@@ -59,12 +59,13 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-extended")
+    implementation("androidx.navigation:navigation-compose:2.8.2")
 
     // ML Kit Document Scanner - handles capture, edge detection, crop & PDF export
     implementation("com.google.android.gms:play-services-mlkit-document-scanner:16.0.0-beta1")
 
-    // Coil for loading scanned page thumbnails
-    implementation("io.coil-kt:coil-compose:2.7.0")
+    // ML Kit Object Detection - counts distinct objects found in a photo
+    implementation("com.google.mlkit:object-detection:17.0.2")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")

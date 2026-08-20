@@ -7,4 +7,15 @@
     <string name="delete">Smazat</string>
     <string name="pages_count">%1$d stránek</string>
     <string name="scan_failed">Skenování se nezdařilo</string>
+
+    <string name="nav_scan">Skenovat</string>
+    <string name="nav_count">Počítat kusy</string>
+    <string name="count_button_camera">Vyfotit</string>
+    <string name="count_button_gallery">Vybrat z galerie</string>
+    <string name="count_result">Napočítáno: %1$d ks</string>
+    <string name="count_empty_title">Spočítej kusy</string>
+    <string name="count_empty_subtitle">Vyfoť nebo vyber fotku s více kusy stejné věci a appka je spočítá a označí</string>
+    <string name="count_new_photo">Nová fotka</string>
+    <string name="count_failed">Počítání se nezdařilo</string>
+    <string name="count_zero_hint">Na fotce se nepodařilo najít žádné oddělené kusy. Zkus lepší osvětlení nebo více rozestupu mezi kusy.</string>
 </resources>

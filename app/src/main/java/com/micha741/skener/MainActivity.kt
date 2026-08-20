@@ -1,11 +1,13 @@
 package com.micha741.skener
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.DocumentScanner
+import androidx.compose.material.icons.filled.FormatListNumbered
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,6 +32,8 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -44,17 +49,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanning
 import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
 import com.micha741.skener.data.ScanDocument
 import com.micha741.skener.ui.theme.SkenerTheme
+import java.io.File
 import java.text.DateFormat
 import java.util.Date
 
 class MainActivity : ComponentActivity() {
 
     private val viewModel: ScanViewModel by viewModels { ScanViewModelFactory(this) }
+    private val countingViewModel: CountingViewModel by viewModels { CountingViewModelFactory(this) }
 
     private val scannerOptions = GmsDocumentScannerOptions.Builder()
         .setGalleryImportAllowed(true)
@@ -65,10 +77,14 @@ class MainActivity : ComponentActivity() {
 
     private val scanner by lazy { GmsDocumentScanning.getClient(scannerOptions) }
 
+    private var pendingCaptureUri: Uri? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             SkenerTheme {
+                val navController = rememberNavController()
+
                 val scanLauncher = rememberLauncherForActivityResult(
                     ActivityResultContracts.StartIntentSenderForResult()
                 ) { result ->
@@ -83,10 +99,37 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                ScanScreen(
-                    viewModel = viewModel,
+                val captureLauncher = rememberLauncherForActivityResult(
+                    ActivityResultContracts.TakePicture()
+                ) { success ->
+                    val uri = pendingCaptureUri
+                    if (success && uri != null) {
+                        countingViewModel.onPhotoSelected(uri)
+                    }
+                }
+
+                val pickPhotoLauncher = rememberLauncherForActivityResult(
+                    ActivityResultContracts.PickVisualMedia()
+                ) { uri ->
+                    uri?.let { countingViewModel.onPhotoSelected(it) }
+                }
+
+                AppScaffold(
+                    navController = navController,
+                    scanViewModel = viewModel,
+                    countingViewModel = countingViewModel,
                     onStartScan = { startScan(scanLauncher) },
                     onShare = ::shareDocument,
+                    onCapturePhoto = {
+                        val uri = createCaptureUri()
+                        pendingCaptureUri = uri
+                        captureLauncher.launch(uri)
+                    },
+                    onPickPhoto = {
+                        pickPhotoLauncher.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        )
+                    },
                 )
             }
         }
@@ -116,6 +159,69 @@ class MainActivity : ComponentActivity() {
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
         startActivity(Intent.createChooser(intent, getString(R.string.share)))
+    }
+
+    private fun createCaptureUri(): Uri {
+        val file = File(cacheDir, "counting_${System.currentTimeMillis()}.jpg")
+        return FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
+    }
+}
+
+@Composable
+private fun AppScaffold(
+    navController: NavHostController,
+    scanViewModel: ScanViewModel,
+    countingViewModel: CountingViewModel,
+    onStartScan: () -> Unit,
+    onShare: (ScanDocument) -> Unit,
+    onCapturePhoto: () -> Unit,
+    onPickPhoto: () -> Unit,
+) {
+    Scaffold(
+        bottomBar = {
+            val backStackEntry by navController.currentBackStackEntryAsState()
+            val currentRoute = backStackEntry?.destination?.route
+            NavigationBar {
+                NavigationBarItem(
+                    selected = currentRoute == "scan",
+                    onClick = { navController.navigateSingleTopTo("scan") },
+                    icon = { Icon(Icons.Default.DocumentScanner, contentDescription = null) },
+                    label = { Text(stringResource(R.string.nav_scan)) },
+                )
+                NavigationBarItem(
+                    selected = currentRoute == "count",
+                    onClick = { navController.navigateSingleTopTo("count") },
+                    icon = { Icon(Icons.Default.FormatListNumbered, contentDescription = null) },
+                    label = { Text(stringResource(R.string.nav_count)) },
+                )
+            }
+        },
+    ) { padding ->
+        NavHost(
+            navController = navController,
+            startDestination = "scan",
+            modifier = Modifier.padding(padding),
+        ) {
+            composable("scan") {
+                ScanScreen(viewModel = scanViewModel, onStartScan = onStartScan, onShare = onShare)
+            }
+            composable("count") {
+                CountingScreen(
+                    viewModel = countingViewModel,
+                    onCapturePhoto = onCapturePhoto,
+                    onPickPhoto = onPickPhoto,
+                )
+            }
+        }
+    }
+}
+
+private fun NavHostController.navigateSingleTopTo(route: String) {
+    val startId = graph.startDestinationId
+    navigate(route) {
+        popUpTo(startId) { saveState = true }
+        launchSingleTop = true
+        restoreState = true
     }
 }
 

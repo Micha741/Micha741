@@ -25,17 +25,26 @@ bez vlastního OpenCV kódu.
 - Seznam uložených skenů (počet stránek, datum)
 - Sdílení PDF přes systémový share sheet
 - Smazání skenu
+- **Počítání kusů**: vyfoť nebo vyber fotku s více stejnými předměty a appka
+  je pomocí ML Kit Object Detection spočítá a vyznačí rámečky
+
+Mezi „Skenovat“ a „Počítat kusy“ se přepíná spodní navigační lištou.
 
 ### Struktura projektu
 
 ```
 app/src/main/java/com/micha741/skener/
-├── MainActivity.kt          # Compose UI + spuštění ML Kit skeneru
-├── ScanViewModel.kt         # stav obrazovky
+├── MainActivity.kt          # navigace + spuštění ML Kit skeneru/kamery/galerie
+├── ScanScreen (v MainActivity.kt)
+├── ScanViewModel.kt         # stav obrazovky skenování
 ├── ScanViewModelFactory.kt
+├── CountingScreen.kt        # UI obrazovky počítání kusů (foto + rámečky)
+├── CountingViewModel.kt     # stav obrazovky počítání kusů
+├── CountingViewModelFactory.kt
 ├── data/
 │   ├── ScanDocument.kt      # model naskenovaného PDF
-│   └── ScanRepository.kt    # ukládání/čtení PDF v app storage
+│   ├── ScanRepository.kt    # ukládání/čtení PDF v app storage
+│   └── ObjectCounter.kt     # detekce a počítání objektů na fotce
 └── ui/theme/Theme.kt        # Material 3 theme (light/dark, dynamic color)
 ```
 
