@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Skener</string>
+    <string name="scan_button">Naskenovat dokument</string>
+    <string name="empty_state_title">Zatím žádné skeny</string>
+    <string name="empty_state_subtitle">Stiskni tlačítko níže a naskenuj svůj první dokument</string>
+    <string name="share">Sdílet</string>
+    <string name="delete">Smazat</string>
+    <string name="pages_count">%1$d stránek</string>
+    <string name="scan_failed">Skenování se nezdařilo</string>
+</resources>
