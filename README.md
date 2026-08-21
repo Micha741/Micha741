@@ -30,8 +30,11 @@ bez vlastního OpenCV kódu.
   vlastní obrazový pipeline (Sobelova hranová detekce, Otsuovo prahování
   jako matematická analýza histogramu jasu, spojité komponenty a statistický
   odhad počtu u slepených kusů podle plochy), žádná externí ML služba
+- **Čtečka čárových a QR kódů**: živý náhled z kamery s průběžným čtením
+  (ML Kit Barcode Scanning), historie naskenovaných kódů v rámci relace
+  s možností kopírovat, otevřít odkaz nebo sdílet
 
-Mezi „Skenovat“ a „Počítat kusy“ se přepíná spodní navigační lištou.
+Mezi „Skenovat“, „Počítat kusy“ a „Kódy“ se přepíná spodní navigační lištou.
 
 ### Struktura projektu
 
@@ -45,12 +48,16 @@ app/src/main/java/com/micha741/skener/
 ├── CountingViewModel.kt     # stav obrazovky počítání kusů
 ├── CountingViewModelFactory.kt
 ├── LiveCameraScreen.kt      # živý náhled kamery (CameraX) s průběžným počítáním
+├── BarcodeScreen.kt         # živý náhled kamery + historie naskenovaných kódů
+├── BarcodeViewModel.kt      # stav obrazovky čtečky kódů
+├── CameraPermission.kt      # sdílená logika oprávnění kamery pro obě kamerové obrazovky
 ├── data/
 │   ├── ScanDocument.kt      # model naskenovaného PDF
 │   ├── ScanRepository.kt    # ukládání/čtení PDF v app storage
 │   ├── BlobAnalyzer.kt      # sdílený algoritmus: hranová detekce + matematická analýza
 │   ├── ObjectCounter.kt     # počítání kusů ze statické fotky (Uri -> BlobAnalyzer)
-│   └── LiveFrameAnalyzer.kt # CameraX analyzer: živé snímky -> BlobAnalyzer
+│   ├── LiveFrameAnalyzer.kt # CameraX analyzer: živé snímky -> BlobAnalyzer
+│   └── BarcodeAnalyzer.kt   # CameraX analyzer: živé snímky -> ML Kit Barcode Scanning
 └── ui/theme/Theme.kt        # Material 3 theme (light/dark, dynamic color)
 ```
 

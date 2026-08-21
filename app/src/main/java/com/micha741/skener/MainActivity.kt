@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.DocumentScanner
 import androidx.compose.material.icons.filled.FormatListNumbered
+import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -65,6 +66,7 @@ class MainActivity : ComponentActivity() {
 
     private val viewModel: ScanViewModel by viewModels { ScanViewModelFactory(this) }
     private val countingViewModel: CountingViewModel by viewModels { CountingViewModelFactory(this) }
+    private val barcodeViewModel: BarcodeViewModel by viewModels()
 
     private val scannerOptions = GmsDocumentScannerOptions.Builder()
         .setGalleryImportAllowed(true)
@@ -105,6 +107,7 @@ class MainActivity : ComponentActivity() {
                     navController = navController,
                     scanViewModel = viewModel,
                     countingViewModel = countingViewModel,
+                    barcodeViewModel = barcodeViewModel,
                     onStartScan = { startScan(scanLauncher) },
                     onShare = ::shareDocument,
                     onPickPhoto = {
@@ -149,6 +152,7 @@ private fun AppScaffold(
     navController: NavHostController,
     scanViewModel: ScanViewModel,
     countingViewModel: CountingViewModel,
+    barcodeViewModel: BarcodeViewModel,
     onStartScan: () -> Unit,
     onShare: (ScanDocument) -> Unit,
     onPickPhoto: () -> Unit,
@@ -171,6 +175,12 @@ private fun AppScaffold(
                         onClick = { navController.navigateSingleTopTo("count") },
                         icon = { Icon(Icons.Default.FormatListNumbered, contentDescription = null) },
                         label = { Text(stringResource(R.string.nav_count)) },
+                    )
+                    NavigationBarItem(
+                        selected = currentRoute == "barcode",
+                        onClick = { navController.navigateSingleTopTo("barcode") },
+                        icon = { Icon(Icons.Default.QrCodeScanner, contentDescription = null) },
+                        label = { Text(stringResource(R.string.nav_barcode)) },
                     )
                 }
             }
@@ -199,6 +209,9 @@ private fun AppScaffold(
                     },
                     onClose = { navController.popBackStack() },
                 )
+            }
+            composable("barcode") {
+                BarcodeScreen(viewModel = barcodeViewModel)
             }
         }
     }

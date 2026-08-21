@@ -1,11 +1,7 @@
 package com.micha741.skener
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
@@ -15,15 +11,12 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.PhotoCamera
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -72,25 +65,9 @@ fun LiveCameraScreen(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    var hasCameraPermission by remember {
-        mutableStateOf(
-            ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) ==
-                PackageManager.PERMISSION_GRANTED
-        )
-    }
-    val permissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { granted -> hasCameraPermission = granted }
-
-    LaunchedEffect(Unit) {
-        if (!hasCameraPermission) permissionLauncher.launch(Manifest.permission.CAMERA)
-    }
-
-    if (!hasCameraPermission) {
-        PermissionRationale(
-            onRequestPermission = { permissionLauncher.launch(Manifest.permission.CAMERA) },
-            onClose = onClose,
-        )
+    val permission = rememberCameraPermissionState()
+    if (!permission.granted) {
+        CameraPermissionRationale(onRequestPermission = permission.requestPermission, onClose = onClose)
         return
     }
 
@@ -243,30 +220,6 @@ fun LiveCameraScreen(
                 ) {
                     Surface(color = Color.White, shape = CircleShape, modifier = Modifier.size(64.dp)) {}
                 }
-            }
-        }
-    }
-}
-
-@Composable
-private fun PermissionRationale(onRequestPermission: () -> Unit, onClose: () -> Unit) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Icon(
-                Icons.Default.PhotoCamera,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-            )
-            Text(
-                text = stringResource(R.string.camera_permission_rationale),
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(top = 12.dp, start = 24.dp, end = 24.dp),
-            )
-            Button(onClick = onRequestPermission, modifier = Modifier.padding(top = 16.dp)) {
-                Text(stringResource(R.string.camera_permission_request))
-            }
-            Button(onClick = onClose, modifier = Modifier.padding(top = 8.dp)) {
-                Text(stringResource(R.string.close))
             }
         }
     }

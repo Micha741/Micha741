@@ -21,6 +21,12 @@
 
     <string name="close">Zavřít</string>
     <string name="live_count_badge">Napočítáno: %1$d ks</string>
-    <string name="camera_permission_rationale">Pro živé počítání kusů appka potřebuje přístup ke kameře.</string>
+    <string name="camera_permission_rationale">Appka potřebuje přístup ke kameře.</string>
     <string name="camera_permission_request">Povolit kameru</string>
+
+    <string name="nav_barcode">Kódy</string>
+    <string name="barcode_history_title">Naskenované kódy</string>
+    <string name="barcode_empty_hint">Namiř kameru na čárový nebo QR kód</string>
+    <string name="barcode_copy">Kopírovat</string>
+    <string name="barcode_open">Otevřít odkaz</string>
 </resources>
