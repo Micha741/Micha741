@@ -76,6 +76,12 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:1.3.4")
     implementation("androidx.camera:camera-view:1.3.4")
 
+    // OpenCV - adaptive threshold, contours & Hu-moment shape matching for the
+    // static-photo piece counter (see data/cv/CvBlobAnalyzer.kt). Official Maven
+    // Central artifact (no more OpenCV Manager APK needed) since 4.9.0 - check
+    // https://mvnrepository.com/artifact/org.opencv/opencv for the newest version.
+    implementation("org.opencv:opencv:4.10.0")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
