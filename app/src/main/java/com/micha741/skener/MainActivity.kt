@@ -1,6 +1,7 @@
 package com.micha741.skener
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -25,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.DocumentScanner
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.FormatListNumbered
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Share
@@ -48,7 +50,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -124,6 +128,17 @@ class MainActivity : ComponentActivity() {
                     uri?.let { countingViewModel.onPhotoSelected(it) }
                 }
 
+                var pendingSaveDocument by remember { mutableStateOf<ScanDocument?>(null) }
+                val saveLauncher = rememberLauncherForActivityResult(
+                    ActivityResultContracts.CreateDocument("application/pdf")
+                ) { destUri ->
+                    val document = pendingSaveDocument
+                    pendingSaveDocument = null
+                    if (destUri != null && document != null) {
+                        exportDocument(document, destUri)
+                    }
+                }
+
                 AppScaffold(
                     navController = navController,
                     scanViewModel = viewModel,
@@ -131,6 +146,10 @@ class MainActivity : ComponentActivity() {
                     barcodeViewModel = barcodeViewModel,
                     onStartScan = { startScan(scanLauncher) },
                     onShare = ::shareDocument,
+                    onSaveToDevice = { document ->
+                        pendingSaveDocument = document
+                        saveLauncher.launch(document.pdfFile.name)
+                    },
                     onPickPhoto = {
                         pickPhotoLauncher.launch(
                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
@@ -166,6 +185,17 @@ class MainActivity : ComponentActivity() {
         }
         startActivity(Intent.createChooser(intent, getString(R.string.share)))
     }
+
+    private fun exportDocument(document: ScanDocument, destUri: Uri) {
+        try {
+            contentResolver.openOutputStream(destUri)?.use { output ->
+                document.pdfFile.inputStream().use { input -> input.copyTo(output) }
+            }
+            viewModel.onSaveSucceeded()
+        } catch (e: Exception) {
+            viewModel.onScanFailed(e.message ?: getString(R.string.save_failed))
+        }
+    }
 }
 
 @Composable
@@ -176,6 +206,7 @@ private fun AppScaffold(
     barcodeViewModel: BarcodeViewModel,
     onStartScan: () -> Unit,
     onShare: (ScanDocument) -> Unit,
+    onSaveToDevice: (ScanDocument) -> Unit,
     onPickPhoto: () -> Unit,
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -213,7 +244,12 @@ private fun AppScaffold(
             modifier = Modifier.padding(padding),
         ) {
             composable("scan") {
-                ScanScreen(viewModel = scanViewModel, onStartScan = onStartScan, onShare = onShare)
+                ScanScreen(
+                    viewModel = scanViewModel,
+                    onStartScan = onStartScan,
+                    onShare = onShare,
+                    onSaveToDevice = onSaveToDevice,
+                )
             }
             composable("count") {
                 CountingScreen(
@@ -253,6 +289,7 @@ private fun ScanScreen(
     viewModel: ScanViewModel,
     onStartScan: () -> Unit,
     onShare: (ScanDocument) -> Unit,
+    onSaveToDevice: (ScanDocument) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -261,6 +298,13 @@ private fun ScanScreen(
         uiState.errorMessage?.let { message ->
             snackbarHostState.showSnackbar(message)
             viewModel.consumeError()
+        }
+    }
+
+    LaunchedEffect(uiState.infoMessage) {
+        uiState.infoMessage?.let { message ->
+            snackbarHostState.showSnackbar(message)
+            viewModel.consumeInfoMessage()
         }
     }
 
@@ -303,6 +347,7 @@ private fun ScanScreen(
                         ScanListItem(
                             document = document,
                             onShare = { onShare(document) },
+                            onSaveToDevice = { onSaveToDevice(document) },
                             onDelete = { viewModel.delete(document) },
                         )
                     }
@@ -393,6 +438,7 @@ private fun EmptyState(padding: PaddingValues) {
 private fun ScanListItem(
     document: ScanDocument,
     onShare: () -> Unit,
+    onSaveToDevice: () -> Unit,
     onDelete: () -> Unit,
 ) {
     Card(modifier = Modifier.fillMaxWidth()) {
@@ -424,6 +470,9 @@ private fun ScanListItem(
                 }
             }
             Row {
+                IconButton(onClick = onSaveToDevice) {
+                    Icon(Icons.Default.Download, contentDescription = stringResource(R.string.save_to_device))
+                }
                 IconButton(onClick = onShare) {
                     Icon(Icons.Default.Share, contentDescription = stringResource(R.string.share))
                 }

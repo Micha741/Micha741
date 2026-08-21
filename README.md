@@ -27,6 +27,9 @@ bez vlastního OpenCV kódu.
   Text Recognition) a vygeneruje PDF jen s rozpoznaným textem, bez fotky
 - Seznam uložených skenů (počet stránek, datum)
 - Sdílení PDF přes systémový share sheet
+- **Uložení do zařízení** — systémový výběr umístění (Storage Access
+  Framework), takže PDF jde uložit třeba do Stažených souborů, na Disk
+  nebo SD kartu, mimo interní úložiště appky
 - Smazání skenu
 - **Počítání kusů**: živý náhled z kamery (CameraX) s průběžnou detekcí a
   počítáním kusů přímo v hledáčku, nebo statická fotka/výběr z galerie —

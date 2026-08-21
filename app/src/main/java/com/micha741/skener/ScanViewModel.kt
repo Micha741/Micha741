@@ -24,6 +24,7 @@ data class ScanUiState(
     val scanMode: ScanMode = ScanMode.IMAGE,
     val isProcessing: Boolean = false,
     val errorMessage: String? = null,
+    val infoMessage: String? = null,
 )
 
 class ScanViewModel(
@@ -96,8 +97,16 @@ class ScanViewModel(
         _uiState.update { it.copy(errorMessage = message) }
     }
 
+    fun onSaveSucceeded() {
+        _uiState.update { it.copy(infoMessage = appContext.getString(R.string.save_success)) }
+    }
+
     fun consumeError() {
         _uiState.update { it.copy(errorMessage = null) }
+    }
+
+    fun consumeInfoMessage() {
+        _uiState.update { it.copy(infoMessage = null) }
     }
 
     fun delete(document: ScanDocument) {

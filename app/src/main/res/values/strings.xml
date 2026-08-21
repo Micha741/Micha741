@@ -11,6 +11,9 @@
     <string name="scan_mode_text">Text (OCR)</string>
     <string name="ocr_processing">Rozpoznávám text…</string>
     <string name="ocr_failed">Rozpoznání textu se nezdařilo</string>
+    <string name="save_to_device">Uložit do zařízení</string>
+    <string name="save_success">PDF uloženo</string>
+    <string name="save_failed">Uložení se nezdařilo</string>
 
     <string name="nav_scan">Skenovat</string>
     <string name="nav_count">Počítat kusy</string>
