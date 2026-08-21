@@ -1,7 +1,6 @@
 package com.micha741.skener
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -59,7 +58,6 @@ import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
 import com.micha741.skener.data.ScanDocument
 import com.micha741.skener.ui.theme.SkenerTheme
-import java.io.File
 import java.text.DateFormat
 import java.util.Date
 
@@ -76,8 +74,6 @@ class MainActivity : ComponentActivity() {
         .build()
 
     private val scanner by lazy { GmsDocumentScanning.getClient(scannerOptions) }
-
-    private var pendingCaptureUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,15 +95,6 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                val captureLauncher = rememberLauncherForActivityResult(
-                    ActivityResultContracts.TakePicture()
-                ) { success ->
-                    val uri = pendingCaptureUri
-                    if (success && uri != null) {
-                        countingViewModel.onPhotoSelected(uri)
-                    }
-                }
-
                 val pickPhotoLauncher = rememberLauncherForActivityResult(
                     ActivityResultContracts.PickVisualMedia()
                 ) { uri ->
@@ -120,11 +107,6 @@ class MainActivity : ComponentActivity() {
                     countingViewModel = countingViewModel,
                     onStartScan = { startScan(scanLauncher) },
                     onShare = ::shareDocument,
-                    onCapturePhoto = {
-                        val uri = createCaptureUri()
-                        pendingCaptureUri = uri
-                        captureLauncher.launch(uri)
-                    },
                     onPickPhoto = {
                         pickPhotoLauncher.launch(
                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
@@ -160,11 +142,6 @@ class MainActivity : ComponentActivity() {
         }
         startActivity(Intent.createChooser(intent, getString(R.string.share)))
     }
-
-    private fun createCaptureUri(): Uri {
-        val file = File(cacheDir, "counting_${System.currentTimeMillis()}.jpg")
-        return FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
-    }
 }
 
 @Composable
@@ -174,26 +151,28 @@ private fun AppScaffold(
     countingViewModel: CountingViewModel,
     onStartScan: () -> Unit,
     onShare: (ScanDocument) -> Unit,
-    onCapturePhoto: () -> Unit,
     onPickPhoto: () -> Unit,
 ) {
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = backStackEntry?.destination?.route
+
     Scaffold(
         bottomBar = {
-            val backStackEntry by navController.currentBackStackEntryAsState()
-            val currentRoute = backStackEntry?.destination?.route
-            NavigationBar {
-                NavigationBarItem(
-                    selected = currentRoute == "scan",
-                    onClick = { navController.navigateSingleTopTo("scan") },
-                    icon = { Icon(Icons.Default.DocumentScanner, contentDescription = null) },
-                    label = { Text(stringResource(R.string.nav_scan)) },
-                )
-                NavigationBarItem(
-                    selected = currentRoute == "count",
-                    onClick = { navController.navigateSingleTopTo("count") },
-                    icon = { Icon(Icons.Default.FormatListNumbered, contentDescription = null) },
-                    label = { Text(stringResource(R.string.nav_count)) },
-                )
+            if (currentRoute != "live_count") {
+                NavigationBar {
+                    NavigationBarItem(
+                        selected = currentRoute == "scan",
+                        onClick = { navController.navigateSingleTopTo("scan") },
+                        icon = { Icon(Icons.Default.DocumentScanner, contentDescription = null) },
+                        label = { Text(stringResource(R.string.nav_scan)) },
+                    )
+                    NavigationBarItem(
+                        selected = currentRoute == "count",
+                        onClick = { navController.navigateSingleTopTo("count") },
+                        icon = { Icon(Icons.Default.FormatListNumbered, contentDescription = null) },
+                        label = { Text(stringResource(R.string.nav_count)) },
+                    )
+                }
             }
         },
     ) { padding ->
@@ -208,8 +187,17 @@ private fun AppScaffold(
             composable("count") {
                 CountingScreen(
                     viewModel = countingViewModel,
-                    onCapturePhoto = onCapturePhoto,
+                    onCapturePhoto = { navController.navigate("live_count") },
                     onPickPhoto = onPickPhoto,
+                )
+            }
+            composable("live_count") {
+                LiveCameraScreen(
+                    onPhotoCaptured = { uri ->
+                        countingViewModel.onPhotoSelected(uri)
+                        navController.popBackStack()
+                    },
+                    onClose = { navController.popBackStack() },
                 )
             }
         }

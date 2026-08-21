@@ -64,6 +64,12 @@ dependencies {
     // ML Kit Document Scanner - handles capture, edge detection, crop & PDF export
     implementation("com.google.android.gms:play-services-mlkit-document-scanner:16.0.0-beta1")
 
+    // CameraX - live viewfinder preview + frame analysis for the piece counter
+    implementation("androidx.camera:camera-core:1.3.4")
+    implementation("androidx.camera:camera-camera2:1.3.4")
+    implementation("androidx.camera:camera-lifecycle:1.3.4")
+    implementation("androidx.camera:camera-view:1.3.4")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")

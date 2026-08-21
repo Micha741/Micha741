@@ -25,10 +25,11 @@ bez vlastního OpenCV kódu.
 - Seznam uložených skenů (počet stránek, datum)
 - Sdílení PDF přes systémový share sheet
 - Smazání skenu
-- **Počítání kusů**: vyfoť nebo vyber fotku s více stejnými předměty a appka
-  je spočítá vlastním obrazovým pipeline — Sobelova hranová detekce, Otsuovo
-  prahování (matematická analýza histogramu jasu), spojité komponenty a
-  statistický odhad počtu u slepených kusů podle plochy — a vyznačí rámečky
+- **Počítání kusů**: živý náhled z kamery (CameraX) s průběžnou detekcí a
+  počítáním kusů přímo v hledáčku, nebo statická fotka/výběr z galerie —
+  vlastní obrazový pipeline (Sobelova hranová detekce, Otsuovo prahování
+  jako matematická analýza histogramu jasu, spojité komponenty a statistický
+  odhad počtu u slepených kusů podle plochy), žádná externí ML služba
 
 Mezi „Skenovat“ a „Počítat kusy“ se přepíná spodní navigační lištou.
 
@@ -36,17 +37,20 @@ Mezi „Skenovat“ a „Počítat kusy“ se přepíná spodní navigační li�
 
 ```
 app/src/main/java/com/micha741/skener/
-├── MainActivity.kt          # navigace + spuštění ML Kit skeneru/kamery/galerie
+├── MainActivity.kt          # navigace + spuštění ML Kit skeneru/galerie
 ├── ScanScreen (v MainActivity.kt)
 ├── ScanViewModel.kt         # stav obrazovky skenování
 ├── ScanViewModelFactory.kt
-├── CountingScreen.kt        # UI obrazovky počítání kusů (foto + rámečky)
+├── CountingScreen.kt        # UI obrazovky počítání kusů (výsledná fotka + rámečky)
 ├── CountingViewModel.kt     # stav obrazovky počítání kusů
 ├── CountingViewModelFactory.kt
+├── LiveCameraScreen.kt      # živý náhled kamery (CameraX) s průběžným počítáním
 ├── data/
 │   ├── ScanDocument.kt      # model naskenovaného PDF
 │   ├── ScanRepository.kt    # ukládání/čtení PDF v app storage
-│   └── ObjectCounter.kt     # hranová detekce + matematická analýza pro počítání kusů
+│   ├── BlobAnalyzer.kt      # sdílený algoritmus: hranová detekce + matematická analýza
+│   ├── ObjectCounter.kt     # počítání kusů ze statické fotky (Uri -> BlobAnalyzer)
+│   └── LiveFrameAnalyzer.kt # CameraX analyzer: živé snímky -> BlobAnalyzer
 └── ui/theme/Theme.kt        # Material 3 theme (light/dark, dynamic color)
 ```
 
