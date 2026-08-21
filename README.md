@@ -22,6 +22,9 @@ bez vlastního OpenCV kódu.
 - Skenování dokumentu kamerou (nebo import z galerie) s automatickou detekcí
   hran a oříznutím
 - Víc stránek v jednom skenu, export do PDF
+- **Dva režimy skenu**: klasický obrázkový PDF (naskenovaná stránka jako
+  fotka), nebo čistě textový PDF — appka přes stránky spustí OCR (ML Kit
+  Text Recognition) a vygeneruje PDF jen s rozpoznaným textem, bez fotky
 - Seznam uložených skenů (počet stránek, datum)
 - Sdílení PDF přes systémový share sheet
 - Smazání skenu
@@ -57,7 +60,9 @@ app/src/main/java/com/micha741/skener/
 │   ├── BlobAnalyzer.kt      # sdílený algoritmus: hranová detekce + matematická analýza
 │   ├── ObjectCounter.kt     # počítání kusů ze statické fotky (Uri -> BlobAnalyzer)
 │   ├── LiveFrameAnalyzer.kt # CameraX analyzer: živé snímky -> BlobAnalyzer
-│   └── BarcodeAnalyzer.kt   # CameraX analyzer: živé snímky -> ML Kit Barcode Scanning
+│   ├── BarcodeAnalyzer.kt   # CameraX analyzer: živé snímky -> ML Kit Barcode Scanning
+│   ├── DocumentTextExtractor.kt # OCR jedné stránky (ML Kit Text Recognition)
+│   └── TextPdfWriter.kt     # vykreslí rozpoznaný text do PDF (bez fotky)
 └── ui/theme/Theme.kt        # Material 3 theme (light/dark, dynamic color)
 ```
 

@@ -67,6 +67,9 @@ dependencies {
     // ML Kit Barcode Scanning - live barcode/QR code reader
     implementation("com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1")
 
+    // ML Kit Text Recognition (Latin) - OCR for the "text only" document scan mode
+    implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.1")
+
     // CameraX - live viewfinder preview + frame analysis for the piece counter & barcode reader
     implementation("androidx.camera:camera-core:1.3.4")
     implementation("androidx.camera:camera-camera2:1.3.4")

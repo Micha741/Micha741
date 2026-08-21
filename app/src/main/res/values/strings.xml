@@ -7,6 +7,10 @@
     <string name="delete">Smazat</string>
     <string name="pages_count">%1$d stránek</string>
     <string name="scan_failed">Skenování se nezdařilo</string>
+    <string name="scan_mode_image">Obrázek</string>
+    <string name="scan_mode_text">Text (OCR)</string>
+    <string name="ocr_processing">Rozpoznávám text…</string>
+    <string name="ocr_failed">Rozpoznání textu se nezdařilo</string>
 
     <string name="nav_scan">Skenovat</string>
     <string name="nav_count">Počítat kusy</string>

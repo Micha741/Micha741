@@ -9,6 +9,7 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Description
@@ -27,8 +29,10 @@ import androidx.compose.material.icons.filled.FormatListNumbered
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,6 +41,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -46,6 +51,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
@@ -71,7 +77,10 @@ class MainActivity : ComponentActivity() {
     private val scannerOptions = GmsDocumentScannerOptions.Builder()
         .setGalleryImportAllowed(true)
         .setPageLimit(50)
-        .setResultFormats(GmsDocumentScannerOptions.RESULT_FORMAT_PDF)
+        .setResultFormats(
+            GmsDocumentScannerOptions.RESULT_FORMAT_PDF,
+            GmsDocumentScannerOptions.RESULT_FORMAT_JPEG,
+        )
         .setScannerMode(GmsDocumentScannerOptions.SCANNER_MODE_FULL)
         .build()
 
@@ -88,11 +97,23 @@ class MainActivity : ComponentActivity() {
                 ) { result ->
                     if (result.resultCode == RESULT_OK) {
                         val scanResult = GmsDocumentScanningResult.fromActivityResultIntent(result.data)
-                        val pdf = scanResult?.pdf
-                        if (pdf != null) {
-                            viewModel.onScanSucceeded(pdf.uri, pdf.pageCount)
-                        } else {
-                            viewModel.onScanFailed(getString(R.string.scan_failed))
+                        when (viewModel.uiState.value.scanMode) {
+                            ScanMode.TEXT -> {
+                                val imageUris = scanResult?.pages?.map { it.imageUri }
+                                if (!imageUris.isNullOrEmpty()) {
+                                    viewModel.onScanSucceededWithText(imageUris)
+                                } else {
+                                    viewModel.onScanFailed(getString(R.string.scan_failed))
+                                }
+                            }
+                            ScanMode.IMAGE -> {
+                                val pdf = scanResult?.pdf
+                                if (pdf != null) {
+                                    viewModel.onScanSucceeded(pdf.uri, pdf.pageCount)
+                                } else {
+                                    viewModel.onScanFailed(getString(R.string.scan_failed))
+                                }
+                            }
                         }
                     }
                 }
@@ -256,23 +277,85 @@ private fun ScanScreen(
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
-        if (uiState.documents.isEmpty()) {
-            EmptyState(padding)
-        } else {
-            LazyColumn(
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding),
-            ) {
-                items(uiState.documents, key = { it.pdfFile.path }) { document ->
-                    ScanListItem(
-                        document = document,
-                        onShare = { onShare(document) },
-                        onDelete = { viewModel.delete(document) },
-                    )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
+        ) {
+            ScanModeSelector(
+                mode = uiState.scanMode,
+                onModeChange = viewModel::setScanMode,
+            )
+
+            if (uiState.documents.isEmpty()) {
+                Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                    EmptyState(PaddingValues(0.dp))
                 }
+            } else {
+                LazyColumn(
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                ) {
+                    items(uiState.documents, key = { it.pdfFile.path }) { document ->
+                        ScanListItem(
+                            document = document,
+                            onShare = { onShare(document) },
+                            onDelete = { viewModel.delete(document) },
+                        )
+                    }
+                }
+            }
+        }
+
+        if (uiState.isProcessing) {
+            OcrProcessingOverlay()
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ScanModeSelector(mode: ScanMode, onModeChange: (ScanMode) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        FilterChip(
+            selected = mode == ScanMode.IMAGE,
+            onClick = { onModeChange(ScanMode.IMAGE) },
+            label = { Text(stringResource(R.string.scan_mode_image)) },
+        )
+        FilterChip(
+            selected = mode == ScanMode.TEXT,
+            onClick = { onModeChange(ScanMode.TEXT) },
+            label = { Text(stringResource(R.string.scan_mode_text)) },
+        )
+    }
+}
+
+@Composable
+private fun OcrProcessingOverlay() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.35f)),
+        contentAlignment = Alignment.Center,
+    ) {
+        Surface(shape = RoundedCornerShape(12.dp)) {
+            Row(
+                modifier = Modifier.padding(24.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                CircularProgressIndicator()
+                Text(
+                    text = stringResource(R.string.ocr_processing),
+                    modifier = Modifier.padding(start = 16.dp),
+                )
             }
         }
     }
