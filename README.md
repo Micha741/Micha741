@@ -33,9 +33,16 @@ bez vlastního OpenCV kódu.
 - Smazání skenu
 - **Počítání kusů**: živý náhled z kamery (CameraX) s průběžnou detekcí a
   počítáním kusů přímo v hledáčku, nebo statická fotka/výběr z galerie —
-  vlastní obrazový pipeline (Sobelova hranová detekce, Otsuovo prahování
-  jako matematická analýza histogramu jasu, spojité komponenty a statistický
-  odhad počtu u slepených kusů podle plochy), žádná externí ML služba
+  vlastní obrazový pipeline (Gaussovo rozostření, adaptivní lokální
+  prahování podle klouzavého průměru jasu přes integrální obraz — funguje
+  i při nerovnoměrném osvětlení/stínech na fotce, na rozdíl od jednoho
+  globálního prahu, Sobelova hranová detekce s Otsuovým prahováním pro
+  oddělení slepených kusů, spojité komponenty, statistický odhad počtu u
+  slepených kusů podle plochy), žádná externí ML služba
+- **Referenční kus**: u statické fotky lze klepnutím označit jeden
+  konkrétní kus a appka pak spočítá jen kusy podobné velikostí a tvarem
+  (poměr stran, "vyplněnost" ohraničujícího obdélníku) tomu označenému —
+  užitečné když je na fotce víc druhů věcí najednou
 - **Čtečka čárových a QR kódů**: živý náhled z kamery s průběžným čtením
   (ML Kit Barcode Scanning), historie naskenovaných kódů v rámci relace
   s možností kopírovat, otevřít odkaz nebo sdílet

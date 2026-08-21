@@ -1,21 +1,35 @@
 package com.micha741.skener.data
 
 import android.graphics.Rect
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
-data class BlobAnalysisResult(val boxes: List<Rect>, val count: Int)
+/** One detected blob: its bounding box plus shape descriptors used for reference matching. */
+data class DetectedBlob(
+    val box: Rect,
+    val area: Int,
+    /** area / bounding-box area - how "solid" the shape is (1.0 = fills its box, e.g. a square/rectangle). */
+    val fillRatio: Float,
+    /** longer side / shorter side of the bounding box, always >= 1 (1.0 = square-ish). */
+    val aspectRatio: Float,
+)
+
+data class BlobAnalysisResult(val blobs: List<DetectedBlob>, val count: Int)
 
 /**
- * Resolution-agnostic blob-counting pipeline shared by the static-photo
+ * Resolution-agnostic blob-segmentation pipeline shared by the static-photo
  * counter ([ObjectCounter]) and the live camera preview ([LiveFrameAnalyzer]):
  *
- * Gaussian blur -> Otsu threshold (foreground/background) -> Sobel edge
- * magnitude (also Otsu-thresholded, used to cut necks between touching
- * items) -> morphological opening -> connected-component labeling ->
- * statistical area-based splitting of merged blobs.
+ * Gaussian blur -> adaptive local-mean threshold (foreground/background,
+ * robust to uneven lighting/shadows across the frame, unlike a single
+ * global threshold) -> Sobel edge magnitude (Otsu-thresholded, used to cut
+ * necks between touching items) -> morphological opening -> connected-
+ * component labeling -> either a statistical area-based split of merged
+ * blobs ("auto" mode), or a match against a user-picked reference piece's
+ * size/shape ("reference" mode, see [matchesReference]).
  *
  * Takes a plain 0-255 grayscale buffer so callers can feed it either an
  * RGB-derived grayscale bitmap or a camera frame's raw luma (Y) plane
@@ -23,17 +37,20 @@ data class BlobAnalysisResult(val boxes: List<Rect>, val count: Int)
  */
 object BlobAnalyzer {
 
-    fun analyze(gray: IntArray, width: Int, height: Int): BlobAnalysisResult {
+    fun analyze(gray: IntArray, width: Int, height: Int, reference: DetectedBlob? = null): BlobAnalysisResult {
         val blurred = gaussianBlur(gray, width, height)
-
-        val threshold = otsuThreshold(histogramOf(blurred))
-        val darkOnLight = isDarkOnLight(blurred, width, height, threshold)
+        val darkOnLight = isDarkOnLight(blurred, width, height)
+        val localMean = boxMean(blurred, width, height, windowSize(width, height))
 
         val edgeMagnitude = sobelMagnitude(blurred, width, height)
         val edgeThreshold = otsuThreshold(histogramOf(edgeMagnitude))
 
         val foreground = BooleanArray(width * height) { i ->
-            val isForegroundPixel = if (darkOnLight) blurred[i] < threshold else blurred[i] > threshold
+            val isForegroundPixel = if (darkOnLight) {
+                blurred[i] < localMean[i] - ADAPTIVE_C
+            } else {
+                blurred[i] > localMean[i] + ADAPTIVE_C
+            }
             val isEdgePixel = edgeMagnitude[i] >= edgeThreshold
             isForegroundPixel && !isEdgePixel
         }
@@ -41,31 +58,53 @@ object BlobAnalyzer {
         val opened = morphologicalOpen(foreground, width, height)
         val components = labelComponents(opened, width, height)
         val minAreaPx = max(MIN_AREA_PX_FLOOR, (width * height * MIN_AREA_FRACTION_OF_FRAME).roundToInt())
-        val filtered = components.filter { it.area >= minAreaPx }
+        val filtered = components.filter { it.area >= minAreaPx }.map { it.toBlob() }
 
         if (filtered.isEmpty()) return BlobAnalysisResult(emptyList(), 0)
+
+        if (reference != null) {
+            val matched = filtered.filter { matchesReference(it, reference) }
+            return BlobAnalysisResult(matched, matched.size)
+        }
 
         val medianArea = filtered.map { it.area }.sorted()[filtered.size / 2]
         val minKeepArea = max(minAreaPx, (medianArea * MIN_AREA_RATIO).roundToInt())
         val kept = filtered.filter { it.area >= minKeepArea }
 
-        val boxes = mutableListOf<Rect>()
         var totalCount = 0
-
-        for (component in kept) {
+        for (blob in kept) {
             val estimatedPieces = if (
                 filtered.size >= MIN_SAMPLES_FOR_SPLIT &&
-                component.area > medianArea * SPLIT_AREA_RATIO
+                blob.area > medianArea * SPLIT_AREA_RATIO
             ) {
-                max(1, (component.area.toFloat() / medianArea).roundToInt())
+                max(1, (blob.area.toFloat() / medianArea).roundToInt())
             } else {
                 1
             }
             totalCount += estimatedPieces
-            boxes += component.boundingBox()
         }
 
-        return BlobAnalysisResult(boxes, totalCount)
+        return BlobAnalysisResult(kept, totalCount)
+    }
+
+    /** True if [candidate]'s size/shape plausibly matches the user-picked [reference] piece. */
+    fun matchesReference(candidate: DetectedBlob, reference: DetectedBlob): Boolean {
+        val areaRatio = candidate.area.toFloat() / reference.area
+        if (areaRatio < REF_AREA_MIN_RATIO || areaRatio > REF_AREA_MAX_RATIO) return false
+        if (abs(candidate.aspectRatio - reference.aspectRatio) > REF_ASPECT_TOLERANCE) return false
+        if (abs(candidate.fillRatio - reference.fillRatio) > REF_FILL_TOLERANCE) return false
+        return true
+    }
+
+    /** Finds the segmented blob under (or, failing that, nearest to) a user-tapped point. */
+    fun findBlobNear(blobs: List<DetectedBlob>, x: Int, y: Int): DetectedBlob? {
+        blobs.firstOrNull { it.box.contains(x, y) }?.let { return it }
+        if (blobs.isEmpty()) return null
+        return blobs.minByOrNull { blob ->
+            val dx = (blob.box.centerX() - x).toLong()
+            val dy = (blob.box.centerY() - y).toLong()
+            dx * dx + dy * dy
+        }
     }
 
     /** Separable 5x5 binomial approximation of a Gaussian blur (sigma ~= 1). */
@@ -99,6 +138,43 @@ object BlobAnalyzer {
             }
         }
         return vertical
+    }
+
+    /** Odd window size for local-mean thresholding, scaled to the frame so it covers roughly one item. */
+    private fun windowSize(width: Int, height: Int): Int {
+        val size = max(15, min(width, height) / 6)
+        return if (size % 2 == 0) size + 1 else size
+    }
+
+    /** Local mean of each pixel over a windowSize x windowSize box, via an integral image (O(1) per pixel). */
+    private fun boxMean(src: IntArray, width: Int, height: Int, windowSize: Int): IntArray {
+        val stride = width + 1
+        val integral = LongArray(stride * (height + 1))
+        for (y in 0 until height) {
+            var rowSum = 0L
+            for (x in 0 until width) {
+                rowSum += src[y * width + x]
+                integral[(y + 1) * stride + (x + 1)] = integral[y * stride + (x + 1)] + rowSum
+            }
+        }
+
+        val radius = windowSize / 2
+        val result = IntArray(width * height)
+        for (y in 0 until height) {
+            val y0 = max(0, y - radius)
+            val y1 = min(height - 1, y + radius)
+            for (x in 0 until width) {
+                val x0 = max(0, x - radius)
+                val x1 = min(width - 1, x + radius)
+                val sum = integral[(y1 + 1) * stride + (x1 + 1)] -
+                    integral[y0 * stride + (x1 + 1)] -
+                    integral[(y1 + 1) * stride + x0] +
+                    integral[y0 * stride + x0]
+                val count = (x1 - x0 + 1) * (y1 - y0 + 1)
+                result[y * width + x] = (sum / count).toInt()
+            }
+        }
+        return result
     }
 
     private fun histogramOf(values: IntArray): IntArray {
@@ -140,23 +216,27 @@ object BlobAnalyzer {
         return threshold
     }
 
-    /** Samples the outer margin of the frame (assumed background) to auto-detect polarity. */
-    private fun isDarkOnLight(gray: IntArray, width: Int, height: Int, threshold: Int): Boolean {
+    /** Samples the outer margin of the frame (assumed background) against the overall mean to auto-detect polarity. */
+    private fun isDarkOnLight(gray: IntArray, width: Int, height: Int): Boolean {
         val margin = max(2, min(width, height) / 20)
-        var sum = 0L
-        var count = 0L
+        var borderSum = 0L
+        var borderCount = 0L
+        var totalSum = 0L
         for (y in 0 until height) {
             val onBorderRow = y < margin || y >= height - margin
             for (x in 0 until width) {
+                val value = gray[y * width + x]
+                totalSum += value
                 val onBorder = onBorderRow || x < margin || x >= width - margin
                 if (onBorder) {
-                    sum += gray[y * width + x]
-                    count++
+                    borderSum += value
+                    borderCount++
                 }
             }
         }
-        val borderMean = if (count > 0) sum.toDouble() / count else 255.0
-        return borderMean >= threshold
+        val borderMean = if (borderCount > 0) borderSum.toDouble() / borderCount else 255.0
+        val overallMean = totalSum.toDouble() / (width * height)
+        return borderMean >= overallMean
     }
 
     private fun sobelMagnitude(src: IntArray, width: Int, height: Int): IntArray {
@@ -234,7 +314,14 @@ object BlobAnalyzer {
         var maxX = Int.MIN_VALUE
         var maxY = Int.MIN_VALUE
 
-        fun boundingBox(): Rect = Rect(minX, minY, maxX + 1, maxY + 1)
+        fun toBlob(): DetectedBlob {
+            val w = maxX - minX + 1
+            val h = maxY - minY + 1
+            val bboxArea = w * h
+            val fillRatio = if (bboxArea > 0) area.toFloat() / bboxArea else 0f
+            val aspectRatio = if (w > 0 && h > 0) max(w, h).toFloat() / min(w, h) else 1f
+            return DetectedBlob(Rect(minX, minY, maxX + 1, maxY + 1), area, fillRatio, aspectRatio)
+        }
     }
 
     private fun labelComponents(mask: BooleanArray, width: Int, height: Int): List<Component> {
@@ -282,4 +369,12 @@ object BlobAnalyzer {
     private const val MIN_AREA_RATIO = 0.15
     private const val MIN_SAMPLES_FOR_SPLIT = 3
     private const val SPLIT_AREA_RATIO = 1.6
+
+    /** Adaptive threshold offset from the local mean (0-255 scale). */
+    private const val ADAPTIVE_C = 10
+
+    private const val REF_AREA_MIN_RATIO = 0.45f
+    private const val REF_AREA_MAX_RATIO = 2.2f
+    private const val REF_ASPECT_TOLERANCE = 0.5f
+    private const val REF_FILL_TOLERANCE = 0.3f
 }

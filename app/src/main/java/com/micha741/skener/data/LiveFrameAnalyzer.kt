@@ -40,7 +40,7 @@ class LiveFrameAnalyzer(
                 imageProxy.imageInfo.rotationDegrees,
             )
             val result = BlobAnalyzer.analyze(rotated, rotatedWidth, rotatedHeight)
-            onResult(LiveFrameResult(result.boxes, result.count, rotatedWidth, rotatedHeight))
+            onResult(LiveFrameResult(result.blobs.map { it.box }, result.count, rotatedWidth, rotatedHeight))
         } finally {
             imageProxy.close()
         }

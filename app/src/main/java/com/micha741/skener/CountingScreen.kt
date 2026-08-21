@@ -1,10 +1,11 @@
 package com.micha741.skener
 
 import android.graphics.BitmapFactory
-import android.graphics.Rect
+import android.graphics.Point
 import android.net.Uri
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +23,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -40,9 +42,12 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.micha741.skener.data.DetectedBlob
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,11 +83,20 @@ fun CountingScreen(
             } else {
                 CountingResult(
                     photoUri = photoUri,
-                    boxes = uiState.boxes,
+                    blobs = uiState.blobs,
+                    referenceBox = uiState.referenceBox,
+                    referenceActive = uiState.referenceActive,
                     count = uiState.count,
                     isProcessing = uiState.isProcessing,
+                    onTap = { point -> viewModel.onReferenceTap(point) },
                 )
                 Spacer(modifier = Modifier.padding(top = 8.dp))
+                if (uiState.referenceActive) {
+                    OutlinedButton(onClick = { viewModel.clearReference() }) {
+                        Text(stringResource(R.string.count_clear_reference))
+                    }
+                    Spacer(modifier = Modifier.padding(top = 8.dp))
+                }
                 Button(onClick = { viewModel.reset() }) {
                     Icon(Icons.Default.Refresh, contentDescription = null)
                     Text(
@@ -134,9 +148,12 @@ private fun CountingEmptyState(onCapturePhoto: () -> Unit, onPickPhoto: () -> Un
 @Composable
 private fun CountingResult(
     photoUri: Uri,
-    boxes: List<Rect>,
+    blobs: List<DetectedBlob>,
+    referenceBox: android.graphics.Rect?,
+    referenceActive: Boolean,
     count: Int?,
     isProcessing: Boolean,
+    onTap: (Point) -> Unit,
 ) {
     val context = LocalContext.current
     val bitmap = remember(photoUri) {
@@ -151,7 +168,16 @@ private fun CountingResult(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(bitmap.width.toFloat() / bitmap.height.toFloat()),
+            .aspectRatio(bitmap.width.toFloat() / bitmap.height.toFloat())
+            .pointerInput(photoUri) {
+                detectTapGestures { offset ->
+                    val scaleX = size.width.toFloat() / bitmap.width
+                    val scaleY = size.height.toFloat() / bitmap.height
+                    val bitmapX = (offset.x / scaleX).roundToInt().coerceIn(0, bitmap.width - 1)
+                    val bitmapY = (offset.y / scaleY).roundToInt().coerceIn(0, bitmap.height - 1)
+                    onTap(Point(bitmapX, bitmapY))
+                }
+            },
     ) {
         Image(
             bitmap = bitmap.asImageBitmap(),
@@ -161,12 +187,14 @@ private fun CountingResult(
         Canvas(modifier = Modifier.fillMaxSize()) {
             val scaleX = size.width / bitmap.width
             val scaleY = size.height / bitmap.height
-            boxes.forEach { box ->
+            blobs.forEach { blob ->
+                val box = blob.box
+                val isReference = referenceActive && referenceBox != null && box == referenceBox
                 drawRect(
-                    color = Color(0xFF62B6CB),
+                    color = if (isReference) Color(0xFFFFB300) else Color(0xFF62B6CB),
                     topLeft = Offset(box.left * scaleX, box.top * scaleY),
                     size = Size(box.width() * scaleX, box.height() * scaleY),
-                    style = Stroke(width = 4f),
+                    style = Stroke(width = if (isReference) 6f else 4f),
                 )
             }
         }
@@ -182,11 +210,24 @@ private fun CountingResult(
         }
     }
 
+    if (!isProcessing) {
+        Text(
+            text = stringResource(R.string.count_tap_hint),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = 8.dp),
+        )
+    }
+
     if (!isProcessing && count != null) {
         Text(
-            text = stringResource(R.string.count_result, count),
+            text = if (referenceActive) {
+                stringResource(R.string.count_reference_active, count)
+            } else {
+                stringResource(R.string.count_result, count)
+            },
             style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(top = 16.dp),
+            modifier = Modifier.padding(top = 8.dp),
         )
         if (count == 0) {
             Text(

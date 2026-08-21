@@ -25,6 +25,10 @@
     <string name="count_new_photo">Nová fotka</string>
     <string name="count_failed">Počítání se nezdařilo</string>
     <string name="count_zero_hint">Na fotce se nepodařilo najít žádné oddělené kusy. Zkus lepší osvětlení nebo více rozestupu mezi kusy.</string>
+    <string name="count_tap_hint">Klepni na jeden kus na fotce a appka spočítá jen podobné (podle velikosti a tvaru)</string>
+    <string name="count_reference_active">Podobných vybranému kusu: %1$d ks</string>
+    <string name="count_clear_reference">Zpět na počítání všech kusů</string>
+    <string name="count_reference_not_found">Na tomto místě se nepodařilo najít žádný kus, zkus klepnout přesněji na jeho střed</string>
 
     <string name="close">Zavřít</string>
     <string name="live_count_badge">Napočítáno: %1$d ks</string>
