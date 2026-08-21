@@ -26,7 +26,9 @@ bez vlastního OpenCV kódu.
 - Sdílení PDF přes systémový share sheet
 - Smazání skenu
 - **Počítání kusů**: vyfoť nebo vyber fotku s více stejnými předměty a appka
-  je pomocí ML Kit Object Detection spočítá a vyznačí rámečky
+  je spočítá vlastním obrazovým pipeline — Sobelova hranová detekce, Otsuovo
+  prahování (matematická analýza histogramu jasu), spojité komponenty a
+  statistický odhad počtu u slepených kusů podle plochy — a vyznačí rámečky
 
 Mezi „Skenovat“ a „Počítat kusy“ se přepíná spodní navigační lištou.
 
@@ -44,7 +46,7 @@ app/src/main/java/com/micha741/skener/
 ├── data/
 │   ├── ScanDocument.kt      # model naskenovaného PDF
 │   ├── ScanRepository.kt    # ukládání/čtení PDF v app storage
-│   └── ObjectCounter.kt     # detekce a počítání objektů na fotce
+│   └── ObjectCounter.kt     # hranová detekce + matematická analýza pro počítání kusů
 └── ui/theme/Theme.kt        # Material 3 theme (light/dark, dynamic color)
 ```
 

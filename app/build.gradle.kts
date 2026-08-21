@@ -64,9 +64,6 @@ dependencies {
     // ML Kit Document Scanner - handles capture, edge detection, crop & PDF export
     implementation("com.google.android.gms:play-services-mlkit-document-scanner:16.0.0-beta1")
 
-    // ML Kit Object Detection - counts distinct objects found in a photo
-    implementation("com.google.mlkit:object-detection:17.0.2")
-
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")

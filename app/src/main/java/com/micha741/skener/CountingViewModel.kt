@@ -34,7 +34,7 @@ class CountingViewModel(
             counter.count(uri)
                 .onSuccess { result ->
                     _uiState.update {
-                        it.copy(isProcessing = false, boxes = result.boxes, count = result.boxes.size)
+                        it.copy(isProcessing = false, boxes = result.boxes, count = result.count)
                     }
                 }
                 .onFailure { exception ->
