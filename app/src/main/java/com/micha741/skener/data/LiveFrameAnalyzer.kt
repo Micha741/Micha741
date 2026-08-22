@@ -1,13 +1,12 @@
 package com.micha741.skener.data
 
-import android.graphics.Rect
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
-data class LiveFrameResult(val boxes: List<Rect>, val count: Int, val frameWidth: Int, val frameHeight: Int)
+data class LiveFrameResult(val blobs: List<DetectedBlob>, val count: Int, val frameWidth: Int, val frameHeight: Int)
 
 /**
  * CameraX [ImageAnalysis.Analyzer] that throttles incoming preview frames,
@@ -15,10 +14,17 @@ data class LiveFrameResult(val boxes: List<Rect>, val count: Int, val frameWidth
  * *is* a grayscale image, no RGB conversion needed), normalizes it to the
  * display's upright orientation, and runs it through [BlobAnalyzer] for a
  * live running count while the user aims the camera.
+ *
+ * [reference] can be set from the UI thread (e.g. after the user taps a
+ * blob in the live overlay) to switch from "count everything" to "count
+ * only pieces similar to this one", read back on the next analyzed frame.
  */
 class LiveFrameAnalyzer(
     private val onResult: (LiveFrameResult) -> Unit,
 ) : ImageAnalysis.Analyzer {
+
+    @Volatile
+    var reference: DetectedBlob? = null
 
     @Volatile
     private var lastAnalyzedAtMs = 0L
@@ -39,8 +45,8 @@ class LiveFrameAnalyzer(
                 frame.height,
                 imageProxy.imageInfo.rotationDegrees,
             )
-            val result = BlobAnalyzer.analyze(rotated, rotatedWidth, rotatedHeight)
-            onResult(LiveFrameResult(result.blobs.map { it.box }, result.count, rotatedWidth, rotatedHeight))
+            val result = BlobAnalyzer.analyze(rotated, rotatedWidth, rotatedHeight, reference)
+            onResult(LiveFrameResult(result.blobs, result.count, rotatedWidth, rotatedHeight))
         } finally {
             imageProxy.close()
         }

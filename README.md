@@ -49,15 +49,25 @@ náhled) — viz sekce Funkce níže.
     nerovnoměrném osvětlení/stínech na fotce, na rozdíl od jednoho
     globálního prahu), morfologické operace, `findContours`, statistický
     odhad počtu u slepených kusů podle plochy
+  - **Rozpoznávání tvarů**: každý nalezený kus se přes `Imgproc.approxPolyDP`
+    (zjednodušení obrysu na polygon) a kruhovitost (`4π·plocha/obvod²`)
+    zařadí jako trojúhelník, obdélník, lichoběžník nebo kruh. Skutečný
+    obrys (ne jen ohraničující obdélník) se vykreslí přímo na fotku, a bez
+    nutnosti cokoliv označit appka rovnou ukáže, kolik je na fotce kterého
+    tvaru ("Trojúhelník: 2 · Obdélník: 5 · Kruh: 3") — to je ono
+    "hledání stejných kusů" bez ručního zásahu
   - **Referenční kus**: u statické fotky lze klepnutím označit jeden
     konkrétní kus a appka pak přes `Imgproc.matchShapes` (Hu momenty —
-    porovnání tvaru nezávislé na velikosti/natočení) spočítá jen kusy
-    podobného tvaru tomu označenému — užitečné když je na fotce víc druhů
-    věcí najednou
-  - Živý náhled z kamery (CameraX) s průběžným počítáním přímo v
+    porovnání tvaru nezávislé na velikosti/natočení) plus shodu kategorie
+    tvaru spočítá jen kusy podobného tvaru tomu označenému — užitečné když
+    je na fotce víc druhů věcí najednou
+  - **Živý náhled** z kamery (CameraX) s průběžným počítáním přímo v
     hledáčku — kvůli rychlosti (desítky snímků/s) běží dál na vlastním
     lehkém Kotlin pipeline bez OpenCV (Sobelova hranová detekce, Otsuovo
-    prahování, spojité komponenty), referenční režim tam zatím není
+    prahování, spojité komponenty; klasifikace tvarů tam není, jen v
+    statické fotce). Nově i tady jde klepnutím na kus přímo v hledáčku
+    nastavit referenční tvar (počítají se pak jen podobné kusy podle
+    velikosti/tvaru), zoom (posuvník napojený na kameru) a tlačítko zpět
 - **Čtečka čárových a QR kódů**: kamera přes celou obrazovku (ML Kit
   Barcode Scanning) s ohraničujícím rámečkem uprostřed jako vizuální
   vodítko, zoom (posuvník napojený na `CameraControl.setLinearZoom`),
@@ -77,10 +87,10 @@ app/src/main/java/com/micha741/skener/
 ├── ScanScreen (v MainActivity.kt)
 ├── ScanViewModel.kt         # stav obrazovky skenování
 ├── ScanViewModelFactory.kt
-├── CountingScreen.kt        # UI obrazovky počítání kusů (výsledná fotka + rámečky, tap na referenční kus)
+├── CountingScreen.kt        # UI obrazovky počítání kusů (obrysy, tvary, tap na referenční kus, tlačítko zpět)
 ├── CountingViewModel.kt     # stav obrazovky počítání kusů
 ├── CountingViewModelFactory.kt
-├── LiveCameraScreen.kt      # živý náhled kamery (CameraX) s průběžným počítáním
+├── LiveCameraScreen.kt      # živý náhled kamery: počítání, zoom, tap na referenční kus, tlačítko zpět
 ├── BarcodeScreen.kt         # fullscreen kamera + zoom/baterka/rámeček + historie v bottom sheetu
 ├── BarcodeViewModel.kt      # stav obrazovky čtečky kódů
 ├── CameraPermission.kt      # sdílená logika oprávnění kamery pro obě kamerové obrazovky
@@ -88,8 +98,8 @@ app/src/main/java/com/micha741/skener/
 │   ├── ScanDocument.kt      # model naskenovaného PDF
 │   ├── ScanRepository.kt    # ukládání/čtení PDF v app storage
 │   ├── BlobAnalyzer.kt      # lehký Kotlin algoritmus pro živý náhled (hranová detekce + matematická analýza)
-│   ├── ObjectCounter.kt     # počítání kusů ze statické fotky (Uri -> CvBlobAnalyzer, případně referenční kus)
-│   ├── LiveFrameAnalyzer.kt # CameraX analyzer: živé snímky -> BlobAnalyzer
+│   ├── ObjectCounter.kt     # počítání kusů ze statické fotky (Uri -> CvBlobAnalyzer, tvary, referenční kus)
+│   ├── LiveFrameAnalyzer.kt # CameraX analyzer: živé snímky -> BlobAnalyzer, nastavitelná reference
 │   ├── BarcodeAnalyzer.kt   # CameraX analyzer: živé snímky -> ML Kit Barcode Scanning
 │   ├── DocumentTextExtractor.kt # OCR jedné stránky + odhad formátování (velikost/tučné/kurzíva/barva) na řádek
 │   ├── TextPdfWriter.kt     # vykreslí rozpoznaný text pozičně/formátovaně do PDF (bez fotky)

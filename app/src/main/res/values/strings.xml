@@ -29,9 +29,18 @@
     <string name="count_reference_active">Podobných vybranému kusu: %1$d ks</string>
     <string name="count_clear_reference">Zpět na počítání všech kusů</string>
     <string name="count_reference_not_found">Na tomto místě se nepodařilo najít žádný kus, zkus klepnout přesněji na jeho střed</string>
+    <string name="shape_triangle">Trojúhelník</string>
+    <string name="shape_rectangle">Obdélník</string>
+    <string name="shape_trapezoid">Lichoběžník</string>
+    <string name="shape_circle">Kruh</string>
+    <string name="shape_other">Ostatní tvary</string>
 
+    <string name="back">Zpět</string>
     <string name="close">Zavřít</string>
     <string name="live_count_badge">Napočítáno: %1$d ks</string>
+    <string name="live_reference_active_badge">Podobných vybranému: %1$d ks</string>
+    <string name="live_clear_reference">Zrušit referenční kus</string>
+    <string name="live_tap_hint">Klepni na kus v hledáčku a bude se počítat jen podle něj</string>
     <string name="camera_permission_rationale">Appka potřebuje přístup ke kameře.</string>
     <string name="camera_permission_request">Povolit kameru</string>
 

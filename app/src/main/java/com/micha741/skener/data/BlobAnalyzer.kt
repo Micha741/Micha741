@@ -1,11 +1,15 @@
 package com.micha741.skener.data
 
+import android.graphics.Point
 import android.graphics.Rect
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
+
+/** Coarse geometric classification of a blob's outline - only the static-photo (OpenCV) pipeline fills this in accurately. */
+enum class ShapeType { TRIANGLE, RECTANGLE, TRAPEZOID, CIRCLE, OTHER }
 
 /** One detected blob: its bounding box plus shape descriptors used for reference matching. */
 data class DetectedBlob(
@@ -15,6 +19,10 @@ data class DetectedBlob(
     val fillRatio: Float,
     /** longer side / shorter side of the bounding box, always >= 1 (1.0 = square-ish). */
     val aspectRatio: Float,
+    /** Real polygon classification only from the OpenCV static-photo pipeline; the live pipeline leaves this OTHER. */
+    val shapeType: ShapeType = ShapeType.OTHER,
+    /** Approximated outline (image pixel coords) for drawing the real edge instead of just the bounding box; empty if unknown. */
+    val polygon: List<Point> = emptyList(),
 )
 
 data class BlobAnalysisResult(val blobs: List<DetectedBlob>, val count: Int)

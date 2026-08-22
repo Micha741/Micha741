@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.micha741.skener.data.DetectedBlob
 import com.micha741.skener.data.ObjectCounter
+import com.micha741.skener.data.ShapeType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,6 +24,8 @@ data class CountingUiState(
     /** True once a reference piece was successfully picked - the count above is "similar to that piece" only. */
     val referenceActive: Boolean = false,
     val referenceBox: Rect? = null,
+    /** Auto mode only: how many blobs of each shape were found ("find identical pieces" without a manual tap). */
+    val shapeBreakdown: Map<ShapeType, Int> = emptyMap(),
 )
 
 class CountingViewModel(
@@ -71,6 +74,7 @@ class CountingViewModel(
                             count = result.count,
                             referenceActive = referenceTap != null && result.referenceBlob != null,
                             referenceBox = if (referenceTap != null) result.referenceBlob?.box else it.referenceBox,
+                            shapeBreakdown = result.shapeBreakdown,
                             errorMessage = if (referenceTap != null && result.referenceBlob == null) {
                                 appContext.getString(R.string.count_reference_not_found)
                             } else {

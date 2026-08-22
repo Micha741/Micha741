@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.FormatListNumbered
 import androidx.compose.material.icons.filled.PhotoLibrary
@@ -22,6 +23,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -40,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
@@ -47,6 +50,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.micha741.skener.data.DetectedBlob
+import com.micha741.skener.data.ShapeType
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,7 +71,18 @@ fun CountingScreen(
     }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text(stringResource(R.string.nav_count)) }) },
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.nav_count)) },
+                navigationIcon = {
+                    if (uiState.photoUri != null) {
+                        IconButton(onClick = { viewModel.reset() }) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
+                        }
+                    }
+                },
+            )
+        },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
         Column(
@@ -87,6 +102,7 @@ fun CountingScreen(
                     referenceBox = uiState.referenceBox,
                     referenceActive = uiState.referenceActive,
                     count = uiState.count,
+                    shapeBreakdown = uiState.shapeBreakdown,
                     isProcessing = uiState.isProcessing,
                     onTap = { point -> viewModel.onReferenceTap(point) },
                 )
@@ -152,6 +168,7 @@ private fun CountingResult(
     referenceBox: android.graphics.Rect?,
     referenceActive: Boolean,
     count: Int?,
+    shapeBreakdown: Map<ShapeType, Int>,
     isProcessing: Boolean,
     onTap: (Point) -> Unit,
 ) {
@@ -190,12 +207,27 @@ private fun CountingResult(
             blobs.forEach { blob ->
                 val box = blob.box
                 val isReference = referenceActive && referenceBox != null && box == referenceBox
-                drawRect(
-                    color = if (isReference) Color(0xFFFFB300) else Color(0xFF62B6CB),
-                    topLeft = Offset(box.left * scaleX, box.top * scaleY),
-                    size = Size(box.width() * scaleX, box.height() * scaleY),
-                    style = Stroke(width = if (isReference) 6f else 4f),
-                )
+                val color = if (isReference) Color(0xFFFFB300) else Color(0xFF62B6CB)
+                val strokeWidth = if (isReference) 6f else 4f
+
+                if (blob.polygon.size >= 3) {
+                    val path = Path().apply {
+                        blob.polygon.forEachIndexed { index, point ->
+                            val x = point.x * scaleX
+                            val y = point.y * scaleY
+                            if (index == 0) moveTo(x, y) else lineTo(x, y)
+                        }
+                        close()
+                    }
+                    drawPath(path, color = color, style = Stroke(width = strokeWidth))
+                } else {
+                    drawRect(
+                        color = color,
+                        topLeft = Offset(box.left * scaleX, box.top * scaleY),
+                        size = Size(box.width() * scaleX, box.height() * scaleY),
+                        style = Stroke(width = strokeWidth),
+                    )
+                }
             }
         }
         if (isProcessing) {
@@ -237,5 +269,35 @@ private fun CountingResult(
                 modifier = Modifier.padding(top = 4.dp),
             )
         }
+        if (!referenceActive) {
+            ShapeBreakdownText(shapeBreakdown)
+        }
     }
+}
+
+@Composable
+private fun ShapeBreakdownText(breakdown: Map<ShapeType, Int>) {
+    val order = listOf(ShapeType.TRIANGLE, ShapeType.RECTANGLE, ShapeType.TRAPEZOID, ShapeType.CIRCLE, ShapeType.OTHER)
+    val parts = order.mapNotNull { shape ->
+        val count = breakdown[shape]
+        if (count == null || count <= 0) return@mapNotNull null
+        "${shapeLabel(shape)}: $count"
+    }
+    if (parts.isEmpty()) return
+
+    Text(
+        text = parts.joinToString(" · "),
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(top = 4.dp),
+    )
+}
+
+@Composable
+private fun shapeLabel(shapeType: ShapeType): String = when (shapeType) {
+    ShapeType.TRIANGLE -> stringResource(R.string.shape_triangle)
+    ShapeType.RECTANGLE -> stringResource(R.string.shape_rectangle)
+    ShapeType.TRAPEZOID -> stringResource(R.string.shape_trapezoid)
+    ShapeType.CIRCLE -> stringResource(R.string.shape_circle)
+    ShapeType.OTHER -> stringResource(R.string.shape_other)
 }

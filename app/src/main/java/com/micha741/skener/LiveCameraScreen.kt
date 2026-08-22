@@ -2,6 +2,7 @@ package com.micha741.skener
 
 import android.content.Context
 import android.net.Uri
+import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
@@ -10,23 +11,31 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ZoomIn
+import androidx.compose.material.icons.filled.ZoomOut
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -36,6 +45,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
@@ -43,19 +53,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import com.micha741.skener.data.BlobAnalyzer
+import com.micha741.skener.data.DetectedBlob
 import com.micha741.skener.data.LiveFrameAnalyzer
 import com.micha741.skener.data.LiveFrameResult
 import kotlinx.coroutines.delay
 import java.io.File
 import java.util.concurrent.Executors
 import kotlin.math.max
+import kotlin.math.roundToInt
 
 /**
  * Full-screen live camera viewfinder for piece counting. Shows the phone's
  * built-in camera preview with a real-time edge-detection overlay and a
- * continuously updating count (via [LiveFrameAnalyzer] + [BlobAnalyzer][
- * com.micha741.skener.data.BlobAnalyzer]), and takes a full-resolution photo
- * on demand for the precise final count.
+ * continuously updating count (via [LiveFrameAnalyzer] + [BlobAnalyzer]),
+ * zoom, an optional reference piece (tap a box to count only similar ones),
+ * and takes a full-resolution photo on demand for the precise final count.
  */
 @Composable
 fun LiveCameraScreen(
@@ -72,13 +85,17 @@ fun LiveCameraScreen(
     }
 
     var liveResult by remember { mutableStateOf<LiveFrameResult?>(null) }
+    var referenceBlob by remember { mutableStateOf<DetectedBlob?>(null) }
     var captureError by remember { mutableStateOf<String?>(null) }
     var isCapturing by remember { mutableStateOf(false) }
+    var camera by remember { mutableStateOf<Camera?>(null) }
+    var zoom by remember { mutableFloatStateOf(0f) }
 
     val previewView = remember {
         PreviewView(context).apply { scaleType = PreviewView.ScaleType.FILL_CENTER }
     }
     val imageCapture = remember { ImageCapture.Builder().build() }
+    val analyzer = remember { LiveFrameAnalyzer { result -> liveResult = result } }
     val analysisExecutor = remember { Executors.newSingleThreadExecutor() }
 
     DisposableEffect(lifecycleOwner) {
@@ -94,13 +111,11 @@ fun LiveCameraScreen(
             val analysis = ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
-                .also {
-                    it.setAnalyzer(analysisExecutor, LiveFrameAnalyzer { result -> liveResult = result })
-                }
+                .also { it.setAnalyzer(analysisExecutor, analyzer) }
 
             try {
                 provider.unbindAll()
-                provider.bindToLifecycle(
+                camera = provider.bindToLifecycle(
                     lifecycleOwner,
                     CameraSelector.DEFAULT_BACK_CAMERA,
                     preview,
@@ -128,7 +143,30 @@ fun LiveCameraScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         AndroidView(factory = { previewView }, modifier = Modifier.fillMaxSize())
 
-        Canvas(modifier = Modifier.fillMaxSize()) {
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTapGestures { offset ->
+                        val result = liveResult ?: return@detectTapGestures
+                        if (result.frameWidth == 0 || result.frameHeight == 0) return@detectTapGestures
+
+                        val boundsWidth = size.width.toFloat()
+                        val boundsHeight = size.height.toFloat()
+                        val scale = max(boundsWidth / result.frameWidth, boundsHeight / result.frameHeight)
+                        val offsetX = (boundsWidth - result.frameWidth * scale) / 2f
+                        val offsetY = (boundsHeight - result.frameHeight * scale) / 2f
+                        val frameX = ((offset.x - offsetX) / scale).roundToInt().coerceIn(0, result.frameWidth - 1)
+                        val frameY = ((offset.y - offsetY) / scale).roundToInt().coerceIn(0, result.frameHeight - 1)
+
+                        val tapped = BlobAnalyzer.findBlobNear(result.blobs, frameX, frameY)
+                        if (tapped != null) {
+                            referenceBlob = tapped
+                            analyzer.reference = tapped
+                        }
+                    }
+                },
+        ) {
             val result = liveResult ?: return@Canvas
             if (result.frameWidth == 0 || result.frameHeight == 0) return@Canvas
 
@@ -136,12 +174,14 @@ fun LiveCameraScreen(
             val offsetX = (size.width - result.frameWidth * scale) / 2f
             val offsetY = (size.height - result.frameHeight * scale) / 2f
 
-            result.boxes.forEach { box ->
+            result.blobs.forEach { blob ->
+                val box = blob.box
+                val isReference = referenceBlob != null && box == referenceBlob?.box
                 drawRect(
-                    color = Color(0xFF62B6CB),
+                    color = if (isReference) Color(0xFFFFB300) else Color(0xFF62B6CB),
                     topLeft = Offset(offsetX + box.left * scale, offsetY + box.top * scale),
                     size = Size(box.width() * scale, box.height() * scale),
-                    style = Stroke(width = 4f),
+                    style = Stroke(width = if (isReference) 6f else 4f),
                 )
             }
         }
@@ -154,26 +194,49 @@ fun LiveCameraScreen(
         ) {
             Surface(color = Color.Black.copy(alpha = 0.4f), shape = CircleShape) {
                 Icon(
-                    Icons.Default.Close,
-                    contentDescription = stringResource(R.string.close),
+                    Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.back),
                     tint = Color.White,
                     modifier = Modifier.padding(8.dp),
                 )
             }
         }
 
-        Surface(
-            color = Color.Black.copy(alpha = 0.5f),
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .padding(top = 24.dp),
         ) {
-            Text(
-                text = stringResource(R.string.live_count_badge, liveResult?.count ?: 0),
-                color = Color.White,
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-            )
+            Surface(color = Color.Black.copy(alpha = 0.5f)) {
+                Text(
+                    text = if (referenceBlob != null) {
+                        stringResource(R.string.live_reference_active_badge, liveResult?.count ?: 0)
+                    } else {
+                        stringResource(R.string.live_count_badge, liveResult?.count ?: 0)
+                    },
+                    color = Color.White,
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                )
+            }
+            Surface(
+                color = Color.Black.copy(alpha = 0.5f),
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .let { if (referenceBlob != null) it.clickable { referenceBlob = null; analyzer.reference = null } else it },
+            ) {
+                Text(
+                    text = if (referenceBlob != null) {
+                        stringResource(R.string.live_clear_reference)
+                    } else {
+                        stringResource(R.string.live_tap_hint)
+                    },
+                    color = Color.White,
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                )
+            }
         }
 
         captureError?.let { message ->
@@ -181,7 +244,7 @@ fun LiveCameraScreen(
                 color = MaterialTheme.colorScheme.errorContainer,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 104.dp, start = 16.dp, end = 16.dp),
+                    .padding(bottom = 180.dp, start = 16.dp, end = 16.dp),
             ) {
                 Text(
                     text = message,
@@ -189,6 +252,26 @@ fun LiveCameraScreen(
                     modifier = Modifier.padding(12.dp),
                 )
             }
+        }
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 120.dp, start = 24.dp, end = 24.dp),
+        ) {
+            Icon(Icons.Default.ZoomOut, contentDescription = null, tint = Color.White)
+            Slider(
+                value = zoom,
+                onValueChange = { value ->
+                    zoom = value
+                    camera?.cameraControl?.setLinearZoom(value)
+                },
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 8.dp),
+            )
+            Icon(Icons.Default.ZoomIn, contentDescription = null, tint = Color.White)
         }
 
         Box(

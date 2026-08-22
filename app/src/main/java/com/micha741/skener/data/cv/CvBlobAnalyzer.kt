@@ -1,19 +1,31 @@
 package com.micha741.skener.data.cv
 
 import android.graphics.Bitmap
+import android.graphics.Point
 import android.graphics.Rect
+import com.micha741.skener.data.ShapeType
 import org.opencv.android.Utils
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
 import org.opencv.core.MatOfPoint2f
 import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
 import kotlin.math.roundToLong
+import kotlin.math.sqrt
 
-/** One OpenCV contour with its bounding box and area. Caller owns [contour] and must release() it. */
-data class CvBlob(val box: Rect, val area: Double, val contour: MatOfPoint)
+/** One OpenCV contour with its bounding box, area and shape. Caller owns [contour] and must release() it. */
+data class CvBlob(
+    val box: Rect,
+    val area: Double,
+    val contour: MatOfPoint,
+    val shapeType: ShapeType,
+    /** Approximated outline (polygon corners), for drawing the real edge instead of just the bounding box. */
+    val polygon: List<Point>,
+)
 
 data class CvAnalysisResult(val blobs: List<CvBlob>, val count: Int)
 
@@ -22,21 +34,22 @@ data class CvAnalysisResult(val blobs: List<CvBlob>, val count: Int)
  * grayscale -> Gaussian blur -> adaptive mean threshold (robust to uneven
  * lighting/shadows across the photo, unlike one global threshold) ->
  * morphological close+open (fills small holes, drops speckle noise) ->
- * external contours.
+ * external contours -> [Imgproc.approxPolyDP] polygon classification
+ * (triangle / rectangle / trapezoid / circle, by vertex count + circularity).
  *
- * With no [referenceContour], every contour above the minimum area counts,
+ * With no [reference], every contour above the minimum area counts,
  * splitting statistically-oversized blobs that likely contain several
- * touching pieces. With a [referenceContour] (a piece the user tapped on),
- * only contours whose *shape* resembles it - via [Imgproc.matchShapes]'s
- * Hu-moment comparison, which is scale- and rotation-invariant - are kept,
- * each counted once.
+ * touching pieces. With a [reference] (a piece the user tapped on), only
+ * contours of the *same shape type* whose outline also resembles it via
+ * [Imgproc.matchShapes]'s Hu-moment comparison (scale/rotation invariant)
+ * are kept, each counted once.
  *
  * Every [MatOfPoint] contour in the result is native-backed and must be
- * released by the caller once its bounding box/area have been read out.
+ * released by the caller once its bounding box/area/shape have been read out.
  */
 object CvBlobAnalyzer {
 
-    fun analyze(bitmap: Bitmap, referenceContour: MatOfPoint2f? = null): CvAnalysisResult {
+    fun analyze(bitmap: Bitmap, reference: CvBlob? = null): CvAnalysisResult {
         val rgba = Mat()
         Utils.bitmapToMat(bitmap, rgba)
 
@@ -78,15 +91,17 @@ object CvBlobAnalyzer {
 
         if (blobs.isEmpty()) return CvAnalysisResult(emptyList(), 0)
 
-        if (referenceContour != null) {
+        if (reference != null) {
+            val referenceContour2f = MatOfPoint2f(*reference.contour.toArray())
             val matched = mutableListOf<CvBlob>()
             for (blob in blobs) {
-                if (matchesReference(blob, referenceContour)) {
+                if (matchesReference(blob, reference, referenceContour2f)) {
                     matched += blob
                 } else {
                     blob.contour.release()
                 }
             }
+            referenceContour2f.release()
             return CvAnalysisResult(matched, matched.size)
         }
 
@@ -114,17 +129,62 @@ object CvBlobAnalyzer {
         }
     }
 
-    /** Hu-moment shape comparison (scale/rotation invariant): low distance = similar outline. */
-    private fun matchesReference(blob: CvBlob, referenceContour: MatOfPoint2f): Boolean {
+    /** Same shape category (when the reference's shape is known) plus a Hu-moment outline comparison. */
+    private fun matchesReference(blob: CvBlob, reference: CvBlob, referenceContour2f: MatOfPoint2f): Boolean {
+        if (reference.shapeType != ShapeType.OTHER && blob.shapeType != reference.shapeType) return false
         val candidate = MatOfPoint2f(*blob.contour.toArray())
-        val shapeDistance = Imgproc.matchShapes(referenceContour, candidate, Imgproc.CONTOURS_MATCH_I1, 0.0)
+        val shapeDistance = Imgproc.matchShapes(referenceContour2f, candidate, Imgproc.CONTOURS_MATCH_I1, 0.0)
         candidate.release()
         return shapeDistance <= SHAPE_MATCH_MAX_DISTANCE
     }
 
     private fun MatOfPoint.toCvBlob(area: Double): CvBlob {
         val rect = Imgproc.boundingRect(this)
-        return CvBlob(Rect(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height), area, this)
+        val (shape, polygon) = classifyShape(this, area)
+        return CvBlob(
+            box = Rect(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height),
+            area = area,
+            contour = this,
+            shapeType = shape,
+            polygon = polygon,
+        )
+    }
+
+    /** Classifies a contour's outline by vertex count (after polygon simplification) and circularity. */
+    private fun classifyShape(contour: MatOfPoint, area: Double): Pair<ShapeType, List<Point>> {
+        val contour2f = MatOfPoint2f(*contour.toArray())
+        val perimeter = Imgproc.arcLength(contour2f, true)
+        val approx2f = MatOfPoint2f()
+        Imgproc.approxPolyDP(contour2f, approx2f, POLY_EPSILON_FACTOR * perimeter, true)
+        contour2f.release()
+
+        val points = approx2f.toArray()
+        approx2f.release()
+        val polygon = points.map { Point(it.x.roundToInt(), it.y.roundToInt()) }
+
+        val circularity = if (perimeter > 0) 4 * Math.PI * area / (perimeter * perimeter) else 0.0
+        val shape = when {
+            circularity > CIRCLE_CIRCULARITY_THRESHOLD -> ShapeType.CIRCLE
+            points.size == 3 -> ShapeType.TRIANGLE
+            points.size == 4 -> if (isRectangleLike(points)) ShapeType.RECTANGLE else ShapeType.TRAPEZOID
+            else -> ShapeType.OTHER
+        }
+        return shape to polygon
+    }
+
+    /** A quadrilateral whose opposite sides are roughly equal length looks like a rectangle rather than a trapezoid. */
+    private fun isRectangleLike(points: Array<org.opencv.core.Point>): Boolean {
+        if (points.size != 4) return false
+        val sideLengths = (0 until 4).map { i ->
+            val p1 = points[i]
+            val p2 = points[(i + 1) % 4]
+            val dx = p1.x - p2.x
+            val dy = p1.y - p2.y
+            sqrt(dx * dx + dy * dy)
+        }
+        val ratio1 = sideLengths[0] / max(sideLengths[2], MIN_SIDE_LENGTH)
+        val ratio2 = sideLengths[1] / max(sideLengths[3], MIN_SIDE_LENGTH)
+        return abs(ratio1 - 1.0) < RECT_SIDE_TOLERANCE && abs(ratio2 - 1.0) < RECT_SIDE_TOLERANCE
     }
 
     /** Odd window size for adaptive thresholding, scaled to the photo so it covers roughly one item. */
@@ -139,4 +199,8 @@ object CvBlobAnalyzer {
     private const val MIN_SAMPLES_FOR_SPLIT = 3
     private const val SPLIT_AREA_RATIO = 1.6
     private const val SHAPE_MATCH_MAX_DISTANCE = 0.3
+    private const val POLY_EPSILON_FACTOR = 0.02
+    private const val CIRCLE_CIRCULARITY_THRESHOLD = 0.85
+    private const val RECT_SIDE_TOLERANCE = 0.25
+    private const val MIN_SIDE_LENGTH = 0.001
 }
