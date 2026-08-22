@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.micha741.skener.data.DocumentTextExtractor
+import com.micha741.skener.data.RecognizedPage
 import com.micha741.skener.data.ScanDocument
 import com.micha741.skener.data.ScanRepository
 import com.micha741.skener.data.TextPdfWriter
@@ -61,11 +62,11 @@ class ScanViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isProcessing = true) }
 
-            val pagesText = mutableListOf<String>()
+            val pages = mutableListOf<RecognizedPage>()
             var failure: Throwable? = null
             for (uri in pageImageUris) {
                 textExtractor.recognize(uri)
-                    .onSuccess { pagesText += it }
+                    .onSuccess { pages += it }
                     .onFailure { failure = it }
                 if (failure != null) break
             }
@@ -82,7 +83,7 @@ class ScanViewModel(
 
             val (pdfFile, renderedPageCount) = withContext(Dispatchers.Default) {
                 val file = File(appContext.cacheDir, "ocr_${System.currentTimeMillis()}.pdf")
-                val pageCount = TextPdfWriter.write(pagesText, file)
+                val pageCount = TextPdfWriter.write(pages, file)
                 file to pageCount
             }
 

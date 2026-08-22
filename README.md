@@ -25,7 +25,17 @@ náhled) — viz sekce Funkce níže.
 - Víc stránek v jednom skenu, export do PDF
 - **Dva režimy skenu**: klasický obrázkový PDF (naskenovaná stránka jako
   fotka), nebo čistě textový PDF — appka přes stránky spustí OCR (ML Kit
-  Text Recognition) a vygeneruje PDF jen s rozpoznaným textem, bez fotky
+  Text Recognition) a vygeneruje PDF jen s rozpoznaným textem, bez fotky.
+  Textový PDF si drží i přibližné formátování z fotky: každý řádek se
+  vykreslí zpátky na svou původní pozici a velikost (podle bounding boxu
+  z OCR — zachová i řádkování), tučné písmo se odhaduje podle hustoty
+  tmavých pixelů v řádku vůči mediánu stránky, kurzíva podle zkosení
+  rohových bodů řádku (ML Kit vrací i mírně nakloněný čtyřúhelník, ne jen
+  rovný obdélník) a barva textu se vzorkuje z nejtmavších pixelů uvnitř
+  řádku na originální fotce. Tučné/kurzíva/barva jsou heuristiky (ML Kit
+  žádné takové metadata sám nedává) — u čistě strojového textu na
+  jednoduchém pozadí fungují dobře, u composite/ručně psaného textu méně
+  spolehlivě
 - Seznam uložených skenů (počet stránek, datum)
 - Sdílení PDF přes systémový share sheet
 - **Uložení do zařízení** — systémový výběr umístění (Storage Access
@@ -48,9 +58,13 @@ náhled) — viz sekce Funkce níže.
     hledáčku — kvůli rychlosti (desítky snímků/s) běží dál na vlastním
     lehkém Kotlin pipeline bez OpenCV (Sobelova hranová detekce, Otsuovo
     prahování, spojité komponenty), referenční režim tam zatím není
-- **Čtečka čárových a QR kódů**: živý náhled z kamery s průběžným čtením
-  (ML Kit Barcode Scanning), historie naskenovaných kódů v rámci relace
-  s možností kopírovat, otevřít odkaz nebo sdílet
+- **Čtečka čárových a QR kódů**: kamera přes celou obrazovku (ML Kit
+  Barcode Scanning) s ohraničujícím rámečkem uprostřed jako vizuální
+  vodítko, zoom (posuvník napojený na `CameraControl.setLinearZoom`),
+  přisvícení (baterka, jen když ji zařízení/objektiv má), možnost načíst
+  kód i ze statické fotky z galerie místo živé kamery, historie
+  naskenovaných kódů v bottom sheetu (odznak s počtem) s možností
+  kopírovat, otevřít odkaz nebo sdílet
 
 Mezi „Skenovat“, „Počítat kusy“ a „Kódy“ se přepíná spodní navigační lištou.
 
@@ -67,7 +81,7 @@ app/src/main/java/com/micha741/skener/
 ├── CountingViewModel.kt     # stav obrazovky počítání kusů
 ├── CountingViewModelFactory.kt
 ├── LiveCameraScreen.kt      # živý náhled kamery (CameraX) s průběžným počítáním
-├── BarcodeScreen.kt         # živý náhled kamery + historie naskenovaných kódů
+├── BarcodeScreen.kt         # fullscreen kamera + zoom/baterka/rámeček + historie v bottom sheetu
 ├── BarcodeViewModel.kt      # stav obrazovky čtečky kódů
 ├── CameraPermission.kt      # sdílená logika oprávnění kamery pro obě kamerové obrazovky
 ├── data/
@@ -77,8 +91,8 @@ app/src/main/java/com/micha741/skener/
 │   ├── ObjectCounter.kt     # počítání kusů ze statické fotky (Uri -> CvBlobAnalyzer, případně referenční kus)
 │   ├── LiveFrameAnalyzer.kt # CameraX analyzer: živé snímky -> BlobAnalyzer
 │   ├── BarcodeAnalyzer.kt   # CameraX analyzer: živé snímky -> ML Kit Barcode Scanning
-│   ├── DocumentTextExtractor.kt # OCR jedné stránky (ML Kit Text Recognition)
-│   ├── TextPdfWriter.kt     # vykreslí rozpoznaný text do PDF (bez fotky)
+│   ├── DocumentTextExtractor.kt # OCR jedné stránky + odhad formátování (velikost/tučné/kurzíva/barva) na řádek
+│   ├── TextPdfWriter.kt     # vykreslí rozpoznaný text pozičně/formátovaně do PDF (bez fotky)
 │   └── cv/
 │       └── CvBlobAnalyzer.kt # OpenCV pipeline pro statickou fotku: adaptivní threshold, kontury, matchShapes
 └── ui/theme/Theme.kt        # Material 3 theme (light/dark, dynamic color)

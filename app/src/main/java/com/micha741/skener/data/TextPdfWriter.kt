@@ -1,74 +1,75 @@
 package com.micha741.skener.data
 
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
-import android.text.Layout
-import android.text.StaticLayout
 import android.text.TextPaint
 import java.io.File
 import java.io.FileOutputStream
+import kotlin.math.max
 
 /**
- * Renders OCR-recognized text into a plain multi-page PDF - no source
- * images are embedded, only the extracted text (word-wrapped, paginated).
+ * Renders OCR-recognized text into a PDF - no source images are embedded,
+ * but each line is drawn back at roughly its original position, size,
+ * color and bold/italic style (see [DocumentTextExtractor]/[FormattedLine]),
+ * one PDF page per source photo, sized to that photo's aspect ratio so the
+ * positions map with a single scale factor.
  */
 object TextPdfWriter {
 
-    private const val PAGE_WIDTH = 595 // A4 at 72dpi
-    private const val PAGE_HEIGHT = 842
-    private const val MARGIN = 48f
-    private const val FONT_SIZE = 12f
-
-    /** Writes the PDF and returns the number of pages actually rendered (may exceed [pagesText].size if a page's text overflows). */
-    fun write(pagesText: List<String>, outputFile: File): Int {
+    /** Writes the PDF; returns the number of pages (always [pages].size - one PDF page per photo). */
+    fun write(pages: List<RecognizedPage>, outputFile: File): Int {
         val document = PdfDocument()
-        val paint = TextPaint().apply {
-            isAntiAlias = true
-            textSize = FONT_SIZE
-            color = Color.BLACK
-        }
-        val contentWidth = (PAGE_WIDTH - 2 * MARGIN).toInt()
-        val bottomBound = PAGE_HEIGHT - MARGIN
-        val lineHeight = paint.fontSpacing
+        val paint = TextPaint().apply { isAntiAlias = true }
 
-        var pageNumber = 1
-        var page: PdfDocument.Page? = null
-        var y = 0f
+        pages.forEachIndexed { index, page ->
+            val scale = if (page.imageWidth > 0) PAGE_WIDTH / page.imageWidth else 1f
+            val pageHeight = max(1, (page.imageHeight * scale).toInt())
+            val pdfPage = document.startPage(
+                PdfDocument.PageInfo.Builder(PAGE_WIDTH.toInt(), pageHeight, index + 1).create(),
+            )
+            val canvas = pdfPage.canvas
 
-        fun startNewPage() {
-            page?.let { document.finishPage(it) }
-            page = document.startPage(PdfDocument.PageInfo.Builder(PAGE_WIDTH, PAGE_HEIGHT, pageNumber).create())
-            pageNumber++
-            y = MARGIN - paint.ascent()
-        }
+            if (page.lines.isEmpty()) {
+                paint.textSize = EMPTY_PAGE_FONT_SIZE
+                paint.color = Color.DKGRAY
+                paint.typeface = Typeface.DEFAULT
+                canvas.drawText("(žádný text nerozpoznán)", MARGIN, MARGIN - paint.ascent(), paint)
+            } else {
+                for (line in page.lines) {
+                    if (line.text.isBlank()) continue
+                    val boxHeight = line.box.height() * scale
+                    if (boxHeight <= 1f) continue
 
-        startNewPage()
+                    paint.textSize = (boxHeight * FONT_SIZE_FACTOR).coerceIn(MIN_FONT_SIZE, MAX_FONT_SIZE)
+                    paint.color = line.color
+                    paint.typeface = Typeface.create(Typeface.DEFAULT, typefaceStyle(line))
 
-        pagesText.forEachIndexed { index, rawText ->
-            val text = rawText.ifBlank { "(žádný text nerozpoznán)" }
-            val layout = StaticLayout.Builder
-                .obtain(text, 0, text.length, paint, contentWidth)
-                .setAlignment(Layout.Alignment.ALIGN_NORMAL)
-                .build()
-
-            for (line in 0 until layout.lineCount) {
-                if (y + paint.descent() > bottomBound) {
-                    startNewPage()
+                    val x = line.box.left * scale
+                    val y = line.box.top * scale - paint.ascent()
+                    canvas.drawText(line.text, x, y, paint)
                 }
-                val start = layout.getLineStart(line)
-                val end = layout.getLineEnd(line)
-                page!!.canvas.drawText(text, start, end, MARGIN, y, paint)
-                y += lineHeight
             }
 
-            if (index != pagesText.lastIndex) {
-                startNewPage()
-            }
+            document.finishPage(pdfPage)
         }
 
-        page?.let { document.finishPage(it) }
         FileOutputStream(outputFile).use { document.writeTo(it) }
         document.close()
-        return pageNumber - 1
+        return pages.size
     }
+
+    private fun typefaceStyle(line: FormattedLine): Int = when {
+        line.bold && line.italic -> Typeface.BOLD_ITALIC
+        line.bold -> Typeface.BOLD
+        line.italic -> Typeface.ITALIC
+        else -> Typeface.NORMAL
+    }
+
+    private const val PAGE_WIDTH = 595f // A4 width at 72dpi
+    private const val MARGIN = 24f
+    private const val FONT_SIZE_FACTOR = 0.8f
+    private const val MIN_FONT_SIZE = 6f
+    private const val MAX_FONT_SIZE = 96f
+    private const val EMPTY_PAGE_FONT_SIZE = 12f
 }
