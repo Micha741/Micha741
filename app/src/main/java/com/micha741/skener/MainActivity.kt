@@ -128,6 +128,12 @@ class MainActivity : ComponentActivity() {
                     uri?.let { countingViewModel.onPhotoSelected(it) }
                 }
 
+                val pickBarcodePhotoLauncher = rememberLauncherForActivityResult(
+                    ActivityResultContracts.PickVisualMedia()
+                ) { uri ->
+                    uri?.let { barcodeViewModel.onPhotoPicked(applicationContext, it) }
+                }
+
                 var pendingSaveDocument by remember { mutableStateOf<ScanDocument?>(null) }
                 val saveLauncher = rememberLauncherForActivityResult(
                     ActivityResultContracts.CreateDocument("application/pdf")
@@ -152,6 +158,11 @@ class MainActivity : ComponentActivity() {
                     },
                     onPickPhoto = {
                         pickPhotoLauncher.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        )
+                    },
+                    onPickBarcodePhoto = {
+                        pickBarcodePhotoLauncher.launch(
                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                         )
                     },
@@ -208,6 +219,7 @@ private fun AppScaffold(
     onShare: (ScanDocument) -> Unit,
     onSaveToDevice: (ScanDocument) -> Unit,
     onPickPhoto: () -> Unit,
+    onPickBarcodePhoto: () -> Unit,
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
@@ -268,7 +280,7 @@ private fun AppScaffold(
                 )
             }
             composable("barcode") {
-                BarcodeScreen(viewModel = barcodeViewModel)
+                BarcodeScreen(viewModel = barcodeViewModel, onPickPhoto = onPickBarcodePhoto)
             }
         }
     }

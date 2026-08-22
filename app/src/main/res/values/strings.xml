@@ -40,4 +40,7 @@
     <string name="barcode_empty_hint">Namiř kameru na čárový nebo QR kód</string>
     <string name="barcode_copy">Kopírovat</string>
     <string name="barcode_open">Otevřít odkaz</string>
+    <string name="barcode_torch">Baterka</string>
+    <string name="barcode_scan_from_photo">Načíst z fotky</string>
+    <string name="barcode_no_code_found">Na fotce se nepodařilo najít žádný čárový ani QR kód</string>
 </resources>
