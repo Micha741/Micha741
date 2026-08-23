@@ -58,8 +58,12 @@ i živý náhled kamery — viz sekce Funkce níže.
     zabírá větší část záběru, např. při přiblížení zoomem; práh na
     odchylku odstínu/sytosti/jasu od tohoto pozadí) — obě masky se spojí
     přes OR, takže appka pozná kus i tehdy, kdy má podobný jas jako
-    pozadí, ale liší se barvou. Dál morfologické operace a `findContours`,
-    statistický odhad počtu u slepených kusů podle plochy
+    pozadí, ale liší se barvou. Dál morfologické operace a `findContours`.
+    Každý nalezený obrys navíc musí mít dostatečnou **plnost** (poměr
+    plochy k ploše jeho konvexního obalu) — tenké klikaté čáry jako žíly
+    ve dřevě stolu jsou lokálně tmavší než okolí, a bez tohoto filtru je
+    appka omylem počítala jako kusy. Nakonec statistický odhad počtu u
+    slepených kusů podle plochy
   - **Rozpoznávání tvarů**: každý nalezený kus se přes `Imgproc.approxPolyDP`
     (zjednodušení obrysu na polygon) a kruhovitost (`4π·plocha/obvod²`)
     zařadí jako trojúhelník, obdélník, lichoběžník nebo kruh. Skutečný

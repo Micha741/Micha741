@@ -9,6 +9,7 @@ import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.CvType
 import org.opencv.core.Mat
+import org.opencv.core.MatOfInt
 import org.opencv.core.MatOfPoint
 import org.opencv.core.MatOfPoint2f
 import org.opencv.core.Scalar
@@ -132,7 +133,7 @@ object CvBlobAnalyzer {
         val blobs = mutableListOf<CvBlob>()
         for (contour in contours) {
             val area = Imgproc.contourArea(contour)
-            if (area >= minArea) {
+            if (area >= minArea && solidityOf(contour, area) >= MIN_SOLIDITY) {
                 blobs += contour.toCvBlob(area)
             } else {
                 contour.release()
@@ -220,6 +221,30 @@ object CvBlobAnalyzer {
             else -> ShapeType.OTHER
         }
         return shape to polygon
+    }
+
+    /**
+     * area / convex-hull-area: how much of its own "envelope" a shape
+     * actually fills. A solid piece (fruit, coin, screw...) has a high
+     * solidity even if irregular. A thin winding line - like a crack or
+     * grain line in a wood table, which a purely local threshold happily
+     * flags as "foreground" since it's darker than its immediate
+     * surroundings - has a convex hull far bigger than its own area, so a
+     * low solidity is exactly what tells them apart from a real piece.
+     */
+    private fun solidityOf(contour: MatOfPoint, area: Double): Double {
+        val hullIndices = MatOfInt()
+        Imgproc.convexHull(contour, hullIndices)
+        val points = contour.toArray()
+        val indices = hullIndices.toArray()
+        hullIndices.release()
+        if (indices.size < 3) return 0.0
+
+        val hullPoints = Array(indices.size) { i -> points[indices[i]] }
+        val hullMat = MatOfPoint(*hullPoints)
+        val hullArea = Imgproc.contourArea(hullMat)
+        hullMat.release()
+        return if (hullArea > 0.0) area / hullArea else 0.0
     }
 
     /** A quadrilateral whose opposite sides are roughly equal length looks like a rectangle rather than a trapezoid. */
@@ -333,6 +358,7 @@ object CvBlobAnalyzer {
 
     private const val MIN_AREA_PX = 40.0
     private const val MIN_AREA_FRACTION = 0.0004
+    private const val MIN_SOLIDITY = 0.5
     private const val ADAPTIVE_C = 10.0
     private const val COLOR_DISTANCE_THRESHOLD = 40.0
     private const val MIN_SAMPLES_FOR_SPLIT = 3
