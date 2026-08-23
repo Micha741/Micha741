@@ -71,16 +71,28 @@ fun CvBlob.toDetectedBlob(scale: Float = 1f): DetectedBlob {
  * from the estimated background color - lets it separate e.g. a colored
  * piece from a similarly-lit but differently colored background, which a
  * brightness-only threshold can miss) -> morphological close+open (fills
- * small holes, drops speckle noise) -> external contours ->
- * [Imgproc.approxPolyDP] polygon classification (triangle / rectangle /
- * trapezoid / circle, by vertex count + circularity).
+ * small holes, drops speckle noise) -> [separateTouchingObjects] (a
+ * distance-transform + watershed split, so touching round pieces - e.g.
+ * overlapping plums - become their own contours instead of staying one
+ * merged blob) -> [Imgproc.approxPolyDP] polygon classification
+ * (triangle / rectangle / trapezoid / circle, by vertex count + circularity).
  *
- * With no [reference], every contour above the minimum area counts,
- * splitting statistically-oversized blobs that likely contain several
- * touching pieces. With a [reference] (a piece the user tapped on), only
- * contours of the *same shape type* whose outline also resembles it via
- * [Imgproc.matchShapes]'s Hu-moment comparison (scale/rotation invariant)
- * are kept, each counted once.
+ * [separateTouchingObjects] also doubles as extra noise rejection: it only
+ * creates a piece where the binary mask has a "core" far enough from its
+ * own edge (see [distanceCoreThreshold]), and a thin winding line - wood
+ * grain, a crack - is never more than a couple of pixels from its own edge
+ * anywhere along its length, so it gets absorbed into the background
+ * instead of becoming its own piece. [isPlausiblePieceShape]'s solidity/
+ * circularity checks still run afterwards as a second, independent filter
+ * on whatever does get through.
+ *
+ * With no [reference], every resulting piece above the minimum area counts
+ * (each is already an individual piece, not a merged blob); a capped,
+ * area-ratio split is kept only as a fallback for the rare case where two
+ * pieces are fused with no distinguishable core of their own. With a
+ * [reference] (a piece the user tapped on), only pieces of the *same shape
+ * type* whose outline also resembles it via [Imgproc.matchShapes]'s
+ * Hu-moment comparison (scale/rotation invariant) are kept, each counted once.
  *
  * Every [MatOfPoint] contour in the result is native-backed and must be
  * released by the caller once its bounding box/area/shape have been read out.
@@ -113,7 +125,6 @@ object CvBlobAnalyzer {
         gray.release()
 
         val colorMask = colorDistanceMask(rgba)
-        rgba.release()
 
         val binary = Mat()
         Core.bitwise_or(luminanceMask, colorMask, binary)
@@ -126,15 +137,17 @@ object CvBlobAnalyzer {
         Imgproc.morphologyEx(binary, binary, Imgproc.MORPH_OPEN, kernel)
         kernel.release()
 
-        val contours = mutableListOf<MatOfPoint>()
-        val hierarchy = Mat()
-        Imgproc.findContours(binary, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE)
-        hierarchy.release()
+        val bgr = Mat()
+        Imgproc.cvtColor(rgba, bgr, Imgproc.COLOR_RGBA2BGR)
+        rgba.release()
+
+        val pieceContours = separateTouchingObjects(binary, bgr)
+        bgr.release()
         binary.release()
 
         val minArea = max(MIN_AREA_PX, bitmap.width * bitmap.height * MIN_AREA_FRACTION)
         val blobs = mutableListOf<CvBlob>()
-        for (contour in contours) {
+        for (contour in pieceContours) {
             val area = Imgproc.contourArea(contour)
             if (area >= minArea && isPlausiblePieceShape(contour, area)) {
                 blobs += contour.toCvBlob(area)
@@ -159,6 +172,9 @@ object CvBlobAnalyzer {
             return CvAnalysisResult(matched, matched.size)
         }
 
+        // Fallback only: separateTouchingObjects() above already splits most touching pieces into
+        // their own contour, so this rarely fires now. It still catches the rare case where two
+        // pieces are fused with no distinguishable core of their own (see distanceCoreThreshold).
         val medianArea = blobs.map { it.area }.sorted()[blobs.size / 2]
         var totalCount = 0
         val withEstimates = blobs.map { blob ->
@@ -184,6 +200,81 @@ object CvBlobAnalyzer {
             val dy = (blob.box.centerY() - y).toLong()
             dx * dx + dy * dy
         }
+    }
+
+    /**
+     * Splits touching round-ish objects (e.g. overlapping plums) that
+     * [binary]'s own connected components would otherwise report as one
+     * big blob. For each blob, the point(s) with a "core" far enough from
+     * any edge (via a distance transform, thresholded at
+     * [distanceCoreThreshold]) become watershed markers - one per touching
+     * piece, since the neck between two touching round objects sits closer
+     * to an edge than either piece's own center. Flooding from those
+     * markers along [colorReference]'s gradient finds the ridge between
+     * touching pieces and cuts there.
+     *
+     * A blob with no core of its own - a thin winding line like wood grain
+     * or a crack, which is never more than a couple of pixels from its own
+     * edge anywhere along its length - gets no marker, so it is absorbed
+     * into the surrounding background marker instead of becoming a piece:
+     * free extra noise rejection on top of [isPlausiblePieceShape].
+     */
+    private fun separateTouchingObjects(binary: Mat, colorReference: Mat): List<MatOfPoint> {
+        val distance = Mat()
+        Imgproc.distanceTransform(binary, distance, Imgproc.DIST_L2, 5)
+
+        val coreThreshold = distanceCoreThreshold(binary.width(), binary.height())
+        val sureForeground = Mat()
+        Imgproc.threshold(distance, sureForeground, coreThreshold, 255.0, Imgproc.THRESH_BINARY)
+        distance.release()
+        val sureForeground8u = Mat()
+        sureForeground.convertTo(sureForeground8u, CvType.CV_8U)
+        sureForeground.release()
+
+        val markers = Mat()
+        val labelCount = Imgproc.connectedComponents(sureForeground8u, markers)
+        if (labelCount <= 1) {
+            sureForeground8u.release()
+            markers.release()
+            return emptyList()
+        }
+        // Shift labels up by one so "sure background" (label 0) isn't confused with "unknown" (0).
+        Core.add(markers, Scalar(1.0), markers)
+
+        val dilateKernel = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, Size(5.0, 5.0))
+        val sureBackground = Mat()
+        Imgproc.dilate(binary, sureBackground, dilateKernel, org.opencv.core.Point(-1.0, -1.0), 2)
+        dilateKernel.release()
+        val unknown = Mat()
+        Core.subtract(sureBackground, sureForeground8u, unknown)
+        sureForeground8u.release()
+        sureBackground.release()
+
+        markers.setTo(Scalar(0.0), unknown)
+        unknown.release()
+
+        Imgproc.watershed(colorReference, markers)
+
+        val pieces = mutableListOf<MatOfPoint>()
+        for (label in 2..labelCount) {
+            val labelMask = Mat()
+            Core.inRange(markers, Scalar(label.toDouble()), Scalar(label.toDouble()), labelMask)
+            if (Core.countNonZero(labelMask) == 0) {
+                labelMask.release()
+                continue
+            }
+            val labelContours = mutableListOf<MatOfPoint>()
+            val hierarchy = Mat()
+            Imgproc.findContours(labelMask, labelContours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE)
+            hierarchy.release()
+            labelMask.release()
+            // A watershed label is almost always one connected piece; on the rare case it isn't, keep the largest.
+            val largest = labelContours.maxByOrNull { Imgproc.contourArea(it) }
+            labelContours.forEach { if (it !== largest) it.release() }
+            largest?.let { pieces += it }
+        }
+        markers.release()
+        return pieces
     }
 
     /** Same shape category (when the reference's shape is known) plus a Hu-moment outline comparison. */
@@ -392,6 +483,17 @@ object CvBlobAnalyzer {
      */
     private fun morphKernelSize(width: Int, height: Int): Double =
         max(3, min(width, height) / 100).toDouble()
+
+    /**
+     * Minimum distance (in pixels) a point must be from its blob's own edge
+     * to count as a piece's "core" in [separateTouchingObjects], scaled to
+     * the frame like [blockSize]/[morphKernelSize] - large enough that a
+     * thin noise line (wood grain, a crack, always only a pixel or two from
+     * its own edge) never reaches it, but small enough that a genuinely
+     * small real piece still has a core of its own.
+     */
+    private fun distanceCoreThreshold(width: Int, height: Int): Double =
+        max(3.0, min(width, height) / 60.0)
 
     private const val MIN_AREA_PX = 40.0
     private const val MIN_AREA_FRACTION = 0.0004

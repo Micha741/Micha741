@@ -59,16 +59,25 @@ i živý náhled kamery — viz sekce Funkce níže.
     odchylku odstínu/sytosti/jasu od tohoto pozadí) — obě masky se spojí
     přes OR, takže appka pozná kus i tehdy, kdy má podobný jas jako
     pozadí, ale liší se barvou. Morfologické operace (velikost jádra
-    škálovaná podle rozlišení snímku, ne pevná) a `findContours`. Každý
-    nalezený obrys navíc musí projít dvěma nezávislými testy tvaru —
+    škálovaná podle rozlišení snímku, ne pevná).
+  - **Rozdělení slepených kusů (watershed)**: než appka hledá obrysy,
+    spojenou binární masku ještě projede přes distanční transformaci
+    (`Imgproc.distanceTransform`) + watershed (`Imgproc.watershed`) —
+    najde místa nejvíc "uvnitř" každého kusu (nejdál od jeho vlastního
+    okraje) jako značky a od nich nechá zaplavit obraz podél hran, takže
+    dva dotýkající se kulaté kusy (např. slepené švestky) se rozdělí na
+    dva samostatné obrysy místo jednoho velkého. Stejný krok zároveň
+    funguje jako další filtr šumu: tenká klikatá čára (žíla ve dřevě,
+    prasklina) není nikde víc než pár pixelů od svého okraje, takže
+    nemá vlastní "jádro" a namísto vlastního kusu se pohltí do pozadí —
+    ještě než vůbec dorazí na testy tvaru. Odhad počtu podle poměru
+    ploch (starší přístup) zůstal jen jako záložní pojistka pro
+    vzácný případ, kdy se dva kusy slijí bez rozpoznatelného vlastního
+    jádra — pořád s horní mezí 20 kusů na jeden obrys.
+  - Každý nalezený obrys navíc musí projít dvěma nezávislými testy tvaru —
     **plností** (poměr plochy k ploše konvexního obalu) a **kruhovitostí**
-    (`4π·plocha/obvod²`) — tenké klikaté čáry jako žíly ve dřevě stolu nebo
-    hrany stínu jsou lokálně tmavší než okolí a bez těchto testů je appka
-    omylem počítala jako kusy. Odhad počtu u slepených kusů podle plochy
-    má navíc horní mez na jeden obrys (max. 20 kusů) — pojistka proti
-    tomu, aby pár zbylých šumových oblastí nestáhlo medián plochy tak
-    nízko, že by se z jednoho reálného (třeba slepeného) kusu najednou
-    "vypočítaly" stovky
+    (`4π·plocha/obvod²`) — jako druhá, nezávislá pojistka proti zbytkům
+    šumu, které by watershed krokem přesto prošly
   - **Rozpoznávání tvarů**: každý nalezený kus se přes `Imgproc.approxPolyDP`
     (zjednodušení obrysu na polygon) a kruhovitost (`4π·plocha/obvod²`)
     zařadí jako trojúhelník, obdélník, lichoběžník nebo kruh. Skutečný
