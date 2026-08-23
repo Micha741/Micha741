@@ -30,6 +30,8 @@ data class CvBlob(
     val shapeType: ShapeType,
     /** Approximated outline (polygon corners), for drawing the real edge instead of just the bounding box. */
     val polygon: List<Point>,
+    /** How many pieces this one blob is estimated to represent (>1 for a statistically oversized/merged blob in auto mode). */
+    val estimatedCount: Int = 1,
 )
 
 data class CvAnalysisResult(val blobs: List<CvBlob>, val count: Int)
@@ -56,7 +58,7 @@ fun CvBlob.toDetectedBlob(scale: Float = 1f): DetectedBlob {
     } else {
         polygon.map { Point((it.x * scale).roundToInt(), (it.y * scale).roundToInt()) }
     }
-    return DetectedBlob(scaledBox, area.roundToInt(), fillRatio, aspectRatio, shapeType, scaledPolygon)
+    return DetectedBlob(scaledBox, area.roundToInt(), fillRatio, aspectRatio, shapeType, scaledPolygon, estimatedCount)
 }
 
 /**
@@ -159,7 +161,7 @@ object CvBlobAnalyzer {
 
         val medianArea = blobs.map { it.area }.sorted()[blobs.size / 2]
         var totalCount = 0
-        for (blob in blobs) {
+        val withEstimates = blobs.map { blob ->
             val estimated = if (blobs.size >= MIN_SAMPLES_FOR_SPLIT && blob.area > medianArea * SPLIT_AREA_RATIO) {
                 // Capped: a handful of tiny leftover noise blobs could otherwise drag the median
                 // area down so far that one real (possibly merged) blob "splits" into hundreds.
@@ -168,8 +170,9 @@ object CvBlobAnalyzer {
                 1
             }
             totalCount += estimated
+            blob.copy(estimatedCount = estimated)
         }
-        return CvAnalysisResult(blobs, totalCount)
+        return CvAnalysisResult(withEstimates, totalCount)
     }
 
     /** Finds the segmented blob under (or, failing that, nearest to) a user-tapped point. */

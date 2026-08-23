@@ -2,6 +2,7 @@ package com.micha741.skener
 
 import android.graphics.BitmapFactory
 import android.graphics.Point
+import android.graphics.Rect
 import android.net.Uri
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -51,7 +52,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.micha741.skener.data.DetectedBlob
 import com.micha741.skener.data.ShapeType
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.roundToInt
+import kotlin.math.sqrt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -101,10 +105,15 @@ fun CountingScreen(
                     blobs = uiState.blobs,
                     referenceBox = uiState.referenceBox,
                     referenceActive = uiState.referenceActive,
-                    count = uiState.count,
+                    count = uiState.adjustedCount.takeIf { uiState.count != null },
                     shapeBreakdown = uiState.shapeBreakdown,
+                    excludedBoxes = uiState.excludedBoxes,
+                    manualAdditions = uiState.manualAdditions,
                     isProcessing = uiState.isProcessing,
                     onTap = { point -> viewModel.onReferenceTap(point) },
+                    onToggleExclude = { box -> viewModel.toggleExcluded(box) },
+                    onAddManual = { point -> viewModel.addManualPiece(point) },
+                    onRemoveManual = { point -> viewModel.removeManualPiece(point) },
                 )
                 Spacer(modifier = Modifier.padding(top = 8.dp))
                 if (uiState.referenceActive) {
@@ -165,12 +174,17 @@ private fun CountingEmptyState(onCapturePhoto: () -> Unit, onPickPhoto: () -> Un
 private fun CountingResult(
     photoUri: Uri,
     blobs: List<DetectedBlob>,
-    referenceBox: android.graphics.Rect?,
+    referenceBox: Rect?,
     referenceActive: Boolean,
     count: Int?,
     shapeBreakdown: Map<ShapeType, Int>,
+    excludedBoxes: Set<Rect>,
+    manualAdditions: List<Point>,
     isProcessing: Boolean,
     onTap: (Point) -> Unit,
+    onToggleExclude: (Rect) -> Unit,
+    onAddManual: (Point) -> Unit,
+    onRemoveManual: (Point) -> Unit,
 ) {
     val context = LocalContext.current
     val bitmap = remember(photoUri) {
@@ -182,18 +196,49 @@ private fun CountingResult(
         return
     }
 
+    val manualHitRadius = max(20, min(bitmap.width, bitmap.height) / 40)
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(bitmap.width.toFloat() / bitmap.height.toFloat())
             .pointerInput(photoUri) {
-                detectTapGestures { offset ->
-                    val scaleX = size.width.toFloat() / bitmap.width
-                    val scaleY = size.height.toFloat() / bitmap.height
-                    val bitmapX = (offset.x / scaleX).roundToInt().coerceIn(0, bitmap.width - 1)
-                    val bitmapY = (offset.y / scaleY).roundToInt().coerceIn(0, bitmap.height - 1)
-                    onTap(Point(bitmapX, bitmapY))
-                }
+                detectTapGestures(
+                    onTap = { offset ->
+                        val scaleX = size.width.toFloat() / bitmap.width
+                        val scaleY = size.height.toFloat() / bitmap.height
+                        val bitmapX = (offset.x / scaleX).roundToInt().coerceIn(0, bitmap.width - 1)
+                        val bitmapY = (offset.y / scaleY).roundToInt().coerceIn(0, bitmap.height - 1)
+                        onTap(Point(bitmapX, bitmapY))
+                    },
+                    onLongPress = { offset ->
+                        val scaleX = size.width.toFloat() / bitmap.width
+                        val scaleY = size.height.toFloat() / bitmap.height
+                        val bitmapX = (offset.x / scaleX).roundToInt().coerceIn(0, bitmap.width - 1)
+                        val bitmapY = (offset.y / scaleY).roundToInt().coerceIn(0, bitmap.height - 1)
+
+                        val nearestManual = manualAdditions.minByOrNull { marker ->
+                            val dx = (marker.x - bitmapX).toDouble()
+                            val dy = (marker.y - bitmapY).toDouble()
+                            dx * dx + dy * dy
+                        }
+                        val manualDistance = nearestManual?.let {
+                            val dx = (it.x - bitmapX).toDouble()
+                            val dy = (it.y - bitmapY).toDouble()
+                            sqrt(dx * dx + dy * dy)
+                        }
+
+                        val hitBlob = blobs.firstOrNull { it.box.contains(bitmapX, bitmapY) }
+
+                        when {
+                            nearestManual != null && manualDistance != null && manualDistance <= manualHitRadius -> {
+                                onRemoveManual(nearestManual)
+                            }
+                            hitBlob != null -> onToggleExclude(hitBlob.box)
+                            else -> onAddManual(Point(bitmapX, bitmapY))
+                        }
+                    },
+                )
             },
     ) {
         Image(
@@ -204,10 +249,16 @@ private fun CountingResult(
         Canvas(modifier = Modifier.fillMaxSize()) {
             val scaleX = size.width / bitmap.width
             val scaleY = size.height / bitmap.height
+
             blobs.forEach { blob ->
                 val box = blob.box
+                val isExcluded = box in excludedBoxes
                 val isReference = referenceActive && referenceBox != null && box == referenceBox
-                val color = if (isReference) Color(0xFFFFB300) else Color(0xFF62B6CB)
+                val color = when {
+                    isExcluded -> Color(0x889E9E9E)
+                    isReference -> Color(0xFFFFB300)
+                    else -> Color(0xFF62B6CB)
+                }
                 val strokeWidth = if (isReference) 6f else 4f
 
                 if (blob.polygon.size >= 3) {
@@ -229,6 +280,16 @@ private fun CountingResult(
                     )
                 }
             }
+
+            val markerRadius = manualHitRadius * scaleX
+            manualAdditions.forEach { point ->
+                drawCircle(
+                    color = Color(0xFF4CAF50),
+                    radius = markerRadius,
+                    center = Offset(point.x * scaleX, point.y * scaleY),
+                    style = Stroke(width = 5f),
+                )
+            }
         }
         if (isProcessing) {
             Surface(
@@ -248,6 +309,12 @@ private fun CountingResult(
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 8.dp),
+        )
+        Text(
+            text = stringResource(R.string.count_long_press_hint),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = 2.dp),
         )
     }
 

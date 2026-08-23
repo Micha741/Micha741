@@ -26,7 +26,19 @@ data class CountingUiState(
     val referenceBox: Rect? = null,
     /** Auto mode only: how many blobs of each shape were found ("find identical pieces" without a manual tap). */
     val shapeBreakdown: Map<ShapeType, Int> = emptyMap(),
-)
+    /** Detected blobs the user manually excluded (long-press on a wrongly-detected piece). */
+    val excludedBoxes: Set<Rect> = emptySet(),
+    /** Pieces the user manually marked (long-press on empty space the detector missed), each worth one piece. */
+    val manualAdditions: List<Point> = emptyList(),
+) {
+    /** [count] adjusted for manual corrections: excluded blobs' own estimate subtracted, manual additions added. */
+    val adjustedCount: Int
+        get() {
+            val base = count ?: return manualAdditions.size
+            val excludedContribution = blobs.filter { it.box in excludedBoxes }.sumOf { it.estimatedCount }
+            return (base - excludedContribution + manualAdditions.size).coerceAtLeast(0)
+        }
+}
 
 class CountingViewModel(
     private val appContext: Context,
@@ -55,6 +67,31 @@ class CountingViewModel(
         runCount(uri, referenceTap = null)
     }
 
+    /** User long-pressed a detected piece: toggle it out of (or back into) the count. */
+    fun toggleExcluded(box: Rect) {
+        _uiState.update { state ->
+            val excluded = state.excludedBoxes
+            state.copy(excludedBoxes = if (box in excluded) excluded - box else excluded + box)
+        }
+    }
+
+    /** User long-pressed empty space where the detector missed a piece: count it manually. */
+    fun addManualPiece(point: Point) {
+        _uiState.update { it.copy(manualAdditions = it.manualAdditions + point) }
+    }
+
+    /** Removes the manual marker nearest [point] (long-press on a manual marker to undo it). */
+    fun removeManualPiece(point: Point) {
+        _uiState.update { state ->
+            val nearest = state.manualAdditions.minByOrNull { marker ->
+                val dx = (marker.x - point.x).toLong()
+                val dy = (marker.y - point.y).toLong()
+                dx * dx + dy * dy
+            } ?: return@update state
+            state.copy(manualAdditions = state.manualAdditions - nearest)
+        }
+    }
+
     fun reset() {
         _uiState.value = CountingUiState()
     }
@@ -75,6 +112,8 @@ class CountingViewModel(
                             referenceActive = referenceTap != null && result.referenceBlob != null,
                             referenceBox = if (referenceTap != null) result.referenceBlob?.box else it.referenceBox,
                             shapeBreakdown = result.shapeBreakdown,
+                            excludedBoxes = emptySet(),
+                            manualAdditions = emptyList(),
                             errorMessage = if (referenceTap != null && result.referenceBlob == null) {
                                 appContext.getString(R.string.count_reference_not_found)
                             } else {

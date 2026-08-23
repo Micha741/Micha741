@@ -23,4 +23,6 @@ data class DetectedBlob(
     val shapeType: ShapeType = ShapeType.OTHER,
     /** Approximated outline (image pixel coords) for drawing the real edge instead of just the bounding box; empty if unknown. */
     val polygon: List<Point> = emptyList(),
+    /** How many pieces this one blob is estimated to represent (>1 for a statistically oversized/merged blob in auto mode). */
+    val estimatedCount: Int = 1,
 )

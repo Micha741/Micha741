@@ -80,6 +80,16 @@ i živý náhled kamery — viz sekce Funkce níže.
     označit jeden konkrétní kus a appka pak přes `Imgproc.matchShapes` (Hu
     momenty — porovnání tvaru nezávislé na velikosti/natočení) plus shodu
     kategorie tvaru počítá jen kusy podobné tomu označenému
+  - **Ruční oprava** (jen u statické fotky): automatická detekce zůstává na
+    členitém pozadí (např. dřevěný stůl se žílami/stíny) nespolehlivá a
+    slepené kusy dokáže spojit do jednoho obrysu místo jejich rozdělení —
+    proto jde výsledek ručně doladit podržením prstu. Podržení na
+    nalezeném kusu ho vyřadí ze součtu (zůstane vykreslený šedě, lze ho
+    stejným gestem vrátit zpět), podržení na prázdném místě přidá kus
+    ručně (zelený kroužek), podržení blízko takto přidaného kroužku ho
+    zase odebere. Zobrazený počet (`adjustedCount` v `CountingViewModel`)
+    započítává i tyto ruční úpravy; při nové fotce nebo přepnutí reference
+    se úpravy vždy vynulují
   - Živý náhled navíc: kreslí se skutečný obrys kusu (ne jen ohraničující
     obdélník), stejně jako u fotky, zoom (posuvník napojený na kameru) a
     tlačítko zpět. Kamerový snímek (YUV_420_888) se převádí na malou
