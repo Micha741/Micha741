@@ -35,7 +35,10 @@ náhled) — viz sekce Funkce níže.
   řádku na originální fotce. Tučné/kurzíva/barva jsou heuristiky (ML Kit
   žádné takové metadata sám nedává) — u čistě strojového textu na
   jednoduchém pozadí fungují dobře, u composite/ručně psaného textu méně
-  spolehlivě
+  spolehlivě. Velikost písma každého řádku je navíc omezená skutečnou
+  mezerou k nejbližšímu řádku pod ním (ne jen výškou vlastního bounding
+  boxu OCR), aby si u hustého textu s malými řádky velká/tučná písmena
+  „nekousala“ s textem pod nimi
 - Seznam uložených skenů (počet stránek, datum)
 - Sdílení PDF přes systémový share sheet
 - **Uložení do zařízení** — systémový výběr umístění (Storage Access
@@ -74,7 +77,10 @@ náhled) — viz sekce Funkce níže.
   přisvícení (baterka, jen když ji zařízení/objektiv má), možnost načíst
   kód i ze statické fotky z galerie místo živé kamery, historie
   naskenovaných kódů v bottom sheetu (odznak s počtem) s možností
-  kopírovat, otevřít odkaz nebo sdílet
+  kopírovat, otevřít odkaz, sdílet nebo **uložit jako obrázek** — hodnota
+  se přes [ZXing](https://github.com/zxing/zxing) (`com.google.zxing:core`)
+  zpětně zakóduje do obrázku (QR i podporované 1D formáty) a uloží se
+  přes systémový výběr umístění, ne jen jako sdílený text
 
 Mezi „Skenovat“, „Počítat kusy“ a „Kódy“ se přepíná spodní navigační lištou.
 
@@ -103,6 +109,7 @@ app/src/main/java/com/micha741/skener/
 │   ├── BarcodeAnalyzer.kt   # CameraX analyzer: živé snímky -> ML Kit Barcode Scanning
 │   ├── DocumentTextExtractor.kt # OCR jedné stránky + odhad formátování (velikost/tučné/kurzíva/barva) na řádek
 │   ├── TextPdfWriter.kt     # vykreslí rozpoznaný text pozičně/formátovaně do PDF (bez fotky)
+│   ├── BarcodeImageEncoder.kt # zpětně zakóduje hodnotu kódu do bitmapy (ZXing) pro uložení jako obrázek
 │   └── cv/
 │       └── CvBlobAnalyzer.kt # OpenCV pipeline pro statickou fotku: adaptivní threshold, kontury, matchShapes
 └── ui/theme/Theme.kt        # Material 3 theme (light/dark, dynamic color)

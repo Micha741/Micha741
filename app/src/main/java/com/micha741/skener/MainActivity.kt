@@ -1,8 +1,10 @@
 package com.micha741.skener
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -59,6 +61,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -67,8 +70,12 @@ import androidx.navigation.compose.rememberNavController
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanning
 import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
+import com.micha741.skener.data.BarcodeImageEncoder
 import com.micha741.skener.data.ScanDocument
 import com.micha741.skener.ui.theme.SkenerTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.Date
 
@@ -145,6 +152,17 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
+                var pendingSaveBarcode by remember { mutableStateOf<ScannedCode?>(null) }
+                val saveBarcodeImageLauncher = rememberLauncherForActivityResult(
+                    ActivityResultContracts.CreateDocument("image/png")
+                ) { destUri ->
+                    val code = pendingSaveBarcode
+                    pendingSaveBarcode = null
+                    if (destUri != null && code != null) {
+                        saveBarcodeImage(code, destUri)
+                    }
+                }
+
                 AppScaffold(
                     navController = navController,
                     scanViewModel = viewModel,
@@ -165,6 +183,10 @@ class MainActivity : ComponentActivity() {
                         pickBarcodePhotoLauncher.launch(
                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                         )
+                    },
+                    onSaveBarcodeImage = { code ->
+                        pendingSaveBarcode = code
+                        saveBarcodeImageLauncher.launch("kod_${code.timestamp}.png")
                     },
                 )
             }
@@ -197,6 +219,24 @@ class MainActivity : ComponentActivity() {
         startActivity(Intent.createChooser(intent, getString(R.string.share)))
     }
 
+    private fun saveBarcodeImage(code: ScannedCode, destUri: Uri) {
+        lifecycleScope.launch {
+            val bitmap = withContext(Dispatchers.Default) { BarcodeImageEncoder.encode(code.value, code.format) }
+            if (bitmap == null) {
+                Toast.makeText(this@MainActivity, getString(R.string.save_failed), Toast.LENGTH_SHORT).show()
+                return@launch
+            }
+            try {
+                contentResolver.openOutputStream(destUri)?.use { output ->
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, output)
+                }
+                Toast.makeText(this@MainActivity, getString(R.string.save_success), Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Toast.makeText(this@MainActivity, e.message ?: getString(R.string.save_failed), Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     private fun exportDocument(document: ScanDocument, destUri: Uri) {
         try {
             contentResolver.openOutputStream(destUri)?.use { output ->
@@ -220,6 +260,7 @@ private fun AppScaffold(
     onSaveToDevice: (ScanDocument) -> Unit,
     onPickPhoto: () -> Unit,
     onPickBarcodePhoto: () -> Unit,
+    onSaveBarcodeImage: (ScannedCode) -> Unit,
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
@@ -280,7 +321,11 @@ private fun AppScaffold(
                 )
             }
             composable("barcode") {
-                BarcodeScreen(viewModel = barcodeViewModel, onPickPhoto = onPickBarcodePhoto)
+                BarcodeScreen(
+                    viewModel = barcodeViewModel,
+                    onPickPhoto = onPickBarcodePhoto,
+                    onSaveImage = onSaveBarcodeImage,
+                )
             }
         }
     }

@@ -7,6 +7,7 @@ import android.text.TextPaint
 import java.io.File
 import java.io.FileOutputStream
 import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Renders OCR-recognized text into a PDF - no source images are embedded,
@@ -36,12 +37,12 @@ object TextPdfWriter {
                 paint.typeface = Typeface.DEFAULT
                 canvas.drawText("(žádný text nerozpoznán)", MARGIN, MARGIN - paint.ascent(), paint)
             } else {
-                for (line in page.lines) {
-                    if (line.text.isBlank()) continue
-                    val boxHeight = line.box.height() * scale
-                    if (boxHeight <= 1f) continue
+                val fontSizes = fontSizesFittingLinePitch(page.lines, scale)
+                page.lines.forEachIndexed { lineIndex, line ->
+                    if (line.text.isBlank()) return@forEachIndexed
+                    val fontSize = fontSizes[lineIndex] ?: return@forEachIndexed
 
-                    paint.textSize = (boxHeight * FONT_SIZE_FACTOR).coerceIn(MIN_FONT_SIZE, MAX_FONT_SIZE)
+                    paint.textSize = fontSize
                     paint.color = line.color
                     paint.typeface = Typeface.create(Typeface.DEFAULT, typefaceStyle(line))
 
@@ -57,6 +58,28 @@ object TextPdfWriter {
         FileOutputStream(outputFile).use { document.writeTo(it) }
         document.close()
         return pages.size
+    }
+
+    /**
+     * A line's own bounding-box height can be taller than the real gap to
+     * the next line below it (dense body text in real documents commonly
+     * has tighter leading than its OCR box height implies) - sizing text
+     * purely off each line's own box therefore lets big glyphs bleed down
+     * into the next line. Cap each line's font size to the *smaller* of
+     * its own box height and the vertical gap to the nearest line below it.
+     */
+    private fun fontSizesFittingLinePitch(lines: List<FormattedLine>, scale: Float): List<Float?> {
+        val tops = lines.map { it.box.top }
+        return lines.mapIndexed { index, line ->
+            val boxHeight = line.box.height() * scale
+            if (boxHeight <= 1f) return@mapIndexed null
+
+            val ownTop = tops[index]
+            val nextGapPx = tops.filter { it > ownTop }.minOrNull()?.let { it - ownTop }
+            val available = if (nextGapPx != null) min(boxHeight, nextGapPx * scale) else boxHeight
+
+            (available * FONT_SIZE_FACTOR).coerceIn(MIN_FONT_SIZE, MAX_FONT_SIZE)
+        }
     }
 
     private fun typefaceStyle(line: FormattedLine): Int = when {

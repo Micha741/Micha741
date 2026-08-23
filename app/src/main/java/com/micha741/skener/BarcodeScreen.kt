@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.FlashOff
 import androidx.compose.material.icons.filled.FlashOn
 import androidx.compose.material.icons.filled.History
@@ -82,7 +83,7 @@ import kotlin.math.min
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarcodeScreen(viewModel: BarcodeViewModel, onPickPhoto: () -> Unit) {
+fun BarcodeScreen(viewModel: BarcodeViewModel, onPickPhoto: () -> Unit, onSaveImage: (ScannedCode) -> Unit) {
     val permission = rememberCameraPermissionState()
     if (!permission.granted) {
         CameraPermissionRationale(onRequestPermission = permission.requestPermission)
@@ -265,7 +266,7 @@ fun BarcodeScreen(viewModel: BarcodeViewModel, onPickPhoto: () -> Unit) {
     if (showHistory) {
         val sheetState = rememberModalBottomSheetState()
         ModalBottomSheet(onDismissRequest = { showHistory = false }, sheetState = sheetState) {
-            BarcodeHistorySheetContent(history = uiState.history)
+            BarcodeHistorySheetContent(history = uiState.history, onSaveImage = onSaveImage)
         }
     }
 }
@@ -336,7 +337,7 @@ private fun CircleIconButton(
 }
 
 @Composable
-private fun BarcodeHistorySheetContent(history: List<ScannedCode>) {
+private fun BarcodeHistorySheetContent(history: List<ScannedCode>, onSaveImage: (ScannedCode) -> Unit) {
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         Text(
             text = stringResource(R.string.barcode_history_title),
@@ -369,7 +370,7 @@ private fun BarcodeHistorySheetContent(history: List<ScannedCode>) {
                     .padding(bottom = 16.dp),
             ) {
                 items(history, key = { it.timestamp }) { code ->
-                    BarcodeHistoryItem(code)
+                    BarcodeHistoryItem(code, onSaveImage = onSaveImage)
                 }
             }
         }
@@ -377,7 +378,7 @@ private fun BarcodeHistorySheetContent(history: List<ScannedCode>) {
 }
 
 @Composable
-private fun BarcodeHistoryItem(code: ScannedCode) {
+private fun BarcodeHistoryItem(code: ScannedCode, onSaveImage: (ScannedCode) -> Unit) {
     val context = LocalContext.current
     val clipboardManager = LocalClipboardManager.current
     val isUrl = code.value.startsWith("http://", ignoreCase = true) ||
@@ -420,6 +421,9 @@ private fun BarcodeHistoryItem(code: ScannedCode) {
                     context.startActivity(Intent.createChooser(intent, context.getString(R.string.share)))
                 }) {
                     Icon(Icons.Default.Share, contentDescription = stringResource(R.string.share))
+                }
+                IconButton(onClick = { onSaveImage(code) }) {
+                    Icon(Icons.Default.Download, contentDescription = stringResource(R.string.barcode_save_image))
                 }
             }
         }

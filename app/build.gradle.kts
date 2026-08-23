@@ -12,8 +12,8 @@ android {
         applicationId = "com.micha741.skener"
         minSdk = 26
         targetSdk = 34
-        versionCode = 12
-        versionName = "2.0"
+        versionCode = 13
+        versionName = "2.1"
     }
 
     buildTypes {
@@ -81,6 +81,12 @@ dependencies {
     // Central artifact (no more OpenCV Manager APK needed) since 4.9.0 - check
     // https://mvnrepository.com/artifact/org.opencv/opencv for the newest version.
     implementation("org.opencv:opencv:4.10.0")
+
+    // ZXing core - re-encodes a scanned barcode/QR value back into an image
+    // (see data/BarcodeImageEncoder.kt), so a scanned code can be saved as a
+    // picture, not just shared as text. Pure Java, no native/native deps -
+    // check https://mvnrepository.com/artifact/com.google.zxing/core for newer.
+    implementation("com.google.zxing:core:3.5.3")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
