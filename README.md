@@ -75,10 +75,11 @@ i živý náhled kamery — viz sekce Funkce níže.
     označit jeden konkrétní kus a appka pak přes `Imgproc.matchShapes` (Hu
     momenty — porovnání tvaru nezávislé na velikosti/natočení) plus shodu
     kategorie tvaru počítá jen kusy podobné tomu označenému
-  - Živý náhled navíc: zoom (posuvník napojený na kameru) a tlačítko zpět.
-    Kamerový snímek (YUV_420_888) se převádí na malou barevnou bitmapu
-    přímo z Y/U/V rovin (bez zacházky přes JPEG) a zmenšuje, aby OpenCV
-    pipeline stíhal běžet průběžně v hledáčku
+  - Živý náhled navíc: kreslí se skutečný obrys kusu (ne jen ohraničující
+    obdélník), stejně jako u fotky, zoom (posuvník napojený na kameru) a
+    tlačítko zpět. Kamerový snímek (YUV_420_888) se převádí na malou
+    barevnou bitmapu přímo z Y/U/V rovin (bez zacházky přes JPEG) a
+    zmenšuje, aby OpenCV pipeline stíhal běžet průběžně v hledáčku
 - **Čtečka čárových a QR kódů**: kamera přes celou obrazovku (ML Kit
   Barcode Scanning) s ohraničujícím rámečkem uprostřed jako vizuální
   vodítko, zoom (posuvník napojený na `CameraControl.setLinearZoom`),
