@@ -118,7 +118,8 @@ object CvBlobAnalyzer {
         luminanceMask.release()
         colorMask.release()
 
-        val kernel = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, Size(5.0, 5.0))
+        val kernelSize = morphKernelSize(binary.width(), binary.height())
+        val kernel = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, Size(kernelSize, kernelSize))
         Imgproc.morphologyEx(binary, binary, Imgproc.MORPH_CLOSE, kernel)
         Imgproc.morphologyEx(binary, binary, Imgproc.MORPH_OPEN, kernel)
         kernel.release()
@@ -133,7 +134,7 @@ object CvBlobAnalyzer {
         val blobs = mutableListOf<CvBlob>()
         for (contour in contours) {
             val area = Imgproc.contourArea(contour)
-            if (area >= minArea && solidityOf(contour, area) >= MIN_SOLIDITY) {
+            if (area >= minArea && isPlausiblePieceShape(contour, area)) {
                 blobs += contour.toCvBlob(area)
             } else {
                 contour.release()
@@ -160,7 +161,9 @@ object CvBlobAnalyzer {
         var totalCount = 0
         for (blob in blobs) {
             val estimated = if (blobs.size >= MIN_SAMPLES_FOR_SPLIT && blob.area > medianArea * SPLIT_AREA_RATIO) {
-                max(1L, (blob.area / medianArea).roundToLong()).toInt()
+                // Capped: a handful of tiny leftover noise blobs could otherwise drag the median
+                // area down so far that one real (possibly merged) blob "splits" into hundreds.
+                max(1L, (blob.area / medianArea).roundToLong()).toInt().coerceAtMost(MAX_SPLIT_PIECES)
             } else {
                 1
             }
@@ -221,6 +224,28 @@ object CvBlobAnalyzer {
             else -> ShapeType.OTHER
         }
         return shape to polygon
+    }
+
+    /**
+     * Rejects contours that can't plausibly be a real piece, on two
+     * independent measures - a thin winding line can occasionally sneak
+     * past one of them alone, but rarely both:
+     *  - solidity (area / convex-hull area): a real piece stays solid even
+     *    if irregular; a winding line's hull sprawls far past its own area.
+     *  - circularity (4*pi*area / perimeter^2): a winding line packs a lot
+     *    of extra perimeter into a small area from doubling back on itself,
+     *    which a straight elongated piece (even a thin one) does not.
+     */
+    private fun isPlausiblePieceShape(contour: MatOfPoint, area: Double): Boolean {
+        if (solidityOf(contour, area) < MIN_SOLIDITY) return false
+
+        val contour2f = MatOfPoint2f(*contour.toArray())
+        val perimeter = Imgproc.arcLength(contour2f, true)
+        contour2f.release()
+        if (perimeter <= 0) return false
+
+        val circularity = 4 * Math.PI * area / (perimeter * perimeter)
+        return circularity >= MIN_CIRCULARITY
     }
 
     /**
@@ -356,13 +381,24 @@ object CvBlobAnalyzer {
         return if (size % 2 == 0) size + 1 else size
     }
 
+    /**
+     * Morphological open/close kernel size, scaled to the frame instead of
+     * a fixed pixel size - a fixed 5x5 kernel is fine on a downscaled ~300px
+     * live frame but far too small relative to a ~900px static photo to
+     * erode away thin noise (wood grain, cracks) before it reaches contours.
+     */
+    private fun morphKernelSize(width: Int, height: Int): Double =
+        max(3, min(width, height) / 100).toDouble()
+
     private const val MIN_AREA_PX = 40.0
     private const val MIN_AREA_FRACTION = 0.0004
-    private const val MIN_SOLIDITY = 0.5
+    private const val MIN_SOLIDITY = 0.65
+    private const val MIN_CIRCULARITY = 0.15
     private const val ADAPTIVE_C = 10.0
     private const val COLOR_DISTANCE_THRESHOLD = 40.0
     private const val MIN_SAMPLES_FOR_SPLIT = 3
     private const val SPLIT_AREA_RATIO = 1.6
+    private const val MAX_SPLIT_PIECES = 20
     private const val SHAPE_MATCH_MAX_DISTANCE = 0.3
     private const val POLY_EPSILON_FACTOR = 0.02
     private const val CIRCLE_CIRCULARITY_THRESHOLD = 0.85

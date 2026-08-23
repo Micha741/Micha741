@@ -58,12 +58,17 @@ i živý náhled kamery — viz sekce Funkce níže.
     zabírá větší část záběru, např. při přiblížení zoomem; práh na
     odchylku odstínu/sytosti/jasu od tohoto pozadí) — obě masky se spojí
     přes OR, takže appka pozná kus i tehdy, kdy má podobný jas jako
-    pozadí, ale liší se barvou. Dál morfologické operace a `findContours`.
-    Každý nalezený obrys navíc musí mít dostatečnou **plnost** (poměr
-    plochy k ploše jeho konvexního obalu) — tenké klikaté čáry jako žíly
-    ve dřevě stolu jsou lokálně tmavší než okolí, a bez tohoto filtru je
-    appka omylem počítala jako kusy. Nakonec statistický odhad počtu u
-    slepených kusů podle plochy
+    pozadí, ale liší se barvou. Morfologické operace (velikost jádra
+    škálovaná podle rozlišení snímku, ne pevná) a `findContours`. Každý
+    nalezený obrys navíc musí projít dvěma nezávislými testy tvaru —
+    **plností** (poměr plochy k ploše konvexního obalu) a **kruhovitostí**
+    (`4π·plocha/obvod²`) — tenké klikaté čáry jako žíly ve dřevě stolu nebo
+    hrany stínu jsou lokálně tmavší než okolí a bez těchto testů je appka
+    omylem počítala jako kusy. Odhad počtu u slepených kusů podle plochy
+    má navíc horní mez na jeden obrys (max. 20 kusů) — pojistka proti
+    tomu, aby pár zbylých šumových oblastí nestáhlo medián plochy tak
+    nízko, že by se z jednoho reálného (třeba slepeného) kusu najednou
+    "vypočítaly" stovky
   - **Rozpoznávání tvarů**: každý nalezený kus se přes `Imgproc.approxPolyDP`
     (zjednodušení obrysu na polygon) a kruhovitost (`4π·plocha/obvod²`)
     zařadí jako trojúhelník, obdélník, lichoběžník nebo kruh. Skutečný
