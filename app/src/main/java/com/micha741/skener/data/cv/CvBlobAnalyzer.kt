@@ -3,11 +3,15 @@ package com.micha741.skener.data.cv
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
+import com.micha741.skener.data.DetectedBlob
 import com.micha741.skener.data.ShapeType
 import org.opencv.android.Utils
+import org.opencv.core.Core
+import org.opencv.core.CvType
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
 import org.opencv.core.MatOfPoint2f
+import org.opencv.core.Scalar
 import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
 import kotlin.math.abs
@@ -29,10 +33,39 @@ data class CvBlob(
 
 data class CvAnalysisResult(val blobs: List<CvBlob>, val count: Int)
 
+/** Converts a native [CvBlob] to the plain UI-facing [DetectedBlob], optionally scaling box/polygon (e.g. back to full photo resolution). */
+fun CvBlob.toDetectedBlob(scale: Float = 1f): DetectedBlob {
+    val scaledBox = if (scale == 1f) {
+        box
+    } else {
+        Rect(
+            (box.left * scale).roundToInt(),
+            (box.top * scale).roundToInt(),
+            (box.right * scale).roundToInt(),
+            (box.bottom * scale).roundToInt(),
+        )
+    }
+    val width = box.width()
+    val height = box.height()
+    val bboxArea = max(1, width * height)
+    val fillRatio = (area / bboxArea).toFloat().coerceIn(0f, 1f)
+    val aspectRatio = if (width > 0 && height > 0) max(width, height).toFloat() / min(width, height) else 1f
+    val scaledPolygon = if (scale == 1f) {
+        polygon
+    } else {
+        polygon.map { Point((it.x * scale).roundToInt(), (it.y * scale).roundToInt()) }
+    }
+    return DetectedBlob(scaledBox, area.roundToInt(), fillRatio, aspectRatio, shapeType, scaledPolygon)
+}
+
 /**
- * OpenCV-based object segmentation for the static-photo piece counter:
- * grayscale -> Gaussian blur -> adaptive mean threshold (robust to uneven
- * lighting/shadows across the photo, unlike one global threshold) ->
+ * OpenCV-based object segmentation, shared by the static-photo counter and
+ * the live camera preview: grayscale -> Gaussian blur -> adaptive mean
+ * threshold (robust to uneven lighting/shadows, unlike one global
+ * threshold), OR'd together with a color-distance mask (pixels whose hue/
+ * saturation/value differ enough from the sampled background color - lets
+ * it separate e.g. a colored piece from a similarly-lit but differently
+ * colored background, which a brightness-only threshold can miss) ->
  * morphological close+open (fills small holes, drops speckle noise) ->
  * external contours -> [Imgproc.approxPolyDP] polygon classification
  * (triangle / rectangle / trapezoid / circle, by vertex count + circularity).
@@ -55,17 +88,23 @@ object CvBlobAnalyzer {
 
         val gray = Mat()
         Imgproc.cvtColor(rgba, gray, Imgproc.COLOR_RGBA2GRAY)
-        rgba.release()
-
         Imgproc.GaussianBlur(gray, gray, Size(5.0, 5.0), 0.0)
 
-        val binary = Mat()
+        val luminanceMask = Mat()
         Imgproc.adaptiveThreshold(
-            gray, binary, 255.0,
+            gray, luminanceMask, 255.0,
             Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV,
             blockSize(gray.width(), gray.height()), ADAPTIVE_C,
         )
         gray.release()
+
+        val colorMask = colorDistanceMask(rgba)
+        rgba.release()
+
+        val binary = Mat()
+        Core.bitwise_or(luminanceMask, colorMask, binary)
+        luminanceMask.release()
+        colorMask.release()
 
         val kernel = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, Size(5.0, 5.0))
         Imgproc.morphologyEx(binary, binary, Imgproc.MORPH_CLOSE, kernel)
@@ -187,6 +226,61 @@ object CvBlobAnalyzer {
         return abs(ratio1 - 1.0) < RECT_SIDE_TOLERANCE && abs(ratio2 - 1.0) < RECT_SIDE_TOLERANCE
     }
 
+    /**
+     * Foreground mask from color alone: converts to HSV, estimates the
+     * background color by sampling the frame's outer margin (assumed to be
+     * background, same idea as the old luma polarity check), then flags
+     * pixels whose hue/saturation/value differ enough from that estimate.
+     * This is what lets e.g. a red piece on a similarly-bright gray table
+     * get segmented correctly even when a brightness-only threshold can't
+     * tell them apart.
+     */
+    private fun colorDistanceMask(rgba: Mat): Mat {
+        val bgr = Mat()
+        Imgproc.cvtColor(rgba, bgr, Imgproc.COLOR_RGBA2BGR)
+        val hsv = Mat()
+        Imgproc.cvtColor(bgr, hsv, Imgproc.COLOR_BGR2HSV)
+        bgr.release()
+
+        val margin = max(2, min(hsv.width(), hsv.height()) / 20)
+        val borderMask = Mat.zeros(hsv.size(), CvType.CV_8UC1)
+        val w = hsv.width().toDouble()
+        val h = hsv.height().toDouble()
+        Imgproc.rectangle(borderMask, org.opencv.core.Point(0.0, 0.0), org.opencv.core.Point(w - 1, margin - 1.0), Scalar(255.0), -1)
+        Imgproc.rectangle(borderMask, org.opencv.core.Point(0.0, h - margin), org.opencv.core.Point(w - 1, h - 1), Scalar(255.0), -1)
+        Imgproc.rectangle(borderMask, org.opencv.core.Point(0.0, 0.0), org.opencv.core.Point(margin - 1.0, h - 1), Scalar(255.0), -1)
+        Imgproc.rectangle(borderMask, org.opencv.core.Point(w - margin, 0.0), org.opencv.core.Point(w - 1, h - 1), Scalar(255.0), -1)
+
+        val background = Core.mean(hsv, borderMask)
+        borderMask.release()
+
+        val backgroundMat = Mat(hsv.size(), hsv.type(), background)
+        val diff = Mat()
+        Core.absdiff(hsv, backgroundMat, diff)
+        backgroundMat.release()
+        hsv.release()
+
+        val channels = ArrayList<Mat>()
+        Core.split(diff, channels)
+        diff.release()
+        val (hueDiff, satDiff, valDiff) = Triple(channels[0], channels[1], channels[2])
+
+        val brightnessDiff = Mat()
+        Core.addWeighted(satDiff, 0.5, valDiff, 0.5, 0.0, brightnessDiff)
+        satDiff.release()
+        valDiff.release()
+
+        val combinedDiff = Mat()
+        Core.addWeighted(brightnessDiff, 0.7, hueDiff, 0.3, 0.0, combinedDiff)
+        brightnessDiff.release()
+        hueDiff.release()
+
+        val mask = Mat()
+        Imgproc.threshold(combinedDiff, mask, COLOR_DISTANCE_THRESHOLD, 255.0, Imgproc.THRESH_BINARY)
+        combinedDiff.release()
+        return mask
+    }
+
     /** Odd window size for adaptive thresholding, scaled to the photo so it covers roughly one item. */
     private fun blockSize(width: Int, height: Int): Int {
         val size = max(15, min(width, height) / 6)
@@ -196,6 +290,7 @@ object CvBlobAnalyzer {
     private const val MIN_AREA_PX = 40.0
     private const val MIN_AREA_FRACTION = 0.0004
     private const val ADAPTIVE_C = 10.0
+    private const val COLOR_DISTANCE_THRESHOLD = 40.0
     private const val MIN_SAMPLES_FOR_SPLIT = 3
     private const val SPLIT_AREA_RATIO = 1.6
     private const val SHAPE_MATCH_MAX_DISTANCE = 0.3

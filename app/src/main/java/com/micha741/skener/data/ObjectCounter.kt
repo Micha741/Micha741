@@ -4,10 +4,10 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Point
-import android.graphics.Rect
 import android.net.Uri
 import com.micha741.skener.data.cv.CvBlob
 import com.micha741.skener.data.cv.CvBlobAnalyzer
+import com.micha741.skener.data.cv.toDetectedBlob
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.math.max
@@ -95,22 +95,6 @@ class ObjectCounter(private val context: Context) {
         working.recycle()
 
         return CountResult(blobs, result.count, scaledReference, shapeBreakdown)
-    }
-
-    private fun CvBlob.toDetectedBlob(scale: Float): DetectedBlob {
-        val scaledBox = Rect(
-            (box.left * scale).roundToInt(),
-            (box.top * scale).roundToInt(),
-            (box.right * scale).roundToInt(),
-            (box.bottom * scale).roundToInt(),
-        )
-        val width = box.width()
-        val height = box.height()
-        val bboxArea = max(1, width * height)
-        val fillRatio = (area / bboxArea).toFloat().coerceIn(0f, 1f)
-        val aspectRatio = if (width > 0 && height > 0) max(width, height).toFloat() / min(width, height) else 1f
-        val scaledPolygon = polygon.map { Point((it.x * scale).roundToInt(), (it.y * scale).roundToInt()) }
-        return DetectedBlob(scaledBox, area.roundToInt(), fillRatio, aspectRatio, shapeType, scaledPolygon)
     }
 
     private companion object {

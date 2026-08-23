@@ -15,8 +15,8 @@ Nativní Android aplikace (Kotlin + Jetpack Compose), která pomocí kamery
 naskenuje dokument, automaticky ho ořízne/vylepší a uloží jako PDF.
 Skenování dokumentu je postavené na [ML Kit Document Scanner API](https://developers.google.com/ml-kit/vision/doc-scanner)
 (detekce hran, korekce perspektivy, filtry, vícestránkové skeny). Počítání
-kusů má vlastní obrazovou analýzu (OpenCV + lehký Kotlin pipeline pro živý
-náhled) — viz sekce Funkce níže.
+kusů má vlastní obrazovou analýzu přes OpenCV, stejnou pro statickou fotku
+i živý náhled kamery — viz sekce Funkce níže.
 
 ### Funkce
 
@@ -45,32 +45,32 @@ náhled) — viz sekce Funkce níže.
   Framework), takže PDF jde uložit třeba do Stažených souborů, na Disk
   nebo SD kartu, mimo interní úložiště appky
 - Smazání skenu
-- **Počítání kusů**:
-  - Statická fotka/výběr z galerie — segmentace přes **OpenCV**
-    (`org.opencv:opencv`): Gaussovo rozostření, adaptivní prahování podle
-    klouzavého průměru jasu (`Imgproc.adaptiveThreshold`, funguje i při
-    nerovnoměrném osvětlení/stínech na fotce, na rozdíl od jednoho
-    globálního prahu), morfologické operace, `findContours`, statistický
-    odhad počtu u slepených kusů podle plochy
+- **Počítání kusů** — statická fotka/výběr z galerie i živý náhled z kamery
+  (CameraX) běží přes **stejný OpenCV pipeline** (`org.opencv:opencv`,
+  `data/cv/CvBlobAnalyzer.kt`):
+  - Segmentace kombinuje dvě masky: adaptivní prahování podle klouzavého
+    průměru jasu (`Imgproc.adaptiveThreshold`, funguje i při nerovnoměrném
+    osvětlení/stínech, na rozdíl od jednoho globálního prahu) **a**
+    barevnou masku (převod do HSV, odhad barvy pozadí ze vzorku okraje
+    fotky, práh na odchylku odstínu/sytosti/jasu od pozadí) — obě masky se
+    spojí přes OR, takže appka pozná kus i tehdy, kdy má podobný jas jako
+    pozadí, ale liší se barvou. Dál morfologické operace a `findContours`,
+    statistický odhad počtu u slepených kusů podle plochy
   - **Rozpoznávání tvarů**: každý nalezený kus se přes `Imgproc.approxPolyDP`
     (zjednodušení obrysu na polygon) a kruhovitost (`4π·plocha/obvod²`)
     zařadí jako trojúhelník, obdélník, lichoběžník nebo kruh. Skutečný
-    obrys (ne jen ohraničující obdélník) se vykreslí přímo na fotku, a bez
-    nutnosti cokoliv označit appka rovnou ukáže, kolik je na fotce kterého
-    tvaru ("Trojúhelník: 2 · Obdélník: 5 · Kruh: 3") — to je ono
-    "hledání stejných kusů" bez ručního zásahu
-  - **Referenční kus**: u statické fotky lze klepnutím označit jeden
-    konkrétní kus a appka pak přes `Imgproc.matchShapes` (Hu momenty —
-    porovnání tvaru nezávislé na velikosti/natočení) plus shodu kategorie
-    tvaru spočítá jen kusy podobného tvaru tomu označenému — užitečné když
-    je na fotce víc druhů věcí najednou
-  - **Živý náhled** z kamery (CameraX) s průběžným počítáním přímo v
-    hledáčku — kvůli rychlosti (desítky snímků/s) běží dál na vlastním
-    lehkém Kotlin pipeline bez OpenCV (Sobelova hranová detekce, Otsuovo
-    prahování, spojité komponenty; klasifikace tvarů tam není, jen v
-    statické fotce). Nově i tady jde klepnutím na kus přímo v hledáčku
-    nastavit referenční tvar (počítají se pak jen podobné kusy podle
-    velikosti/tvaru), zoom (posuvník napojený na kameru) a tlačítko zpět
+    obrys (ne jen ohraničující obdélník) se vykreslí přímo na fotku/náhled,
+    a bez nutnosti cokoliv označit appka rovnou ukáže, kolik je kterého
+    tvaru ("Trojúhelník: 2 · Obdélník: 5 · Kruh: 3" — u statické fotky) —
+    to je ono "hledání stejných kusů" bez ručního zásahu
+  - **Referenční kus**: klepnutím (na fotce i přímo v živém náhledu) lze
+    označit jeden konkrétní kus a appka pak přes `Imgproc.matchShapes` (Hu
+    momenty — porovnání tvaru nezávislé na velikosti/natočení) plus shodu
+    kategorie tvaru počítá jen kusy podobné tomu označenému
+  - Živý náhled navíc: zoom (posuvník napojený na kameru) a tlačítko zpět.
+    Kamerový snímek (YUV_420_888) se převádí na malou barevnou bitmapu
+    přímo z Y/U/V rovin (bez zacházky přes JPEG) a zmenšuje, aby OpenCV
+    pipeline stíhal běžet průběžně v hledáčku
 - **Čtečka čárových a QR kódů**: kamera přes celou obrazovku (ML Kit
   Barcode Scanning) s ohraničujícím rámečkem uprostřed jako vizuální
   vodítko, zoom (posuvník napojený na `CameraControl.setLinearZoom`),
@@ -103,15 +103,16 @@ app/src/main/java/com/micha741/skener/
 ├── data/
 │   ├── ScanDocument.kt      # model naskenovaného PDF
 │   ├── ScanRepository.kt    # ukládání/čtení PDF v app storage
-│   ├── BlobAnalyzer.kt      # lehký Kotlin algoritmus pro živý náhled (hranová detekce + matematická analýza)
+│   ├── DetectedBlob.kt      # sdílený model kusu (box, tvar, obrys) pro fotku i živý náhled
 │   ├── ObjectCounter.kt     # počítání kusů ze statické fotky (Uri -> CvBlobAnalyzer, tvary, referenční kus)
-│   ├── LiveFrameAnalyzer.kt # CameraX analyzer: živé snímky -> BlobAnalyzer, nastavitelná reference
+│   ├── LiveFrameAnalyzer.kt # CameraX analyzer: YUV -> barevná bitmapa -> CvBlobAnalyzer, nastavitelná reference
 │   ├── BarcodeAnalyzer.kt   # CameraX analyzer: živé snímky -> ML Kit Barcode Scanning
 │   ├── DocumentTextExtractor.kt # OCR jedné stránky + odhad formátování (velikost/tučné/kurzíva/barva) na řádek
 │   ├── TextPdfWriter.kt     # vykreslí rozpoznaný text pozičně/formátovaně do PDF (bez fotky)
 │   ├── BarcodeImageEncoder.kt # zpětně zakóduje hodnotu kódu do bitmapy (ZXing) pro uložení jako obrázek
 │   └── cv/
-│       └── CvBlobAnalyzer.kt # OpenCV pipeline pro statickou fotku: adaptivní threshold, kontury, matchShapes
+│       └── CvBlobAnalyzer.kt # sdílený OpenCV pipeline (fotka i živý náhled): adaptivní práh + barevná
+│                              # segmentace, kontury, klasifikace tvaru, matchShapes
 └── ui/theme/Theme.kt        # Material 3 theme (light/dark, dynamic color)
 ```
 

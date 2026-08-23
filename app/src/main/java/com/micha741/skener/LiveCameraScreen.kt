@@ -53,8 +53,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import com.micha741.skener.data.BlobAnalyzer
-import com.micha741.skener.data.DetectedBlob
 import com.micha741.skener.data.LiveFrameAnalyzer
 import com.micha741.skener.data.LiveFrameResult
 import kotlinx.coroutines.delay
@@ -65,10 +63,10 @@ import kotlin.math.roundToInt
 
 /**
  * Full-screen live camera viewfinder for piece counting. Shows the phone's
- * built-in camera preview with a real-time edge-detection overlay and a
- * continuously updating count (via [LiveFrameAnalyzer] + [BlobAnalyzer]),
- * zoom, an optional reference piece (tap a box to count only similar ones),
- * and takes a full-resolution photo on demand for the precise final count.
+ * built-in camera preview with a real-time overlay (real OpenCV contours -
+ * see [LiveFrameAnalyzer]) and a continuously updating count, zoom, an
+ * optional reference piece (tap a box to count only similar ones), and
+ * takes a full-resolution photo on demand for the precise final count.
  */
 @Composable
 fun LiveCameraScreen(
@@ -85,7 +83,6 @@ fun LiveCameraScreen(
     }
 
     var liveResult by remember { mutableStateOf<LiveFrameResult?>(null) }
-    var referenceBlob by remember { mutableStateOf<DetectedBlob?>(null) }
     var captureError by remember { mutableStateOf<String?>(null) }
     var isCapturing by remember { mutableStateOf(false) }
     var camera by remember { mutableStateOf<Camera?>(null) }
@@ -130,6 +127,7 @@ fun LiveCameraScreen(
         onDispose {
             cameraProvider?.unbindAll()
             analysisExecutor.shutdown()
+            analyzer.release()
         }
     }
 
@@ -159,11 +157,7 @@ fun LiveCameraScreen(
                         val frameX = ((offset.x - offsetX) / scale).roundToInt().coerceIn(0, result.frameWidth - 1)
                         val frameY = ((offset.y - offsetY) / scale).roundToInt().coerceIn(0, result.frameHeight - 1)
 
-                        val tapped = BlobAnalyzer.findBlobNear(result.blobs, frameX, frameY)
-                        if (tapped != null) {
-                            referenceBlob = tapped
-                            analyzer.reference = tapped
-                        }
+                        analyzer.requestReferenceAt(frameX, frameY)
                     }
                 },
         ) {
@@ -174,14 +168,15 @@ fun LiveCameraScreen(
             val offsetX = (size.width - result.frameWidth * scale) / 2f
             val offsetY = (size.height - result.frameHeight * scale) / 2f
 
+            val color = if (result.referenceActive) Color(0xFFFFB300) else Color(0xFF62B6CB)
+            val strokeWidth = if (result.referenceActive) 6f else 4f
             result.blobs.forEach { blob ->
                 val box = blob.box
-                val isReference = referenceBlob != null && box == referenceBlob?.box
                 drawRect(
-                    color = if (isReference) Color(0xFFFFB300) else Color(0xFF62B6CB),
+                    color = color,
                     topLeft = Offset(offsetX + box.left * scale, offsetY + box.top * scale),
                     size = Size(box.width() * scale, box.height() * scale),
-                    style = Stroke(width = if (isReference) 6f else 4f),
+                    style = Stroke(width = strokeWidth),
                 )
             }
         }
@@ -208,9 +203,10 @@ fun LiveCameraScreen(
                 .align(Alignment.TopCenter)
                 .padding(top = 24.dp),
         ) {
+            val referenceActive = liveResult?.referenceActive == true
             Surface(color = Color.Black.copy(alpha = 0.5f)) {
                 Text(
-                    text = if (referenceBlob != null) {
+                    text = if (referenceActive) {
                         stringResource(R.string.live_reference_active_badge, liveResult?.count ?: 0)
                     } else {
                         stringResource(R.string.live_count_badge, liveResult?.count ?: 0)
@@ -224,10 +220,10 @@ fun LiveCameraScreen(
                 color = Color.Black.copy(alpha = 0.5f),
                 modifier = Modifier
                     .padding(top = 8.dp)
-                    .let { if (referenceBlob != null) it.clickable { referenceBlob = null; analyzer.reference = null } else it },
+                    .let { if (referenceActive) it.clickable { analyzer.clearReference() } else it },
             ) {
                 Text(
-                    text = if (referenceBlob != null) {
+                    text = if (referenceActive) {
                         stringResource(R.string.live_clear_reference)
                     } else {
                         stringResource(R.string.live_tap_hint)
