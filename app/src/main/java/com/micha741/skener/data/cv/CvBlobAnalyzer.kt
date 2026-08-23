@@ -62,13 +62,15 @@ fun CvBlob.toDetectedBlob(scale: Float = 1f): DetectedBlob {
  * OpenCV-based object segmentation, shared by the static-photo counter and
  * the live camera preview: grayscale -> Gaussian blur -> adaptive mean
  * threshold (robust to uneven lighting/shadows, unlike one global
- * threshold), OR'd together with a color-distance mask (pixels whose hue/
- * saturation/value differ enough from the sampled background color - lets
- * it separate e.g. a colored piece from a similarly-lit but differently
- * colored background, which a brightness-only threshold can miss) ->
- * morphological close+open (fills small holes, drops speckle noise) ->
- * external contours -> [Imgproc.approxPolyDP] polygon classification
- * (triangle / rectangle / trapezoid / circle, by vertex count + circularity).
+ * threshold; polarity - dark piece on light background or the reverse -
+ * is detected per frame, see [isDarkOnLight]), OR'd together with a
+ * color-distance mask (pixels whose hue/saturation/value differ enough
+ * from the estimated background color - lets it separate e.g. a colored
+ * piece from a similarly-lit but differently colored background, which a
+ * brightness-only threshold can miss) -> morphological close+open (fills
+ * small holes, drops speckle noise) -> external contours ->
+ * [Imgproc.approxPolyDP] polygon classification (triangle / rectangle /
+ * trapezoid / circle, by vertex count + circularity).
  *
  * With no [reference], every contour above the minimum area counts,
  * splitting statistically-oversized blobs that likely contain several
@@ -90,12 +92,21 @@ object CvBlobAnalyzer {
         Imgproc.cvtColor(rgba, gray, Imgproc.COLOR_RGBA2GRAY)
         Imgproc.GaussianBlur(gray, gray, Size(5.0, 5.0), 0.0)
 
+        val darkOnLight = isDarkOnLight(gray)
         val luminanceMask = Mat()
-        Imgproc.adaptiveThreshold(
-            gray, luminanceMask, 255.0,
-            Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV,
-            blockSize(gray.width(), gray.height()), ADAPTIVE_C,
-        )
+        if (darkOnLight) {
+            Imgproc.adaptiveThreshold(
+                gray, luminanceMask, 255.0,
+                Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV,
+                blockSize(gray.width(), gray.height()), ADAPTIVE_C,
+            )
+        } else {
+            Imgproc.adaptiveThreshold(
+                gray, luminanceMask, 255.0,
+                Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY,
+                blockSize(gray.width(), gray.height()), -ADAPTIVE_C,
+            )
+        }
         gray.release()
 
         val colorMask = colorDistanceMask(rgba)
@@ -228,12 +239,15 @@ object CvBlobAnalyzer {
 
     /**
      * Foreground mask from color alone: converts to HSV, estimates the
-     * background color by sampling the frame's outer margin (assumed to be
-     * background, same idea as the old luma polarity check), then flags
-     * pixels whose hue/saturation/value differ enough from that estimate.
-     * This is what lets e.g. a red piece on a similarly-bright gray table
-     * get segmented correctly even when a brightness-only threshold can't
-     * tell them apart.
+     * background color as the per-channel *median* across the whole frame
+     * (not just its border - a piece filling much of the frame, e.g. when
+     * zoomed in, would otherwise contaminate a border-only sample and make
+     * the estimate worse the closer you get), then flags pixels whose hue/
+     * saturation/value differ enough from that estimate. This is what lets
+     * e.g. a red piece on a similarly-bright gray table get segmented
+     * correctly even when a brightness-only threshold can't tell them
+     * apart. The median only holds up while the background is still the
+     * majority of the frame (piece under ~50% of the frame area).
      */
     private fun colorDistanceMask(rgba: Mat): Mat {
         val bgr = Mat()
@@ -242,17 +256,14 @@ object CvBlobAnalyzer {
         Imgproc.cvtColor(bgr, hsv, Imgproc.COLOR_BGR2HSV)
         bgr.release()
 
-        val margin = max(2, min(hsv.width(), hsv.height()) / 20)
-        val borderMask = Mat.zeros(hsv.size(), CvType.CV_8UC1)
-        val w = hsv.width().toDouble()
-        val h = hsv.height().toDouble()
-        Imgproc.rectangle(borderMask, org.opencv.core.Point(0.0, 0.0), org.opencv.core.Point(w - 1, margin - 1.0), Scalar(255.0), -1)
-        Imgproc.rectangle(borderMask, org.opencv.core.Point(0.0, h - margin), org.opencv.core.Point(w - 1, h - 1), Scalar(255.0), -1)
-        Imgproc.rectangle(borderMask, org.opencv.core.Point(0.0, 0.0), org.opencv.core.Point(margin - 1.0, h - 1), Scalar(255.0), -1)
-        Imgproc.rectangle(borderMask, org.opencv.core.Point(w - margin, 0.0), org.opencv.core.Point(w - 1, h - 1), Scalar(255.0), -1)
-
-        val background = Core.mean(hsv, borderMask)
-        borderMask.release()
+        val hsvChannels = ArrayList<Mat>()
+        Core.split(hsv, hsvChannels)
+        val background = Scalar(
+            medianOf(hsvChannels[0]),
+            medianOf(hsvChannels[1]),
+            medianOf(hsvChannels[2]),
+        )
+        hsvChannels.forEach { it.release() }
 
         val backgroundMat = Mat(hsv.size(), hsv.type(), background)
         val diff = Mat()
@@ -279,6 +290,39 @@ object CvBlobAnalyzer {
         Imgproc.threshold(combinedDiff, mask, COLOR_DISTANCE_THRESHOLD, 255.0, Imgproc.THRESH_BINARY)
         combinedDiff.release()
         return mask
+    }
+
+    /** Median value of a single-channel 8-bit Mat, via a native sort (fast even for a full photo). */
+    private fun medianOf(channel: Mat): Double {
+        val flat = channel.reshape(1, 1)
+        val sorted = Mat()
+        Core.sort(flat, sorted, Core.SORT_ASCENDING)
+        val value = sorted.get(0, sorted.cols() / 2)[0]
+        sorted.release()
+        return value
+    }
+
+    /**
+     * True if the frame's outer margin (assumed background) is lighter than
+     * the frame's overall mean - i.e. the piece is likely darker than its
+     * background, not the other way round. Fixed polarity (always assuming
+     * dark-on-light) made adaptiveThreshold flag the *background* as
+     * foreground on a dark background, instead of the actual piece.
+     */
+    private fun isDarkOnLight(gray: Mat): Boolean {
+        val margin = max(2, min(gray.width(), gray.height()) / 20)
+        val borderMask = Mat.zeros(gray.size(), CvType.CV_8UC1)
+        val w = gray.width().toDouble()
+        val h = gray.height().toDouble()
+        Imgproc.rectangle(borderMask, org.opencv.core.Point(0.0, 0.0), org.opencv.core.Point(w - 1, margin - 1.0), Scalar(255.0), -1)
+        Imgproc.rectangle(borderMask, org.opencv.core.Point(0.0, h - margin), org.opencv.core.Point(w - 1, h - 1), Scalar(255.0), -1)
+        Imgproc.rectangle(borderMask, org.opencv.core.Point(0.0, 0.0), org.opencv.core.Point(margin - 1.0, h - 1), Scalar(255.0), -1)
+        Imgproc.rectangle(borderMask, org.opencv.core.Point(w - margin, 0.0), org.opencv.core.Point(w - 1, h - 1), Scalar(255.0), -1)
+
+        val borderMean = Core.mean(gray, borderMask).`val`[0]
+        borderMask.release()
+        val overallMean = Core.mean(gray).`val`[0]
+        return borderMean >= overallMean
     }
 
     /** Odd window size for adaptive thresholding, scaled to the photo so it covers roughly one item. */

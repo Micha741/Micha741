@@ -50,10 +50,14 @@ i živý náhled kamery — viz sekce Funkce níže.
   `data/cv/CvBlobAnalyzer.kt`):
   - Segmentace kombinuje dvě masky: adaptivní prahování podle klouzavého
     průměru jasu (`Imgproc.adaptiveThreshold`, funguje i při nerovnoměrném
-    osvětlení/stínech, na rozdíl od jednoho globálního prahu) **a**
-    barevnou masku (převod do HSV, odhad barvy pozadí ze vzorku okraje
-    fotky, práh na odchylku odstínu/sytosti/jasu od pozadí) — obě masky se
-    spojí přes OR, takže appka pozná kus i tehdy, kdy má podobný jas jako
+    osvětlení/stínech, na rozdíl od jednoho globálního prahu — polarita
+    světlý/tmavý kus na opačném pozadí se navíc detekuje pro každý snímek
+    zvlášť, takže to funguje stejně dobře na světlém i tmavém pozadí) **a**
+    barevnou masku (převod do HSV; barva pozadí se odhaduje jako medián
+    přes celý snímek, ne jen z okraje fotky — mnohem odolnější, když kus
+    zabírá větší část záběru, např. při přiblížení zoomem; práh na
+    odchylku odstínu/sytosti/jasu od tohoto pozadí) — obě masky se spojí
+    přes OR, takže appka pozná kus i tehdy, kdy má podobný jas jako
     pozadí, ale liší se barvou. Dál morfologické operace a `findContours`,
     statistický odhad počtu u slepených kusů podle plochy
   - **Rozpoznávání tvarů**: každý nalezený kus se přes `Imgproc.approxPolyDP`
