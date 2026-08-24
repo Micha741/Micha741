@@ -82,7 +82,7 @@ dependencies {
     // this is a trained on-device detector instead of a contrast heuristic.
     // Check https://mvnrepository.com/artifact/com.google.android.gms/play-services-mlkit-object-detection
     // for the newest version.
-    implementation("com.google.android.gms:play-services-mlkit-object-detection:17.0.2")
+    implementation("com.google.android.gms:play-services-mlkit-object-detection:17.0.1")
 
     // CameraX - live viewfinder preview + frame analysis for the piece counter & barcode reader
     implementation("androidx.camera:camera-core:1.3.4")
