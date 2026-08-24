@@ -5,9 +5,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.net.Uri
-import com.micha741.skener.data.cv.CvBlob
-import com.micha741.skener.data.cv.CvBlobAnalyzer
-import com.micha741.skener.data.cv.toDetectedBlob
+import com.google.android.gms.tasks.Tasks
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.objects.ObjectDetection
+import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.math.max
@@ -18,22 +19,21 @@ data class CountResult(
     val blobs: List<DetectedBlob>,
     val count: Int,
     val referenceBlob: DetectedBlob? = null,
-    /** Auto mode only: how many blobs of each shape were found, so "find identical pieces" works without a manual tap. */
-    val shapeBreakdown: Map<ShapeType, Int> = emptyMap(),
 )
 
 /**
- * Counts discrete objects in a still photo via [CvBlobAnalyzer] (OpenCV:
- * adaptive threshold + contours + polygon shape classification). Works
- * best for well-lit items on a reasonably uniform, contrasting background
- * (parts on a table, coins, tablets, etc.).
+ * Counts discrete objects in a still photo via ML Kit's on-device Object
+ * Detection & Tracking (SINGLE_IMAGE_MODE, multiple objects + coarse
+ * classification enabled) - a trained detector, not a hand-tuned OpenCV
+ * threshold/color/contour pipeline, so background texture (wood grain,
+ * fabric prints) doesn't get mistaken for pieces the way local contrast
+ * heuristics did.
  *
  * If [referenceTap] is given (a point in the *original* photo's pixel
- * coordinates that the user tapped on one piece), only blobs of the same
- * shape category whose outline also resembles that piece (Hu-moment
- * matching) are kept and counted 1:1. Otherwise every plausible blob is
- * counted, splitting statistically-oversized merged blobs, and grouped by
- * shape in [CountResult.shapeBreakdown].
+ * coordinates the user tapped on one piece), only objects that are a
+ * plausible size match (and, when both have one, share the same coarse
+ * category) are kept and counted 1:1 - see [matchesReference]. Otherwise
+ * every detected object counts.
  */
 class ObjectCounter(private val context: Context) {
 
@@ -52,49 +52,42 @@ class ObjectCounter(private val context: Context) {
         val downscale = min(1f, WORKING_MAX_DIMENSION.toFloat() / max(original.width, original.height))
         val workWidth = max(1, (original.width * downscale).roundToInt())
         val workHeight = max(1, (original.height * downscale).roundToInt())
-        val scaledDown = if (downscale < 1f) {
+        val working = if (downscale < 1f) {
             Bitmap.createScaledBitmap(original, workWidth, workHeight, true)
         } else {
             original
         }
-        // Utils.bitmapToMat requires a software ARGB_8888/RGBA_F16 bitmap.
-        val working = if (scaledDown.config != Bitmap.Config.ARGB_8888) {
-            scaledDown.copy(Bitmap.Config.ARGB_8888, false)
-        } else {
-            scaledDown
-        }
-        if (scaledDown !== original && scaledDown !== working) scaledDown.recycle()
-        if (original !== working) original.recycle()
+        if (working !== original) original.recycle()
 
-        val auto = CvBlobAnalyzer.analyze(working)
+        val options = ObjectDetectorOptions.Builder()
+            .setDetectorMode(ObjectDetectorOptions.SINGLE_IMAGE_MODE)
+            .enableMultipleObjects()
+            .enableClassification()
+            .build()
+        val detector = ObjectDetection.getClient(options)
+        val detected = Tasks.await(detector.process(InputImage.fromBitmap(working, 0)))
+        detector.close()
+        val allBlobs = detected.map { it.toDetectedBlob() }
 
-        var referenceCvBlob: CvBlob? = null
+        var referenceBlob: DetectedBlob? = null
         if (referenceTap != null) {
             val workX = (referenceTap.x * downscale).roundToInt().coerceIn(0, working.width - 1)
             val workY = (referenceTap.y * downscale).roundToInt().coerceIn(0, working.height - 1)
-            referenceCvBlob = CvBlobAnalyzer.findBlobNear(auto.blobs, workX, workY)
+            referenceBlob = findBlobNear(allBlobs, workX, workY)
         }
 
-        val result = if (referenceCvBlob != null) {
-            CvBlobAnalyzer.analyze(working, referenceCvBlob)
+        val kept = if (referenceBlob != null) {
+            allBlobs.filter { matchesReference(it, referenceBlob) }
         } else {
-            auto
+            allBlobs
         }
 
         val inverseScale = if (downscale < 1f) 1f / downscale else 1f
-        val blobs = result.blobs.map { it.toDetectedBlob(inverseScale) }
-        val scaledReference = referenceCvBlob?.toDetectedBlob(inverseScale)
-        val shapeBreakdown = if (referenceCvBlob == null) {
-            result.blobs.groupingBy { it.shapeType }.eachCount()
-        } else {
-            emptyMap()
-        }
-
-        auto.blobs.forEach { it.contour.release() }
-        if (result !== auto) result.blobs.forEach { it.contour.release() }
+        val scaledBlobs = kept.map { it.scaledBy(inverseScale) }
+        val scaledReference = referenceBlob?.scaledBy(inverseScale)
         working.recycle()
 
-        return CountResult(blobs, result.count, scaledReference, shapeBreakdown)
+        return CountResult(scaledBlobs, scaledBlobs.size, scaledReference)
     }
 
     private companion object {

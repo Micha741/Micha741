@@ -43,7 +43,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
@@ -51,7 +50,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.micha741.skener.data.DetectedBlob
-import com.micha741.skener.data.ShapeType
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -106,7 +104,6 @@ fun CountingScreen(
                     referenceBox = uiState.referenceBox,
                     referenceActive = uiState.referenceActive,
                     count = uiState.adjustedCount.takeIf { uiState.count != null },
-                    shapeBreakdown = uiState.shapeBreakdown,
                     excludedBoxes = uiState.excludedBoxes,
                     manualAdditions = uiState.manualAdditions,
                     isProcessing = uiState.isProcessing,
@@ -177,7 +174,6 @@ private fun CountingResult(
     referenceBox: Rect?,
     referenceActive: Boolean,
     count: Int?,
-    shapeBreakdown: Map<ShapeType, Int>,
     excludedBoxes: Set<Rect>,
     manualAdditions: List<Point>,
     isProcessing: Boolean,
@@ -261,24 +257,12 @@ private fun CountingResult(
                 }
                 val strokeWidth = if (isReference) 6f else 4f
 
-                if (blob.polygon.size >= 3) {
-                    val path = Path().apply {
-                        blob.polygon.forEachIndexed { index, point ->
-                            val x = point.x * scaleX
-                            val y = point.y * scaleY
-                            if (index == 0) moveTo(x, y) else lineTo(x, y)
-                        }
-                        close()
-                    }
-                    drawPath(path, color = color, style = Stroke(width = strokeWidth))
-                } else {
-                    drawRect(
-                        color = color,
-                        topLeft = Offset(box.left * scaleX, box.top * scaleY),
-                        size = Size(box.width() * scaleX, box.height() * scaleY),
-                        style = Stroke(width = strokeWidth),
-                    )
-                }
+                drawRect(
+                    color = color,
+                    topLeft = Offset(box.left * scaleX, box.top * scaleY),
+                    size = Size(box.width() * scaleX, box.height() * scaleY),
+                    style = Stroke(width = strokeWidth),
+                )
             }
 
             val markerRadius = manualHitRadius * scaleX
@@ -336,35 +320,5 @@ private fun CountingResult(
                 modifier = Modifier.padding(top = 4.dp),
             )
         }
-        if (!referenceActive) {
-            ShapeBreakdownText(shapeBreakdown)
-        }
     }
-}
-
-@Composable
-private fun ShapeBreakdownText(breakdown: Map<ShapeType, Int>) {
-    val order = listOf(ShapeType.TRIANGLE, ShapeType.RECTANGLE, ShapeType.TRAPEZOID, ShapeType.CIRCLE, ShapeType.OTHER)
-    val parts = order.mapNotNull { shape ->
-        val count = breakdown[shape]
-        if (count == null || count <= 0) return@mapNotNull null
-        "${shapeLabel(shape)}: $count"
-    }
-    if (parts.isEmpty()) return
-
-    Text(
-        text = parts.joinToString(" · "),
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.padding(top = 4.dp),
-    )
-}
-
-@Composable
-private fun shapeLabel(shapeType: ShapeType): String = when (shapeType) {
-    ShapeType.TRIANGLE -> stringResource(R.string.shape_triangle)
-    ShapeType.RECTANGLE -> stringResource(R.string.shape_rectangle)
-    ShapeType.TRAPEZOID -> stringResource(R.string.shape_trapezoid)
-    ShapeType.CIRCLE -> stringResource(R.string.shape_circle)
-    ShapeType.OTHER -> stringResource(R.string.shape_other)
 }

@@ -44,7 +44,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
@@ -64,10 +63,10 @@ import kotlin.math.roundToInt
 
 /**
  * Full-screen live camera viewfinder for piece counting. Shows the phone's
- * built-in camera preview with a real-time overlay (real OpenCV contours -
- * see [LiveFrameAnalyzer]) and a continuously updating count, zoom, an
- * optional reference piece (tap a box to count only similar ones), and
- * takes a full-resolution photo on demand for the precise final count.
+ * built-in camera preview with a real-time overlay (ML Kit Object Detection
+ * & Tracking - see [LiveFrameAnalyzer]) and a continuously updating count,
+ * zoom, an optional reference piece (tap a box to count only similar ones),
+ * and takes a full-resolution photo on demand for the precise final count.
  */
 @Composable
 fun LiveCameraScreen(
@@ -173,24 +172,12 @@ fun LiveCameraScreen(
             val strokeWidth = if (result.referenceActive) 6f else 4f
             result.blobs.forEach { blob ->
                 val box = blob.box
-                if (blob.polygon.size >= 3) {
-                    val path = Path().apply {
-                        blob.polygon.forEachIndexed { index, point ->
-                            val x = offsetX + point.x * scale
-                            val y = offsetY + point.y * scale
-                            if (index == 0) moveTo(x, y) else lineTo(x, y)
-                        }
-                        close()
-                    }
-                    drawPath(path, color = color, style = Stroke(width = strokeWidth))
-                } else {
-                    drawRect(
-                        color = color,
-                        topLeft = Offset(offsetX + box.left * scale, offsetY + box.top * scale),
-                        size = Size(box.width() * scale, box.height() * scale),
-                        style = Stroke(width = strokeWidth),
-                    )
-                }
+                drawRect(
+                    color = color,
+                    topLeft = Offset(offsetX + box.left * scale, offsetY + box.top * scale),
+                    size = Size(box.width() * scale, box.height() * scale),
+                    style = Stroke(width = strokeWidth),
+                )
             }
         }
 

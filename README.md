@@ -15,8 +15,8 @@ Nativní Android aplikace (Kotlin + Jetpack Compose), která pomocí kamery
 naskenuje dokument, automaticky ho ořízne/vylepší a uloží jako PDF.
 Skenování dokumentu je postavené na [ML Kit Document Scanner API](https://developers.google.com/ml-kit/vision/doc-scanner)
 (detekce hran, korekce perspektivy, filtry, vícestránkové skeny). Počítání
-kusů má vlastní obrazovou analýzu přes OpenCV, stejnou pro statickou fotku
-i živý náhled kamery — viz sekce Funkce níže.
+kusů běží přes [ML Kit Object Detection & Tracking](https://developers.google.com/ml-kit/vision/object-detection),
+stejně pro statickou fotku i živý náhled kamery — viz sekce Funkce níže.
 
 ### Funkce
 
@@ -46,70 +46,40 @@ i živý náhled kamery — viz sekce Funkce níže.
   nebo SD kartu, mimo interní úložiště appky
 - Smazání skenu
 - **Počítání kusů** — statická fotka/výběr z galerie i živý náhled z kamery
-  (CameraX) běží přes **stejný OpenCV pipeline** (`org.opencv:opencv`,
-  `data/cv/CvBlobAnalyzer.kt`):
-  - Segmentace kombinuje dvě masky: adaptivní prahování podle klouzavého
-    průměru jasu (`Imgproc.adaptiveThreshold`, funguje i při nerovnoměrném
-    osvětlení/stínech, na rozdíl od jednoho globálního prahu — polarita
-    světlý/tmavý kus na opačném pozadí se navíc detekuje pro každý snímek
-    zvlášť, takže to funguje stejně dobře na světlém i tmavém pozadí) **a**
-    barevnou masku (převod do HSV; barva pozadí se odhaduje jako medián
-    přes celý snímek, ne jen z okraje fotky — mnohem odolnější, když kus
-    zabírá větší část záběru, např. při přiblížení zoomem; práh na
-    odchylku odstínu/sytosti/jasu od tohoto pozadí) — obě masky se spojí
-    přes OR, takže appka pozná kus i tehdy, kdy má podobný jas jako
-    pozadí, ale liší se barvou. Morfologické operace (velikost jádra
-    škálovaná podle rozlišení snímku, ne pevná).
-  - **Rozdělení slepených kusů (watershed)**: než appka hledá obrysy,
-    spojenou binární masku ještě projede přes distanční transformaci
-    (`Imgproc.distanceTransform`) + watershed (`Imgproc.watershed`) —
-    najde místa nejvíc "uvnitř" každého kusu (nejdál od jeho vlastního
-    okraje) jako značky a od nich nechá zaplavit obraz podél hran, takže
-    dva dotýkající se kulaté kusy (např. slepené švestky) se rozdělí na
-    dva samostatné obrysy místo jednoho velkého. Stejný krok zároveň
-    funguje jako další filtr šumu: tenká klikatá čára (žíla ve dřevě,
-    prasklina) není nikde víc než pár pixelů od svého okraje, takže
-    nemá vlastní "jádro" a namísto vlastního kusu se pohltí do pozadí —
-    ještě než vůbec dorazí na testy tvaru. Odhad počtu podle poměru
-    ploch (starší přístup) zůstal jen jako záložní pojistka pro
-    vzácný případ, kdy se dva kusy slijí bez rozpoznatelného vlastního
-    jádra — pořád s horní mezí 20 kusů na jeden obrys.
-  - Každý nalezený obrys navíc musí projít dvěma nezávislými testy tvaru —
-    **plností** (poměr plochy k ploše konvexního obalu) a **kruhovitostí**
-    (`4π·plocha/obvod²`) — jako druhá, nezávislá pojistka proti zbytkům
-    šumu, které by watershed krokem přesto prošly
-  - **Rozpoznávání tvarů**: každý nalezený kus se přes `Imgproc.approxPolyDP`
-    (zjednodušení obrysu na polygon) a kruhovitost (`4π·plocha/obvod²`)
-    zařadí jako trojúhelník, obdélník, lichoběžník nebo kruh. Skutečný
-    obrys (ne jen ohraničující obdélník) se vykreslí přímo na fotku/náhled,
-    a bez nutnosti cokoliv označit appka rovnou ukáže, kolik je kterého
-    tvaru ("Trojúhelník: 2 · Obdélník: 5 · Kruh: 3" — u statické fotky) —
-    to je ono "hledání stejných kusů" bez ručního zásahu
+  (CameraX) běží přes **ML Kit Object Detection & Tracking**
+  (`play-services-mlkit-object-detection`, `data/ObjectCounter.kt` a
+  `data/LiveFrameAnalyzer.kt`), s vícenásobnou detekcí a hrubou klasifikací
+  zapnutou (`enableMultipleObjects()`, `enableClassification()`):
+  - Předchozí verze appky měla vlastní OpenCV pipeline (adaptivní práh,
+    barevná segmentace, watershed rozdělení slepených kusů, vlastní
+    klasifikace tvaru) — na opakovaných reálných fotkách (dřevěný stůl se
+    žílami, potištěná látka) se ale pořád znovu ukázalo, že čistě
+    kontrastní/barevný heuristický přístup nedokáže spolehlivě odlišit
+    "kus" od textury pozadí, ať se ladí sebevíc. ML Kit místo toho používá
+    natrénovaný on-device model, který pozná oddělené objekty ve scéně,
+    ne jen lokální kontrast — appka tak dostává hotové ohraničující
+    obdélníky jednotlivých kusů (ne přesný obrys), ale mnohem
+    spolehlivěji oddělené od pozadí i od sebe navzájem
   - **Referenční kus**: klepnutím (na fotce i přímo v živém náhledu) lze
-    označit jeden konkrétní kus a appka pak přes `Imgproc.matchShapes` (Hu
-    momenty — porovnání tvaru nezávislé na velikosti/natočení) plus shodu
-    kategorie tvaru počítá jen kusy podobné tomu označenému. Protože jsou
-    Hu momenty schválně nezávislé na velikosti, samy o sobě by mohly
-    omylem označit za "podobný" i obří klikatou skvrnu (např. spáru mezi
-    prkny stolu) s tvarově náhodně podobnou signaturou jako malý
-    referenční kus — proto se navíc kontroluje i poměr ploch (kandidát
-    smí být max. 3× větší/menší než referenční kus), než se vůbec
-    porovnává tvar
-  - **Ruční oprava** (jen u statické fotky): automatická detekce zůstává na
-    členitém pozadí (např. dřevěný stůl se žílami/stíny) nespolehlivá a
-    slepené kusy dokáže spojit do jednoho obrysu místo jejich rozdělení —
-    proto jde výsledek ručně doladit podržením prstu. Podržení na
+    označit jeden konkrétní kus a appka pak počítá jen kusy podobné
+    velikosti (v rámci poměru ploch max. 3×) a — pokud má klasifikátor
+    jistou hrubou kategorii u obou (např. "Food") — i stejné kategorie.
+    Klasifikátor zná jen pár širokých kategorií a u spousty věcí žádnou
+    jistou kategorii nevrátí, takže v praxi rozhoduje hlavně velikost
+  - **Ruční oprava** (jen u statické fotky): i natrénovaný detektor může
+    dva těsně se dotýkající kusy spojit do jednoho, nebo nějaký přehlédnout
+    — proto jde výsledek ručně doladit podržením prstu. Podržení na
     nalezeném kusu ho vyřadí ze součtu (zůstane vykreslený šedě, lze ho
     stejným gestem vrátit zpět), podržení na prázdném místě přidá kus
     ručně (zelený kroužek), podržení blízko takto přidaného kroužku ho
     zase odebere. Zobrazený počet (`adjustedCount` v `CountingViewModel`)
     započítává i tyto ruční úpravy; při nové fotce nebo přepnutí reference
     se úpravy vždy vynulují
-  - Živý náhled navíc: kreslí se skutečný obrys kusu (ne jen ohraničující
-    obdélník), stejně jako u fotky, zoom (posuvník napojený na kameru) a
-    tlačítko zpět. Kamerový snímek (YUV_420_888) se převádí na malou
-    barevnou bitmapu přímo z Y/U/V rovin (bez zacházky přes JPEG) a
-    zmenšuje, aby OpenCV pipeline stíhal běžet průběžně v hledáčku
+  - Živý náhled navíc: zoom (posuvník napojený na kameru) a tlačítko zpět.
+    Kamerový snímek (YUV_420_888) se převádí na malou barevnou bitmapu
+    přímo z Y/U/V rovin (bez zacházky přes JPEG) a zmenšuje, než jde do
+    ML Kit detektoru (STREAM_MODE) — stejná logika snímání jako dřív, jen
+    jiný krok samotné detekce
 - **Čtečka čárových a QR kódů**: kamera přes celou obrazovku (ML Kit
   Barcode Scanning) s ohraničujícím rámečkem uprostřed jako vizuální
   vodítko, zoom (posuvník napojený na `CameraControl.setLinearZoom`),
@@ -127,12 +97,11 @@ Mezi „Skenovat“, „Počítat kusy“ a „Kódy“ se přepíná spodní na
 
 ```
 app/src/main/java/com/micha741/skener/
-├── SkenerApplication.kt     # Application - inicializuje OpenCV (OpenCVLoader.initLocal())
 ├── MainActivity.kt          # navigace + spuštění ML Kit skeneru/galerie
 ├── ScanScreen (v MainActivity.kt)
 ├── ScanViewModel.kt         # stav obrazovky skenování
 ├── ScanViewModelFactory.kt
-├── CountingScreen.kt        # UI obrazovky počítání kusů (obrysy, tvary, tap na referenční kus, tlačítko zpět)
+├── CountingScreen.kt        # UI obrazovky počítání kusů (obdélníky, tap na referenční kus, ruční oprava, tlačítko zpět)
 ├── CountingViewModel.kt     # stav obrazovky počítání kusů
 ├── CountingViewModelFactory.kt
 ├── LiveCameraScreen.kt      # živý náhled kamery: počítání, zoom, tap na referenční kus, tlačítko zpět
@@ -142,16 +111,14 @@ app/src/main/java/com/micha741/skener/
 ├── data/
 │   ├── ScanDocument.kt      # model naskenovaného PDF
 │   ├── ScanRepository.kt    # ukládání/čtení PDF v app storage
-│   ├── DetectedBlob.kt      # sdílený model kusu (box, tvar, obrys) pro fotku i živý náhled
-│   ├── ObjectCounter.kt     # počítání kusů ze statické fotky (Uri -> CvBlobAnalyzer, tvary, referenční kus)
-│   ├── LiveFrameAnalyzer.kt # CameraX analyzer: YUV -> barevná bitmapa -> CvBlobAnalyzer, nastavitelná reference
+│   ├── DetectedBlob.kt      # sdílený model kusu (box, kategorie) pro fotku i živý náhled
+│   ├── DetectedBlobMatching.kt # sdílené mapování/porovnávání: DetectedObject -> DetectedBlob, hledání pod tapem, referenční shoda podle velikosti/kategorie
+│   ├── ObjectCounter.kt     # počítání kusů ze statické fotky přes ML Kit Object Detection (SINGLE_IMAGE_MODE), referenční kus
+│   ├── LiveFrameAnalyzer.kt # CameraX analyzer: YUV -> upright bitmapa -> ML Kit Object Detection (STREAM_MODE), nastavitelná reference
 │   ├── BarcodeAnalyzer.kt   # CameraX analyzer: živé snímky -> ML Kit Barcode Scanning
 │   ├── DocumentTextExtractor.kt # OCR jedné stránky + odhad formátování (velikost/tučné/kurzíva/barva) na řádek
 │   ├── TextPdfWriter.kt     # vykreslí rozpoznaný text pozičně/formátovaně do PDF (bez fotky)
-│   ├── BarcodeImageEncoder.kt # zpětně zakóduje hodnotu kódu do bitmapy (ZXing) pro uložení jako obrázek
-│   └── cv/
-│       └── CvBlobAnalyzer.kt # sdílený OpenCV pipeline (fotka i živý náhled): adaptivní práh + barevná
-│                              # segmentace, kontury, klasifikace tvaru, matchShapes
+│   └── BarcodeImageEncoder.kt # zpětně zakóduje hodnotu kódu do bitmapy (ZXing) pro uložení jako obrázek
 └── ui/theme/Theme.kt        # Material 3 theme (light/dark, dynamic color)
 ```
 

@@ -14,8 +14,8 @@ android {
         applicationId = "com.micha741.skener"
         minSdk = 26
         targetSdk = 34
-        versionCode = 21
-        versionName = "2.9"
+        versionCode = 22
+        versionName = "3.0"
     }
 
     buildTypes {
@@ -75,17 +75,20 @@ dependencies {
     // ML Kit Text Recognition (Latin) - OCR for the "text only" document scan mode
     implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.1")
 
+    // ML Kit Object Detection & Tracking - finds and separates distinct objects
+    // in a photo/live frame (data/ObjectCounter.kt, data/LiveFrameAnalyzer.kt).
+    // Replaced a hand-tuned OpenCV threshold/contour pipeline that kept
+    // mistaking background texture (wood grain, fabric prints) for pieces -
+    // this is a trained on-device detector instead of a contrast heuristic.
+    // Check https://mvnrepository.com/artifact/com.google.android.gms/play-services-mlkit-object-detection
+    // for the newest version.
+    implementation("com.google.android.gms:play-services-mlkit-object-detection:17.0.2")
+
     // CameraX - live viewfinder preview + frame analysis for the piece counter & barcode reader
     implementation("androidx.camera:camera-core:1.3.4")
     implementation("androidx.camera:camera-camera2:1.3.4")
     implementation("androidx.camera:camera-lifecycle:1.3.4")
     implementation("androidx.camera:camera-view:1.3.4")
-
-    // OpenCV - adaptive threshold, contours & Hu-moment shape matching for the
-    // static-photo piece counter (see data/cv/CvBlobAnalyzer.kt). Official Maven
-    // Central artifact (no more OpenCV Manager APK needed) since 4.9.0 - check
-    // https://mvnrepository.com/artifact/org.opencv/opencv for the newest version.
-    implementation("org.opencv:opencv:4.10.0")
 
     // ZXing core - re-encodes a scanned barcode/QR value back into an image
     // (see data/BarcodeImageEncoder.kt), so a scanned code can be saved as a

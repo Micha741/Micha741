@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.micha741.skener.data.DetectedBlob
 import com.micha741.skener.data.ObjectCounter
-import com.micha741.skener.data.ShapeType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,19 +23,17 @@ data class CountingUiState(
     /** True once a reference piece was successfully picked - the count above is "similar to that piece" only. */
     val referenceActive: Boolean = false,
     val referenceBox: Rect? = null,
-    /** Auto mode only: how many blobs of each shape were found ("find identical pieces" without a manual tap). */
-    val shapeBreakdown: Map<ShapeType, Int> = emptyMap(),
     /** Detected blobs the user manually excluded (long-press on a wrongly-detected piece). */
     val excludedBoxes: Set<Rect> = emptySet(),
     /** Pieces the user manually marked (long-press on empty space the detector missed), each worth one piece. */
     val manualAdditions: List<Point> = emptyList(),
 ) {
-    /** [count] adjusted for manual corrections: excluded blobs' own estimate subtracted, manual additions added. */
+    /** [count] adjusted for manual corrections: excluded blobs subtracted, manual additions added. */
     val adjustedCount: Int
         get() {
             val base = count ?: return manualAdditions.size
-            val excludedContribution = blobs.filter { it.box in excludedBoxes }.sumOf { it.estimatedCount }
-            return (base - excludedContribution + manualAdditions.size).coerceAtLeast(0)
+            val excludedCount = blobs.count { it.box in excludedBoxes }
+            return (base - excludedCount + manualAdditions.size).coerceAtLeast(0)
         }
 }
 
@@ -111,7 +108,6 @@ class CountingViewModel(
                             count = result.count,
                             referenceActive = referenceTap != null && result.referenceBlob != null,
                             referenceBox = if (referenceTap != null) result.referenceBlob?.box else it.referenceBox,
-                            shapeBreakdown = result.shapeBreakdown,
                             excludedBoxes = emptySet(),
                             manualAdditions = emptyList(),
                             errorMessage = if (referenceTap != null && result.referenceBlob == null) {

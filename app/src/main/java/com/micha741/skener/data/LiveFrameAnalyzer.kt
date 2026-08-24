@@ -3,9 +3,11 @@ package com.micha741.skener.data
 import android.graphics.Bitmap
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-import com.micha741.skener.data.cv.CvBlob
-import com.micha741.skener.data.cv.CvBlobAnalyzer
-import com.micha741.skener.data.cv.toDetectedBlob
+import com.google.android.gms.tasks.Tasks
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.objects.ObjectDetection
+import com.google.mlkit.vision.objects.ObjectDetector
+import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -20,26 +22,33 @@ data class LiveFrameResult(
 
 /**
  * CameraX [ImageAnalysis.Analyzer] that throttles incoming preview frames,
- * decodes the YUV_420_888 frame into a small *color* [Bitmap] (downsampled
+ * decodes the YUV_420_888 frame into a small upright [Bitmap] (downsampled
  * while reading straight from the Y/U/V planes - no JPEG round-trip), and
- * runs it through the same OpenCV pipeline as the static-photo counter
- * ([CvBlobAnalyzer]): adaptive threshold + color-distance segmentation,
- * real contours and shape classification, instead of the cruder luma-only
- * pipeline this used to run for the sake of frame rate.
+ * runs it through ML Kit's on-device Object Detection & Tracking
+ * (STREAM_MODE) - the same trained detector the static-photo counter uses
+ * in SINGLE_IMAGE_MODE (see [com.micha741.skener.data.ObjectCounter]),
+ * instead of a hand-tuned OpenCV threshold pipeline that kept mistaking
+ * background texture for pieces.
  *
  * [requestReferenceAt] lets the UI pick a reference piece by tapping a spot
  * in frame coordinates; the analyzer resolves it against the *next*
- * analyzed frame and retains that blob's native contour across frames
- * until [clearReference] or [release] - both are safe to call from any
- * thread, synchronized against the analysis thread so the retained
- * contour is never read after being released.
+ * analyzed frame's detections and retains that blob until [clearReference]
+ * or [release].
  */
 class LiveFrameAnalyzer(
     private val onResult: (LiveFrameResult) -> Unit,
 ) : ImageAnalysis.Analyzer {
 
-    private val referenceLock = Any()
-    private var referenceBlob: CvBlob? = null
+    private val detector: ObjectDetector = ObjectDetection.getClient(
+        ObjectDetectorOptions.Builder()
+            .setDetectorMode(ObjectDetectorOptions.STREAM_MODE)
+            .enableMultipleObjects()
+            .enableClassification()
+            .build(),
+    )
+
+    @Volatile
+    private var referenceBlob: DetectedBlob? = null
 
     @Volatile
     private var pendingReferenceTap: IntArray? = null
@@ -53,10 +62,15 @@ class LiveFrameAnalyzer(
     }
 
     /** Drops the retained reference, if any, going back to counting every detected piece. */
-    fun clearReference() = setReference(null)
+    fun clearReference() {
+        referenceBlob = null
+    }
 
-    /** Releases the retained reference contour, if any - call when the camera screen is torn down. */
-    fun release() = setReference(null)
+    /** Releases the detector - call when the camera screen is torn down. */
+    fun release() {
+        referenceBlob = null
+        detector.close()
+    }
 
     override fun analyze(imageProxy: ImageProxy) {
         val now = System.currentTimeMillis()
@@ -68,47 +82,27 @@ class LiveFrameAnalyzer(
 
         try {
             val bitmap = extractRotatedBitmap(imageProxy, MAX_DIMENSION)
+            val width = bitmap.width
+            val height = bitmap.height
+
+            val detected = Tasks.await(detector.process(InputImage.fromBitmap(bitmap, 0)))
+            bitmap.recycle()
+            val allBlobs = detected.map { it.toDetectedBlob() }
 
             val tap = pendingReferenceTap
             if (tap != null) {
                 pendingReferenceTap = null
-                resolveReferenceTap(bitmap, tap[0], tap[1])
+                referenceBlob = findBlobNear(allBlobs, tap[0], tap[1])
             }
 
-            val reference = currentReference()
-            val result = CvBlobAnalyzer.analyze(bitmap, reference)
-            val width = bitmap.width
-            val height = bitmap.height
-            val blobs = result.blobs.map { it.toDetectedBlob() }
-            result.blobs.forEach { it.contour.release() }
-            bitmap.recycle()
+            val reference = referenceBlob
+            val blobs = if (reference != null) allBlobs.filter { matchesReference(it, reference) } else allBlobs
 
-            onResult(LiveFrameResult(blobs, result.count, width, height, reference != null))
+            onResult(LiveFrameResult(blobs, blobs.size, width, height, reference != null))
         } finally {
             imageProxy.close()
         }
     }
-
-    /** Runs one auto-mode pass to find the blob under the tapped point, then retains just that one as the reference. */
-    private fun resolveReferenceTap(bitmap: Bitmap, x: Int, y: Int) {
-        val auto = CvBlobAnalyzer.analyze(bitmap)
-        val picked = CvBlobAnalyzer.findBlobNear(auto.blobs, x, y)
-        if (picked != null) {
-            setReference(picked)
-            auto.blobs.forEach { if (it !== picked) it.contour.release() }
-        } else {
-            auto.blobs.forEach { it.contour.release() }
-        }
-    }
-
-    private fun setReference(blob: CvBlob?) {
-        synchronized(referenceLock) {
-            if (referenceBlob !== blob) referenceBlob?.contour?.release()
-            referenceBlob = blob
-        }
-    }
-
-    private fun currentReference(): CvBlob? = synchronized(referenceLock) { referenceBlob }
 
     /** Converts the YUV_420_888 frame to a small upright ARGB [Bitmap], downsampling while reading (no JPEG round-trip). */
     private fun extractRotatedBitmap(imageProxy: ImageProxy, maxDimension: Int): Bitmap {
