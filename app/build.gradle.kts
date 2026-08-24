@@ -80,9 +80,12 @@ dependencies {
     // Replaced a hand-tuned OpenCV threshold/contour pipeline that kept
     // mistaking background texture (wood grain, fabric prints) for pieces -
     // this is a trained on-device detector instead of a contrast heuristic.
-    // Check https://mvnrepository.com/artifact/com.google.android.gms/play-services-mlkit-object-detection
+    // Unlike barcode scanning/document scanner/text recognition above, this
+    // API has no play-services-mlkit-* wrapper - it only ships as the
+    // standalone com.google.mlkit artifact. Check
+    // https://developers.google.com/ml-kit/vision/object-detection/android
     // for the newest version.
-    implementation("com.google.android.gms:play-services-mlkit-object-detection:17.0.1")
+    implementation("com.google.mlkit:object-detection:17.0.2")
 
     // CameraX - live viewfinder preview + frame analysis for the piece counter & barcode reader
     implementation("androidx.camera:camera-core:1.3.4")
