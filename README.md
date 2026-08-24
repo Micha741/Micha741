@@ -60,6 +60,21 @@ stejně pro statickou fotku i živý náhled kamery — viz sekce Funkce níže.
     ne jen lokální kontrast — appka tak dostává hotové ohraničující
     obdélníky jednotlivých kusů (ne přesný obrys), ale mnohem
     spolehlivěji oddělené od pozadí i od sebe navzájem
+  - **Detekce po dlaždicích** (jen u statické fotky): základní ML Kit model
+    je laděný na pár výrazných objektů zabírajících podstatnou část
+    záběru — pár drobných kusů rozesetých po velké ploše (semínka na
+    podlaze) tak dokázal spojit do jednoho velkého "zajímavého místa"
+    místo aby je našel jednotlivě, protože se na žádný kus pořádně
+    "nepodíval" zblízka. `ObjectCounter.detectTiled()` proto fotku rozdělí
+    na překrývající se mřížku dlaždic (3×3), každou zvětší na stejné
+    pracovní rozlišení jako celou fotku předtím (takže drobný kus najednou
+    zabírá mnohem větší podíl toho, co detektor vidí) a spustí detekci na
+    každé zvlášť. Výsledky z dlaždic se namapují zpět do souřadnic
+    původní fotky a přes IoU (překryv boxů) se odstraní duplicity kusů
+    zachycených ve více dlaždicích najednou (`deduplicate()`). Živý náhled
+    dlaždice nepoužívá — devět detekcí na snímek by pro plynulý hledáček
+    bylo příliš pomalé — takže tam funguje jeden průchod na (škrcený)
+    snímek jako dřív
   - **Referenční kus**: klepnutím (na fotce i přímo v živém náhledu) lze
     označit jeden konkrétní kus a appka pak počítá jen kusy podobné
     velikosti (v rámci poměru ploch max. 3×) a — pokud má klasifikátor
