@@ -91,8 +91,10 @@ fun CvBlob.toDetectedBlob(scale: Float = 1f): DetectedBlob {
  * area-ratio split is kept only as a fallback for the rare case where two
  * pieces are fused with no distinguishable core of their own. With a
  * [reference] (a piece the user tapped on), only pieces of the *same shape
- * type* whose outline also resembles it via [Imgproc.matchShapes]'s
- * Hu-moment comparison (scale/rotation invariant) are kept, each counted once.
+ * type*, a similar size, whose outline also resembles it via
+ * [Imgproc.matchShapes]'s Hu-moment comparison (scale/rotation invariant) are
+ * kept, each counted once - see [matchesReference] for why the size check is
+ * needed on top of the shape comparison.
  *
  * Every [MatOfPoint] contour in the result is native-backed and must be
  * released by the caller once its bounding box/area/shape have been read out.
@@ -277,9 +279,21 @@ object CvBlobAnalyzer {
         return pieces
     }
 
-    /** Same shape category (when the reference's shape is known) plus a Hu-moment outline comparison. */
+    /**
+     * Same shape category (when the reference's shape is known), a similar
+     * size, plus a Hu-moment outline comparison. Hu moments alone are
+     * scale-invariant by design, so a huge, irregular region (e.g. a wood
+     * grain seam) can coincidentally land within [SHAPE_MATCH_MAX_DISTANCE]
+     * of a tiny reference piece's moments despite being nowhere near the
+     * same size - the area-ratio check rejects that before the shape
+     * comparison even runs.
+     */
     private fun matchesReference(blob: CvBlob, reference: CvBlob, referenceContour2f: MatOfPoint2f): Boolean {
         if (reference.shapeType != ShapeType.OTHER && blob.shapeType != reference.shapeType) return false
+
+        val areaRatio = max(blob.area, reference.area) / max(min(blob.area, reference.area), 1.0)
+        if (areaRatio > MAX_REFERENCE_AREA_RATIO) return false
+
         val candidate = MatOfPoint2f(*blob.contour.toArray())
         val shapeDistance = Imgproc.matchShapes(referenceContour2f, candidate, Imgproc.CONTOURS_MATCH_I1, 0.0)
         candidate.release()
@@ -505,6 +519,7 @@ object CvBlobAnalyzer {
     private const val SPLIT_AREA_RATIO = 1.6
     private const val MAX_SPLIT_PIECES = 20
     private const val SHAPE_MATCH_MAX_DISTANCE = 0.3
+    private const val MAX_REFERENCE_AREA_RATIO = 3.0
     private const val POLY_EPSILON_FACTOR = 0.02
     private const val CIRCLE_CIRCULARITY_THRESHOLD = 0.85
     private const val RECT_SIDE_TOLERANCE = 0.25

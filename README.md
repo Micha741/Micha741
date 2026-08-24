@@ -88,7 +88,13 @@ i živý náhled kamery — viz sekce Funkce níže.
   - **Referenční kus**: klepnutím (na fotce i přímo v živém náhledu) lze
     označit jeden konkrétní kus a appka pak přes `Imgproc.matchShapes` (Hu
     momenty — porovnání tvaru nezávislé na velikosti/natočení) plus shodu
-    kategorie tvaru počítá jen kusy podobné tomu označenému
+    kategorie tvaru počítá jen kusy podobné tomu označenému. Protože jsou
+    Hu momenty schválně nezávislé na velikosti, samy o sobě by mohly
+    omylem označit za "podobný" i obří klikatou skvrnu (např. spáru mezi
+    prkny stolu) s tvarově náhodně podobnou signaturou jako malý
+    referenční kus — proto se navíc kontroluje i poměr ploch (kandidát
+    smí být max. 3× větší/menší než referenční kus), než se vůbec
+    porovnává tvar
   - **Ruční oprava** (jen u statické fotky): automatická detekce zůstává na
     členitém pozadí (např. dřevěný stůl se žílami/stíny) nespolehlivá a
     slepené kusy dokáže spojit do jednoho obrysu místo jejich rozdělení —
