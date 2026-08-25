@@ -10,7 +10,6 @@ import com.google.android.gms.tasks.Tasks
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.objects.DetectedObject
 import com.google.mlkit.vision.objects.ObjectDetection
-import com.google.mlkit.vision.objects.ObjectDetector
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -99,17 +98,7 @@ class ObjectCounter(private val context: Context) {
         }
         if (photo !== original) original.recycle()
 
-        val options = ObjectDetectorOptions.Builder()
-            .setDetectorMode(ObjectDetectorOptions.SINGLE_IMAGE_MODE)
-            .enableMultipleObjects()
-            .enableClassification()
-            .build()
-        val detector = ObjectDetection.getClient(options)
-        val allBlobs = try {
-            deduplicate(detectTiled(detector, photo))
-        } finally {
-            detector.close()
-        }
+        val allBlobs = deduplicate(detectTiled(photo))
         photo.recycle()
 
         var referenceBlob: DetectedBlob? = null
@@ -132,12 +121,12 @@ class ObjectCounter(private val context: Context) {
         return CountResult(scaledBlobs, scaledBlobs.size, scaledReference)
     }
 
-    /** Runs [detector] on an overlapping [TILE_GRID]x[TILE_GRID] grid over [photo], each tile upscaled to [TILE_WORKING_DIMENSION]. */
-    private fun detectTiled(detector: ObjectDetector, photo: Bitmap): List<DetectedBlob> {
+    /** Runs detection on an overlapping [TILE_GRID]x[TILE_GRID] grid over [photo], each tile upscaled to [TILE_WORKING_DIMENSION]. */
+    private fun detectTiled(photo: Bitmap): List<DetectedBlob> {
         val tileWidth = photo.width / TILE_GRID
         val tileHeight = photo.height / TILE_GRID
         if (tileWidth < 1 || tileHeight < 1) {
-            return runDetection(detector, photo).map { it.toDetectedBlob() }
+            return runDetection(photo).map { it.toDetectedBlob() }
         }
 
         val overlapX = (tileWidth * TILE_OVERLAP_FRACTION).roundToInt()
@@ -168,7 +157,7 @@ class ObjectCounter(private val context: Context) {
                 }
                 if (scaledTile !== tile) tile.recycle()
 
-                val detected = runDetection(detector, scaledTile)
+                val detected = runDetection(scaledTile)
                 val scaledTileWidth = scaledTile.width
                 val scaledTileHeight = scaledTile.height
                 scaledTile.recycle()
@@ -191,8 +180,27 @@ class ObjectCounter(private val context: Context) {
         return blobs
     }
 
-    private fun runDetection(detector: ObjectDetector, bitmap: Bitmap): List<DetectedObject> =
-        Tasks.await(detector.process(InputImage.fromBitmap(bitmap, 0)))
+    /**
+     * Builds a fresh object detector client for this one call and closes it
+     * right after, instead of reusing a single client across all 9 tile
+     * calls. Device testing surfaced a native crash inside ML Kit's own
+     * libmlkitcommonpipeline.so - reusing one client for repeated,
+     * back-to-back process() calls seems to be what triggers it; a fresh
+     * client per call avoids whatever state it's accumulating.
+     */
+    private fun runDetection(bitmap: Bitmap): List<DetectedObject> {
+        val options = ObjectDetectorOptions.Builder()
+            .setDetectorMode(ObjectDetectorOptions.SINGLE_IMAGE_MODE)
+            .enableMultipleObjects()
+            .enableClassification()
+            .build()
+        val detector = ObjectDetection.getClient(options)
+        return try {
+            Tasks.await(detector.process(InputImage.fromBitmap(bitmap, 0)))
+        } finally {
+            detector.close()
+        }
+    }
 
     /**
      * True for a box that looks like a straight architectural edge (a door

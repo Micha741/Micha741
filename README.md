@@ -74,7 +74,14 @@ stejně pro statickou fotku i živý náhled kamery — viz sekce Funkce níže.
     zachycených ve více dlaždicích najednou (`deduplicate()`). Živý náhled
     dlaždice nepoužívá — devět detekcí na snímek by pro plynulý hledáček
     bylo příliš pomalé — takže tam funguje jeden průchod na (škrcený)
-    snímek jako dřív
+    snímek jako dřív. `ObjectCounter.runDetection()` navíc pro každou
+    dlaždici vytvoří a hned zavře **nový** klienta detektoru, místo aby
+    jednoho sdíleného klienta volal 9× po sobě — reálný pád na zařízení
+    (nativní pád uvnitř `libmlkitcommonpipeline.so`, mimo dosah Kotlin
+    try/catch) ukázal, že opakované volání `process()` na jednom klientovi
+    v rychlém sledu dokáže shodit nativní část ML Kitu. Živý náhled tohle
+    nepotřebuje — tam běží `STREAM_MODE`, který je na opakované volání na
+    jednom klientovi navržený (drží kontinuitu sledování mezi snímky)
   - **Odstranění duplicit mezi dlaždicemi**: kus, co leží na okraji dvou
     dlaždic (nebo je zabraný jednou dlaždicí vcelku a druhou po částech),
     může vyjít z detekce vícekrát. `ObjectCounter.deduplicate()` proto
