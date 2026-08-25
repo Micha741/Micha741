@@ -76,6 +76,7 @@ import com.micha741.skener.ui.theme.SkenerTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.text.DateFormat
 import java.util.Date
 
@@ -99,6 +100,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        offerCrashLogShare()
         setContent {
             SkenerTheme {
                 val navController = rememberNavController()
@@ -203,6 +205,33 @@ class MainActivity : ComponentActivity() {
             .addOnFailureListener { exception ->
                 viewModel.onScanFailed(exception.message ?: getString(R.string.scan_failed))
             }
+    }
+
+    /**
+     * If the app crashed last run (see [SkenerApplication]), offers to share
+     * the saved stack trace. The marker file is renamed to a fresh name and
+     * the original deleted right away, so this only fires once per crash -
+     * but the renamed copy itself is left alone, since the receiving share
+     * target reads it asynchronously (potentially after the user spends a
+     * few seconds picking an app from the chooser) and deleting it here
+     * could race that read and send an empty file.
+     */
+    private fun offerCrashLogShare() {
+        val crashFile = File(cacheDir, SkenerApplication.CRASH_LOG_FILE_NAME)
+        if (!crashFile.exists()) return
+
+        val shareFile = File(cacheDir, "crash_${System.currentTimeMillis()}.txt")
+        crashFile.copyTo(shareFile, overwrite = true)
+        crashFile.delete()
+
+        Toast.makeText(this, getString(R.string.crash_log_found), Toast.LENGTH_LONG).show()
+        val uri = FileProvider.getUriForFile(this, "$packageName.fileprovider", shareFile)
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_STREAM, uri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        startActivity(Intent.createChooser(intent, getString(R.string.share)))
     }
 
     private fun shareDocument(document: ScanDocument) {

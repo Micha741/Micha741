@@ -133,7 +133,8 @@ Mezi „Skenovat“, „Počítat kusy“ a „Kódy“ se přepíná spodní na
 
 ```
 app/src/main/java/com/micha741/skener/
-├── MainActivity.kt          # navigace + spuštění ML Kit skeneru/galerie
+├── SkenerApplication.kt     # zachytává neošetřené pády do souboru v cache (last_crash.txt) - appka se instaluje ze staženého APK, ne přes USB/Logcat
+├── MainActivity.kt          # navigace + spuštění ML Kit skeneru/galerie; při startu nabídne sdílení pádu z minula, pokud existuje
 ├── ScanScreen (v MainActivity.kt)
 ├── ScanViewModel.kt         # stav obrazovky skenování
 ├── ScanViewModelFactory.kt
