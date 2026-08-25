@@ -168,21 +168,52 @@ class ObjectCounter(private val context: Context) {
         Tasks.await(detector.process(InputImage.fromBitmap(bitmap, 0)))
 
     /**
-     * Greedy non-max suppression: an object that straddles two tiles'
-     * overlap margin gets detected once per tile, so keep only the
-     * biggest box in each cluster of heavily overlapping detections
-     * (bigger usually means a fuller, less tile-edge-clipped view of it).
+     * An object that straddles two tiles' overlap margin gets detected once
+     * per tile, so the same physical object can show up as several
+     * overlapping candidate boxes. Which box is the "right" one to keep
+     * depends on *why* they overlap:
+     *  - Several boxes that all mostly overlap *each other* too (not just
+     *    the biggest one) are redundant views of the same single object
+     *    (e.g. "whole shoe" and "just its toe" from two different tiles) -
+     *    keep only the biggest, drop the rest.
+     *  - A big box that turns out to just be an amalgam of two or more
+     *    *mutually distinct* smaller boxes (e.g. one tile saw "the whole
+     *    cluster of seeds" as one blob while other tiles individually
+     *    found each seed) is a false merge, not a real piece - drop the
+     *    big box and keep the smaller, independent ones instead.
      */
     private fun deduplicate(blobs: List<DetectedBlob>): List<DetectedBlob> {
+        val remaining = blobs.toMutableList()
         val kept = mutableListOf<DetectedBlob>()
-        for (blob in blobs.sortedByDescending { it.box.width().toLong() * it.box.height().toLong() }) {
-            val overlapsExisting = kept.any { iou(it.box, blob.box) > DEDUPE_IOU_THRESHOLD }
-            if (!overlapsExisting) kept += blob
+
+        while (remaining.isNotEmpty()) {
+            val biggest = remaining.maxBy { it.box.area() }
+            val overlappingBiggest = remaining.filter { overlapRatio(it.box, biggest.box) > DEDUPE_OVERLAP_THRESHOLD }
+            val independentSubPieces = independentSubset(overlappingBiggest - biggest)
+
+            if (independentSubPieces.size >= 2) {
+                kept += independentSubPieces
+            } else {
+                kept += biggest
+            }
+            remaining.removeAll(overlappingBiggest)
         }
         return kept
     }
 
-    private fun iou(a: Rect, b: Rect): Double {
+    /** Greedily picks the biggest-first subset of [candidates] whose boxes don't significantly overlap each other. */
+    private fun independentSubset(candidates: List<DetectedBlob>): List<DetectedBlob> {
+        val picked = mutableListOf<DetectedBlob>()
+        for (candidate in candidates.sortedByDescending { it.box.area() }) {
+            if (picked.none { overlapRatio(it.box, candidate.box) > DEDUPE_OVERLAP_THRESHOLD }) {
+                picked += candidate
+            }
+        }
+        return picked
+    }
+
+    /** Intersection area relative to the *smaller* of the two boxes - catches "one box is basically inside the other" even when their sizes differ a lot, which plain intersection-over-union (relative to their combined area) can miss. */
+    private fun overlapRatio(a: Rect, b: Rect): Double {
         val interLeft = max(a.left, b.left)
         val interTop = max(a.top, b.top)
         val interRight = min(a.right, b.right)
@@ -190,11 +221,11 @@ class ObjectCounter(private val context: Context) {
         if (interRight <= interLeft || interBottom <= interTop) return 0.0
 
         val interArea = (interRight - interLeft).toLong() * (interBottom - interTop).toLong()
-        val areaA = a.width().toLong() * a.height().toLong()
-        val areaB = b.width().toLong() * b.height().toLong()
-        val unionArea = areaA + areaB - interArea
-        return if (unionArea <= 0) 0.0 else interArea.toDouble() / unionArea.toDouble()
+        val smallerArea = min(a.area(), b.area())
+        return if (smallerArea <= 0) 0.0 else interArea.toDouble() / smallerArea.toDouble()
     }
+
+    private fun Rect.area(): Long = width().toLong() * height().toLong()
 
     private companion object {
         const val PHOTO_MAX_DIMENSION = 1600
@@ -202,6 +233,6 @@ class ObjectCounter(private val context: Context) {
         const val TILE_OVERLAP_FRACTION = 0.15f
         const val TILE_WORKING_DIMENSION = 640
         const val MAX_TILE_UPSCALE = 4f
-        const val DEDUPE_IOU_THRESHOLD = 0.35
+        const val DEDUPE_OVERLAP_THRESHOLD = 0.4
     }
 }

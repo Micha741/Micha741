@@ -75,6 +75,19 @@ stejně pro statickou fotku i živý náhled kamery — viz sekce Funkce níže.
     dlaždice nepoužívá — devět detekcí na snímek by pro plynulý hledáček
     bylo příliš pomalé — takže tam funguje jeden průchod na (škrcený)
     snímek jako dřív
+  - **Odstranění duplicit mezi dlaždicemi**: kus, co leží na okraji dvou
+    dlaždic (nebo je zabraný jednou dlaždicí vcelku a druhou po částech),
+    může vyjít z detekce vícekrát. `ObjectCounter.deduplicate()` proto
+    porovnává překryv boxů vůči *menšímu* z dvojice (ne vůči jejich
+    sjednocení jako klasické IoU) — to pozná i "malý box skoro celý
+    uvnitř velkého", což IoU při hodně rozdílné velikosti boxů přehlídne.
+    Když se u jednoho velkého boxu najdou dva a víc menších boxů, co se
+    vzájemně nepřekrývají (typicky roztroušené drobné kusy jako semínka),
+    je velký box vyhozen jako chybné sloučení a zůstanou ty menší,
+    samostatné. Když menší boxy uvnitř velkého jsou
+    naopak jen navzájem se překrývající duplicity stejného kusu (např.
+    "celá bota" a "jen její špička" z různých dlaždic), zůstane jen ten
+    největší a zbytek se zahodí
   - **Referenční kus**: klepnutím (na fotce i přímo v živém náhledu) lze
     označit jeden konkrétní kus a appka pak počítá jen kusy podobné
     velikosti (v rámci poměru ploch max. 3×) a — pokud má klasifikátor
