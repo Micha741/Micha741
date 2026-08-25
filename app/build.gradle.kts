@@ -14,8 +14,8 @@ android {
         applicationId = "com.micha741.skener"
         minSdk = 26
         targetSdk = 34
-        versionCode = 24
-        versionName = "3.2"
+        versionCode = 25
+        versionName = "3.3"
     }
 
     buildTypes {

@@ -146,11 +146,15 @@ class ObjectCounter(private val context: Context) {
                 if (scaledTile !== tile) tile.recycle()
 
                 val detected = runDetection(detector, scaledTile)
+                val scaledTileWidth = scaledTile.width
+                val scaledTileHeight = scaledTile.height
                 scaledTile.recycle()
 
                 detected.forEach { obj ->
                     val blob = obj.toDetectedBlob()
                     val box = blob.box
+                    if (looksLikeStraightEdge(box, scaledTileWidth, scaledTileHeight)) return@forEach
+
                     val mappedBox = Rect(
                         left + (box.left / tileScale).roundToInt(),
                         top + (box.top / tileScale).roundToInt(),
@@ -166,6 +170,29 @@ class ObjectCounter(private val context: Context) {
 
     private fun runDetection(detector: ObjectDetector, bitmap: Bitmap): List<DetectedObject> =
         Tasks.await(detector.process(InputImage.fromBitmap(bitmap, 0)))
+
+    /**
+     * True for a box that looks like a straight architectural edge (a door
+     * frame, a wall/floor seam) rather than a real piece: device testing
+     * showed the detector flagging these as "objects" in their own right.
+     * The giveaway is being *both* strongly elongated *and* running across
+     * most of its own tile - a real piece, even a thin one (a screw, a
+     * pen), only rarely spans most of an entire tile's width or height,
+     * while a straight line crossing the frame naturally does. Checked
+     * against the tile's own dimensions, not the whole photo's - a seam
+     * spanning most of one ~1/3-of-the-photo tile would only cover a small
+     * fraction of the full photo, so that comparison would miss it.
+     */
+    private fun looksLikeStraightEdge(box: Rect, tileWidth: Int, tileHeight: Int): Boolean {
+        val longSide = max(box.width(), box.height())
+        val shortSide = max(1, min(box.width(), box.height()))
+        val aspectRatio = longSide.toDouble() / shortSide
+        if (aspectRatio < MIN_EDGE_ASPECT_RATIO) return false
+
+        val spansTile = box.height() >= tileHeight * EDGE_TILE_SPAN_FRACTION ||
+            box.width() >= tileWidth * EDGE_TILE_SPAN_FRACTION
+        return spansTile
+    }
 
     /**
      * An object that straddles two tiles' overlap margin gets detected once
@@ -234,5 +261,7 @@ class ObjectCounter(private val context: Context) {
         const val TILE_WORKING_DIMENSION = 640
         const val MAX_TILE_UPSCALE = 4f
         const val DEDUPE_OVERLAP_THRESHOLD = 0.4
+        const val MIN_EDGE_ASPECT_RATIO = 3.0
+        const val EDGE_TILE_SPAN_FRACTION = 0.6
     }
 }

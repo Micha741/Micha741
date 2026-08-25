@@ -88,6 +88,14 @@ stejně pro statickou fotku i živý náhled kamery — viz sekce Funkce níže.
     naopak jen navzájem se překrývající duplicity stejného kusu (např.
     "celá bota" a "jen její špička" z různých dlaždic), zůstane jen ten
     největší a zbytek se zahodí
+  - **Filtr na rovné hrany**: detektor si občas splete výraznou rovnou
+    čáru v pozadí (zárubeň dveří, spára mezi dlaždicemi) se "zajímavým
+    objektem". `looksLikeStraightEdge()` proto vyhodí box, který je
+    zároveň hodně protáhlý *a* zabírá většinu své vlastní dlaždice (ne
+    celé fotky — čára táhnoucí se přes většinu jedné dlaždice by v
+    přepočtu na celou fotku byla jen malý zlomek, takže srovnání vůči
+    celé fotce by ji nezachytilo). Skutečný kus, byť protáhlý (šroub,
+    tužka), takhle velkou část dlaždice málokdy zabírá
   - **Referenční kus**: klepnutím (na fotce i přímo v živém náhledu) lze
     označit jeden konkrétní kus a appka pak počítá jen kusy podobné
     velikosti (v rámci poměru ploch max. 3×) a — pokud má klasifikátor
