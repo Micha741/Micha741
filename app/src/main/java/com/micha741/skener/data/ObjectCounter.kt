@@ -62,8 +62,31 @@ class ObjectCounter(private val context: Context) {
         }
     }
 
-    private fun decodeBitmap(uri: Uri): Bitmap? =
-        context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it) }
+    /**
+     * Decodes [uri] downsampled close to [PHOTO_MAX_DIMENSION] instead of at
+     * full resolution - a phone camera photo can easily be 4000px+ on a
+     * side, and decoding that in full just to immediately shrink it in
+     * [analyze] wastes memory that tiled detection (up to 9 extra bitmaps
+     * per photo) can't afford to spare.
+     */
+    private fun decodeBitmap(uri: Uri): Bitmap? {
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        val boundsStream = context.contentResolver.openInputStream(uri) ?: return null
+        boundsStream.use { BitmapFactory.decodeStream(it, null, bounds) }
+
+        val options = BitmapFactory.Options().apply { inSampleSize = sampleSizeFor(bounds.outWidth, bounds.outHeight) }
+        return context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, options) }
+    }
+
+    /** Power-of-two downsample factor (BitmapFactory only honors powers of two) that gets the decoded bitmap's long side down close to [PHOTO_MAX_DIMENSION]. */
+    private fun sampleSizeFor(width: Int, height: Int): Int {
+        if (width <= 0 || height <= 0) return 1
+        var sampleSize = 1
+        while (max(width, height) / (sampleSize * 2) >= PHOTO_MAX_DIMENSION) {
+            sampleSize *= 2
+        }
+        return sampleSize
+    }
 
     private fun analyze(original: Bitmap, referenceTap: Point?): CountResult {
         val downscale = min(1f, PHOTO_MAX_DIMENSION.toFloat() / max(original.width, original.height))
@@ -210,7 +233,10 @@ class ObjectCounter(private val context: Context) {
      *    big box and keep the smaller, independent ones instead.
      */
     private fun deduplicate(blobs: List<DetectedBlob>): List<DetectedBlob> {
-        val remaining = blobs.toMutableList()
+        // A zero-width/zero-height box (possible after tile-coordinate rounding) has zero overlap
+        // even with itself, so it would never get picked up by overlapRatio() below and the loop
+        // would keep re-selecting it forever without ever removing it from `remaining`.
+        val remaining = blobs.filterTo(mutableListOf()) { it.box.area() > 0 }
         val kept = mutableListOf<DetectedBlob>()
 
         while (remaining.isNotEmpty()) {
