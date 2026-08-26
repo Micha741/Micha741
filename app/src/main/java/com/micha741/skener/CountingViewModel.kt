@@ -123,7 +123,13 @@ class CountingViewModel(
                     }
                 }
                 .onFailure { exception ->
-                    val message = exception.message ?: appContext.getString(R.string.count_failed)
+                    // Includes the exception's own type/message rather than just the generic
+                    // fallback string - an unexpected exception here (anything other than the
+                    // couldn't-read-the-photo case ObjectCounter throws deliberately) is a bug,
+                    // and a vague "counting failed" toast makes that unreportable.
+                    val detail = exception.message?.let { "${exception::class.simpleName}: $it" }
+                        ?: exception::class.simpleName
+                    val message = detail ?: appContext.getString(R.string.count_failed)
                     _uiState.update { it.copy(isProcessing = false, errorMessage = message) }
                 }
         }

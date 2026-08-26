@@ -95,6 +95,17 @@ model (TFLite, AGPL-3.0 — viz sekce Funkce níže), živý náhled kamery pře
     syntetických testovacích scénách přes reálný `.tflite` model (ne jen
     předpoklad): dlaždice najdou o pár menších kusů víc, beze změny na
     už správně odděleném ovoci
+  - **Bug (opraveno)**: `detect()` po zavedení dlaždic vůbec nic nenašlo -
+    appka na fotce ukázala jen krátce probliknutou chybovou hlášku a žádné
+    boxy ani počet. Příčina byl `Bitmap.createBitmap(zdroj, x, y, š, v)`:
+    když se požadovaný výřez rozměrově přesně kryje se zdrojovou bitmapou
+    (což první, celofotkový "výřez" v `tileRegions()` vždycky splňuje),
+    Android vrátí *tu samou instanci* zdrojové bitmapy, ne kopii. Kód pak
+    po zpracování tohohle "výřezu" zavolal `tile.recycle()` a tím omylem
+    recykloval originální bitmapu volajícího - každý další výřez pak
+    padal na `Bitmap.createBitmap()` ze už recyklované bitmapy. Oprava:
+    recyklovat výřez, jen když `tile !== bitmap`, tedy jen když
+    `createBitmap()` opravdu vytvořil kopii
   - **Univerzální = počítá skutečně cokoliv, ne jen to, co má na fotce
     fotograf na mysli**: FastSAM nerozlišuje kategorie, takže v
     automatickém režimu (bez klepnutí na referenční kus) spočítá úplně

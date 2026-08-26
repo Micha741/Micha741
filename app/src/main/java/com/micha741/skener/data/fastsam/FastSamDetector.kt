@@ -64,7 +64,13 @@ class FastSamDetector(context: Context) {
         for (region in tileRegions(bitmap.width, bitmap.height)) {
             val tile = Bitmap.createBitmap(bitmap, region.left, region.top, region.width(), region.height())
             allBoxes += detectSingle(tile).map { it.offsetBy(region.left, region.top) }
-            tile.recycle()
+            // The full-photo region's crop bounds exactly match bitmap's own -
+            // Bitmap.createBitmap() special-cases that and returns bitmap
+            // itself rather than a copy, so recycling tile here would
+            // recycle the caller's bitmap out from under it (and crash every
+            // tile after this one, since they crop from the now-recycled
+            // bitmap): only recycle when createBitmap actually made a copy.
+            if (tile !== bitmap) tile.recycle()
         }
         return mergeOverlapping(allBoxes).map { DetectedBlob(box = it.box, label = null) }
     }
