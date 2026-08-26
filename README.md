@@ -103,6 +103,14 @@ stejně pro statickou fotku i živý náhled kamery — viz sekce Funkce níže.
     přepočtu na celou fotku byla jen malý zlomek, takže srovnání vůči
     celé fotce by ji nezachytilo). Skutečný kus, byť protáhlý (šroub,
     tužka), takhle velkou část dlaždice málokdy zabírá
+  - **Odmítnutí velikostních odlehlých hodnot** (jen automatický režim bez
+    referenčního kusu): dotýkající se kusy občas nechají mezi sebou
+    "ducha" — malý falešný box v mezeře mezi nimi (odraz světla, kousek
+    pozadí), který se dost nepřekrývá ani s jedním ze skutečných kusů, aby
+    ho zachytilo odstranění duplicit. `rejectSizeOutliers()` proto (při
+    alespoň 3 nalezených kusech) spočítá medián velikosti všech nalezených
+    boxů a vyhodí ty, co jsou výrazně menší (pod čtvrtinu mediánu) — když
+    appka počítá víc kusů stejné věci, měly by mít podobnou velikost
   - **Referenční kus**: klepnutím (na fotce i přímo v živém náhledu) lze
     označit jeden konkrétní kus a appka pak počítá jen kusy podobné
     velikosti (v rámci poměru ploch max. 3×) a — pokud má klasifikátor

@@ -49,7 +49,8 @@ data class CountResult(
  * coordinates the user tapped on one piece), only objects that are a
  * plausible size match (and, when both have one, share the same coarse
  * category) are kept and counted 1:1 - see [matchesReference]. Otherwise
- * every detected object counts.
+ * every detected object counts, minus anything [rejectSizeOutliers] throws
+ * out as an implausibly small stray detection relative to the rest.
  */
 class ObjectCounter(private val context: Context) {
 
@@ -111,7 +112,7 @@ class ObjectCounter(private val context: Context) {
         val kept = if (referenceBlob != null) {
             allBlobs.filter { matchesReference(it, referenceBlob) }
         } else {
-            allBlobs
+            rejectSizeOutliers(allBlobs)
         }
 
         val inverseScale = if (downscale < 1f) 1f / downscale else 1f
@@ -226,6 +227,28 @@ class ObjectCounter(private val context: Context) {
     }
 
     /**
+     * Auto mode only (no reference piece): device testing showed a stray
+     * box sitting in the gap between two real, touching pieces (a
+     * reflection, a sliver of the newspaper between two crocs) that
+     * [deduplicate] can't catch, since it doesn't meaningfully overlap
+     * either real piece - there's nothing to merge it into. When counting
+     * several instances of "the same kind of thing" (the app's whole
+     * premise), real pieces should be roughly consistent in size, so a box
+     * much smaller than the *median* of everything else found is more
+     * likely such a stray artifact than a genuinely distinct extra piece.
+     * Needs a handful of samples to make a meaningful median, and only
+     * applies here - reference mode already has its own, more reliable,
+     * user-anchored size check in [matchesReference].
+     */
+    private fun rejectSizeOutliers(blobs: List<DetectedBlob>): List<DetectedBlob> {
+        if (blobs.size < MIN_SAMPLES_FOR_SIZE_FILTER) return blobs
+        val areas = blobs.map { it.box.area() }.sorted()
+        val medianArea = areas[areas.size / 2]
+        if (medianArea <= 0) return blobs
+        return blobs.filter { it.box.area() >= medianArea * MIN_SIZE_RATIO_TO_MEDIAN }
+    }
+
+    /**
      * An object that straddles two tiles' overlap margin gets detected once
      * per tile, so the same physical object can show up as several
      * overlapping candidate boxes. Which box is the "right" one to keep
@@ -297,5 +320,7 @@ class ObjectCounter(private val context: Context) {
         const val DEDUPE_OVERLAP_THRESHOLD = 0.4
         const val MIN_EDGE_ASPECT_RATIO = 3.0
         const val EDGE_TILE_SPAN_FRACTION = 0.6
+        const val MIN_SAMPLES_FOR_SIZE_FILTER = 3
+        const val MIN_SIZE_RATIO_TO_MEDIAN = 0.25
     }
 }
