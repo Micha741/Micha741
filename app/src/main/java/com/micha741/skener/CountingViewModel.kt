@@ -27,6 +27,8 @@ data class CountingUiState(
     val excludedBoxes: Set<Rect> = emptySet(),
     /** Pieces the user manually marked (long-press on empty space the detector missed), each worth one piece. */
     val manualAdditions: List<Point> = emptyList(),
+    /** Region of interest the user dragged out (in original photo pixel coordinates) - detections outside it are discarded entirely, before reference/outlier filtering. Null means the whole photo counts. */
+    val roiBox: Rect? = null,
 ) {
     /** [count] adjusted for manual corrections: excluded blobs subtracted, manual additions added. */
     val adjustedCount: Int
@@ -47,21 +49,37 @@ class CountingViewModel(
 
     fun onPhotoSelected(uri: Uri) {
         _uiState.value = CountingUiState(photoUri = uri, isProcessing = true)
-        runCount(uri, referenceTap = null)
+        runCount(uri, referenceTap = null, roi = null)
     }
 
     /** User tapped a piece in the result photo (in original photo pixel coordinates): count only similar pieces. */
     fun onReferenceTap(point: Point) {
         val uri = _uiState.value.photoUri ?: return
+        val roi = _uiState.value.roiBox
         _uiState.update { it.copy(isProcessing = true) }
-        runCount(uri, referenceTap = point)
+        runCount(uri, referenceTap = point, roi = roi)
     }
 
-    /** Drops the reference piece and goes back to counting every detected piece. */
+    /** Drops the reference piece and goes back to counting every detected piece (within the ROI, if one is set). */
     fun clearReference() {
         val uri = _uiState.value.photoUri ?: return
+        val roi = _uiState.value.roiBox
         _uiState.update { it.copy(isProcessing = true, referenceActive = false, referenceBox = null) }
-        runCount(uri, referenceTap = null)
+        runCount(uri, referenceTap = null, roi = roi)
+    }
+
+    /** User dragged out a rectangle (in original photo pixel coordinates): only detections inside it count from now on. Drops any reference piece, since it may no longer be in view. */
+    fun setRoi(rect: Rect) {
+        val uri = _uiState.value.photoUri ?: return
+        _uiState.update { it.copy(isProcessing = true, roiBox = rect, referenceActive = false, referenceBox = null) }
+        runCount(uri, referenceTap = null, roi = rect)
+    }
+
+    /** Drops the region of interest and goes back to counting the whole photo. */
+    fun clearRoi() {
+        val uri = _uiState.value.photoUri ?: return
+        _uiState.update { it.copy(isProcessing = true, roiBox = null, referenceActive = false, referenceBox = null) }
+        runCount(uri, referenceTap = null, roi = null)
     }
 
     /** User long-pressed a detected piece: toggle it out of (or back into) the count. */
@@ -101,9 +119,9 @@ class CountingViewModel(
         counter.close()
     }
 
-    private fun runCount(uri: Uri, referenceTap: Point?) {
+    private fun runCount(uri: Uri, referenceTap: Point?, roi: Rect?) {
         viewModelScope.launch {
-            counter.count(uri, referenceTap)
+            counter.count(uri, referenceTap, roi)
                 .onSuccess { result ->
                     _uiState.update {
                         it.copy(

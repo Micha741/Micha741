@@ -149,7 +149,20 @@ model (TFLite, AGPL-3.0 — viz sekce Funkce níže), živý náhled kamery pře
     vzdálenost propustila spoustu listů, odstín správně nechal jen švestky).
     Barva se použije jen když má smysl — u nízko sytých/šedivých kusů
     (`matchesHue()`) se přeskočí, stejně jako se štítek přeskočí, když ho
-    aspoň jedna strana nemá
+    aspoň jedna strana nemá. I barva ale narazí na svůj limit, když má kus
+    skoro stejný odstín jako to, na čem leží (krémový česnek na světlém
+    dřevěném parketu — obojí vyjde jako nízko sytá téměř stejná béžová) —
+    pro přesně tenhle případ slouží oblast zájmu níž
+  - **Oblast zájmu**: tlačítkem "Vybrat oblast" appka přepne fotku do režimu
+    přetažení obdélníku (`detectDragGestures` místo klepání/podržení) — vše
+    mimo vybraný obdélník se zahodí ještě před referenčním/velikostním
+    filtrováním, ne až po něm. To řeší přesně to, co barva ani velikost
+    samy nezvládnou: falešné detekce na pozadí (kresba dřeva, textura
+    koberce) stejné velikosti *a* barvy jako počítané kusy, jen jinde na
+    fotce — oblast zájmu je stáhne pryč čistě podle polohy, bez ohledu na
+    to, jak moc se pozadí kusům podobá. Jde kombinovat s referenčním kusem
+    (klepnutí na kus uvnitř vybrané oblasti) i použít samostatně; výběr
+    nové oblasti zruší dosavadní referenční kus (může být mimo nový výřez)
   - **Ruční oprava** (jen u statické fotky): i natrénovaný detektor může
     dva těsně se dotýkající kusy spojit do jednoho, nebo nějaký přehlédnout
     — proto jde výsledek ručně doladit podržením prstu. Podržení na

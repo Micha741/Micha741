@@ -44,7 +44,14 @@ data class CountResult(
  * photo while it's still decoded here (FastSAM's own output is just boxes,
  * no color or category) - without it, tapping one plum on a tree photo
  * would also count every same-sized leaf, since to a class-agnostic
- * detector a leaf and a plum are just two similarly-sized blobs.
+ * detector a leaf and a plum are just two similarly-sized blobs. Color
+ * matching is no help when the piece and the clutter around it are close
+ * to the same color too (cream garlic on a light wood floor, say) - that's
+ * what [roi] is for: a rectangle (also in original-photo pixel coordinates,
+ * dragged out by the user over just the pieces) that throws out every
+ * detection outside it *before* reference/outlier filtering even runs, so
+ * a same-colored, similar-sized false detection sitting elsewhere in the
+ * frame never gets a chance to be counted in the first place.
  * Otherwise every detected object counts, minus anything
  * [rejectSizeOutliers] throws out as an implausibly small stray detection,
  * and anything [looksLikeStraightEdge] throws out as a straight
@@ -56,11 +63,11 @@ class ObjectCounter(context: Context) {
     private val detectorLazy = lazy { FastSamDetector(appContext) }
     private val detector by detectorLazy
 
-    suspend fun count(uri: Uri, referenceTap: Point? = null): Result<CountResult> = withContext(Dispatchers.Default) {
+    suspend fun count(uri: Uri, referenceTap: Point? = null, roi: Rect? = null): Result<CountResult> = withContext(Dispatchers.Default) {
         runCatching {
             val photo = decodePhoto(uri)
                 ?: throw IllegalArgumentException("Nepodařilo se načíst fotku")
-            analyze(photo, referenceTap)
+            analyze(photo, referenceTap, roi)
         }
     }
 
@@ -101,7 +108,7 @@ class ObjectCounter(context: Context) {
         return sampleSize
     }
 
-    private fun analyze(photo: DecodedPhoto, referenceTap: Point?): CountResult {
+    private fun analyze(photo: DecodedPhoto, referenceTap: Point?, roi: Rect?): CountResult {
         val bitmap = photo.bitmap
         // Same ratio on both axes: inSampleSize preserves aspect ratio.
         val inverseScale = photo.trueWidth.toFloat() / bitmap.width
@@ -109,6 +116,15 @@ class ObjectCounter(context: Context) {
         var allBlobs = detector.detect(bitmap)
         allBlobs = allBlobs.filterNot { looksLikeStraightEdge(it.box, bitmap.width, bitmap.height) }
         allBlobs = allBlobs.map { it.copy(avgColor = averageColor(bitmap, it.box)) }
+        if (roi != null) {
+            val bitmapRoi = Rect(
+                (roi.left / inverseScale).roundToInt(),
+                (roi.top / inverseScale).roundToInt(),
+                (roi.right / inverseScale).roundToInt(),
+                (roi.bottom / inverseScale).roundToInt(),
+            )
+            allBlobs = allBlobs.filter { bitmapRoi.contains(it.box.centerX(), it.box.centerY()) }
+        }
         bitmap.recycle()
 
         var referenceBlob: DetectedBlob? = null

@@ -29,6 +29,9 @@
     <string name="count_reference_active">Podobných vybranému kusu: %1$d ks</string>
     <string name="count_clear_reference">Zpět na počítání všech kusů</string>
     <string name="count_reference_not_found">Na tomto místě se nepodařilo najít žádný kus, zkus klepnout přesněji na jeho střed</string>
+    <string name="count_select_roi">Vybrat oblast</string>
+    <string name="count_roi_selecting">Přetáhni obdélník kolem kusů…</string>
+    <string name="count_clear_roi">Zrušit výběr oblasti</string>
     <string name="back">Zpět</string>
     <string name="close">Zavřít</string>
     <string name="live_count_badge">Napočítáno: %1$d ks</string>
