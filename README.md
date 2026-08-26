@@ -162,7 +162,15 @@ natrénovaný **FastSAM** model (TFLite, AGPL-3.0 — viz sekce Funkce níže).
     fotce — oblast zájmu je stáhne pryč čistě podle polohy, bez ohledu na
     to, jak moc se pozadí kusům podobá. Jde kombinovat s referenčním kusem
     (klepnutí na kus uvnitř vybrané oblasti) i použít samostatně; výběr
-    nové oblasti zruší dosavadní referenční kus (může být mimo nový výřez)
+    nové oblasti zruší dosavadní referenční kus (může být mimo nový výřez).
+    Souřadnice oblasti jsou zlomkové (0f..1f na každé hraně, ne pixely) -
+    díky tomu appka umí přenést oblast vybranou v živém náhledu (malý
+    zmenšený snímek) na plnou vyfocenou fotku (úplně jiné rozlišení): oběma
+    stačí rozumět si v "kolik procent šířky/výšky", ne v přesných pixelech.
+    Tlačítko spouště v `LiveCameraScreen` proto při focení pošle aktuálně
+    vybranou oblast dál (`onPhotoCaptured(uri, roi)` →
+    `CountingViewModel.onPhotoSelected(uri, roi)`), takže oblast vybraná a
+    už fungující v živém náhledu nemusí jít vybírat znovu na výsledné fotce
   - **Ruční oprava** (jen u statické fotky): i natrénovaný detektor může
     dva těsně se dotýkající kusy spojit do jednoho, nebo nějaký přehlédnout
     — proto jde výsledek ručně doladit podržením prstu. Podržení na
@@ -218,11 +226,23 @@ natrénovaný **FastSAM** model (TFLite, AGPL-3.0 — viz sekce Funkce níže).
     doběhnutí fronty (`analysisExecutor.awaitTermination()`)
   - **Oblast zájmu i v živém náhledu**: stejné gesto přetažení jako u
     fotky (`LiveFrameAnalyzer.setRoi()`) — zahodí detekce mimo vybraný
-    obdélník v snímkových souřadnicích ještě před referenčním
-    filtrováním. Jde vybrat v libovolném pořadí s referenčním kusem:
-    nejdřív oblast a pak klepnutím referenci uvnitř ní, nebo naopak —
-    referenční klepnutí se vždy vyhodnocuje už proti snímkům omezeným na
-    aktuální oblast zájmu, takže obě pořadí fungují stejně
+    obdélník ještě před referenčním filtrováním. Jde vybrat v libovolném
+    pořadí s referenčním kusem: nejdřív oblast a pak klepnutím referenci
+    uvnitř ní, nebo naopak — referenční klepnutí se vždy vyhodnocuje už
+    proti snímkům omezeným na aktuální oblast zájmu, takže obě pořadí
+    fungují stejně. Oblast je zlomková (0f..1f), přepočítaná na aktuální
+    snímek čerstvě při každém `analyze()` volání, ne jednou dopředu -
+    stejný důvod jako u fotky výše
+  - **Oblast zájmu přenesená z náhledu do vyfocené fotky**: appka dřív po
+    vyfocení z živého náhledu vždycky spustila počítání nanovo na celé
+    fotce, i když byla v náhledu vybraná oblast — na fotce se tak objevily
+    i falešné detekce z pozadí, které oblast v náhledu už úspěšně
+    odstínila (např. 6 stroužků česneku správně v náhledu, ale 13 kusů po
+    vyfocení, dokud se oblast nevybrala znovu). Tlačítko spouště teď
+    aktuálně vybranou (zlomkovou) oblast pošle spolu s fotkou
+    (`onPhotoCaptured(uri, roi)` → `CountingViewModel.onPhotoSelected(uri, roi)`),
+    takže se převezme rovnou a není potřeba ji na výsledné fotce
+    vybírat znovu
 - **Čtečka čárových a QR kódů**: kamera přes celou obrazovku (ML Kit
   Barcode Scanning) s ohraničujícím rámečkem uprostřed jako vizuální
   vodítko, zoom (posuvník napojený na `CameraControl.setLinearZoom`),

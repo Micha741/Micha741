@@ -355,8 +355,8 @@ private fun AppScaffold(
             }
             composable("live_count") {
                 LiveCameraScreen(
-                    onPhotoCaptured = { uri ->
-                        countingViewModel.onPhotoSelected(uri)
+                    onPhotoCaptured = { uri, roi ->
+                        countingViewModel.onPhotoSelected(uri, roi)
                         navController.popBackStack()
                     },
                     onClose = { navController.popBackStack() },

@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.graphics.Rect
+import android.graphics.RectF
 import android.net.Uri
 import com.micha741.skener.data.fastsam.FastSamDetector
 import kotlinx.coroutines.Dispatchers
@@ -46,11 +47,17 @@ data class CountResult(
  * detector a leaf and a plum are just two similarly-sized blobs. Color
  * matching is no help when the piece and the clutter around it are close
  * to the same color too (cream garlic on a light wood floor, say) - that's
- * what [roi] is for: a rectangle (also in original-photo pixel coordinates,
- * dragged out by the user over just the pieces) that throws out every
- * detection outside it *before* reference/outlier filtering even runs, so
- * a same-colored, similar-sized false detection sitting elsewhere in the
- * frame never gets a chance to be counted in the first place.
+ * what [roi] is for: a rectangle the user dragged out over just the pieces,
+ * that throws out every detection outside it *before* reference/outlier
+ * filtering even runs, so a same-colored, similar-sized false detection
+ * sitting elsewhere in the frame never gets a chance to be counted in the
+ * first place. [roi] is fractional (0f..1f on each edge, relative to
+ * whatever photo it's applied to) rather than pixel coordinates - a region
+ * picked in the live camera's small preview frame and one picked on this
+ * full-resolution photo need to mean "the same place" despite the two
+ * having entirely different pixel dimensions (see
+ * [com.micha741.skener.LiveCameraScreen]'s capture button, which carries
+ * the live ROI over to the captured photo this way).
  * Otherwise every detected object counts, minus anything
  * [rejectSizeOutliers] throws out as an implausibly small stray detection,
  * and anything [looksLikeStraightEdge] throws out as a straight
@@ -62,7 +69,7 @@ class ObjectCounter(context: Context) {
     private val detectorLazy = lazy { FastSamDetector(appContext) }
     private val detector by detectorLazy
 
-    suspend fun count(uri: Uri, referenceTap: Point? = null, roi: Rect? = null): Result<CountResult> = withContext(Dispatchers.Default) {
+    suspend fun count(uri: Uri, referenceTap: Point? = null, roi: RectF? = null): Result<CountResult> = withContext(Dispatchers.Default) {
         runCatching {
             val photo = decodePhoto(uri)
                 ?: throw IllegalArgumentException("Nepodařilo se načíst fotku")
@@ -107,7 +114,7 @@ class ObjectCounter(context: Context) {
         return sampleSize
     }
 
-    private fun analyze(photo: DecodedPhoto, referenceTap: Point?, roi: Rect?): CountResult {
+    private fun analyze(photo: DecodedPhoto, referenceTap: Point?, roi: RectF?): CountResult {
         val bitmap = photo.bitmap
         // Same ratio on both axes: inSampleSize preserves aspect ratio.
         val inverseScale = photo.trueWidth.toFloat() / bitmap.width
@@ -117,10 +124,10 @@ class ObjectCounter(context: Context) {
         allBlobs = allBlobs.map { it.copy(avgColor = averageColor(bitmap, it.box)) }
         if (roi != null) {
             val bitmapRoi = Rect(
-                (roi.left / inverseScale).roundToInt(),
-                (roi.top / inverseScale).roundToInt(),
-                (roi.right / inverseScale).roundToInt(),
-                (roi.bottom / inverseScale).roundToInt(),
+                (roi.left * bitmap.width).roundToInt(),
+                (roi.top * bitmap.height).roundToInt(),
+                (roi.right * bitmap.width).roundToInt(),
+                (roi.bottom * bitmap.height).roundToInt(),
             )
             allBlobs = allBlobs.filter { bitmapRoi.contains(it.box.centerX(), it.box.centerY()) }
         }

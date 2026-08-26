@@ -3,6 +3,7 @@ package com.micha741.skener.data
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Rect
+import android.graphics.RectF
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.micha741.skener.data.fastsam.FastSamDetector
@@ -50,13 +51,17 @@ data class LiveFrameResult(
  * in frame coordinates; the analyzer resolves it against the *next*
  * analyzed frame's detections and retains that blob until [clearReference].
  *
- * [setRoi] lets the UI drag out a region of interest (also frame
- * coordinates): detections whose center falls outside it are discarded
- * before reference matching runs, same order and same purpose as
- * [com.micha741.skener.data.ObjectCounter]'s roi parameter - a same-sized,
- * same-colored false detection sitting elsewhere in the frame (a
- * background pattern) never gets a chance to be counted, regardless of
- * how well size/color matching would or wouldn't have caught it.
+ * [setRoi] lets the UI drag out a region of interest, fractional (0f..1f on
+ * each edge, converted to this frame's own pixel dimensions fresh on every
+ * [analyze] call rather than once up front): detections whose center falls
+ * outside it are discarded before reference matching runs, same order and
+ * same purpose as [com.micha741.skener.data.ObjectCounter]'s roi parameter -
+ * a same-sized, same-colored false detection sitting elsewhere in the frame
+ * (a background pattern) never gets a chance to be counted, regardless of
+ * how well size/color matching would or wouldn't have caught it. Fractional
+ * rather than pixel coordinates so the same region also means the same
+ * place if it's carried over to a captured photo of a different resolution
+ * (see [com.micha741.skener.LiveCameraScreen]'s capture button).
  */
 class LiveFrameAnalyzer(
     context: Context,
@@ -74,7 +79,7 @@ class LiveFrameAnalyzer(
     private var pendingReferenceTap: IntArray? = null
 
     @Volatile
-    private var roiBox: Rect? = null
+    private var roiBox: RectF? = null
 
     @Volatile
     private var lastAnalyzedAtMs = 0L
@@ -89,8 +94,8 @@ class LiveFrameAnalyzer(
         referenceBlob = null
     }
 
-    /** Call from the UI thread: only detections whose center falls within [rect] (frame coordinates) count from now on. Drops any retained reference, since it may fall outside the new region. */
-    fun setRoi(rect: Rect) {
+    /** Call from the UI thread: only detections whose center falls within [rect] (fractional, 0f..1f) count from now on. Drops any retained reference, since it may fall outside the new region. */
+    fun setRoi(rect: RectF) {
         roiBox = rect
         referenceBlob = null
     }
@@ -126,7 +131,13 @@ class LiveFrameAnalyzer(
 
             val roi = roiBox
             if (roi != null) {
-                allBlobs = allBlobs.filter { roi.contains(it.box.centerX(), it.box.centerY()) }
+                val pixelRoi = Rect(
+                    (roi.left * width).roundToInt(),
+                    (roi.top * height).roundToInt(),
+                    (roi.right * width).roundToInt(),
+                    (roi.bottom * height).roundToInt(),
+                )
+                allBlobs = allBlobs.filter { pixelRoi.contains(it.box.centerX(), it.box.centerY()) }
             }
             bitmap.recycle()
 

@@ -1,7 +1,7 @@
 package com.micha741.skener
 
 import android.content.Context
-import android.graphics.Rect
+import android.graphics.RectF
 import android.net.Uri
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
@@ -79,11 +79,14 @@ import kotlin.math.roundToInt
  * like it does the other way around, since [LiveFrameAnalyzer] resolves a
  * reference tap against the already-ROI-filtered detections, not the raw
  * ones. Also takes a full-resolution photo on demand for the precise
- * final count.
+ * final count - the shutter button passes the currently-active region of
+ * interest, if any, along to [onPhotoCaptured] (fractional, see
+ * [LiveFrameAnalyzer.setRoi]) so a region already dialed in here carries
+ * over to the captured photo instead of forcing it to be redrawn.
  */
 @Composable
 fun LiveCameraScreen(
-    onPhotoCaptured: (Uri) -> Unit,
+    onPhotoCaptured: (Uri, RectF?) -> Unit,
     onClose: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -101,7 +104,7 @@ fun LiveCameraScreen(
     var camera by remember { mutableStateOf<Camera?>(null) }
     var zoom by remember { mutableFloatStateOf(0f) }
     var isSelectingRoi by remember { mutableStateOf(false) }
-    var roiBox by remember { mutableStateOf<Rect?>(null) }
+    var roiBox by remember { mutableStateOf<RectF?>(null) }
     var dragStart by remember(isSelectingRoi) { mutableStateOf<Offset?>(null) }
     var dragCurrent by remember(isSelectingRoi) { mutableStateOf<Offset?>(null) }
 
@@ -184,11 +187,11 @@ fun LiveCameraScreen(
                                     val scale = max(boundsWidth / result.frameWidth, boundsHeight / result.frameHeight)
                                     val offsetX = (boundsWidth - result.frameWidth * scale) / 2f
                                     val offsetY = (boundsHeight - result.frameHeight * scale) / 2f
-                                    val left = ((min(start.x, end.x) - offsetX) / scale).roundToInt().coerceIn(0, result.frameWidth - 1)
-                                    val top = ((min(start.y, end.y) - offsetY) / scale).roundToInt().coerceIn(0, result.frameHeight - 1)
-                                    val right = ((max(start.x, end.x) - offsetX) / scale).roundToInt().coerceIn(left + 1, result.frameWidth)
-                                    val bottom = ((max(start.y, end.y) - offsetY) / scale).roundToInt().coerceIn(top + 1, result.frameHeight)
-                                    val rect = Rect(left, top, right, bottom)
+                                    val left = (((min(start.x, end.x) - offsetX) / scale) / result.frameWidth).coerceIn(0f, 1f)
+                                    val top = (((min(start.y, end.y) - offsetY) / scale) / result.frameHeight).coerceIn(0f, 1f)
+                                    val right = (((max(start.x, end.x) - offsetX) / scale) / result.frameWidth).coerceIn(left, 1f)
+                                    val bottom = (((max(start.y, end.y) - offsetY) / scale) / result.frameHeight).coerceIn(top, 1f)
+                                    val rect = RectF(left, top, right, bottom)
                                     roiBox = rect
                                     analyzer.setRoi(rect)
                                 }
@@ -249,8 +252,14 @@ fun LiveCameraScreen(
             roiBox?.let { roi ->
                 drawRect(
                     color = Color.White,
-                    topLeft = Offset(offsetX + roi.left * scale, offsetY + roi.top * scale),
-                    size = Size(roi.width() * scale, roi.height() * scale),
+                    topLeft = Offset(
+                        offsetX + roi.left * result.frameWidth * scale,
+                        offsetY + roi.top * result.frameHeight * scale,
+                    ),
+                    size = Size(
+                        roi.width() * result.frameWidth * scale,
+                        roi.height() * result.frameHeight * scale,
+                    ),
                     style = roiStroke,
                 )
             }
@@ -386,7 +395,7 @@ fun LiveCameraScreen(
                             imageCapture = imageCapture,
                             onSuccess = { uri ->
                                 isCapturing = false
-                                onPhotoCaptured(uri)
+                                onPhotoCaptured(uri, roiBox)
                             },
                             onError = { message ->
                                 isCapturing = false

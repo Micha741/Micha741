@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.graphics.Rect
+import android.graphics.RectF
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -32,8 +33,8 @@ data class CountingUiState(
     val excludedBoxes: Set<Rect> = emptySet(),
     /** Pieces the user manually marked (long-press on empty space the detector missed), each worth one piece. */
     val manualAdditions: List<Point> = emptyList(),
-    /** Region of interest the user dragged out (in original photo pixel coordinates) - detections outside it are discarded entirely, before reference/outlier filtering. Null means the whole photo counts. */
-    val roiBox: Rect? = null,
+    /** Region of interest the user dragged out, fractional (0f..1f on each edge, relative to the photo) - detections outside it are discarded entirely, before reference/outlier filtering. Fractional rather than pixel coordinates so a region picked in the live camera can carry over to a captured photo of a completely different resolution. Null means the whole photo counts. */
+    val roiBox: RectF? = null,
 ) {
     /** [count] adjusted for manual corrections: excluded blobs subtracted, manual additions added. */
     val adjustedCount: Int
@@ -52,9 +53,10 @@ class CountingViewModel(
     private val _uiState = MutableStateFlow(CountingUiState())
     val uiState: StateFlow<CountingUiState> = _uiState.asStateFlow()
 
-    fun onPhotoSelected(uri: Uri) {
-        _uiState.value = CountingUiState(photoUri = uri, isProcessing = true)
-        runCount(uri, referenceTap = null, roi = null)
+    /** [roi] carries over a region of interest already selected elsewhere (the live camera's capture button passes along whatever ROI was active there) - see [CountingUiState.roiBox] on why it's fractional. */
+    fun onPhotoSelected(uri: Uri, roi: RectF? = null) {
+        _uiState.value = CountingUiState(photoUri = uri, isProcessing = true, roiBox = roi)
+        runCount(uri, referenceTap = null, roi = roi)
     }
 
     /** User tapped a piece in the result photo (in original photo pixel coordinates): count only similar pieces. */
@@ -73,8 +75,8 @@ class CountingViewModel(
         runCount(uri, referenceTap = null, roi = roi)
     }
 
-    /** User dragged out a rectangle (in original photo pixel coordinates): only detections inside it count from now on. Drops any reference piece, since it may no longer be in view. */
-    fun setRoi(rect: Rect) {
+    /** User dragged out a rectangle (fractional, see [CountingUiState.roiBox]): only detections inside it count from now on. Drops any reference piece, since it may no longer be in view. */
+    fun setRoi(rect: RectF) {
         val uri = _uiState.value.photoUri ?: return
         _uiState.update { it.copy(isProcessing = true, roiBox = rect, referenceActive = false, referenceBox = null) }
         runCount(uri, referenceTap = null, roi = rect)
@@ -174,7 +176,7 @@ class CountingViewModel(
         counter.close()
     }
 
-    private fun runCount(uri: Uri, referenceTap: Point?, roi: Rect?) {
+    private fun runCount(uri: Uri, referenceTap: Point?, roi: RectF?) {
         viewModelScope.launch {
             counter.count(uri, referenceTap, roi)
                 .onSuccess { result ->

@@ -3,6 +3,7 @@ package com.micha741.skener
 import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.graphics.Rect
+import android.graphics.RectF
 import android.net.Uri
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -215,7 +216,7 @@ private fun CountingResult(
     blobs: List<DetectedBlob>,
     referenceBox: Rect?,
     referenceActive: Boolean,
-    roiBox: Rect?,
+    roiBox: RectF?,
     isSelectingRoi: Boolean,
     count: Int?,
     excludedBoxes: Set<Rect>,
@@ -225,7 +226,7 @@ private fun CountingResult(
     onToggleExclude: (Rect) -> Unit,
     onAddManual: (Point) -> Unit,
     onRemoveManual: (Point) -> Unit,
-    onRoiSelected: (Rect) -> Unit,
+    onRoiSelected: (RectF) -> Unit,
 ) {
     val context = LocalContext.current
     val bitmap = remember(photoUri) {
@@ -257,13 +258,11 @@ private fun CountingResult(
                             val start = dragStart
                             val end = dragCurrent
                             if (start != null && end != null) {
-                                val scaleX = size.width.toFloat() / bitmap.width
-                                val scaleY = size.height.toFloat() / bitmap.height
-                                val left = (min(start.x, end.x) / scaleX).roundToInt().coerceIn(0, bitmap.width - 1)
-                                val top = (min(start.y, end.y) / scaleY).roundToInt().coerceIn(0, bitmap.height - 1)
-                                val right = (max(start.x, end.x) / scaleX).roundToInt().coerceIn(left + 1, bitmap.width)
-                                val bottom = (max(start.y, end.y) / scaleY).roundToInt().coerceIn(top + 1, bitmap.height)
-                                onRoiSelected(Rect(left, top, right, bottom))
+                                val left = (min(start.x, end.x) / size.width).coerceIn(0f, 1f)
+                                val top = (min(start.y, end.y) / size.height).coerceIn(0f, 1f)
+                                val right = (max(start.x, end.x) / size.width).coerceIn(left, 1f)
+                                val bottom = (max(start.y, end.y) / size.height).coerceIn(top, 1f)
+                                onRoiSelected(RectF(left, top, right, bottom))
                             }
                             dragStart = null
                             dragCurrent = null
@@ -361,8 +360,8 @@ private fun CountingResult(
             if (roiBox != null) {
                 drawRect(
                     color = Color.White,
-                    topLeft = Offset(roiBox.left * scaleX, roiBox.top * scaleY),
-                    size = Size(roiBox.width() * scaleX, roiBox.height() * scaleY),
+                    topLeft = Offset(roiBox.left * size.width, roiBox.top * size.height),
+                    size = Size(roiBox.width() * size.width, roiBox.height() * size.height),
                     style = roiStroke,
                 )
             }
