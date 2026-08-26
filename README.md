@@ -137,6 +137,13 @@ model (TFLite, AGPL-3.0 — viz sekce Funkce níže), živý náhled kamery pře
     zase odebere. Zobrazený počet (`adjustedCount` v `CountingViewModel`)
     započítává i tyto ruční úpravy; při nové fotce nebo přepnutí reference
     se úpravy vždy vynulují
+  - **Fotka přes celou šířku obrazovky**: `CountingScreen.kt` dřív měl kolem
+    fotky pevných 16dp okrajů a pod ní samostatné řádky nápovědy (klepni na
+    kus / podrž prst) a až pod nimi výsledek — na menší obrazovce to fotce
+    ubíralo dost místa. Okraje jsou pryč, fotka jde teď přes celou šířku a
+    počet ("Napočítáno: X ks") se vykresluje jako poloprůhledný pruh přes
+    spodní okraj fotky samotné, ne jako text pod ní - nápovědové řádky byly
+    odstraněné úplně
   - **Živý náhled zůstává na ML Kitu** (`enableMultipleObjects()`,
     `enableClassification()`), s referenčním kusem (klepnutím na kus v
     hledáčku), zoomem a stejným zpracováním kamerového snímku

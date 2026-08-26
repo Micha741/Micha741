@@ -90,8 +90,7 @@ fun CountingScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp),
+                .padding(padding),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             val photoUri = uiState.photoUri
@@ -134,7 +133,10 @@ fun CountingScreen(
 @Composable
 private fun CountingEmptyState(onCapturePhoto: () -> Unit, onPickPhoto: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
             Icon(
                 Icons.Default.FormatListNumbered,
                 contentDescription = null,
@@ -285,40 +287,33 @@ private fun CountingResult(
                 }
             }
         }
-    }
-
-    if (!isProcessing) {
-        Text(
-            text = stringResource(R.string.count_tap_hint),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(top = 8.dp),
-        )
-        Text(
-            text = stringResource(R.string.count_long_press_hint),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(top = 2.dp),
-        )
-    }
-
-    if (!isProcessing && count != null) {
-        Text(
-            text = if (referenceActive) {
-                stringResource(R.string.count_reference_active, count)
-            } else {
-                stringResource(R.string.count_result, count)
-            },
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(top = 8.dp),
-        )
-        if (count == 0) {
-            Text(
-                text = stringResource(R.string.count_zero_hint),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 4.dp),
-            )
+        if (!isProcessing && count != null) {
+            Surface(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth(),
+                color = MaterialTheme.colorScheme.scrim.copy(alpha = 0.55f),
+            ) {
+                Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                    Text(
+                        text = if (referenceActive) {
+                            stringResource(R.string.count_reference_active, count)
+                        } else {
+                            stringResource(R.string.count_result, count)
+                        },
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = Color.White,
+                    )
+                    if (count == 0) {
+                        Text(
+                            text = stringResource(R.string.count_zero_hint),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White,
+                            modifier = Modifier.padding(top = 4.dp),
+                        )
+                    }
+                }
+            }
         }
     }
 }
