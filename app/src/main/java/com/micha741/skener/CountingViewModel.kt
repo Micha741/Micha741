@@ -1,18 +1,23 @@
 package com.micha741.skener
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.graphics.Rect
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.micha741.skener.data.CountingResultEncoder
 import com.micha741.skener.data.DetectedBlob
 import com.micha741.skener.data.ObjectCounter
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 data class CountingUiState(
     val photoUri: Uri? = null,
@@ -104,6 +109,56 @@ class CountingViewModel(
                 dx * dx + dy * dy
             } ?: return@update state
             state.copy(manualAdditions = state.manualAdditions - nearest)
+        }
+    }
+
+    /**
+     * Flattens the current photo, boxes and count into one image and writes
+     * it to [destUri] (from a Storage Access Framework picker, same pattern
+     * as [com.micha741.skener.MainActivity]'s PDF/barcode-image saves) - the
+     * on-screen result only exists as a live overlay, nothing durable to
+     * point a save at otherwise. No-op if there's no result yet.
+     */
+    fun saveResult(destUri: Uri) {
+        val state = _uiState.value
+        val photoUri = state.photoUri ?: return
+        if (state.count == null) return
+
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.Default) {
+                runCatching {
+                    val bitmap = appContext.contentResolver.openInputStream(photoUri)
+                        ?.use { BitmapFactory.decodeStream(it) }
+                        ?: throw IllegalStateException(appContext.getString(R.string.count_failed))
+                    val countLabel = if (state.referenceActive) {
+                        appContext.getString(R.string.count_reference_active, state.adjustedCount)
+                    } else {
+                        appContext.getString(R.string.count_result, state.adjustedCount)
+                    }
+                    val encoded = CountingResultEncoder.encode(
+                        bitmap = bitmap,
+                        blobs = state.blobs,
+                        excludedBoxes = state.excludedBoxes,
+                        manualAdditions = state.manualAdditions,
+                        referenceActive = state.referenceActive,
+                        referenceBox = state.referenceBox,
+                        countLabel = countLabel,
+                    )
+                    val written = appContext.contentResolver.openOutputStream(destUri)?.use { output ->
+                        encoded.compress(Bitmap.CompressFormat.PNG, 100, output)
+                    }
+                    if (written != true) throw IllegalStateException(appContext.getString(R.string.save_failed))
+                }
+            }
+            _uiState.update {
+                it.copy(
+                    errorMessage = if (result.isSuccess) {
+                        appContext.getString(R.string.count_save_success)
+                    } else {
+                        result.exceptionOrNull()?.message ?: appContext.getString(R.string.save_failed)
+                    },
+                )
+            }
         }
     }
 

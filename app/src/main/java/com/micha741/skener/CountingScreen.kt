@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.CropFree
 import androidx.compose.material.icons.filled.FormatListNumbered
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -70,6 +71,7 @@ fun CountingScreen(
     viewModel: CountingViewModel,
     onCapturePhoto: () -> Unit,
     onPickPhoto: () -> Unit,
+    onSaveResult: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -89,6 +91,13 @@ fun CountingScreen(
                     if (uiState.photoUri != null) {
                         IconButton(onClick = { viewModel.reset() }) {
                             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
+                        }
+                    }
+                },
+                actions = {
+                    if (uiState.count != null) {
+                        IconButton(onClick = onSaveResult) {
+                            Icon(Icons.Default.Save, contentDescription = stringResource(R.string.count_save))
                         }
                     }
                 },

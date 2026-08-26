@@ -165,6 +165,14 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
+                val saveCountResultLauncher = rememberLauncherForActivityResult(
+                    ActivityResultContracts.CreateDocument("image/png")
+                ) { destUri ->
+                    if (destUri != null) {
+                        countingViewModel.saveResult(destUri)
+                    }
+                }
+
                 AppScaffold(
                     navController = navController,
                     scanViewModel = viewModel,
@@ -189,6 +197,9 @@ class MainActivity : ComponentActivity() {
                     onSaveBarcodeImage = { code ->
                         pendingSaveBarcode = code
                         saveBarcodeImageLauncher.launch("kod_${code.timestamp}.png")
+                    },
+                    onSaveCountResult = {
+                        saveCountResultLauncher.launch("pocet_${System.currentTimeMillis()}.png")
                     },
                 )
             }
@@ -290,6 +301,7 @@ private fun AppScaffold(
     onPickPhoto: () -> Unit,
     onPickBarcodePhoto: () -> Unit,
     onSaveBarcodeImage: (ScannedCode) -> Unit,
+    onSaveCountResult: () -> Unit,
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
@@ -338,6 +350,7 @@ private fun AppScaffold(
                     viewModel = countingViewModel,
                     onCapturePhoto = { navController.navigate("live_count") },
                     onPickPhoto = onPickPhoto,
+                    onSaveResult = onSaveCountResult,
                 )
             }
             composable("live_count") {

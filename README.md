@@ -172,6 +172,17 @@ natrénovaný **FastSAM** model (TFLite, AGPL-3.0 — viz sekce Funkce níže).
     zase odebere. Zobrazený počet (`adjustedCount` v `CountingViewModel`)
     započítává i tyto ruční úpravy; při nové fotce nebo přepnutí reference
     se úpravy vždy vynulují
+  - **Uložení výsledku jako obrázek**: ikona uložení v horní liště (viditelná,
+    jen když appka má nějaký výsledek) vezme aktuální fotku, do kopie
+    (`CountingResultEncoder.encode()`, `android.graphics.Canvas`/`Paint`, ne
+    zachycení Compose obrazovky) dokreslí přesně to, co appka ukazuje na
+    displeji — barevné boxy (včetně vyřazených šedě a referenčního žlutě),
+    zelené kroužky ručně přidaných kusů a pruh s počtem dole — a přes
+    systémový výběr umístění (`ActivityResultContracts.CreateDocument`,
+    stejný vzor jako uložení PDF/kódu) ho uloží jako PNG. Tloušťky čar a
+    velikost kroužků/textu se počítají relativně k rozlišení *fotky* (ne
+    pevné konstanty z náhledu na displeji), aby na uloženém víc-megapixelovém
+    obrázku nebyly vlásečnicové
   - **Fotka přes celou šířku obrazovky**: `CountingScreen.kt` dřív měl kolem
     fotky pevných 16dp okrajů a pod ní samostatné řádky nápovědy (klepni na
     kus / podrž prst) a až pod nimi výsledek — na menší obrazovce to fotce
@@ -254,7 +265,8 @@ app/src/main/java/com/micha741/skener/
 │   ├── BarcodeAnalyzer.kt   # CameraX analyzer: živé snímky -> ML Kit Barcode Scanning
 │   ├── DocumentTextExtractor.kt # OCR jedné stránky + odhad formátování (velikost/tučné/kurzíva/barva) na řádek
 │   ├── TextPdfWriter.kt     # vykreslí rozpoznaný text pozičně/formátovaně do PDF (bez fotky)
-│   └── BarcodeImageEncoder.kt # zpětně zakóduje hodnotu kódu do bitmapy (ZXing) pro uložení jako obrázek
+│   ├── BarcodeImageEncoder.kt # zpětně zakóduje hodnotu kódu do bitmapy (ZXing) pro uložení jako obrázek
+│   └── CountingResultEncoder.kt # dokreslí boxy/kroužky/počet do kopie fotky pro uložení výsledku počítání
 ├── assets/
 │   └── fastsam_s.tflite     # FastSAM-s model (~45 MB, AGPL-3.0) pro počítání kusů - fotka i živý náhled
 └── ui/theme/Theme.kt        # Material 3 theme (light/dark, dynamic color)
