@@ -15,8 +15,9 @@ Nativní Android aplikace (Kotlin + Jetpack Compose), která pomocí kamery
 naskenuje dokument, automaticky ho ořízne/vylepší a uloží jako PDF.
 Skenování dokumentu je postavené na [ML Kit Document Scanner API](https://developers.google.com/ml-kit/vision/doc-scanner)
 (detekce hran, korekce perspektivy, filtry, vícestránkové skeny). Počítání
-kusů běží přes [ML Kit Object Detection & Tracking](https://developers.google.com/ml-kit/vision/object-detection),
-stejně pro statickou fotku i živý náhled kamery — viz sekce Funkce níže.
+kusů ze statické fotky běží přes vlastní na zařízení natrénovaný **FastSAM**
+model (TFLite, AGPL-3.0 — viz sekce Funkce níže), živý náhled kamery přes
+[ML Kit Object Detection & Tracking](https://developers.google.com/ml-kit/vision/object-detection).
 
 ### Funkce
 
@@ -45,78 +46,57 @@ stejně pro statickou fotku i živý náhled kamery — viz sekce Funkce níže.
   Framework), takže PDF jde uložit třeba do Stažených souborů, na Disk
   nebo SD kartu, mimo interní úložiště appky
 - Smazání skenu
-- **Počítání kusů** — statická fotka/výběr z galerie i živý náhled z kamery
-  (CameraX) běží přes **ML Kit Object Detection & Tracking**
-  (`play-services-mlkit-object-detection`, `data/ObjectCounter.kt` a
-  `data/LiveFrameAnalyzer.kt`), s vícenásobnou detekcí a hrubou klasifikací
-  zapnutou (`enableMultipleObjects()`, `enableClassification()`):
-  - Předchozí verze appky měla vlastní OpenCV pipeline (adaptivní práh,
-    barevná segmentace, watershed rozdělení slepených kusů, vlastní
-    klasifikace tvaru) — na opakovaných reálných fotkách (dřevěný stůl se
-    žílami, potištěná látka) se ale pořád znovu ukázalo, že čistě
-    kontrastní/barevný heuristický přístup nedokáže spolehlivě odlišit
-    "kus" od textury pozadí, ať se ladí sebevíc. ML Kit místo toho používá
-    natrénovaný on-device model, který pozná oddělené objekty ve scéně,
-    ne jen lokální kontrast — appka tak dostává hotové ohraničující
-    obdélníky jednotlivých kusů (ne přesný obrys), ale mnohem
-    spolehlivěji oddělené od pozadí i od sebe navzájem
-  - **Detekce po dlaždicích** (jen u statické fotky): základní ML Kit model
-    je laděný na pár výrazných objektů zabírajících podstatnou část
-    záběru — pár drobných kusů rozesetých po velké ploše (semínka na
-    podlaze) tak dokázal spojit do jednoho velkého "zajímavého místa"
-    místo aby je našel jednotlivě, protože se na žádný kus pořádně
-    "nepodíval" zblízka. `ObjectCounter.detectTiled()` proto fotku rozdělí
-    na překrývající se mřížku dlaždic (3×3), každou zvětší na stejné
-    pracovní rozlišení jako celou fotku předtím (takže drobný kus najednou
-    zabírá mnohem větší podíl toho, co detektor vidí) a spustí detekci na
-    každé zvlášť. Výsledky z dlaždic se namapují zpět do souřadnic
-    původní fotky a přes IoU (překryv boxů) se odstraní duplicity kusů
-    zachycených ve více dlaždicích najednou (`deduplicate()`). Živý náhled
-    dlaždice nepoužívá — devět detekcí na snímek by pro plynulý hledáček
-    bylo příliš pomalé — takže tam funguje jeden průchod na (škrcený)
-    snímek jako dřív. `ObjectCounter.runDetection()` navíc pro každou
-    dlaždici vytvoří a hned zavře **nový** klienta detektoru, místo aby
-    jednoho sdíleného klienta volal 9× po sobě — reálný pád na zařízení
-    (nativní pád uvnitř `libmlkitcommonpipeline.so`, mimo dosah Kotlin
-    try/catch) ukázal, že opakované volání `process()` na jednom klientovi
-    v rychlém sledu dokáže shodit nativní část ML Kitu. Živý náhled tohle
-    nepotřebuje — tam běží `STREAM_MODE`, který je na opakované volání na
-    jednom klientovi navržený (drží kontinuitu sledování mezi snímky)
-  - **Odstranění duplicit mezi dlaždicemi**: kus, co leží na okraji dvou
-    dlaždic (nebo je zabraný jednou dlaždicí vcelku a druhou po částech),
-    může vyjít z detekce vícekrát. `ObjectCounter.deduplicate()` proto
-    porovnává překryv boxů vůči *menšímu* z dvojice (ne vůči jejich
-    sjednocení jako klasické IoU) — to pozná i "malý box skoro celý
-    uvnitř velkého", což IoU při hodně rozdílné velikosti boxů přehlídne.
-    Když se u jednoho velkého boxu najdou dva a víc menších boxů, co se
-    vzájemně nepřekrývají (typicky roztroušené drobné kusy jako semínka),
-    je velký box vyhozen jako chybné sloučení a zůstanou ty menší,
-    samostatné. Když menší boxy uvnitř velkého jsou
-    naopak jen navzájem se překrývající duplicity stejného kusu (např.
-    "celá bota" a "jen její špička" z různých dlaždic), zůstane jen ten
-    největší a zbytek se zahodí
-  - **Filtr na rovné hrany**: detektor si občas splete výraznou rovnou
-    čáru v pozadí (zárubeň dveří, spára mezi dlaždicemi) se "zajímavým
-    objektem". `looksLikeStraightEdge()` proto vyhodí box, který je
-    zároveň hodně protáhlý *a* zabírá většinu své vlastní dlaždice (ne
-    celé fotky — čára táhnoucí se přes většinu jedné dlaždice by v
-    přepočtu na celou fotku byla jen malý zlomek, takže srovnání vůči
-    celé fotce by ji nezachytilo). Skutečný kus, byť protáhlý (šroub,
-    tužka), takhle velkou část dlaždice málokdy zabírá
+- **Počítání kusů** — statická fotka/výběr z galerie běží přes vlastní
+  natrénovaný **FastSAM-s** model (`assets/fastsam_s.tflite`,
+  `data/fastsam/FastSamDetector.kt`), živý náhled z kamery (CameraX) pořád
+  přes **ML Kit Object Detection & Tracking** (`data/LiveFrameAnalyzer.kt`):
+  - Appka postupně prošla třemi generacemi segmentace: vlastní OpenCV
+    pipeline (adaptivní práh/barva/watershed) na opakovaných reálných
+    fotkách (dřevěný stůl se žílami, potištěná látka) pořád znovu
+    ukazovala, že čistě kontrastní heuristika nedokáže odlišit "kus" od
+    textury pozadí; ML Kit Object Detection to o dost zlepšil, ale jako
+    natrénovaný jen na pár širokých kategorií (jídlo/oblečení/rostlina...)
+    měl problém s neznámými/drobnými/těsně u sebe naskládanými kusy.
+    **FastSAM** je jiný typ modelu — *class-agnostic* "segment everything":
+    neptá se "co to je", jen hledá každou opticky oddělenou oblast ve
+    scéně, což je přesně to, co potřebuje appka na počítání "čehokoliv"
+  - Model je exportovaná varianta FastSAM-s (postavená na architektuře
+    YOLOv8-seg, checkpoint CASIA-IVA-Lab/Ultralytics) do TFLite, běží
+    přímo na zařízení (`org.tensorflow:tensorflow-lite`), offline, zdarma.
+    Vstup má pevných 320×320 px — fotka se před vložením do modelu
+    "letterboxuje" (zmenší se zachováním poměru stran a dorovná šedou
+    barvou na čtverec), aby se nezdeformovala. Appka zatím čte jen
+    hlavu s obdélníky a skóre (37 kanálů na kotvu × 2100 kotev = 4 souřadnice
+    + 1 skóre + 32 koeficientů masky, z nichž se koeficienty zatím
+    nevyužívají) a spustí přes ně vlastní NMS (potlačení překrývajících
+    se duplicit podle skóre) — appka tedy zatím kreslí obdélníky, ne
+    přesné obrysy, i když by je model uměl dát (výstup masek [1,32,80,80]
+    v modelu je, jen se zatím nezpracovává)
+  - **Licence**: FastSAM i nástroje použité k exportu jsou pod AGPL-3.0
+    (text v `/third_party_licenses/FastSAM_AGPL-3.0_LICENSE.txt`) — tahle
+    licence je "nakažlivá": pokud appku někomu distribuuješ (i zdarma),
+    zavazuje tě to zveřejnit celý zdrojový kód appky pod stejnou licencí.
+    Repozitář je už veřejný, takže to prakticky nic nemění, ale je dobré
+    o tom vědět
+  - **Filtr na rovné hrany**: dřívější testování (ještě s ML Kitem)
+    ukázalo, že detektor dokáže splést výraznou rovnou čáru v pozadí
+    (zárubeň dveří, spára mezi dlaždicemi) se "zajímavým objektem".
+    `looksLikeStraightEdge()` proto vyhodí box, který je zároveň hodně
+    protáhlý *a* zabírá většinu celé fotky — skutečný kus, byť protáhlý
+    (šroub, tužka), takhle velkou část záběru málokdy zabírá
   - **Odmítnutí velikostních odlehlých hodnot** (jen automatický režim bez
     referenčního kusu): dotýkající se kusy občas nechají mezi sebou
     "ducha" — malý falešný box v mezeře mezi nimi (odraz světla, kousek
-    pozadí), který se dost nepřekrývá ani s jedním ze skutečných kusů, aby
-    ho zachytilo odstranění duplicit. `rejectSizeOutliers()` proto (při
-    alespoň 3 nalezených kusech) spočítá medián velikosti všech nalezených
-    boxů a vyhodí ty, co jsou výrazně menší (pod čtvrtinu mediánu) — když
-    appka počítá víc kusů stejné věci, měly by mít podobnou velikost
-  - **Referenční kus**: klepnutím (na fotce i přímo v živém náhledu) lze
-    označit jeden konkrétní kus a appka pak počítá jen kusy podobné
-    velikosti (v rámci poměru ploch max. 3×) a — pokud má klasifikátor
-    jistou hrubou kategorii u obou (např. "Food") — i stejné kategorie.
-    Klasifikátor zná jen pár širokých kategorií a u spousty věcí žádnou
-    jistou kategorii nevrátí, takže v praxi rozhoduje hlavně velikost
+    pozadí), který model vlastní NMS nezachytí, protože se dost
+    nepřekrývá ani s jedním ze skutečných kusů. `rejectSizeOutliers()`
+    proto (při alespoň 3 nalezených kusech) spočítá medián velikosti
+    všech nalezených boxů a vyhodí ty, co jsou výrazně menší (pod
+    čtvrtinu mediánu) — když appka počítá víc kusů stejné věci, měly by
+    mít podobnou velikost
+  - **Referenční kus**: klepnutím na fotce lze označit jeden konkrétní kus
+    a appka pak počítá jen kusy podobné velikosti (v rámci poměru ploch
+    max. 3×) — FastSAM na rozdíl od ML Kitu nedává žádnou kategorii/štítek
+    (je "class-agnostic"), takže tady rozhoduje čistě velikost
   - **Ruční oprava** (jen u statické fotky): i natrénovaný detektor může
     dva těsně se dotýkající kusy spojit do jednoho, nebo nějaký přehlédnout
     — proto jde výsledek ručně doladit podržením prstu. Podržení na
@@ -126,11 +106,14 @@ stejně pro statickou fotku i živý náhled kamery — viz sekce Funkce níže.
     zase odebere. Zobrazený počet (`adjustedCount` v `CountingViewModel`)
     započítává i tyto ruční úpravy; při nové fotce nebo přepnutí reference
     se úpravy vždy vynulují
-  - Živý náhled navíc: zoom (posuvník napojený na kameru) a tlačítko zpět.
-    Kamerový snímek (YUV_420_888) se převádí na malou barevnou bitmapu
-    přímo z Y/U/V rovin (bez zacházky přes JPEG) a zmenšuje, než jde do
-    ML Kit detektoru (STREAM_MODE) — stejná logika snímání jako dřív, jen
-    jiný krok samotné detekce
+  - **Živý náhled zůstává na ML Kitu** (`enableMultipleObjects()`,
+    `enableClassification()`, `STREAM_MODE`), s referenčním kusem
+    (klepnutím na kus v hledáčku), zoomem a stejným zpracováním kamerového
+    snímku (YUV_420_888 → malá barevná bitmapa přímo z Y/U/V rovin) jako
+    dřív. FastSAM tam zatím neběží — jeden běh modelu na fotku je v
+    pořádku, ale běžet znovu a znovu na každý snímek hledáčku (řádově
+    4× za sekundu) by na běžném telefonu bez zrychlení přes GPU/NPU
+    delegáta bylo příliš pomalé pro plynulý náhled
 - **Čtečka čárových a QR kódů**: kamera přes celou obrazovku (ML Kit
   Barcode Scanning) s ohraničujícím rámečkem uprostřed jako vizuální
   vodítko, zoom (posuvník napojený na `CameraControl.setLinearZoom`),
@@ -164,13 +147,17 @@ app/src/main/java/com/micha741/skener/
 │   ├── ScanDocument.kt      # model naskenovaného PDF
 │   ├── ScanRepository.kt    # ukládání/čtení PDF v app storage
 │   ├── DetectedBlob.kt      # sdílený model kusu (box, kategorie) pro fotku i živý náhled
-│   ├── DetectedBlobMatching.kt # sdílené mapování/porovnávání: DetectedObject -> DetectedBlob, hledání pod tapem, referenční shoda podle velikosti/kategorie
-│   ├── ObjectCounter.kt     # počítání kusů ze statické fotky přes ML Kit Object Detection (SINGLE_IMAGE_MODE), referenční kus
+│   ├── DetectedBlobMatching.kt # sdílené mapování/porovnávání: hledání pod tapem, referenční shoda podle velikosti/kategorie
+│   ├── ObjectCounter.kt     # počítání kusů ze statické fotky přes FastSamDetector, filtry, referenční kus
+│   ├── fastsam/
+│   │   └── FastSamDetector.kt # TFLite inference nad fastsam_s.tflite: letterbox, dekódování boxů, NMS
 │   ├── LiveFrameAnalyzer.kt # CameraX analyzer: YUV -> upright bitmapa -> ML Kit Object Detection (STREAM_MODE), nastavitelná reference
 │   ├── BarcodeAnalyzer.kt   # CameraX analyzer: živé snímky -> ML Kit Barcode Scanning
 │   ├── DocumentTextExtractor.kt # OCR jedné stránky + odhad formátování (velikost/tučné/kurzíva/barva) na řádek
 │   ├── TextPdfWriter.kt     # vykreslí rozpoznaný text pozičně/formátovaně do PDF (bez fotky)
 │   └── BarcodeImageEncoder.kt # zpětně zakóduje hodnotu kódu do bitmapy (ZXing) pro uložení jako obrázek
+├── assets/
+│   └── fastsam_s.tflite     # FastSAM-s model (~45 MB, AGPL-3.0) pro počítání kusů ze statické fotky
 └── ui/theme/Theme.kt        # Material 3 theme (light/dark, dynamic color)
 ```
 

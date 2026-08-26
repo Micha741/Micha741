@@ -97,6 +97,10 @@ class CountingViewModel(
         _uiState.update { it.copy(errorMessage = null) }
     }
 
+    override fun onCleared() {
+        counter.close()
+    }
+
     private fun runCount(uri: Uri, referenceTap: Point?) {
         viewModelScope.launch {
             counter.count(uri, referenceTap)

@@ -14,8 +14,8 @@ android {
         applicationId = "com.micha741.skener"
         minSdk = 26
         targetSdk = 34
-        versionCode = 29
-        versionName = "3.7"
+        versionCode = 30
+        versionName = "4.0"
     }
 
     buildTypes {
@@ -41,6 +41,12 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+
+    // TFLite Interpreter memory-maps model assets directly for fast, low-memory loading -
+    // that only works if the file is stored uncompressed in the APK.
+    androidResources {
+        noCompress += "tflite"
     }
 }
 
@@ -86,6 +92,18 @@ dependencies {
     // https://developers.google.com/ml-kit/vision/object-detection/android
     // for the newest version.
     implementation("com.google.mlkit:object-detection:17.0.2")
+
+    // TensorFlow Lite - runs the bundled FastSAM-s segmentation model
+    // (app/src/main/assets/fastsam_s.tflite, see data/fastsam/FastSamDetector.kt)
+    // for the static-photo counter. Unlike ML Kit's base object detector,
+    // this is a class-agnostic "segment everything" model - trained to find
+    // every distinct object in a scene regardless of what it is, which is
+    // what a genuinely universal piece counter needs. The model file is
+    // AGPL-3.0 licensed (see /third_party_licenses/FastSAM_AGPL-3.0_LICENSE.txt)
+    // - distributing this app means the whole app falls under those terms.
+    // Check https://mvnrepository.com/artifact/org.tensorflow/tensorflow-lite
+    // for the newest version.
+    implementation("org.tensorflow:tensorflow-lite:2.17.0")
 
     // CameraX - live viewfinder preview + frame analysis for the piece counter & barcode reader
     implementation("androidx.camera:camera-core:1.3.4")

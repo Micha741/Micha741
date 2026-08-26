@@ -6,11 +6,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.graphics.Rect
 import android.net.Uri
-import com.google.android.gms.tasks.Tasks
-import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.objects.DetectedObject
-import com.google.mlkit.vision.objects.ObjectDetection
-import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
+import com.micha741.skener.data.fastsam.FastSamDetector
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.math.max
@@ -24,58 +20,69 @@ data class CountResult(
 )
 
 /**
- * Counts discrete objects in a still photo via ML Kit's on-device Object
- * Detection & Tracking - a trained detector, not a hand-tuned OpenCV
- * threshold/color/contour pipeline, so background texture (wood grain,
- * fabric prints) doesn't get mistaken for pieces the way local contrast
- * heuristics did.
+ * Counts discrete objects in a still photo via a bundled FastSAM-s model
+ * (see [FastSamDetector]) - a class-agnostic "segment everything" detector,
+ * not one tuned to recognize a handful of common categories the way ML
+ * Kit's base Object Detection (still used for the live camera, see
+ * [LiveFrameAnalyzer]) is. That's what a genuinely universal piece counter
+ * needs: it doesn't have to know *what* something is to find it.
  *
- * The base (non-custom) model is tuned to find a handful of prominent
- * objects filling a meaningful part of the frame. Fed the whole photo at
- * once, several small pieces scattered over a mostly-empty background (a
- * few seeds on a big floor) get merged into a single "region of interest"
- * instead of being found individually - the model never gets a good look
- * at any *one* piece. [detectTiled] works around this by splitting the
- * photo into a grid of overlapping tiles and running detection on each
- * tile *upscaled to the same working resolution* - so a tiny piece becomes
- * a much bigger fraction of what the detector actually sees - then mapping
- * every tile's detections back to the original photo and merging
- * duplicates found in more than one tile's overlap margin (see
- * [deduplicate]). Only the static-photo counter tiles like this; the live
- * camera stays on one full-frame pass per throttled frame, since 9 ML Kit
- * calls per frame would make the live overlay lag too much to be usable.
+ * The photo is decoded downsampled close to [PHOTO_MAX_DIMENSION] (a
+ * phone photo can easily be 4000px+ on a side) rather than at full
+ * resolution, purely to save memory - [FastSamDetector] does its own
+ * further internal resize to its fixed model input size regardless. Every
+ * returned box is scaled back up to the photo's *true* original
+ * resolution (tracked separately from the decoded bitmap's own, possibly
+ * downsampled, size), since that's the resolution the UI displays the
+ * photo at.
  *
  * If [referenceTap] is given (a point in the *original* photo's pixel
  * coordinates the user tapped on one piece), only objects that are a
- * plausible size match (and, when both have one, share the same coarse
- * category) are kept and counted 1:1 - see [matchesReference]. Otherwise
- * every detected object counts, minus anything [rejectSizeOutliers] throws
- * out as an implausibly small stray detection relative to the rest.
+ * plausible size match are kept and counted 1:1 - see [matchesReference].
+ * Otherwise every detected object counts, minus anything
+ * [rejectSizeOutliers] throws out as an implausibly small stray detection,
+ * and anything [looksLikeStraightEdge] throws out as a straight
+ * architectural line (a door frame, a wall seam) rather than a piece.
  */
-class ObjectCounter(private val context: Context) {
+class ObjectCounter(context: Context) {
+
+    private val appContext = context.applicationContext
+    private val detectorLazy = lazy { FastSamDetector(appContext) }
+    private val detector by detectorLazy
 
     suspend fun count(uri: Uri, referenceTap: Point? = null): Result<CountResult> = withContext(Dispatchers.Default) {
         runCatching {
-            val original = decodeBitmap(uri)
+            val photo = decodePhoto(uri)
                 ?: throw IllegalArgumentException("Nepodařilo se načíst fotku")
-            analyze(original, referenceTap)
+            analyze(photo, referenceTap)
         }
     }
 
+    /** Releases the detector's native TFLite resources - call when the owning ViewModel is cleared. No-op if a count() was never run, since that's the only thing that initializes the detector. */
+    fun close() {
+        if (detectorLazy.isInitialized()) detector.close()
+    }
+
+    private class DecodedPhoto(val bitmap: Bitmap, val trueWidth: Int, val trueHeight: Int)
+
     /**
      * Decodes [uri] downsampled close to [PHOTO_MAX_DIMENSION] instead of at
-     * full resolution - a phone camera photo can easily be 4000px+ on a
-     * side, and decoding that in full just to immediately shrink it in
-     * [analyze] wastes memory that tiled detection (up to 9 extra bitmaps
-     * per photo) can't afford to spare.
+     * full resolution, to save memory - but keeps the *true* original
+     * dimensions (from a bounds-only pre-pass) alongside the decoded
+     * bitmap, so callers can scale results back up to match what the UI
+     * actually displays (a full-resolution decode of the same photo).
      */
-    private fun decodeBitmap(uri: Uri): Bitmap? {
+    private fun decodePhoto(uri: Uri): DecodedPhoto? {
         val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-        val boundsStream = context.contentResolver.openInputStream(uri) ?: return null
+        val boundsStream = appContext.contentResolver.openInputStream(uri) ?: return null
         boundsStream.use { BitmapFactory.decodeStream(it, null, bounds) }
+        if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
 
         val options = BitmapFactory.Options().apply { inSampleSize = sampleSizeFor(bounds.outWidth, bounds.outHeight) }
-        return context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, options) }
+        val bitmap = appContext.contentResolver.openInputStream(uri)
+            ?.use { BitmapFactory.decodeStream(it, null, options) }
+            ?: return null
+        return DecodedPhoto(bitmap, bounds.outWidth, bounds.outHeight)
     }
 
     /** Power-of-two downsample factor (BitmapFactory only honors powers of two) that gets the decoded bitmap's long side down close to [PHOTO_MAX_DIMENSION]. */
@@ -88,25 +95,20 @@ class ObjectCounter(private val context: Context) {
         return sampleSize
     }
 
-    private fun analyze(original: Bitmap, referenceTap: Point?): CountResult {
-        val downscale = min(1f, PHOTO_MAX_DIMENSION.toFloat() / max(original.width, original.height))
-        val photoWidth = max(1, (original.width * downscale).roundToInt())
-        val photoHeight = max(1, (original.height * downscale).roundToInt())
-        val photo = if (downscale < 1f) {
-            Bitmap.createScaledBitmap(original, photoWidth, photoHeight, true)
-        } else {
-            original
-        }
-        if (photo !== original) original.recycle()
+    private fun analyze(photo: DecodedPhoto, referenceTap: Point?): CountResult {
+        val bitmap = photo.bitmap
+        // Same ratio on both axes: inSampleSize preserves aspect ratio.
+        val inverseScale = photo.trueWidth.toFloat() / bitmap.width
 
-        val allBlobs = deduplicate(detectTiled(photo))
-        photo.recycle()
+        var allBlobs = detector.detect(bitmap)
+        allBlobs = allBlobs.filterNot { looksLikeStraightEdge(it.box, bitmap.width, bitmap.height) }
+        bitmap.recycle()
 
         var referenceBlob: DetectedBlob? = null
         if (referenceTap != null) {
-            val photoX = (referenceTap.x * downscale).roundToInt().coerceIn(0, photoWidth - 1)
-            val photoY = (referenceTap.y * downscale).roundToInt().coerceIn(0, photoHeight - 1)
-            referenceBlob = findBlobNear(allBlobs, photoX, photoY)
+            val bitmapX = (referenceTap.x / inverseScale).roundToInt().coerceIn(0, photo.trueWidth - 1)
+            val bitmapY = (referenceTap.y / inverseScale).roundToInt().coerceIn(0, photo.trueHeight - 1)
+            referenceBlob = findBlobNear(allBlobs, bitmapX, bitmapY)
         }
 
         val kept = if (referenceBlob != null) {
@@ -115,211 +117,56 @@ class ObjectCounter(private val context: Context) {
             rejectSizeOutliers(allBlobs)
         }
 
-        val inverseScale = if (downscale < 1f) 1f / downscale else 1f
         val scaledBlobs = kept.map { it.scaledBy(inverseScale) }
         val scaledReference = referenceBlob?.scaledBy(inverseScale)
 
         return CountResult(scaledBlobs, scaledBlobs.size, scaledReference)
     }
 
-    /** Runs detection on an overlapping [TILE_GRID]x[TILE_GRID] grid over [photo], each tile upscaled to [TILE_WORKING_DIMENSION]. */
-    private fun detectTiled(photo: Bitmap): List<DetectedBlob> {
-        val tileWidth = photo.width / TILE_GRID
-        val tileHeight = photo.height / TILE_GRID
-        if (tileWidth < 1 || tileHeight < 1) {
-            return runDetection(photo).map { it.toDetectedBlob() }
-        }
-
-        val overlapX = (tileWidth * TILE_OVERLAP_FRACTION).roundToInt()
-        val overlapY = (tileHeight * TILE_OVERLAP_FRACTION).roundToInt()
-        val blobs = mutableListOf<DetectedBlob>()
-
-        for (row in 0 until TILE_GRID) {
-            for (col in 0 until TILE_GRID) {
-                val left = max(0, col * tileWidth - overlapX)
-                val top = max(0, row * tileHeight - overlapY)
-                val right = min(photo.width, (col + 1) * tileWidth + overlapX)
-                val bottom = min(photo.height, (row + 1) * tileHeight + overlapY)
-                val tileW = right - left
-                val tileH = bottom - top
-                if (tileW < 1 || tileH < 1) continue
-
-                val tile = Bitmap.createBitmap(photo, left, top, tileW, tileH)
-                val tileScale = min(MAX_TILE_UPSCALE, TILE_WORKING_DIMENSION.toFloat() / max(tileW, tileH))
-                val scaledTile = if (tileScale != 1f) {
-                    Bitmap.createScaledBitmap(
-                        tile,
-                        max(1, (tileW * tileScale).roundToInt()),
-                        max(1, (tileH * tileScale).roundToInt()),
-                        true,
-                    )
-                } else {
-                    tile
-                }
-                if (scaledTile !== tile) tile.recycle()
-
-                val detected = runDetection(scaledTile)
-                val scaledTileWidth = scaledTile.width
-                val scaledTileHeight = scaledTile.height
-                scaledTile.recycle()
-
-                detected.forEach { obj ->
-                    val blob = obj.toDetectedBlob()
-                    val box = blob.box
-                    if (looksLikeStraightEdge(box, scaledTileWidth, scaledTileHeight)) return@forEach
-
-                    val mappedBox = Rect(
-                        left + (box.left / tileScale).roundToInt(),
-                        top + (box.top / tileScale).roundToInt(),
-                        left + (box.right / tileScale).roundToInt(),
-                        top + (box.bottom / tileScale).roundToInt(),
-                    )
-                    blobs += blob.copy(box = mappedBox)
-                }
-            }
-        }
-        return blobs
-    }
-
-    /**
-     * Builds a fresh object detector client for this one call and closes it
-     * right after, instead of reusing a single client across all 9 tile
-     * calls. Device testing surfaced a native crash inside ML Kit's own
-     * libmlkitcommonpipeline.so - reusing one client for repeated,
-     * back-to-back process() calls seems to be what triggers it; a fresh
-     * client per call avoids whatever state it's accumulating.
-     */
-    private fun runDetection(bitmap: Bitmap): List<DetectedObject> {
-        val options = ObjectDetectorOptions.Builder()
-            .setDetectorMode(ObjectDetectorOptions.SINGLE_IMAGE_MODE)
-            .enableMultipleObjects()
-            .enableClassification()
-            .build()
-        val detector = ObjectDetection.getClient(options)
-        return try {
-            Tasks.await(detector.process(InputImage.fromBitmap(bitmap, 0)))
-        } finally {
-            detector.close()
-        }
-    }
-
     /**
      * True for a box that looks like a straight architectural edge (a door
-     * frame, a wall/floor seam) rather than a real piece: device testing
-     * showed the detector flagging these as "objects" in their own right.
-     * The giveaway is being *both* strongly elongated *and* running across
-     * most of its own tile - a real piece, even a thin one (a screw, a
-     * pen), only rarely spans most of an entire tile's width or height,
-     * while a straight line crossing the frame naturally does. Checked
-     * against the tile's own dimensions, not the whole photo's - a seam
-     * spanning most of one ~1/3-of-the-photo tile would only cover a small
-     * fraction of the full photo, so that comparison would miss it.
+     * frame, a wall/floor seam) rather than a real piece: earlier testing
+     * against ML Kit's detector showed exactly this failure. The giveaway
+     * is being *both* strongly elongated *and* running across most of the
+     * photo - a real piece, even a thin one (a screw, a pen), only rarely
+     * spans most of the frame's width or height.
      */
-    private fun looksLikeStraightEdge(box: Rect, tileWidth: Int, tileHeight: Int): Boolean {
+    private fun looksLikeStraightEdge(box: Rect, photoWidth: Int, photoHeight: Int): Boolean {
         val longSide = max(box.width(), box.height())
         val shortSide = max(1, min(box.width(), box.height()))
         val aspectRatio = longSide.toDouble() / shortSide
         if (aspectRatio < MIN_EDGE_ASPECT_RATIO) return false
 
-        val spansTile = box.height() >= tileHeight * EDGE_TILE_SPAN_FRACTION ||
-            box.width() >= tileWidth * EDGE_TILE_SPAN_FRACTION
-        return spansTile
+        val spansPhoto = box.height() >= photoHeight * EDGE_PHOTO_SPAN_FRACTION ||
+            box.width() >= photoWidth * EDGE_PHOTO_SPAN_FRACTION
+        return spansPhoto
     }
 
     /**
-     * Auto mode only (no reference piece): device testing showed a stray
-     * box sitting in the gap between two real, touching pieces (a
-     * reflection, a sliver of the newspaper between two crocs) that
-     * [deduplicate] can't catch, since it doesn't meaningfully overlap
-     * either real piece - there's nothing to merge it into. When counting
-     * several instances of "the same kind of thing" (the app's whole
-     * premise), real pieces should be roughly consistent in size, so a box
-     * much smaller than the *median* of everything else found is more
-     * likely such a stray artifact than a genuinely distinct extra piece.
-     * Needs a handful of samples to make a meaningful median, and only
-     * applies here - reference mode already has its own, more reliable,
-     * user-anchored size check in [matchesReference].
+     * Auto mode only (no reference piece): a stray false detection (a
+     * reflection, a sliver of background) sitting apart from the real
+     * pieces isn't caught by the detector's own NMS, since it doesn't
+     * overlap a real piece - there's nothing to merge it into. When
+     * counting several instances of "the same kind of thing" (the app's
+     * whole premise), real pieces should be roughly consistent in size, so
+     * a box much smaller than the *median* of everything else found is
+     * more likely such a stray artifact than a genuinely distinct extra
+     * piece. Needs a handful of samples to make a meaningful median, and
+     * only applies here - reference mode already has its own, more
+     * reliable, user-anchored size check in [matchesReference].
      */
     private fun rejectSizeOutliers(blobs: List<DetectedBlob>): List<DetectedBlob> {
         if (blobs.size < MIN_SAMPLES_FOR_SIZE_FILTER) return blobs
-        val areas = blobs.map { it.box.area() }.sorted()
+        val areas = blobs.map { it.box.width().toLong() * it.box.height().toLong() }.sorted()
         val medianArea = areas[areas.size / 2]
         if (medianArea <= 0) return blobs
-        return blobs.filter { it.box.area() >= medianArea * MIN_SIZE_RATIO_TO_MEDIAN }
+        return blobs.filter { it.box.width().toLong() * it.box.height().toLong() >= medianArea * MIN_SIZE_RATIO_TO_MEDIAN }
     }
-
-    /**
-     * An object that straddles two tiles' overlap margin gets detected once
-     * per tile, so the same physical object can show up as several
-     * overlapping candidate boxes. Which box is the "right" one to keep
-     * depends on *why* they overlap:
-     *  - Several boxes that all mostly overlap *each other* too (not just
-     *    the biggest one) are redundant views of the same single object
-     *    (e.g. "whole shoe" and "just its toe" from two different tiles) -
-     *    keep only the biggest, drop the rest.
-     *  - A big box that turns out to just be an amalgam of two or more
-     *    *mutually distinct* smaller boxes (e.g. one tile saw "the whole
-     *    cluster of seeds" as one blob while other tiles individually
-     *    found each seed) is a false merge, not a real piece - drop the
-     *    big box and keep the smaller, independent ones instead.
-     */
-    private fun deduplicate(blobs: List<DetectedBlob>): List<DetectedBlob> {
-        // A zero-width/zero-height box (possible after tile-coordinate rounding) has zero overlap
-        // even with itself, so it would never get picked up by overlapRatio() below and the loop
-        // would keep re-selecting it forever without ever removing it from `remaining`.
-        val remaining = blobs.filterTo(mutableListOf()) { it.box.area() > 0 }
-        val kept = mutableListOf<DetectedBlob>()
-
-        while (remaining.isNotEmpty()) {
-            val biggest = remaining.maxBy { it.box.area() }
-            val overlappingBiggest = remaining.filter { overlapRatio(it.box, biggest.box) > DEDUPE_OVERLAP_THRESHOLD }
-            val independentSubPieces = independentSubset(overlappingBiggest - biggest)
-
-            if (independentSubPieces.size >= 2) {
-                kept += independentSubPieces
-            } else {
-                kept += biggest
-            }
-            remaining.removeAll(overlappingBiggest)
-        }
-        return kept
-    }
-
-    /** Greedily picks the biggest-first subset of [candidates] whose boxes don't significantly overlap each other. */
-    private fun independentSubset(candidates: List<DetectedBlob>): List<DetectedBlob> {
-        val picked = mutableListOf<DetectedBlob>()
-        for (candidate in candidates.sortedByDescending { it.box.area() }) {
-            if (picked.none { overlapRatio(it.box, candidate.box) > DEDUPE_OVERLAP_THRESHOLD }) {
-                picked += candidate
-            }
-        }
-        return picked
-    }
-
-    /** Intersection area relative to the *smaller* of the two boxes - catches "one box is basically inside the other" even when their sizes differ a lot, which plain intersection-over-union (relative to their combined area) can miss. */
-    private fun overlapRatio(a: Rect, b: Rect): Double {
-        val interLeft = max(a.left, b.left)
-        val interTop = max(a.top, b.top)
-        val interRight = min(a.right, b.right)
-        val interBottom = min(a.bottom, b.bottom)
-        if (interRight <= interLeft || interBottom <= interTop) return 0.0
-
-        val interArea = (interRight - interLeft).toLong() * (interBottom - interTop).toLong()
-        val smallerArea = min(a.area(), b.area())
-        return if (smallerArea <= 0) 0.0 else interArea.toDouble() / smallerArea.toDouble()
-    }
-
-    private fun Rect.area(): Long = width().toLong() * height().toLong()
 
     private companion object {
         const val PHOTO_MAX_DIMENSION = 1600
-        const val TILE_GRID = 3
-        const val TILE_OVERLAP_FRACTION = 0.15f
-        const val TILE_WORKING_DIMENSION = 640
-        const val MAX_TILE_UPSCALE = 4f
-        const val DEDUPE_OVERLAP_THRESHOLD = 0.4
         const val MIN_EDGE_ASPECT_RATIO = 3.0
-        const val EDGE_TILE_SPAN_FRACTION = 0.6
+        const val EDGE_PHOTO_SPAN_FRACTION = 0.6
         const val MIN_SAMPLES_FOR_SIZE_FILTER = 3
         const val MIN_SIZE_RATIO_TO_MEDIAN = 0.25
     }
