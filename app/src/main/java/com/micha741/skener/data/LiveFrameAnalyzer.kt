@@ -1,6 +1,7 @@
 package com.micha741.skener.data
 
 import android.graphics.Bitmap
+import android.graphics.Rect
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.google.android.gms.tasks.Tasks
@@ -42,6 +43,14 @@ data class LiveFrameResult(
  * [requestReferenceAt] lets the UI pick a reference piece by tapping a spot
  * in frame coordinates; the analyzer resolves it against the *next*
  * analyzed frame's detections and retains that blob until [clearReference].
+ *
+ * [setRoi] lets the UI drag out a region of interest (also frame
+ * coordinates): detections whose center falls outside it are discarded
+ * before reference matching runs, same order and same purpose as
+ * [com.micha741.skener.data.ObjectCounter]'s roi parameter - a same-sized,
+ * same-colored false detection sitting elsewhere in the frame (a
+ * background pattern) never gets a chance to be counted, regardless of
+ * how well size/color matching would or wouldn't have caught it.
  */
 class LiveFrameAnalyzer(
     private val onResult: (LiveFrameResult) -> Unit,
@@ -52,6 +61,9 @@ class LiveFrameAnalyzer(
 
     @Volatile
     private var pendingReferenceTap: IntArray? = null
+
+    @Volatile
+    private var roiBox: Rect? = null
 
     @Volatile
     private var lastAnalyzedAtMs = 0L
@@ -66,9 +78,21 @@ class LiveFrameAnalyzer(
         referenceBlob = null
     }
 
+    /** Call from the UI thread: only detections whose center falls within [rect] (frame coordinates) count from now on. Drops any retained reference, since it may fall outside the new region. */
+    fun setRoi(rect: Rect) {
+        roiBox = rect
+        referenceBlob = null
+    }
+
+    /** Drops the region of interest, going back to counting the whole frame. */
+    fun clearRoi() {
+        roiBox = null
+    }
+
     /** Call when the camera screen is torn down. No detector client is held between frames, so there's nothing to release. */
     fun release() {
         referenceBlob = null
+        roiBox = null
     }
 
     override fun analyze(imageProxy: ImageProxy) {
@@ -86,7 +110,12 @@ class LiveFrameAnalyzer(
 
             val detected = runDetection(bitmap)
             bitmap.recycle()
-            val allBlobs = detected.map { it.toDetectedBlob() }
+            var allBlobs = detected.map { it.toDetectedBlob() }
+
+            val roi = roiBox
+            if (roi != null) {
+                allBlobs = allBlobs.filter { roi.contains(it.box.centerX(), it.box.centerY()) }
+            }
 
             val tap = pendingReferenceTap
             if (tap != null) {

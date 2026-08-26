@@ -178,10 +178,16 @@ model (TFLite, AGPL-3.0 — viz sekce Funkce níže), živý náhled kamery pře
     ubíralo dost místa. Okraje jsou pryč, fotka jde teď přes celou šířku a
     počet ("Napočítáno: X ks") se vykresluje jako poloprůhledný pruh přes
     spodní okraj fotky samotné, ne jako text pod ní - nápovědové řádky byly
-    odstraněné úplně
+    odstraněné úplně. Sloupec s tlačítky pod fotkou (výběr oblasti,
+    referenční kus, nová fotka) je navíc přes `verticalScroll` posuvný - s
+    přibývajícím počtem tlačítek by se poslední z nich na menších
+    obrazovkách jinak schoval pod spodní navigační lištu, nedosažitelný
   - **Živý náhled zůstává na ML Kitu** (`enableMultipleObjects()`,
     `enableClassification()`), s referenčním kusem (klepnutím na kus v
-    hledáčku), zoomem a stejným zpracováním kamerového snímku
+    hledáčku), oblastí zájmu (stejná logika i gesto přetažení jako u
+    statické fotky - `LiveFrameAnalyzer.setRoi()` zahodí detekce mimo
+    vybraný obdélník v snímkových souřadnicích, ještě před referenčním
+    filtrováním), zoomem a stejným zpracováním kamerového snímku
     (YUV_420_888 → malá barevná bitmapa přímo z Y/U/V rovin) jako dřív.
     FastSAM tam zatím neběží — i těch pět běhů modelu na jednu vyfocenou
     fotku (viz dlaždice výše) je v pořádku, protože se počítá jednou po
