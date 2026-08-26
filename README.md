@@ -125,9 +125,20 @@ model (TFLite, AGPL-3.0 — viz sekce Funkce níže), živý náhled kamery pře
     čtvrtinu mediánu) — když appka počítá víc kusů stejné věci, měly by
     mít podobnou velikost
   - **Referenční kus**: klepnutím na fotce lze označit jeden konkrétní kus
-    a appka pak počítá jen kusy podobné velikosti (v rámci poměru ploch
-    max. 3×) — FastSAM na rozdíl od ML Kitu nedává žádnou kategorii/štítek
-    (je "class-agnostic"), takže tady rozhoduje čistě velikost
+    a appka pak počítá jen podobné kusy — podobné velikostí (v rámci poměru
+    ploch max. 3×) *a* podobné barvou. FastSAM na rozdíl od ML Kitu nedává
+    žádnou kategorii/štítek (je "class-agnostic"), takže samotná velikost
+    nestačí rozeznat např. švestku od podobně velkého listu na stejném
+    stromě — appka si proto při počítání ze statické fotky (`ObjectCounter.averageColor()`)
+    z fotky sama vzorkuje průměrnou barvu uvnitř každého nalezeného boxu a
+    porovnává **odstín (hue)**, ne přímou RGB vzdálenost — švestka a list
+    mají hodně rozdílný odstín (fialová vs. zelená), ale RGB vzdálenost mezi
+    nimi kolísá podle osvětlení/stínu natolik, že by je přímé srovnání barev
+    často zaměnilo (ověřeno na syntetické scéně přes reálný model: RGB
+    vzdálenost propustila spoustu listů, odstín správně nechal jen švestky).
+    Barva se použije jen když má smysl — u nízko sytých/šedivých kusů
+    (`matchesHue()`) se přeskočí, stejně jako se štítek přeskočí, když ho
+    aspoň jedna strana nemá
   - **Ruční oprava** (jen u statické fotky): i natrénovaný detektor může
     dva těsně se dotýkající kusy spojit do jednoho, nebo nějaký přehlédnout
     — proto jde výsledek ručně doladit podržením prstu. Podržení na

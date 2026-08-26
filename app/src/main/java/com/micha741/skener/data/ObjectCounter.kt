@@ -3,6 +3,7 @@ package com.micha741.skener.data
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.Point
 import android.graphics.Rect
 import android.net.Uri
@@ -38,7 +39,12 @@ data class CountResult(
  *
  * If [referenceTap] is given (a point in the *original* photo's pixel
  * coordinates the user tapped on one piece), only objects that are a
- * plausible size match are kept and counted 1:1 - see [matchesReference].
+ * plausible size *and color* match are kept and counted 1:1 - see
+ * [matchesReference]. Color comes from [averageColor], sampled from the
+ * photo while it's still decoded here (FastSAM's own output is just boxes,
+ * no color or category) - without it, tapping one plum on a tree photo
+ * would also count every same-sized leaf, since to a class-agnostic
+ * detector a leaf and a plum are just two similarly-sized blobs.
  * Otherwise every detected object counts, minus anything
  * [rejectSizeOutliers] throws out as an implausibly small stray detection,
  * and anything [looksLikeStraightEdge] throws out as a straight
@@ -102,6 +108,7 @@ class ObjectCounter(context: Context) {
 
         var allBlobs = detector.detect(bitmap)
         allBlobs = allBlobs.filterNot { looksLikeStraightEdge(it.box, bitmap.width, bitmap.height) }
+        allBlobs = allBlobs.map { it.copy(avgColor = averageColor(bitmap, it.box)) }
         bitmap.recycle()
 
         var referenceBlob: DetectedBlob? = null
@@ -121,6 +128,29 @@ class ObjectCounter(context: Context) {
         val scaledReference = referenceBlob?.scaledBy(inverseScale)
 
         return CountResult(scaledBlobs, scaledBlobs.size, scaledReference)
+    }
+
+    /** Mean pixel color inside [box] on [bitmap], used by [matchesReference] to tell same-sized but differently-colored things apart (a plum from a leaf). */
+    private fun averageColor(bitmap: Bitmap, box: Rect): Int {
+        val left = box.left.coerceIn(0, bitmap.width - 1)
+        val top = box.top.coerceIn(0, bitmap.height - 1)
+        val right = box.right.coerceIn(left + 1, bitmap.width)
+        val bottom = box.bottom.coerceIn(top + 1, bitmap.height)
+        val width = right - left
+        val height = bottom - top
+
+        val pixels = IntArray(width * height)
+        bitmap.getPixels(pixels, 0, width, left, top, width, height)
+        var r = 0L
+        var g = 0L
+        var b = 0L
+        for (pixel in pixels) {
+            r += (pixel shr 16) and 0xFF
+            g += (pixel shr 8) and 0xFF
+            b += pixel and 0xFF
+        }
+        val count = pixels.size
+        return Color.rgb((r / count).toInt(), (g / count).toInt(), (b / count).toInt())
     }
 
     /**
