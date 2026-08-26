@@ -71,7 +71,21 @@ model (TFLite, AGPL-3.0 — viz sekce Funkce níže), živý náhled kamery pře
     nevyužívají) a spustí přes ně vlastní NMS (potlačení překrývajících
     se duplicit podle skóre) — appka tedy zatím kreslí obdélníky, ne
     přesné obrysy, i když by je model uměl dát (výstup masek [1,32,80,80]
-    v modelu je, jen se zatím nezpracovává)
+    v modelu je, jen se zatím nezpracovává). `FastSamDetector.nonMaxSuppression()`
+    porovnává překryv boxů vůči *menšímu* z dvojice, ne klasickým IoU vůči
+    jejich sjednocení — u prohnutého/protáhlého shluku (trs banánů) totiž
+    klasické IoU mezi boxem kolem jednoho banánu a boxem kolem několika
+    banánů vyjde nízké (dominuje ho plocha toho většího), i když jde o
+    stejnou věc — to se na zařízení projevilo jako víc překrývajících se
+    boxů na jednom shluku ovoce
+  - **Univerzální = počítá skutečně cokoliv, ne jen to, co má na fotce
+    fotograf na mysli**: FastSAM nerozlišuje kategorie, takže v
+    automatickém režimu (bez klepnutí na referenční kus) spočítá úplně
+    všechno opticky oddělené v záběru — i roh linky, sušák nádobí nebo
+    láhev v pozadí, ne jen ovoce v míse. To není chyba k opravě, je to
+    přesně to, co "univerzální" počítání znamená; pro počítání jen
+    konkrétní věci (jen ovoce, ne pozadí) slouží **referenční kus** —
+    klepnutím na jeden kus appka omezí počítání na podobně velké kusy
   - **Licence**: FastSAM i nástroje použité k exportu jsou pod AGPL-3.0
     (text v `/third_party_licenses/FastSAM_AGPL-3.0_LICENSE.txt`) — tahle
     licence je "nakažlivá": pokud appku někomu distribuuješ (i zdarma),

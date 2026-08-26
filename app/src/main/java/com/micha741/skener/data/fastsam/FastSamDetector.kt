@@ -130,19 +130,30 @@ class FastSamDetector(context: Context) {
         return candidates
     }
 
-    /** Standard greedy NMS: highest-confidence box wins each cluster of heavily overlapping candidates. */
+    /**
+     * Greedy NMS: highest-confidence box wins each cluster of overlapping
+     * candidates. Uses containment (intersection relative to the *smaller*
+     * box) rather than classic IoU (relative to their combined area) - a
+     * curved/elongated cluster (a bunch of bananas) can produce one
+     * candidate box around just one banana and another around several,
+     * and those two have low classic IoU (the bigger box's own area
+     * dominates the union) even though they clearly describe the same
+     * object - exactly the failure mode device testing showed as several
+     * overlapping boxes stacked on one real cluster.
+     */
     private fun nonMaxSuppression(candidates: List<Candidate>): List<Candidate> {
         val sorted = candidates.sortedByDescending { it.score }.toMutableList()
         val kept = mutableListOf<Candidate>()
         while (sorted.isNotEmpty()) {
             val best = sorted.removeAt(0)
             kept += best
-            sorted.removeAll { iou(it, best) > NMS_IOU_THRESHOLD }
+            sorted.removeAll { overlapRatio(it, best) > NMS_OVERLAP_THRESHOLD }
         }
         return kept
     }
 
-    private fun iou(a: Candidate, b: Candidate): Float {
+    /** Intersection area relative to the *smaller* of the two boxes - see [nonMaxSuppression]. */
+    private fun overlapRatio(a: Candidate, b: Candidate): Float {
         val interLeft = max(a.left, b.left)
         val interTop = max(a.top, b.top)
         val interRight = min(a.right, b.right)
@@ -150,8 +161,8 @@ class FastSamDetector(context: Context) {
         if (interRight <= interLeft || interBottom <= interTop) return 0f
 
         val interArea = (interRight - interLeft) * (interBottom - interTop)
-        val unionArea = a.area + b.area - interArea
-        return if (unionArea <= 0f) 0f else interArea / unionArea
+        val smallerArea = min(a.area, b.area)
+        return if (smallerArea <= 0f) 0f else interArea / smallerArea
     }
 
     private data class Letterbox(val bitmap: Bitmap, val scale: Float, val padX: Float, val padY: Float)
@@ -175,6 +186,6 @@ class FastSamDetector(context: Context) {
         const val MASK_DIM = 32
         const val PROTO_SIZE = 80
         const val CONFIDENCE_THRESHOLD = 0.4f
-        const val NMS_IOU_THRESHOLD = 0.5f
+        const val NMS_OVERLAP_THRESHOLD = 0.45f
     }
 }
