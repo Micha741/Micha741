@@ -107,13 +107,22 @@ model (TFLite, AGPL-3.0 — viz sekce Funkce níže), živý náhled kamery pře
     započítává i tyto ruční úpravy; při nové fotce nebo přepnutí reference
     se úpravy vždy vynulují
   - **Živý náhled zůstává na ML Kitu** (`enableMultipleObjects()`,
-    `enableClassification()`, `STREAM_MODE`), s referenčním kusem
-    (klepnutím na kus v hledáčku), zoomem a stejným zpracováním kamerového
-    snímku (YUV_420_888 → malá barevná bitmapa přímo z Y/U/V rovin) jako
-    dřív. FastSAM tam zatím neběží — jeden běh modelu na fotku je v
-    pořádku, ale běžet znovu a znovu na každý snímek hledáčku (řádově
-    4× za sekundu) by na běžném telefonu bez zrychlení přes GPU/NPU
-    delegáta bylo příliš pomalé pro plynulý náhled
+    `enableClassification()`), s referenčním kusem (klepnutím na kus v
+    hledáčku), zoomem a stejným zpracováním kamerového snímku
+    (YUV_420_888 → malá barevná bitmapa přímo z Y/U/V rovin) jako dřív.
+    FastSAM tam zatím neběží — jeden běh modelu na fotku je v pořádku,
+    ale běžet znovu a znovu na každý snímek hledáčku (řádově 4× za
+    sekundu) by na běžném telefonu bez zrychlení přes GPU/NPU delegáta
+    bylo příliš pomalé pro plynulý náhled. Původně běžel v `STREAM_MODE`
+    (kontinuální sledování mezi snímky) na jednom sdíleném klientovi po
+    celou dobu náhledu — reálný pád na zařízení (nativní pád uvnitř
+    `libmlkitcommonpipeline.so`, úplně stejná adresa jako dřívější pád u
+    dlaždicové detekce) ukázal, že i tenhle režim je při opakovaném
+    použití jednoho klienta nestabilní, a appka trackovací ID stejně
+    nikde nevyužívala. `LiveFrameAnalyzer.runDetection()` proto teď pro
+    každý zpracovaný snímek vytvoří a hned zavře nový klient v
+    `SINGLE_IMAGE_MODE`, stejně jako `FastSamDetector` volá TFLite
+    interpreter jen na jeden běh
 - **Čtečka čárových a QR kódů**: kamera přes celou obrazovku (ML Kit
   Barcode Scanning) s ohraničujícím rámečkem uprostřed jako vizuální
   vodítko, zoom (posuvník napojený na `CameraControl.setLinearZoom`),
