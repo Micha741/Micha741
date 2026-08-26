@@ -78,6 +78,23 @@ model (TFLite, AGPL-3.0 — viz sekce Funkce níže), živý náhled kamery pře
     banánů vyjde nízké (dominuje ho plocha toho většího), i když jde o
     stejnou věc — to se na zařízení projevilo jako víc překrývajících se
     boxů na jednom shluku ovoce
+  - **Více průchodů modelu na jednu fotku (dlaždice)**: `FastSamDetector.detect()`
+    nespouští interpreter jen jednou na celou fotku, ale na pěti
+    překrývajících se výřezech — celá fotka plus čtyři výřezy po 60 %
+    šířky/výšky pokrývající její rohy (`tileRegions()`). Důvod: model má
+    pořád stejný pevný vstup 320×320 bez ohledu na to, jak velkou fotku mu
+    appka dá, takže na fotce s hodně malými/hustě natěsnanými kusy (listí
+    na větvi, hromádka šroubků) se spousta z nich do jednoho zmenšeného
+    záběru vejde jen jako pár pixelů a nepřekročí práh jistoty. Detekce po
+    výřezech dá každé oblasti víc efektivního rozlišení. Duplicitní boxy,
+    které tím vzniknou na švech mezi výřezy (nebo mezi výřezem a
+    celofotkovým průchodem, když najdou stejný větší objekt), se
+    odstraní druhým, křížovým NMS průchodem (`mergeOverlapping()`) přes
+    boxy už přepočítané do sdílených souřadnic celé fotky — stejný
+    containment test jako `nonMaxSuppression()` výše. Ověřeno na
+    syntetických testovacích scénách přes reálný `.tflite` model (ne jen
+    předpoklad): dlaždice najdou o pár menších kusů víc, beze změny na
+    už správně odděleném ovoci
   - **Univerzální = počítá skutečně cokoliv, ne jen to, co má na fotce
     fotograf na mysli**: FastSAM nerozlišuje kategorie, takže v
     automatickém režimu (bez klepnutí na referenční kus) spočítá úplně
@@ -124,9 +141,10 @@ model (TFLite, AGPL-3.0 — viz sekce Funkce níže), živý náhled kamery pře
     `enableClassification()`), s referenčním kusem (klepnutím na kus v
     hledáčku), zoomem a stejným zpracováním kamerového snímku
     (YUV_420_888 → malá barevná bitmapa přímo z Y/U/V rovin) jako dřív.
-    FastSAM tam zatím neběží — jeden běh modelu na fotku je v pořádku,
-    ale běžet znovu a znovu na každý snímek hledáčku (řádově 4× za
-    sekundu) by na běžném telefonu bez zrychlení přes GPU/NPU delegáta
+    FastSAM tam zatím neběží — i těch pět běhů modelu na jednu vyfocenou
+    fotku (viz dlaždice výše) je v pořádku, protože se počítá jednou po
+    klepnutí, ale běžet znovu a znovu na každý snímek hledáčku (řádově 4×
+    za sekundu) by na běžném telefonu bez zrychlení přes GPU/NPU delegáta
     bylo příliš pomalé pro plynulý náhled. Původně běžel v `STREAM_MODE`
     (kontinuální sledování mezi snímky) na jednom sdíleném klientovi po
     celou dobu náhledu — reálný pád na zařízení (nativní pád uvnitř
@@ -135,8 +153,7 @@ model (TFLite, AGPL-3.0 — viz sekce Funkce níže), živý náhled kamery pře
     použití jednoho klienta nestabilní, a appka trackovací ID stejně
     nikde nevyužívala. `LiveFrameAnalyzer.runDetection()` proto teď pro
     každý zpracovaný snímek vytvoří a hned zavře nový klient v
-    `SINGLE_IMAGE_MODE`, stejně jako `FastSamDetector` volá TFLite
-    interpreter jen na jeden běh
+    `SINGLE_IMAGE_MODE`
 - **Čtečka čárových a QR kódů**: kamera přes celou obrazovku (ML Kit
   Barcode Scanning) s ohraničujícím rámečkem uprostřed jako vizuální
   vodítko, zoom (posuvník napojený na `CameraControl.setLinearZoom`),

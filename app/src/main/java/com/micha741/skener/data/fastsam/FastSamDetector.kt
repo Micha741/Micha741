@@ -41,6 +41,18 @@ import kotlin.math.roundToInt
  * exported model directly against a synthetic test image and inspecting
  * the raw output, not assumed) - not absolute pixels, which is a
  * different convention than the classic YOLO TF export.
+ *
+ * [detect] runs more than one inference pass ([tileRegions]: the full
+ * photo, plus four overlapping crops covering it) rather than one - the
+ * model's input is a fixed 320x320 grid no matter how large the source
+ * photo is, so on a busy scene with many small objects (leaves on a
+ * branch, screws in a pile) a lot of them are too small in a single
+ * whole-photo pass to ever cross the confidence threshold. Detecting on
+ * crops gives each region more effective resolution. Duplicate boxes this
+ * creates near tile seams (or between a tile's find and the full-photo
+ * pass finding the same larger object) are collapsed by a second,
+ * cross-tile [mergeOverlapping] pass, reusing the same containment-based
+ * overlap test as the per-tile NMS below.
  */
 class FastSamDetector(context: Context) {
 
@@ -48,6 +60,49 @@ class FastSamDetector(context: Context) {
 
     /** Runs detection on [bitmap] and returns bounding boxes in [bitmap]'s own pixel coordinates. */
     fun detect(bitmap: Bitmap): List<DetectedBlob> {
+        val allBoxes = mutableListOf<ScoredBox>()
+        for (region in tileRegions(bitmap.width, bitmap.height)) {
+            val tile = Bitmap.createBitmap(bitmap, region.left, region.top, region.width(), region.height())
+            allBoxes += detectSingle(tile).map { it.offsetBy(region.left, region.top) }
+            tile.recycle()
+        }
+        return mergeOverlapping(allBoxes).map { DetectedBlob(box = it.box, label = null) }
+    }
+
+    fun close() {
+        interpreter.close()
+    }
+
+    /**
+     * The regions [detect] runs one inference pass over: the whole photo
+     * (so nothing larger than a single tile is missed), plus four
+     * overlapping [TILE_FRACTION]-sized crops covering the four corners of
+     * the photo, giving small/dense clusters of objects more effective
+     * resolution than the single 320x320 whole-photo pass allows. Skipped
+     * for a photo already smaller than [MIN_DIMENSION_FOR_TILING] on
+     * either side, where a single pass already sees it at close to full
+     * detail.
+     */
+    private fun tileRegions(width: Int, height: Int): List<Rect> {
+        if (width < MIN_DIMENSION_FOR_TILING || height < MIN_DIMENSION_FOR_TILING) {
+            return listOf(Rect(0, 0, width, height))
+        }
+        val tileWidth = (width * TILE_FRACTION).roundToInt().coerceIn(1, width)
+        val tileHeight = (height * TILE_FRACTION).roundToInt().coerceIn(1, height)
+        val xStarts = if (tileWidth >= width) setOf(0) else setOf(0, width - tileWidth)
+        val yStarts = if (tileHeight >= height) setOf(0) else setOf(0, height - tileHeight)
+
+        val regions = mutableListOf(Rect(0, 0, width, height))
+        for (y in yStarts) {
+            for (x in xStarts) {
+                regions += Rect(x, y, x + tileWidth, y + tileHeight)
+            }
+        }
+        return regions
+    }
+
+    /** Runs one inference pass over [bitmap] and returns boxes in [bitmap]'s own pixel coordinates. */
+    private fun detectSingle(bitmap: Bitmap): List<ScoredBox> {
         val letterbox = letterbox(bitmap, INPUT_SIZE)
         val inputBuffer = buildInputBuffer(letterbox.bitmap)
         letterbox.bitmap.recycle()
@@ -58,11 +113,7 @@ class FastSamDetector(context: Context) {
 
         val candidates = decodeCandidates(output0[0])
         val kept = nonMaxSuppression(candidates)
-        return kept.map { it.toDetectedBlob(letterbox) }
-    }
-
-    fun close() {
-        interpreter.close()
+        return kept.map { it.toScoredBox(letterbox) }
     }
 
     private fun loadModelFile(context: Context): MappedByteBuffer {
@@ -131,15 +182,14 @@ class FastSamDetector(context: Context) {
     }
 
     /**
-     * Greedy NMS: highest-confidence box wins each cluster of overlapping
-     * candidates. Uses containment (intersection relative to the *smaller*
-     * box) rather than classic IoU (relative to their combined area) - a
-     * curved/elongated cluster (a bunch of bananas) can produce one
-     * candidate box around just one banana and another around several,
-     * and those two have low classic IoU (the bigger box's own area
-     * dominates the union) even though they clearly describe the same
-     * object - exactly the failure mode device testing showed as several
-     * overlapping boxes stacked on one real cluster.
+     * Greedy NMS over one tile's raw candidates, in that tile's own
+     * letterboxed 320x320 space. Uses containment (intersection relative
+     * to the *smaller* box) rather than classic IoU (relative to their
+     * combined area) - a curved/elongated cluster (a bunch of bananas) can
+     * produce one candidate box around just one banana and another around
+     * several, and those two have low classic IoU (the bigger box's own
+     * area dominates the union) even though they clearly describe the same
+     * object.
      */
     private fun nonMaxSuppression(candidates: List<Candidate>): List<Candidate> {
         val sorted = candidates.sortedByDescending { it.score }.toMutableList()
@@ -147,35 +197,69 @@ class FastSamDetector(context: Context) {
         while (sorted.isNotEmpty()) {
             val best = sorted.removeAt(0)
             kept += best
-            sorted.removeAll { overlapRatio(it, best) > NMS_OVERLAP_THRESHOLD }
+            sorted.removeAll { overlapRatio(it.left, it.top, it.right, it.bottom, it.area, best.left, best.top, best.right, best.bottom, best.area) > NMS_OVERLAP_THRESHOLD }
+        }
+        return kept
+    }
+
+    /** One kept detection in some bitmap's own pixel coordinates (a whole tile, or the full photo), with its confidence. */
+    private data class ScoredBox(val box: Rect, val score: Float) {
+        val area: Float get() = max(0, box.width()).toFloat() * max(0, box.height())
+    }
+
+    private fun ScoredBox.offsetBy(dx: Int, dy: Int): ScoredBox =
+        ScoredBox(Rect(box.left + dx, box.top + dy, box.right + dx, box.bottom + dy), score)
+
+    /**
+     * Second, cross-tile NMS pass over every tile's already-deduplicated
+     * boxes, now all mapped into the original photo's shared pixel space -
+     * collapses the same real object being found by more than one
+     * overlapping tile (or by both a tile and the whole-photo pass) into
+     * one box, same containment-based test as [nonMaxSuppression].
+     */
+    private fun mergeOverlapping(boxes: List<ScoredBox>): List<ScoredBox> {
+        val sorted = boxes.sortedByDescending { it.score }.toMutableList()
+        val kept = mutableListOf<ScoredBox>()
+        while (sorted.isNotEmpty()) {
+            val best = sorted.removeAt(0)
+            kept += best
+            sorted.removeAll {
+                overlapRatio(
+                    it.box.left.toFloat(), it.box.top.toFloat(), it.box.right.toFloat(), it.box.bottom.toFloat(), it.area,
+                    best.box.left.toFloat(), best.box.top.toFloat(), best.box.right.toFloat(), best.box.bottom.toFloat(), best.area,
+                ) > NMS_OVERLAP_THRESHOLD
+            }
         }
         return kept
     }
 
     /** Intersection area relative to the *smaller* of the two boxes - see [nonMaxSuppression]. */
-    private fun overlapRatio(a: Candidate, b: Candidate): Float {
-        val interLeft = max(a.left, b.left)
-        val interTop = max(a.top, b.top)
-        val interRight = min(a.right, b.right)
-        val interBottom = min(a.bottom, b.bottom)
+    private fun overlapRatio(
+        aLeft: Float, aTop: Float, aRight: Float, aBottom: Float, aArea: Float,
+        bLeft: Float, bTop: Float, bRight: Float, bBottom: Float, bArea: Float,
+    ): Float {
+        val interLeft = max(aLeft, bLeft)
+        val interTop = max(aTop, bTop)
+        val interRight = min(aRight, bRight)
+        val interBottom = min(aBottom, bBottom)
         if (interRight <= interLeft || interBottom <= interTop) return 0f
 
         val interArea = (interRight - interLeft) * (interBottom - interTop)
-        val smallerArea = min(a.area, b.area)
+        val smallerArea = min(aArea, bArea)
         return if (smallerArea <= 0f) 0f else interArea / smallerArea
     }
 
     private data class Letterbox(val bitmap: Bitmap, val scale: Float, val padX: Float, val padY: Float)
 
-    /** Maps this candidate's box from the letterboxed 320x320 space back to the original photo's pixel coordinates. */
-    private fun Candidate.toDetectedBlob(letterbox: Letterbox): DetectedBlob {
+    /** Maps this candidate's box from the letterboxed 320x320 space back to the tile's own pixel coordinates. */
+    private fun Candidate.toScoredBox(letterbox: Letterbox): ScoredBox {
         val box = Rect(
             ((left - letterbox.padX) / letterbox.scale).roundToInt(),
             ((top - letterbox.padY) / letterbox.scale).roundToInt(),
             ((right - letterbox.padX) / letterbox.scale).roundToInt(),
             ((bottom - letterbox.padY) / letterbox.scale).roundToInt(),
         )
-        return DetectedBlob(box = box, label = null)
+        return ScoredBox(box, score)
     }
 
     private companion object {
@@ -187,5 +271,7 @@ class FastSamDetector(context: Context) {
         const val PROTO_SIZE = 80
         const val CONFIDENCE_THRESHOLD = 0.4f
         const val NMS_OVERLAP_THRESHOLD = 0.45f
+        const val TILE_FRACTION = 0.6f
+        const val MIN_DIMENSION_FOR_TILING = 400
     }
 }
