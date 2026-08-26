@@ -1,14 +1,11 @@
 package com.micha741.skener.data
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Rect
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-import com.google.android.gms.tasks.Tasks
-import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.objects.DetectedObject
-import com.google.mlkit.vision.objects.ObjectDetection
-import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
+import com.micha741.skener.data.fastsam.FastSamDetector
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -25,20 +22,29 @@ data class LiveFrameResult(
  * CameraX [ImageAnalysis.Analyzer] that throttles incoming preview frames,
  * decodes the YUV_420_888 frame into a small upright [Bitmap] (downsampled
  * while reading straight from the Y/U/V planes - no JPEG round-trip), and
- * runs it through ML Kit's on-device Object Detection & Tracking, the same
- * trained detector the static photo counter used to use before switching
- * to a bundled FastSAM model (see [com.micha741.skener.data.ObjectCounter]).
+ * runs it through the same bundled FastSAM-s model the static-photo counter
+ * uses (see [com.micha741.skener.data.ObjectCounter]).
  *
- * Builds a fresh detector client per analyzed frame instead of reusing one
- * for the whole camera session (originally STREAM_MODE, chosen for its
- * cross-frame object tracking - but nothing here ever reads a tracking ID,
- * so it bought nothing). Device testing found a native crash inside ML
- * Kit's own libmlkitcommonpipeline.so from reusing one client for repeated
- * process() calls - first seen with a SINGLE_IMAGE_MODE client called 9x
- * per photo for tiled detection (fixed the same way), then again here with
- * a STREAM_MODE client reused across many preview frames, so the "STREAM_MODE
- * is designed for repeated reuse, so it must be safe" assumption doesn't
- * hold up - a fresh client per call is what actually avoids the crash.
+ * This used to run ML Kit's base Object Detection instead - cheaper, but
+ * this codebase's own earlier notes on why FastSAM replaced it for the
+ * static photo apply here too: the base (non-custom) ML Kit model has
+ * trouble telling apart unfamiliar, small, or tightly-clustered pieces,
+ * and device testing bore that out directly - a photo of several touching
+ * garlic bulbs counted correctly (FastSAM, static path) but the *same*
+ * bulbs in the live preview (ML Kit) always came back as one merged blob.
+ * Live frames here are downsampled to [MAX_DIMENSION] - already close to
+ * FastSAM's own fixed 320x320 input and comfortably under
+ * [FastSamDetector]'s tiling threshold, so this only ever runs one
+ * inference pass per analyzed frame, not the five a large static photo
+ * can trigger.
+ *
+ * Unlike ML Kit's client, which turned out to crash under reuse (this
+ * file used to build a fresh one per frame to work around it - see the
+ * git history and [ObjectCounter]/[FastSamDetector]), a single TFLite
+ * `Interpreter` is fine to call repeatedly from the same background thread,
+ * which is exactly how [analyze] is invoked (CameraX calls it serially on
+ * one dedicated executor) - so one [FastSamDetector] is built lazily on
+ * first use and kept for the life of this analyzer, closed in [release].
  *
  * [requestReferenceAt] lets the UI pick a reference piece by tapping a spot
  * in frame coordinates; the analyzer resolves it against the *next*
@@ -53,8 +59,13 @@ data class LiveFrameResult(
  * how well size/color matching would or wouldn't have caught it.
  */
 class LiveFrameAnalyzer(
+    context: Context,
     private val onResult: (LiveFrameResult) -> Unit,
 ) : ImageAnalysis.Analyzer {
+
+    private val appContext = context.applicationContext
+    private val detectorLazy = lazy { FastSamDetector(appContext) }
+    private val detector by detectorLazy
 
     @Volatile
     private var referenceBlob: DetectedBlob? = null
@@ -89,10 +100,11 @@ class LiveFrameAnalyzer(
         roiBox = null
     }
 
-    /** Call when the camera screen is torn down. No detector client is held between frames, so there's nothing to release. */
+    /** Call when the camera screen is torn down: releases the TFLite interpreter's native resources, if it was ever used. */
     fun release() {
         referenceBlob = null
         roiBox = null
+        if (detectorLazy.isInitialized()) detector.close()
     }
 
     override fun analyze(imageProxy: ImageProxy) {
@@ -108,14 +120,15 @@ class LiveFrameAnalyzer(
             val width = bitmap.width
             val height = bitmap.height
 
-            val detected = runDetection(bitmap)
-            bitmap.recycle()
-            var allBlobs = detected.map { it.toDetectedBlob() }
+            var allBlobs = detector.detect(bitmap)
+            allBlobs = allBlobs.filterNot { looksLikeStraightEdge(it.box, width, height) }
+            allBlobs = allBlobs.map { it.copy(avgColor = averageColor(bitmap, it.box)) }
 
             val roi = roiBox
             if (roi != null) {
                 allBlobs = allBlobs.filter { roi.contains(it.box.centerX(), it.box.centerY()) }
             }
+            bitmap.recycle()
 
             val tap = pendingReferenceTap
             if (tap != null) {
@@ -124,25 +137,15 @@ class LiveFrameAnalyzer(
             }
 
             val reference = referenceBlob
-            val blobs = if (reference != null) allBlobs.filter { matchesReference(it, reference) } else allBlobs
+            val blobs = if (reference != null) {
+                allBlobs.filter { matchesReference(it, reference) }
+            } else {
+                rejectSizeOutliers(allBlobs)
+            }
 
             onResult(LiveFrameResult(blobs, blobs.size, width, height, reference != null))
         } finally {
             imageProxy.close()
-        }
-    }
-
-    private fun runDetection(bitmap: Bitmap): List<DetectedObject> {
-        val options = ObjectDetectorOptions.Builder()
-            .setDetectorMode(ObjectDetectorOptions.SINGLE_IMAGE_MODE)
-            .enableMultipleObjects()
-            .enableClassification()
-            .build()
-        val detector = ObjectDetection.getClient(options)
-        return try {
-            Tasks.await(detector.process(InputImage.fromBitmap(bitmap, 0)))
-        } finally {
-            detector.close()
         }
     }
 

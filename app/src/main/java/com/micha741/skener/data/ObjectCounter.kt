@@ -3,7 +3,6 @@ package com.micha741.skener.data
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.graphics.Point
 import android.graphics.Rect
 import android.net.Uri
@@ -11,7 +10,6 @@ import com.micha741.skener.data.fastsam.FastSamDetector
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.math.max
-import kotlin.math.min
 import kotlin.math.roundToInt
 
 data class CountResult(
@@ -23,10 +21,11 @@ data class CountResult(
 /**
  * Counts discrete objects in a still photo via a bundled FastSAM-s model
  * (see [FastSamDetector]) - a class-agnostic "segment everything" detector,
- * not one tuned to recognize a handful of common categories the way ML
- * Kit's base Object Detection (still used for the live camera, see
- * [LiveFrameAnalyzer]) is. That's what a genuinely universal piece counter
- * needs: it doesn't have to know *what* something is to find it.
+ * not one tuned to recognize a handful of common categories. That's what a
+ * genuinely universal piece counter needs: it doesn't have to know *what*
+ * something is to find it. [LiveFrameAnalyzer] runs the same model for the
+ * live camera; the filters below ([looksLikeStraightEdge], [rejectSizeOutliers],
+ * [averageColor]) are shared between both in `DetectedBlobFilters.kt`.
  *
  * The photo is decoded downsampled close to [PHOTO_MAX_DIMENSION] (a
  * phone photo can easily be 4000px+ on a side) rather than at full
@@ -146,74 +145,7 @@ class ObjectCounter(context: Context) {
         return CountResult(scaledBlobs, scaledBlobs.size, scaledReference)
     }
 
-    /** Mean pixel color inside [box] on [bitmap], used by [matchesReference] to tell same-sized but differently-colored things apart (a plum from a leaf). */
-    private fun averageColor(bitmap: Bitmap, box: Rect): Int {
-        val left = box.left.coerceIn(0, bitmap.width - 1)
-        val top = box.top.coerceIn(0, bitmap.height - 1)
-        val right = box.right.coerceIn(left + 1, bitmap.width)
-        val bottom = box.bottom.coerceIn(top + 1, bitmap.height)
-        val width = right - left
-        val height = bottom - top
-
-        val pixels = IntArray(width * height)
-        bitmap.getPixels(pixels, 0, width, left, top, width, height)
-        var r = 0L
-        var g = 0L
-        var b = 0L
-        for (pixel in pixels) {
-            r += (pixel shr 16) and 0xFF
-            g += (pixel shr 8) and 0xFF
-            b += pixel and 0xFF
-        }
-        val count = pixels.size
-        return Color.rgb((r / count).toInt(), (g / count).toInt(), (b / count).toInt())
-    }
-
-    /**
-     * True for a box that looks like a straight architectural edge (a door
-     * frame, a wall/floor seam) rather than a real piece: earlier testing
-     * against ML Kit's detector showed exactly this failure. The giveaway
-     * is being *both* strongly elongated *and* running across most of the
-     * photo - a real piece, even a thin one (a screw, a pen), only rarely
-     * spans most of the frame's width or height.
-     */
-    private fun looksLikeStraightEdge(box: Rect, photoWidth: Int, photoHeight: Int): Boolean {
-        val longSide = max(box.width(), box.height())
-        val shortSide = max(1, min(box.width(), box.height()))
-        val aspectRatio = longSide.toDouble() / shortSide
-        if (aspectRatio < MIN_EDGE_ASPECT_RATIO) return false
-
-        val spansPhoto = box.height() >= photoHeight * EDGE_PHOTO_SPAN_FRACTION ||
-            box.width() >= photoWidth * EDGE_PHOTO_SPAN_FRACTION
-        return spansPhoto
-    }
-
-    /**
-     * Auto mode only (no reference piece): a stray false detection (a
-     * reflection, a sliver of background) sitting apart from the real
-     * pieces isn't caught by the detector's own NMS, since it doesn't
-     * overlap a real piece - there's nothing to merge it into. When
-     * counting several instances of "the same kind of thing" (the app's
-     * whole premise), real pieces should be roughly consistent in size, so
-     * a box much smaller than the *median* of everything else found is
-     * more likely such a stray artifact than a genuinely distinct extra
-     * piece. Needs a handful of samples to make a meaningful median, and
-     * only applies here - reference mode already has its own, more
-     * reliable, user-anchored size check in [matchesReference].
-     */
-    private fun rejectSizeOutliers(blobs: List<DetectedBlob>): List<DetectedBlob> {
-        if (blobs.size < MIN_SAMPLES_FOR_SIZE_FILTER) return blobs
-        val areas = blobs.map { it.box.width().toLong() * it.box.height().toLong() }.sorted()
-        val medianArea = areas[areas.size / 2]
-        if (medianArea <= 0) return blobs
-        return blobs.filter { it.box.width().toLong() * it.box.height().toLong() >= medianArea * MIN_SIZE_RATIO_TO_MEDIAN }
-    }
-
     private companion object {
         const val PHOTO_MAX_DIMENSION = 1600
-        const val MIN_EDGE_ASPECT_RATIO = 3.0
-        const val EDGE_PHOTO_SPAN_FRACTION = 0.6
-        const val MIN_SAMPLES_FOR_SIZE_FILTER = 3
-        const val MIN_SIZE_RATIO_TO_MEDIAN = 0.25
     }
 }

@@ -61,6 +61,7 @@ import com.micha741.skener.data.LiveFrameResult
 import kotlinx.coroutines.delay
 import java.io.File
 import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -68,12 +69,17 @@ import kotlin.math.roundToInt
 
 /**
  * Full-screen live camera viewfinder for piece counting. Shows the phone's
- * built-in camera preview with a real-time overlay (ML Kit Object Detection
- * & Tracking - see [LiveFrameAnalyzer]) and a continuously updating count,
- * zoom, an optional reference piece (tap a box to count only similar ones),
- * an optional region of interest (drag a rectangle to discard everything
- * outside it, same as the static-photo counter's - see [LiveFrameAnalyzer.setRoi]),
- * and takes a full-resolution photo on demand for the precise final count.
+ * built-in camera preview with a real-time overlay (the same bundled
+ * FastSAM-s model the static-photo counter uses - see [LiveFrameAnalyzer])
+ * and a continuously updating count, zoom, an optional reference piece
+ * (tap a box to count only similar ones), and an optional region of
+ * interest (drag a rectangle to discard everything outside it - see
+ * [LiveFrameAnalyzer.setRoi]). The two compose in either order: selecting
+ * a region first and then tapping a reference within it works exactly
+ * like it does the other way around, since [LiveFrameAnalyzer] resolves a
+ * reference tap against the already-ROI-filtered detections, not the raw
+ * ones. Also takes a full-resolution photo on demand for the precise
+ * final count.
  */
 @Composable
 fun LiveCameraScreen(
@@ -103,7 +109,7 @@ fun LiveCameraScreen(
         PreviewView(context).apply { scaleType = PreviewView.ScaleType.FILL_CENTER }
     }
     val imageCapture = remember { ImageCapture.Builder().build() }
-    val analyzer = remember { LiveFrameAnalyzer { result -> liveResult = result } }
+    val analyzer = remember { LiveFrameAnalyzer(context) { result -> liveResult = result } }
     val analysisExecutor = remember { Executors.newSingleThreadExecutor() }
 
     DisposableEffect(lifecycleOwner) {
@@ -138,6 +144,11 @@ fun LiveCameraScreen(
         onDispose {
             cameraProvider?.unbindAll()
             analysisExecutor.shutdown()
+            // release() now closes the TFLite interpreter, unlike the old ML-Kit-based
+            // analyzer's release() (which only cleared a field) - awaitTermination first
+            // so a still-in-flight analyze() call on the executor's thread can't be mid
+            // inference when the interpreter it's using gets closed out from under it.
+            analysisExecutor.awaitTermination(1, TimeUnit.SECONDS)
             analyzer.release()
         }
     }

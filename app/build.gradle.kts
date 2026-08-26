@@ -14,8 +14,8 @@ android {
         applicationId = "com.micha741.skener"
         minSdk = 26
         targetSdk = 34
-        versionCode = 38
-        versionName = "4.8"
+        versionCode = 39
+        versionName = "4.9"
     }
 
     buildTypes {
@@ -81,27 +81,22 @@ dependencies {
     // ML Kit Text Recognition (Latin) - OCR for the "text only" document scan mode
     implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.1")
 
-    // ML Kit Object Detection & Tracking - finds and separates distinct objects
-    // in a photo/live frame (data/ObjectCounter.kt, data/LiveFrameAnalyzer.kt).
-    // Replaced a hand-tuned OpenCV threshold/contour pipeline that kept
-    // mistaking background texture (wood grain, fabric prints) for pieces -
-    // this is a trained on-device detector instead of a contrast heuristic.
-    // Unlike barcode scanning/document scanner/text recognition above, this
-    // API has no play-services-mlkit-* wrapper - it only ships as the
-    // standalone com.google.mlkit artifact. Check
-    // https://developers.google.com/ml-kit/vision/object-detection/android
-    // for the newest version.
-    implementation("com.google.mlkit:object-detection:17.0.2")
-
     // TensorFlow Lite - runs the bundled FastSAM-s segmentation model
     // (app/src/main/assets/fastsam_s.tflite, see data/fastsam/FastSamDetector.kt)
-    // for the static-photo counter. Unlike ML Kit's base object detector,
-    // this is a class-agnostic "segment everything" model - trained to find
-    // every distinct object in a scene regardless of what it is, which is
-    // what a genuinely universal piece counter needs. The model file is
-    // AGPL-3.0 licensed (see /third_party_licenses/FastSAM_AGPL-3.0_LICENSE.txt)
-    // - distributing this app means the whole app falls under those terms.
-    // Check https://mvnrepository.com/artifact/org.tensorflow/tensorflow-lite
+    // for piece counting, both the static photo (data/ObjectCounter.kt) and
+    // the live camera (data/LiveFrameAnalyzer.kt). Replaced a hand-tuned
+    // OpenCV threshold/contour pipeline (mistook background texture - wood
+    // grain, fabric prints - for pieces), then ML Kit's base Object
+    // Detection & Tracking (a trained detector, but tuned to a handful of
+    // broad categories - struggled with unfamiliar, small, or
+    // tightly-clustered pieces, e.g. several touching garlic bulbs merging
+    // into one detection). FastSAM is class-agnostic "segment everything" -
+    // it doesn't need to know what something is, just that it's a distinct
+    // object, which is what a genuinely universal piece counter needs. The
+    // model file is AGPL-3.0 licensed (see
+    // /third_party_licenses/FastSAM_AGPL-3.0_LICENSE.txt) - distributing
+    // this app means the whole app falls under those terms. Check
+    // https://mvnrepository.com/artifact/org.tensorflow/tensorflow-lite
     // for the newest version.
     implementation("org.tensorflow:tensorflow-lite:2.17.0")
 

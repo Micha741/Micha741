@@ -15,9 +15,8 @@ Nativní Android aplikace (Kotlin + Jetpack Compose), která pomocí kamery
 naskenuje dokument, automaticky ho ořízne/vylepší a uloží jako PDF.
 Skenování dokumentu je postavené na [ML Kit Document Scanner API](https://developers.google.com/ml-kit/vision/doc-scanner)
 (detekce hran, korekce perspektivy, filtry, vícestránkové skeny). Počítání
-kusů ze statické fotky běží přes vlastní na zařízení natrénovaný **FastSAM**
-model (TFLite, AGPL-3.0 — viz sekce Funkce níže), živý náhled kamery přes
-[ML Kit Object Detection & Tracking](https://developers.google.com/ml-kit/vision/object-detection).
+kusů — statická fotka i živý náhled kamery — běží přes vlastní na zařízení
+natrénovaný **FastSAM** model (TFLite, AGPL-3.0 — viz sekce Funkce níže).
 
 ### Funkce
 
@@ -46,10 +45,11 @@ model (TFLite, AGPL-3.0 — viz sekce Funkce níže), živý náhled kamery pře
   Framework), takže PDF jde uložit třeba do Stažených souborů, na Disk
   nebo SD kartu, mimo interní úložiště appky
 - Smazání skenu
-- **Počítání kusů** — statická fotka/výběr z galerie běží přes vlastní
-  natrénovaný **FastSAM-s** model (`assets/fastsam_s.tflite`,
-  `data/fastsam/FastSamDetector.kt`), živý náhled z kamery (CameraX) pořád
-  přes **ML Kit Object Detection & Tracking** (`data/LiveFrameAnalyzer.kt`):
+- **Počítání kusů** — statická fotka/výběr z galerie i živý náhled z kamery
+  (CameraX) běží přes vlastní natrénovaný **FastSAM-s** model
+  (`assets/fastsam_s.tflite`, `data/fastsam/FastSamDetector.kt`,
+  volaný z `data/ObjectCounter.kt` pro fotku a `data/LiveFrameAnalyzer.kt`
+  pro živý náhled):
   - Appka postupně prošla třemi generacemi segmentace: vlastní OpenCV
     pipeline (adaptivní práh/barva/watershed) na opakovaných reálných
     fotkách (dřevěný stůl se žílami, potištěná látka) pořád znovu
@@ -182,26 +182,36 @@ model (TFLite, AGPL-3.0 — viz sekce Funkce níže), živý náhled kamery pře
     referenční kus, nová fotka) je navíc přes `verticalScroll` posuvný - s
     přibývajícím počtem tlačítek by se poslední z nich na menších
     obrazovkách jinak schoval pod spodní navigační lištu, nedosažitelný
-  - **Živý náhled zůstává na ML Kitu** (`enableMultipleObjects()`,
-    `enableClassification()`), s referenčním kusem (klepnutím na kus v
-    hledáčku), oblastí zájmu (stejná logika i gesto přetažení jako u
-    statické fotky - `LiveFrameAnalyzer.setRoi()` zahodí detekce mimo
-    vybraný obdélník v snímkových souřadnicích, ještě před referenčním
-    filtrováním), zoomem a stejným zpracováním kamerového snímku
-    (YUV_420_888 → malá barevná bitmapa přímo z Y/U/V rovin) jako dřív.
-    FastSAM tam zatím neběží — i těch pět běhů modelu na jednu vyfocenou
-    fotku (viz dlaždice výše) je v pořádku, protože se počítá jednou po
-    klepnutí, ale běžet znovu a znovu na každý snímek hledáčku (řádově 4×
-    za sekundu) by na běžném telefonu bez zrychlení přes GPU/NPU delegáta
-    bylo příliš pomalé pro plynulý náhled. Původně běžel v `STREAM_MODE`
-    (kontinuální sledování mezi snímky) na jednom sdíleném klientovi po
-    celou dobu náhledu — reálný pád na zařízení (nativní pád uvnitř
-    `libmlkitcommonpipeline.so`, úplně stejná adresa jako dřívější pád u
-    dlaždicové detekce) ukázal, že i tenhle režim je při opakovaném
-    použití jednoho klienta nestabilní, a appka trackovací ID stejně
-    nikde nevyužívala. `LiveFrameAnalyzer.runDetection()` proto teď pro
-    každý zpracovaný snímek vytvoří a hned zavře nový klient v
-    `SINGLE_IMAGE_MODE`
+  - **Živý náhled na FastSAM taky (dřív na ML Kitu)**: appka dřív pro živý
+    náhled kamery používala ML Kit Object Detection & Tracking (levnější,
+    ale natrénovaný jen na pár širokých kategorií). Reálné testování na
+    zařízení ukázalo přesně tu slabinu, kvůli které FastSAM nahradil ML
+    Kit i u statické fotky: stejná fotka pěti k sobě přitisknutých
+    stroužků česneku appka spočítala správně přes FastSAM (fotka), ale v
+    živém náhledu (tehdy ML Kit) z nich pořád dělal jeden slitý box.
+    `LiveFrameAnalyzer` teď volá stejný `FastSamDetector` jako
+    `ObjectCounter`, se stejnými filtry (`looksLikeStraightEdge()`,
+    `rejectSizeOutliers()`, barevné porovnání odstínu u referenčního kusu
+    — sdílené v `DetectedBlobFilters.kt`/`DetectedBlobMatching.kt`). Živý
+    snímek se zmenšuje na 300 px (`MAX_DIMENSION`) — blízko modelovému
+    pevnému vstupu 320×320 a pod prahem pro dlaždice (`MIN_DIMENSION_FOR_TILING`
+    = 400), takže na snímek běží jen jeden průchod modelu, ne pět jako u
+    velké vyfocené fotky. Interpreter se navíc (na rozdíl od ML Kitova
+    klienta, který se ukázal nestabilní při opakovaném použití — nativní
+    pád uvnitř `libmlkitcommonpipeline.so`) bezpečně volá opakovaně z
+    jednoho vlákna (`analysisExecutor`, jak CameraX `Analyzer` volá
+    `analyze()` sériově) — appka ho tedy postaví líně jednou a drží po
+    celou dobu náhledu, zavře až v `release()`. Aby se `release()` (zavře
+    TFLite interpreter) nespustil, zatímco `analyze()` na tom samém
+    interpreteru zrovna běží, `LiveCameraScreen` před ním počká na
+    doběhnutí fronty (`analysisExecutor.awaitTermination()`)
+  - **Oblast zájmu i v živém náhledu**: stejné gesto přetažení jako u
+    fotky (`LiveFrameAnalyzer.setRoi()`) — zahodí detekce mimo vybraný
+    obdélník v snímkových souřadnicích ještě před referenčním
+    filtrováním. Jde vybrat v libovolném pořadí s referenčním kusem:
+    nejdřív oblast a pak klepnutím referenci uvnitř ní, nebo naopak —
+    referenční klepnutí se vždy vyhodnocuje už proti snímkům omezeným na
+    aktuální oblast zájmu, takže obě pořadí fungují stejně
 - **Čtečka čárových a QR kódů**: kamera přes celou obrazovku (ML Kit
   Barcode Scanning) s ohraničujícím rámečkem uprostřed jako vizuální
   vodítko, zoom (posuvník napojený na `CameraControl.setLinearZoom`),
@@ -234,18 +244,19 @@ app/src/main/java/com/micha741/skener/
 ├── data/
 │   ├── ScanDocument.kt      # model naskenovaného PDF
 │   ├── ScanRepository.kt    # ukládání/čtení PDF v app storage
-│   ├── DetectedBlob.kt      # sdílený model kusu (box, kategorie) pro fotku i živý náhled
-│   ├── DetectedBlobMatching.kt # sdílené mapování/porovnávání: hledání pod tapem, referenční shoda podle velikosti/kategorie
-│   ├── ObjectCounter.kt     # počítání kusů ze statické fotky přes FastSamDetector, filtry, referenční kus
+│   ├── DetectedBlob.kt      # sdílený model kusu (box, průměrná barva) pro fotku i živý náhled
+│   ├── DetectedBlobMatching.kt # sdílené mapování/porovnávání: hledání pod tapem, referenční shoda podle velikosti/odstínu
+│   ├── DetectedBlobFilters.kt # sdílené filtry (rovná hrana, velikostní odlehlé hodnoty, průměrná barva) pro fotku i živý náhled
+│   ├── ObjectCounter.kt     # počítání kusů ze statické fotky přes FastSamDetector, referenční kus, oblast zájmu
 │   ├── fastsam/
-│   │   └── FastSamDetector.kt # TFLite inference nad fastsam_s.tflite: letterbox, dekódování boxů, NMS
-│   ├── LiveFrameAnalyzer.kt # CameraX analyzer: YUV -> upright bitmapa -> ML Kit Object Detection (STREAM_MODE), nastavitelná reference
+│   │   └── FastSamDetector.kt # TFLite inference nad fastsam_s.tflite: letterbox, dlaždice, dekódování boxů, NMS
+│   ├── LiveFrameAnalyzer.kt # CameraX analyzer: YUV -> upright bitmapa -> FastSamDetector, referenční kus, oblast zájmu
 │   ├── BarcodeAnalyzer.kt   # CameraX analyzer: živé snímky -> ML Kit Barcode Scanning
 │   ├── DocumentTextExtractor.kt # OCR jedné stránky + odhad formátování (velikost/tučné/kurzíva/barva) na řádek
 │   ├── TextPdfWriter.kt     # vykreslí rozpoznaný text pozičně/formátovaně do PDF (bez fotky)
 │   └── BarcodeImageEncoder.kt # zpětně zakóduje hodnotu kódu do bitmapy (ZXing) pro uložení jako obrázek
 ├── assets/
-│   └── fastsam_s.tflite     # FastSAM-s model (~45 MB, AGPL-3.0) pro počítání kusů ze statické fotky
+│   └── fastsam_s.tflite     # FastSAM-s model (~45 MB, AGPL-3.0) pro počítání kusů - fotka i živý náhled
 └── ui/theme/Theme.kt        # Material 3 theme (light/dark, dynamic color)
 ```
 

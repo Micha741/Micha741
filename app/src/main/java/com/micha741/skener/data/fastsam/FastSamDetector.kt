@@ -72,7 +72,7 @@ class FastSamDetector(context: Context) {
             // bitmap): only recycle when createBitmap actually made a copy.
             if (tile !== bitmap) tile.recycle()
         }
-        return mergeOverlapping(allBoxes).map { DetectedBlob(box = it.box, label = null) }
+        return mergeOverlapping(allBoxes).map { DetectedBlob(box = it.box) }
     }
 
     fun close() {
