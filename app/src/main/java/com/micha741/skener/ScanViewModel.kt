@@ -75,7 +75,7 @@ class ScanViewModel(
                 _uiState.update {
                     it.copy(
                         isProcessing = false,
-                        errorMessage = failure?.message ?: appContext.getString(R.string.ocr_failed),
+                        errorMessage = failure.message ?: appContext.getString(R.string.ocr_failed),
                     )
                 }
                 return@launch
