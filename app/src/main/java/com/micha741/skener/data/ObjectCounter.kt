@@ -158,7 +158,7 @@ class ObjectCounter(context: Context) {
                 (roi.right * bitmap.width).roundToInt(),
                 (roi.bottom * bitmap.height).roundToInt(),
             )
-            allBlobs = allBlobs.filter { bitmapRoi.contains(it.box.centerX(), it.box.centerY()) }
+            allBlobs = allBlobs.filter { overlapsRoiEnough(it.box, bitmapRoi) }
         }
         bitmap.recycle()
 

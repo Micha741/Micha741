@@ -153,7 +153,7 @@ class LiveFrameAnalyzer(
                     (roi.right * width).roundToInt(),
                     (roi.bottom * height).roundToInt(),
                 )
-                allBlobs = allBlobs.filter { pixelRoi.contains(it.box.centerX(), it.box.centerY()) }
+                allBlobs = allBlobs.filter { overlapsRoiEnough(it.box, pixelRoi) }
             }
             bitmap.recycle()
 

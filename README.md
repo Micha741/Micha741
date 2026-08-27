@@ -275,6 +275,17 @@ natrénovaný **FastSAM** model (TFLite, AGPL-3.0 — viz sekce Funkce níže).
     (`LiveFrameAnalyzer.suggestRoiFromLastFrame()`) ještě před filtrováním
     podle aktuální oblasti/reference, stejně jako u fotky
     (`ObjectCounter.suggestRoi()`)
+  - **Oblast zájmu podle plochy kusu, ne jen jeho středu**: filtrování podle
+    oblasti dřív kontrolovalo jen to, jestli **střed** nalezeného boxu leží
+    uvnitř vybraného obdélníku (`Rect.contains(centerX, centerY)`) — box
+    samotný ale mohl sahat daleko mimo ni a pořád se započítal celý. V husté
+    hromadě dotýkajících se kusů (šrouby v krabičce) FastSAM občas spojí
+    několik z nich do jednoho velkého blobu; když se jeho střed trefil do
+    vybrané oblasti, appka ho vzala celý, i když z většiny ležel mimo ni —
+    hlášeno přímo jako "kus větší než výběr". `overlapsRoiEnough()`
+    (`DetectedBlobFilters.kt`, sdílené fotkou i živým náhledem) místo toho
+    počítá, kolik procent plochy boxu leží uvnitř oblasti, a box zahodí, když
+    je to méně než polovina
 - **Čtečka čárových a QR kódů**: kamera přes celou obrazovku (ML Kit
   Barcode Scanning) s ohraničujícím rámečkem uprostřed jako vizuální
   vodítko, zoom (posuvník napojený na `CameraControl.setLinearZoom`),

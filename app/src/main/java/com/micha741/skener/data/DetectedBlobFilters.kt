@@ -56,6 +56,28 @@ fun rejectSizeOutliers(blobs: List<DetectedBlob>): List<DetectedBlob> {
     return blobs.filter { it.box.width().toLong() * it.box.height().toLong() >= medianArea * MIN_SIZE_RATIO_TO_MEDIAN }
 }
 
+/**
+ * True when at least [minFraction] of [box]'s own area falls inside [roi] -
+ * stricter than just checking whether its center point lands inside, which
+ * let a box mostly (or even almost entirely) outside a selected region of
+ * interest still count as long as its center happened to fall inside it -
+ * reported directly: a dense pile where several touching pieces get merged
+ * by FastSAM into one oversized blob, sitting mostly outside the region the
+ * user actually dragged out, still showed up "bigger than the selection".
+ */
+fun overlapsRoiEnough(box: Rect, roi: Rect, minFraction: Double = ROI_MIN_OVERLAP_FRACTION): Boolean {
+    val left = max(box.left, roi.left)
+    val top = max(box.top, roi.top)
+    val right = min(box.right, roi.right)
+    val bottom = min(box.bottom, roi.bottom)
+    if (right <= left || bottom <= top) return false
+
+    val boxArea = box.width().toLong() * box.height().toLong()
+    if (boxArea <= 0) return false
+    val interArea = (right - left).toLong() * (bottom - top).toLong()
+    return interArea.toDouble() / boxArea >= minFraction
+}
+
 /** Mean pixel color inside [box] on [bitmap], used by [matchesReference] to tell same-sized but differently-colored things apart (a plum from a leaf). */
 fun averageColor(bitmap: Bitmap, box: Rect): Int {
     val left = box.left.coerceIn(0, bitmap.width - 1)
@@ -83,3 +105,4 @@ private const val MIN_EDGE_ASPECT_RATIO = 3.0
 private const val EDGE_PHOTO_SPAN_FRACTION = 0.6
 private const val MIN_SAMPLES_FOR_SIZE_FILTER = 3
 private const val MIN_SIZE_RATIO_TO_MEDIAN = 0.25
+private const val ROI_MIN_OVERLAP_FRACTION = 0.5
