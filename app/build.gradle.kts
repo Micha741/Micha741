@@ -1,7 +1,5 @@
 @file:Suppress("DEPRECATION")
 
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.plugin.compose")
@@ -48,12 +46,6 @@ android {
     // that only works if the file is stored uncompressed in the APK.
     androidResources {
         noCompress += "tflite"
-    }
-}
-
-kotlin {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)
     }
 }
 
