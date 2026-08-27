@@ -28,6 +28,13 @@ data class CountResult(
  * live camera; the filters below ([looksLikeStraightEdge], [rejectSizeOutliers],
  * [averageColor]) are shared between both in `DetectedBlobFilters.kt`.
  *
+ * Every detected blob also runs through [subdivideGrids] first: FastSAM
+ * finds a keyboard, a tiled floor, a pegboard as *one* object (individual
+ * keys/tiles sit flush against each other with no shadow/gap boundary for
+ * it to split on), which [GridDetector] fixes by looking for regular
+ * periodic gaps in brightness across that one blob and slicing it into a
+ * grid of smaller boxes when it finds them.
+ *
  * The photo is decoded downsampled close to [PHOTO_MAX_DIMENSION] (a
  * phone photo can easily be 4000px+ on a side) rather than at full
  * resolution, purely to save memory - [FastSamDetector] does its own
@@ -77,6 +84,28 @@ class ObjectCounter(context: Context) {
         }
     }
 
+    /**
+     * Suggests a region of interest by detecting every object on the whole
+     * photo and finding the largest cluster of them sitting close together
+     * (see [suggestRoi]) - an automatic alternative to dragging one out by
+     * hand, for the common case of a bunch of pieces together plus some
+     * scattered false detections elsewhere in the frame. Null means no
+     * confident cluster was found (too few objects, or nothing clustered).
+     */
+    suspend fun suggestRoi(uri: Uri): Result<RectF?> = withContext(Dispatchers.Default) {
+        runCatching {
+            val photo = decodePhoto(uri)
+                ?: throw IllegalArgumentException("Nepodařilo se načíst fotku")
+            val bitmap = photo.bitmap
+            val width = bitmap.width
+            val height = bitmap.height
+            var allBlobs = subdivideGrids(detector.detect(bitmap), bitmap)
+            allBlobs = allBlobs.filterNot { looksLikeStraightEdge(it.box, width, height) }
+            bitmap.recycle()
+            suggestRoi(allBlobs, width, height)
+        }
+    }
+
     /** Releases the detector's native TFLite resources - call when the owning ViewModel is cleared. No-op if a count() was never run, since that's the only thing that initializes the detector. */
     fun close() {
         if (detectorLazy.isInitialized()) detector.close()
@@ -119,7 +148,7 @@ class ObjectCounter(context: Context) {
         // Same ratio on both axes: inSampleSize preserves aspect ratio.
         val inverseScale = photo.trueWidth.toFloat() / bitmap.width
 
-        var allBlobs = detector.detect(bitmap)
+        var allBlobs = subdivideGrids(detector.detect(bitmap), bitmap)
         allBlobs = allBlobs.filterNot { looksLikeStraightEdge(it.box, bitmap.width, bitmap.height) }
         allBlobs = allBlobs.map { it.copy(avgColor = averageColor(bitmap, it.box)) }
         if (roi != null) {

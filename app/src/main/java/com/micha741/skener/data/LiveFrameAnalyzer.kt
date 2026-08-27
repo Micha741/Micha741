@@ -84,6 +84,12 @@ class LiveFrameAnalyzer(
     @Volatile
     private var lastAnalyzedAtMs = 0L
 
+    @Volatile
+    private var lastRawBlobs: List<DetectedBlob> = emptyList()
+
+    @Volatile
+    private var lastFrameSize: IntArray? = null
+
     /** Call from the UI thread: the blob nearest ([x], [y]) in *frame* coordinates becomes the reference on the next frame. */
     fun requestReferenceAt(x: Int, y: Int) {
         pendingReferenceTap = intArrayOf(x, y)
@@ -105,10 +111,18 @@ class LiveFrameAnalyzer(
         roiBox = null
     }
 
+    /** Suggests a region of interest from the most recently analyzed frame's raw detections (before any current ROI/reference narrowed them) - see [com.micha741.skener.data.suggestRoi]. Null if no frame has been analyzed yet, or no confident cluster was found. */
+    fun suggestRoiFromLastFrame(): RectF? {
+        val size = lastFrameSize ?: return null
+        return suggestRoi(lastRawBlobs, size[0], size[1])
+    }
+
     /** Call when the camera screen is torn down: releases the TFLite interpreter's native resources, if it was ever used. */
     fun release() {
         referenceBlob = null
         roiBox = null
+        lastRawBlobs = emptyList()
+        lastFrameSize = null
         if (detectorLazy.isInitialized()) detector.close()
     }
 
@@ -125,9 +139,11 @@ class LiveFrameAnalyzer(
             val width = bitmap.width
             val height = bitmap.height
 
-            var allBlobs = detector.detect(bitmap)
+            var allBlobs = subdivideGrids(detector.detect(bitmap), bitmap)
             allBlobs = allBlobs.filterNot { looksLikeStraightEdge(it.box, width, height) }
             allBlobs = allBlobs.map { it.copy(avgColor = averageColor(bitmap, it.box)) }
+            lastRawBlobs = allBlobs
+            lastFrameSize = intArrayOf(width, height)
 
             val roi = roiBox
             if (roi != null) {

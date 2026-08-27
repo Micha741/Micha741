@@ -32,6 +32,8 @@
     <string name="count_select_roi">Vybrat oblast</string>
     <string name="count_roi_selecting">Přetáhni obdélník kolem kusů…</string>
     <string name="count_clear_roi">Zrušit výběr oblasti</string>
+    <string name="count_find_roi">Najít oblast automaticky</string>
+    <string name="count_roi_not_found">Nepodařilo se najít žádný zřetelný shluk kusů - zkus oblast vybrat ručně</string>
     <string name="count_save">Uložit výsledek</string>
     <string name="count_save_success">Obrázek uložen</string>
     <string name="back">Zpět</string>

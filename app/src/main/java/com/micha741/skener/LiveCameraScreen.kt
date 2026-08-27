@@ -341,6 +341,30 @@ fun LiveCameraScreen(
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                 )
             }
+            if (roiBox == null) {
+                Surface(
+                    color = Color.Black.copy(alpha = 0.5f),
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .clickable {
+                            val suggested = analyzer.suggestRoiFromLastFrame()
+                            if (suggested != null) {
+                                roiBox = suggested
+                                analyzer.setRoi(suggested)
+                                isSelectingRoi = false
+                            } else {
+                                captureError = context.getString(R.string.count_roi_not_found)
+                            }
+                        },
+                ) {
+                    Text(
+                        text = stringResource(R.string.count_find_roi),
+                        color = Color.White,
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                    )
+                }
+            }
         }
 
         captureError?.let { message ->

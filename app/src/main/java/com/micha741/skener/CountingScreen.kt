@@ -9,8 +9,10 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +22,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.CropFree
 import androidx.compose.material.icons.filled.FormatListNumbered
@@ -144,12 +147,21 @@ fun CountingScreen(
                         Text(stringResource(R.string.count_clear_roi))
                     }
                 } else {
-                    OutlinedButton(onClick = { isSelectingRoi = !isSelectingRoi }) {
-                        Icon(Icons.Default.CropFree, contentDescription = null)
-                        Text(
-                            text = stringResource(if (isSelectingRoi) R.string.count_roi_selecting else R.string.count_select_roi),
-                            modifier = Modifier.padding(start = 8.dp),
-                        )
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedButton(onClick = { isSelectingRoi = !isSelectingRoi }) {
+                            Icon(Icons.Default.CropFree, contentDescription = null)
+                            Text(
+                                text = stringResource(if (isSelectingRoi) R.string.count_roi_selecting else R.string.count_select_roi),
+                                modifier = Modifier.padding(start = 8.dp),
+                            )
+                        }
+                        OutlinedButton(onClick = { viewModel.findRoiAutomatically() }) {
+                            Icon(Icons.Default.AutoAwesome, contentDescription = null)
+                            Text(
+                                text = stringResource(R.string.count_find_roi),
+                                modifier = Modifier.padding(start = 8.dp),
+                            )
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.padding(top = 8.dp))

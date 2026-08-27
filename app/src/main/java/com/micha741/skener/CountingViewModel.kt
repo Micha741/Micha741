@@ -89,6 +89,28 @@ class CountingViewModel(
         runCount(uri, referenceTap = null, roi = null)
     }
 
+    /** Detects every object on the whole photo, finds the largest cluster of them sitting close together, and applies its bounding box as the region of interest (see [ObjectCounter.suggestRoi]) - an automatic alternative to dragging one out by hand. */
+    fun findRoiAutomatically() {
+        val uri = _uiState.value.photoUri ?: return
+        _uiState.update { it.copy(isProcessing = true) }
+        viewModelScope.launch {
+            counter.suggestRoi(uri)
+                .onSuccess { roi ->
+                    if (roi != null) {
+                        setRoi(roi)
+                    } else {
+                        _uiState.update {
+                            it.copy(isProcessing = false, errorMessage = appContext.getString(R.string.count_roi_not_found))
+                        }
+                    }
+                }
+                .onFailure { exception ->
+                    val message = exception.message ?: appContext.getString(R.string.count_failed)
+                    _uiState.update { it.copy(isProcessing = false, errorMessage = message) }
+                }
+        }
+    }
+
     /** User long-pressed a detected piece: toggle it out of (or back into) the count. */
     fun toggleExcluded(box: Rect) {
         _uiState.update { state ->

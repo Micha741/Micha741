@@ -243,6 +243,38 @@ natrénovaný **FastSAM** model (TFLite, AGPL-3.0 — viz sekce Funkce níže).
     (`onPhotoCaptured(uri, roi)` → `CountingViewModel.onPhotoSelected(uri, roi)`),
     takže se převezme rovnou a není potřeba ji na výsledné fotce
     vybírat znovu
+  - **Rozpoznání mřížky** (`GridDetector.kt`, `subdivideGrids()`): pravidelná
+    mřížka (klávesnice, dlaždice na podlaze) vyjde z FastSAM jako jeden velký
+    box místo jednotlivých kusů — hrany dlaždic/kláves na sebe těsně
+    navazují, takže model nemá kde "class-agnostic" segmentaci přeříznout.
+    Appka proto na každý nalezený box (fotka i živý snímek, `ObjectCounter`/
+    `LiveFrameAnalyzer` shodně) zkusí `GridDetector.subdivide()`: sečte
+    "tmavost" pixelů (255 mínus průměr RGB) po sloupcích a po řádcích do
+    dvou 1D profilů — spáry mezi dlaždicemi/mezery mezi klávesami se v nich
+    projeví jako pravidelně se opakující tmavé špičky. Dominantní perioda se
+    hledá normalizovanou autokorelací přes rozumný rozsah (6 až 30 buněk na
+    osu); aby se predikce nespletla s obyčejnou texturou (např. kresba dřeva
+    dá na krátkou vzdálenost taky vysokou autokorelaci, ověřeno na syntetické
+    scéně — vyšla dokonce výš než u skutečné klávesnice), appka požaduje, aby
+    stejně silná shoda vyšla i na dvojnásobné *a* trojnásobné periodě —
+    skutečné opakování drží sílu na obou, náhodná hladkost textury ne. Když
+    obě osy (nebo aspoň jedna) projdou, appka podél nalezené periody "přichytí"
+    dělicí čáry k nejbližší silné špičce v profilu a box rozseká na mřížku
+    menších boxů — jinak zůstane beze změny jako jeden kus
+  - **Automatický výběr oblasti zájmu** (`RoiSuggester.kt`): tlačítko "Najít
+    oblast automaticky" vedle ručního výběru (fotka i živý náhled) spustí
+    detekci na celé fotce/snímku a shluky k sobě blízkých kusů spojí přes
+    union-find — dva kusy patří do stejného shluku, když vzdálenost jejich
+    středů nepřekročí 1,5násobek jejich průměrné úhlopříčky. Ohraničující box
+    největšího shluku (s 8% okrajem) se nastaví jako oblast zájmu stejně,
+    jako by ji appka dostala z ručního přetažení — řeší stejný případ jako
+    ruční oblast (kusy stejné velikosti/barvy jako pozadí, jen jinde na
+    fotce), bez nutnosti je sám obtahovat. Když appka nenajde dost velký
+    shluk (méně než 3 kusy), ukáže hlášku a nechá výběr na ručním tlačítku.
+    V živém náhledu tlačítko běží nad posledním analyzovaným snímkem
+    (`LiveFrameAnalyzer.suggestRoiFromLastFrame()`) ještě před filtrováním
+    podle aktuální oblasti/reference, stejně jako u fotky
+    (`ObjectCounter.suggestRoi()`)
 - **Čtečka čárových a QR kódů**: kamera přes celou obrazovku (ML Kit
   Barcode Scanning) s ohraničujícím rámečkem uprostřed jako vizuální
   vodítko, zoom (posuvník napojený na `CameraControl.setLinearZoom`),
@@ -278,6 +310,8 @@ app/src/main/java/com/micha741/skener/
 │   ├── DetectedBlob.kt      # sdílený model kusu (box, průměrná barva) pro fotku i živý náhled
 │   ├── DetectedBlobMatching.kt # sdílené mapování/porovnávání: hledání pod tapem, referenční shoda podle velikosti/odstínu
 │   ├── DetectedBlobFilters.kt # sdílené filtry (rovná hrana, velikostní odlehlé hodnoty, průměrná barva) pro fotku i živý náhled
+│   ├── GridDetector.kt      # rozseká box na mřížku dlaždic/kláves, když v něm najde pravidelný opakující se vzor
+│   ├── RoiSuggester.kt      # automatický výběr oblasti zájmu: shlukování kusů podle blízkosti (union-find), box největšího shluku
 │   ├── ObjectCounter.kt     # počítání kusů ze statické fotky přes FastSamDetector, referenční kus, oblast zájmu
 │   ├── fastsam/
 │   │   └── FastSamDetector.kt # TFLite inference nad fastsam_s.tflite: letterbox, dlaždice, dekódování boxů, NMS
