@@ -1,7 +1,10 @@
 @file:Suppress("DEPRECATION")
 
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("com.android.application")
+    id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
@@ -36,18 +39,6 @@ android {
         compose = true
     }
 
-    // All .kt sources live under src/main/java (not src/main/kotlin) - the old
-    // org.jetbrains.kotlin.android plugin (removed when this project migrated to
-    // AGP's built-in Kotlin support) used to treat that as a matter of course.
-    // Declared explicitly here so built-in Kotlin can't miss it and silently
-    // compile zero sources (surfaced as every app class - starting with
-    // SkenerApplication itself - missing from the installed APK entirely).
-    sourceSets {
-        named("main") {
-            kotlin.directories.add("src/main/java")
-        }
-    }
-
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -58,6 +49,12 @@ android {
     // that only works if the file is stored uncompressed in the APK.
     androidResources {
         noCompress += "tflite"
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
     }
 }
 
