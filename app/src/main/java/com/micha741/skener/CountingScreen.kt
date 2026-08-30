@@ -58,6 +58,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -254,6 +255,14 @@ private fun CountingResult(
     var dragStart by remember(photoUri, isSelectingRoi) { mutableStateOf<Offset?>(null) }
     var dragCurrent by remember(photoUri, isSelectingRoi) { mutableStateOf<Offset?>(null) }
 
+    // Sequential numbers matching what's actually counted (adjustedCount in
+    // CountingViewModel): excluded boxes get skipped, manual additions
+    // continue the sequence after the detected ones - so "8" on the photo
+    // really is the 8th of however many the count label says.
+    val includedBlobs = blobs.filterNot { it.box in excludedBoxes }
+    val boxNumbers = includedBlobs.withIndex().associate { (index, blob) -> blob.box to index + 1 }
+    val manualNumbers = manualAdditions.withIndex().associate { (index, point) -> point to includedBlobs.size + index + 1 }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -325,9 +334,17 @@ private fun CountingResult(
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
         )
+        val numberPaint = remember {
+            android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
+                color = android.graphics.Color.WHITE
+                textAlign = android.graphics.Paint.Align.CENTER
+                setShadowLayer(6f, 0f, 0f, android.graphics.Color.BLACK)
+            }
+        }
         Canvas(modifier = Modifier.fillMaxSize()) {
             val scaleX = size.width / bitmap.width
             val scaleY = size.height / bitmap.height
+            numberPaint.textSize = min(size.width, size.height) / 22f
 
             blobs.forEach { blob ->
                 val box = blob.box
@@ -339,13 +356,23 @@ private fun CountingResult(
                     else -> Color(0xFF62B6CB)
                 }
                 val strokeWidth = if (isReference) 6f else 4f
+                val left = box.left * scaleX
+                val top = box.top * scaleY
 
                 drawRect(
                     color = color,
-                    topLeft = Offset(box.left * scaleX, box.top * scaleY),
+                    topLeft = Offset(left, top),
                     size = Size(box.width() * scaleX, box.height() * scaleY),
                     style = Stroke(width = strokeWidth),
                 )
+                boxNumbers[box]?.let { number ->
+                    drawContext.canvas.nativeCanvas.drawText(
+                        number.toString(),
+                        left + numberPaint.textSize / 2f,
+                        top + numberPaint.textSize,
+                        numberPaint,
+                    )
+                }
             }
 
             val markerRadius = manualHitRadius * scaleX
@@ -356,6 +383,14 @@ private fun CountingResult(
                     center = Offset(point.x * scaleX, point.y * scaleY),
                     style = Stroke(width = 5f),
                 )
+                manualNumbers[point]?.let { number ->
+                    drawContext.canvas.nativeCanvas.drawText(
+                        number.toString(),
+                        point.x * scaleX,
+                        point.y * scaleY + numberPaint.textSize / 3f,
+                        numberPaint,
+                    )
+                }
             }
 
             val roiStroke = Stroke(width = 4f, pathEffect = PathEffect.dashPathEffect(floatArrayOf(20f, 12f)))

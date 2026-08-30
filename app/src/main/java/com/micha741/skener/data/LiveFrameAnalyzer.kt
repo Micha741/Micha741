@@ -139,7 +139,7 @@ class LiveFrameAnalyzer(
             val width = bitmap.width
             val height = bitmap.height
 
-            var allBlobs = subdivideGrids(detector.detect(bitmap), bitmap)
+            var allBlobs = detector.detect(bitmap)
             allBlobs = allBlobs.filterNot { looksLikeStraightEdge(it.box, width, height) }
             allBlobs = allBlobs.map { it.copy(avgColor = averageColor(bitmap, it.box)) }
             lastRawBlobs = allBlobs

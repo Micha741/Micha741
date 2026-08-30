@@ -180,6 +180,13 @@ natrénovaný **FastSAM** model (TFLite, AGPL-3.0 — viz sekce Funkce níže).
     zase odebere. Zobrazený počet (`adjustedCount` v `CountingViewModel`)
     započítává i tyto ruční úpravy; při nové fotce nebo přepnutí reference
     se úpravy vždy vynulují
+  - **Číslování napočítaných kusů**: každý box (statická fotka i uložený
+    obrázek) má uprostřed horního okraje bílé číslo — pořadí odpovídá přesně
+    tomu, co appka počítá do zobrazeného počtu (`adjustedCount`): vyřazené
+    kusy číslo nemají, ručně přidané zelené kroužky pokračují v číslování
+    hned za detekovanými kusy. Usnadňuje to ověřit si výsledek pohledem
+    (spočítat si čísla na fotce) a přesně vidět, kde appka rozdělila jeden
+    kus na víc boxů nebo naopak
   - **Uložení výsledku jako obrázek**: ikona uložení v horní liště (viditelná,
     jen když appka má nějaký výsledek) vezme aktuální fotku, do kopie
     (`CountingResultEncoder.encode()`, `android.graphics.Canvas`/`Paint`, ne
@@ -243,24 +250,22 @@ natrénovaný **FastSAM** model (TFLite, AGPL-3.0 — viz sekce Funkce níže).
     (`onPhotoCaptured(uri, roi)` → `CountingViewModel.onPhotoSelected(uri, roi)`),
     takže se převezme rovnou a není potřeba ji na výsledné fotce
     vybírat znovu
-  - **Rozpoznání mřížky** (`GridDetector.kt`, `subdivideGrids()`): pravidelná
-    mřížka (klávesnice, dlaždice na podlaze) vyjde z FastSAM jako jeden velký
-    box místo jednotlivých kusů — hrany dlaždic/kláves na sebe těsně
-    navazují, takže model nemá kde "class-agnostic" segmentaci přeříznout.
-    Appka proto na každý nalezený box (fotka i živý snímek, `ObjectCounter`/
-    `LiveFrameAnalyzer` shodně) zkusí `GridDetector.subdivide()`: sečte
-    "tmavost" pixelů (255 mínus průměr RGB) po sloupcích a po řádcích do
-    dvou 1D profilů — spáry mezi dlaždicemi/mezery mezi klávesami se v nich
-    projeví jako pravidelně se opakující tmavé špičky. Dominantní perioda se
-    hledá normalizovanou autokorelací přes rozumný rozsah (6 až 30 buněk na
-    osu); aby se predikce nespletla s obyčejnou texturou (např. kresba dřeva
-    dá na krátkou vzdálenost taky vysokou autokorelaci, ověřeno na syntetické
-    scéně — vyšla dokonce výš než u skutečné klávesnice), appka požaduje, aby
-    stejně silná shoda vyšla i na dvojnásobné *a* trojnásobné periodě —
-    skutečné opakování drží sílu na obou, náhodná hladkost textury ne. Když
-    obě osy (nebo aspoň jedna) projdou, appka podél nalezené periody "přichytí"
-    dělicí čáry k nejbližší silné špičce v profilu a box rozseká na mřížku
-    menších boxů — jinak zůstane beze změny jako jeden kus
+  - **Rozpoznání mřížky, dočasně vypnuté** (`GridDetector.kt`,
+    `subdivideGrids()`): záměr byl, že appka na každý nalezený box (fotka i
+    živý snímek) zkusí `GridDetector.subdivide()` — sečte "tmavost" pixelů po
+    sloupcích a po řádcích do dvou 1D profilů, najde dominantní periodu
+    normalizovanou autokorelací (potvrzenou i na dvoj- a trojnásobku periody,
+    aby se to nespletlo s obyčejnou texturou) a podél ní box rozseká na
+    mřížku, když v ní najde pravidelně se opakující tmavé špičky (spáry mezi
+    dlaždicemi, mezery mezi klávesami). Fungovalo to na syntetických testech
+    (klávesnice, textury dřeva) i na reálné klávesnici, ale na reálném testu
+    s česnekem se ukázalo, že papírová slupka stroužku má dost pravidelné
+    proužkování na to, aby přes stejnou kontrolu prošla taky — appka pak
+    jeden stroužek rozsekala na desítky tenkých pásků a napočítala jich
+    desetinásobek skutečného počtu. Kód (`ObjectCounter`/`LiveFrameAnalyzer`
+    ho volaly stejně jako oblast zájmu) zůstává v projektu, ale žádné volání
+    ho teď nepoužívá — bezpečnější pro běžné počítání kusů, dokud nebude buď
+    přísnější, nebo zapínatelné jen když si o něj uživatel řekne
   - **Automatický výběr oblasti zájmu** (`RoiSuggester.kt`): tlačítko "Najít
     oblast automaticky" vedle ručního výběru (fotka i živý náhled) spustí
     detekci na celé fotce/snímku a shluky k sobě blízkých kusů spojí přes

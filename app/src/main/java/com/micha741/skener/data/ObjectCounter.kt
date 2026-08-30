@@ -28,12 +28,14 @@ data class CountResult(
  * live camera; the filters below ([looksLikeStraightEdge], [rejectSizeOutliers],
  * [averageColor]) are shared between both in `DetectedBlobFilters.kt`.
  *
- * Every detected blob also runs through [subdivideGrids] first: FastSAM
- * finds a keyboard, a tiled floor, a pegboard as *one* object (individual
- * keys/tiles sit flush against each other with no shadow/gap boundary for
- * it to split on), which [GridDetector] fixes by looking for regular
- * periodic gaps in brightness across that one blob and slicing it into a
- * grid of smaller boxes when it finds them.
+ * [GridDetector]/[subdivideGrids] (splitting one blob that's really a
+ * keyboard/tiled floor into its individual keys/tiles) is *not* run here
+ * any more - real testing on garlic bulbs turned up too many false
+ * positives (a bulb's papery, faintly striped skin reads as a periodic
+ * pattern just as strongly as an actual grid does, shredding one real
+ * piece into a few dozen fake ones) for it to be safe to apply to every
+ * blob unconditionally. The code is still here, just unused, in case a
+ * more conservative version (or an opt-in toggle) is worth building later.
  *
  * The photo is decoded downsampled close to [PHOTO_MAX_DIMENSION] (a
  * phone photo can easily be 4000px+ on a side) rather than at full
@@ -99,7 +101,7 @@ class ObjectCounter(context: Context) {
             val bitmap = photo.bitmap
             val width = bitmap.width
             val height = bitmap.height
-            var allBlobs = subdivideGrids(detector.detect(bitmap), bitmap)
+            var allBlobs = detector.detect(bitmap)
             allBlobs = allBlobs.filterNot { looksLikeStraightEdge(it.box, width, height) }
             bitmap.recycle()
             suggestRoi(allBlobs, width, height)
@@ -148,7 +150,7 @@ class ObjectCounter(context: Context) {
         // Same ratio on both axes: inSampleSize preserves aspect ratio.
         val inverseScale = photo.trueWidth.toFloat() / bitmap.width
 
-        var allBlobs = subdivideGrids(detector.detect(bitmap), bitmap)
+        var allBlobs = detector.detect(bitmap)
         allBlobs = allBlobs.filterNot { looksLikeStraightEdge(it.box, bitmap.width, bitmap.height) }
         allBlobs = allBlobs.map { it.copy(avgColor = averageColor(bitmap, it.box)) }
         if (roi != null) {
