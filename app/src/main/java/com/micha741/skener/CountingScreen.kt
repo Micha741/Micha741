@@ -7,6 +7,7 @@ import android.graphics.RectF
 import android.net.Uri
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -54,6 +55,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,10 +67,13 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.micha741.skener.data.DetectedBlob
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -123,11 +128,14 @@ fun CountingScreen(
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
+        val scrollState = rememberScrollState()
+        var viewportHeightPx by remember { mutableStateOf(0) }
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .verticalScroll(rememberScrollState()),
+                .onGloballyPositioned { viewportHeightPx = it.size.height }
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             val photoUri = uiState.photoUri
@@ -147,6 +155,8 @@ fun CountingScreen(
                     excludedBoxes = uiState.excludedBoxes,
                     manualAdditions = uiState.manualAdditions,
                     isProcessing = uiState.isProcessing,
+                    scrollState = scrollState,
+                    viewportHeightPx = viewportHeightPx,
                     onTap = { point -> viewModel.onReferenceTap(point) },
                     onToggleExclude = { box -> viewModel.toggleExcluded(box) },
                     onAddManual = { point -> viewModel.addManualPiece(point) },
@@ -282,6 +292,8 @@ private fun CountingResult(
     excludedBoxes: Set<Rect>,
     manualAdditions: List<Point>,
     isProcessing: Boolean,
+    scrollState: ScrollState,
+    viewportHeightPx: Int,
     onTap: (Point) -> Unit,
     onToggleExclude: (Rect) -> Unit,
     onAddManual: (Point) -> Unit,
@@ -301,6 +313,8 @@ private fun CountingResult(
     val manualHitRadius = max(20, min(bitmap.width, bitmap.height) / 40)
     var dragStart by remember(photoUri, isSelectingRoi) { mutableStateOf<Offset?>(null) }
     var dragCurrent by remember(photoUri, isSelectingRoi) { mutableStateOf<Offset?>(null) }
+    val coroutineScope = rememberCoroutineScope()
+    val edgeMarginPx = with(LocalDensity.current) { 56.dp.toPx() }
 
     // Sequential numbers matching what's actually counted (adjustedCount in
     // CountingViewModel): excluded boxes get skipped, manual additions
@@ -321,7 +335,28 @@ private fun CountingResult(
                             dragStart = offset
                             dragCurrent = offset
                         },
-                        onDrag = { change, _ -> dragCurrent = change.position },
+                        onDrag = { change, _ ->
+                            dragCurrent = change.position
+                            // The photo can be taller than the visible screen (a tall gallery
+                            // photo, or just the space left once the top/bottom bars take
+                            // their share) - the box's own local Y here doesn't move when its
+                            // parent Column scrolls, only its position within the visible
+                            // viewport does, so nudge that scroll position whenever the point
+                            // being dragged toward is at or past the edge of what's currently
+                            // visible - otherwise a corner beyond the initial viewport is
+                            // simply never reachable by a single continuous drag.
+                            val y = change.position.y
+                            val visibleTop = scrollState.value.toFloat()
+                            val visibleBottom = visibleTop + viewportHeightPx
+                            val target = when {
+                                y < visibleTop + edgeMarginPx -> (y - edgeMarginPx)
+                                viewportHeightPx > 0 && y > visibleBottom - edgeMarginPx -> (y + edgeMarginPx - viewportHeightPx)
+                                else -> null
+                            }
+                            if (target != null) {
+                                coroutineScope.launch { scrollState.scrollTo(target.roundToInt().coerceAtLeast(0)) }
+                            }
+                        },
                         onDragEnd = {
                             val start = dragStart
                             val end = dragCurrent

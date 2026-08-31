@@ -271,6 +271,20 @@ natrénovaný **FastSAM** model (TFLite, AGPL-3.0 — viz sekce Funkce níže).
     velké fotce z galerie potřebuje co nejvíc svislého prostoru, a těch
     ~80dp lišty navíc dělalo přesné trefení rohů obdélníku zbytečně těžké.
     Návrat zpět (šipka v horní liště, `viewModel.reset()`) lištu vrátí
+  - **Fotka se při výběru oblasti sama posouvá k místu, kam se táhne** (jen
+    statická fotka): u vyšší fotky z galerie je celý obdélník s fotkou
+    (`aspectRatio` podle rozměrů fotky) často vyšší než viditelná obrazovka,
+    takže horní nebo dolní část fotky mimo aktuální posun sloupce nebyla při
+    tažení obdélníku dosažitelná vůbec — jakmile appka jednou začala tažení
+    sledovat, odrolování sloupce (posun scrollu) přestalo fungovat, protože
+    gesto tažení má přednost. `CountingResult` teď při každém pohybu prstu
+    (`onDrag`) porovná souřadnici tažení s aktuálně viditelnou částí sloupce
+    (`ScrollState.value` a naměřenou výškou přes `onGloballyPositioned`) a
+    když se tažení blíží k hornímu nebo dolnímu okraji viditelné oblasti (56dp
+    okraj), plynule tam sloupec posune (`scrollState.scrollTo()`) — funguje to
+    bez ohledu na to, jak vysoká fotka je, protože souřadnice tažení jsou
+    vždycky vztažené k fotce samotné (na posunu scrollu nezávislé), jen se
+    mění to, co je z ní zrovna vidět
   - **Živý náhled na FastSAM taky (dřív na ML Kitu)**: appka dřív pro živý
     náhled kamery používala ML Kit Object Detection & Tracking (levnější,
     ale natrénovaný jen na pár širokých kategorií). Reálné testování na
