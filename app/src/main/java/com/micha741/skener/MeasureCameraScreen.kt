@@ -1,5 +1,3 @@
-@file:OptIn(androidx.camera.camera2.interop.ExperimentalCamera2Interop::class)
-
 package com.micha741.skener
 
 import android.hardware.camera2.CameraCharacteristics
