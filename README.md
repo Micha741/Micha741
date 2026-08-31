@@ -238,6 +238,22 @@ natrénovaný **FastSAM** model (TFLite, AGPL-3.0 — viz sekce Funkce níže).
     velikost kroužků/textu se počítají relativně k rozlišení *fotky* (ne
     pevné konstanty z náhledu na displeji), aby na uloženém víc-megapixelovém
     obrázku nebyly vlásečnicové
+  - **Nahlásit problém / Podezření**: appka nemá žádné učení ani zpětnou
+    vazbu do detekce — je to pevně daný model, takže "appka si zapamatuje
+    tenhle konkrétní zámek" reálně neznamená, že si zapamatuje *ten
+    zámek* (žádné rozpoznávání konkrétních objektů), jen že si uživatel
+    poznamená, co bylo špatně. Ikonka vlaječky v horní liště (vedle
+    uložení, viditelná jen s výsledkem) otevře dialog na krátkou
+    poznámku ("tohle nejsou 2 kusy") a uloží stejně vykreslený obrázek
+    jako `count_save` (`CountingResultEncoder.encode()`, sdílené přes
+    novou `encodeResult()` v `CountingViewModel`) do
+    `SuspicionRepository` — dvojice `.png` + `.txt` se stejným
+    časovým razítkem ve `files/suspicions/`, stejný souborový vzor jako
+    `ScanRepository` u PDF (žádná databáze navíc). Ikonka historie vedle
+    ní vede na novou obrazovku **Podezření** (`SuspicionsScreen.kt`,
+    vlastní `SuspicionsViewModel`) se seznamem uložených nahlášení
+    (náhled, poznámka, datum, smazání) — čistě osobní deník k
+    dohledání, appka ho sama nijak nepoužívá při dalším počítání
   - **Fotka přes celou šířku obrazovky**: `CountingScreen.kt` dřív měl kolem
     fotky pevných 16dp okrajů a pod ní samostatné řádky nápovědy (klepni na
     kus / podrž prst) a až pod nimi výsledek — na menší obrazovce to fotce
@@ -356,6 +372,9 @@ app/src/main/java/com/micha741/skener/
 ├── CountingScreen.kt        # UI obrazovky počítání kusů (obdélníky, tap na referenční kus, ruční oprava, tlačítko zpět)
 ├── CountingViewModel.kt     # stav obrazovky počítání kusů
 ├── CountingViewModelFactory.kt
+├── SuspicionsScreen.kt      # seznam nahlášených "podezřelých" výsledků počítání (náhled, poznámka, smazání)
+├── SuspicionsViewModel.kt   # stav obrazovky Podezření
+├── SuspicionsViewModelFactory.kt
 ├── LiveCameraScreen.kt      # živý náhled kamery: počítání, zoom, tap na referenční kus, tlačítko zpět
 ├── BarcodeScreen.kt         # fullscreen kamera + zoom/baterka/rámeček + historie v bottom sheetu
 ├── BarcodeViewModel.kt      # stav obrazovky čtečky kódů
@@ -363,6 +382,8 @@ app/src/main/java/com/micha741/skener/
 ├── data/
 │   ├── ScanDocument.kt      # model naskenovaného PDF
 │   ├── ScanRepository.kt    # ukládání/čtení PDF v app storage
+│   ├── SuspicionRecord.kt   # model jednoho nahlášeného "podezřelého" výsledku (obrázek + poznámka + čas)
+│   ├── SuspicionRepository.kt # ukládání/čtení nahlášení v app storage, stejný souborový vzor jako ScanRepository
 │   ├── DetectedBlob.kt      # sdílený model kusu (box, průměrná barva) pro fotku i živý náhled
 │   ├── DetectedBlobMatching.kt # sdílené mapování/porovnávání: hledání pod tapem, referenční shoda podle velikosti/odstínu
 │   ├── DetectedBlobFilters.kt # sdílené filtry (rovná hrana, velikostní odlehlé hodnoty, průměrná barva) pro fotku i živý náhled

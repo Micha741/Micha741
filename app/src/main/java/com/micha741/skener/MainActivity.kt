@@ -84,6 +84,7 @@ class MainActivity : ComponentActivity() {
 
     private val viewModel: ScanViewModel by viewModels { ScanViewModelFactory(this) }
     private val countingViewModel: CountingViewModel by viewModels { CountingViewModelFactory(this) }
+    private val suspicionsViewModel: SuspicionsViewModel by viewModels { SuspicionsViewModelFactory(this) }
     private val barcodeViewModel: BarcodeViewModel by viewModels()
 
     private val scannerOptions = GmsDocumentScannerOptions.Builder()
@@ -177,6 +178,7 @@ class MainActivity : ComponentActivity() {
                     navController = navController,
                     scanViewModel = viewModel,
                     countingViewModel = countingViewModel,
+                    suspicionsViewModel = suspicionsViewModel,
                     barcodeViewModel = barcodeViewModel,
                     onStartScan = { startScan(scanLauncher) },
                     onShare = ::shareDocument,
@@ -294,6 +296,7 @@ private fun AppScaffold(
     navController: NavHostController,
     scanViewModel: ScanViewModel,
     countingViewModel: CountingViewModel,
+    suspicionsViewModel: SuspicionsViewModel,
     barcodeViewModel: BarcodeViewModel,
     onStartScan: () -> Unit,
     onShare: (ScanDocument) -> Unit,
@@ -308,7 +311,7 @@ private fun AppScaffold(
 
     Scaffold(
         bottomBar = {
-            if (currentRoute != "live_count") {
+            if (currentRoute != "live_count" && currentRoute != "suspicions") {
                 NavigationBar {
                     NavigationBarItem(
                         selected = currentRoute == "scan",
@@ -351,6 +354,16 @@ private fun AppScaffold(
                     onCapturePhoto = { navController.navigate("live_count") },
                     onPickPhoto = onPickPhoto,
                     onSaveResult = onSaveCountResult,
+                    onViewSuspicions = {
+                        suspicionsViewModel.refresh()
+                        navController.navigate("suspicions")
+                    },
+                )
+            }
+            composable("suspicions") {
+                SuspicionsScreen(
+                    viewModel = suspicionsViewModel,
+                    onBack = { navController.popBackStack() },
                 )
             }
             composable("live_count") {

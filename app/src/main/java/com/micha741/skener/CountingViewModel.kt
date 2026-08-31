@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.micha741.skener.data.CountingResultEncoder
 import com.micha741.skener.data.DetectedBlob
 import com.micha741.skener.data.ObjectCounter
+import com.micha741.skener.data.SuspicionRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -50,6 +51,7 @@ data class CountingUiState(
 class CountingViewModel(
     private val appContext: Context,
     private val counter: ObjectCounter,
+    private val suspicions: SuspicionRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CountingUiState())
@@ -147,29 +149,12 @@ class CountingViewModel(
      */
     fun saveResult(destUri: Uri) {
         val state = _uiState.value
-        val photoUri = state.photoUri ?: return
-        if (state.count == null) return
+        if (state.photoUri == null || state.count == null) return
 
         viewModelScope.launch {
             val result = withContext(Dispatchers.Default) {
                 runCatching {
-                    val bitmap = appContext.contentResolver.openInputStream(photoUri)
-                        ?.use { BitmapFactory.decodeStream(it) }
-                        ?: throw IllegalStateException(appContext.getString(R.string.count_failed))
-                    val countLabel = if (state.referenceActive) {
-                        appContext.getString(R.string.count_reference_active, state.adjustedCount)
-                    } else {
-                        appContext.getString(R.string.count_result, state.adjustedCount)
-                    }
-                    val encoded = CountingResultEncoder.encode(
-                        bitmap = bitmap,
-                        blobs = state.blobs,
-                        excludedBoxes = state.excludedBoxes,
-                        manualAdditions = state.manualAdditions,
-                        referenceActive = state.referenceActive,
-                        referenceBox = state.referenceBox,
-                        countLabel = countLabel,
-                    )
+                    val encoded = encodeResult(state)
                     val written = appContext.contentResolver.openOutputStream(destUri)?.use { output ->
                         encoded.compress(Bitmap.CompressFormat.PNG, 100, output)
                     }
@@ -186,6 +171,56 @@ class CountingViewModel(
                 )
             }
         }
+    }
+
+    /**
+     * Flattens the current result the same way [saveResult] does and files
+     * it away in [SuspicionRepository] with [note] attached - a personal log
+     * of results the user thinks are wrong ("this padlock isn't 2 pieces"),
+     * to look back on. Purely a record: it doesn't change how any future
+     * photo gets counted, since there's no per-object recognition to apply
+     * a remembered note to. No-op if there's no result yet.
+     */
+    fun reportSuspicion(note: String) {
+        val state = _uiState.value
+        if (state.photoUri == null || state.count == null) return
+
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.Default) {
+                runCatching { suspicions.save(encodeResult(state), note) }
+            }
+            _uiState.update {
+                it.copy(
+                    errorMessage = if (result.isSuccess) {
+                        appContext.getString(R.string.count_suspicion_saved)
+                    } else {
+                        result.exceptionOrNull()?.message ?: appContext.getString(R.string.save_failed)
+                    },
+                )
+            }
+        }
+    }
+
+    /** Decodes the current photo and draws the same boxes/count bar onto it that the screen overlays live - shared by [saveResult] and [reportSuspicion]. Must run off the main thread. */
+    private fun encodeResult(state: CountingUiState): Bitmap {
+        val photoUri = state.photoUri ?: throw IllegalStateException(appContext.getString(R.string.count_failed))
+        val bitmap = appContext.contentResolver.openInputStream(photoUri)
+            ?.use { BitmapFactory.decodeStream(it) }
+            ?: throw IllegalStateException(appContext.getString(R.string.count_failed))
+        val countLabel = if (state.referenceActive) {
+            appContext.getString(R.string.count_reference_active, state.adjustedCount)
+        } else {
+            appContext.getString(R.string.count_result, state.adjustedCount)
+        }
+        return CountingResultEncoder.encode(
+            bitmap = bitmap,
+            blobs = state.blobs,
+            excludedBoxes = state.excludedBoxes,
+            manualAdditions = state.manualAdditions,
+            referenceActive = state.referenceActive,
+            referenceBox = state.referenceBox,
+            countLabel = countLabel,
+        )
     }
 
     fun reset() {

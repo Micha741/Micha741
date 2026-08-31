@@ -25,10 +25,13 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.CropFree
+import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.FormatListNumbered
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,12 +39,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -77,9 +82,11 @@ fun CountingScreen(
     onCapturePhoto: () -> Unit,
     onPickPhoto: () -> Unit,
     onSaveResult: () -> Unit,
+    onViewSuspicions: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    var showReportDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(uiState.errorMessage) {
         uiState.errorMessage?.let { message ->
@@ -104,6 +111,12 @@ fun CountingScreen(
                         IconButton(onClick = onSaveResult) {
                             Icon(Icons.Default.Save, contentDescription = stringResource(R.string.count_save))
                         }
+                        IconButton(onClick = { showReportDialog = true }) {
+                            Icon(Icons.Default.Flag, contentDescription = stringResource(R.string.count_report_suspicion))
+                        }
+                    }
+                    IconButton(onClick = onViewSuspicions) {
+                        Icon(Icons.Default.History, contentDescription = stringResource(R.string.count_view_suspicions))
                     }
                 },
             )
@@ -182,6 +195,38 @@ fun CountingScreen(
                 }
             }
         }
+    }
+
+    if (showReportDialog) {
+        var note by remember { mutableStateOf("") }
+        AlertDialog(
+            onDismissRequest = { showReportDialog = false },
+            title = { Text(stringResource(R.string.count_report_suspicion_title)) },
+            text = {
+                OutlinedTextField(
+                    value = note,
+                    onValueChange = { note = it },
+                    placeholder = { Text(stringResource(R.string.count_report_suspicion_hint)) },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.reportSuspicion(note)
+                        showReportDialog = false
+                    },
+                    enabled = note.isNotBlank(),
+                ) {
+                    Text(stringResource(R.string.count_report_suspicion_confirm))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showReportDialog = false }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            },
+        )
     }
 }
 
