@@ -80,7 +80,7 @@ natrénovaný **FastSAM** model (TFLite, AGPL-3.0 — viz sekce Funkce níže).
     boxů na jednom shluku ovoce
   - **Více průchodů modelu na jednu fotku (dlaždice)**: `FastSamDetector.detect()`
     nespouští interpreter jen jednou na celou fotku, ale na pěti
-    překrývajících se výřezech — celá fotka plus čtyři výřezy po 60 %
+    překrývajících se výřezech — celá fotka plus čtyři výřezy po 75 %
     šířky/výšky pokrývající její rohy (`tileRegions()`). Důvod: model má
     pořád stejný pevný vstup 320×320 bez ohledu na to, jak velkou fotku mu
     appka dá, takže na fotce s hodně malými/hustě natěsnanými kusy (listí
@@ -106,6 +106,24 @@ natrénovaný **FastSAM** model (TFLite, AGPL-3.0 — viz sekce Funkce níže).
     padal na `Bitmap.createBitmap()` ze už recyklované bitmapy. Oprava:
     recyklovat výřez, jen když `tile !== bitmap`, tedy jen když
     `createBitmap()` opravdu vytvořil kopii
+  - **Bug (opraveno)**: protáhlý kus (šroub) položený tak, že jeho délka
+    přesahovala přes hranici mezi dvěma výřezy, se počítal dvakrát —
+    reálně reprodukováno a potvrzeno přímo na fotkách (přesné souřadnice
+    boxů rozebrané pixel po pixelu): žádný jednotlivý výřez neviděl celý
+    kus, každý jen jeho útržek (hlavu, nebo kus závitu), a protože se
+    tyhle útržky mezi sebou vůbec nepřekrývaly, `mergeOverlapping()` je
+    neměl jak poznat jako jeden kus — ten test totiž funguje jen na
+    překryv, ne na "leží v prodloužení". Otočení stejného kusu do jiné
+    osy problém nezmizelo, jen přesunulo, na kterou hranici výřezu
+    narazí. Zkoušel jsem i heuristiku slučující blízké útržky podle
+    barvy/jasu spáry mezi nimi, ale na reálných datech nespolehlivě
+    rozeznávala "jeden protažený kus" od "dva různé kusy položené blízko
+    sebe" (falešně by slila i washer s vedlejším šroubem, `boxNumbers`
+    pomohly přesně identifikovat, který pár byl který) — bezpečnější
+    oprava je nedopustit, aby se kus takhle přeřízl vůbec: `TILE_FRACTION`
+    zvednuté z 60 % na 75 % zvětší překryv mezi výřezy natolik, že by se
+    takhle musel přeříznout kus širší než zhruba polovina šířky/výšky
+    celé fotky, což žádný počítaný kus reálně není
   - **Univerzální = počítá skutečně cokoliv, ne jen to, co má na fotce
     fotograf na mysli**: FastSAM nerozlišuje kategorie, takže v
     automatickém režimu (bez klepnutí na referenční kus) spočítá úplně

@@ -88,6 +88,23 @@ class FastSamDetector(context: Context) {
      * for a photo already smaller than [MIN_DIMENSION_FOR_TILING] on
      * either side, where a single pass already sees it at close to full
      * detail.
+     *
+     * A piece whose own extent straddles the boundary between two tiles -
+     * not fully inside either one - only ever gets seen as two disjoint
+     * fragments (whatever portion of it falls in each tile), which
+     * [mergeOverlapping] can't collapse back into one box since fragments
+     * of the same piece from different tiles don't overlap each other at
+     * all. Reported directly: an elongated piece (a bolt) lying so its
+     * long axis crosses that boundary got counted twice, and rotating the
+     * same piece to lie along a different axis moved which tile boundary
+     * it crossed but not the underlying problem. [TILE_FRACTION] needs to
+     * stay well above 0.5 so the two tiles along an axis overlap enough
+     * that only a piece wider than roughly (2 * TILE_FRACTION - 1) times
+     * the photo's own width/height could straddle both boundaries at
+     * once - comfortably larger than a single counted piece is ever going
+     * to be, while still leaving tiles zoomed in enough to help find
+     * genuinely small/dense clusters (a pile of screws, cloves of garlic),
+     * which is what tiling exists for in the first place.
      */
     private fun tileRegions(width: Int, height: Int): List<Rect> {
         if (width < MIN_DIMENSION_FOR_TILING || height < MIN_DIMENSION_FOR_TILING) {
@@ -277,7 +294,7 @@ class FastSamDetector(context: Context) {
         const val PROTO_SIZE = 80
         const val CONFIDENCE_THRESHOLD = 0.4f
         const val NMS_OVERLAP_THRESHOLD = 0.45f
-        const val TILE_FRACTION = 0.6f
+        const val TILE_FRACTION = 0.75f
         const val MIN_DIMENSION_FOR_TILING = 400
     }
 }
