@@ -420,6 +420,36 @@ natrénovaný **FastSAM** model (TFLite, AGPL-3.0 — viz sekce Funkce níže).
     kusů — dřív to byla soukromá funkce v `LiveCameraScreen.kt`, teď je to
     `CameraCapture.kt`, parametrizované jen předponou názvu souboru a
     záložní chybovou hláškou
+  - **Širokoúhlý objektiv při focení** (`widestBackCameraSelector()` v
+    `MeasureCameraScreen.kt`): místo pevného `CameraSelector.DEFAULT_BACK_CAMERA`
+    appka mezi zadními kamerami, které CameraX na telefonu vidí, vybere tu
+    s nejkratší ohniskovou vzdáleností (`CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS`
+    přes `Camera2CameraInfo`) — tou se ultraširokoúhlý modul pozná (hlavní
+    objektiv i teleobjektiv mají ohniskovou vzdálenost o dost delší). Cíl:
+    do záběru se vejde víc prostoru, aniž by se muselo odstupovat od
+    měřeného předmětu. Ne každý telefon svoje objektivy takhle nabízí jako
+    samostatná CameraX camera ID (někde je jen jedna logická zadní kamera,
+    která si přepíná objektivy sama uvnitř) — tam se to chová stejně jako
+    `DEFAULT_BACK_CAMERA`. Širokoúhlý objektiv má ale na krajích záběru
+    typicky výraznější optické zkreslení (rovné čáry se prohýbají) — pro
+    přesné měření je proto lepší mít měřený předmět/vzdálenost spíš uprostřed
+    záběru, ne u úplného kraje fotky
+  - **Lupa při ťukání bodu, pro přesnější zacílení** (`detectMeasurementGestures()`
+    v `MeasureScreen.kt`): dřív šlo bod jen ťuknout (`detectTapGestures`),
+    takže se muselo trefit přesně pod prst — na fotce zmenšené na šířku
+    obrazovky ale jeden obrazovkový pixel typicky odpovídá několika pixelům
+    skutečné fotky, takže i malá nepřesnost ťuknutí znamenala reálnou
+    odchylku v naměřené vzdálenosti. Teď se při podržení prstu nad fotkou
+    zobrazí kolečko se zvětšeným výřezem okolo prstu (posunuté nad/pod prst,
+    ať ho nezakrývá) s nitkovým křížkem uprostřed přesně na cíleném pixelu;
+    prst lze po fotce posouvat a dolaďovat pozici, dokud lupa neukazuje
+    přesně to, co se má trefit, a teprve zvednutím prstu se bod potvrdí.
+    Podržení bez pohybu poblíž existující úsečky pořád funguje jako dřív —
+    smaže ji
+  - **Lišta režimů zmizí i tady, jakmile je fotka nahraná** — stejný důvod
+    jako u počítání kusů (`MainActivity.kt`'s `hideBottomBar`): ťukání
+    kalibračních a měřicích bodů na velkou fotku potřebuje každý kousek
+    výšky obrazovky, který jde ušetřit
 
 Mezi „Skenovat“, „Počítat kusy“, „Kódy“ a „Měřit“ se přepíná spodní navigační lištou.
 

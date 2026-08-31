@@ -5,7 +5,7 @@ import android.graphics.PointF
 import android.net.Uri
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -51,11 +51,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.input.pointer.PointerInputScope
+import androidx.compose.ui.input.pointer.awaitFirstDown
+import androidx.compose.ui.input.pointer.changedToUpIgnoreConsumed
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.micha741.skener.data.CalibrationPoints
 import com.micha741.skener.data.MeasuredSegment
@@ -63,6 +72,7 @@ import com.micha741.skener.data.formatCm
 import kotlin.math.hypot
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -255,33 +265,31 @@ private fun MeasureResult(
     val currentOnTap = rememberUpdatedState(onTap)
     val currentOnRemoveSegment = rememberUpdatedState(onRemoveSegment)
 
+    // Position (in the photo Box's own coordinate space) of the finger while it's down, so the
+    // magnifier below can render there; null while nothing is pressed. Written from inside the
+    // pointerInput gesture below, read from the Canvas draw block further down.
+    val magnifierPosition = remember { mutableStateOf<Offset?>(null) }
+    val imageBitmap = remember(bitmap) { bitmap.asImageBitmap() }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(bitmap.width.toFloat() / bitmap.height.toFloat())
             .pointerInput(photoUri) {
                 val hitRadius = max(24f, min(size.width, size.height) / 30f)
-                detectTapGestures(
-                    onTap = { offset ->
+                detectMeasurementGestures(
+                    hitRadius = hitRadius,
+                    segments = { currentSegments.value },
+                    onMagnifierMove = { position -> magnifierPosition.value = position },
+                    onPlacePoint = { offset ->
                         currentOnTap.value(PointF(offset.x / size.width, offset.y / size.height))
                     },
-                    onLongPress = { offset ->
-                        val nearest = currentSegments.value.minByOrNull { segment ->
-                            val midX = (segment.a.x + segment.b.x) / 2f * size.width
-                            val midY = (segment.a.y + segment.b.y) / 2f * size.height
-                            hypot(midX - offset.x, midY - offset.y)
-                        } ?: return@detectTapGestures
-                        val midX = (nearest.a.x + nearest.b.x) / 2f * size.width
-                        val midY = (nearest.a.y + nearest.b.y) / 2f * size.height
-                        if (hypot(midX - offset.x, midY - offset.y) <= hitRadius) {
-                            currentOnRemoveSegment.value(nearest)
-                        }
-                    },
+                    onRemoveSegment = { segment -> currentOnRemoveSegment.value(segment) },
                 )
             },
     ) {
         Image(
-            bitmap = bitmap.asImageBitmap(),
+            bitmap = imageBitmap,
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
         )
@@ -319,6 +327,51 @@ private fun MeasureResult(
                     center = Offset(point.x * size.width, point.y * size.height),
                 )
             }
+
+            // Zoomed loupe around the finger while it's down, so a point can be placed on the
+            // exact pixel instead of guessing under a fingertip - the displayed image is almost
+            // always shrunk well below the photo's real resolution, so a screen pixel can be
+            // several photo pixels wide.
+            magnifierPosition.value?.let { finger ->
+                val radiusPx = 55.dp.toPx()
+                val zoom = 2.5f
+                val bitmapPerScreenPx = bitmap.width / size.width
+                val srcRadius = (radiusPx / zoom) * bitmapPerScreenPx
+                val srcCenterX = finger.x * bitmapPerScreenPx
+                val srcCenterY = finger.y * bitmapPerScreenPx
+                val srcLeft = (srcCenterX - srcRadius).roundToInt().coerceIn(0, bitmap.width)
+                val srcTop = (srcCenterY - srcRadius).roundToInt().coerceIn(0, bitmap.height)
+                val srcRight = (srcCenterX + srcRadius).roundToInt().coerceIn(0, bitmap.width)
+                val srcBottom = (srcCenterY + srcRadius).roundToInt().coerceIn(0, bitmap.height)
+
+                val gap = radiusPx * 2.3f
+                val dstCenter = Offset(
+                    x = finger.x.coerceIn(radiusPx, size.width - radiusPx),
+                    y = if (finger.y - gap > radiusPx) finger.y - gap else finger.y + gap,
+                )
+
+                clipPath(
+                    Path().apply {
+                        addOval(
+                            androidx.compose.ui.geometry.Rect(
+                                center = dstCenter,
+                                radius = radiusPx,
+                            ),
+                        )
+                    },
+                ) {
+                    drawImage(
+                        image = imageBitmap,
+                        srcOffset = IntOffset(srcLeft, srcTop),
+                        srcSize = IntSize((srcRight - srcLeft).coerceAtLeast(1), (srcBottom - srcTop).coerceAtLeast(1)),
+                        dstOffset = IntOffset((dstCenter.x - radiusPx).roundToInt(), (dstCenter.y - radiusPx).roundToInt()),
+                        dstSize = IntSize((radiusPx * 2).roundToInt(), (radiusPx * 2).roundToInt()),
+                    )
+                }
+                drawCircle(color = Color.White, radius = radiusPx, center = dstCenter, style = Stroke(width = 4f))
+                drawLine(Color.Red, Offset(dstCenter.x - 14f, dstCenter.y), Offset(dstCenter.x + 14f, dstCenter.y), strokeWidth = 3f)
+                drawLine(Color.Red, Offset(dstCenter.x, dstCenter.y - 14f), Offset(dstCenter.x, dstCenter.y + 14f), strokeWidth = 3f)
+            }
         }
         Surface(
             modifier = Modifier
@@ -332,6 +385,65 @@ private fun MeasureResult(
                 color = Color.White,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             )
+        }
+    }
+}
+
+/**
+ * A press drives the magnifier ([onMagnifierMove]) to track the finger until it's lifted - the
+ * final position is where the point gets placed ([onPlacePoint]), so a tap can be fine-tuned
+ * onto the exact pixel before it commits instead of guessing under a fingertip. Holding still
+ * near an existing segment's midpoint for a long press instead deletes it ([onRemoveSegment]),
+ * same as the old detectTapGestures(onLongPress) behavior this replaces.
+ */
+private suspend fun PointerInputScope.detectMeasurementGestures(
+    hitRadius: Float,
+    segments: () -> List<MeasuredSegment>,
+    onMagnifierMove: (Offset?) -> Unit,
+    onPlacePoint: (Offset) -> Unit,
+    onRemoveSegment: (MeasuredSegment) -> Unit,
+) {
+    awaitEachGesture {
+        val down = awaitFirstDown()
+        val longPressTimeoutMillis = viewConfiguration.longPressTimeoutMillis
+        val downTime = System.currentTimeMillis()
+        val downPos = down.position
+
+        val nearestAtDown = segments()
+            .map { segment ->
+                val midX = (segment.a.x + segment.b.x) / 2f * size.width
+                val midY = (segment.a.y + segment.b.y) / 2f * size.height
+                segment to hypot(midX - downPos.x, midY - downPos.y)
+            }
+            .minByOrNull { it.second }
+            ?.takeIf { it.second <= hitRadius }
+            ?.first
+
+        onMagnifierMove(downPos)
+        var lastPos = downPos
+        var moved = false
+        val pointerId = down.id
+        while (true) {
+            val event = awaitPointerEvent()
+            val change = event.changes.firstOrNull { it.id == pointerId } ?: break
+            if (change.changedToUpIgnoreConsumed()) {
+                lastPos = change.position
+                break
+            }
+            if (change.positionChanged()) {
+                lastPos = change.position
+                if (hypot(lastPos.x - downPos.x, lastPos.y - downPos.y) > viewConfiguration.touchSlop) moved = true
+                onMagnifierMove(lastPos)
+                change.consume()
+            }
+        }
+        onMagnifierMove(null)
+
+        val elapsed = System.currentTimeMillis() - downTime
+        if (nearestAtDown != null && !moved && elapsed >= longPressTimeoutMillis) {
+            onRemoveSegment(nearestAtDown)
+        } else {
+            onPlacePoint(lastPos)
         }
     }
 }

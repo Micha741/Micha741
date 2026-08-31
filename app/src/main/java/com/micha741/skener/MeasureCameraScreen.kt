@@ -1,7 +1,12 @@
+@file:OptIn(androidx.camera.camera2.interop.ExperimentalCamera2Interop::class)
+
 package com.micha741.skener
 
+import android.hardware.camera2.CameraCharacteristics
 import android.net.Uri
+import androidx.camera.camera2.interop.Camera2CameraInfo
 import androidx.camera.core.Camera
+import androidx.camera.core.CameraInfo
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
@@ -95,7 +100,7 @@ fun MeasureCameraScreen(
                 provider.unbindAll()
                 camera = provider.bindToLifecycle(
                     lifecycleOwner,
-                    CameraSelector.DEFAULT_BACK_CAMERA,
+                    widestBackCameraSelector(provider),
                     preview,
                     imageCapture,
                 )
@@ -198,4 +203,42 @@ fun MeasureCameraScreen(
             }
         }
     }
+}
+
+/**
+ * Picks the widest-angle back camera the device exposes (e.g. the ultra-wide lens on phones
+ * that expose it as its own camera ID), instead of always [CameraSelector.DEFAULT_BACK_CAMERA]
+ * (the main lens). Wider field of view means less need to step back from what's being measured
+ * to fit the whole thing in frame - useful for measuring larger objects/distances up close.
+ *
+ * Heuristic: among the back-facing cameras CameraX enumerates, pick the one with the smallest
+ * reported minimum focal length - a much shorter focal length than the phone's main camera is
+ * how an ultra-wide module identifies itself; a telephoto module has a much longer one instead.
+ * Not every phone exposes its extra lenses as separate CameraX camera IDs (some only expose a
+ * single logical camera that switches internally), in which case this just falls back to the
+ * single available back camera - same as [CameraSelector.DEFAULT_BACK_CAMERA].
+ */
+private fun widestBackCameraSelector(cameraProvider: ProcessCameraProvider): CameraSelector {
+    val backCameras = try {
+        cameraProvider.availableCameraInfos.filter { CameraSelector.LENS_FACING_BACK == it.lensFacing }
+    } catch (e: Exception) {
+        emptyList()
+    }
+    if (backCameras.size <= 1) return CameraSelector.DEFAULT_BACK_CAMERA
+
+    val widest = backCameras.minByOrNull { info -> minFocalLengthOrMax(info) }
+        ?: return CameraSelector.DEFAULT_BACK_CAMERA
+
+    return CameraSelector.Builder()
+        .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+        .addCameraFilter { infos -> infos.filter { it == widest }.toMutableList() }
+        .build()
+}
+
+private fun minFocalLengthOrMax(info: CameraInfo): Float = try {
+    Camera2CameraInfo.from(info)
+        .getCameraCharacteristic(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)
+        ?.minOrNull() ?: Float.MAX_VALUE
+} catch (e: Exception) {
+    Float.MAX_VALUE
 }

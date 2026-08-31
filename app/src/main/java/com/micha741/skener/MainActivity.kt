@@ -325,13 +325,16 @@ private fun AppScaffold(
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
     val countingUiState by countingViewModel.uiState.collectAsState()
-    // Hidden once a photo's loaded on the count screen, not just on live_count/suspicions -
-    // dragging out a region of interest on a large gallery photo needs every bit of vertical
-    // space it can get; the nav bar's own ~80dp was enough to make that drag hard to land.
+    val measureUiState by measureViewModel.uiState.collectAsState()
+    // Hidden once a photo's loaded on the count/measure screen, not just on live_count/suspicions -
+    // dragging out a region of interest (or precisely tapping a measurement point) on a large
+    // gallery photo needs every bit of vertical space it can get; the nav bar's own ~80dp was
+    // enough to make that hard to land.
     val hideBottomBar = currentRoute == "live_count" ||
         currentRoute == "measure_camera" ||
         currentRoute == "suspicions" ||
-        (currentRoute == "count" && countingUiState.photoUri != null)
+        (currentRoute == "count" && countingUiState.photoUri != null) ||
+        (currentRoute == "measure" && measureUiState.photoUri != null)
 
     Scaffold(
         bottomBar = {
