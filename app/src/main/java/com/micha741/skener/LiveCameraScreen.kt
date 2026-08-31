@@ -300,6 +300,16 @@ fun LiveCameraScreen(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 )
             }
+            if (liveResult?.hasSuspiciousBlob == true) {
+                Surface(color = Color.Black.copy(alpha = 0.5f), modifier = Modifier.padding(top = 8.dp)) {
+                    Text(
+                        text = stringResource(R.string.count_suspicious_hint),
+                        color = Color.White,
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                    )
+                }
+            }
             Surface(
                 color = Color.Black.copy(alpha = 0.5f),
                 modifier = Modifier

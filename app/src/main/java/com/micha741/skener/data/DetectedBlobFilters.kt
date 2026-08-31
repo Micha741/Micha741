@@ -1,7 +1,5 @@
 package com.micha741.skener.data
 
-import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.Rect
 import kotlin.math.max
 import kotlin.math.min
@@ -78,31 +76,30 @@ fun overlapsRoiEnough(box: Rect, roi: Rect, minFraction: Double = ROI_MIN_OVERLA
     return interArea.toDouble() / boxArea >= minFraction
 }
 
-/** Mean pixel color inside [box] on [bitmap], used by [matchesReference] to tell same-sized but differently-colored things apart (a plum from a leaf). */
-fun averageColor(bitmap: Bitmap, box: Rect): Int {
-    val left = box.left.coerceIn(0, bitmap.width - 1)
-    val top = box.top.coerceIn(0, bitmap.height - 1)
-    val right = box.right.coerceIn(left + 1, bitmap.width)
-    val bottom = box.bottom.coerceIn(top + 1, bitmap.height)
-    val width = right - left
-    val height = bottom - top
-
-    val pixels = IntArray(width * height)
-    bitmap.getPixels(pixels, 0, width, left, top, width, height)
-    var r = 0L
-    var g = 0L
-    var b = 0L
-    for (pixel in pixels) {
-        r += (pixel shr 16) and 0xFF
-        g += (pixel shr 8) and 0xFF
-        b += pixel and 0xFF
-    }
-    val count = pixels.size
-    return Color.rgb((r / count).toInt(), (g / count).toInt(), (b / count).toInt())
+/**
+ * Auto mode only (no reference piece - same scope as [rejectSizeOutliers],
+ * whose own median-based size check already covers reference mode): true
+ * when at least one kept blob's box is a lot bigger than the rest. Real
+ * pieces of "the same kind of thing" (the whole premise of counting them)
+ * should be roughly consistent in size, so an outsized box is a good proxy
+ * for the failure this app is most exposed to - FastSAM merging several
+ * touching/overlapping pieces into one blob instead of finding them
+ * separately (the original reason a region of interest exists at all: see
+ * [com.micha741.skener.CountingScreen]). Surfaced as a hint to spread the
+ * pieces out and recount, not auto-corrected - there's no reliable way to
+ * tell *how many* real pieces one oversized blob actually is.
+ */
+fun hasSuspiciouslyLargeBlob(blobs: List<DetectedBlob>): Boolean {
+    if (blobs.size < MIN_SAMPLES_FOR_SIZE_FILTER) return false
+    val areas = blobs.map { it.box.width().toLong() * it.box.height().toLong() }.sorted()
+    val medianArea = areas[areas.size / 2]
+    if (medianArea <= 0) return false
+    return areas.last() >= medianArea * MAX_SIZE_RATIO_TO_MEDIAN
 }
 
 private const val MIN_EDGE_ASPECT_RATIO = 3.0
 private const val EDGE_PHOTO_SPAN_FRACTION = 0.6
 private const val MIN_SAMPLES_FOR_SIZE_FILTER = 3
 private const val MIN_SIZE_RATIO_TO_MEDIAN = 0.25
+private const val MAX_SIZE_RATIO_TO_MEDIAN = 3.0
 private const val ROI_MIN_OVERLAP_FRACTION = 0.5

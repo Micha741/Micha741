@@ -12,6 +12,7 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
+import kotlin.math.exp
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -29,12 +30,20 @@ import kotlin.math.roundToInt
  * region in the frame - which is what a genuinely universal piece counter
  * needs, rather than one tuned to recognize a handful of common categories.
  *
- * This only decodes the model's box + confidence head (a standard
- * YOLOv8-seg-style single-class output: 37 channels per anchor = 4 box +
- * 1 score + 32 mask coefficients, 2100 anchors) and runs NMS on it - the
- * 32 mask coefficients and the [1,32,80,80] prototype output are present
- * in the model but not used yet, so this draws bounding boxes, not precise
- * outlines, same as the ML Kit path did.
+ * Decodes the model's box + confidence head (a standard YOLOv8-seg-style
+ * single-class output: 37 channels per anchor = 4 box + 1 score + 32 mask
+ * coefficients, 2100 anchors) and runs NMS on it - boxes, not precise
+ * outlines, are still what this returns and what the rest of the app
+ * draws, same as the ML Kit path did. The 32 mask coefficients and the
+ * [1,32,80,80] prototype output *are* used for one thing, though: each
+ * kept detection's own segmentation mask (`coeffs · proto`, sigmoid,
+ * mapped from the model's 80x80 mask grid back through the same letterbox
+ * transform as its box) picks out which pixels *inside* that box are
+ * actually the piece rather than background creeping into its corners -
+ * [maskAverageColor] averages only those for [DetectedBlob.avgColor],
+ * instead of every pixel in the box like a plain rectangle scan would.
+ * Matters most for round/diagonal pieces, where a snug box still has a
+ * lot of background in its four corners.
  *
  * The box coordinates in the model's output are normalized to [0,1]
  * relative to the model's fixed 320x320 input (confirmed by running the
@@ -72,7 +81,7 @@ class FastSamDetector(context: Context) {
             // bitmap): only recycle when createBitmap actually made a copy.
             if (tile !== bitmap) tile.recycle()
         }
-        return mergeOverlapping(allBoxes).map { DetectedBlob(box = it.box) }
+        return mergeOverlapping(allBoxes).map { DetectedBlob(box = it.box, avgColor = it.avgColor) }
     }
 
     fun close() {
@@ -136,7 +145,7 @@ class FastSamDetector(context: Context) {
 
         val candidates = decodeCandidates(output0[0])
         val kept = nonMaxSuppression(candidates)
-        return kept.map { it.toScoredBox(letterbox) }
+        return kept.map { it.toScoredBox(bitmap, letterbox, output1[0]) }
     }
 
     private fun loadModelFile(context: Context): MappedByteBuffer {
@@ -183,8 +192,15 @@ class FastSamDetector(context: Context) {
         return buffer
     }
 
-    /** One anchor's decoded box (in the letterboxed 320x320 space) and confidence. */
-    private data class Candidate(val left: Float, val top: Float, val right: Float, val bottom: Float, val score: Float) {
+    /** One anchor's decoded box (in the letterboxed 320x320 space), confidence, and its 32 mask coefficients (see the class doc). */
+    private data class Candidate(
+        val left: Float,
+        val top: Float,
+        val right: Float,
+        val bottom: Float,
+        val score: Float,
+        val maskCoeffs: FloatArray,
+    ) {
         val area: Float get() = max(0f, right - left) * max(0f, bottom - top)
     }
 
@@ -199,7 +215,9 @@ class FastSamDetector(context: Context) {
             val cy = output[1][anchor] * INPUT_SIZE
             val w = output[2][anchor] * INPUT_SIZE
             val h = output[3][anchor] * INPUT_SIZE
-            candidates += Candidate(cx - w / 2f, cy - h / 2f, cx + w / 2f, cy + h / 2f, score)
+            // Channels 5..36 (after the 4 box + 1 score channels) are the 32 mask coefficients.
+            val maskCoeffs = FloatArray(MASK_DIM) { c -> output[5 + c][anchor] }
+            candidates += Candidate(cx - w / 2f, cy - h / 2f, cx + w / 2f, cy + h / 2f, score, maskCoeffs)
         }
         return candidates
     }
@@ -225,13 +243,13 @@ class FastSamDetector(context: Context) {
         return kept
     }
 
-    /** One kept detection in some bitmap's own pixel coordinates (a whole tile, or the full photo), with its confidence. */
-    private data class ScoredBox(val box: Rect, val score: Float) {
+    /** One kept detection in some bitmap's own pixel coordinates (a whole tile, or the full photo), with its confidence and mask-sampled average color (see the class doc; null if its mask came out empty). */
+    private data class ScoredBox(val box: Rect, val score: Float, val avgColor: Int?) {
         val area: Float get() = max(0, box.width()).toFloat() * max(0, box.height())
     }
 
     private fun ScoredBox.offsetBy(dx: Int, dy: Int): ScoredBox =
-        ScoredBox(Rect(box.left + dx, box.top + dy, box.right + dx, box.bottom + dy), score)
+        ScoredBox(Rect(box.left + dx, box.top + dy, box.right + dx, box.bottom + dy), score, avgColor)
 
     /**
      * Second, cross-tile NMS pass over every tile's already-deduplicated
@@ -274,16 +292,62 @@ class FastSamDetector(context: Context) {
 
     private data class Letterbox(val bitmap: Bitmap, val scale: Float, val padX: Float, val padY: Float)
 
-    /** Maps this candidate's box from the letterboxed 320x320 space back to the tile's own pixel coordinates. */
-    private fun Candidate.toScoredBox(letterbox: Letterbox): ScoredBox {
+    /** Maps this candidate's box from the letterboxed 320x320 space back to [bitmap]'s own pixel coordinates, and samples its mask-average color from [bitmap] the same way (see [maskAverageColor]). */
+    private fun Candidate.toScoredBox(bitmap: Bitmap, letterbox: Letterbox, proto: Array<Array<FloatArray>>): ScoredBox {
         val box = Rect(
             ((left - letterbox.padX) / letterbox.scale).roundToInt(),
             ((top - letterbox.padY) / letterbox.scale).roundToInt(),
             ((right - letterbox.padX) / letterbox.scale).roundToInt(),
             ((bottom - letterbox.padY) / letterbox.scale).roundToInt(),
         )
-        return ScoredBox(box, score)
+        return ScoredBox(box, score, maskAverageColor(bitmap, maskCoeffs, proto, letterbox))
     }
+
+    /**
+     * Averages [bitmap]'s pixel colors under this detection's own segmentation
+     * mask instead of its whole box - a mask pixel's value is
+     * `sigmoid(coeffs · proto[:, y, x])` (the standard YOLOv8-seg decode,
+     * confirmed against this exact model: running it on a synthetic test
+     * image and rendering the resulting masks lined up with the actual
+     * objects, not their boxes). [proto]'s 80x80 grid covers the same
+     * letterboxed 320x320 space as [Candidate]'s own box coordinates, at a
+     * fixed 4px-per-cell scale ([INPUT_SIZE] / [PROTO_SIZE]) - each mask
+     * cell center is mapped back through the same letterbox transform as
+     * the box above to land on [bitmap]'s own pixel grid. Null (falls back
+     * to no color, same as [DetectedBlob.avgColor]'s default) if the mask
+     * came out empty - every cell below [MASK_THRESHOLD], or landing
+     * entirely outside [bitmap] - rather than risk a color averaged from
+     * zero real samples.
+     */
+    private fun maskAverageColor(bitmap: Bitmap, maskCoeffs: FloatArray, proto: Array<Array<FloatArray>>, letterbox: Letterbox): Int? {
+        var sumR = 0L
+        var sumG = 0L
+        var sumB = 0L
+        var count = 0
+        val cellSize = INPUT_SIZE.toFloat() / PROTO_SIZE
+
+        for (cellY in 0 until PROTO_SIZE) {
+            for (cellX in 0 until PROTO_SIZE) {
+                var raw = 0f
+                for (c in 0 until MASK_DIM) raw += maskCoeffs[c] * proto[c][cellY][cellX]
+                if (sigmoid(raw) <= MASK_THRESHOLD) continue
+
+                val bitmapX = (((cellX + 0.5f) * cellSize - letterbox.padX) / letterbox.scale).roundToInt()
+                val bitmapY = (((cellY + 0.5f) * cellSize - letterbox.padY) / letterbox.scale).roundToInt()
+                if (bitmapX !in 0 until bitmap.width || bitmapY !in 0 until bitmap.height) continue
+
+                val pixel = bitmap.getPixel(bitmapX, bitmapY)
+                sumR += (pixel shr 16) and 0xFF
+                sumG += (pixel shr 8) and 0xFF
+                sumB += pixel and 0xFF
+                count++
+            }
+        }
+        if (count == 0) return null
+        return Color.rgb((sumR / count).toInt(), (sumG / count).toInt(), (sumB / count).toInt())
+    }
+
+    private fun sigmoid(x: Float): Float = 1f / (1f + exp(-x))
 
     private companion object {
         const val MODEL_ASSET_NAME = "fastsam_s.tflite"
@@ -294,6 +358,7 @@ class FastSamDetector(context: Context) {
         const val PROTO_SIZE = 80
         const val CONFIDENCE_THRESHOLD = 0.4f
         const val NMS_OVERLAP_THRESHOLD = 0.45f
+        const val MASK_THRESHOLD = 0.5f
         const val TILE_FRACTION = 0.75f
         const val MIN_DIMENSION_FOR_TILING = 400
     }

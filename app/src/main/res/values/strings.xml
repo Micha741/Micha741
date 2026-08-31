@@ -26,6 +26,7 @@
     <string name="count_new_photo">Nová fotka</string>
     <string name="count_failed">Počítání se nezdařilo</string>
     <string name="count_zero_hint">Na fotce se nepodařilo najít žádné oddělené kusy. Zkus lepší osvětlení nebo více rozestupu mezi kusy.</string>
+    <string name="count_suspicious_hint">Jeden z nalezených kusů je nezvykle velký — možná se dva nebo víc dotýkajících kusů spojilo do jednoho. Zkus je rozestrčit a vyfotit znovu.</string>
     <string name="count_reference_active">Podobných vybranému kusu: %1$d ks</string>
     <string name="count_clear_reference">Zpět na počítání všech kusů</string>
     <string name="count_reference_not_found">Na tomto místě se nepodařilo najít žádný kus, zkus klepnout přesněji na jeho střed</string>

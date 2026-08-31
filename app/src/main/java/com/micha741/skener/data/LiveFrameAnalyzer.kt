@@ -17,6 +17,8 @@ data class LiveFrameResult(
     val frameWidth: Int,
     val frameHeight: Int,
     val referenceActive: Boolean,
+    /** See [hasSuspiciouslyLargeBlob] - a hint, not a correction, that some of [blobs] might be touching/merged pieces rather than one. */
+    val hasSuspiciousBlob: Boolean = false,
 )
 
 /**
@@ -141,7 +143,6 @@ class LiveFrameAnalyzer(
 
             var allBlobs = detector.detect(bitmap)
             allBlobs = allBlobs.filterNot { looksLikeStraightEdge(it.box, width, height) }
-            allBlobs = allBlobs.map { it.copy(avgColor = averageColor(bitmap, it.box)) }
             lastRawBlobs = allBlobs
             lastFrameSize = intArrayOf(width, height)
 
@@ -169,8 +170,9 @@ class LiveFrameAnalyzer(
             } else {
                 rejectSizeOutliers(allBlobs)
             }
+            val suspicious = reference == null && hasSuspiciouslyLargeBlob(blobs)
 
-            onResult(LiveFrameResult(blobs, blobs.size, width, height, reference != null))
+            onResult(LiveFrameResult(blobs, blobs.size, width, height, reference != null, suspicious))
         } finally {
             imageProxy.close()
         }

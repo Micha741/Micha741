@@ -158,9 +158,8 @@ natrénovaný **FastSAM** model (TFLite, AGPL-3.0 — viz sekce Funkce níže).
     ploch max. 3×) *a* podobné barvou. FastSAM na rozdíl od ML Kitu nedává
     žádnou kategorii/štítek (je "class-agnostic"), takže samotná velikost
     nestačí rozeznat např. švestku od podobně velkého listu na stejném
-    stromě — appka si proto při počítání ze statické fotky (`ObjectCounter.averageColor()`)
-    z fotky sama vzorkuje průměrnou barvu uvnitř každého nalezeného boxu a
-    porovnává **odstín (hue)**, ne přímou RGB vzdálenost — švestka a list
+    stromě — appka proto porovnává i **odstín (hue)**, ne přímou RGB
+    vzdálenost — švestka a list
     mají hodně rozdílný odstín (fialová vs. zelená), ale RGB vzdálenost mezi
     nimi kolísá podle osvětlení/stínu natolik, že by je přímé srovnání barev
     často zaměnilo (ověřeno na syntetické scéně přes reálný model: RGB
@@ -171,6 +170,29 @@ natrénovaný **FastSAM** model (TFLite, AGPL-3.0 — viz sekce Funkce níže).
     skoro stejný odstín jako to, na čem leží (krémový česnek na světlém
     dřevěném parketu — obojí vyjde jako nízko sytá téměř stejná béžová) —
     pro přesně tenhle případ slouží oblast zájmu níž
+  - **Barva se vzorkuje podle masky, ne podle celého boxu**: FastSAM kromě
+    boxu a jistoty vrací i 32 koeficientů masky a společnou prototypovou
+    mřížku 80×80 (`[1,32,80,80]`) — appka je dřív zahazovala a barvu brala
+    jako průměr přes celý obdélník. U kulatého nebo šikmo položeného kusu
+    ale roh čtvercového/obdélníkového boxu skoro vždycky patří pozadí, ne
+    kusu, takže to zbytečně kazilo přesnost barevného porovnání.
+    `FastSamDetector.maskAverageColor()` teď pro každou nalezenou věc
+    spočítá její vlastní masku (`sigmoid(koeficienty · prototyp)`, stejný
+    přepočet zpět přes letterbox jako u boxu) a zprůměruje jen pixely pod
+    ní — méně "kontaminace" pozadím, přesnější odstín pro porovnání
+    referenčního kusu. Ověřeno přímo na reálném modelu (vykreslení masky
+    přes syntetickou scénu sedělo na tvar objektů, ne na jejich boxy)
+  - **Varování na podezřele velký kus** (jen automatický režim bez
+    referenčního kusu): `hasSuspiciouslyLargeBlob()` po odečtení
+    velikostních odlehlých hodnot zkontroluje, jestli není některý
+    nalezený box přes trojnásobek mediánové velikosti ostatních — u
+    počítání "více kusů stejné věci" by měly být si podobné velikostí, a
+    výrazně větší box bývá ve skutečnosti víc dotýkajících se kusů, které
+    FastSAM slil do jednoho (přesně tenhle problém appku na začátku
+    přivedl k oblasti zájmu). Appka to nijak sama neopravuje — nedá se
+    spolehlivě poznat, kolik kusů se v tom velkém boxu vlastně skrývá —
+    jen zobrazí hlášku, ať kusy uživatel rozestrčí a vyfotí znovu (na
+    fotce pod počtem, v živém náhledu jako další odznak)
   - **Oblast zájmu**: tlačítkem "Vybrat oblast" appka přepne fotku do režimu
     přetažení obdélníku (`detectDragGestures` místo klepání/podržení) — vše
     mimo vybraný obdélník se zahodí ještě před referenčním/velikostním

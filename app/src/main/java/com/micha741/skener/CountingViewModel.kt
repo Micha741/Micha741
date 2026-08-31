@@ -35,6 +35,8 @@ data class CountingUiState(
     val manualAdditions: List<Point> = emptyList(),
     /** Region of interest the user dragged out, fractional (0f..1f on each edge, relative to the photo) - detections outside it are discarded entirely, before reference/outlier filtering. Fractional rather than pixel coordinates so a region picked in the live camera can carry over to a captured photo of a completely different resolution. Null means the whole photo counts. */
     val roiBox: RectF? = null,
+    /** See [com.micha741.skener.data.hasSuspiciouslyLargeBlob] - a hint (not auto-corrected) that some pieces may be touching/merged. */
+    val hasSuspiciousBlob: Boolean = false,
 ) {
     /** [count] adjusted for manual corrections: excluded blobs subtracted, manual additions added. */
     val adjustedCount: Int
@@ -211,6 +213,7 @@ class CountingViewModel(
                             referenceBox = if (referenceTap != null) result.referenceBlob?.box else it.referenceBox,
                             excludedBoxes = emptySet(),
                             manualAdditions = emptyList(),
+                            hasSuspiciousBlob = result.hasSuspiciousBlob,
                             errorMessage = if (referenceTap != null && result.referenceBlob == null) {
                                 appContext.getString(R.string.count_reference_not_found)
                             } else {

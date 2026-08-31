@@ -130,6 +130,7 @@ fun CountingScreen(
                     roiBox = uiState.roiBox,
                     isSelectingRoi = isSelectingRoi,
                     count = uiState.adjustedCount.takeIf { uiState.count != null },
+                    hasSuspiciousBlob = uiState.hasSuspiciousBlob,
                     excludedBoxes = uiState.excludedBoxes,
                     manualAdditions = uiState.manualAdditions,
                     isProcessing = uiState.isProcessing,
@@ -232,6 +233,7 @@ private fun CountingResult(
     roiBox: RectF?,
     isSelectingRoi: Boolean,
     count: Int?,
+    hasSuspiciousBlob: Boolean,
     excludedBoxes: Set<Rect>,
     manualAdditions: List<Point>,
     isProcessing: Boolean,
@@ -443,6 +445,13 @@ private fun CountingResult(
                     if (count == 0) {
                         Text(
                             text = stringResource(R.string.count_zero_hint),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White,
+                            modifier = Modifier.padding(top = 4.dp),
+                        )
+                    } else if (hasSuspiciousBlob) {
+                        Text(
+                            text = stringResource(R.string.count_suspicious_hint),
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color.White,
                             modifier = Modifier.padding(top = 4.dp),

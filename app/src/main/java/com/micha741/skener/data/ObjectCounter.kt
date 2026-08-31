@@ -17,6 +17,8 @@ data class CountResult(
     val blobs: List<DetectedBlob>,
     val count: Int,
     val referenceBlob: DetectedBlob? = null,
+    /** See [hasSuspiciouslyLargeBlob] - a hint, not a correction, that some of [blobs] might be touching/merged pieces rather than one. */
+    val hasSuspiciousBlob: Boolean = false,
 )
 
 /**
@@ -25,8 +27,8 @@ data class CountResult(
  * not one tuned to recognize a handful of common categories. That's what a
  * genuinely universal piece counter needs: it doesn't have to know *what*
  * something is to find it. [LiveFrameAnalyzer] runs the same model for the
- * live camera; the filters below ([looksLikeStraightEdge], [rejectSizeOutliers],
- * [averageColor]) are shared between both in `DetectedBlobFilters.kt`.
+ * live camera; the filters below ([looksLikeStraightEdge], [rejectSizeOutliers])
+ * are shared between both in `DetectedBlobFilters.kt`.
  *
  * [GridDetector]/[subdivideGrids] (splitting one blob that's really a
  * keyboard/tiled floor into its individual keys/tiles) is *not* run here
@@ -49,10 +51,13 @@ data class CountResult(
  * If [referenceTap] is given (a point in the *original* photo's pixel
  * coordinates the user tapped on one piece), only objects that are a
  * plausible size *and color* match are kept and counted 1:1 - see
- * [matchesReference]. Color comes from [averageColor], sampled from the
- * photo while it's still decoded here (FastSAM's own output is just boxes,
- * no color or category) - without it, tapping one plum on a tree photo
- * would also count every same-sized leaf, since to a class-agnostic
+ * [matchesReference]. Color comes straight from [DetectedBlob.avgColor],
+ * which [FastSamDetector] itself samples under each blob's own
+ * segmentation mask (not the whole box - see [FastSamDetector.maskAverageColor])
+ * so a round or diagonal piece's box corners full of background can't
+ * skew it. FastSAM's own raw output is just boxes, no color or category
+ * on its own - without sampling this at all, tapping one plum on a tree
+ * photo would also count every same-sized leaf, since to a class-agnostic
  * detector a leaf and a plum are just two similarly-sized blobs. Color
  * matching is no help when the piece and the clutter around it are close
  * to the same color too (cream garlic on a light wood floor, say) - that's
@@ -152,7 +157,6 @@ class ObjectCounter(context: Context) {
 
         var allBlobs = detector.detect(bitmap)
         allBlobs = allBlobs.filterNot { looksLikeStraightEdge(it.box, bitmap.width, bitmap.height) }
-        allBlobs = allBlobs.map { it.copy(avgColor = averageColor(bitmap, it.box)) }
         if (roi != null) {
             val bitmapRoi = Rect(
                 (roi.left * bitmap.width).roundToInt(),
@@ -179,8 +183,9 @@ class ObjectCounter(context: Context) {
 
         val scaledBlobs = kept.map { it.scaledBy(inverseScale) }
         val scaledReference = referenceBlob?.scaledBy(inverseScale)
+        val suspicious = referenceBlob == null && hasSuspiciouslyLargeBlob(kept)
 
-        return CountResult(scaledBlobs, scaledBlobs.size, scaledReference)
+        return CountResult(scaledBlobs, scaledBlobs.size, scaledReference, suspicious)
     }
 
     private companion object {
