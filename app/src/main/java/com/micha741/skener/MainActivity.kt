@@ -32,6 +32,7 @@ import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.FormatListNumbered
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Straighten
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -85,6 +86,7 @@ class MainActivity : ComponentActivity() {
     private val viewModel: ScanViewModel by viewModels { ScanViewModelFactory(this) }
     private val countingViewModel: CountingViewModel by viewModels { CountingViewModelFactory(this) }
     private val suspicionsViewModel: SuspicionsViewModel by viewModels { SuspicionsViewModelFactory(this) }
+    private val measureViewModel: MeasureViewModel by viewModels { MeasureViewModelFactory(this) }
     private val barcodeViewModel: BarcodeViewModel by viewModels()
 
     private val scannerOptions = GmsDocumentScannerOptions.Builder()
@@ -144,6 +146,26 @@ class MainActivity : ComponentActivity() {
                     uri?.let { barcodeViewModel.onPhotoPicked(applicationContext, it) }
                 }
 
+                val pickMeasurePhotoLauncher = rememberLauncherForActivityResult(
+                    ActivityResultContracts.PickVisualMedia()
+                ) { uri ->
+                    uri?.let { measureViewModel.onPhotoSelected(it) }
+                }
+
+                // Measuring has no live camera view (unlike counting's LiveCameraScreen) - just
+                // a plain system camera capture into a cache file, same FileProvider pattern
+                // LiveCameraScreen's own shutter button uses to hand a photo back to the app.
+                var pendingMeasurePhotoUri by remember { mutableStateOf<Uri?>(null) }
+                val captureMeasurePhotoLauncher = rememberLauncherForActivityResult(
+                    ActivityResultContracts.TakePicture()
+                ) { success ->
+                    val uri = pendingMeasurePhotoUri
+                    pendingMeasurePhotoUri = null
+                    if (success && uri != null) {
+                        measureViewModel.onPhotoSelected(uri)
+                    }
+                }
+
                 var pendingSaveDocument by remember { mutableStateOf<ScanDocument?>(null) }
                 val saveLauncher = rememberLauncherForActivityResult(
                     ActivityResultContracts.CreateDocument("application/pdf")
@@ -179,6 +201,7 @@ class MainActivity : ComponentActivity() {
                     scanViewModel = viewModel,
                     countingViewModel = countingViewModel,
                     suspicionsViewModel = suspicionsViewModel,
+                    measureViewModel = measureViewModel,
                     barcodeViewModel = barcodeViewModel,
                     onStartScan = { startScan(scanLauncher) },
                     onShare = ::shareDocument,
@@ -196,6 +219,16 @@ class MainActivity : ComponentActivity() {
                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                         )
                     },
+                    onPickMeasurePhoto = {
+                        pickMeasurePhotoLauncher.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        )
+                    },
+                    onCaptureMeasurePhoto = {
+                        val uri = createCacheImageUri("measure_${System.currentTimeMillis()}.jpg")
+                        pendingMeasurePhotoUri = uri
+                        captureMeasurePhotoLauncher.launch(uri)
+                    },
                     onSaveBarcodeImage = { code ->
                         pendingSaveBarcode = code
                         saveBarcodeImageLauncher.launch("kod_${code.timestamp}.png")
@@ -206,6 +239,12 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    /** A fresh cache file wrapped as a FileProvider [Uri] - same pattern [LiveCameraScreen]'s shutter button uses, for launchers (like [ActivityResultContracts.TakePicture]) that need a destination handed to them before they run, not returned from them. */
+    private fun createCacheImageUri(fileName: String): Uri {
+        val file = File(cacheDir, fileName)
+        return FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
     }
 
     private fun startScan(
@@ -297,12 +336,15 @@ private fun AppScaffold(
     scanViewModel: ScanViewModel,
     countingViewModel: CountingViewModel,
     suspicionsViewModel: SuspicionsViewModel,
+    measureViewModel: MeasureViewModel,
     barcodeViewModel: BarcodeViewModel,
     onStartScan: () -> Unit,
     onShare: (ScanDocument) -> Unit,
     onSaveToDevice: (ScanDocument) -> Unit,
     onPickPhoto: () -> Unit,
     onPickBarcodePhoto: () -> Unit,
+    onPickMeasurePhoto: () -> Unit,
+    onCaptureMeasurePhoto: () -> Unit,
     onSaveBarcodeImage: (ScannedCode) -> Unit,
     onSaveCountResult: () -> Unit,
 ) {
@@ -337,6 +379,12 @@ private fun AppScaffold(
                         onClick = { navController.navigateSingleTopTo("barcode") },
                         icon = { Icon(Icons.Default.QrCodeScanner, contentDescription = null) },
                         label = { Text(stringResource(R.string.nav_barcode)) },
+                    )
+                    NavigationBarItem(
+                        selected = currentRoute == "measure",
+                        onClick = { navController.navigateSingleTopTo("measure") },
+                        icon = { Icon(Icons.Default.Straighten, contentDescription = null) },
+                        label = { Text(stringResource(R.string.nav_measure)) },
                     )
                 }
             }
@@ -387,6 +435,13 @@ private fun AppScaffold(
                     viewModel = barcodeViewModel,
                     onPickPhoto = onPickBarcodePhoto,
                     onSaveImage = onSaveBarcodeImage,
+                )
+            }
+            composable("measure") {
+                MeasureScreen(
+                    viewModel = measureViewModel,
+                    onCapturePhoto = onCaptureMeasurePhoto,
+                    onPickPhoto = onPickMeasurePhoto,
                 )
             }
         }

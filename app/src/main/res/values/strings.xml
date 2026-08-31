@@ -56,6 +56,20 @@
     <string name="camera_permission_rationale">Appka potřebuje přístup ke kameře.</string>
     <string name="camera_permission_request">Povolit kameru</string>
 
+    <string name="nav_measure">Měřit</string>
+    <string name="measure_empty_title">Změř vzdálenost</string>
+    <string name="measure_empty_subtitle">Vyfoť nebo vyber fotku, na které je vidět něco se známou délkou (pravítko, list papíru) — appka podle toho spočítá skutečné vzdálenosti</string>
+    <string name="measure_calibrate_hint">Klepni na dva body známé vzdálenosti (např. okraj pravítka)</string>
+    <string name="measure_second_point_hint">Klepni na druhý bod</string>
+    <string name="measure_hint">Klepni na dva body pro změření vzdálenosti</string>
+    <string name="measure_calibration_dialog_title">Jaká je to skutečná vzdálenost?</string>
+    <string name="measure_calibration_dialog_hint">Délka v cm, např. 5</string>
+    <string name="measure_calibration_invalid">Zadej platnou kladnou délku v cm</string>
+    <string name="measure_confirm">Potvrdit</string>
+    <string name="measure_recalibrate">Překalibrovat</string>
+    <string name="measure_new_photo">Nová fotka</string>
+    <string name="measure_failed">Nepodařilo se načíst fotku</string>
+
     <string name="nav_barcode">Kódy</string>
     <string name="barcode_history_title">Naskenované kódy</string>
     <string name="barcode_empty_hint">Namiř kameru na čárový nebo QR kód</string>

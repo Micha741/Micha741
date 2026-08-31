@@ -378,8 +378,37 @@ natrénovaný **FastSAM** model (TFLite, AGPL-3.0 — viz sekce Funkce níže).
   se přes [ZXing](https://github.com/zxing/zxing) (`com.google.zxing:core`)
   zpětně zakóduje do obrázku (QR i podporované 1D formáty) a uloží se
   přes systémový výběr umístění, ne jen jako sdílený text
+- **Měření vzdálenosti**: appka neumí žádné rozšířené realitě podobné
+  hloubkové snímání (to by chtělo ARCore — nový balíček, jen podporovaná
+  zařízení a nešlo by to tady v sandboxu vůbec ověřit) — místo toho funguje
+  na stejném principu jako referenční kus u počítání kusů: appka se nejdřív
+  "zakalibruje" na něco, jehož skutečnou délku uživatel zná, a teprve pak
+  umí převádět pixely na centimetry
+  - **Kalibrace**: klepnutím na dva body na fotce, které představují známou
+    vzdálenost (okraj pravítka, list papíru A4…), appka otevře dialog na
+    zadání skutečné délky v cm. Dokud appka není zkalibrovaná, každé další
+    klepnutí pokračuje ve výběru kalibračního páru, ne měření
+  - **Měření**: po zkalibrování appka z každé dvojice klepnutí ihned spočítá
+    a vykreslí vzdálenost (`distanceCm()` v `data/MeasurementModels.kt`) —
+    barevná úsečka (žlutá pro kalibraci, modrá pro měření) s popiskem
+    (`formatCm()`: mm pod 1 cm, cm do 1 m, jinak m). Lze změřit víc
+    vzdáleností na jedné fotce bez nutnosti kalibrovat znovu; dlouhé
+    podržení poblíž popisku úsečku smaže. Tlačítko "Překalibrovat" zahodí
+    aktuální měřítko i všechna měření a appka čeká na nový kalibrační pár
+  - **Skutečné rozměry fotky, ne zlomkové**: `distanceCm()` potřebuje
+    *skutečnou* šířku/výšku fotky v pixelech (`MeasureViewModel.onPhotoSelected()`
+    fotku jen "změří" přes `BitmapFactory.Options.inJustDecodeBounds`, bez
+    načtení celé bitmapy do paměti) — u nečtvercové fotky totiž osa X a Y
+    škáluje jinak, takže by diagonální úsečka bez skutečných rozměrů vyšla
+    zkreslená
+  - **Focení bez živého náhledu**: na rozdíl od počítání kusů appka pro
+    měření nemá vlastní CameraX obrazovku — tlačítko "Vyfotit" spustí obyčejný
+    systémový fotoaparát (`ActivityResultContracts.TakePicture()`) do souboru
+    v cache, stejný `FileProvider` vzor jako všude jinde v appce. Jednodušší
+    na postavení; živé měření v náhledu kamery by šlo přidat později, pokud
+    se tenhle základní postup osvědčí
 
-Mezi „Skenovat“, „Počítat kusy“ a „Kódy“ se přepíná spodní navigační lištou.
+Mezi „Skenovat“, „Počítat kusy“, „Kódy“ a „Měřit“ se přepíná spodní navigační lištou.
 
 ### Struktura projektu
 
@@ -399,10 +428,14 @@ app/src/main/java/com/micha741/skener/
 ├── LiveCameraScreen.kt      # živý náhled kamery: počítání, zoom, tap na referenční kus, tlačítko zpět
 ├── BarcodeScreen.kt         # fullscreen kamera + zoom/baterka/rámeček + historie v bottom sheetu
 ├── BarcodeViewModel.kt      # stav obrazovky čtečky kódů
+├── MeasureScreen.kt         # UI obrazovky měření vzdálenosti (kalibrace, měřicí úsečky, dlouhé podržení pro smazání)
+├── MeasureViewModel.kt      # stav obrazovky měření vzdálenosti
+├── MeasureViewModelFactory.kt
 ├── CameraPermission.kt      # sdílená logika oprávnění kamery pro obě kamerové obrazovky
 ├── data/
 │   ├── ScanDocument.kt      # model naskenovaného PDF
 │   ├── ScanRepository.kt    # ukládání/čtení PDF v app storage
+│   ├── MeasurementModels.kt # CalibrationPoints/MeasuredSegment, distanceCm() a formatCm() pro měření vzdálenosti
 │   ├── SuspicionRecord.kt   # model jednoho nahlášeného "podezřelého" výsledku (obrázek + poznámka + čas)
 │   ├── SuspicionRepository.kt # ukládání/čtení nahlášení v app storage, stejný souborový vzor jako ScanRepository
 │   ├── DetectedBlob.kt      # sdílený model kusu (box, průměrná barva) pro fotku i živý náhled

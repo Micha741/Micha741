@@ -56,6 +56,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -315,6 +316,14 @@ private fun CountingResult(
     var dragCurrent by remember(photoUri, isSelectingRoi) { mutableStateOf<Offset?>(null) }
     val coroutineScope = rememberCoroutineScope()
     val edgeMarginPx = with(LocalDensity.current) { 56.dp.toPx() }
+    // pointerInput(photoUri, isSelectingRoi) below only restarts its gesture-detecting
+    // coroutine on those two keys - blobs/manualAdditions change on nearly every tap
+    // (independently of both keys), so the tap/long-press branch reads them through
+    // rememberUpdatedState rather than directly, or a long-press right after adding a
+    // manual marker would hit-test against the pre-addition snapshot and add a second
+    // one instead of recognizing the first to remove it.
+    val currentBlobs = rememberUpdatedState(blobs)
+    val currentManualAdditions = rememberUpdatedState(manualAdditions)
 
     // Sequential numbers matching what's actually counted (adjustedCount in
     // CountingViewModel): excluded boxes get skipped, manual additions
@@ -386,7 +395,7 @@ private fun CountingResult(
                             val bitmapX = (offset.x / scaleX).roundToInt().coerceIn(0, bitmap.width - 1)
                             val bitmapY = (offset.y / scaleY).roundToInt().coerceIn(0, bitmap.height - 1)
 
-                            val nearestManual = manualAdditions.minByOrNull { marker ->
+                            val nearestManual = currentManualAdditions.value.minByOrNull { marker ->
                                 val dx = (marker.x - bitmapX).toDouble()
                                 val dy = (marker.y - bitmapY).toDouble()
                                 dx * dx + dy * dy
@@ -397,7 +406,7 @@ private fun CountingResult(
                                 sqrt(dx * dx + dy * dy)
                             }
 
-                            val hitBlob = blobs.firstOrNull { it.box.contains(bitmapX, bitmapY) }
+                            val hitBlob = currentBlobs.value.firstOrNull { it.box.contains(bitmapX, bitmapY) }
 
                             when {
                                 nearestManual != null && manualDistance != null && manualDistance <= manualHitRadius -> {
