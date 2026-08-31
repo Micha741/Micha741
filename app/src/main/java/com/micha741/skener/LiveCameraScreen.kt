@@ -1,13 +1,11 @@
 package com.micha741.skener
 
-import android.content.Context
 import android.graphics.RectF
 import android.net.Uri
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
@@ -55,11 +53,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import com.micha741.skener.data.LiveFrameAnalyzer
 import com.micha741.skener.data.LiveFrameResult
 import kotlinx.coroutines.delay
-import java.io.File
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
@@ -427,6 +423,8 @@ fun LiveCameraScreen(
                         capturePhoto(
                             context = context,
                             imageCapture = imageCapture,
+                            filePrefix = "counting",
+                            fallbackErrorMessage = context.getString(R.string.count_failed),
                             onSuccess = { uri ->
                                 isCapturing = false
                                 onPhotoCaptured(uri, roiBox)
@@ -444,28 +442,4 @@ fun LiveCameraScreen(
             }
         }
     }
-}
-
-private fun capturePhoto(
-    context: Context,
-    imageCapture: ImageCapture,
-    onSuccess: (Uri) -> Unit,
-    onError: (String) -> Unit,
-) {
-    val file = File(context.cacheDir, "counting_${System.currentTimeMillis()}.jpg")
-    val outputOptions = ImageCapture.OutputFileOptions.Builder(file).build()
-    imageCapture.takePicture(
-        outputOptions,
-        ContextCompat.getMainExecutor(context),
-        object : ImageCapture.OnImageSavedCallback {
-            override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
-                onSuccess(uri)
-            }
-
-            override fun onError(exception: ImageCaptureException) {
-                onError(exception.message ?: context.getString(R.string.count_failed))
-            }
-        },
-    )
 }

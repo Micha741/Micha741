@@ -152,20 +152,6 @@ class MainActivity : ComponentActivity() {
                     uri?.let { measureViewModel.onPhotoSelected(it) }
                 }
 
-                // Measuring has no live camera view (unlike counting's LiveCameraScreen) - just
-                // a plain system camera capture into a cache file, same FileProvider pattern
-                // LiveCameraScreen's own shutter button uses to hand a photo back to the app.
-                var pendingMeasurePhotoUri by remember { mutableStateOf<Uri?>(null) }
-                val captureMeasurePhotoLauncher = rememberLauncherForActivityResult(
-                    ActivityResultContracts.TakePicture()
-                ) { success ->
-                    val uri = pendingMeasurePhotoUri
-                    pendingMeasurePhotoUri = null
-                    if (success && uri != null) {
-                        measureViewModel.onPhotoSelected(uri)
-                    }
-                }
-
                 var pendingSaveDocument by remember { mutableStateOf<ScanDocument?>(null) }
                 val saveLauncher = rememberLauncherForActivityResult(
                     ActivityResultContracts.CreateDocument("application/pdf")
@@ -224,11 +210,6 @@ class MainActivity : ComponentActivity() {
                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                         )
                     },
-                    onCaptureMeasurePhoto = {
-                        val uri = createCacheImageUri("measure_${System.currentTimeMillis()}.jpg")
-                        pendingMeasurePhotoUri = uri
-                        captureMeasurePhotoLauncher.launch(uri)
-                    },
                     onSaveBarcodeImage = { code ->
                         pendingSaveBarcode = code
                         saveBarcodeImageLauncher.launch("kod_${code.timestamp}.png")
@@ -239,12 +220,6 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
-    }
-
-    /** A fresh cache file wrapped as a FileProvider [Uri] - same pattern [LiveCameraScreen]'s shutter button uses, for launchers (like [ActivityResultContracts.TakePicture]) that need a destination handed to them before they run, not returned from them. */
-    private fun createCacheImageUri(fileName: String): Uri {
-        val file = File(cacheDir, fileName)
-        return FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
     }
 
     private fun startScan(
@@ -344,7 +319,6 @@ private fun AppScaffold(
     onPickPhoto: () -> Unit,
     onPickBarcodePhoto: () -> Unit,
     onPickMeasurePhoto: () -> Unit,
-    onCaptureMeasurePhoto: () -> Unit,
     onSaveBarcodeImage: (ScannedCode) -> Unit,
     onSaveCountResult: () -> Unit,
 ) {
@@ -355,6 +329,7 @@ private fun AppScaffold(
     // dragging out a region of interest on a large gallery photo needs every bit of vertical
     // space it can get; the nav bar's own ~80dp was enough to make that drag hard to land.
     val hideBottomBar = currentRoute == "live_count" ||
+        currentRoute == "measure_camera" ||
         currentRoute == "suspicions" ||
         (currentRoute == "count" && countingUiState.photoUri != null)
 
@@ -440,8 +415,17 @@ private fun AppScaffold(
             composable("measure") {
                 MeasureScreen(
                     viewModel = measureViewModel,
-                    onCapturePhoto = onCaptureMeasurePhoto,
+                    onCapturePhoto = { navController.navigate("measure_camera") },
                     onPickPhoto = onPickMeasurePhoto,
+                )
+            }
+            composable("measure_camera") {
+                MeasureCameraScreen(
+                    onPhotoCaptured = { uri ->
+                        measureViewModel.onPhotoSelected(uri)
+                        navController.popBackStack()
+                    },
+                    onClose = { navController.popBackStack() },
                 )
             }
         }

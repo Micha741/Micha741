@@ -7,16 +7,6 @@
         android:name="android.hardware.camera"
         android:required="true" />
 
-    <!-- Needed for ActivityResultContracts.TakePicture() (Měřit's "Vyfotit", a plain
-         system-camera capture, unlike the other tabs' own in-app CameraX preview) to
-         resolve a camera app at all - targetSdk 34 means package-visibility filtering
-         (API 30+) otherwise hides installed camera apps from this query. -->
-    <queries>
-        <intent>
-            <action android:name="android.media.action.IMAGE_CAPTURE" />
-        </intent>
-    </queries>
-
     <application
         android:name=".SkenerApplication"
         android:allowBackup="true"

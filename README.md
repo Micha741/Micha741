@@ -401,12 +401,25 @@ natrénovaný **FastSAM** model (TFLite, AGPL-3.0 — viz sekce Funkce níže).
     načtení celé bitmapy do paměti) — u nečtvercové fotky totiž osa X a Y
     škáluje jinak, takže by diagonální úsečka bez skutečných rozměrů vyšla
     zkreslená
-  - **Focení bez živého náhledu**: na rozdíl od počítání kusů appka pro
-    měření nemá vlastní CameraX obrazovku — tlačítko "Vyfotit" spustí obyčejný
-    systémový fotoaparát (`ActivityResultContracts.TakePicture()`) do souboru
-    v cache, stejný `FileProvider` vzor jako všude jinde v appce. Jednodušší
-    na postavení; živé měření v náhledu kamery by šlo přidat později, pokud
-    se tenhle základní postup osvědčí
+  - **Focení přes appčinu vlastní kameru, ne systémovou** (`MeasureCameraScreen.kt`):
+    první verze tlačítka "Vyfotit" spouštěla obyčejný systémový fotoaparát
+    (`ActivityResultContracts.TakePicture()`) — jednodušší na postavení, bez
+    vlastní CameraX obrazovky. Na reálném zařízení to ale spadlo na
+    `SecurityException: ... with revoked permission android.permission.CAMERA`:
+    tenhle konkrétní systémový fotoaparát (na rozdíl od běžného chování téhle
+    akce, kde se o oprávnění stará výhradně volaná kamera appka) odmítne
+    appku spustit, dokud appka sama nemá za běhu (ne jen v manifestu)
+    udělené `CAMERA` oprávnění — o to se dřív starala jen obrazovka živého
+    náhledu u počítání kusů, appka měření tudy vůbec neprocházela.
+    `MeasureCameraScreen` tenhle problém obchází úplně — je to prostý CameraX
+    náhled + spoušť (bez FastSAM analýzy, na rozdíl od `LiveCameraScreen`u u
+    počítání kusů: kalibrační i měřicí body se ťukají až na vyfocené fotce
+    v `MeasureScreen`u), přes stejný `rememberCameraPermissionState()`
+    tok jako všude jinde v appce, kde appka vlastní kameru používá. Samotné
+    focení do souboru v cache (`capturePhoto()`) appka sdílí s počítáním
+    kusů — dřív to byla soukromá funkce v `LiveCameraScreen.kt`, teď je to
+    `CameraCapture.kt`, parametrizované jen předponou názvu souboru a
+    záložní chybovou hláškou
 
 Mezi „Skenovat“, „Počítat kusy“, „Kódy“ a „Měřit“ se přepíná spodní navigační lištou.
 
@@ -431,7 +444,9 @@ app/src/main/java/com/micha741/skener/
 ├── MeasureScreen.kt         # UI obrazovky měření vzdálenosti (kalibrace, měřicí úsečky, dlouhé podržení pro smazání)
 ├── MeasureViewModel.kt      # stav obrazovky měření vzdálenosti
 ├── MeasureViewModelFactory.kt
-├── CameraPermission.kt      # sdílená logika oprávnění kamery pro obě kamerové obrazovky
+├── MeasureCameraScreen.kt   # živý náhled kamery pro focení na měření - jen preview + spoušť, bez FastSAM analýzy
+├── CameraCapture.kt         # sdílené vyfocení do souboru v cache (ImageCapture → FileProvider Uri), používá živý náhled počítání i měření
+├── CameraPermission.kt      # sdílená logika oprávnění kamery pro všechny kamerové obrazovky
 ├── data/
 │   ├── ScanDocument.kt      # model naskenovaného PDF
 │   ├── ScanRepository.kt    # ukládání/čtení PDF v app storage
