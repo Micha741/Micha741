@@ -264,6 +264,13 @@ natrénovaný **FastSAM** model (TFLite, AGPL-3.0 — viz sekce Funkce níže).
     referenční kus, nová fotka) je navíc přes `verticalScroll` posuvný - s
     přibývajícím počtem tlačítek by se poslední z nich na menších
     obrazovkách jinak schoval pod spodní navigační lištu, nedosažitelný
+  - **Spodní navigační lišta (Skenovat/Počítat kusy/Kódy) zmizí, jakmile má
+    obrazovka počítání načtenou fotku** (`AppScaffold` v `MainActivity.kt`
+    sleduje `CountingViewModel.uiState.photoUri`, stejně jako už dřív mizela
+    na `live_count`/`suspicions`) — přetažení obdélníku výběru oblasti na
+    velké fotce z galerie potřebuje co nejvíc svislého prostoru, a těch
+    ~80dp lišty navíc dělalo přesné trefení rohů obdélníku zbytečně těžké.
+    Návrat zpět (šipka v horní liště, `viewModel.reset()`) lištu vrátí
   - **Živý náhled na FastSAM taky (dřív na ML Kitu)**: appka dřív pro živý
     náhled kamery používala ML Kit Object Detection & Tracking (levnější,
     ale natrénovaný jen na pár širokých kategorií). Reálné testování na

@@ -308,10 +308,17 @@ private fun AppScaffold(
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
+    val countingUiState by countingViewModel.uiState.collectAsState()
+    // Hidden once a photo's loaded on the count screen, not just on live_count/suspicions -
+    // dragging out a region of interest on a large gallery photo needs every bit of vertical
+    // space it can get; the nav bar's own ~80dp was enough to make that drag hard to land.
+    val hideBottomBar = currentRoute == "live_count" ||
+        currentRoute == "suspicions" ||
+        (currentRoute == "count" && countingUiState.photoUri != null)
 
     Scaffold(
         bottomBar = {
-            if (currentRoute != "live_count" && currentRoute != "suspicions") {
+            if (!hideBottomBar) {
                 NavigationBar {
                     NavigationBarItem(
                         selected = currentRoute == "scan",
