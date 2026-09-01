@@ -450,6 +450,36 @@ natrénovaný **FastSAM** model (TFLite, AGPL-3.0 — viz sekce Funkce níže).
     jako u počítání kusů (`MainActivity.kt`'s `hideBottomBar`): ťukání
     kalibračních a měřicích bodů na velkou fotku potřebuje každý kousek
     výšky obrazovky, který jde ušetřit
+  - **Automatická kalibrace na známý předmět** (`data/MeasureAutoCalibrator.kt`):
+    tlačítko "Automaticky" spustí na fotce ten samý FastSAM detektor, který
+    appka používá pro počítání kusů, a mezi nalezenými kandidáty hledá ten,
+    jehož poměr stran (delší/kratší strana ohraničujícího obdélníku)
+    odpovídá skutečnému poměru běžného předmětu známé velikosti — listu A4
+    (29,7×21,0 cm) nebo platební/identifikační karty (8,56×5,4 cm), viz
+    `KnownReferenceObject` v `data/MeasurementModels.kt`. FastSAM sám neví,
+    *co* je co, jen že je to samostatný objekt — appka proto vždycky nabídne
+    nalezenou shodu k potvrzení v dialogu (delší hrana + jaký objekt to má
+    být), nikdy ji nepoužije potichu. Když nenajde jistou shodu (žádný
+    kandidát v toleranci, nebo víc kandidátů skoro stejně blízko — hádání
+    by pak byl hod mincí), appka o tom napíše a uživatel zkalibruje ručně
+    jako dřív. Ověřeno na dvou syntetických testovacích fotkách přes
+    skutečný nasazený model (sandbox u tohohle vývoje nemá k appce/zařízení
+    přístup) — oba tvary appka správně našla s poměrem stran na dvě desetinná
+    místa přesně
+  - **Upozornění na možná nespolehlivé měření** (`isLikelyUnreliable()` v
+    `data/MeasurementModels.kt`): `distanceCm()` počítá s jedním plochým
+    poměrem cm na pixel pro celou fotku, což platí jen tehdy, když je
+    měřený bod přibližně stejně daleko od foťáku jako kalibrační úsek — na
+    fotce s perspektivou (dlouhá chodba, roh místnosti) může být cokoli
+    dál od kamery silně podhodnocené, protože appka nemá žádnou skutečnou
+    hloubkovou informaci (žádný LiDAR, žádné stereo, jen jedna plochá
+    fotka). Appka proto jako hrubou náhradu porovná, jak daleko od sebe
+    leží středy kalibrační a měřené úsečky *na fotce* — je-li to hodně
+    daleko, úsečka se vykreslí oranžově místo modře a appka pod fotkou
+    vysvětlí proč. Je to jen odhad, ne skutečná kontrola hloubky, a může se
+    plést oběma směry (fotka kolmo dolů na stůl nemá žádnou perspektivu bez
+    ohledu na to, jak daleko jsou body od sebe) — nic neblokuje ani
+    nepřepočítává, jen upozorní
 
 Mezi „Skenovat“, „Počítat kusy“, „Kódy“ a „Měřit“ se přepíná spodní navigační lištou.
 
@@ -480,7 +510,8 @@ app/src/main/java/com/micha741/skener/
 ├── data/
 │   ├── ScanDocument.kt      # model naskenovaného PDF
 │   ├── ScanRepository.kt    # ukládání/čtení PDF v app storage
-│   ├── MeasurementModels.kt # CalibrationPoints/MeasuredSegment, distanceCm() a formatCm() pro měření vzdálenosti
+│   ├── MeasurementModels.kt # CalibrationPoints/MeasuredSegment, distanceCm(), formatCm() a isLikelyUnreliable() pro měření vzdálenosti
+│   ├── MeasureAutoCalibrator.kt # hledá na fotce list A4/platební kartu (podle poměru stran boxu z FastSAM) pro automatickou kalibraci
 │   ├── SuspicionRecord.kt   # model jednoho nahlášeného "podezřelého" výsledku (obrázek + poznámka + čas)
 │   ├── SuspicionRepository.kt # ukládání/čtení nahlášení v app storage, stejný souborový vzor jako ScanRepository
 │   ├── DetectedBlob.kt      # sdílený model kusu (box, průměrná barva) pro fotku i živý náhled

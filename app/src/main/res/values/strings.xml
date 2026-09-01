@@ -69,6 +69,13 @@
     <string name="measure_recalibrate">Překalibrovat</string>
     <string name="measure_new_photo">Nová fotka</string>
     <string name="measure_failed">Nepodařilo se načíst fotku</string>
+    <string name="measure_auto_calibrate">Automaticky</string>
+    <string name="measure_auto_calibration_not_found">Nenašel jsem jistý referenční předmět (list A4, platební kartu) — zkalibruj prosím ručně</string>
+    <string name="measure_auto_calibration_title">Nalezen možný referenční předmět</string>
+    <string name="measure_auto_calibration_message_a4">Vypadá to na list papíru A4 — použít jeho delší hranu (29,7 cm) ke kalibraci?</string>
+    <string name="measure_auto_calibration_message_card">Vypadá to na platební/identifikační kartu — použít její delší hranu (8,56 cm) ke kalibraci?</string>
+    <string name="measure_auto_calibration_use">Použít</string>
+    <string name="measure_unreliable_hint">Oranžová úsečka: bod je na fotce dost daleko od kalibrace, měření nemusí být přesné (jiná vzdálenost od foťáku)</string>
 
     <string name="nav_barcode">Kódy</string>
     <string name="barcode_history_title">Naskenované kódy</string>

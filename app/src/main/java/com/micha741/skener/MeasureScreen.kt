@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -26,6 +27,7 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Straighten
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -66,7 +68,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import com.micha741.skener.data.AutoCalibrationSuggestion
 import com.micha741.skener.data.CalibrationPoints
+import com.micha741.skener.data.KnownReferenceObject
 import com.micha741.skener.data.MeasuredSegment
 import com.micha741.skener.data.formatCm
 import kotlin.math.hypot
@@ -122,6 +126,7 @@ fun MeasureScreen(
                     calibration = uiState.calibration,
                     segments = uiState.segments,
                     pendingPoint = uiState.pendingPoint,
+                    autoCalibrationSuggestion = uiState.autoCalibrationSuggestion,
                     onTap = { point -> viewModel.onTap(point) },
                     onRemoveSegment = { segment -> viewModel.removeSegment(segment) },
                 )
@@ -130,6 +135,17 @@ fun MeasureScreen(
                     if (uiState.isCalibrated) {
                         OutlinedButton(onClick = { viewModel.recalibrate() }) {
                             Text(stringResource(R.string.measure_recalibrate))
+                        }
+                    } else {
+                        OutlinedButton(
+                            onClick = { viewModel.detectAutoCalibration() },
+                            enabled = !uiState.isDetectingAutoCalibration,
+                        ) {
+                            if (uiState.isDetectingAutoCalibration) {
+                                CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
+                            } else {
+                                Text(stringResource(R.string.measure_auto_calibrate))
+                            }
                         }
                     }
                     Button(onClick = { viewModel.reset() }) {
@@ -190,6 +206,31 @@ fun MeasureScreen(
             },
         )
     }
+
+    val autoSuggestion = uiState.autoCalibrationSuggestion
+    if (autoSuggestion != null) {
+        AlertDialog(
+            onDismissRequest = { viewModel.dismissAutoCalibrationSuggestion() },
+            title = { Text(stringResource(R.string.measure_auto_calibration_title)) },
+            text = {
+                val messageRes = when (autoSuggestion.objectType) {
+                    KnownReferenceObject.A4_PAPER -> R.string.measure_auto_calibration_message_a4
+                    KnownReferenceObject.PAYMENT_CARD -> R.string.measure_auto_calibration_message_card
+                }
+                Text(stringResource(messageRes))
+            },
+            confirmButton = {
+                TextButton(onClick = { viewModel.confirmAutoCalibration() }) {
+                    Text(stringResource(R.string.measure_auto_calibration_use))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.dismissAutoCalibrationSuggestion() }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            },
+        )
+    }
 }
 
 @Composable
@@ -237,6 +278,7 @@ private fun MeasureResult(
     calibration: CalibrationPoints?,
     segments: List<MeasuredSegment>,
     pendingPoint: PointF?,
+    autoCalibrationSuggestion: AutoCalibrationSuggestion?,
     onTap: (PointF) -> Unit,
     onRemoveSegment: (MeasuredSegment) -> Unit,
 ) {
@@ -318,7 +360,12 @@ private fun MeasureResult(
             }
 
             calibration?.let { drawSegment(it.a, it.b, Color(0xFFFFB300), formatCm(it.realLengthCm)) }
-            segments.forEach { segment -> drawSegment(segment.a, segment.b, Color(0xFF62B6CB), formatCm(segment.lengthCm)) }
+            autoCalibrationSuggestion?.let { drawSegment(it.a, it.b, Color(0xFF66BB6A), formatCm(it.realLengthCm)) }
+            segments.forEach { segment ->
+                val color = if (segment.isLikelyUnreliable) Color(0xFFFF7043) else Color(0xFF62B6CB)
+                val label = if (segment.isLikelyUnreliable) "${formatCm(segment.lengthCm)} ?" else formatCm(segment.lengthCm)
+                drawSegment(segment.a, segment.b, color, label)
+            }
 
             pendingPoint?.let { point ->
                 drawCircle(
@@ -373,18 +420,31 @@ private fun MeasureResult(
                 drawLine(Color.Red, Offset(dstCenter.x, dstCenter.y - 14f), Offset(dstCenter.x, dstCenter.y + 14f), strokeWidth = 3f)
             }
         }
-        Surface(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth(),
-            color = MaterialTheme.colorScheme.scrim.copy(alpha = 0.55f),
-        ) {
-            Text(
-                text = stringResource(hintRes),
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.White,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-            )
+        Column(modifier = Modifier.align(Alignment.BottomCenter)) {
+            if (segments.any { it.isLikelyUnreliable }) {
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = Color(0xFFFF7043).copy(alpha = 0.85f),
+                ) {
+                    Text(
+                        text = stringResource(R.string.measure_unreliable_hint),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.White,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
+                    )
+                }
+            }
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.scrim.copy(alpha = 0.55f),
+            ) {
+                Text(
+                    text = stringResource(hintRes),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                )
+            }
         }
     }
 }

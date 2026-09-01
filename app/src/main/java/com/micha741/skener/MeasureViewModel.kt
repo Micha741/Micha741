@@ -5,13 +5,18 @@ import android.graphics.BitmapFactory
 import android.graphics.PointF
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.micha741.skener.data.AutoCalibrationSuggestion
 import com.micha741.skener.data.CalibrationPoints
+import com.micha741.skener.data.MeasureAutoCalibrator
 import com.micha741.skener.data.MeasuredSegment
 import com.micha741.skener.data.distanceCm
+import com.micha741.skener.data.isLikelyUnreliable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 data class MeasureUiState(
     val photoUri: Uri? = null,
@@ -24,6 +29,10 @@ data class MeasureUiState(
     val pendingPoint: PointF? = null,
     /** Set the instant a *calibration* pair's second point lands - the UI shows a dialog asking for its real length while this is non-null, rather than computing anything yet. */
     val pendingCalibrationSegment: Pair<PointF, PointF>? = null,
+    /** True while [MeasureAutoCalibrator] is running on the current photo. */
+    val isDetectingAutoCalibration: Boolean = false,
+    /** [MeasureAutoCalibrator]'s proposed calibration, waiting on the user to confirm or reject it - see [confirmAutoCalibration]/[dismissAutoCalibrationSuggestion]. */
+    val autoCalibrationSuggestion: AutoCalibrationSuggestion? = null,
     val errorMessage: String? = null,
 ) {
     val isCalibrated: Boolean get() = calibration != null
@@ -40,7 +49,10 @@ data class MeasureUiState(
  * photo's *true* pixel dimensions, not just the tapped fractions, to get a
  * diagonal line's length right on a non-square photo.
  */
-class MeasureViewModel(private val appContext: Context) : ViewModel() {
+class MeasureViewModel(
+    private val appContext: Context,
+    private val autoCalibrator: MeasureAutoCalibrator,
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MeasureUiState())
     val uiState: StateFlow<MeasureUiState> = _uiState.asStateFlow()
@@ -69,8 +81,9 @@ class MeasureViewModel(private val appContext: Context) : ViewModel() {
             _uiState.update { it.copy(pendingPoint = null, pendingCalibrationSegment = first to point) }
         } else {
             val lengthCm = distanceCm(first, point, state.photoWidth, state.photoHeight, calibration)
+            val unreliable = isLikelyUnreliable(first, point, calibration)
             _uiState.update {
-                it.copy(pendingPoint = null, segments = it.segments + MeasuredSegment(first, point, lengthCm))
+                it.copy(pendingPoint = null, segments = it.segments + MeasuredSegment(first, point, lengthCm, unreliable))
             }
         }
     }
@@ -92,6 +105,55 @@ class MeasureViewModel(private val appContext: Context) : ViewModel() {
         _uiState.update { it.copy(pendingCalibrationSegment = null) }
     }
 
+    /**
+     * Runs [MeasureAutoCalibrator] on the current photo looking for a common
+     * object of known size (a sheet of A4 paper, a payment/ID card) to
+     * propose calibrating from, instead of the user tapping two points and
+     * typing a length by hand. Sets [MeasureUiState.autoCalibrationSuggestion]
+     * for the UI to show a confirm/reject prompt, or an error message if
+     * nothing was found confidently.
+     */
+    fun detectAutoCalibration() {
+        val uri = _uiState.value.photoUri ?: return
+        _uiState.update { it.copy(isDetectingAutoCalibration = true) }
+        viewModelScope.launch {
+            autoCalibrator.detect(uri)
+                .onSuccess { suggestion ->
+                    _uiState.update {
+                        it.copy(
+                            isDetectingAutoCalibration = false,
+                            autoCalibrationSuggestion = suggestion,
+                            errorMessage = if (suggestion == null) {
+                                appContext.getString(R.string.measure_auto_calibration_not_found)
+                            } else {
+                                it.errorMessage
+                            },
+                        )
+                    }
+                }
+                .onFailure { exception ->
+                    val message = exception.message ?: appContext.getString(R.string.measure_failed)
+                    _uiState.update { it.copy(isDetectingAutoCalibration = false, errorMessage = message) }
+                }
+        }
+    }
+
+    /** User accepted [MeasureUiState.autoCalibrationSuggestion] - applies it as the active calibration, same as confirming a manual one. */
+    fun confirmAutoCalibration() {
+        val suggestion = _uiState.value.autoCalibrationSuggestion ?: return
+        _uiState.update {
+            it.copy(
+                calibration = CalibrationPoints(suggestion.a, suggestion.b, suggestion.realLengthCm),
+                autoCalibrationSuggestion = null,
+            )
+        }
+    }
+
+    /** User rejected [MeasureUiState.autoCalibrationSuggestion] - drops it, back to tapping a calibration pair by hand. */
+    fun dismissAutoCalibrationSuggestion() {
+        _uiState.update { it.copy(autoCalibrationSuggestion = null) }
+    }
+
     /** Drops the current scale and every measurement made with it, back to tapping a fresh calibration pair - for when the reference distance itself needs to change. */
     fun recalibrate() {
         _uiState.update { it.copy(calibration = null, segments = emptyList(), pendingPoint = null) }
@@ -108,5 +170,9 @@ class MeasureViewModel(private val appContext: Context) : ViewModel() {
 
     fun consumeError() {
         _uiState.update { it.copy(errorMessage = null) }
+    }
+
+    override fun onCleared() {
+        autoCalibrator.close()
     }
 }
