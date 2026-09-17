@@ -354,7 +354,27 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'tf=30 ns, toff=220 ns.',
     tags: 'tranzistor,pnp,bipolární,sot-23,smd,zesilovací,spínací,mmbt2907a,2n2907a',
   },
-  { name: '2N3906', packageType: 'TO-92', value: 'PNP, 40 V, 200 mA', notes: 'Malovýkonový bipolární tranzistor', tags: 'tranzistor,pnp,bipolární' },
+  {
+    name: '2N3906',
+    packageType: 'TO-92, 3 vývody: 1=emitor, 2=báze, 3=kolektor (pohled zepředu na popsanou stranu)',
+    value: 'PNP, VCEO -40 V, IC -200 mA, hFE 100–300 (@ IC=-10 mA)',
+    notes:
+      'Malovýkonový bipolární PNP tranzistor pro obecné spínací a zesilovací aplikace — komplementární ' +
+      'k 2N3904. Datasheet GTM Corporation (jejich verze „G2N3906"), vydán 2004, revize 2005/06/24. ' +
+      'Hodnoty v datasheetu jsou v PNP konvenci záporné, zde uvedeny stejně. ' +
+      'Mezní hodnoty: VCBO=-40 V, VCEO=-40 V, VEBO=-5 V, IC=-200 mA, Ptot=625 mW @TA=25 °C, ' +
+      'TJ=+150 °C, Tstg=-55 až +150 °C. ' +
+      'BVCBO min -40 V @IC=-10 µA. BVCEO min -40 V @IC=-1 mA. BVEBO min -5 V @IE=-10 µA. ' +
+      'ICEX max -50 nA @VCE=-30 V/VEB=-3 V. IEBO max -50 nA @VEB=-3 V. ' +
+      'VCE(sat) max -0,25 V @IC=-10 mA/IB=-1 mA; max -0,4 V @IC=-50 mA/IB=-5 mA. ' +
+      'VBE(sat) -0,65 až -0,85 V @IC=-10 mA/IB=-1 mA; max -0,95 V @IC=-50 mA/IB=-5 mA. ' +
+      'hFE: min 60 @IC=-0,1 mA, min 80 @IC=-1 mA, 100–300 @IC=-10 mA, min 60 @IC=-50 mA, ' +
+      'min 30 @IC=-100 mA (vždy @VCE=-1 V). ' +
+      'fT min 250 MHz @VCE=-20 V/IE=-10 mA/f=100 MHz. Cob max 4,5 pF @VCB=-10 V. Cib max 10 pF @VEB=-0,5 V. ' +
+      'Spínací časy (VCC=-3 V, IC=-10 mA, IB1=-1 mA): td max 35 ns, tr max 35 ns, tstg max 225 ns, ' +
+      'tf max 75 ns.',
+    tags: 'tranzistor,pnp,bipolární,to-92,2n3906,spínací,zesilovací',
+  },
   { name: 'S8550', packageType: 'TO-92', value: 'PNP, 25 V, 700 mA', notes: 'Malovýkonový bipolární tranzistor', tags: 'tranzistor,pnp,bipolární' },
 
   {
