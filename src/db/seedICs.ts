@@ -688,6 +688,33 @@ const IC_SPECS: IcSpec[] = [
       'reset pulz min. 480 µs, time slot 60–120 µs, zotavovací doba min. 1 µs mezi bity.',
     tags: 'io,senzor,teploměr,ds1822,1-wire,dallas,maxim,econo',
   },
+  {
+    name: 'TC625',
+    packageType:
+      'TO-92-3 (model "VZB": 1=DOUT, 2=VDD, 3=GND) nebo SOT-23A-5 (model "VNT", ekv. EIAJ ' +
+      'SC-74A: 1=DOUT, 2=VDD, 3=GND, piny 4 a 5 nezapojené) — bez nutnosti externích součástek',
+    value:
+      'Jednovodičový (pulzně-šířkový) digitální teploměr, -25 až +100 °C, ±1 °C typ. přesnost ' +
+      '(±1,5 °C v celém rozsahu), VDD 2,7–5,5 V',
+    notes:
+      'TelCom Semiconductor TC625 "1-Wire Digital Thermometer" (Preliminary Information, dok. ' +
+      'TC625-01, 5/1997). ⚠️ Přes shodný název "1-Wire" jde o zcela odlišnou technologii než ' +
+      'Dallas/Maxim DS18B20 a DS1822 (samostatné záznamy) — TC625 NEPOUŽÍVÁ digitální sběrnicový ' +
+      'protokol s ROM adresací ani příkazovou sadu (Convert T, Match ROM apod.). Místo toho ' +
+      'monolitický snímač (teplota→napětí převodník + delta-sigma modulátor) generuje na jediném ' +
+      'pinu DOUT prostý pulzní signál, jehož poměr doby vysoké/nízké úrovně je přímo úměrný ' +
+      'teplotě čipu — mikrokontrolér tak teplotu určí měřením času (čítačem/časovačem), bez ADC ' +
+      'a bez sériového protokolu. Nelze proto adresovat více kusů na jedné sběrnici (žádný ' +
+      'multidrop, žádné ROM kódy) tak jako u DS18B20/DS1822. Dva výstupní typy dle objednacího ' +
+      'kódu: TC625C (komplementární/push-pull výstup DOUT, kódy TC625CVNT v SOT-23A-5 a ' +
+      'TC625CVZB v TO-92-3) a TC625N (výstup s otevřeným kolektorem/drain, vyžaduje externí ' +
+      'pull-up, kódy TC625NVNT v SOT-23A-5 a TC625NVZB v TO-92-3) — jinak elektricky shodné. ' +
+      'Nevyžaduje žádné externí součástky (na rozdíl od DS18B20/DS1822 se doporučuje jen pro ' +
+      'variantu N externí pull-up na DOUT, pro variantu C není potřeba nic). Nízkonapěťový ' +
+      'provoz VDD 2,7–5,5 V. K dispozici byla vývojová sada TC625EV (evaluační kit pro TC625 ' +
+      'a TC12 — není součástka, nedošlo k jejímu přidání do knihovny).',
+    tags: 'io,senzor,teploměr,tc625,1-wire,telcom,pwm',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
