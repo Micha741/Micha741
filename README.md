@@ -212,30 +212,40 @@ natrénovaný **FastSAM** model (TFLite, AGPL-3.0 — viz sekce Funkce níže).
     o 45° jen polovinu) - na jednom snímku nejde spolehlivě rozeznat "nízká
     vyplněnost, protože je to kulaté" od "nízká vyplněnost, protože to je
     čtverec zachycený pod úhlem", takže se o to appka nesnaží
-  - **Strop počtu kusů** (jen statická fotka, vyžaduje aktivní referenční
+  - **Meze počtu kusů** (jen statická fotka, vyžaduje aktivní referenční
     kus, `data/PieceCountCap.kt`): vznikl z reálného výpočtu v konverzaci -
-    kolik šroubů M8×50 se maximálně vejde do vyfoceného kýble. Appka do teď
-    neznala žádné skutečné rozměry (jen relativní pixely na fotce), takže
-    tlačítko "Nastavit strop" (vedle "Zpět na počítání všech kusů") nejdřív
-    nechá zadat skutečnou délku aktuálního referenčního kusu (delší strana,
-    v cm) - z toho a z vybrané oblasti zájmu (nebo celé fotky, když žádná
-    není) appka přes `suggestSingleLayerCap()` navrhne, kolik kusů takové
-    velikosti by se vešlo vedle sebe v *jedné volně nasypané vrstvě*
-    (plocha oblasti × faktor zaplnění ÷ plocha jednoho kusu - faktor
-    zaplnění je 0,55 pro protáhlé kusy a 0,75 pro kompaktní, viz
+    kolik šroubů M8×50 se maximálně vejde do vyfoceného kýble - a z
+    navazující poznámky, že stejný princip by šel obrátit i na minimum.
+    Appka do teď neznala žádné skutečné rozměry (jen relativní pixely na
+    fotce), takže tlačítko "Nastavit meze počtu" (vedle "Zpět na počítání
+    všech kusů") nejdřív nechá zadat skutečnou délku aktuálního
+    referenčního kusu (delší strana, v cm) - z toho a z vybrané oblasti
+    zájmu (nebo celé fotky, když žádná není) appka přes
+    `suggestSingleLayerCap()` navrhne **strop** (horní mez): kolik kusů
+    takové velikosti by se vešlo vedle sebe v *jedné volně nasypané
+    vrstvě* (plocha oblasti × faktor zaplnění ÷ plocha jednoho kusu -
+    faktor zaplnění je 0,55 pro protáhlé kusy a 0,75 pro kompaktní, viz
     `classifyShape()` výše, obojí jen doložený odhad, ne změřená hodnota).
     Skutečnou *hloubku* nádoby appka znát nemůže (jedna plochá fotka na to
     nestačí - žádný LiDAR, žádné stereo, stejné omezení jako
-    `isLikelyUnreliable()` u Měřit), takže navržené číslo je vždycky jen
+    `isLikelyUnreliable()` u Měřit), takže navržený strop je vždycky jen
     "jedna vrstva" - uživatel ho přepíše vlastním, když ví, že nádoba je
     hlubší (přesně tenhle bucket-of-bolts případ: skutečná odpověď byla
-    185 kusů, zjištěná zpětně z hmotnosti, ne z jedné fotky). Jakmile je
-    strop nastavený, zobrazený počet ho nikdy nepřekročí
-    (`CountingUiState.cappedCount`) - appka nic z detekce nemaže, jen
-    zobrazované číslo ořízne a jasně napíše, že strop byl použit
-    (`count_capped_hint`). Nová referenční fotka, jiná oblast zájmu nebo
-    nové klepnutí na referenční kus strop i zadanou délku zruší - platily
-    jen pro tu konkrétní kombinaci, na které byly spočítané
+    185 kusů, zjištěná zpětně z hmotnosti, ne z jedné fotky). Vedle stropu
+    appka umí i **minimum** (dolní mez) - to je ale čistě ruční číslo bez
+    navrhovaného výchozího odhadu, protože na rozdíl od stropu (jedna
+    vrstva je vždycky reálný horní strop, bez ohledu na to, jak moc je
+    nádoba plná) minimum závisí na tom, kolik toho v nádobě doopravdy je -
+    to appka z fotky vědět nemůže, jen uživatel, když už to číslo zná
+    (typicky přesně odsud, z výpočtu podle hmotnosti). Zobrazený počet se
+    do obou mezí nikdy nedostane mimo (`CountingUiState.cappedCount`) -
+    appka nic z detekce nemaže, jen zobrazované číslo ořízne/zvedne a
+    jasně napíše, který strop se použil (`count_capped_hint`/
+    `count_floored_hint`) - minimum je hlavně užitečné jako varování, že
+    detekce pravděpodobně slila nebo přehlédla nějaké kusy, když napočítá
+    míň, než uživatel ví, že tam je. Nová referenční fotka, jiná oblast
+    zájmu nebo nové klepnutí na referenční kus obě meze i zadanou délku
+    zruší - platily jen pro tu konkrétní kombinaci, na které byly spočítané
   - **Oblast zájmu**: tlačítkem "Vybrat oblast" appka přepne fotku do režimu
     přetažení obdélníku (`detectDragGestures` místo klepání/podržení) — vše
     mimo vybraný obdélník se zahodí ještě před referenčním/velikostním

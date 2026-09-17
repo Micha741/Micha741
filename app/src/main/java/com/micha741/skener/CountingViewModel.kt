@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.math.max
 import kotlin.math.min
 
 data class CountingUiState(
@@ -50,6 +51,18 @@ data class CountingUiState(
     val referenceRealLengthCm: Float? = null,
     /** User-confirmed ceiling on the reported count - see [CountingViewModel.setPieceCountCap]. The displayed count never exceeds this (see [cappedCount]); null means no cap. */
     val pieceCountCap: Int? = null,
+    /**
+     * User-confirmed floor on the reported count - the symmetric counterpart to [pieceCountCap],
+     * see [CountingViewModel.setPieceCountMin]. Where the cap catches an implausibly *high*
+     * count (more than could physically fit), this catches an implausibly *low* one: detection
+     * under-counting - two touching pieces FastSAM merged into one blob, or one it missed
+     * outright - is a much more common failure than over-counting throughout this app's own
+     * history, so a user who already knows roughly how many pieces should be there (they filled
+     * the container themselves, say) can tell the app not to report fewer. Purely a floor on the
+     * displayed number (see [cappedCount]), same as the cap: nothing about the underlying
+     * detection changes. Null means no floor.
+     */
+    val pieceCountMin: Int? = null,
 ) {
     /** [count] adjusted for manual corrections: excluded blobs subtracted, manual additions added. */
     val adjustedCount: Int
@@ -59,13 +72,22 @@ data class CountingUiState(
             return (base - excludedCount + manualAdditions.size).coerceAtLeast(0)
         }
 
-    /** [adjustedCount], clipped to [pieceCountCap] if one is set. */
+    /** [adjustedCount], clipped to [pieceCountCap] and/or raised to [pieceCountMin] - whichever apply. */
     val cappedCount: Int
-        get() = pieceCountCap?.let { min(adjustedCount, it) } ?: adjustedCount
+        get() {
+            var value = adjustedCount
+            pieceCountCap?.let { value = min(value, it) }
+            pieceCountMin?.let { value = max(value, it) }
+            return value
+        }
 
     /** True when [pieceCountCap] is actually cutting the reported number down - the UI uses this to say so. */
     val isCapped: Boolean
         get() = pieceCountCap != null && adjustedCount > pieceCountCap
+
+    /** True when [pieceCountMin] is actually raising the reported number - the UI uses this to say so. */
+    val isFloored: Boolean
+        get() = pieceCountMin != null && adjustedCount < pieceCountMin
 
     /**
      * A single-loose-layer capacity estimate from [referenceBox]/[referenceRealLengthCm] and
@@ -106,15 +128,17 @@ class CountingViewModel(
         runCount(uri, referenceTap = null, roi = roi)
     }
 
-    /** User tapped a piece in the result photo (in original photo pixel coordinates): count only similar pieces. Drops any calibration/cap made against a previous reference piece - a new tap may well be a different, differently-sized piece. */
+    /** User tapped a piece in the result photo (in original photo pixel coordinates): count only similar pieces. Drops any calibration/cap/floor made against a previous reference piece - a new tap may well be a different, differently-sized piece. */
     fun onReferenceTap(point: Point) {
         val uri = _uiState.value.photoUri ?: return
         val roi = _uiState.value.roiBox
-        _uiState.update { it.copy(isProcessing = true, referenceRealLengthCm = null, pieceCountCap = null) }
+        _uiState.update {
+            it.copy(isProcessing = true, referenceRealLengthCm = null, pieceCountCap = null, pieceCountMin = null)
+        }
         runCount(uri, referenceTap = point, roi = roi)
     }
 
-    /** Drops the reference piece and goes back to counting every detected piece (within the ROI, if one is set). Also drops any calibration/cap made against that reference - see [CountingUiState.referenceRealLengthCm]. */
+    /** Drops the reference piece and goes back to counting every detected piece (within the ROI, if one is set). Also drops any calibration/cap/floor made against that reference - see [CountingUiState.referenceRealLengthCm]. */
     fun clearReference() {
         val uri = _uiState.value.photoUri ?: return
         val roi = _uiState.value.roiBox
@@ -125,12 +149,13 @@ class CountingViewModel(
                 referenceBox = null,
                 referenceRealLengthCm = null,
                 pieceCountCap = null,
+                pieceCountMin = null,
             )
         }
         runCount(uri, referenceTap = null, roi = roi)
     }
 
-    /** User dragged out a rectangle (fractional, see [CountingUiState.roiBox]): only detections inside it count from now on. Drops any reference piece (it may no longer be in view) and any calibration/cap made against it or the old region. */
+    /** User dragged out a rectangle (fractional, see [CountingUiState.roiBox]): only detections inside it count from now on. Drops any reference piece (it may no longer be in view) and any calibration/cap/floor made against it or the old region. */
     fun setRoi(rect: RectF) {
         val uri = _uiState.value.photoUri ?: return
         _uiState.update {
@@ -141,12 +166,13 @@ class CountingViewModel(
                 referenceBox = null,
                 referenceRealLengthCm = null,
                 pieceCountCap = null,
+                pieceCountMin = null,
             )
         }
         runCount(uri, referenceTap = null, roi = rect)
     }
 
-    /** Drops the region of interest and goes back to counting the whole photo. Also drops any reference piece and any calibration/cap made against it or the old region. */
+    /** Drops the region of interest and goes back to counting the whole photo. Also drops any reference piece and any calibration/cap/floor made against it or the old region. */
     fun clearRoi() {
         val uri = _uiState.value.photoUri ?: return
         _uiState.update {
@@ -157,6 +183,7 @@ class CountingViewModel(
                 referenceBox = null,
                 referenceRealLengthCm = null,
                 pieceCountCap = null,
+                pieceCountMin = null,
             )
         }
         runCount(uri, referenceTap = null, roi = null)
@@ -178,6 +205,11 @@ class CountingViewModel(
     /** User confirmed a ceiling on the reported count (typically starting from [CountingUiState.suggestedPieceCountCap], then adjusted by hand) - see [CountingUiState.cappedCount]. Pass null to remove the cap. */
     fun setPieceCountCap(cap: Int?) {
         _uiState.update { it.copy(pieceCountCap = cap?.coerceAtLeast(0)) }
+    }
+
+    /** User confirmed a floor on the reported count - see [CountingUiState.pieceCountMin]/[CountingUiState.cappedCount]. Pass null to remove it. */
+    fun setPieceCountMin(min: Int?) {
+        _uiState.update { it.copy(pieceCountMin = min?.coerceAtLeast(0)) }
     }
 
     /** Detects every object on the whole photo, finds the largest cluster of them sitting close together, and applies its bounding box as the region of interest (see [ObjectCounter.suggestRoi]) - an automatic alternative to dragging one out by hand. */

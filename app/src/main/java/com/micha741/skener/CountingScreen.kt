@@ -158,6 +158,7 @@ fun CountingScreen(
                     count = uiState.cappedCount.takeIf { uiState.count != null },
                     rawCount = uiState.adjustedCount,
                     isCapped = uiState.isCapped,
+                    isFloored = uiState.isFloored,
                     shapeGroups = uiState.shapeGroups,
                     hasSuspiciousBlob = uiState.hasSuspiciousBlob,
                     excludedBoxes = uiState.excludedBoxes,
@@ -206,7 +207,11 @@ fun CountingScreen(
                         OutlinedButton(onClick = { showCapDialog = true }) {
                             Text(
                                 stringResource(
-                                    if (uiState.pieceCountCap != null) R.string.count_edit_cap else R.string.count_set_cap,
+                                    if (uiState.pieceCountCap != null || uiState.pieceCountMin != null) {
+                                        R.string.count_edit_cap
+                                    } else {
+                                        R.string.count_set_cap
+                                    },
                                 ),
                             )
                         }
@@ -263,10 +268,14 @@ fun CountingScreen(
         }
         var capText by remember(showCapDialog) { mutableStateOf(uiState.pieceCountCap?.toString() ?: "") }
         var capEditedByUser by remember(showCapDialog) { mutableStateOf(uiState.pieceCountCap != null) }
+        var minText by remember(showCapDialog) { mutableStateOf(uiState.pieceCountMin?.toString() ?: "") }
         val lengthCm = lengthText.replace(',', '.').toFloatOrNull()
         // Computed locally (not round-tripped through the ViewModel) purely so the suggestion
         // updates live as the length field changes, without writing half-typed numbers into
-        // CountingUiState - only Nastavit actually commits anything.
+        // CountingUiState - only Nastavit actually commits anything. There's no equivalent
+        // suggestion for the minimum - a single-layer footprint is a real upper bound regardless
+        // of how full the container actually is, but a lower bound needs to know how full it
+        // is, which a photo alone can't say - the minimum is always purely a manually known number.
         val suggestedCap = if (referenceBox != null && lengthCm != null && lengthCm > 0f) {
             suggestSingleLayerCap(
                 referenceBox = referenceBox,
@@ -283,6 +292,8 @@ fun CountingScreen(
                 capText = suggestedCap.toString()
             }
         }
+        val capValid = capText.isBlank() || capText.toIntOrNull() != null
+        val minValid = minText.isBlank() || minText.toIntOrNull() != null
         AlertDialog(
             onDismissRequest = { showCapDialog = false },
             title = { Text(stringResource(R.string.count_cap_dialog_title)) },
@@ -312,14 +323,25 @@ fun CountingScreen(
                         value = capText,
                         onValueChange = { capText = it; capEditedByUser = true },
                         label = { Text(stringResource(R.string.count_cap_value_label)) },
+                        isError = !capValid,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 12.dp),
                     )
-                    if (uiState.pieceCountCap != null) {
+                    OutlinedTextField(
+                        value = minText,
+                        onValueChange = { minText = it },
+                        label = { Text(stringResource(R.string.count_cap_min_label)) },
+                        isError = !minValid,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 12.dp),
+                    )
+                    if (uiState.pieceCountCap != null || uiState.pieceCountMin != null) {
                         TextButton(
                             onClick = {
                                 viewModel.setPieceCountCap(null)
+                                viewModel.setPieceCountMin(null)
                                 showCapDialog = false
                             },
                             modifier = Modifier.align(Alignment.End),
@@ -332,14 +354,12 @@ fun CountingScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        val cap = capText.toIntOrNull()
-                        if (cap != null && cap >= 0) {
-                            lengthCm?.let { viewModel.setReferenceRealLength(it) }
-                            viewModel.setPieceCountCap(cap)
-                            showCapDialog = false
-                        }
+                        lengthCm?.let { viewModel.setReferenceRealLength(it) }
+                        viewModel.setPieceCountCap(capText.toIntOrNull())
+                        viewModel.setPieceCountMin(minText.toIntOrNull())
+                        showCapDialog = false
                     },
-                    enabled = capText.toIntOrNull() != null,
+                    enabled = capValid && minValid,
                 ) {
                     Text(stringResource(R.string.count_cap_confirm))
                 }
@@ -407,6 +427,7 @@ private fun CountingResult(
     count: Int?,
     rawCount: Int,
     isCapped: Boolean,
+    isFloored: Boolean,
     shapeGroups: List<ShapeCountGroup>,
     hasSuspiciousBlob: Boolean,
     excludedBoxes: Set<Rect>,
@@ -653,6 +674,14 @@ private fun CountingResult(
                     if (isCapped) {
                         Text(
                             text = stringResource(R.string.count_capped_hint, count, rawCount),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White,
+                            modifier = Modifier.padding(top = 4.dp),
+                        )
+                    }
+                    if (isFloored) {
+                        Text(
+                            text = stringResource(R.string.count_floored_hint, count, rawCount),
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color.White,
                             modifier = Modifier.padding(top = 4.dp),
