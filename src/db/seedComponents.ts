@@ -947,6 +947,26 @@ const TRANSISTOR_SPECS: PartSpec[] = [
 
   { name: '2N5457', packageType: 'TO-92', value: 'N-JFET', notes: 'Unipolární (JFET) tranzistor', tags: 'tranzistor,jfet,n-kanál' },
   { name: 'BF245', packageType: 'TO-92', value: 'N-JFET', notes: 'Unipolární (JFET) tranzistor', tags: 'tranzistor,jfet,n-kanál' },
+  {
+    name: 'BSR58LT1',
+    packageType:
+      'SOT-23 (SMD), 3 vývody: 1=drain, 2=source, 3=gate (case 318, style 10)',
+    value: 'N-JFET (depletion, chopper), VDG max -40 V, VGS(off) -0,8 až -4,0 V, IDSS 8–80 mA',
+    notes:
+      'JFET chopper tranzistor, ON Semiconductor (datasheet BSR58LT1/D, rev. 1, srpen 2005), ' +
+      'Pb-free provedení dostupné (varianta „BSR58LT1G"). Hodnoty jsou dle N-kanálové depletion ' +
+      'konvence datasheetu záporné (VDG, VGS), zde uvedeny stejně. ' +
+      'Mezní hodnoty: VDG=-40 V, VGS=-35 V, IG=50 mA, Ptot=350 mW @TA=25 °C (odvod 2,8 mW/°C), ' +
+      'TJ/Tstg=-65 až +150 °C. ' +
+      'V(BR)GSS min 40 V @IG=-1,0 A (uvedeno v datasheetu kladně, jde o průrazné napětí gate-source). ' +
+      'IGSS max -1,0 nA @VGS=-15 V. VGS(off) -0,8 až -4,0 V @VDS=5,0 V/ID=1,0 µA. ' +
+      'ID(off) max 1,0 nA @VDS=5,0 V/VGS=-10 V. ' +
+      'IDSS 8,0–80 mA @VDS=15 V (zero-gate-voltage drain current — široký rozptyl je pro JFETy ' +
+      'typický, vhodné měřit/třídit kusy při použití v přesnějších aplikacích). ' +
+      'rDS(on) max 60 Ω @VDS=0,1 V. Cdg(on)+Csg(on) max 28 pF @VDS=VGS=0/f=1 MHz. ' +
+      'Cdg(off) max 5,0 pF, Csg(off) max 5,0 pF @VGS=-10 V/f=1 MHz.',
+    tags: 'tranzistor,jfet,n-kanál,depletion,sot-23,smd,bsr58lt1,chopper',
+  },
 ];
 
 function buildFromSpecs(specs: PartSpec[], category: 'Dioda' | 'Tranzistor'): ComponentInput[] {
