@@ -690,7 +690,32 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'Qrr typ 210, max 320 nC.',
     tags: 'tranzistor,mosfet,n-kanál,to-220,irlz44n,logic-level,spínací',
   },
-  { name: 'IRF3205', packageType: 'TO-220', value: 'N-MOSFET, 55 V, 110 A', notes: 'Výkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál' },
+  {
+    name: 'IRF3205',
+    packageType:
+      'TO-220AB, 4 vývody: 1=gate, 2=drain, 3=source, 4=drain (chladicí ploška = drain)',
+    value: 'N-MOSFET, VDSS 55 V, ID 110 A (viz poznámka o reálném limitu), RDS(on) max 8,0 mΩ',
+    notes:
+      '⚠️ Hlavičková hodnota ID=110 A je dle datasheetu jen vypočtená hodnota na základě max. teploty ' +
+      'přechodu — reálné omezení pouzdrem (vývody/bondovací drátky) je 75 A (viz graf max. proudu vs. ' +
+      'teplota pouzdra, "LIMITED BY PACKAGE"). Pro dimenzování počítej s 75 A, ne se 110 A. ' +
+      'Datasheet International Rectifier, 2001 (kvalifikováno i pro automotive Q101). ' +
+      'Mezní hodnoty: VDSS=55 V, VGS=±20 V, ID(trvalý)=80 A @TC=100 °C, IDM (pulzně)=390 A, ' +
+      'Ptot=200 W @TC=25 °C (odvod 1,3 W/°C), TJ/Tstg=-55 až +175 °C. ' +
+      'IAR (lavinový proud)=62 A, EAR (opakovatelná lavinová energie)=20 mJ, dv/dt=5,0 V/ns. ' +
+      'RθJC max 0,75 °C/W, RθCS typ 0,50 °C/W, RθJA max 62 °C/W. ' +
+      'V(BR)DSS min 55 V @ID=250 µA. VGS(th) 2,0–4,0 V @ID=250 µA. RDS(on) max 8,0 mΩ @VGS=10 V/ID=62 A. ' +
+      'gfs min 44 S @VDS=25 V/ID=62 A. IDSS max 25 µA @VDS=55 V (max 250 µA @TJ=150 °C). ' +
+      'IGSS max ±100 nA @VGS=±20 V. ' +
+      'Qg(tot) max 146 nC @ID=62 A, Qgs typ 35 nC, Qgd typ 54 nC. ' +
+      'Spínání (VDD=28 V, ID=62 A, RG=4,5 Ω): td(on) typ 14 ns, tr typ 101 ns, td(off) typ 50 ns, tf typ 65 ns. ' +
+      'Kapacity @f=1 MHz: Ciss typ 3247 pF, Coss typ 781 pF, Crss typ 211 pF. ' +
+      'EAS (jednorázová lavinová energie): max 264 mJ (vypočtený rating, TJ=175 °C) — typ 1050 mJ je ' +
+      'destruktivní testovací hodnota mimo doporučené meze, neber jako běžně použitelný limit. ' +
+      'Tělesová dioda: IS(trvalý)=110 A, ISM(pulzně)=390 A. VSD max 1,3 V @IS=62 A. ' +
+      'trr typ 69, max 104 ns @IF=62 A/di/dt=100 A/µs. Qrr typ 143, max 215 nC.',
+    tags: 'tranzistor,mosfet,n-kanál,to-220,irf3205,spínací,pozor-proud',
+  },
   { name: '2N7000', packageType: 'TO-92', value: 'N-MOSFET, 60 V, 200 mA', notes: 'Malovýkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál' },
 
   { name: 'IRF9540', packageType: 'TO-220', value: 'P-MOSFET, -100 V, -19 A', notes: 'Výkonový spínací MOSFET', tags: 'tranzistor,mosfet,p-kanál' },
