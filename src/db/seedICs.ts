@@ -648,6 +648,46 @@ const IC_SPECS: IcSpec[] = [
       'tRSTL > 960 µs vyvolat power-on reset.',
     tags: 'io,senzor,teploměr,ds18b20,1-wire,dallas,maxim',
   },
+  {
+    name: 'DS1822',
+    packageType:
+      'TO-92 (3 vývody: 1=GND, 2=DQ, 3=VDD, model DS1822) nebo DS1822Z 8pin SO 150 mil ' +
+      '(funkční piny 3=VDD, 4=DQ, 5=GND, ostatní NC) — vyžaduje externí pull-up rezistor ' +
+      '~4,7 kΩ na DQ (open-drain 1-Wire výstup)',
+    value:
+      'Digitální teploměr "Econo" s programovatelným rozlišením, 1-Wire rozhraní, -55 až ' +
+      '+125 °C, ±2,0 °C přesnost (-10 až +85 °C), VDD 3,0–5,5 V (nebo parazitní napájení z DQ)',
+    notes:
+      'Dallas/Maxim DS1822 "Econo 1-Wire Digital Thermometer" (dok. 101107). ⚠️ Odlišný ' +
+      'objednací díl od DS18B20 (samostatný záznam) — DS1822 je levnější "econo" verze se ' +
+      'stejným pouzdrem, pinoutem a softwarovým/protokolovým rozhraním (uvádí se jako ' +
+      'softwarově kompatibilní s DS18B20 a lze jej naprogramovat/číst stejnými příkazy), ale ' +
+      's výrazně horší přesností měření: ±2,0 °C v rozsahu -10 až +85 °C a ±3 °C v rozsahu ' +
+      '-55 až +125 °C (u DS18B20 ±0,5 °C resp. ±2 °C). Má také jiný 1-Wire rodinný kód v ROM ' +
+      '(22h, zatímco DS18B20 má 28h) — na stejné sběrnici jsou proto oba typy rozlišitelné a ' +
+      'vzájemně zaměnitelné jen na úrovni funkce, ne na úrovni typu čidla. Komunikuje po ' +
+      'jediném datovém vodiči (1-Wire, DQ) + zemi — napájení lze odebírat přímo z datové linky ' +
+      '("parazitní napájení" přes interní kondenzátor, VDD pin se pak musí uzemnit) nebo ' +
+      'připojit externí VDD 3,0–5,5 V. Každý kus má unikátní 64bit laserem vypálený ROM kód ' +
+      '(8bit rodinný kód 22h + 48bit sériové číslo + 8bit CRC), takže lze na jednu 1-Wire ' +
+      'sběrnici připojit libovolný počet čidel současně (multidrop) a adresovat je jednotlivě ' +
+      'příkazy Match ROM / Search ROM / Skip ROM / Alarm Search. Rozlišení převodu teploty ' +
+      'programovatelné 9–12 bitů (konfigurační registr, výchozí nastavení z výroby 12 bitů = ' +
+      '0,0625 °C/LSB) s dobou převodu závislou na rozlišení: 9bit max 93,75 ms, 10bit max ' +
+      '187,5 ms, 11bit max 375 ms, 12bit max 750 ms. Nonvolatilní EEPROM (uchovává uživatelsky ' +
+      'nastavitelné meze alarmu TH/TL nebo obecnou 2bajtovou paměť) a konfigurační registr ' +
+      'rozlišení. Příkaz "Alarm Search" umožňuje na sběrnici okamžitě identifikovat jen čidla, ' +
+      'jejichž poslední naměřená teplota překročila nastavené meze. Mezní hodnoty: napětí na ' +
+      'libovolném pinu vůči zemi -0,5 až +6,0 V, provozní/skladovací teplota -55 až +125 °C, ' +
+      'pájení dle IPC/JEDEC J-STD-020A (dip) nebo do +220 °C (reflow). Doporučené provozní ' +
+      'podmínky: VDD 3,0–5,5 V, log. 1 (VIH) min 2,2 V (local power) / min 3,0 V (parasite ' +
+      'power), log. 0 (VIL) max 0,8 V. Proudový odběr: klidový (standby) typ. 750 nA (max ' +
+      '1000 nA, měřeno do 70 °C, při 125 °C typicky 3 µA), aktivní (převod teploty nebo zápis ' +
+      'do EEPROM) typ. 1 mA (max 1,5 mA @VDD=5V). Drift ±0,2 °C (1000hodinový zátěžový test ' +
+      '@125 °C/VDD=5,5 V). Vstupní/výstupní kapacita DQ max 25 pF. Časování 1-Wire sběrnice: ' +
+      'reset pulz min. 480 µs, time slot 60–120 µs, zotavovací doba min. 1 µs mezi bity.',
+    tags: 'io,senzor,teploměr,ds1822,1-wire,dallas,maxim,econo',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
