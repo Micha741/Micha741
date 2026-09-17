@@ -657,8 +657,38 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'td(off) typ 350 max 400 ns, tf typ 180 max 200 ns (spínací časy prakticky nezávislé na teplotě). ' +
       'Qg(tot) max 80 nC @VGS=5 V/ID=35 A, Qgs typ 20 nC, Qgd typ 30 nC (náboj hradla nezávislý na teplotě). ' +
       'Tělesová dioda: IS(trvalý)=35 A, ISM(pulzně)=140 A. VSD max 2,5 V @IS=35 A/VGS=0 V (poměrně vysoký ' +
-      'úbytek oproti jiným MOSFETům). trr max 600 ns @IF=35 A/dIF/dt=100 A/µs.',
+      'úbytek oproti jiným MOSFETům). trr max 600 ns @IF=35 A/dIF/dt=100 A/µs. ' +
+      '⚠️ Nezaměňovat s „IRLZ44N" (International Rectifier) — podobný název, ale novější/výkonnější díl ' +
+      's jinými parametry, viz samostatná položka.',
     tags: 'tranzistor,mosfet,n-kanál,to-220,irlz44,irlz40,logic-level,spínací',
+  },
+  {
+    name: 'IRLZ44N',
+    packageType: 'TO-220AB, 4 vývody: 1=gate, 2=drain, 3=source, 4=drain (chladicí ploška = drain)',
+    value: 'N-MOSFET (logic level), VDSS 55 V, ID 47 A (@TC=25 °C), RDS(on) max 0,022 Ω (@VGS=10 V)',
+    notes:
+      '⚠️ POZOR na záměnu tří podobně znějících dílů: „IRFZ44N" (běžný gate, potřebuje ~10 V pro plné ' +
+      'sepnutí), „IRLZ44" (Samsung, logic level, 60 V/35 A, RDS(on) max 0,04 Ω) a tento „IRLZ44N" ' +
+      '(International Rectifier, 5. generace HEXFET, logic level) — každý má jiné parametry! ' +
+      'Datasheet International Rectifier (PD-94831). Logic-level: RDS(on) garantováno už při VGS=5,0 V, ' +
+      'lze spínat přímo z výstupu mikrokontroléru/logiky. ' +
+      'Mezní hodnoty: VDSS=55 V, VGS=±16 V, ID(trvalý)=47 A @TC=25 °C (33 A @TC=100 °C), ' +
+      'IDM (pulzně)=160 A, Ptot=110 W @TC=25 °C (odvod 0,71 W/°C), TJ/Tstg=-55 až +175 °C. ' +
+      'EAS (jednorázová lavinová energie)=210 mJ. IAR (lavinový proud)=25 A, EAR (opakovatelná lavinová ' +
+      'energie)=11 mJ. dv/dt (špičkové zotavení diody)=5,0 V/ns. ' +
+      'RθJC max 1,4 °C/W, RθCS typ 0,50 °C/W, RθJA max 62 °C/W. ' +
+      'V(BR)DSS min 55 V @ID=250 µA. VGS(th) 1,0–2,0 V @ID=250 µA. ' +
+      'RDS(on): max 0,022 Ω @VGS=10 V/ID=25 A; max 0,025 Ω @VGS=5,0 V/ID=25 A; max 0,035 Ω @VGS=4,0 V/ID=21 A. ' +
+      'gfs min 21 S @VDS=25 V/ID=25 A. IDSS max 25 µA @VDS=55 V (max 250 µA @TJ=150 °C). ' +
+      'IGSS max ±100 nA @VGS=±16 V. ' +
+      'Qg(tot) max 48 nC @ID=25 A, Qgs typ 8,6 nC, Qgd typ 25 nC @VGS=5,0 V. ' +
+      'Spínání (VDD=28 V, ID=25 A, VGS=5,0 V, RG=3,4 Ω): td(on) typ 11 ns, tr typ 84 ns, ' +
+      'td(off) typ 26 ns, tf typ 15 ns. ' +
+      'Kapacity @f=1 MHz: Ciss typ 1700 pF, Coss typ 400 pF, Crss typ 150 pF. ' +
+      'Tělesová dioda: IS(trvalý)=47 A, ISM(pulzně)=160 A. VSD max 1,3 V @IS=25 A ' +
+      '(výrazně nižší úbytek než u Samsung IRLZ44). trr typ 80, max 120 ns @IF=25 A/di/dt=100 A/µs. ' +
+      'Qrr typ 210, max 320 nC.',
+    tags: 'tranzistor,mosfet,n-kanál,to-220,irlz44n,logic-level,spínací',
   },
   { name: 'IRF3205', packageType: 'TO-220', value: 'N-MOSFET, 55 V, 110 A', notes: 'Výkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál' },
   { name: '2N7000', packageType: 'TO-92', value: 'N-MOSFET, 60 V, 200 mA', notes: 'Malovýkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál' },
