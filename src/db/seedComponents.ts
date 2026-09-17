@@ -610,6 +610,32 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'usměrňovací diody, u rychlého spínání induktivní zátěže zvaž externí rychlou diodu.',
     tags: 'tranzistor,mosfet,n-kanál,to-220,irf540n,spínací',
   },
+  {
+    name: 'IRF540NS',
+    packageType:
+      'D2Pak (SMD) — POZOR, jiné pouzdro než TO-220 „IRF540N"! Vývody/pady: 1=gate, 2=drain, 3=source. ' +
+      'Nízkoprofilová THT varianta stejné elektrické rodiny: IRF540NL v pouzdře TO-262.',
+    value: 'N-MOSFET, VDSS 100 V, ID 33 A (@TC=25 °C), RDS(on) max 44 mΩ (@ID=16 A)',
+    notes:
+      'International Rectifier HEXFET, i přes podobný název odlišný díl od TO-220 „IRF540N" (Intersil) — ' +
+      'jiné pouzdro (D2Pak SMD / TO-262 nízkoprofilové THT) a RDS(on) měřeno při jiném proudu (16 A ' +
+      'místo 33 A). Datasheet International Rectifier, 2004 (PD-95130). ' +
+      'Mezní hodnoty: VDSS=100 V, VGS=±20 V, ID=33 A @TC=25 °C (23 A @TC=100 °C), IDM (pulzně)=110 A, ' +
+      'Ptot=130 W @TC=25 °C (odvod 0,87 W/°C), IAR (lavinový proud)=16 A, EAR (opakovatelná lavinová ' +
+      'energie)=13 mJ, dv/dt (špičkové zotavení diody)=7,0 V/ns, TJ/Tstg=-55 až +175 °C. ' +
+      'RθJC max 1,15 °C/W, RθJA max 40 °C/W (na DPS 1" čtverec, FR-4/G-10). ' +
+      'V(BR)DSS min 100 V @ID=250 µA. RDS(on) max 44 mΩ @VGS=10 V/ID=16 A. VGS(th) 2,0–4,0 V @ID=250 µA. ' +
+      'gfs (transkonduktance) min 21 S @VDS=50 V/ID=16 A. ' +
+      'IDSS max 25 µA @VDS=100 V (max 250 µA @VDS=80 V/TJ=150 °C). IGSS max ±100 nA @VGS=±20 V. ' +
+      'Náboj hradla: Qg max 71 nC @ID=16 A, Qgs max 14 nC, Qgd max 21 nC. ' +
+      'Spínání (VDD=50 V, ID=16 A, RG=5,1 Ω): td(on) typ 11 ns, tr typ 35 ns, td(off) typ 39 ns, tf typ 35 ns. ' +
+      'Kapacity @f=1 MHz: Ciss typ 1960 pF, Coss typ 250 pF, Crss typ 40 pF. ' +
+      'Lavinová energie EAS: max 185 mJ (vypočtený rating, TJ=175 °C) — typ 700 mJ je destruktivní ' +
+      'testovací hodnota mimo doporučené meze, neber jako běžně použitelný limit. ' +
+      'Tělesová dioda: IS(trvalý)=33 A, ISM(pulzně)=110 A. VSD max 1,2 V @IS=16 A. ' +
+      'trr typ 115, max 170 ns @IF=16 A. Qrr typ 505, max 760 nC @di/dt=100 A/µs.',
+    tags: 'tranzistor,mosfet,n-kanál,smd,d2pak,irf540ns,irf540nl,spínací',
+  },
   { name: 'IRFZ44N', packageType: 'TO-220', value: 'N-MOSFET, 55 V, 49 A', notes: 'Výkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál' },
   { name: 'IRF3205', packageType: 'TO-220', value: 'N-MOSFET, 55 V, 110 A', notes: 'Výkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál' },
   { name: '2N7000', packageType: 'TO-92', value: 'N-MOSFET, 60 V, 200 mA', notes: 'Malovýkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál' },
