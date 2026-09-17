@@ -602,6 +602,43 @@ const IC_SPECS: IcSpec[] = [
       'jeho záznam pro plný popis). 4 KB EEPROM, 8 KB SRAM.',
     tags: 'io,mikrokontrolér,avr,atmega,atmega2561,8bit',
   },
+
+  // Senzory
+  {
+    name: 'DS18B20',
+    packageType:
+      'TO-92 (3 vývody: 1=GND, 2=DQ, 3=VDD) nebo DS18B20Z 8pin SOIC 150 mil (funkční piny ' +
+      '3=VDD, 4=DQ, 5=GND, ostatní piny nezapojené/NC) — vyžaduje externí pull-up rezistor ' +
+      '~4,7 kΩ na DQ (open-drain 1-Wire výstup)',
+    value:
+      'Digitální teploměr s programovatelným rozlišením, 1-Wire rozhraní, -55 až +125 °C, ' +
+      '±0,5 °C přesnost (-10 až +85 °C), VDD 3,0–5,5 V (nebo parazitní napájení z DQ)',
+    notes:
+      'Dallas/Maxim DS18B20 "Programmable Resolution 1-Wire Digital Thermometer" (Preliminary, ' +
+      'dok. 050400). Komunikuje po jediném datovém vodiči (1-Wire, DQ) + zemi — napájení lze ' +
+      'odebírat přímo z datové linky ("parazitní napájení" přes interní kondenzátor, VDD pin se ' +
+      'pak musí uzemnit) nebo připojit externí VDD 3,0–5,5 V. Každý kus má unikátní 64bit laserem ' +
+      'vypálený ROM kód (8bit rodinný kód 28h + 48bit sériové číslo + 8bit CRC), takže lze na ' +
+      'jednu 1-Wire sběrnici připojit libovolný počet čidel současně (multidrop) a adresovat je ' +
+      'jednotlivě příkazy Match ROM / Search ROM / Skip ROM / Alarm Search. Rozlišení převodu ' +
+      'teploty programovatelné 9–12 bitů (konfigurační registr, výchozí nastavení z výroby ' +
+      '12 bitů = 0,0625 °C/LSB) s dobou převodu závislou na rozlišení: 9bit max 93,75 ms, 10bit ' +
+      'max 187,5 ms, 11bit max 375 ms, 12bit max 750 ms. Nonvolatilní EEPROM (min. 50 000 ' +
+      'zápisů, 10 let retence dat @+55 °C) uchovává uživatelsky nastavitelné meze alarmu TH/TL ' +
+      '(nebo je lze použít jako obecnou 2bajtovou paměť) a konfigurační registr rozlišení. ' +
+      'Příkaz "Alarm Search" umožňuje na sběrnici okamžitě identifikovat jen čidla, jejichž ' +
+      'poslední naměřená teplota překročila nastavené meze, bez nutnosti číst všechna čidla. ' +
+      'Mezní hodnoty: napětí na libovolném pinu vůči zemi -0,5 až +6,0 V, provozní/skladovací ' +
+      'teplota -55 až +125 °C, pájecí teplota dle J-STD-020A. Doporučené provozní podmínky: ' +
+      'VDD 3,0–5,5 V, log. 1 (VIH) min 2,2 V, log. 0 (VIL) max 0,8 V. Proudový odběr: klidový ' +
+      '(standby) typ. 750 nA (max 1000 nA, měřeno do 70 °C, při 125 °C typicky 3 µA), aktivní ' +
+      '(převod teploty nebo zápis do EEPROM) typ. 1 mA (max 1,5 mA; zápis do EEPROM odebírá ' +
+      'navíc cca 200 µA po dobu až 10 ms). Chyba teploměru: ±0,5 °C v rozsahu -10 až +85 °C, ' +
+      '±2 °C v rozsahu -55 až +125 °C. Vstupní/výstupní kapacita DQ max 25 pF. Časování 1-Wire ' +
+      'sběrnice (nutné dodržet v aplikaci): reset pulz min. 480 µs, time slot 60–120 µs, ' +
+      'zotavovací doba min. 1 µs mezi bity.',
+    tags: 'io,senzor,teploměr,ds18b20,1-wire,dallas,maxim',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
