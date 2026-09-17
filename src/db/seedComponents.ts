@@ -582,6 +582,34 @@ const DIODE_SPECS: PartSpec[] = [
       '1200 mA, TJ max 150 °C, provozní teplota pouzdra -40 až 135 °C, ESD 3A, MSL1.',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,royal-blue,es',
   },
+  {
+    name: 'LCW CR7P.PC',
+    packageType:
+      'SMD keramické pouzdro OSRAM OSLON SSL 80, 3,1 × 3,1 mm (2,9–3,1 mm), výška s čočkou ' +
+      '2,65–2,75 mm, kopulovitá silikonová čočka (silikonový zalévací gel), 2 pájecí plošky ' +
+      '(anoda, katoda) + 1 prostřední nekontaktovaná ploška (bez elektrické funkce), hmotnost 25 mg',
+    value:
+      'Výkonová bílá LED (fosforová konverze), neutrální bílá 3000–6500 K, CRI min. 70 (typ. 72), ' +
+      'svět. tok 112–164 lm dle skupiny @IF=350 mA, VF 2,80–3,25 V (typ. 2,95 V), vyzařovací úhel 80°',
+    notes:
+      'OSRAM Opto Semiconductors, OSLON SSL 80 datasheet v2.1 (2015-12-18) — vysoce výkonná SMD ' +
+      'LED s předfokusovanou charakteristikou vyzařování (ideální pro bodová svítidla), ⚠️ zcela ' +
+      'odlišná konstrukce/technologie od generických 3/5mm THT bílých LED již v knihovně ("LED ' +
+      '5mm bílá"). Rodina LCW CR7P.PC pokrývá barevné teploty 3000/3500/4000/4500/5000/5700/6500 K, ' +
+      'rozlišené skupinami jasu (LP 112–121 lm, LQ 121–130, LR 130–140, LS 140–150, LT 150–164 lm) ' +
+      'a skupinami napětí VF (L1 2,80–2,90 V, L2 2,90–3,00 V, M1 3,00–3,10 V, MX 3,10–3,25 V) — ' +
+      'konkrétní objednací kód např. LCW CR7P.PC-LQLS-5L7N-1 (4000 K, Q65111A2549). Testováno ' +
+      'IF=350 mA, TS=25 °C. Reálný tepelný odpor přechod–pájecí bod 9,6 °C/typ. (max. 10,8 °C/W); ' +
+      '"elektrický" tepelný odpor (η=40 %) 5,8 °C/W typ. (max. 6,5 °C/W). Zpětné napětí max. 1,2 V ' +
+      'při IR=20 mA (LED má paralelně integrovanou ESD ochrannou diodu — na rozdíl od výkonových LED ' +
+      'LUXEON Rebel, které nejsou určeny k provozu v závěrném směru vůbec). Mezní hodnoty: DC proud ' +
+      '100–800 mA (nesmí být provozována pod 100 mA), impulzní špičkový proud 2000 mA, TJ max ' +
+      '135 °C (absolutně 160 °C), provozní/skladovací teplota -40 až 120 °C, ESD odolnost 8 kV ' +
+      '(ANSI/ESDA/JEDEC JS-001, třída 3B — výrazně vyšší než běžné LED). Zvýšená odolnost proti ' +
+      'korozi (testováno 40 °C/90 % RH/15 ppm H2S/336 h). Pájení reflow: MSL2 (JEDEC J-STD-020D.01), ' +
+      'doporučený vrchol 245 °C (max. 260 °C).',
+    tags: 'dioda,led,výkonová,smd,bílá,oslon,oslon-ssl-80,osram',
+  },
 ];
 
 const TRANSISTOR_SPECS: PartSpec[] = [
