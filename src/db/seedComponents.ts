@@ -434,6 +434,29 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'izolační podložku.',
     tags: 'tranzistor,npn,bipolární,výkonový,to-247,tip33c,pozor-chladič',
   },
+  {
+    name: 'TIP29C',
+    packageType:
+      'TO-220 (3 vývody): 1=báze, 2=kolektor, 3=emitor — POZOR, prostřední pin (kolektor) je ' +
+      'přímo spojen s montážní/chladicí ploškou (na rozdíl od 4vývodových TIP41C/TIP120)',
+    value: 'NPN, VCEO 100 V, VCBO 140 V, IC 1 A (trvale), hFE 15–75 (@ IC=1 A)',
+    notes:
+      'Výkonový spínací/zesilovací tranzistor navržený pro komplementární použití s řadou TIP30 (PNP). ' +
+      'Datasheet Power Innovations Ltd. (1997, staré TI označení). TIP29C má nejvyšší napěťovou třídu ' +
+      'rodiny (TIP29=40/80 V, TIP29A=60/100 V, TIP29B=80/120 V, TIP29C=100/140 V — VCEO/VCBO). ' +
+      'Mezní hodnoty: VCEO=100 V, VCBO=140 V, VEBO=5 V, IC(trvalý)=1 A, ICM (špičkově, tp≤0,3 ms)=3 A, ' +
+      'IB max=0,4 A. Ptot=30 W @TC=25 °C (odvod 0,24 W/°C) / jen 2 W @TA=25 °C na volném vzduchu bez ' +
+      'chladiče (odvod 16 mW/°C). TJ/Tstg=-65 až +150 °C. Teplota vývodu max 250 °C (3,2 mm od pouzdra, 10 s). ' +
+      'RθJC=4,17 °C/W, RθJA=62,5 °C/W. ' +
+      'Energie neomezené induktivní zátěže ½LIC²=32 mJ (L=20 mH, IB(on)=0,4 A, RBE=100 Ω, VBE(off)=0, ' +
+      'RS=0,1 Ω, VCC=20 V). ' +
+      'ICES max 0,2 mA @VCE=140 V/VBE=0. ICEO max 0,3 mA @VCE=60 V/IB=0. IEBO max 1 mA @VEB=5 V. ' +
+      'hFE: min 40 @IC=0,2 A/VCE=4 V; min 15, max 75 @IC=1 A/VCE=4 V. ' +
+      'VCE(sat) max 0,7 V @IB=125 mA/IC=1 A. VBE max 1,3 V @VCE=4 V/IC=1 A. ' +
+      'hfe (malý signál) min 20 @IC=0,2 A/VCE=10 V/f=1 kHz; |hfe| min 3 @f=1 MHz. ' +
+      'Spínací časy (odporová zátěž, IC=1 A): ton typ 0,5 µs, toff typ 2 µs.',
+    tags: 'tranzistor,npn,bipolární,výkonový,to-220,tip29c,pozor-chladič',
+  },
   { name: 'TIP3055', packageType: 'TO-218/TO-220', value: 'NPN, 60 V, 15 A', notes: 'Výkonový bipolární tranzistor', tags: 'tranzistor,npn,výkonový' },
   { name: '2N3055', packageType: 'TO-3', value: 'NPN, 60 V, 15 A', notes: 'Výkonový bipolární tranzistor', tags: 'tranzistor,npn,výkonový' },
   { name: 'BD135', packageType: 'TO-126', value: 'NPN, 45 V, 1,5 A', notes: 'Výkonový bipolární tranzistor', tags: 'tranzistor,npn,výkonový' },
