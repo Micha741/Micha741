@@ -154,6 +154,37 @@ const MODULE_SPECS: ModuleSpec[] = [
     tags:
       'modul,esp8684,esp32-c2,wifi,bluetooth,ble,risc-v,smd,pcb-anténa,mikrokontrolér',
   },
+  {
+    name: 'ESP-12S',
+    packageType:
+      'SMD-16 modul, 24 × 16 × 3 mm (±0,2 mm), hmotnost 0,45 g, 16 pinů (8 po každé straně), ' +
+      'z toho 9 využitelných I/O portů (RST, ADC, EN, IO16, IO14, IO12, IO13, VCC na jedné straně; ' +
+      'TXD, RXD, IO5, IO4, IO0, IO2, IO15, GND na druhé), integrovaná PCB anténa (zisk 2 dBi)',
+    value:
+      'Wi-Fi modul, ESP8266 (model ESP-12) @ do 160 MHz, vestavěná SPI flash 32 Mbit (4 MB), ' +
+      'VDD 3,0–3,6 V',
+    notes:
+      'ESP-12S 802.11 b/g/n Wi-Fi Module V1.1 (výrobce RF Solutions / AI-Thinker), modulový model ' +
+      '"ESP-12" — nejmenší balení modulu na bázi čipu ESP8266 v aktuální revizi "S". ⚠️ Odlišné od ' +
+      'záznamu "Adafruit Feather HUZZAH ESP8266" (samostatný záznam, kategorie Modul) — ten používá ' +
+      'stejnou rodinu modulů ESP-12 jako součástku osazenou na hotové vývojové desce s USB-sériovým ' +
+      'převodníkem a LiPo nabíječkou, zatímco ESP-12S je samotný holý SMD modul určený k přímému ' +
+      'pájení na vlastní DPS (bez USB, bez napájecí/nabíjecí elektroniky) — nejmenší stavební ' +
+      'jednotka pro vlastní návrh. ⚠️ Stejná čipová rodina (ESP8266) jako ESP8285 a ESP8089 ' +
+      '(samostatné záznamy v kategorii IO), ale architektonicky odlišná od ESP32/ESP32-C3/ESP8684 ' +
+      '(ty používají RISC-V nebo Xtensa LX6, ESP8266 uvnitř ESP-12S má jádro Tensilica L106). ' +
+      'Integrované Wi-Fi MAC/BB/RF/PA/LNA, vestavěný lwIP protokolový zásobník, podpora režimů ' +
+      'STA/AP/STA+AP, Smart Config/AirKiss, obecné AT příkazy, vzdálená aktualizace firmwaru (FOTA). ' +
+      'Rozhraní: UART (300–4 608 000 bps, výchozí 115 200), HSPI, I2C, PWM, 10bit ADC. Frekvenční ' +
+      'rozsah 2412–2484 MHz. Výstupní výkon: 802.11b 16±dBm @11 Mbps, 802.11g 14±2 dBm @54 Mbps, ' +
+      '802.11n 13±dBm @HT20/MCS7. Citlivost přijímače: CCK 1 Mbps -90 dBm, CCK 11 Mbps -85 dBm, ' +
+      '6 Mbps (1/2 BPSK) -88 dB, 54 Mbps (3/4 64-QAM) -70 dBm. Proudový odběr (typ.): nepřetržité ' +
+      'vysílání průměr 71 mA / špička 300 mA, modem-sleep 20 mA, light-sleep 2 mA, deep-sleep ' +
+      '0,02 mA (20 µA). Zabezpečení WEP/WPA-PSK/WPA2-PSK. Napájení 3,0–3,6 V, doporučený zdroj ' +
+      'proudu >300 mA. Provozní teplota -20 až 85 °C, skladovací prostředí -40 až 90 °C při <90 % RH. ' +
+      'Certifikace FCC, CE.',
+    tags: 'modul,esp8266,esp-12,esp-12s,wifi,smd,pcb-anténa,tensilica',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
