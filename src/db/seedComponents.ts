@@ -259,6 +259,329 @@ const DIODE_SPECS: PartSpec[] = [
   { name: 'LED 5mm infra (IR)', packageType: '5 mm THT', value: '~1,2 V / 20 mA', notes: 'Infračervená LED', tags: 'dioda,led,infra' },
   { name: 'LED 3mm červená', packageType: '3 mm THT', value: '~2,0 V / 20 mA', notes: 'Standardní LED', tags: 'dioda,led,červená' },
   { name: 'LED 3mm zelená', packageType: '3 mm THT', value: '~2,2 V / 20 mA', notes: 'Standardní LED', tags: 'dioda,led,zelená' },
+
+  {
+    name: 'LXML-PF01',
+    packageType:
+      'SMD keramické pouzdro LUXEON Rebel, 4,61 × 3,17 mm (min. 4,37 × 2,93 mm), kopulovitá ' +
+      'čočka Ø2,61 mm, 3 pájecí plošky (1=katoda, 2=anoda, 3=tepelná plocha, elektricky izolovaná ' +
+      'od katody/anody)',
+    value:
+      'Výkonová LED Far Red, peak λ 720–750 nm, zářivý výkon 210–260 mW (typ.) @IF=350 mA, ' +
+      'VF 1,60–2,40 V (typ. 1,80 V)',
+    notes:
+      'Lumileds LUXEON Rebel Color Line (datasheet DS68, rev. 20230103) — rodina výkonových SMD ' +
+      'LED na keramickém nosiči, konstrukčně zcela odlišná od generických 3/5mm THT LED již v ' +
+      'knihovně (viz "LED 5mm/3mm ..." výše) — přidáno jako samostatné položky, ne jako úprava ' +
+      'generických záznamů. LXML-PF01 = Far Red, čip AlInGaP, testováno IF=350 mA, TJ=25 °C, binováno ' +
+      'podle peak vlnové délky a zářivého výkonu (radiometrického, ne světelného toku). Spektrální ' +
+      'pološířka 30 nm, teplotní koeficient vlnové délky 0,17 nm/°C, celkový vyzařovací úhel 145° ' +
+      '(typ. viditelný úhel 125°). Tepelný odpor přechod–pájecí ploška 5,50 °C/W. Mezní hodnoty ' +
+      '(skupina Far Red/Deep Red/Red/Red-Orange/Amber): DC proud 700 mA, špičkový pulzní proud ' +
+      '875 mA (pulz ≤5 ms, duty ≤50 %), TJ max 135 °C, provozní teplota pouzdra -40 až 120 °C, ' +
+      'ESD třída 3A (ANSI/ESDA/JEDEC JS-001-2012), vlhkostní citlivost MSL1 (JEDEC 020c), pájení ' +
+      'reflow max 260 °C (max. 3 cykly). LUXEON LED nejsou určeny k provozu v závěrném směru.',
+    tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,far-red',
+  },
+  {
+    name: 'LXM3-PD01',
+    packageType:
+      'SMD keramické pouzdro LUXEON Rebel, 4,61 × 3,17 mm, kopulovitá čočka Ø2,61 mm, 3 pájecí ' +
+      'plošky (1=katoda, 2=anoda, 3=tepelná plocha, izolovaná)',
+    value:
+      'Výkonová LED Deep Red, peak λ 650–670 nm, zářivý výkon 270–360 mW (typ.) @IF=350 mA, ' +
+      'VF 1,80–2,80 V (typ. 2,10 V)',
+    notes:
+      'Lumileds LUXEON Rebel Color Line (DS68, 20230103). LXM3-PD01 = Deep Red, čip AlInGaP. ' +
+      '⚠️ Odlišný ordering code od "Far Red" (LXML-PF01, samostatný záznam, kratší vlnová délka ' +
+      '720–750 nm) a od rodiny "Red" LXM2/LXML/LXM5-PD01 (samostatné záznamy, vlnová délka ' +
+      '620–645 nm) — přestože název "PD01" je stejný jako u Red, prefix LXM3 značí jiný ' +
+      'čip/pouzdro/binování. Testováno IF=350 mA, TJ=25 °C, binováno podle peak vlnové délky a ' +
+      'radiometrického výkonu. Pološířka 20 nm, teplotní koef. vlnové délky 0,05 nm/°C, vyzařovací ' +
+      'úhel 145°/125° (typ.). Tepelný odpor přechod–pájecí ploška 8,00 °C/W. Mezní hodnoty stejná ' +
+      'skupina jako Far Red: DC 700 mA, špičkově 875 mA, TJ max 135 °C, pouzdro -40 až 120 °C, ' +
+      'ESD 3A, MSL1.',
+    tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,deep-red',
+  },
+  {
+    name: 'LXM2-PD01',
+    packageType:
+      'SMD keramické pouzdro LUXEON Rebel (diode size 1 mm²), kopulovitá čočka, 3 pájecí plošky ' +
+      '(1=katoda, 2=anoda, 3=tepelná plocha, izolovaná)',
+    value:
+      'Výkonová LED Red, dominantní λ 620–645 nm, svět. tok 40–60 lm min (typ. 48–62 lm dle binu) ' +
+      '@IF=350 mA, VF 1,80–2,80 V (typ. 2,10 V)',
+    notes:
+      'Lumileds LUXEON Rebel Color Line (DS68, 20230103). LXM2-PD01 = Red, čip AlInGaP, diode size ' +
+      '1 mm² (menší čip v rámci nomenklatury LXM2/LXML/LXM5). Testováno IF=350 mA, TJ=25 °C, ' +
+      'binováno podle dominantní vlnové délky a světelného toku (na rozdíl od Far Red/Deep Red/' +
+      'Royal Blue, které se binují podle radiometrického výkonu). ⚠️ Součást rodiny tří pouzder ' +
+      'pro barvu Red se shodnou vlnovou délkou 620–645 nm, ale odlišným čipem/tepelným odporem — ' +
+      'LXM2-PD01 (tento záznam, Rth 8,00 °C/W), LXML-PD01 (diode size 2 mm², samostatný záznam, ' +
+      'Rth 12,00 °C/W) a LXM5-PD01 (velký čip bez "size" kódu, samostatný záznam, Rth 7,00 °C/W) — ' +
+      'jde o tři odlišné objednací kódy, ne o binovou variantu jedné součástky. Pološířka 20 nm, ' +
+      'teplotní koef. vlnové délky 0,05 nm/°C, vyzařovací úhel 145°/125° (typ.). Mezní hodnoty: ' +
+      'DC 700 mA, špičkově 875 mA, TJ max 135 °C, pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,red,lxm2',
+  },
+  {
+    name: 'LXML-PD01',
+    packageType:
+      'SMD keramické pouzdro LUXEON Rebel (diode size 2 mm²), 4,61 × 3,17 mm, kopulovitá čočka ' +
+      'Ø2,61 mm, 3 pájecí plošky (1=katoda, 2=anoda, 3=tepelná plocha, izolovaná)',
+    value:
+      'Výkonová LED Red, dominantní λ 620–645 nm, svět. tok 30–50 lm min (typ. 38–52 lm dle binu) ' +
+      '@IF=350 mA, VF 2,31–3,51 V (typ. 2,90 V)',
+    notes:
+      'Lumileds LUXEON Rebel Color Line (DS68, 20230103). LXML-PD01 = Red, čip AlInGaP, diode size ' +
+      '2 mm² — standardní pouzdro řady LUXEON Rebel (stejné mechanické rozměry jako u ostatních ' +
+      '"L"-variant v této knihovně, např. LXML-PF01). ⚠️ Odlišný objednací kód od LXM2-PD01 (menší ' +
+      'čip 1 mm², Rth 8,00 °C/W, samostatný záznam) a LXM5-PD01 (velký čip, Rth 7,00 °C/W, ' +
+      'samostatný záznam) — všechny tři sdílejí stejný rozsah vlnové délky 620–645 nm, ale liší se ' +
+      'čipem, tepelným odporem i rozsahem světelného toku. Testováno IF=350 mA, TJ=25 °C. Pološířka ' +
+      '20 nm, teplotní koef. vlnové délky 0,05 nm/°C, vyzařovací úhel 145°/125° (typ.). Tepelný ' +
+      'odpor přechod–pájecí ploška 12,00 °C/W. Mezní hodnoty: DC 700 mA, špičkově 875 mA, TJ max ' +
+      '135 °C, pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,red,lxml',
+  },
+  {
+    name: 'LXM5-PD01',
+    packageType:
+      'SMD keramické pouzdro LUXEON Rebel (velký čip), kopulovitá čočka, 3 pájecí plošky ' +
+      '(1=katoda, 2=anoda, 3=tepelná plocha, izolovaná)',
+    value:
+      'Výkonová LED Red, dominantní λ 620–645 nm, svět. tok min 50 lm (typ. 64 lm) @IF=350 mA, ' +
+      'VF 1,80–2,60 V (typ. 2,10 V)',
+    notes:
+      'Lumileds LUXEON Rebel Color Line (DS68, 20230103). LXM5-PD01 = Red, čip AlInGaP, největší ' +
+      'čip v rodině Red (bez "1"/"2" size kódu v nomenklatuře). ⚠️ Odlišný objednací kód od ' +
+      'LXM2-PD01 a LXML-PD01 (samostatné záznamy) — sdílí vlnovou délku 620–645 nm, ale má nejnižší ' +
+      'tepelný odpor v rodině (7,00 °C/W) a nejvyšší typický světelný tok při srovnatelném VF. ' +
+      'Testováno IF=350 mA, TJ=25 °C. Pološířka 20 nm, teplotní koef. vlnové délky 0,05 nm/°C, ' +
+      'vyzařovací úhel 145°/125° (typ.). Mezní hodnoty: DC 700 mA, špičkově 875 mA, TJ max 135 °C, ' +
+      'pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,red,lxm5',
+  },
+  {
+    name: 'LXM2-PH01',
+    packageType:
+      'SMD keramické pouzdro LUXEON Rebel (diode size 1 mm²), kopulovitá čočka, 3 pájecí plošky ' +
+      '(1=katoda, 2=anoda, 3=tepelná plocha, izolovaná)',
+    value:
+      'Výkonová LED Red-Orange, dominantní λ 610–620 nm, svět. tok 60–70 lm min (typ. 67–72 lm ' +
+      'dle binu) @IF=350 mA, VF 1,80–2,80 V (typ. 2,10 V)',
+    notes:
+      'Lumileds LUXEON Rebel Color Line (DS68, 20230103). LXM2-PH01 = Red-Orange, čip AlInGaP, ' +
+      'diode size 1 mm². ⚠️ Součást rodiny tří pouzder pro Red-Orange se stejnou vlnovou délkou ' +
+      '610–620 nm: LXM2-PH01 (tento záznam, Rth 8,00 °C/W), LXML-PH01 (diode size 2 mm², ' +
+      'samostatný záznam, Rth 12,00 °C/W) a LXM5-PH01 (velký čip, samostatný záznam, Rth 7,00 °C/W) ' +
+      '— tři odlišné objednací kódy. Testováno IF=350 mA, TJ=25 °C. Pološířka 20 nm, teplotní koef. ' +
+      'vlnové délky 0,08 nm/°C, vyzařovací úhel 145°/125° (typ.). Mezní hodnoty: DC 700 mA, ' +
+      'špičkově 875 mA, TJ max 135 °C, pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,red-orange,lxm2',
+  },
+  {
+    name: 'LXML-PH01',
+    packageType:
+      'SMD keramické pouzdro LUXEON Rebel (diode size 2 mm²), 4,61 × 3,17 mm, kopulovitá čočka ' +
+      'Ø2,61 mm, 3 pájecí plošky (1=katoda, 2=anoda, 3=tepelná plocha, izolovaná)',
+    value:
+      'Výkonová LED Red-Orange, dominantní λ 610–620 nm, svět. tok 50–60 lm min (typ. 56–62 lm ' +
+      'dle binu) @IF=350 mA, VF 2,31–3,51 V (typ. 2,90 V)',
+    notes:
+      'Lumileds LUXEON Rebel Color Line (DS68, 20230103). LXML-PH01 = Red-Orange, čip AlInGaP, ' +
+      'diode size 2 mm². ⚠️ Odlišný objednací kód od LXM2-PH01 (Rth 8,00 °C/W) a LXM5-PH01 ' +
+      '(Rth 7,00 °C/W, samostatné záznamy) — sdílí vlnovou délku 610–620 nm. Testováno IF=350 mA, ' +
+      'TJ=25 °C. Pološířka 20 nm, teplotní koef. vlnové délky 0,08 nm/°C, vyzařovací úhel 145°/125° ' +
+      '(typ.). Tepelný odpor přechod–pájecí ploška 12,00 °C/W. Mezní hodnoty: DC 700 mA, špičkově ' +
+      '875 mA, TJ max 135 °C, pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,red-orange,lxml',
+  },
+  {
+    name: 'LXM5-PH01',
+    packageType:
+      'SMD keramické pouzdro LUXEON Rebel (velký čip), kopulovitá čočka, 3 pájecí plošky ' +
+      '(1=katoda, 2=anoda, 3=tepelná plocha, izolovaná)',
+    value:
+      'Výkonová LED Red-Orange, dominantní λ 610–620 nm, svět. tok min 50 lm (typ. 90 lm) ' +
+      '@IF=350 mA, VF 1,80–2,60 V (typ. 2,10 V)',
+    notes:
+      'Lumileds LUXEON Rebel Color Line (DS68, 20230103). LXM5-PH01 = Red-Orange, čip AlInGaP, ' +
+      'největší čip v rodině. ⚠️ Odlišný objednací kód od LXM2-PH01 a LXML-PH01 (samostatné ' +
+      'záznamy) — nejnižší tepelný odpor v rodině (7,00 °C/W) a výrazně vyšší typický tok vůči ' +
+      'minimu (90 lm typ. při min. 50 lm). Testováno IF=350 mA, TJ=25 °C. Pološířka 20 nm, teplotní ' +
+      'koef. vlnové délky 0,08 nm/°C, vyzařovací úhel 145°/125° (typ.). Mezní hodnoty: DC 700 mA, ' +
+      'špičkově 875 mA, TJ max 135 °C, pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,red-orange,lxm5',
+  },
+  {
+    name: 'LXM2-PL01',
+    packageType:
+      'SMD keramické pouzdro LUXEON Rebel (diode size 1 mm²), kopulovitá čočka, 3 pájecí plošky ' +
+      '(1=katoda, 2=anoda, 3=tepelná plocha, izolovaná)',
+    value:
+      'Výkonová LED PC Amber (fosforem konvertovaná), dominantní λ 594–604 nm, svět. tok min ' +
+      '80 lm (typ. 110 lm) @IF=350 mA, VF 2,55–3,51 V (typ. 3,05 V)',
+    notes:
+      'Lumileds LUXEON Rebel Color Line (DS68, 20230103). LXM2-PL01 = PC Amber ("phosphor ' +
+      'converted"), čip InGaN s fosforovou konverzí — ⚠️ odlišná technologie i vlnová délka od ' +
+      '"Amber" (LXML-PL01/LXM5-PL01, čistě AlInGaP čip, 585–595 nm, samostatné záznamy), přestože ' +
+      'název "PL01" je stejný. PC Amber má výrazně širší spektrální pološířku (80 nm vs 20 nm) a ' +
+      'záporný teplotní koeficient vlnové délky (-0,01 nm/°C, jediný záporný v celé rodině). ' +
+      'Vyzařovací úhel užší než ostatní barvy: 140° celkový / 120° typický (ostatní 145°/125°). ' +
+      'Testováno IF=350 mA, TJ=25 °C. Tepelný odpor přechod–pájecí ploška 10,00 °C/W. ⚠️ Mezní ' +
+      'hodnoty PC Amber jsou přísnější než u ostatní rodiny Far Red/Deep Red/Red/Red-Orange/Amber: ' +
+      'TJ max jen 130 °C (ne 135 °C) a provozní teplota pouzdra jen -40 až 110 °C (ne -40 až ' +
+      '120 °C), přestože DC proud 700 mA a špičkový 875 mA jsou stejné. ESD 3A, MSL1.',
+    tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,pc-amber,lxm2',
+  },
+  {
+    name: 'LXML-PL01',
+    packageType:
+      'SMD keramické pouzdro LUXEON Rebel (diode size 2 mm²), 4,61 × 3,17 mm, kopulovitá čočka ' +
+      'Ø2,61 mm, 3 pájecí plošky (1=katoda, 2=anoda, 3=tepelná plocha, izolovaná)',
+    value:
+      'Výkonová LED Amber, dominantní λ 585–595 nm, svět. tok 30–60 lm min (typ. 38–61 lm dle ' +
+      'binu) @IF=350 mA, VF 2,31–3,51 V (typ. 2,90 V)',
+    notes:
+      'Lumileds LUXEON Rebel Color Line (DS68, 20230103). LXML-PL01 = Amber, čip AlInGaP, diode ' +
+      'size 2 mm². ⚠️ Odlišná technologie/vlnová délka od "PC Amber" (LXM2-PL01, InGaN s fosforem, ' +
+      '594–604 nm, samostatný záznam). Součást rodiny dvou pouzder pro Amber: LXML-PL01 (tento ' +
+      'záznam, Rth 12,00 °C/W) a LXM5-PL01 (velký čip, samostatný záznam, Rth 7,00 °C/W). Testováno ' +
+      'IF=350 mA, TJ=25 °C. Pološířka 20 nm, teplotní koef. vlnové délky 0,10 nm/°C, vyzařovací ' +
+      'úhel 145°/125° (typ.). Mezní hodnoty stejná skupina jako Far Red/Red/Red-Orange: DC 700 mA, ' +
+      'špičkově 875 mA, TJ max 135 °C, pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,amber,lxml',
+  },
+  {
+    name: 'LXM5-PL01',
+    packageType:
+      'SMD keramické pouzdro LUXEON Rebel (velký čip), kopulovitá čočka, 3 pájecí plošky ' +
+      '(1=katoda, 2=anoda, 3=tepelná plocha, izolovaná)',
+    value:
+      'Výkonová LED Amber, dominantní λ 585–595 nm, svět. tok min 50 lm (typ. 74 lm) @IF=350 mA, ' +
+      'VF 1,80–2,60 V (typ. 2,10 V)',
+    notes:
+      'Lumileds LUXEON Rebel Color Line (DS68, 20230103). LXM5-PL01 = Amber, čip AlInGaP, největší ' +
+      'čip v rodině. ⚠️ Odlišný objednací kód od LXML-PL01 (samostatný záznam, Rth 12,00 °C/W) a od ' +
+      '"PC Amber" LXM2-PL01 (jiná technologie/vlnová délka, samostatný záznam). Nejnižší tepelný ' +
+      'odpor v rodině Amber (7,00 °C/W). Testováno IF=350 mA, TJ=25 °C. Pološířka 20 nm, teplotní ' +
+      'koef. vlnové délky 0,10 nm/°C, vyzařovací úhel 145°/125° (typ.). Mezní hodnoty: DC 700 mA, ' +
+      'špičkově 875 mA, TJ max 135 °C, pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,amber,lxm5',
+  },
+  {
+    name: 'LXML-PX02',
+    packageType:
+      'SMD keramické pouzdro LUXEON Rebel, 4,61 × 3,17 mm, kopulovitá čočka Ø2,61 mm, 3 pájecí ' +
+      'plošky (1=katoda, 2=anoda, 3=tepelná plocha, izolovaná)',
+    value:
+      'Výkonová LED Lime, dominantní λ 566–569 nm, svět. tok min 140 lm (typ. 184 lm) @IF=350 mA, ' +
+      'TJ=85 °C, VF 2,60–3,00 V (typ. 2,75 V)',
+    notes:
+      'Lumileds LUXEON Rebel Color Line (DS68, 20230103). LXML-PX02 = Lime, čip InGaN. ⚠️ Jediná ' +
+      'barva v této rodině testovaná/binovaná při TJ=85 °C (všechny ostatní barvy kromě ES ' +
+      'Blue/ES Royal Blue při TJ=25 °C) — hodnoty proto nejsou přímo srovnatelné s ostatními ' +
+      'záznamy. Používá odlišný 4-místný alfanumerický CAT kód (flux-color-color-VF) místo ' +
+      '3-místného kódu ostatních barev. Nejširší spektrální pološířka v rodině (100 nm) a jediný ' +
+      'záznam s téměř nulovým teplotním koeficientem vlnové délky (0,01 nm/°C). Vyzařovací úhel ' +
+      '145°/125° (typ.). Tepelný odpor přechod–pájecí ploška 6,00 °C/W. Mezní hodnoty (tabulka pro ' +
+      'TJ=85 °C): DC proud 1000 mA, špičkový 1200 mA, TJ max 150 °C, provozní teplota pouzdra -40 ' +
+      'až 135 °C, ESD 3A, autokláv 100% RH/96 h max.',
+    tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,lime',
+  },
+  {
+    name: 'LXML-PM01',
+    packageType:
+      'SMD keramické pouzdro LUXEON Rebel, 4,61 × 3,17 mm, kopulovitá čočka Ø2,61 mm, 3 pájecí ' +
+      'plošky (1=katoda, 2=anoda, 3=tepelná plocha, izolovaná)',
+    value:
+      'Výkonová LED Green, dominantní λ 520–540 nm, svět. tok 70–100 lm min (typ. 79–102 lm dle ' +
+      'binu) @IF=350 mA, VF 2,55–3,51 V (typ. 3,21 V)',
+    notes:
+      'Lumileds LUXEON Rebel Color Line (DS68, 20230103). LXML-PM01 = Green, čip InGaN. Testováno ' +
+      'IF=350 mA, TJ=25 °C, binováno podle dominantní vlnové délky a světelného toku. Pološířka ' +
+      '30 nm, teplotní koef. vlnové délky 0,05 nm/°C, vyzařovací úhel 145°/125° (typ.). Tepelný ' +
+      'odpor přechod–pájecí ploška 10,00 °C/W. Mezní hodnoty (skupina Green/Cyan/Blue/Royal Blue): ' +
+      'DC proud 1000 mA, špičkový pulzní proud 1200 mA, TJ max 150 °C, provozní teplota pouzdra ' +
+      '-40 až 135 °C, ESD 3A, MSL1.',
+    tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,green',
+  },
+  {
+    name: 'LXML-PE01',
+    packageType:
+      'SMD keramické pouzdro LUXEON Rebel, 4,61 × 3,17 mm, kopulovitá čočka Ø2,61 mm, 3 pájecí ' +
+      'plošky (1=katoda, 2=anoda, 3=tepelná plocha, izolovaná)',
+    value:
+      'Výkonová LED Cyan, dominantní λ 490–515 nm, svět. tok 60–80 lm min (typ. 67–83 lm dle ' +
+      'binu) @IF=350 mA, VF 2,55–3,51 V (typ. 3,17 V)',
+    notes:
+      'Lumileds LUXEON Rebel Color Line (DS68, 20230103). LXML-PE01 = Cyan, čip InGaN. Testováno ' +
+      'IF=350 mA, TJ=25 °C. Pološířka 30 nm, teplotní koef. vlnové délky 0,04 nm/°C, vyzařovací ' +
+      'úhel 145°/125° (typ.). Tepelný odpor přechod–pájecí ploška 10,00 °C/W. Mezní hodnoty ' +
+      '(skupina Green/Cyan/Blue/Royal Blue): DC proud 1000 mA, špičkový 1200 mA, TJ max 150 °C, ' +
+      'provozní teplota pouzdra -40 až 135 °C, ESD 3A, MSL1.',
+    tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,cyan',
+  },
+  {
+    name: 'LXML-PB01',
+    packageType:
+      'SMD keramické pouzdro LUXEON Rebel, 4,61 × 3,17 mm, kopulovitá čočka Ø2,61 mm, 3 pájecí ' +
+      'plošky (1=katoda, 2=anoda, 3=tepelná plocha, izolovaná)',
+    value:
+      'Výkonová LED Blue, dominantní λ 460–485 nm, svět. tok 18–40 lm min (typ. 22–41 lm dle ' +
+      'binu) @IF=350 mA, VF 2,55–3,51 V (typ. 2,95 V)',
+    notes:
+      'Lumileds LUXEON Rebel Color Line (DS68, 20230103). LXML-PB01 = Blue, čip InGaN, testováno ' +
+      'standardním proudem IF=350 mA (na rozdíl od "ES Royal Blue" LXML-PR02, který je binován při ' +
+      '700 mA — v této datasheetu není samostatná "ES Blue" položka s konkrétním part number, jen ' +
+      'obecná zmínka v testovacích podmínkách a mezních hodnotách). Pološířka 20 nm, teplotní koef. ' +
+      'vlnové délky 0,05 nm/°C, vyzařovací úhel 145°/125° (typ.). Tepelný odpor přechod–pájecí ' +
+      'ploška 10,00 °C/W. Mezní hodnoty (skupina Green/Cyan/Blue/Royal Blue): DC proud 1000 mA, ' +
+      'špičkový 1200 mA, TJ max 150 °C, provozní teplota pouzdra -40 až 135 °C, ESD 3A, MSL1.',
+    tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,blue',
+  },
+  {
+    name: 'LXML-PR01',
+    packageType:
+      'SMD keramické pouzdro LUXEON Rebel, 4,61 × 3,17 mm, kopulovitá čočka Ø2,61 mm, 3 pájecí ' +
+      'plošky (1=katoda, 2=anoda, 3=tepelná plocha, izolovaná)',
+    value:
+      'Výkonová LED Royal Blue, peak λ 440–460 nm, zářivý výkon min 500 mW (typ. 520 mW) ' +
+      '@IF=350 mA, VF 2,55–3,51 V (typ. 2,95 V)',
+    notes:
+      'Lumileds LUXEON Rebel Color Line (DS68, 20230103). LXML-PR01 = Royal Blue (standardní, ne ' +
+      '"ES"), čip InGaN, testováno IF=350 mA, TJ=25 °C, binováno podle peak vlnové délky a ' +
+      'radiometrického výkonu. ⚠️ Odlišný ordering code od "ES Royal Blue" LXML-PR02 (samostatný ' +
+      'záznam) — PR02 je binován/testován při vyšším proudu 700 mA a dosahuje výrazně vyššího ' +
+      'výkonu (800–1100 mW typ. 890–1120 mW), zatímco PR01 je jediný bin s min. 500 mW. Pološířka ' +
+      '20 nm, teplotní koef. vlnové délky 0,04 nm/°C, vyzařovací úhel 145°/125° (typ.). Tepelný ' +
+      'odpor přechod–pájecí ploška 10,00 °C/W. Mezní hodnoty (skupina Green/Cyan/Blue/Royal Blue): ' +
+      'DC proud 1000 mA, špičkový 1200 mA, TJ max 150 °C, provozní teplota pouzdra -40 až 135 °C, ' +
+      'ESD 3A, MSL1.',
+    tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,royal-blue',
+  },
+  {
+    name: 'LXML-PR02',
+    packageType:
+      'SMD keramické pouzdro LUXEON Rebel ES (mírně upravená mechanika oproti standardní řadě, ' +
+      'viz Fig. 7b datasheetu), kopulovitá čočka Ø2,61 mm, 3 pájecí plošky (1=katoda, 2=anoda, ' +
+      '3=tepelná plocha, izolovaná)',
+    value:
+      'Výkonová LED ES Royal Blue, peak λ 440–460 nm, zářivý výkon 800–1100 mW min (typ. ' +
+      '890–1120 mW dle binu) @IF=700 mA, VF 2,50–3,50 V (typ. 2,90 V)',
+    notes:
+      'Lumileds LUXEON Rebel Color Line (DS68, 20230103). LXML-PR02 = ES Royal Blue ("Enhanced ' +
+      'Spec"), čip InGaN. ⚠️ Odlišný ordering code od standardní "Royal Blue" LXML-PR01 (samostatný ' +
+      'záznam, testován/binován při 350 mA, max. výkon jen 500–520 mW) — ES varianta je testována ' +
+      'a binována při vyšším proudu IF=700 mA, TJ=25 °C a dosahuje více než dvojnásobného ' +
+      'radiometrického výkonu. Bin LXML-PR02-A900 je speciální výběr pouze z color binů 4 a 5. ' +
+      'Pološířka 20 nm, teplotní koef. vlnové délky 0,04 nm/°C, vyzařovací úhel 145°/125° (typ.). ' +
+      'Tepelný odpor přechod–pájecí ploška 6,00 °C/W (nižší než u PR01 díky odlišné mechanice). ' +
+      'Mezní hodnoty (skupina ES Blue/ES Royal Blue): DC proud 1000 mA, špičkový pulzní proud ' +
+      '1200 mA, TJ max 150 °C, provozní teplota pouzdra -40 až 135 °C, ESD 3A, MSL1.',
+    tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,royal-blue,es',
+  },
 ];
 
 const TRANSISTOR_SPECS: PartSpec[] = [
