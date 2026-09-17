@@ -153,6 +153,21 @@ const DIODE_SPECS: PartSpec[] = [
 ];
 
 const TRANSISTOR_SPECS: PartSpec[] = [
+  {
+    name: 'BC546',
+    packageType: 'TO-92 (TO-226AA, Case 29-04, styl 17) — vývody: 1 kolektor, 2 báze, 3 emitor',
+    value: 'NPN, VCEO 65 V, IC 100 mA, hFE 110–450 (@ IC=2 mA)',
+    notes:
+      'Malovýkonový NPN zesilovací tranzistor. Klíčové parametry z datasheetu ' +
+      '(Motorola BC546/D, rev. 1): VCEO=65 V, VCBO=80 V, VEBO=6 V, IC(trvalý)=100 mA, ' +
+      'PD=625 mW @TA=25 °C (1,5 W @TC=25 °C), TJ/Tstg=-55 až +150 °C. ' +
+      'hFE @IC=2 mA/VCE=5 V: min 110, max 450 (u varianty BC546B min 200, typ 290, max 450). ' +
+      'VCE(sat) @IC=10 mA/IB=0,5 mA: typ 0,09 V, max 0,25 V. VBE(on) @IC=2 mA: 0,55–0,7 V. ' +
+      'fT @IC=10 mA/VCE=5 V/f=100 MHz: min 150 MHz, typ 300 MHz. ' +
+      'Cobo=1,7 pF typ (max 4,5 pF) @VCB=10 V, Cibo=10 pF typ @VEB=0,5 V. ' +
+      'Šum NF @IC=0,2 mA/VCE=5 V/RS=2 kΩ: typ 2,0 dB, max 10 dB.',
+    tags: 'tranzistor,npn,bipolární,to-92,zesilovací,bc546',
+  },
   { name: 'BC547', packageType: 'TO-92', value: 'NPN, 45 V, 100 mA', notes: 'Malovýkonový bipolární tranzistor', tags: 'tranzistor,npn,bipolární' },
   { name: 'BC548', packageType: 'TO-92', value: 'NPN, 30 V, 100 mA', notes: 'Malovýkonový bipolární tranzistor', tags: 'tranzistor,npn,bipolární' },
   { name: 'BC549', packageType: 'TO-92', value: 'NPN, 30 V, 100 mA', notes: 'Malovýkonový bipolární tranzistor, nízký šum', tags: 'tranzistor,npn,bipolární' },
