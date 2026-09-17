@@ -517,6 +517,91 @@ const IC_SPECS: IcSpec[] = [
       'než starší ESP32-C3 (tam jen orientační údaje v revizích datasheetu).',
     tags: 'io,mikrokontrolér,soc,esp8684,esp32-c2,wifi,bluetooth,ble,risc-v,qfn24',
   },
+
+  // Mikrokontroléry AVR
+  {
+    name: 'ATmega640',
+    packageType: 'TQFP-100 / CBGA-100',
+    value: '8bit AVR mikrokontrolér, 64 KB flash, 4 KB EEPROM, 8 KB SRAM, 86 GPIO, VCC 1,8–5,5 V',
+    notes:
+      'Atmel/Microchip ATmega640/1280/1281/2560/2561 (datasheet "Preliminary Summary", ' +
+      'dok. 2549KS-AVR, rev. K, 01/07) — rodina pěti mikrokontrolérů sdílejících stejné jádro a ' +
+      'periferie, lišících se jen velikostí paměti a počtem pinů (viz Table 2 "Configuration ' +
+      'Summary" v datasheetu); zpracováno všech 5 členů rodiny v jednom kroku. ATmega640 = ' +
+      'největší flash (64 KB) ve velkém pouzdru (86 GPIO). 8bit AVR RISC architektura (135 ' +
+      'instrukcí, většina v 1 cyklu, 32×8 obecných pracovních registrů), do 16 MIPS @16 MHz. ' +
+      'Paměť: 64 KB In-System programovatelná flash (10 000 cyklů), volitelná Boot Loader sekce ' +
+      's nezávislými zámkovými bity a True Read-While-Write, 4 KB EEPROM (100 000 cyklů), 8 KB ' +
+      'interní SRAM, do 64 KB volitelné externí paměti. Periferie: 2× 8bit časovač/čítač, 4× ' +
+      '16bit časovač/čítač (samostatný prescaler, compare, capture), RTC s odděleným oscilátorem, ' +
+      '12× 8bit PWM kanálů s rozlišením 2–16 bitů + output compare modulator, 16kanálový 10bit ' +
+      'ADC, 4× programovatelný USART, master/slave SPI, TWI (I2C kompatibilní), programovatelný ' +
+      'watchdog s vlastním oscilátorem, analogový komparátor, přerušení a probuzení při změně ' +
+      'pinu. JTAG (IEEE std. 1149.1) s boundary-scan, on-chip debug, programování flash/EEPROM/' +
+      'fuses/zámkových bitů přes JTAG. Zabezpečení: Power-on Reset, programovatelná Brown-out ' +
+      'detekce, interní kalibrovaný oscilátor, externí i interní zdroje přerušení, 6 režimů ' +
+      'spánku (Idle, ADC Noise Reduction, Power-save, Power-down, Standby, Extended Standby). ' +
+      'Napájení/rychlost dle "speed grade": verze bez "V" 0–8 MHz @2,7–5,5 V nebo 0–16 MHz ' +
+      '@4,5–5,5 V; verze "V" (nízkonapěťová, např. ATmega640V) 0–4 MHz @1,8–5,5 V nebo 0–8 MHz ' +
+      '@2,7–5,5 V. Spotřeba (typ.): aktivní režim @1 MHz/1,8 V cca 510 µA, power-down @1,8 V cca ' +
+      '0,1 µA. Provozní teplota -40 až 85 °C (průmyslový rozsah). RoHS/bezolovnaté provedení.',
+    tags: 'io,mikrokontrolér,avr,atmega,atmega640,8bit',
+  },
+  {
+    name: 'ATmega1280',
+    packageType: 'TQFP-100 / CBGA-100',
+    value: '8bit AVR mikrokontrolér, 128 KB flash, 4 KB EEPROM, 8 KB SRAM, 86 GPIO, VCC 1,8–5,5 V',
+    notes:
+      'Atmel/Microchip ATmega640/1280/1281/2560/2561 (dok. 2549KS-AVR, rev. K, 01/07) — součást ' +
+      'stejné rodiny jako ATmega640/1281/2560/2561 (samostatné záznamy). ATmega1280 = dvojnásobná ' +
+      'flash oproti ATmega640 (128 KB) ve stejném velkém pouzdru/pinoutu (86 GPIO, 12 PWM kanálů, ' +
+      '4 USART, 16 ADC kanálů) — použit např. v deskách Arduino Mega. Architektura, periferie, ' +
+      'JTAG, napájecí rozsahy a spotřeba shodné s ATmega640 (viz jeho záznam pro plný popis). ' +
+      '4 KB EEPROM, 8 KB SRAM, do 64 KB volitelné externí paměti.',
+    tags: 'io,mikrokontrolér,avr,atmega,atmega1280,8bit,arduino-mega',
+  },
+  {
+    name: 'ATmega1281',
+    packageType: 'TQFP-64 / QFN-64 (MLF-64)',
+    value: '8bit AVR mikrokontrolér, 128 KB flash, 4 KB EEPROM, 8 KB SRAM, 54 GPIO, VCC 1,8–5,5 V',
+    notes:
+      'Atmel/Microchip ATmega640/1280/1281/2560/2561 (dok. 2549KS-AVR, rev. K, 01/07) — součást ' +
+      'stejné rodiny jako ATmega640/1280/2560/2561 (samostatné záznamy). ⚠️ ATmega1281 má stejnou ' +
+      'velikost flash jako ATmega1280 (128 KB), ale je v menším 64pinovém pouzdru s omezenější ' +
+      'sadou periferií: 54 GPIO (ne 86), 6 PWM kanálů (ne 12), 2 USART (ne 4), 8kanálový ADC ' +
+      '(ne 16) — port H, J, K, L a druhá/třetí/čtvrtá USART, DAC a 16bit časovače T/C4 a T/C5 ' +
+      'jsou dostupné jen ve 100pinové verzi (ATmega1280/2560), ne zde. Architektura, JTAG, ' +
+      'napájecí rozsahy a spotřeba shodné s ATmega640 (viz jeho záznam pro plný popis). ' +
+      '4 KB EEPROM, 8 KB SRAM.',
+    tags: 'io,mikrokontrolér,avr,atmega,atmega1281,8bit',
+  },
+  {
+    name: 'ATmega2560',
+    packageType: 'TQFP-100 / CBGA-100',
+    value: '8bit AVR mikrokontrolér, 256 KB flash, 4 KB EEPROM, 8 KB SRAM, 86 GPIO, VCC 1,8–5,5 V',
+    notes:
+      'Atmel/Microchip ATmega640/1280/1281/2560/2561 (dok. 2549KS-AVR, rev. K, 01/07) — součást ' +
+      'stejné rodiny jako ATmega640/1280/1281/2561 (samostatné záznamy). ATmega2560 = největší ' +
+      'flash v rodině (256 KB) ve velkém pouzdru (86 GPIO, 12 PWM kanálů, 4 USART, 16 ADC kanálů) ' +
+      '— nejpoužívanější člen rodiny, osazuje např. desky Arduino Mega 2560. Architektura, ' +
+      'periferie, JTAG, napájecí rozsahy a spotřeba shodné s ATmega640 (viz jeho záznam pro plný ' +
+      'popis). 4 KB EEPROM, 8 KB SRAM, do 64 KB volitelné externí paměti.',
+    tags: 'io,mikrokontrolér,avr,atmega,atmega2560,8bit,arduino-mega',
+  },
+  {
+    name: 'ATmega2561',
+    packageType: 'TQFP-64 / QFN-64 (MLF-64)',
+    value: '8bit AVR mikrokontrolér, 256 KB flash, 4 KB EEPROM, 8 KB SRAM, 54 GPIO, VCC 1,8–5,5 V',
+    notes:
+      'Atmel/Microchip ATmega640/1280/1281/2560/2561 (dok. 2549KS-AVR, rev. K, 01/07) — součást ' +
+      'stejné rodiny jako ATmega640/1280/1281/2560 (samostatné záznamy). ⚠️ ATmega2561 má stejnou ' +
+      'velikost flash jako ATmega2560 (256 KB), ale je v menším 64pinovém pouzdru s omezenější ' +
+      'sadou periferií (obdoba vztahu ATmega1281↔ATmega1280): 54 GPIO (ne 86), 6 PWM kanálů ' +
+      '(ne 12), 2 USART (ne 4), 8kanálový ADC (ne 16) — porty H/J/K/L, DAC a časovače T/C4, T/C5 ' +
+      'nejsou dostupné. Architektura, JTAG, napájecí rozsahy a spotřeba shodné s ATmega640 (viz ' +
+      'jeho záznam pro plný popis). 4 KB EEPROM, 8 KB SRAM.',
+    tags: 'io,mikrokontrolér,avr,atmega,atmega2561,8bit',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
