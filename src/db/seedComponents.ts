@@ -261,7 +261,25 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'Spínací časy (IC=150 mA, IB=15 mA): td=10 ns, tr=25 ns, ts=225 ns, tf=60 ns — vhodný i pro spínací aplikace.',
     tags: 'tranzistor,npn,bipolární,to-92,spínací,zesilovací,p2n2222a,2n2222a',
   },
-  { name: '2N3904', packageType: 'TO-92', value: 'NPN, 40 V, 200 mA', notes: 'Malovýkonový bipolární tranzistor', tags: 'tranzistor,npn,bipolární' },
+  {
+    name: '2N3904',
+    packageType: 'TO-92, 3 vývody: 1=emitor, 2=báze, 3=kolektor (pohled zepředu na popsanou stranu)',
+    value: 'NPN, VCEO 40 V, IC 200 mA, hFE 100–300 (@ IC=10 mA)',
+    notes:
+      'Malovýkonový bipolární NPN tranzistor pro obecné spínací a zesilovací aplikace — komplementární ' +
+      'k 2N3906. Datasheet GTM Corporation (jejich verze „G2N3904"), vydán 2003, revize 2005/06/24. ' +
+      'Mezní hodnoty: VCBO=60 V, VCEO=40 V, VEBO=6 V, IC=200 mA, Ptot=625 mW @TA=25 °C, ' +
+      'TJ=+150 °C, Tstg=-55 až +150 °C. ' +
+      'BVCBO min 60 V @IC=10 µA. BVCEO min 40 V @IC=1 mA. BVEBO min 6 V @IE=10 µA. ' +
+      'ICEX max 50 nA @VCE=30 V/VEB=3 V. IEBO max 50 nA @VEB=3 V. ' +
+      'VCE(sat) max 200 mV @IC=10 mA/IB=1 mA; max 300 mV @IC=50 mA/IB=5 mA. ' +
+      'VBE(sat) 650–850 mV @IC=10 mA/IB=1 mA; max 950 mV @IC=50 mA/IB=5 mA. ' +
+      'hFE: min 40 @IC=0,1 mA, min 70 @IC=1 mA, 100–300 @IC=10 mA, min 60 @IC=50 mA, min 30 @IC=100 mA ' +
+      '(vždy @VCE=1 V). ' +
+      'fT min 300 MHz @VCE=20 V/IE=10 mA/f=100 MHz. Cob max 4 pF @VCB=10 V. Cib max 8 pF @VEB=0,5 V. ' +
+      'Spínací časy (VCC=3 V, IC=10 mA, IB1=1 mA): td max 35 ns, tr max 35 ns, tstg max 200 ns, tf max 50 ns.',
+    tags: 'tranzistor,npn,bipolární,to-92,2n3904,spínací,zesilovací',
+  },
   { name: 'S8050', packageType: 'TO-92', value: 'NPN, 25 V, 700 mA', notes: 'Malovýkonový bipolární tranzistor', tags: 'tranzistor,npn,bipolární' },
   {
     name: 'KTC3542T',
