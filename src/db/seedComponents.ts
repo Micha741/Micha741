@@ -985,6 +985,25 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'Ciss max 11 pF, Crss max 5,5 pF @VDS=0/VGS=10 V/f=1 MHz.',
     tags: 'tranzistor,jfet,p-kanál,depletion,sot-23,smd,mmbfj177lt1g,j177,chopper',
   },
+  {
+    name: 'J110',
+    packageType: 'TO-92 (case 29, style 5), 3 vývody: 1=drain, 2=source, 3=gate',
+    value: 'N-JFET (depletion, obecné použití), VGS -25 V, RDS(on) max 18 Ω, IDSS min 10 mA',
+    notes:
+      'JFET pro obecné použití (audio zesilovače, analogové spínače, choppery), ON Semiconductor ' +
+      '(datasheet J110/D, rev. 6, listopad 2005), Pb-free provedení dostupné. Drain a source jsou ' +
+      'dle datasheetu vzájemně zaměnitelné. Hodnoty v N-kanálové depletion konvenci datasheetu jsou ' +
+      'záporné (VGS, VDG), zde uvedeny stejně. ' +
+      'Mezní hodnoty: VGS=-25 V, VDG=-25 V, IG=10 mA, Ptot=310 mW @TA=25 °C (odvod 2,82 mW/°C), ' +
+      'TJ=135 °C, Tstg=-65 až +150 °C. ' +
+      'V(BR)GSS min -25 V @IG=-1,0 µA. IGSS max -3,0 nA @VGS=-15 V/VDS=0 (max -200 nA @TA=100 °C). ' +
+      'VGS(off) -0,5 až -4,0 V @VDS=5,0 V/ID=1,0 µA. RDS(on) max 18 Ω @VDS≤0,1 V/VGS=0. ' +
+      'IDSS min 10 mA @VDS=15 V (zero-gate-voltage drain current). ' +
+      'Cdg(on)+Csg(on) max 85 pF @VDS=VGS=0/f=1 MHz. Cdg(off) max 15 pF, Csg(off) max 15 pF ' +
+      '@VGS=-10 V/f=1 MHz. ' +
+      'Rychlé spínání (typ.): td(on)+tr=8,0 ns. Nízký šum (typ.): en=6,0 nV/√Hz @10 Hz.',
+    tags: 'tranzistor,jfet,n-kanál,depletion,to-92,j110,chopper,zesilovací,spínací',
+  },
 ];
 
 function buildFromSpecs(specs: PartSpec[], category: 'Dioda' | 'Tranzistor'): ComponentInput[] {
