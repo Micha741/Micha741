@@ -125,7 +125,114 @@ const DIODE_SPECS: PartSpec[] = [
   { name: 'BAT43', packageType: 'DO-35', value: '200 mA / 30 V', notes: 'Schottky dioda', tags: 'dioda,schottky' },
   { name: 'BAT46', packageType: 'DO-35', value: '150 mA / 100 V', notes: 'Schottky dioda', tags: 'dioda,schottky' },
   { name: 'BAT85', packageType: 'DO-35', value: '200 mA / 30 V', notes: 'Schottky dioda', tags: 'dioda,schottky' },
-  { name: 'SS14', packageType: 'SMA (SMD)', value: '1 A / 40 V', notes: 'Schottky dioda, SMD', tags: 'dioda,schottky,smd' },
+  {
+    name: 'SS12',
+    packageType: 'SMA (SMD, case 403AE), 2 vývody: 1=anoda, 2=katoda',
+    value: 'Schottky dioda, VRRM 20 V, IF(AV) 1,0 A, VF max 500 mV @IF=1,0 A',
+    notes:
+      'Součást rodiny SS12–S100 (ON Semiconductor, datasheet SS19/D rev. 3, leden 2019) — společný ' +
+      'datasheet pro 8 dílů lišících se jen VRRM a VF, viz i sourozenecké záznamy SS13/SS14/SS15/SS16/' +
+      'SS18/SS19/S100. Pb-free/halogen-free, RoHS. Skleněný (glass-passivated) přechod, klip-bonded ' +
+      'nožičky pro nízký el. odpor a dobrý tepelný přenos. Vhodné pro free-wheeling, sekundární ' +
+      'usměrnění, ochranu proti přepólování. ' +
+      'Mezní hodnoty: VRRM=20 V, IF(AV)=1,0 A (0,375" délka vývodu @TA=75 °C), IFSM=40 A ' +
+      '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
+      'RθJA=88 °C/W (na FR4 desce). ' +
+      'VF max 500 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    tags: 'dioda,schottky,smd,sma,ss12',
+  },
+  {
+    name: 'SS13',
+    packageType: 'SMA (SMD, case 403AE), 2 vývody: 1=anoda, 2=katoda',
+    value: 'Schottky dioda, VRRM 30 V, IF(AV) 1,0 A, VF max 500 mV @IF=1,0 A',
+    notes:
+      'Součást rodiny SS12–S100 (ON Semiconductor, datasheet SS19/D rev. 3, leden 2019) — viz ' +
+      'poznámka u sourozeneckého záznamu SS12 pro plný popis rodiny. Pb-free/halogen-free, RoHS. ' +
+      'Mezní hodnoty: VRRM=30 V, IF(AV)=1,0 A (0,375" délka vývodu @TA=75 °C), IFSM=40 A ' +
+      '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
+      'RθJA=88 °C/W (na FR4 desce). ' +
+      'VF max 500 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    tags: 'dioda,schottky,smd,sma,ss13',
+  },
+  {
+    name: 'SS14',
+    packageType: 'SMA (SMD, case 403AE), 2 vývody: 1=anoda, 2=katoda',
+    value: 'Schottky dioda, VRRM 40 V, IF(AV) 1,0 A, VF max 500 mV @IF=1,0 A',
+    notes:
+      'Součást rodiny SS12–S100 (ON Semiconductor, datasheet SS19/D rev. 3, leden 2019) — viz ' +
+      'poznámka u sourozeneckého záznamu SS12 pro plný popis rodiny. Pb-free/halogen-free, RoHS. ' +
+      'Mezní hodnoty: VRRM=40 V, IF(AV)=1,0 A (0,375" délka vývodu @TA=75 °C), IFSM=40 A ' +
+      '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
+      'RθJA=88 °C/W (na FR4 desce). ' +
+      'VF max 500 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    tags: 'dioda,schottky,smd,sma,ss14',
+  },
+  {
+    name: 'SS15',
+    packageType: 'SMA (SMD, case 403AE), 2 vývody: 1=anoda, 2=katoda',
+    value: 'Schottky dioda, VRRM 50 V, IF(AV) 1,0 A, VF max 700 mV @IF=1,0 A',
+    notes:
+      'Součást rodiny SS12–S100 (ON Semiconductor, datasheet SS19/D rev. 3, leden 2019) — viz ' +
+      'poznámka u sourozeneckého záznamu SS12 pro plný popis rodiny. Pb-free/halogen-free, RoHS. ' +
+      'Mezní hodnoty: VRRM=50 V, IF(AV)=1,0 A (0,375" délka vývodu @TA=75 °C), IFSM=40 A ' +
+      '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
+      'RθJA=88 °C/W (na FR4 desce). ' +
+      'VF max 700 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    tags: 'dioda,schottky,smd,sma,ss15',
+  },
+  {
+    name: 'SS16',
+    packageType: 'SMA (SMD, case 403AE), 2 vývody: 1=anoda, 2=katoda',
+    value: 'Schottky dioda, VRRM 60 V, IF(AV) 1,0 A, VF max 700 mV @IF=1,0 A',
+    notes:
+      'Součást rodiny SS12–S100 (ON Semiconductor, datasheet SS19/D rev. 3, leden 2019) — viz ' +
+      'poznámka u sourozeneckého záznamu SS12 pro plný popis rodiny. Pb-free/halogen-free, RoHS. ' +
+      'Mezní hodnoty: VRRM=60 V, IF(AV)=1,0 A (0,375" délka vývodu @TA=75 °C), IFSM=40 A ' +
+      '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
+      'RθJA=88 °C/W (na FR4 desce). ' +
+      'VF max 700 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    tags: 'dioda,schottky,smd,sma,ss16',
+  },
+  {
+    name: 'SS18',
+    packageType: 'SMA (SMD, case 403AE), 2 vývody: 1=anoda, 2=katoda',
+    value: 'Schottky dioda, VRRM 80 V, IF(AV) 1,0 A, VF max 850 mV @IF=1,0 A',
+    notes:
+      'Součást rodiny SS12–S100 (ON Semiconductor, datasheet SS19/D rev. 3, leden 2019) — viz ' +
+      'poznámka u sourozeneckého záznamu SS12 pro plný popis rodiny. Pb-free/halogen-free, RoHS. ' +
+      'Mezní hodnoty: VRRM=80 V, IF(AV)=1,0 A (0,375" délka vývodu @TA=75 °C), IFSM=40 A ' +
+      '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
+      'RθJA=88 °C/W (na FR4 desce). ' +
+      'VF max 850 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    tags: 'dioda,schottky,smd,sma,ss18',
+  },
+  {
+    name: 'SS19',
+    packageType: 'SMA (SMD, case 403AE), 2 vývody: 1=anoda, 2=katoda',
+    value: 'Schottky dioda, VRRM 90 V, IF(AV) 1,0 A, VF max 850 mV @IF=1,0 A',
+    notes:
+      'Součást rodiny SS12–S100 (ON Semiconductor, datasheet SS19/D rev. 3, leden 2019) — viz ' +
+      'poznámka u sourozeneckého záznamu SS12 pro plný popis rodiny. Pb-free/halogen-free, RoHS. ' +
+      'Mezní hodnoty: VRRM=90 V, IF(AV)=1,0 A (0,375" délka vývodu @TA=75 °C), IFSM=40 A ' +
+      '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
+      'RθJA=88 °C/W (na FR4 desce). ' +
+      'VF max 850 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    tags: 'dioda,schottky,smd,sma,ss19',
+  },
+  {
+    name: 'S100',
+    packageType: 'SMA (SMD, case 403AE), 2 vývody: 1=anoda, 2=katoda',
+    value: 'Schottky dioda, VRRM 100 V, IF(AV) 1,0 A, VF max 850 mV @IF=1,0 A',
+    notes:
+      'Součást rodiny SS12–S100 (ON Semiconductor, datasheet SS19/D rev. 3, leden 2019) — nejvyšší ' +
+      'napěťová varianta rodiny, viz poznámka u sourozeneckého záznamu SS12 pro plný popis rodiny. ' +
+      'Pb-free/halogen-free, RoHS. ' +
+      'Mezní hodnoty: VRRM=100 V, IF(AV)=1,0 A (0,375" délka vývodu @TA=75 °C), IFSM=40 A ' +
+      '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
+      'RθJA=88 °C/W (na FR4 desce). ' +
+      'VF max 850 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    tags: 'dioda,schottky,smd,sma,s100',
+  },
   { name: 'SS34', packageType: 'SMB (SMD)', value: '3 A / 40 V', notes: 'Schottky dioda, SMD', tags: 'dioda,schottky,smd' },
 
   { name: 'BZX55C3V3', packageType: 'DO-35', value: '3,3 V / 0,5 W', notes: 'Zenerova dioda', tags: 'dioda,zener' },
