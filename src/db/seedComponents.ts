@@ -402,17 +402,28 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     value: 'NPN Darlington, VCEO 80 V, IC 10 A (trvale), hFE min 1000 (@ IC=5 A)',
     notes:
       'Velmi vysokozisková NPN Darlington výkonová "Silicon Power Pac" — driver, regulátor, budič relé/ ' +
-      'solenoidu, audio výstup. Datasheet New Jersey Semi-Conductor Products. D44E3 má nejvyšší ' +
-      'napěťovou třídu rodiny (D44E1=40 V, D44E2=60 V, D44E3=80 V — VCEO/VCES). ' +
-      'Mezní hodnoty: VCEO=VCES=80 V, VEBO=7 V, IC(trvalý)=10 A, ICM (špičkově, 50% střída, 25 ms puls)=20 A, ' +
-      'IB(trvalý) max=1 A. Ptot=50 W @TC=25 °C na pouzdru / jen 1,67 W @TA=25 °C na volném vzduchu bez ' +
-      'chladiče. RθJC=2,5 °C/W, RθJA=75 °C/W. TJ/Tstg=-55 až +150 °C. Teplota vývodu max 260 °C ' +
-      '(1/16"±1/32" od pouzdra, 10 s). ' +
-      'hFE @IC=5 A/VCE=5 V: min 1000. VCE(sat) max 1,5 V @IC=5 A/IB=10 mA; max 2,0 V @IC=10 A/IB=20 mA. ' +
-      'VBE(sat) max 2,5 V @IC=5 A/IB=10 mA. ' +
-      'ICES max 10 µA @Tj=25 °C (max 1,0 mA @Tj=150 °C, při jmenovitém VCES). IEBO max 1,0 µA @VEB=7 V. ' +
-      'CCBO max 130 pF @VCB=10 V/f=1 MHz. ' +
-      'Spínací časy (IC=10 A, IB=20 mA): td+tr max 0,6 µs, ts max 2,0 µs, tf max 0,5 µs. ' +
+      'solenoidu, audio výstup. Vyrobena epitaxním base procesem se 2 integrovanými rezistory a 1 diodou ' +
+      'pro stabilitu a ochranu (dle Central Semiconductor) — podobně jako TIP120, vhodná pro přímé ' +
+      'spínání induktivní zátěže. Srovnání 2 datasheetů: New Jersey Semi-Conductor Products (starší) a ' +
+      'Central Semiconductor Corp (2014, R1). D44E3 má nejvyšší napěťovou třídu rodiny (D44E1=40 V, ' +
+      'D44E2=60 V, D44E3=80 V — VCEO/VCES, shoda obou zdrojů). ' +
+      'Mezní hodnoty: VCEO=VCES=80 V, VEBO=7 V, IC(trvalý)=10 A (shoda), IB(trvalý) max=1 A (shoda). ' +
+      'ICM (špičkově, 50% střída, 25 ms puls)=20 A (jen NJSC). ' +
+      'Ptot: 80 W (Central, bez upřesnění podmínek) / 50 W @TC=25 °C na pouzdru, jen 1,67 W @TA=25 °C ' +
+      'na volném vzduchu bez chladiče (NJSC) — zdroje se liší, drž se konzervativnější (nižší) hodnoty ' +
+      'bez ověřeného chlazení. RθJC=1,56 °C/W (Central) / 2,5 °C/W (NJSC) — také rozdíl mezi zdroji. ' +
+      'RθJA=75 °C/W (NJSC). TJ/Tstg=-65/-55 až +150 °C. Teplota vývodu max 260 °C (NJSC, 1/16"±1/32" ' +
+      'od pouzdra, 10 s). ' +
+      'hFE @IC=5 A/VCE=5 V: min 1000 (shoda obou zdrojů). ' +
+      'VCE(sat) max 1,5 V @IC=5 A/IB=10 mA; max 3,0 V @IC=10 A/IB=20 mA (shoda obou zdrojů — velmi ' +
+      'konzistentní parametr). VBE(sat) max 2,5 V @IC=5 A/IB=10 mA (shoda). ' +
+      'ICES max 500 µA @VCE=rated VCES, 25 °C (Central) / max 10 µA @25 °C, max 1,0 mA @150 °C (NJSC) — ' +
+      'nekonzistentní, ber jako orientační řádovou hodnotu. ' +
+      'IEBO @VEB=7 V: max 5,0 mA (Central) / max 1,0 µA (NJSC) — výrazný rozpor mezi zdroji (možný ' +
+      'překlep v jednom z listů), neber doslovně, ověř na konkrétním kusu. ' +
+      'Cob/CCBO @VCB=10 V/f=1 MHz: max 200 pF (Central) / max 130 pF (NJSC). ' +
+      'Spínací časy (IC=10 A, IB=20 mA): ton max 1,0 µs (Central) odpovídá NJSC td+tr max 0,6 µs; ' +
+      'toff max 2,5 µs (Central) přesně odpovídá součtu NJSC ts (2,0 µs) + tf (0,5 µs). ' +
       '⚠️ Montážní ploška (pin 4) je na potenciálu kolektoru — při montáži na uzemněný/sdílený chladič ' +
       'použij izolační podložku, pokud kolektor není na zemním potenciálu.',
     tags: 'tranzistor,npn,bipolární,darlington,to-220,d44e3,relé,pozor-chladič',
