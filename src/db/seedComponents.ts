@@ -536,7 +536,30 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'Spínací časy (odporová zátěž, IC=1 A): ton typ 0,3 µs, toff typ 1 µs.',
     tags: 'tranzistor,npn,bipolární,výkonový,to-220,bd243c,pozor-chladič',
   },
-  { name: 'TIP3055', packageType: 'TO-218/TO-220', value: 'NPN, 60 V, 15 A', notes: 'Výkonový bipolární tranzistor', tags: 'tranzistor,npn,výkonový' },
+  {
+    name: 'TIP3055',
+    packageType:
+      'TO-247 (dříve i SOT-93/TO-218, od 6/2012 jen TO-247) — vývody: 1=báze, 2=kolektor, ' +
+      '3=emitor, 4=kolektor (u TO-218/TO-247 stejné jako chladicí ploška)',
+    value: 'NPN, VCEO 60 V, IC 15 A (trvale), hFE 20–70 (@ IC=4 A)',
+    notes:
+      'Plastová/výkonová obdoba klasického 2N3055 (stejná elektrická rodina — datasheet ON ' +
+      'Semiconductor odkazuje na charakteristické křivky 2N3055), PNP komplement TIP2955. ' +
+      'Od června 2012 dodáváno pouze v pouzdru TO-247 (FPCN#16827), dříve i SOT-93/TO-218. ' +
+      'Mezní hodnoty: VCEO=60 V, VCER=70 V (s RBE=100 Ω), VCB=100 V, VEB=7 V, IC(trvalý)=15 A, ' +
+      'IB max=7 A, Ptot=90 W @TC=25 °C (odvod 0,72 W/°C), TJ/Tstg=-65 až +150 °C. ' +
+      'RθJC=1,39 °C/W, RθJA=35,7 °C/W. ' +
+      'VCEO(sus) min 60 V @IC=30 mA/IB=0. ICER max 1,0 mA @VCE=70 V/RBE=100 Ω. ' +
+      'ICEO max 0,7 mA @VCE=30 V/IB=0. ICEV max 5,0 mA @VCE=100 V/VBE(off)=1,5 V. ' +
+      'IEBO max 5,0 mA @VEB=7 V. ' +
+      'hFE @IC=4 A/VCE=4 V: min 20, max 70. @IC=10 A/VCE=4 V: min 5. ' +
+      'VCE(sat) max 1,1 V @IC=4 A/IB=400 mA; max 3,0 V @IC=10 A/IB=3,3 A. VBE(on) max 1,8 V @IC=4 A/VCE=4 V. ' +
+      'Druhý průraz (second breakdown): Is/b min 3,0 A @VCE=30 V, t=1,0 s (nonrepetitivní). ' +
+      'fT min 2,5 MHz @IC=0,5 A/VCE=10 V/f=1 MHz. hfe (malý signál) min 15 @VCE=4 V/IC=1 A/f=1 kHz. ' +
+      '⚠️ U TO-218/TO-247 varianty je chladicí ploška/pin 4 spojena s kolektorem — při montáži na ' +
+      'sdílený/uzemněný chladič použij izolační podložku, pokud kolektor není na zemním potenciálu.',
+    tags: 'tranzistor,npn,bipolární,výkonový,to-247,to-218,tip3055,tip2955',
+  },
   {
     name: '2N3055',
     packageType: 'TO-3 — vývody: 1=báze, 2=emitor, 3=kolektor (kolektor je spojen s kovovým pouzdrem/case!)',
