@@ -187,7 +187,40 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   { name: 'BC548', packageType: 'TO-92', value: 'NPN, 30 V, 100 mA', notes: 'Malovýkonový bipolární tranzistor', tags: 'tranzistor,npn,bipolární' },
   { name: 'BC549', packageType: 'TO-92', value: 'NPN, 30 V, 100 mA', notes: 'Malovýkonový bipolární tranzistor, nízký šum', tags: 'tranzistor,npn,bipolární' },
   { name: '2N2222', packageType: 'TO-18', value: 'NPN, 40 V, 800 mA', notes: 'Malovýkonový bipolární tranzistor', tags: 'tranzistor,npn,bipolární' },
-  { name: '2N2222A', packageType: 'TO-18', value: 'NPN, 75 V, 800 mA', notes: 'Malovýkonový bipolární tranzistor', tags: 'tranzistor,npn,bipolární' },
+  {
+    name: '2N2222A',
+    packageType: 'TO-18 — vývody: 1=kolektor, 2=báze, 3=emitor',
+    value: 'NPN, VCEO 40 V, VCBO 75 V, IC 600–800 mA (dle pouzdra/výrobce)',
+    notes:
+      'OPRAVA: dříve uvedených 75 V byla ve skutečnosti hodnota VCBO, ne VCEO — opraveno podle ' +
+      'datasheetu plastové varianty P2N2222A/D (Motorola), která sdílí stejnou elektrickou třídu "A". ' +
+      'VCEO=40 V, VCBO=75 V, VEBO=6,0 V. hFE typicky 100–300 (@IC=150 mA), fT typ 300 MHz. ' +
+      'Podrobná data viz samostatná položka „P2N2222A“ (plastová TO-92 verze téže třídy A).',
+    tags: 'tranzistor,npn,bipolární',
+  },
+  {
+    name: 'P2N2222A',
+    packageType: 'TO-92 (TO-226AA, Case 29-04, styl 17) — vývody: 1=kolektor, 2=báze, 3=emitor',
+    value: 'NPN, VCEO 40 V, VCBO 75 V, IC(trvalý) 600 mA, hFE 100–300 (@ IC=150 mA)',
+    notes:
+      'Plastová TO-92 verze tranzistoru 2N2222A (elektricky stejná třída "A" jako kovový TO-18 ' +
+      '2N2222A, ale nižší proudové/výkonové zatížení pouzdra). Datasheet Motorola P2N2222A/D. ' +
+      'Mezní hodnoty: VCEO=40 V, VCBO=75 V, VEBO=6,0 V, IC(trvalý)=600 mA. ' +
+      'PD=625 mW @TA=25 °C (1,5 W @TC=25 °C), TJ/Tstg=-55 až +150 °C. ' +
+      'RθJA=200 °C/W, RθJC=83,3 °C/W. ' +
+      'Off charakteristiky: V(BR)CEO min 40 V, V(BR)CBO min 75 V, V(BR)EBO min 6,0 V. ' +
+      'ICEX max 10 nA @VCE=60 V. ICBO max 0,01 µA @25 °C / max 10 µA @Tj=150 °C (VCB=60 V). ' +
+      'IEBO max 10 nA, ICEO max 10 nA @VCE=10 V, IBEX max 20 nA. ' +
+      'hFE: @IC=0,1 mA min 35; @1 mA min 50; @10 mA min 75 (min 35 při -55 °C); ' +
+      '@150 mA min 100, max 300; @150 mA/VCE=1 V min 50; @500 mA min 40. ' +
+      'VCE(sat) @IC=150 mA/IB=15 mA: max 0,3 V. @IC=500 mA/IB=50 mA: max 1,0 V. ' +
+      'VBE(sat) @IC=150 mA/IB=15 mA: 0,6–1,2 V. @IC=500 mA/IB=50 mA: max 2,0 V. ' +
+      'fT @IC=20 mA/VCE=20 V/f=100 MHz: min 300 MHz. ' +
+      'Cobo max 8,0 pF @VCB=10 V. Cibo max 25 pF @VEB=0,5 V. ' +
+      'Šum NF max 4,0 dB @IC=100 µA/VCE=10 V/RS=1 kΩ. ' +
+      'Spínací časy (IC=150 mA, IB=15 mA): td=10 ns, tr=25 ns, ts=225 ns, tf=60 ns — vhodný i pro spínací aplikace.',
+    tags: 'tranzistor,npn,bipolární,to-92,spínací,zesilovací,p2n2222a,2n2222a',
+  },
   { name: '2N3904', packageType: 'TO-92', value: 'NPN, 40 V, 200 mA', notes: 'Malovýkonový bipolární tranzistor', tags: 'tranzistor,npn,bipolární' },
   { name: 'S8050', packageType: 'TO-92', value: 'NPN, 25 V, 700 mA', notes: 'Malovýkonový bipolární tranzistor', tags: 'tranzistor,npn,bipolární' },
 
