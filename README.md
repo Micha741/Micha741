@@ -13,13 +13,14 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    262 běžných součástek: 84 rezistorů (řada E12, 1 Ω – 8,2 MΩ), 39 kondenzátorů
+    264 běžných součástek: 84 rezistorů (řada E12, 1 Ω – 8,2 MΩ), 39 kondenzátorů
     (keramické, elektrolytické, tantalové, fóliové), 42 diod (usměrňovací, spínací,
     Schottky, Zenerovy, LED), 58 tranzistorů (bipolární NPN/PNP, Darlington, výkonové,
-    MOSFET, JFET) a 39 integrovaných obvodů (časovače, komparátory, op-zesilovače,
-    regulátory, logická hradla, čítače, Wi-Fi/BLE mikrokontrolér ESP32-C3 aj.).
-    Tlačítkem „Knihovna” v horní liště lze kdykoli doplnit chybějící položky
-    (např. po smazání), aniž by se duplikovaly už existující.
+    MOSFET, JFET), 39 integrovaných obvodů (časovače, komparátory, op-zesilovače,
+    regulátory, logická hradla, čítače, Wi-Fi/BLE mikrokontrolér ESP32-C3 aj.) a
+    2 Wi-Fi/BLE moduly (ESP32-C3-MINI-1, ESP32-C3-WROOM-02). Tlačítkem „Knihovna”
+    v horní liště lze kdykoli doplnit chybějící položky (např. po smazání), aniž
+    by se duplikovaly už existující.
 
 ## Plánováno dál
 

@@ -1,5 +1,6 @@
 import type { ComponentInput } from '../types/component';
 import { buildIcSeed } from './seedICs';
+import { buildModuleSeed } from './seedModules';
 
 function formatResistance(ohms: number): string {
   if (ohms >= 1_000_000) {
@@ -1099,4 +1100,5 @@ export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildFromSpecs(DIODE_SPECS, 'Dioda'),
   ...buildFromSpecs(TRANSISTOR_SPECS, 'Tranzistor'),
   ...buildIcSeed(),
+  ...buildModuleSeed(),
 ];
