@@ -718,7 +718,37 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   },
   { name: '2N7000', packageType: 'TO-92', value: 'N-MOSFET, 60 V, 200 mA', notes: 'Malovýkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál' },
 
-  { name: 'IRF9540', packageType: 'TO-220', value: 'P-MOSFET, -100 V, -19 A', notes: 'Výkonový spínací MOSFET', tags: 'tranzistor,mosfet,p-kanál' },
+  {
+    name: 'IRF9540',
+    packageType: 'TO-220',
+    value: 'P-MOSFET, -100 V, -19 A',
+    notes:
+      'Výkonový spínací MOSFET. Existuje i novější/mírně odlišný díl „IRF9540N" (5. generace HEXFET, ' +
+      'ID=-23 A, RDS(on)=0,117 Ω) — viz samostatná položka, pokud máš konkrétně tuto verzi.',
+    tags: 'tranzistor,mosfet,p-kanál',
+  },
+  {
+    name: 'IRF9540N',
+    packageType: 'TO-220AB, 4 vývody: 1=gate, 2=drain, 3=source, 4=drain (chladicí ploška = drain)',
+    value: 'P-MOSFET, VDSS -100 V, ID -23 A (@TC=25 °C), RDS(on) max 0,117 Ω (@VGS=-10 V)',
+    notes:
+      '5. generace HEXFET od International Rectifier — odlišný/novější díl od generického „IRF9540" ' +
+      '(ten má ID=-19 A). Hodnoty v datasheetu jsou v P-kanálové konvenci záporné, zde uvedeny stejně. ' +
+      'Mezní hodnoty: VDSS=-100 V, VGS=±20 V, ID(trvalý)=-23 A @TC=25 °C (-16 A @TC=100 °C), ' +
+      'IDM (pulzně)=-76 A, Ptot=140 W @TC=25 °C (odvod 0,91 W/°C), TJ/Tstg=-55 až +175 °C. ' +
+      'EAS (jednorázová lavinová energie)=430 mJ. IAR (lavinový proud)=-11 A, EAR (opakovatelná ' +
+      'lavinová energie)=14 mJ. dv/dt=-5,0 V/ns. ' +
+      'RθJC max 1,1 °C/W, RθCS typ 0,50 °C/W, RθJA max 62 °C/W. ' +
+      'V(BR)DSS min -100 V @ID=-250 µA. VGS(th) -2,0 až -4,0 V @ID=-250 µA. ' +
+      'RDS(on) max 0,117 Ω @VGS=-10 V/ID=-11 A. gfs min 5,3 S @VDS=-50 V/ID=-11 A. ' +
+      'IDSS max -25 µA @VDS=-100 V (max -250 µA @TJ=150 °C). IGSS max ±100 nA @VGS=±20 V. ' +
+      'Qg(tot) max 97 nC @ID=-11 A, Qgs typ 15 nC, Qgd typ 51 nC. ' +
+      'Spínání (VDD=-50 V, ID=-11 A, RG=5,1 Ω): td(on) typ 15 ns, tr typ 67 ns, td(off) typ 51 ns, tf typ 51 ns. ' +
+      'Kapacity @f=1 MHz: Ciss typ 1300 pF, Coss typ 400 pF, Crss typ 240 pF. ' +
+      'Tělesová dioda: IS(trvalý)=-23 A, ISM(pulzně)=-76 A. VSD max -1,6 V @IS=-11 A. ' +
+      'trr typ 150, max 220 ns @IF=-11 A/di/dt=-100 A/µs. Qrr typ 830, max 1200 nC.',
+    tags: 'tranzistor,mosfet,p-kanál,to-220,irf9540n,spínací',
+  },
   { name: 'IRF4905', packageType: 'TO-220', value: 'P-MOSFET, -55 V, -74 A', notes: 'Výkonový spínací MOSFET', tags: 'tranzistor,mosfet,p-kanál' },
 
   { name: '2N5457', packageType: 'TO-92', value: 'N-JFET', notes: 'Unipolární (JFET) tranzistor', tags: 'tranzistor,jfet,n-kanál' },
