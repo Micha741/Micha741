@@ -270,7 +270,30 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   { name: '2N3906', packageType: 'TO-92', value: 'PNP, 40 V, 200 mA', notes: 'Malovýkonový bipolární tranzistor', tags: 'tranzistor,pnp,bipolární' },
   { name: 'S8550', packageType: 'TO-92', value: 'PNP, 25 V, 700 mA', notes: 'Malovýkonový bipolární tranzistor', tags: 'tranzistor,pnp,bipolární' },
 
-  { name: 'TIP120', packageType: 'TO-220', value: 'NPN Darlington, 60 V, 5 A', notes: 'Darlington tranzistor', tags: 'tranzistor,npn,darlington' },
+  {
+    name: 'TIP120',
+    packageType:
+      'TO-220, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=kolektor ' +
+      '(chladicí ploška pouzdra je elektricky spojená s kolektorem!)',
+    value: 'NPN Darlington, VCEO(sus) 60 V (min), IC 5 A (trvale), hFE min 1000',
+    notes:
+      'Monolitický Darlington s integrovaným rezistorem báze-emitor a vestavěnou ochrannou ' +
+      '(zpětnou) diodou mezi kolektorem a emitorem — vhodný pro přímé spínání induktivní zátěže ' +
+      '(relé, motor, solenoid) z mikrokontroléru přes bázový rezistor, bez nutnosti externí ' +
+      'flyback diody. Datasheet MOSPEC pro rodinu TIP120/121/122 (NPN) a PNP komplement ' +
+      'TIP125/126/127 — TIP120/125 mají nejnižší napěťovou třídu rodiny (TIP121/126=80 V, ' +
+      'TIP122/127=100 V). ' +
+      'Mezní hodnoty: VCEO=VCBO=60 V, VEBO=5,0 V, IC(trvalý)=5,0 A, ICM (špičkově)=8,0 A, ' +
+      'IB max=120 mA, Ptot=65 W @TC=25 °C (odvod 0,52 W/°C), TJ/Tstg=-65 až +150 °C. RθJC=1,92 °C/W. ' +
+      'ICEO max 0,5 mA @VCE=30 V. ICBO max 0,2 mA @VCB=60 V. IEBO max 2,0 mA @VEB=5 V. ' +
+      'hFE (DC, pulzní test): min 1000 @IC=0,5 A i @IC=3,0 A/VCE=3,0 V (typicky výrazně vyšší, dle grafu). ' +
+      'VCE(sat) max 2,0 V @IC=3,0 A/IB=12 mA; max 4,0 V @IC=5,0 A/IB=20 mA. ' +
+      'VBE(on) max 2,5 V @IC=3,0 A/VCE=3,0 V. hfe (malý signál) min 4,0 @IC=3,0 A/VCE=4,0 V/f=1 MHz. ' +
+      'Cob max 300 pF @VCB=10 V/f=0,1 MHz. ' +
+      '⚠️ Chladicí ploška (pin 4 i kovový tab) je na potenciálu kolektoru — při montáži na uzemněný ' +
+      'nebo sdílený chladič použij izolační podložku, pokud kolektor není na zemním potenciálu.',
+    tags: 'tranzistor,npn,bipolární,darlington,to-220,tip120,spínací,relé,motor,pozor-chladič',
+  },
   { name: 'TIP125', packageType: 'TO-220', value: 'PNP Darlington, 60 V, 5 A', notes: 'Darlington tranzistor', tags: 'tranzistor,pnp,darlington' },
   { name: 'BC517', packageType: 'TO-92', value: 'NPN Darlington, 30 V, 400 mA', notes: 'Darlington tranzistor', tags: 'tranzistor,npn,darlington' },
 
