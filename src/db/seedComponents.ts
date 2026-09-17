@@ -849,6 +849,26 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '(pulzní test, šířka pulzu ≤300 µs, střída ≤2 %).',
     tags: 'tranzistor,mosfet,n-kanál,to-92,logická-úroveň,malý-signál,g2n7000,2n7000,spínací',
   },
+  {
+    name: 'G2N7002',
+    packageType:
+      'SOT-23 (SMD), 3 vývody: 1=gate, 2=source, 3=drain (pohled zepředu na popsanou stranu, značka „702")',
+    value: 'N-MOSFET (SMD, malý signál), VDS 60 V, ID 500 mA, RDS(on) max 4,5 Ω @VGS=10 V',
+    notes:
+      '⚠️ Jiný díl než „G2N7000" (TO-92, ID=200 mA) — jde o SMD ekvivalent, elektricky odpovídá ' +
+      'běžnému 2N7002, ne 2N7000. GTM Corporation (datasheet vydán 2003, revize 2006/01/17), ' +
+      'Pb-free pokovení. Určen univerzálně pro komerční/průmyslové SMD aplikace. ' +
+      'Mezní hodnoty: VDS=60 V, VGS=±20 V (nepřerušovaně), VGS(M)=±40 V (jednorázově, tp≤50 µs), ' +
+      'ID(trvalý)=500 mA, IDM (pulzně)=800 mA, Ptot=225 mW @TA=25 °C, TJ/Tstg=-55 až +150 °C, ' +
+      'RθJA=556 °C/W. ' +
+      'BVDSS min 60 V @VGS=0/ID=250 µA. VGS(th) 1,0–2,5 V @VDS=2,5 V/ID=0,25 mA. ' +
+      'IGSS max ±100 nA @VGS=±20 V/VDS=0. IDSS max 1 µA @VDS=60 V/VGS=0. ' +
+      'ID(on) min 500 mA @VDS=7,5 V/VGS=10 V. ' +
+      'RDS(on) max 5 Ω @ID=50 mA/VGS=5 V; max 4,5 Ω @ID=500 mA/VGS=10 V. ' +
+      'gfs min 80 mS @VDS>2·VDS(on)/ID=200 mA. ' +
+      'Ciss max 50 pF, Coss max 25 pF, Crss max 5 pF (@VDS=25 V/VGS=0/f=1 MHz).',
+    tags: 'tranzistor,mosfet,n-kanál,sot-23,smd,logická-úroveň,malý-signál,g2n7002,2n7002,spínací',
+  },
 
   { name: '2N5457', packageType: 'TO-92', value: 'N-JFET', notes: 'Unipolární (JFET) tranzistor', tags: 'tranzistor,jfet,n-kanál' },
   { name: 'BF245', packageType: 'TO-92', value: 'N-JFET', notes: 'Unipolární (JFET) tranzistor', tags: 'tranzistor,jfet,n-kanál' },
