@@ -483,7 +483,25 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,npn,bipolární,výkonový,to-220,bd243c,pozor-chladič',
   },
   { name: 'TIP3055', packageType: 'TO-218/TO-220', value: 'NPN, 60 V, 15 A', notes: 'Výkonový bipolární tranzistor', tags: 'tranzistor,npn,výkonový' },
-  { name: '2N3055', packageType: 'TO-3', value: 'NPN, 60 V, 15 A', notes: 'Výkonový bipolární tranzistor', tags: 'tranzistor,npn,výkonový' },
+  {
+    name: '2N3055',
+    packageType: 'TO-3 — vývody: 1=báze, 2=emitor, 3=kolektor (kolektor je spojen s kovovým pouzdrem/case!)',
+    value: 'NPN, VCEO 60 V, IC 15 A (trvale), hFE 20–70 (@ IC=4 A)',
+    notes:
+      'Klasický výkonový tranzistor pro obecné zesilovací a spínací aplikace. Datasheet Multicomp Pro ' +
+      '(2019), pouzdro TO-3. ' +
+      'Mezní hodnoty: VCEO=60 V, VCEX=70 V (s reverzní bází), VCBO=100 V, VEBO=7 V, IC(trvalý)=15 A, ' +
+      'IB max=7 A, Ptot=115 W @TC=25 °C (odvod 0,657 W/°C), TJ/Tstg=-65 až +150 °C. RθJC=1,52 °C/W. ' +
+      'VCEO(sus) min 60 V @IC=200 mA/IB=0. VCER(sus) min 70 V @IC=200 mA/RBE=100 Ω. ' +
+      'ICEO max 0,7 mA @VCE=30 V/IB=0. ICEX max 1 mA @VCE=100 V/VBE(off)=1,5 V (max 5 mA @TC=150 °C). ' +
+      'IEBO max 5 mA @VEB=7 V. ' +
+      'hFE @IC=4 A/VCE=4 V: min 20, max 70. @IC=10 A/VCE=4 V: min 5. ' +
+      'VCE(sat) max 1,1 V @IC=4 A/IB=0,4 A; max 3 V @IC=10 A/IB=3,3 A. VBE(sat) max 1,5 V @IC=4 A/VCE=4 V. ' +
+      'fT min 2,5 MHz @IC=500 mA/VCE=10 V/f=1 MHz. hfe (malý signál) min 15, max 120 @IC=1 A/VCE=4 V/f=1 MHz. ' +
+      '⚠️ Pouzdro TO-3 nemá izolovanou patici — kolektor je přímo spojen s kovovým tělem tranzistoru; ' +
+      'při montáži na společný chladič s jinými součástkami použij izolační podložku a průchodku.',
+    tags: 'tranzistor,npn,bipolární,výkonový,to-3,2n3055,pozor-chladič',
+  },
   { name: 'BD135', packageType: 'TO-126', value: 'NPN, 45 V, 1,5 A', notes: 'Výkonový bipolární tranzistor', tags: 'tranzistor,npn,výkonový' },
   { name: 'BD139', packageType: 'TO-126', value: 'NPN, 80 V, 1,5 A', notes: 'Výkonový bipolární tranzistor', tags: 'tranzistor,npn,výkonový' },
 
