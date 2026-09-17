@@ -768,7 +768,87 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'viz tam pro plný výčet.',
     tags: 'tranzistor,mosfet,p-kanál,smd,d2pak,to-262,irf9540ns,irf9540nl,spínací',
   },
-  { name: 'IRF4905', packageType: 'TO-220', value: 'P-MOSFET, -55 V, -74 A', notes: 'Výkonový spínací MOSFET', tags: 'tranzistor,mosfet,p-kanál' },
+  {
+    name: 'IRF4905',
+    packageType:
+      'TO-220AB, 4 vývody: 1=gate, 2=drain, 3=source, 4=drain (chladicí ploška = drain)',
+    value: 'P-MOSFET, VDSS -55 V, ID -74 A (@TC=25 °C), RDS(on) max 0,020 Ω (@VGS=-10 V)',
+    notes:
+      'HEXFET Power MOSFET, International Rectifier (datasheet 8/25/97). ' +
+      'Mezní hodnoty: VDSS=-55 V, VGS=±20 V, ID(trvalý)=-74 A @TC=25 °C (-52 A @TC=100 °C), ' +
+      'IDM (pulzně)=-260 A, Ptot=200 W @TC=25 °C (odvod 1,3 W/°C), TJ/Tstg=-55 až +175 °C. ' +
+      'EAS (jednorázová lavinová energie)=930 mJ. IAR (lavinový proud)=-38 A, EAR (opakovatelná ' +
+      'lavinová energie)=20 mJ. dv/dt=-5,0 V/ns. ' +
+      'RθJC max 0,75 °C/W, RθCS typ 0,50 °C/W, RθJA max 62 °C/W. ' +
+      'V(BR)DSS min -55 V @ID=-250 µA (ΔV(BR)DSS/ΔTJ typ -0,05 V/°C). ' +
+      'VGS(th) -2,0 až -4,0 V @ID=-250 µA. RDS(on) max 0,020 Ω @VGS=-10 V/ID=-38 A. ' +
+      'gfs min 21 S @VDS=-25 V/ID=-38 A. ' +
+      'IDSS max -25 µA @VDS=-55 V/VGS=0 (max -250 µA @VDS=-44 V/TJ=150 °C). ' +
+      'IGSS max 100 nA @VGS=20 V (fwd), max -100 nA @VGS=-20 V (rev). ' +
+      'Qg(tot) max 180 nC @ID=-38 A, Qgs typ 32 nC @VDS=-44 V, Qgd typ 86 nC @VGS=-10 V. ' +
+      'Spínání (VDD=-28 V, ID=-38 A, RG=2,5 Ω): td(on) typ 18 ns, tr typ 99 ns, td(off) typ 61 ns, ' +
+      'tf typ 96 ns (@RD=0,72 Ω). Ciss typ 3400 pF, Coss typ 1400 pF, Crss typ 640 pF ' +
+      '(@VGS=0/VDS=-25 V/f=1 MHz). ' +
+      'Tělesová dioda: IS=-74 A (trvale), ISM=-260 A (pulzně), VSD max -1,6 V @IS=-38 A/VGS=0, ' +
+      'trr typ 89 ns (max 130 ns) @IF=-38 A/di/dt=-100 A/µs, Qrr typ 230 (max 350) — datasheet uvádí ' +
+      'jednotku µC, což je u tohoto typu náboje neobvyklé (u srovnatelných dílů bývá v nC); možná jde ' +
+      'o překlep v originálním datasheetu, hodnotu proto neopravuji a jen upozorňuji.',
+    tags: 'tranzistor,mosfet,p-kanál,to-220,irf4905,spínací',
+  },
+  {
+    name: 'IRFBA1405P',
+    packageType:
+      'Super-220 (mechanicky kompatibilní s TO-220, ale s větším křemíkovým čipem), 3+1 vývody: ' +
+      '1=gate, 2=drain, 3=source, 4=drain (chladicí ploška pouzdra = drain). JEDEC TO-273AA. ' +
+      'Automotive/Q101 kvalifikace.',
+    value: 'N-MOSFET, VDSS 55 V, ID 174 A⁶ (viz poznámka o reálném limitu pouzdrem), RDS(on) max 5,0 mΩ',
+    notes:
+      '⚠️ Hlavičková hodnota ID=174 A @TC=25 °C je dle datasheetu vypočtená na základě max. teploty ' +
+      'přechodu (RθJC) — poznámka v datasheetu uvádí, že reálné omezení pouzdrem (package limitation) ' +
+      'je 95 A. Pro dimenzování počítej spíše s tímto limitem než se 174 A. ' +
+      'International Rectifier, Super-220™ (stejný mechanický rozměr/pinout jako TO-220, ale s větším ' +
+      'čipem než TO-220 i menším než TO-247), navrženo pro automotive aplikace (EPS, ABS, stěrače, ' +
+      'klimatizace), kvalifikováno dle Q101. Datasheet PD-94111, 3/1/01. ' +
+      'Mezní hodnoty: VDSS=55 V, VGS=±20 V, ID(trvalý)=174 A @TC=25 °C (123 A @TC=100 °C), ' +
+      'IDM (pulzně)=680 A, Ptot=330 W @TC=25 °C (odvod 2,2 W/°C), TJ=-40 až +175 °C, Tstg=-55 až +175 °C. ' +
+      'EAS (jednorázová lavinová energie)=560 mJ. dv/dt=5,0 V/ns. ' +
+      'RθJC max 0,45 °C/W, RθCS typ 0,50 °C/W, RθJA max 58 °C/W. ' +
+      'V(BR)DSS min 55 V @VGS=0/ID=250 µA (ΔV(BR)DSS/ΔTJ typ 0,057 V/°C). ' +
+      'VGS(th) 2,0–4,0 V @VDS=10 V/ID=250 µA. RDS(on) typ 4,3 max 5,0 mΩ @VGS=10 V/ID=101 A. ' +
+      'gfs min 69 S @VDS=25 V/ID=110 A. ' +
+      'IDSS max 20 µA @VDS=55 V/VGS=0 (max 250 µA @VDS=44 V/TJ=150 °C). ' +
+      'IGSS max 200 nA (fwd @VGS=20 V), max -200 nA (rev @VGS=-20 V). ' +
+      'Qg(tot) typ 170 max 260 nC @ID=101 A, Qgs typ 44 max 66 nC @VDS=44 V, ' +
+      'Qgd typ 62 max 93 nC @VGS=10 V. ' +
+      'Spínání (VDD=38 V, ID=110 A, RG=1,1 Ω): td(on) typ 13 ns, tr typ 190 ns, td(off) typ 130 ns, ' +
+      'tf typ 110 ns. Ciss typ 5480 pF, Coss typ 1210 pF, Crss typ 280 pF (@VGS=0/VDS=25 V/f=1 MHz). ' +
+      'Tělesová dioda: IS=174 A (trvale), ISM=680 A (pulzně), VSD max 1,3 V @IS=101 A/VGS=0, ' +
+      'trr typ 88 ns (max 130 ns) @IF=101 A/di/dt=100 A/µs, Qrr typ 250 max 380 nC.',
+    tags: 'tranzistor,mosfet,n-kanál,super-220,to-220,automotive,irfba1405p,spínací',
+  },
+  {
+    name: 'G2N7000',
+    packageType:
+      'TO-92, 3 vývody: 1=source, 2=gate, 3=drain (pohled zepředu na popsanou stranu, značka „S G D")',
+    value: 'N-MOSFET (logická úroveň, malý signál), VDSS 60 V, ID 200 mA, RDS(on) max 5,0 Ω @VGS=10 V',
+    notes:
+      'Malý spínací N-MOSFET, GTM Corporation (datasheet vydán 2004, revize 2006/10/30). ' +
+      'Určen pro spínací regulátory, měniče, budiče relé a solenoidů. Elektricky kompatibilní ' +
+      'ekvivalent běžného 2N7000. ' +
+      'Mezní hodnoty: VDSS=60 V, VGS=±20 V (nepřerušovaně), VGS(M)=±40 V (jednorázově, tp≤50 µs), ' +
+      'ID(trvalý)=200 mA, IDM (pulzně)=500 mA, Ptot=0,35 W @TA=25 °C (odvod 2,8 mW/°C), ' +
+      'TJ/Tstg=-55 až +150 °C, RθJA=357 °C/W. ' +
+      'V(BR)DSS min 60 V @VGS=0/ID=250 µA. VGS(th) 0,8–3,0 V @VDS=VGS/ID=1,0 mA. ' +
+      'IGSS max ±100 nA @VGS=±20 V/VDS=0. IDSS max 1 µA @VDS=60 V/VGS=0. ' +
+      'ID(on) min 75 mA @VGS=4,5 V/VDS=10 V. ' +
+      'RDS(on) max 6,0 Ω @VGS=4,5 V/ID=75 mA; max 5,0 Ω @VGS=10 V/ID=500 mA. ' +
+      'VDS(on) max 0,45 V @VGS=4,5 V/ID=75 mA; max 2,5 V @VGS=10 V/ID=500 mA. ' +
+      'gfs min 100 mS @VDS=10 V/ID=200 mA. ' +
+      'Ciss max 60 pF, Coss max 25 pF, Crss max 5 pF (@VDS=25 V/VGS=0/f=1 MHz). ' +
+      'Spínání (VDD=15 V, ID=500 mA, RG=25 Ω, RL=30 Ω): ton max 10 ns, toff max 10 ns ' +
+      '(pulzní test, šířka pulzu ≤300 µs, střída ≤2 %).',
+    tags: 'tranzistor,mosfet,n-kanál,to-92,logická-úroveň,malý-signál,g2n7000,2n7000,spínací',
+  },
 
   { name: '2N5457', packageType: 'TO-92', value: 'N-JFET', notes: 'Unipolární (JFET) tranzistor', tags: 'tranzistor,jfet,n-kanál' },
   { name: 'BF245', packageType: 'TO-92', value: 'N-JFET', notes: 'Unipolární (JFET) tranzistor', tags: 'tranzistor,jfet,n-kanál' },
