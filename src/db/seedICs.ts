@@ -333,24 +333,38 @@ const IC_SPECS: IcSpec[] = [
       'jde o holý čip, ne modul s anténou (na rozdíl např. od ESP32-WROOM)',
     value: 'Wi-Fi + BLE SoC, RISC-V 32bit @ do 160 MHz, 400 KB SRAM, 384 KB ROM, VDD 3,0–3,6 V',
     notes:
-      'Espressif ESP32-C3 (rodina zahrnuje i ESP32-C3FN4/FH4 se 4 MB vestavěné flash), ' +
-      'datasheet V0.6 (preliminary), 2021. Ultra-nízkopříkonový SoC s jednojádrovým RISC-V ' +
-      'procesorem (32bit, 4stupňová pipeline, RV32IMC, až 160 MHz), podporuje 2,4 GHz Wi-Fi ' +
-      '(802.11 b/g/n, do 150 Mbps) a Bluetooth LE (Bluetooth 5, Bluetooth mesh). ' +
-      'Paměť: 384 KB ROM, 400 KB SRAM (z toho 16 KB cache), 8 KB RTC SRAM, 4 kbit eFuse ' +
+      'Espressif ESP32-C3 (rodina zahrnuje i ESP32-C3FN4/FH4 se 4 MB vestavěné flash). ' +
+      '⚠️ Doplněno podle finálního datasheetu „ESP32-C3 Series" v1.1 (říjen 2021), který nahrazuje ' +
+      'dříve zpracovanou preliminary verzi „ESP32-C3 Family" V0.6 — rozdíly oproti V0.6 jsou označeny ' +
+      'níže. Ultra-nízkopříkonový SoC s jednojádrovým RISC-V procesorem (32bit, 4stupňová pipeline, ' +
+      'RV32IMC, až 160 MHz, CoreMark skóre 407,22 @160 MHz = 2,55 CoreMark/MHz), podporuje 2,4 GHz ' +
+      'Wi-Fi (802.11 b/g/n, do 150 Mbps) a Bluetooth LE (Bluetooth 5, Bluetooth mesh). ' +
+      'Paměť: 384 KB ROM, 400 KB SRAM (z toho 16 KB cache), 8 KB RTC FAST SRAM, 4 kbit eFuse ' +
       '(1792 bitů pro uživatele). Podpora externí SPI/Dual-SPI/Quad-SPI/QPI flash až 16 MB. ' +
-      'Periferie: 22× GPIO, 2× 12bit SAR ADC (6 kanálů), 1× teplotní senzor, 3× SPI, 2× UART, ' +
-      '1× I2C, 1× I2S, RMT (IR dálkové ovládání, 2+2 kanály), 6kanálový LED PWM, GDMA ' +
-      '(3+3 kanály), 1× TWAI (CAN, dle ISO 11898-1), JTAG. ' +
-      'Zabezpečení: secure boot, XTS-AES-128 šifrování flash, hardwarová akcelerace ' +
-      'AES-128/256, SHA, RSA, HMAC, digitální podpis, generátor náhodných čísel. ' +
-      'Napájení: VDDA/VDD3P3/VDD3P3_RTC/VDD3P3_CPU 3,0–3,6 V (typ. 3,3 V), doporučený zdroj ' +
-      'proudu ≥500 mA. Absolutní max. napětí na napájecích pinech -0,3 až 3,6 V. ' +
+      'Periferie: 22× GPIO, 2× 12bit SAR ADC — ⚠️ upřesnění oproti V0.6 („6 kanálů" souhrnně): ADC1 ' +
+      'má 5 kanálů a je tovarně kalibrovaný, ADC2 má jen 1 kanál a kalibrovaný není; ADC vzorkovací ' +
+      'frekvence max 100 kSPS (⚠️ V0.6 uváděl chybně/odlišně až 2 Msps). Dále 1× teplotní senzor, ' +
+      '3× SPI, 2× UART, 1× I2C, 1× I2S, RMT (IR dálkové ovládání, 2+2 kanály), 6kanálový LED PWM, ' +
+      'GDMA (3+3 kanály), 1× TWAI (CAN, dle ISO 11898-1/CAN 2.0), JTAG. ' +
+      '⚠️ Nově doplněný USB Serial/JTAG řadič (chybí v V0.6): plnorychlostní USB 2.0 (12 Mbit/s, ' +
+      'nepodporuje 480 Mbit/s high-speed), integrovaná USB PHY, funguje jako CDC-ACM virtuální ' +
+      'sériový port i JTAG adaptér, umožňuje programování flash a ladění CPU přes USB bez externího ' +
+      'programátoru — piny GPIO18/GPIO19 slouží jako USB_D-/USB_D+. ' +
+      'Zabezpečení: secure boot, XTS-AES šifrování flash, hardwarová akcelerace AES-128/256, SHA, ' +
+      'RSA, HMAC, digitální podpis, generátor náhodných čísel. ' +
+      'Napájení: VDDA(1,2)/VDD3P3_RTC/VDD3P3_CPU 3,0–3,6 V (typ. 3,3 V), doporučený zdroj proudu ' +
+      '≥500 mA (pro zápis eFuse musí být VDD3P3_CPU ≤3,3 V). Absolutní max. napětí na napájecích ' +
+      'pinech -0,3 až 3,6 V. ' +
       'Provozní teplota: ESP32-C3 -40 až 105 °C, ESP32-C3FN4 -40 až 85 °C, ESP32-C3FH4 -40 až 105 °C. ' +
-      'Proudový odběr: aktivní TX až 325 mA (802.11b @21 dBm), RX ~84–87 mA, modem-sleep ' +
-      '15–20 mA, light-sleep 130 µA, deep-sleep 5 µA, power-off 1 µA. ' +
-      'Tři strapping piny (GPIO8, GPIO9, GPIO10) určují boot mód (SPI boot / download boot) ' +
-      '— je nutné na ně dbát při návrhu DPS (viz aplikační poznámky výrobce).',
+      'Proudový odběr: aktivní TX až 335 mA @802.11b/1 Mbps/21 dBm (⚠️ V0.6 uváděl 325 mA — ' +
+      'aktualizovaná hodnota z finálního měření), RX ~84–87 mA, modem-sleep 15–20 mA, ' +
+      'light-sleep 130 µA, deep-sleep 5 µA, power-off 1 µA. Čtyři napájecí režimy (Active, ' +
+      'Modem-sleep, Light-sleep, Deep-sleep) — finální datasheet už neuvádí samostatný ' +
+      '„Hibernation mode" zmíněný v některých starších materiálech. ' +
+      '⚠️ Strapping piny se liší od V0.6: finální datasheet uvádí GPIO2, GPIO8, GPIO9 ' +
+      '(V0.6 uváděl GPIO8, GPIO9, GPIO10) — určují boot mód (SPI boot / download boot); ' +
+      'kombinace GPIO8=0 a GPIO9=0 je neplatná. Je nutné na ně dbát při návrhu DPS ' +
+      '(viz aplikační poznámky výrobce a Technical Reference Manual).',
     tags: 'io,mikrokontrolér,soc,esp32,esp32-c3,wifi,bluetooth,ble,risc-v,qfn32',
   },
 ];
