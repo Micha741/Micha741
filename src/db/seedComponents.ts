@@ -1052,6 +1052,30 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'Rychlé spínání (typ.): td(on)+tr=8,0 ns. Nízký šum (typ.): en=6,0 nV/√Hz @10 Hz.',
     tags: 'tranzistor,jfet,n-kanál,depletion,to-92,j110,chopper,zesilovací,spínací',
   },
+  {
+    name: 'ACE8205A',
+    packageType:
+      'TSSOP-8 (SMD), dvojice N-MOSFETů se společným pouzdrem: piny 1/8=D1/D2 (společný drain), ' +
+      '2,3=S1, 4=G1, 5=G2, 6,7=S2 — vhodné pro battery-protection zapojení se dvěma sériovými ' +
+      'spínacími MOSFETy (např. nabíjecí/vybíjecí FET Li-ion ochranného obvodu)',
+    value: '2× N-MOSFET (dual), VDS 20 V, ID 6 A, RDS(on) max 27 mΩ (@VGS=4,5 V) / max 37 mΩ (@VGS=2,5 V)',
+    notes:
+      'Dvojitý N-kanálový spínací MOSFET (trench technologie), ACE Technology, datasheet ver. 1.1, ' +
+      'RoHS/Pb-free/halogen-free. Určen pro ochranu baterií, load-switche a power management — ' +
+      'pracuje už při VGS=2,5 V. ESD chráněný. ' +
+      'Mezní hodnoty (na jeden FET v pouzdru): VDS=20 V, VGS=±10 V, ID(trvalý)=6 A, IDM (pulzně)=25 A, ' +
+      'Ptot=1,5 W @TA=25 °C, TJ/Tstg=-55 až +150 °C, RθJA=83 °C/W (SMD na FR4). ' +
+      'BVDSS min 20 V (typ 21 V) @VGS=0/ID=250 µA. IDSS max 1 µA @VDS=19,5 V/VGS=0. ' +
+      'IGSS max ±100 nA @VGS=±10 V/VDS=0. VGS(th) 0,5–1,2 V (typ 0,7 V) @VDS=VGS/ID=250 µA. ' +
+      'RDS(on): typ 21 max 27 mΩ @VGS=4,5 V/ID=4,5 A; typ 27 max 37 mΩ @VGS=2,5 V/ID=3,5 A. ' +
+      'gfs typ 10 S @VDS=5 V/ID=4,5 A. ' +
+      'Ciss typ 600 pF, Coss typ 330 pF, Crss typ 140 pF (@VDS=8 V/VGS=0/f=1 MHz). ' +
+      'Spínání (VDD=10 V, ID=1,0 A, VGS=4,5 V, RGEN=6 Ω): td(on) typ 10 max 20 ns, tr typ 11 max 25 ns, ' +
+      'td(off) typ 35 max 75 ns, tf typ 30 max 60 ns. ' +
+      'Qg(tot) typ 10 max 15 nC, Qgs typ 2,3 nC, Qgd typ 1,5 nC (@VDS=10 V/ID=6 A/VGS=4,5 V). ' +
+      'Tělesová dioda: VSD typ 0,75 max 1,2 V @IS=1,7 A/VGS=0, IS max 1,7 A.',
+    tags: 'tranzistor,mosfet,n-kanál,dual,tssop-8,smd,ace8205a,battery-protection,logická-úroveň,spínací',
+  },
 ];
 
 function buildFromSpecs(specs: PartSpec[], category: 'Dioda' | 'Tranzistor'): ComponentInput[] {
