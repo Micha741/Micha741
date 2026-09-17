@@ -395,6 +395,24 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'fT min 250 MHz @VCE=10 V/IC=20 mA/f=100 MHz. Cob max 6,5 pF @VCB=5 V/f=1 MHz.',
     tags: 'tranzistor,npn,bipolární,to-92,2n4401,spínací,zesilovací',
   },
+  {
+    name: '2N5551',
+    packageType: 'TO-92, 3 vývody: 1=emitor, 2=báze, 3=kolektor (pohled zepředu na popsanou stranu)',
+    value: 'NPN, VCEO 160 V, VCBO 180 V, IC 600 mA, hFE 80–400 (@ IC=10 mA)',
+    notes:
+      'Malovýkonový bipolární NPN tranzistor s vysokým průrazným napětím — komplementární k PNP typu ' +
+      '2N5401. Datasheet GTM Corporation (jejich verze „G2N5551"), vydán 2004, revize 2004/11/29. ' +
+      'Mezní hodnoty: VCBO=180 V, VCEO=160 V, VEBO=6 V, IC=600 mA, Ptot=625 mW @TA=25 °C, ' +
+      'TJ=+150 °C, Tstg=-55 až +150 °C. ' +
+      'BVCBO min 180 V @IC=100 µA. BVCEO min 160 V @IC=1 mA. BVEBO min 6 V @IE=10 µA. ' +
+      'ICBO max 50 nA @VCB=120 V. IEBO max 50 nA @VEB=4 V. ' +
+      'VCE(sat) max 0,15 V @IC=10 mA/IB=1 mA; max 0,2 V @IC=50 mA/IB=5 mA. ' +
+      'VBE(sat) max 1 V @IC=10 mA/IB=1 mA i @IC=50 mA/IB=5 mA. ' +
+      'hFE (@VCE=5 V): min 80 @IC=1 mA, 80–400 (typ 160) @IC=10 mA (třídění: rank A 80–200, ' +
+      'rank N 100–250, rank C 160–400), min 50 @IC=50 mA. ' +
+      'fT min 100 (typ 300) MHz @VCE=10 V/IC=10 mA/f=100 MHz. Cob max 6 pF @VCB=10 V/f=1 MHz.',
+    tags: 'tranzistor,npn,bipolární,to-92,2n5551,vysokonapěťový,zesilovací,spínací',
+  },
 
   {
     name: 'TIP120',
