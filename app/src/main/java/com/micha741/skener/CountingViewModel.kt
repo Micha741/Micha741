@@ -12,7 +12,9 @@ import androidx.lifecycle.viewModelScope
 import com.micha741.skener.data.CountingResultEncoder
 import com.micha741.skener.data.DetectedBlob
 import com.micha741.skener.data.ObjectCounter
+import com.micha741.skener.data.ShapeCountGroup
 import com.micha741.skener.data.SuspicionRepository
+import com.micha741.skener.data.suggestSingleLayerCap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,9 +22,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.math.min
 
 data class CountingUiState(
     val photoUri: Uri? = null,
+    /** True original photo dimensions (from a bounds-only decode, see [CountingViewModel.onPhotoSelected]) - needed alongside [referenceRealLengthCm] to turn [roiBox]'s fractional area into real cm² for [suggestedPieceCountCap]. */
+    val photoWidth: Int = 0,
+    val photoHeight: Int = 0,
     val blobs: List<DetectedBlob> = emptyList(),
     val count: Int? = null,
     val isProcessing: Boolean = false,
@@ -30,6 +36,8 @@ data class CountingUiState(
     /** True once a reference piece was successfully picked - the count above is "similar to that piece" only. */
     val referenceActive: Boolean = false,
     val referenceBox: Rect? = null,
+    /** [blobs] split by shape (see [com.micha741.skener.data.classifyShape]) - only populated in auto mode (no reference piece), empty otherwise. */
+    val shapeGroups: List<ShapeCountGroup> = emptyList(),
     /** Detected blobs the user manually excluded (long-press on a wrongly-detected piece). */
     val excludedBoxes: Set<Rect> = emptySet(),
     /** Pieces the user manually marked (long-press on empty space the detector missed), each worth one piece. */
@@ -38,6 +46,10 @@ data class CountingUiState(
     val roiBox: RectF? = null,
     /** See [com.micha741.skener.data.hasSuspiciouslyLargeBlob] - a hint (not auto-corrected) that some pieces may be touching/merged. */
     val hasSuspiciousBlob: Boolean = false,
+    /** Real length (cm) of the current reference piece's longer side, entered by the user - see [CountingViewModel.setReferenceRealLength]. Needed for [suggestedPieceCountCap]; null until set, and reset whenever the reference/ROI it was measured against changes. */
+    val referenceRealLengthCm: Float? = null,
+    /** User-confirmed ceiling on the reported count - see [CountingViewModel.setPieceCountCap]. The displayed count never exceeds this (see [cappedCount]); null means no cap. */
+    val pieceCountCap: Int? = null,
 ) {
     /** [count] adjusted for manual corrections: excluded blobs subtracted, manual additions added. */
     val adjustedCount: Int
@@ -45,6 +57,29 @@ data class CountingUiState(
             val base = count ?: return manualAdditions.size
             val excludedCount = blobs.count { it.box in excludedBoxes }
             return (base - excludedCount + manualAdditions.size).coerceAtLeast(0)
+        }
+
+    /** [adjustedCount], clipped to [pieceCountCap] if one is set. */
+    val cappedCount: Int
+        get() = pieceCountCap?.let { min(adjustedCount, it) } ?: adjustedCount
+
+    /** True when [pieceCountCap] is actually cutting the reported number down - the UI uses this to say so. */
+    val isCapped: Boolean
+        get() = pieceCountCap != null && adjustedCount > pieceCountCap
+
+    /**
+     * A single-loose-layer capacity estimate from [referenceBox]/[referenceRealLengthCm] and
+     * [roiBox] (or the whole photo, if no region of interest is set) - see
+     * [suggestSingleLayerCap]'s own doc for why it's only ever a *starting point* for
+     * [pieceCountCap], never computed automatically into it. Null until a reference piece's
+     * real length has been entered.
+     */
+    val suggestedPieceCountCap: Int?
+        get() {
+            val box = referenceBox ?: return null
+            val realLength = referenceRealLengthCm ?: return null
+            val containerFraction = roiBox?.let { it.width() * it.height() } ?: 1f
+            return suggestSingleLayerCap(box, realLength, containerFraction, photoWidth, photoHeight)
         }
 }
 
@@ -59,38 +94,90 @@ class CountingViewModel(
 
     /** [roi] carries over a region of interest already selected elsewhere (the live camera's capture button passes along whatever ROI was active there) - see [CountingUiState.roiBox] on why it's fractional. */
     fun onPhotoSelected(uri: Uri, roi: RectF? = null) {
-        _uiState.value = CountingUiState(photoUri = uri, isProcessing = true, roiBox = roi)
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        appContext.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, bounds) }
+        _uiState.value = CountingUiState(
+            photoUri = uri,
+            photoWidth = bounds.outWidth.coerceAtLeast(0),
+            photoHeight = bounds.outHeight.coerceAtLeast(0),
+            isProcessing = true,
+            roiBox = roi,
+        )
         runCount(uri, referenceTap = null, roi = roi)
     }
 
-    /** User tapped a piece in the result photo (in original photo pixel coordinates): count only similar pieces. */
+    /** User tapped a piece in the result photo (in original photo pixel coordinates): count only similar pieces. Drops any calibration/cap made against a previous reference piece - a new tap may well be a different, differently-sized piece. */
     fun onReferenceTap(point: Point) {
         val uri = _uiState.value.photoUri ?: return
         val roi = _uiState.value.roiBox
-        _uiState.update { it.copy(isProcessing = true) }
+        _uiState.update { it.copy(isProcessing = true, referenceRealLengthCm = null, pieceCountCap = null) }
         runCount(uri, referenceTap = point, roi = roi)
     }
 
-    /** Drops the reference piece and goes back to counting every detected piece (within the ROI, if one is set). */
+    /** Drops the reference piece and goes back to counting every detected piece (within the ROI, if one is set). Also drops any calibration/cap made against that reference - see [CountingUiState.referenceRealLengthCm]. */
     fun clearReference() {
         val uri = _uiState.value.photoUri ?: return
         val roi = _uiState.value.roiBox
-        _uiState.update { it.copy(isProcessing = true, referenceActive = false, referenceBox = null) }
+        _uiState.update {
+            it.copy(
+                isProcessing = true,
+                referenceActive = false,
+                referenceBox = null,
+                referenceRealLengthCm = null,
+                pieceCountCap = null,
+            )
+        }
         runCount(uri, referenceTap = null, roi = roi)
     }
 
-    /** User dragged out a rectangle (fractional, see [CountingUiState.roiBox]): only detections inside it count from now on. Drops any reference piece, since it may no longer be in view. */
+    /** User dragged out a rectangle (fractional, see [CountingUiState.roiBox]): only detections inside it count from now on. Drops any reference piece (it may no longer be in view) and any calibration/cap made against it or the old region. */
     fun setRoi(rect: RectF) {
         val uri = _uiState.value.photoUri ?: return
-        _uiState.update { it.copy(isProcessing = true, roiBox = rect, referenceActive = false, referenceBox = null) }
+        _uiState.update {
+            it.copy(
+                isProcessing = true,
+                roiBox = rect,
+                referenceActive = false,
+                referenceBox = null,
+                referenceRealLengthCm = null,
+                pieceCountCap = null,
+            )
+        }
         runCount(uri, referenceTap = null, roi = rect)
     }
 
-    /** Drops the region of interest and goes back to counting the whole photo. */
+    /** Drops the region of interest and goes back to counting the whole photo. Also drops any reference piece and any calibration/cap made against it or the old region. */
     fun clearRoi() {
         val uri = _uiState.value.photoUri ?: return
-        _uiState.update { it.copy(isProcessing = true, roiBox = null, referenceActive = false, referenceBox = null) }
+        _uiState.update {
+            it.copy(
+                isProcessing = true,
+                roiBox = null,
+                referenceActive = false,
+                referenceBox = null,
+                referenceRealLengthCm = null,
+                pieceCountCap = null,
+            )
+        }
         runCount(uri, referenceTap = null, roi = null)
+    }
+
+    /**
+     * User entered the current reference piece's real length (its longer side, cm) - enables
+     * [CountingUiState.suggestedPieceCountCap] as a starting point for [setPieceCountCap]. No-op
+     * without an active reference piece, or for a non-positive length.
+     */
+    fun setReferenceRealLength(cm: Float) {
+        if (cm <= 0f) return
+        _uiState.update { state ->
+            if (!state.referenceActive || state.referenceBox == null) return@update state
+            state.copy(referenceRealLengthCm = cm)
+        }
+    }
+
+    /** User confirmed a ceiling on the reported count (typically starting from [CountingUiState.suggestedPieceCountCap], then adjusted by hand) - see [CountingUiState.cappedCount]. Pass null to remove the cap. */
+    fun setPieceCountCap(cap: Int?) {
+        _uiState.update { it.copy(pieceCountCap = cap?.coerceAtLeast(0)) }
     }
 
     /** Detects every object on the whole photo, finds the largest cluster of them sitting close together, and applies its bounding box as the region of interest (see [ObjectCounter.suggestRoi]) - an automatic alternative to dragging one out by hand. */
@@ -208,9 +295,9 @@ class CountingViewModel(
             ?.use { BitmapFactory.decodeStream(it) }
             ?: throw IllegalStateException(appContext.getString(R.string.count_failed))
         val countLabel = if (state.referenceActive) {
-            appContext.getString(R.string.count_reference_active, state.adjustedCount)
+            appContext.getString(R.string.count_reference_active, state.cappedCount)
         } else {
-            appContext.getString(R.string.count_result, state.adjustedCount)
+            appContext.getString(R.string.count_result, state.cappedCount)
         }
         return CountingResultEncoder.encode(
             bitmap = bitmap,
@@ -246,6 +333,7 @@ class CountingViewModel(
                             count = result.count,
                             referenceActive = referenceTap != null && result.referenceBlob != null,
                             referenceBox = if (referenceTap != null) result.referenceBlob?.box else it.referenceBox,
+                            shapeGroups = result.shapeGroups,
                             excludedBoxes = emptySet(),
                             manualAdditions = emptyList(),
                             hasSuspiciousBlob = result.hasSuspiciousBlob,

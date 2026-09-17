@@ -74,6 +74,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.micha741.skener.data.DetectedBlob
+import com.micha741.skener.data.PieceShape
+import com.micha741.skener.data.ShapeCountGroup
+import com.micha741.skener.data.suggestSingleLayerCap
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.max
@@ -93,6 +96,7 @@ fun CountingScreen(
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     var showReportDialog by remember { mutableStateOf(false) }
+    var showCapDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(uiState.errorMessage) {
         uiState.errorMessage?.let { message ->
@@ -151,7 +155,10 @@ fun CountingScreen(
                     referenceActive = uiState.referenceActive,
                     roiBox = uiState.roiBox,
                     isSelectingRoi = isSelectingRoi,
-                    count = uiState.adjustedCount.takeIf { uiState.count != null },
+                    count = uiState.cappedCount.takeIf { uiState.count != null },
+                    rawCount = uiState.adjustedCount,
+                    isCapped = uiState.isCapped,
+                    shapeGroups = uiState.shapeGroups,
                     hasSuspiciousBlob = uiState.hasSuspiciousBlob,
                     excludedBoxes = uiState.excludedBoxes,
                     manualAdditions = uiState.manualAdditions,
@@ -192,8 +199,17 @@ fun CountingScreen(
                 }
                 Spacer(modifier = Modifier.padding(top = 8.dp))
                 if (uiState.referenceActive) {
-                    OutlinedButton(onClick = { viewModel.clearReference() }) {
-                        Text(stringResource(R.string.count_clear_reference))
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedButton(onClick = { viewModel.clearReference() }) {
+                            Text(stringResource(R.string.count_clear_reference))
+                        }
+                        OutlinedButton(onClick = { showCapDialog = true }) {
+                            Text(
+                                stringResource(
+                                    if (uiState.pieceCountCap != null) R.string.count_edit_cap else R.string.count_set_cap,
+                                ),
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.padding(top = 8.dp))
                 }
@@ -239,7 +255,107 @@ fun CountingScreen(
             },
         )
     }
+
+    if (showCapDialog) {
+        val referenceBox = uiState.referenceBox
+        var lengthText by remember(showCapDialog) {
+            mutableStateOf(uiState.referenceRealLengthCm?.let { formatCapLength(it) } ?: "")
+        }
+        var capText by remember(showCapDialog) { mutableStateOf(uiState.pieceCountCap?.toString() ?: "") }
+        var capEditedByUser by remember(showCapDialog) { mutableStateOf(uiState.pieceCountCap != null) }
+        val lengthCm = lengthText.replace(',', '.').toFloatOrNull()
+        // Computed locally (not round-tripped through the ViewModel) purely so the suggestion
+        // updates live as the length field changes, without writing half-typed numbers into
+        // CountingUiState - only Nastavit actually commits anything.
+        val suggestedCap = if (referenceBox != null && lengthCm != null && lengthCm > 0f) {
+            suggestSingleLayerCap(
+                referenceBox = referenceBox,
+                referenceRealLengthCm = lengthCm,
+                containerAreaFraction = uiState.roiBox?.let { it.width() * it.height() } ?: 1f,
+                photoWidth = uiState.photoWidth,
+                photoHeight = uiState.photoHeight,
+            )
+        } else {
+            null
+        }
+        LaunchedEffect(suggestedCap) {
+            if (!capEditedByUser && suggestedCap != null) {
+                capText = suggestedCap.toString()
+            }
+        }
+        AlertDialog(
+            onDismissRequest = { showCapDialog = false },
+            title = { Text(stringResource(R.string.count_cap_dialog_title)) },
+            text = {
+                Column {
+                    Text(
+                        text = stringResource(R.string.count_cap_dialog_explanation),
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                    OutlinedTextField(
+                        value = lengthText,
+                        onValueChange = { lengthText = it },
+                        label = { Text(stringResource(R.string.count_cap_length_label)) },
+                        placeholder = { Text(stringResource(R.string.count_cap_length_hint)) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 12.dp),
+                    )
+                    if (suggestedCap != null) {
+                        Text(
+                            text = stringResource(R.string.count_cap_suggestion, suggestedCap),
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(top = 8.dp),
+                        )
+                    }
+                    OutlinedTextField(
+                        value = capText,
+                        onValueChange = { capText = it; capEditedByUser = true },
+                        label = { Text(stringResource(R.string.count_cap_value_label)) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 12.dp),
+                    )
+                    if (uiState.pieceCountCap != null) {
+                        TextButton(
+                            onClick = {
+                                viewModel.setPieceCountCap(null)
+                                showCapDialog = false
+                            },
+                            modifier = Modifier.align(Alignment.End),
+                        ) {
+                            Text(stringResource(R.string.count_cap_remove))
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val cap = capText.toIntOrNull()
+                        if (cap != null && cap >= 0) {
+                            lengthCm?.let { viewModel.setReferenceRealLength(it) }
+                            viewModel.setPieceCountCap(cap)
+                            showCapDialog = false
+                        }
+                    },
+                    enabled = capText.toIntOrNull() != null,
+                ) {
+                    Text(stringResource(R.string.count_cap_confirm))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showCapDialog = false }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            },
+        )
+    }
 }
+
+/** "5" not "5.0" - a whole-number real length shouldn't come back into the text field with a trailing ".0" the user never typed. */
+private fun formatCapLength(cm: Float): String =
+    if (cm == cm.toInt().toFloat()) cm.toInt().toString() else cm.toString()
 
 @Composable
 private fun CountingEmptyState(onCapturePhoto: () -> Unit, onPickPhoto: () -> Unit) {
@@ -289,6 +405,9 @@ private fun CountingResult(
     roiBox: RectF?,
     isSelectingRoi: Boolean,
     count: Int?,
+    rawCount: Int,
+    isCapped: Boolean,
+    shapeGroups: List<ShapeCountGroup>,
     hasSuspiciousBlob: Boolean,
     excludedBoxes: Set<Rect>,
     manualAdditions: List<Point>,
@@ -531,6 +650,28 @@ private fun CountingResult(
                         style = MaterialTheme.typography.headlineSmall,
                         color = Color.White,
                     )
+                    if (isCapped) {
+                        Text(
+                            text = stringResource(R.string.count_capped_hint, count, rawCount),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White,
+                            modifier = Modifier.padding(top = 4.dp),
+                        )
+                    }
+                    if (shapeGroups.size > 1) {
+                        val elongatedLabel = stringResource(R.string.count_shape_elongated)
+                        val compactLabel = stringResource(R.string.count_shape_compact)
+                        val breakdown = shapeGroups.joinToString(" · ") { group ->
+                            val label = if (group.shape == PieceShape.ELONGATED) elongatedLabel else compactLabel
+                            "$label: ${group.blobs.size}"
+                        }
+                        Text(
+                            text = stringResource(R.string.count_shape_breakdown, breakdown),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White,
+                            modifier = Modifier.padding(top = 4.dp),
+                        )
+                    }
                     if (count == 0) {
                         Text(
                             text = stringResource(R.string.count_zero_hint),

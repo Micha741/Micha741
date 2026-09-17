@@ -193,6 +193,49 @@ natrénovaný **FastSAM** model (TFLite, AGPL-3.0 — viz sekce Funkce níže).
     spolehlivě poznat, kolik kusů se v tom velkém boxu vlastně skrývá —
     jen zobrazí hlášku, ať kusy uživatel rozestrčí a vyfotí znovu (na
     fotce pod počtem, v živém náhledu jako další odznak)
+  - **Rozdělení podle tvaru** (jen statická fotka, jen automatický režim bez
+    referenčního kusu, `data/DetectedBlobFilters.kt`'s `classifyShape()`):
+    vznikl z reálné otázky, proč appka počítá protáhlé kusy (šrouby) o dost
+    spolehlivěji než hranaté/kompaktní (matice, podložky) — příčina byla, že
+    `rejectSizeOutliers()`/`hasSuspiciouslyLargeBlob()` počítaly jeden
+    společný medián velikosti přes *všechny* nalezené kusy najednou, a fotka
+    se dvěma opravdu různě velkými druhy kusů (šroub i matice) tenhle medián
+    zkreslila pro oba. Appka teď před těmito filtry rozdělí nalezené kusy do
+    dvou skupin podle poměru stran boxu (`ELONGATED` při poměru stran ≥ 1,8,
+    jinak `COMPACT`) a oba filtry pustí zvlášť na každé skupině -
+    `CountResult.shapeGroups` pak appka zobrazí jako rozpis pod celkovým
+    počtem ("Podle tvaru: protáhlé: 8 · kompaktní: 3"), když je nalezeno víc
+    než jedna skupina. Jemnější rozlišení uvnitř kompaktních kusů (kulaté
+    podložky vs. hranaté matice) by šlo přes vyplněnost segmentační masky
+    (plocha masky / plocha boxu), ale ta se hodně mění podle natočení kusu na
+    fotce (čtverec na rovno vyplní celý svůj box, ten samý čtverec otočený
+    o 45° jen polovinu) - na jednom snímku nejde spolehlivě rozeznat "nízká
+    vyplněnost, protože je to kulaté" od "nízká vyplněnost, protože to je
+    čtverec zachycený pod úhlem", takže se o to appka nesnaží
+  - **Strop počtu kusů** (jen statická fotka, vyžaduje aktivní referenční
+    kus, `data/PieceCountCap.kt`): vznikl z reálného výpočtu v konverzaci -
+    kolik šroubů M8×50 se maximálně vejde do vyfoceného kýble. Appka do teď
+    neznala žádné skutečné rozměry (jen relativní pixely na fotce), takže
+    tlačítko "Nastavit strop" (vedle "Zpět na počítání všech kusů") nejdřív
+    nechá zadat skutečnou délku aktuálního referenčního kusu (delší strana,
+    v cm) - z toho a z vybrané oblasti zájmu (nebo celé fotky, když žádná
+    není) appka přes `suggestSingleLayerCap()` navrhne, kolik kusů takové
+    velikosti by se vešlo vedle sebe v *jedné volně nasypané vrstvě*
+    (plocha oblasti × faktor zaplnění ÷ plocha jednoho kusu - faktor
+    zaplnění je 0,55 pro protáhlé kusy a 0,75 pro kompaktní, viz
+    `classifyShape()` výše, obojí jen doložený odhad, ne změřená hodnota).
+    Skutečnou *hloubku* nádoby appka znát nemůže (jedna plochá fotka na to
+    nestačí - žádný LiDAR, žádné stereo, stejné omezení jako
+    `isLikelyUnreliable()` u Měřit), takže navržené číslo je vždycky jen
+    "jedna vrstva" - uživatel ho přepíše vlastním, když ví, že nádoba je
+    hlubší (přesně tenhle bucket-of-bolts případ: skutečná odpověď byla
+    185 kusů, zjištěná zpětně z hmotnosti, ne z jedné fotky). Jakmile je
+    strop nastavený, zobrazený počet ho nikdy nepřekročí
+    (`CountingUiState.cappedCount`) - appka nic z detekce nemaže, jen
+    zobrazované číslo ořízne a jasně napíše, že strop byl použit
+    (`count_capped_hint`). Nová referenční fotka, jiná oblast zájmu nebo
+    nové klepnutí na referenční kus strop i zadanou délku zruší - platily
+    jen pro tu konkrétní kombinaci, na které byly spočítané
   - **Oblast zájmu**: tlačítkem "Vybrat oblast" appka přepne fotku do režimu
     přetažení obdélníku (`detectDragGestures` místo klepání/podržení) — vše
     mimo vybraný obdélník se zahodí ještě před referenčním/velikostním
@@ -516,10 +559,11 @@ app/src/main/java/com/micha741/skener/
 │   ├── SuspicionRepository.kt # ukládání/čtení nahlášení v app storage, stejný souborový vzor jako ScanRepository
 │   ├── DetectedBlob.kt      # sdílený model kusu (box, průměrná barva) pro fotku i živý náhled
 │   ├── DetectedBlobMatching.kt # sdílené mapování/porovnávání: hledání pod tapem, referenční shoda podle velikosti/odstínu
-│   ├── DetectedBlobFilters.kt # sdílené filtry (rovná hrana, velikostní odlehlé hodnoty, průměrná barva) pro fotku i živý náhled
+│   ├── DetectedBlobFilters.kt # sdílené filtry (rovná hrana, velikostní odlehlé hodnoty, průměrná barva, classifyShape()) pro fotku i živý náhled
 │   ├── GridDetector.kt      # rozseká box na mřížku dlaždic/kláves, když v něm najde pravidelný opakující se vzor
 │   ├── RoiSuggester.kt      # automatický výběr oblasti zájmu: shlukování kusů podle blízkosti (union-find), box největšího shluku
-│   ├── ObjectCounter.kt     # počítání kusů ze statické fotky přes FastSamDetector, referenční kus, oblast zájmu
+│   ├── PieceCountCap.kt     # suggestSingleLayerCap(): odhad "kolik kusů v jedné vrstvě" pro strop počtu v Počítání kusů
+│   ├── ObjectCounter.kt     # počítání kusů ze statické fotky přes FastSamDetector, referenční kus, oblast zájmu, rozdělení podle tvaru
 │   ├── fastsam/
 │   │   └── FastSamDetector.kt # TFLite inference nad fastsam_s.tflite: letterbox, dlaždice, dekódování boxů, NMS
 │   ├── LiveFrameAnalyzer.kt # CameraX analyzer: YUV -> upright bitmapa -> FastSamDetector, referenční kus, oblast zájmu

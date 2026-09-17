@@ -19,7 +19,12 @@ data class CountResult(
     val referenceBlob: DetectedBlob? = null,
     /** See [hasSuspiciouslyLargeBlob] - a hint, not a correction, that some of [blobs] might be touching/merged pieces rather than one. */
     val hasSuspiciousBlob: Boolean = false,
+    /** [blobs] split by [classifyShape] - empty in reference mode (see [ShapeCountGroup]'s own doc). */
+    val shapeGroups: List<ShapeCountGroup> = emptyList(),
 )
+
+/** One [PieceShape] bucket's own kept blobs, for the auto-mode "podle tvaru" breakdown - see [ObjectCounter.analyze]. */
+data class ShapeCountGroup(val shape: PieceShape, val blobs: List<DetectedBlob>)
 
 /**
  * Counts discrete objects in a still photo via a bundled FastSAM-s model
@@ -75,7 +80,12 @@ data class CountResult(
  * Otherwise every detected object counts, minus anything
  * [rejectSizeOutliers] throws out as an implausibly small stray detection,
  * and anything [looksLikeStraightEdge] throws out as a straight
- * architectural line (a door frame, a wall seam) rather than a piece.
+ * architectural line (a door frame, a wall seam) rather than a piece. In
+ * this no-reference case, everything kept is also split by [classifyShape]
+ * *before* [rejectSizeOutliers] runs, and run separately per shape (see
+ * [CountResult.shapeGroups]) - a photo with both screws and nuts on it has
+ * two genuinely different real sizes, and one shared median across both
+ * made outlier rejection unreliable for either.
  */
 class ObjectCounter(context: Context) {
 
@@ -175,17 +185,26 @@ class ObjectCounter(context: Context) {
             referenceBlob = findBlobNear(allBlobs, bitmapX, bitmapY)
         }
 
-        val kept = if (referenceBlob != null) {
-            allBlobs.filter { matchesReference(it, referenceBlob) }
+        val kept: List<DetectedBlob>
+        val shapeGroups: List<ShapeCountGroup>
+        val suspicious: Boolean
+        if (referenceBlob != null) {
+            kept = allBlobs.filter { matchesReference(it, referenceBlob) }
+            shapeGroups = emptyList()
+            suspicious = false
         } else {
-            rejectSizeOutliers(allBlobs)
+            val keptByShape = allBlobs.groupBy { classifyShape(it.box) }
+                .mapValues { (_, group) -> rejectSizeOutliers(group) }
+            kept = keptByShape.values.flatten()
+            shapeGroups = keptByShape.map { (shape, group) -> ShapeCountGroup(shape, group) }
+            suspicious = keptByShape.values.any { hasSuspiciouslyLargeBlob(it) }
         }
 
         val scaledBlobs = kept.map { it.scaledBy(inverseScale) }
         val scaledReference = referenceBlob?.scaledBy(inverseScale)
-        val suspicious = referenceBlob == null && hasSuspiciouslyLargeBlob(kept)
+        val scaledGroups = shapeGroups.map { group -> group.copy(blobs = group.blobs.map { it.scaledBy(inverseScale) }) }
 
-        return CountResult(scaledBlobs, scaledBlobs.size, scaledReference, suspicious)
+        return CountResult(scaledBlobs, scaledBlobs.size, scaledReference, suspicious, scaledGroups)
     }
 
     private companion object {

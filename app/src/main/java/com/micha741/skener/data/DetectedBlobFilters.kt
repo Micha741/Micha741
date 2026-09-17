@@ -97,9 +97,36 @@ fun hasSuspiciouslyLargeBlob(blobs: List<DetectedBlob>): Boolean {
     return areas.last() >= medianArea * MAX_SIZE_RATIO_TO_MEDIAN
 }
 
+/** Coarse shape bucket a box falls into - see [classifyShape]. */
+enum class PieceShape { ELONGATED, COMPACT }
+
+/**
+ * Buckets a box as [PieceShape.ELONGATED] (screws, bolts, pins - aspect ratio at or above
+ * [ELONGATED_ASPECT_RATIO]) or [PieceShape.COMPACT] (nuts, washers, square/round parts)
+ * otherwise, so [com.micha741.skener.data.ObjectCounter] can apply [rejectSizeOutliers] and
+ * [hasSuspiciouslyLargeBlob] separately per shape instead of one shared median across two
+ * genuinely different kinds of piece (which is exactly what made a mixed photo of both count
+ * unreliably before this existed).
+ *
+ * Only splits on aspect ratio, not on how round vs. how angular a compact piece looks (a
+ * washer vs. a hex nut) - a shape's mask *fill ratio* (area of its own segmentation mask vs.
+ * its bounding box) would be the natural signal for that, but it swings a lot with rotation for
+ * anything with corners (an axis-aligned square fills its whole box, the same square rotated
+ * 45° fills only half of it), while aspect ratio stays meaningful for an elongated piece no
+ * matter which way it's lying. A single photo only ever sees one rotation per piece, so there's
+ * no reliable way to tell "this fill ratio is low because it's round" from "...because it's a
+ * square caught at an angle" - not attempted here rather than guessing.
+ */
+fun classifyShape(box: Rect): PieceShape {
+    val longSide = max(box.width(), box.height()).toFloat()
+    val shortSide = max(1, min(box.width(), box.height())).toFloat()
+    return if (longSide / shortSide >= ELONGATED_ASPECT_RATIO) PieceShape.ELONGATED else PieceShape.COMPACT
+}
+
 private const val MIN_EDGE_ASPECT_RATIO = 3.0
 private const val EDGE_PHOTO_SPAN_FRACTION = 0.6
 private const val MIN_SAMPLES_FOR_SIZE_FILTER = 3
 private const val MIN_SIZE_RATIO_TO_MEDIAN = 0.25
 private const val MAX_SIZE_RATIO_TO_MEDIAN = 3.0
 private const val ROI_MIN_OVERLAP_FRACTION = 0.5
+private const val ELONGATED_ASPECT_RATIO = 1.8f
