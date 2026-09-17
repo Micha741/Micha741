@@ -305,7 +305,22 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,npn,bipolární,darlington,to-220,tip120,spínací,relé,motor,pozor-chladič',
   },
   { name: 'TIP125', packageType: 'TO-220', value: 'PNP Darlington, 60 V, 5 A', notes: 'Darlington tranzistor', tags: 'tranzistor,pnp,darlington' },
-  { name: 'BC517', packageType: 'TO-92', value: 'NPN Darlington, 30 V, 400 mA', notes: 'Darlington tranzistor', tags: 'tranzistor,npn,darlington' },
+  {
+    name: 'BC517',
+    packageType: 'TO-92 — vývody: 1=kolektor, 2=báze, 3=emitor',
+    value: 'NPN Darlington, VCEO 30 V, IC 500 mA, hFE min 30 000 (@ IC=100 mA)',
+    notes:
+      'Vysoce ziskový NPN Darlington pro obecné použití (např. citlivé spínání malým bázovým ' +
+      'proudem). Datasheet HSMC HBC517 (ekvivalent/druhý zdroj BC517). ' +
+      'Mezní hodnoty: VCBO=40 V, VCEO=30 V, VEBO=10 V, IC=500 mA, PD=625 mW @TA=25 °C, ' +
+      'TJ max 150 °C, Tstg -55 až +150 °C. ' +
+      'ICBO max 1 µA @VCB=40 V. IEBO max 1 µA @VEB=10 V. ' +
+      'hFE @IC=100 mA/VCE=2 V: min 30 000 (extrémně vysoký zisk typický pro dvojitý Darlington). ' +
+      'VCE(sat) @IC=100 mA/IB=1 mA: max 1 V. VBE(sat) @IC=100 mA/IB=1 mA: typ 1,5 V, max 2 V ' +
+      '(dvojnásobný úbytek, typické pro Darlington zapojení). ' +
+      'fT @IC=100 mA/VCE=2 V/f=100 MHz: typ 220 MHz. Cob=5 pF typ @VCB=10 V/f=1 MHz.',
+    tags: 'tranzistor,npn,bipolární,darlington,to-92,bc517,hbc517',
+  },
 
   { name: 'TIP41C', packageType: 'TO-220', value: 'NPN, 100 V, 6 A', notes: 'Výkonový bipolární tranzistor', tags: 'tranzistor,npn,výkonový' },
   { name: 'TIP3055', packageType: 'TO-218/TO-220', value: 'NPN, 60 V, 15 A', notes: 'Výkonový bipolární tranzistor', tags: 'tranzistor,npn,výkonový' },
