@@ -376,6 +376,25 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,pnp,bipolární,to-92,2n3906,spínací,zesilovací',
   },
   { name: 'S8550', packageType: 'TO-92', value: 'PNP, 25 V, 700 mA', notes: 'Malovýkonový bipolární tranzistor', tags: 'tranzistor,pnp,bipolární' },
+  {
+    name: '2N4401',
+    packageType: 'TO-92, 3 vývody: 1=emitor, 2=báze, 3=kolektor (pohled zepředu na popsanou stranu)',
+    value: 'NPN, VCEO 40 V, IC 600 mA, hFE 100–300 (@ IC=150 mA)',
+    notes:
+      'Malovýkonový bipolární NPN tranzistor pro obecné spínací a zesilovací aplikace — komplementární ' +
+      'k 2N4403, vyšší proudová zatížitelnost a vyšší hFE při vyšším proudu než u 2N3904. Datasheet ' +
+      'GTM Corporation (jejich verze „G2N4401"), vydán 2004, revize 2004/11/29. ' +
+      'Mezní hodnoty: VCBO=60 V, VCEO=40 V, VEBO=5 V, IC=600 mA, Ptot=625 mW @TA=25 °C, ' +
+      'TJ=+150 °C, Tstg=-55 až +150 °C. ' +
+      'BVCBO min 60 V @IC=100 µA. BVCEO min 40 V @IC=1 mA. BVEBO min 5 V @IE=10 µA. ' +
+      'ICEX max 100 nA @VCE=35 V/VBE=0,4 V. ' +
+      'VCE(sat) max 400 mV @IC=150 mA/IB=15 mA; max 750 mV @IC=500 mA/IB=50 mA. ' +
+      'VBE(sat) 750–950 mV @IC=150 mA/IB=15 mA; max 1,2 V @IC=500 mA/IB=50 mA. ' +
+      'hFE: min 20 @IB=0,1 mA, min 40 @IC=1 mA, min 80 @IC=10 mA, 100–300 @IC=150 mA (třídění: ' +
+      'rank A 100–210, rank B 190–300), min 40 @IC=500 mA/VCE=2 V (ostatní @VCE=1 V). ' +
+      'fT min 250 MHz @VCE=10 V/IC=20 mA/f=100 MHz. Cob max 6,5 pF @VCB=5 V/f=1 MHz.',
+    tags: 'tranzistor,npn,bipolární,to-92,2n4401,spínací,zesilovací',
+  },
 
   {
     name: 'TIP120',
