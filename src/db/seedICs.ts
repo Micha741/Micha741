@@ -476,6 +476,47 @@ const IC_SPECS: IcSpec[] = [
       'ochranu proti přepětí/ESD (snap-back obvod, ~6 V spouštěcí napětí).',
     tags: 'io,wifi,adaptér,sdio,esp8089,qfn32',
   },
+  {
+    name: 'ESP8684',
+    packageType:
+      'QFN24 (4×4 mm), 25 vývodů (24 pinů + spodní GND ploška), jde o holý čip, ne modul — nutné ' +
+      'vlastní napájecí/decouplovací obvody a RF anténní přizpůsobení dle aplikační poznámky',
+    value:
+      'Wi-Fi + BLE SoC, RISC-V 32bit @ do 120 MHz, 272 KB SRAM, 576 KB ROM, volitelná vestavěná ' +
+      'flash 2 nebo 4 MB, VDD 3,0–3,6 V',
+    notes:
+      'Espressif ESP8684 Series datasheet v2.0. ⚠️ Podle výrobce patří čipová řada ESP8684 do ' +
+      '"skupiny ESP32-C2" (Espressif tuto řadu na trhu prodává i pod marketingovým označením ' +
+      'ESP32-C2) — v knihovně veden pod přesným označením z datasheetu. ⚠️ Odlišné od ESP32-C3 ' +
+      '(samostatný záznam) — menší a levnější čip: méně GPIO (14 vs. 22), nižší max. takt (120 MHz ' +
+      'vs. 160 MHz), menší pouzdro (QFN24 4×4 mm vs. QFN32 5×5 mm), žádný USB Serial/JTAG řadič, ' +
+      'jen 1 SAR ADC (do 5 kanálů) místo dvou u C3. Objednací kódy: ESP8684H2X (2 MB vestavěné ' +
+      'flash), ESP8684H4X (4 MB vestavěné flash) — obě revize čipu v2.0 (nástupci starších ' +
+      'ESP8684H2/H4 rev. v1.2 a nižší, verze v2.0 přidává cca 20 KB SRAM navíc). RISC-V ' +
+      'jednojádrový 32bit procesor do 120 MHz (CoreMark 305,42 @120 MHz = 2,55 CoreMark/MHz). ' +
+      'Paměť: 576 KB ROM, 272 KB SRAM (z toho 16 KB cache), 1024bit eFuse OTP (256 bitů pro ' +
+      'uživatele). SPI flash v pouzdře běží standardně na 60 MHz (bez podpory auto-suspend). ' +
+      'Wi-Fi 802.11 b/g/n (HT20, 1T1R do 72,2 Mbps), WMM, TX/RX A-MPDU/A-MSDU, immediate Block ACK, ' +
+      'TXOP, 3 virtuální Wi-Fi rozhraní, anténní diverzita. Bluetooth LE 5,3 (certifikováno), ' +
+      'vysoký výkon do +20 dBm, rychlosti 125 Kbps/500 Kbps/1 Mbps/2 Mbps, advertising extensions, ' +
+      'interní koexistenční mechanismus Wi-Fi/BT sdílející jednu anténu. RF modul integruje anténní ' +
+      'přepínač, balun, PA a LNA — výstupní výkon do +22 dBm (802.11b), +20 dBm (802.11n), BLE ' +
+      'citlivost přijímače do -106 dBm @125 Kbps. Periferie: 3× SPI, 2× UART, I2C master, LED PWM ' +
+      '(6 kanálů), GDMA (1 TX + 1 RX kanál), 12bit SAR ADC (do 5 kanálů, vzorkování do 100 kSPS), ' +
+      'teplotní senzor, 54bit obecný časovač, 2× watchdog, 52bit systémový časovač, filtr glitchů ' +
+      'hodinového signálu. Zabezpečení: secure boot, šifrování flash, hardwarová akcelerace ECC, ' +
+      'SHA (FIPS PUB 180-4), generátor náhodných čísel. Napájecí režimy: Active, Modem-sleep, ' +
+      'Light-sleep (typ. 140 µA), Deep-sleep (typ. 5 µA, zachováno napájení RTC), Power off ' +
+      '(typ. 1 µA). Napájení: VDDA3P3/VDDA/VDD3P3_RTC/VDD3P3_CPU doporučeno 3,0–3,6 V (typ. 3,3 V), ' +
+      'doporučený zdroj proudu ≥500 mA. Mezní hodnoty: napájecí piny -0,3 až 3,6 V, kumulativní ' +
+      'výstupní proud IO max 730 mA, skladovací teplota -40 až 150 °C, doporučená okolní teplota ' +
+      '-40 až 105 °C. Proudový odběr (RF, 3,3 V): Wi-Fi TX 802.11b 1 Mbps/+22 dBm špička 370 mA, ' +
+      'TX 802.11g 54 Mbps/+20 dBm špička 320 mA, TX 802.11n HT20 MCS7/+19 dBm špička 300 mA, ' +
+      'RX 802.11b/g/n špička 65 mA; BLE TX @20 dBm špička 320 mA, RX špička 62 mA. Spolehlivost: ' +
+      'ESD HBM ±2000 V / CDM ±1000 V, HTOL/HTSL/LTSL/TCT/uHAST dle JEDEC — přísnější ESD hodnoty ' +
+      'než starší ESP32-C3 (tam jen orientační údaje v revizích datasheetu).',
+    tags: 'io,mikrokontrolér,soc,esp8684,esp32-c2,wifi,bluetooth,ble,risc-v,qfn24',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
