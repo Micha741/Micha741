@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import {
+  Alert,
   FlatList,
   Pressable,
   StyleSheet,
@@ -11,7 +12,7 @@ import { useSQLiteContext } from 'expo-sqlite';
 import { useFocusEffect } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
-import { listComponents } from '../db/componentRepository';
+import { importMissingDefaultComponents, listComponents } from '../db/componentRepository';
 import type { ElectronicComponent } from '../types/component';
 import { COMPONENT_CATEGORIES } from '../types/component';
 
@@ -32,6 +33,30 @@ export default function ComponentListScreen({ navigation }: Props) {
     useCallback(() => {
       reload();
     }, [reload])
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      navigation.setOptions({
+        headerRight: () => (
+          <Pressable
+            onPress={async () => {
+              const added = await importMissingDefaultComponents(db);
+              await reload();
+              Alert.alert(
+                'Výchozí knihovna',
+                added > 0
+                  ? `Doplněno ${added} součástek z výchozí knihovny.`
+                  : 'Výchozí knihovna je již kompletní.'
+              );
+            }}
+            hitSlop={8}
+          >
+            <Text style={styles.headerButton}>Knihovna</Text>
+          </Pressable>
+        ),
+      });
+    }, [navigation, db, reload])
   );
 
   return (
@@ -112,6 +137,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     fontSize: 16,
   },
+  headerButton: { color: '#2f6fed', fontSize: 15, fontWeight: '600', marginRight: 4 },
   chipRow: { flexGrow: 0, paddingHorizontal: 12, marginBottom: 4 },
   chip: {
     paddingHorizontal: 12,

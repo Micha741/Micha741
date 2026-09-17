@@ -12,6 +12,12 @@ i návrh schémat obvodů a plošných spojů.
     odkaz na datasheet, tagy, poznámky
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
+  - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
+    197 běžných součástek: 84 rezistorů (řada E12, 1 Ω – 8,2 MΩ), 39 kondenzátorů
+    (keramické, elektrolytické, tantalové, fóliové), 42 diod (usměrňovací, spínací,
+    Schottky, Zenerovy, LED) a 32 tranzistorů (bipolární NPN/PNP, Darlington, výkonové,
+    MOSFET, JFET). Tlačítkem „Knihovna“ v horní liště lze kdykoli doplnit chybějící
+    položky (např. po smazání), aniž by se duplikovaly už existující.
 
 ## Plánováno dál
 
@@ -32,6 +38,7 @@ npm run android     # nebo spusť přímo v Android emulátoru/zařízení
 App.tsx                     — root komponenta, SQLite + navigace
 src/db/schema.ts            — inicializace a migrace SQLite databáze
 src/db/componentRepository.ts — CRUD operace nad tabulkou součástek
+src/db/seedComponents.ts    — výchozí knihovna běžných součástek
 src/types/component.ts      — typy a seznam kategorií součástek
 src/navigation/             — React Navigation stack
 src/screens/                — obrazovky (seznam, detail, formulář)

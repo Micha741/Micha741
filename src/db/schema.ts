@@ -31,6 +31,11 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
 
     CREATE INDEX IF NOT EXISTS idx_components_category ON components (category);
     CREATE INDEX IF NOT EXISTS idx_components_name ON components (name);
+
+    CREATE TABLE IF NOT EXISTS app_meta (
+      key TEXT PRIMARY KEY NOT NULL,
+      value TEXT NOT NULL
+    );
   `);
 
   await db.execAsync('PRAGMA user_version = 1');
