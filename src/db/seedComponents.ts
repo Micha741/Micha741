@@ -157,27 +157,30 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: 'BC546',
     packageType:
       'TO-92 — POZOR, pořadí vývodů závisí na výrobci (viz poznámka): ' +
-      'Motorola/ON Semi (Case 29-04) = C-B-E, Philips/NXP (SOT54/SC-43A) = E-B-C',
+      'Motorola/ON Semi a UTC/Unisonic (většina) = C-B-E, Philips/NXP (SOT54/SC-43A, výjimka) = E-B-C',
     value: 'NPN, VCEO 65 V, IC 100 mA, hFE 110–450 (@ IC=2 mA)',
     notes:
       '⚠️ PINOUT SE LIŠÍ PODLE VÝROBCE — vždy ověř podle konkrétního kusu: ' +
-      '• Motorola/ON Semi TO-92 (Case 29-04, styl 17): 1=kolektor, 2=báze, 3=emitor. ' +
-      '• Philips/NXP TO-92 (SOT54, JEDEC SC-43A): 1=emitor, 2=báze, 3=kolektor. ' +
+      '• Motorola/ON Semi TO-92 (Case 29-04, styl 17) a UTC/Unisonic TO-92: 1=kolektor, 2=báze, 3=emitor (většinová konvence). ' +
+      '• Philips/NXP TO-92 (SOT54, JEDEC SC-43A): 1=emitor, 2=báze, 3=kolektor (výjimka!). ' +
       'Záměna vývodů podle špatného výrobce tranzistor nezničí, ale obvod nebude fungovat. ' +
       'PNP komplement (dle Philips/NXP): BC556/BC557. ' +
-      'Elektrické parametry (Motorola BC546/D + Philips/NXP datasheet 2004, kombinováno): ' +
-      'VCEO=65 V (BC546A/B), VCBO=80 V, VEBO=6 V, IC(trvalý)=100 mA, ICM (špičkově)=200 mA, IBM (špičkově)=200 mA. ' +
-      'PD=625 mW @TA=25 °C na volném vzduchu (Motorola) / 500 mW @Tamb=25 °C na DPS FR4 (Philips) — ' +
-      'výkon silně závisí na chlazení a osazení. TJ max 150 °C, Tstg/Tamb -55/-65 až +150 °C. ' +
-      'Rth(j-a)=200 °C/W (Motorola) / 250 K/W na DPS FR4 (Philips). ' +
-      'hFE @IC=2 mA/VCE=5 V: BC546A min 110, typ 180, max 220; BC546B min 200, typ 290, max 450. ' +
-      'hFE @IC=10 µA: BC546A typ 90, BC546B typ 150. ' +
-      'ICBO (únik) max 15 nA @VCB=30 V (max 5 µA @Tj=150 °C). IEBO max 100 nA @VEB=5 V. ' +
-      'VCE(sat) @IC=10 mA/IB=0,5 mA: typ 0,09 V, max 0,25 V. VBE(sat): typ 0,7 V. ' +
-      'VBE(on) @IC=2 mA/VCE=5 V: 0,58–0,70 V (typ 0,66 V). ' +
-      'fT @IC=10 mA/VCE=5 V/f=100 MHz: min 100–150 MHz, typ 300 MHz. ' +
-      'Kapacity: Cobo/Cc (kolektor) 1,5–1,7 pF typ @VCB=10 V; Cibo/Ce (emitor) 10–11 pF typ @VEB=0,5 V. ' +
-      'Šum NF @IC=0,2 mA/VCE=5 V/RS=2 kΩ: typ 2,0 dB, max 10 dB (shoda obou datasheetů).',
+      'Elektrické parametry — srovnání 3 datasheetů (Motorola BC546/D, Philips/NXP 2004, UTC QW-R201-037): ' +
+      'VCEO=65 V, VCBO=80 V, VEBO=6 V (shoda všech tří). IC(trvalý)=100 mA (shoda). ' +
+      'ICM/IBM (špičkově, jen Philips)=200 mA. ' +
+      'Ptot/Pc: 625 mW @TA=25 °C na volném vzduchu (Motorola) / 500 mW @Tamb=25 °C na DPS FR4 (Philips) / ' +
+      '500 mW bez upřesnění chlazení (UTC) — reálný výkon závisí na chlazení a osazení. ' +
+      'TJ max 150 °C (shoda), Tstg -55/-65 až +150 °C. ' +
+      'Rth(j-a)=200 °C/W (Motorola, volný vzduch) / 250 K/W na DPS FR4 (Philips). ' +
+      'hFE @IC=2 mA/VCE=5 V: základní BC546(A) min 110, typ 180, max 220 (shoda Motorola/UTC); ' +
+      'BC546B min 200, typ 290, max 450 (shoda všech tří). hFE @IC=10 µA: BC546A typ 90, BC546B typ 150. ' +
+      'ICBO (únik) max 15 nA @VCB=30 V (shoda Motorola/UTC, max 5 µA @Tj=150 °C dle Motoroly). IEBO max 100 nA @VEB=5 V (Philips). ' +
+      'VCE(sat) @IC=10 mA/IB=0,5 mA: typ 0,09 V, max 0,25 V (shoda všech tří — velmi konzistentní parametr). ' +
+      'VBE(sat) @IC=10 mA: typ 0,7 V (shoda Philips/UTC). VBE(on) @IC=2 mA: 0,58–0,70 V, typ 0,66 V (shoda). ' +
+      'fT @IC=10 mA/VCE=5 V/f=100 MHz: typ 300 MHz (shoda Motorola/UTC), Philips udává jen min 100 MHz. ' +
+      'Kapacity: výstupní (Cobo/Cc/Cob) 1,5–1,7 pF typ (Motorola/Philips), ale 3,5–6 pF (UTC) — znatelný rozptyl mezi výrobci. ' +
+      'Vstupní (Cibo/Ce/Cib) 9–11 pF (přibližná shoda). ' +
+      'Šum NF @IC=0,2 mA/VCE=5 V/RS=2 kΩ: typ 2,0 dB, max 10 dB (shoda všech tří zdrojů).',
     tags: 'tranzistor,npn,bipolární,to-92,zesilovací,bc546,pozor-pinout',
   },
   { name: 'BC547', packageType: 'TO-92', value: 'NPN, 45 V, 100 mA', notes: 'Malovýkonový bipolární tranzistor', tags: 'tranzistor,npn,bipolární' },
