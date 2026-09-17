@@ -637,6 +637,29 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,mosfet,n-kanál,smd,d2pak,irf540ns,irf540nl,spínací',
   },
   { name: 'IRFZ44N', packageType: 'TO-220', value: 'N-MOSFET, 55 V, 49 A', notes: 'Výkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál' },
+  {
+    name: 'IRLZ44',
+    packageType: 'TO-220 — vývody: 1=gate, 2=drain, 3=source',
+    value: 'N-MOSFET (logic level), VDSS 60 V, ID 35 A (@TC=25 °C), RDS(on) max 0,04 Ω (@VGS=5 V!)',
+    notes:
+      '⚠️ LOGIC LEVEL MOSFET — na rozdíl od podobně znějícího IRFZ44N (běžný gate, potřebuje VGS okolo ' +
+      '10 V pro plné sepnutí) má IRLZ44 nízké prahové napětí VGS(th)=1,0–2,0 V a RDS(on) je garantováno ' +
+      'už při VGS=5,0 V — lze tedy přímo spínat z výstupu mikrokontroléru/logiky (5 V) bez budiče hradla. ' +
+      'Datasheet Samsung Electronics. Sourozenec IRLZ40 má nižší VDSS=50 V, jinak identické parametry. ' +
+      'Mezní hodnoty: VDSS=60 V, VDGR=60 V (RGS=1 MΩ), VGS=±15 V, ID(trvalý)=35 A @TC=25 °C ' +
+      '(27 A @TC=100 °C), IDM (pulzně)=140 A, Ptot=150 W @TC=25 °C (odvod 1,0 W/°C), TJ/Tstg=-55 až +175 °C. ' +
+      'RθJC max 1,0 °C/W, RθCS (pouzdro-chladič, greased) typ 0,5 °C/W, RθJA max 62,5 °C/W (volný vzduch). ' +
+      'BVDSS min 60 V @ID=250 µA/VGS=0 V. VGS(th) 1,0–2,0 V @ID=1 mA. ' +
+      'IGSS max ±100 nA @VGS=±15 V. IDSS max 250 µA @VDS=max/VGS=0 V (max 1000 µA @TC=125 °C). ' +
+      'RDS(on) max 0,04 Ω @VGS=5,0 V/ID=18 A. gfs min 15,0 S @VDS≥15 V/ID=18 A. ' +
+      'Ciss typ 2400 pF, Coss typ 795 pF, Crss typ 390 pF @VDS=25 V/f=1 MHz. ' +
+      'Spínání (VDD=0,5×BVDSS, ID=3,5 A, Zo=9,1 Ω): td(on) typ 25 max 40 ns, tr typ 65 max 85 ns, ' +
+      'td(off) typ 350 max 400 ns, tf typ 180 max 200 ns (spínací časy prakticky nezávislé na teplotě). ' +
+      'Qg(tot) max 80 nC @VGS=5 V/ID=35 A, Qgs typ 20 nC, Qgd typ 30 nC (náboj hradla nezávislý na teplotě). ' +
+      'Tělesová dioda: IS(trvalý)=35 A, ISM(pulzně)=140 A. VSD max 2,5 V @IS=35 A/VGS=0 V (poměrně vysoký ' +
+      'úbytek oproti jiným MOSFETům). trr max 600 ns @IF=35 A/dIF/dt=100 A/µs.',
+    tags: 'tranzistor,mosfet,n-kanál,to-220,irlz44,irlz40,logic-level,spínací',
+  },
   { name: 'IRF3205', packageType: 'TO-220', value: 'N-MOSFET, 55 V, 110 A', notes: 'Výkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál' },
   { name: '2N7000', packageType: 'TO-92', value: 'N-MOSFET, 60 V, 200 mA', notes: 'Malovýkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál' },
 
