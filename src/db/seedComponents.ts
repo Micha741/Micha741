@@ -967,6 +967,24 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'Cdg(off) max 5,0 pF, Csg(off) max 5,0 pF @VGS=-10 V/f=1 MHz.',
     tags: 'tranzistor,jfet,n-kanál,depletion,sot-23,smd,bsr58lt1,chopper',
   },
+  {
+    name: 'MMBFJ177LT1G',
+    packageType:
+      'SOT-23 (SMD), 3 vývody: 1=drain, 2=source, 3=gate (case 318-08, style 10)',
+    value: 'P-JFET (depletion, chopper), VDG max 25 V, VGS(off) 0,8–2,5 V, IDSS 1,5–20 mA',
+    notes:
+      '⚠️ P-kanálový JFET (na rozdíl od dosud zavedených N-kanálových JFETů 2N5457/BF245/BSR58LT1 ' +
+      'v knihovně) — JFET chopper, ON Semiconductor (datasheet MMBFJ177LT1/D, rev. 4, srpen 2009), ' +
+      'Pb-free/halogen-free/BFR-free, RoHS. ' +
+      'Mezní hodnoty: VDG=25 V, VGS(r) (reverzní gate-source)=-25 V, Ptot=225 mW @TA=25 °C ' +
+      '(deska FR-5, odvod 1,8 mW/°C), RθJA=556 °C/W, TJ/Tstg=-55 až +150 °C. ' +
+      'V(BR)GSS min 30 V @VDS=0/ID=1,0 µA. IGSS max 1,0 nA @VDS=0/VGS=20 V. ' +
+      'VGS(off) 0,8–2,5 V @VDS=15 V/ID=10 nA. ' +
+      'IDSS 1,5–20 mA @VGS=0/VDS=15 V (zero-gate-voltage drain current). ' +
+      'ID(off) max 1,0 nA @VDS=15 V/VGS=10 V. rDS(on) max 300 Ω @ID=500 µA. ' +
+      'Ciss max 11 pF, Crss max 5,5 pF @VDS=0/VGS=10 V/f=1 MHz.',
+    tags: 'tranzistor,jfet,p-kanál,depletion,sot-23,smd,mmbfj177lt1g,j177,chopper',
+  },
 ];
 
 function buildFromSpecs(specs: PartSpec[], category: 'Dioda' | 'Tranzistor'): ComponentInput[] {
