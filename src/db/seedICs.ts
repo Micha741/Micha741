@@ -323,6 +323,36 @@ const IC_SPECS: IcSpec[] = [
     notes: 'Hodiny reálného času s I2C rozhraním a podporou záložní baterie (CR2032) pro uchování času bez napájení.',
     tags: 'io,rtc,hodiny,i2c,ds1307',
   },
+
+  // Mikrokontroléry / SoC
+  {
+    name: 'ESP32-C3',
+    packageType:
+      'QFN32 (5×5 mm), 33 vývodů (32 pinů + spodní GND ploška), nutné vlastní napájecí ' +
+      'a decouplovací obvody, RF anténní přizpůsobení a strapping rezistory dle aplikační poznámky — ' +
+      'jde o holý čip, ne modul s anténou (na rozdíl např. od ESP32-WROOM)',
+    value: 'Wi-Fi + BLE SoC, RISC-V 32bit @ do 160 MHz, 400 KB SRAM, 384 KB ROM, VDD 3,0–3,6 V',
+    notes:
+      'Espressif ESP32-C3 (rodina zahrnuje i ESP32-C3FN4/FH4 se 4 MB vestavěné flash), ' +
+      'datasheet V0.6 (preliminary), 2021. Ultra-nízkopříkonový SoC s jednojádrovým RISC-V ' +
+      'procesorem (32bit, 4stupňová pipeline, RV32IMC, až 160 MHz), podporuje 2,4 GHz Wi-Fi ' +
+      '(802.11 b/g/n, do 150 Mbps) a Bluetooth LE (Bluetooth 5, Bluetooth mesh). ' +
+      'Paměť: 384 KB ROM, 400 KB SRAM (z toho 16 KB cache), 8 KB RTC SRAM, 4 kbit eFuse ' +
+      '(1792 bitů pro uživatele). Podpora externí SPI/Dual-SPI/Quad-SPI/QPI flash až 16 MB. ' +
+      'Periferie: 22× GPIO, 2× 12bit SAR ADC (6 kanálů), 1× teplotní senzor, 3× SPI, 2× UART, ' +
+      '1× I2C, 1× I2S, RMT (IR dálkové ovládání, 2+2 kanály), 6kanálový LED PWM, GDMA ' +
+      '(3+3 kanály), 1× TWAI (CAN, dle ISO 11898-1), JTAG. ' +
+      'Zabezpečení: secure boot, XTS-AES-128 šifrování flash, hardwarová akcelerace ' +
+      'AES-128/256, SHA, RSA, HMAC, digitální podpis, generátor náhodných čísel. ' +
+      'Napájení: VDDA/VDD3P3/VDD3P3_RTC/VDD3P3_CPU 3,0–3,6 V (typ. 3,3 V), doporučený zdroj ' +
+      'proudu ≥500 mA. Absolutní max. napětí na napájecích pinech -0,3 až 3,6 V. ' +
+      'Provozní teplota: ESP32-C3 -40 až 105 °C, ESP32-C3FN4 -40 až 85 °C, ESP32-C3FH4 -40 až 105 °C. ' +
+      'Proudový odběr: aktivní TX až 325 mA (802.11b @21 dBm), RX ~84–87 mA, modem-sleep ' +
+      '15–20 mA, light-sleep 130 µA, deep-sleep 5 µA, power-off 1 µA. ' +
+      'Tři strapping piny (GPIO8, GPIO9, GPIO10) určují boot mód (SPI boot / download boot) ' +
+      '— je nutné na ně dbát při návrhu DPS (viz aplikační poznámky výrobce).',
+    tags: 'io,mikrokontrolér,soc,esp32,esp32-c3,wifi,bluetooth,ble,risc-v,qfn32',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
