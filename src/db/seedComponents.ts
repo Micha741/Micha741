@@ -586,7 +586,30 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   { name: 'BD136', packageType: 'TO-126', value: 'PNP, 45 V, 1,5 A', notes: 'Výkonový bipolární tranzistor', tags: 'tranzistor,pnp,výkonový' },
   { name: 'BD140', packageType: 'TO-126', value: 'PNP, 80 V, 1,5 A', notes: 'Výkonový bipolární tranzistor', tags: 'tranzistor,pnp,výkonový' },
 
-  { name: 'IRF540N', packageType: 'TO-220', value: 'N-MOSFET, 100 V, 33 A', notes: 'Výkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál' },
+  {
+    name: 'IRF540N',
+    packageType:
+      'TO-220AB — vývody: 1=gate, 2=drain, 3=source (chladicí ploška je spojena s drainem)',
+    value: 'N-MOSFET, VDSS 100 V, ID 33 A (@TC=25 °C), RDS(on) typ 0,033 Ω (max 0,040 Ω @VGS=10 V)',
+    notes:
+      'Výkonový spínací N-MOSFET s nízkým odporem v sepnutém stavu. Datasheet Intersil, 2000. ' +
+      'Mezní hodnoty: VDSS=100 V, VDGR=100 V (RGS=20 kΩ), VGS=±20 V, ID(trvalý)=33 A @TC=25 °C ' +
+      '(klesá na 23 A @TC=100 °C — viz graf odvodu proudu s teplotou). Ptot=120 W @TC=25 °C ' +
+      '(odvod 0,80 W/°C), TJ/Tstg=-55 až +175 °C. ' +
+      'RθJC max 1,25 °C/W (na chladiči), RθJA max 62 °C/W (bez chladiče). ' +
+      'BVDSS min 100 V @ID=250 µA/VGS=0 V. IDSS max 1 µA @VDS=95 V (max 250 µA @TC=150 °C). ' +
+      'IGSS max ±100 nA @VGS=±20 V. VGS(th) (prahové napětí) 2–4 V @ID=250 µA. ' +
+      'RDS(on) typ 0,033 Ω, max 0,040 Ω @ID=33 A/VGS=10 V. ' +
+      'Spínací časy @VGS=10 V (VDD=50 V, ID=33 A, RGS=9,1 Ω): tON max 100 ns (td(on) typ 9,5 ns, ' +
+      'tr typ 57 ns), tOFF max 145 ns (td(off) typ 40 ns, tf typ 55 ns). ' +
+      'Náboj hradla: Qg(tot) typ 66 max 79 nC (VGS=0→20 V), Qg(10) typ 35 max 42 nC (0→10 V), ' +
+      'Qgs typ 5,4 nC, Qgd (Miller) typ 13 nC. ' +
+      'Kapacity @VDS=25 V/VGS=0 V/f=1 MHz: Ciss typ 1220 pF, Coss typ 295 pF, Crss typ 100 pF. ' +
+      'Vnitřní tělesová (body) dioda: VSD max 1,25 V @ISD=33 A (max 1,00 V @17 A); ' +
+      'trr max 112 ns, QRR max 400 nC @ISD=33 A/dISD/dt=100 A/µs — pomalejší než diskrétní Schottky/ ' +
+      'usměrňovací diody, u rychlého spínání induktivní zátěže zvaž externí rychlou diodu.',
+    tags: 'tranzistor,mosfet,n-kanál,to-220,irf540n,spínací',
+  },
   { name: 'IRFZ44N', packageType: 'TO-220', value: 'N-MOSFET, 55 V, 49 A', notes: 'Výkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál' },
   { name: 'IRF3205', packageType: 'TO-220', value: 'N-MOSFET, 55 V, 110 A', notes: 'Výkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál' },
   { name: '2N7000', packageType: 'TO-92', value: 'N-MOSFET, 60 V, 200 mA', notes: 'Malovýkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál' },
