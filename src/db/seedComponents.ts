@@ -395,6 +395,29 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,pnp,bipolární,darlington,smd,2n6299,2n6301',
   },
   {
+    name: 'D44E3',
+    packageType:
+      'TO-220AB, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=montážní ploška ' +
+      '(elektricky spojená s kolektorem!)',
+    value: 'NPN Darlington, VCEO 80 V, IC 10 A (trvale), hFE min 1000 (@ IC=5 A)',
+    notes:
+      'Velmi vysokozisková NPN Darlington výkonová "Silicon Power Pac" — driver, regulátor, budič relé/ ' +
+      'solenoidu, audio výstup. Datasheet New Jersey Semi-Conductor Products. D44E3 má nejvyšší ' +
+      'napěťovou třídu rodiny (D44E1=40 V, D44E2=60 V, D44E3=80 V — VCEO/VCES). ' +
+      'Mezní hodnoty: VCEO=VCES=80 V, VEBO=7 V, IC(trvalý)=10 A, ICM (špičkově, 50% střída, 25 ms puls)=20 A, ' +
+      'IB(trvalý) max=1 A. Ptot=50 W @TC=25 °C na pouzdru / jen 1,67 W @TA=25 °C na volném vzduchu bez ' +
+      'chladiče. RθJC=2,5 °C/W, RθJA=75 °C/W. TJ/Tstg=-55 až +150 °C. Teplota vývodu max 260 °C ' +
+      '(1/16"±1/32" od pouzdra, 10 s). ' +
+      'hFE @IC=5 A/VCE=5 V: min 1000. VCE(sat) max 1,5 V @IC=5 A/IB=10 mA; max 2,0 V @IC=10 A/IB=20 mA. ' +
+      'VBE(sat) max 2,5 V @IC=5 A/IB=10 mA. ' +
+      'ICES max 10 µA @Tj=25 °C (max 1,0 mA @Tj=150 °C, při jmenovitém VCES). IEBO max 1,0 µA @VEB=7 V. ' +
+      'CCBO max 130 pF @VCB=10 V/f=1 MHz. ' +
+      'Spínací časy (IC=10 A, IB=20 mA): td+tr max 0,6 µs, ts max 2,0 µs, tf max 0,5 µs. ' +
+      '⚠️ Montážní ploška (pin 4) je na potenciálu kolektoru — při montáži na uzemněný/sdílený chladič ' +
+      'použij izolační podložku, pokud kolektor není na zemním potenciálu.',
+    tags: 'tranzistor,npn,bipolární,darlington,to-220,d44e3,relé,pozor-chladič',
+  },
+  {
     name: 'BC517',
     packageType: 'TO-92 — vývody: 1=kolektor, 2=báze, 3=emitor',
     value: 'NPN Darlington, VCEO 30 V, IC 500 mA, hFE min 30 000 (@ IC=100 mA)',
