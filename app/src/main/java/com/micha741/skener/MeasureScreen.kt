@@ -53,6 +53,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.asImageBitmap
@@ -73,6 +74,7 @@ import com.micha741.skener.data.CalibrationPoints
 import com.micha741.skener.data.KnownReferenceObject
 import com.micha741.skener.data.MeasuredSegment
 import com.micha741.skener.data.formatCm
+import com.micha741.skener.data.pixelsPerCm
 import kotlin.math.hypot
 import kotlin.math.max
 import kotlin.math.min
@@ -123,6 +125,8 @@ fun MeasureScreen(
             } else {
                 MeasureResult(
                     photoUri = photoUri,
+                    photoWidth = uiState.photoWidth,
+                    photoHeight = uiState.photoHeight,
                     calibration = uiState.calibration,
                     segments = uiState.segments,
                     pendingPoint = uiState.pendingPoint,
@@ -275,6 +279,8 @@ private fun MeasureEmptyState(onCapturePhoto: () -> Unit, onPickPhoto: () -> Uni
 @Composable
 private fun MeasureResult(
     photoUri: Uri,
+    photoWidth: Int,
+    photoHeight: Int,
     calibration: CalibrationPoints?,
     segments: List<MeasuredSegment>,
     pendingPoint: PointF?,
@@ -342,6 +348,13 @@ private fun MeasureResult(
                 setShadowLayer(6f, 0f, 0f, android.graphics.Color.BLACK)
             }
         }
+        val rulerPaint = remember {
+            android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
+                color = android.graphics.Color.WHITE
+                textAlign = android.graphics.Paint.Align.LEFT
+                setShadowLayer(4f, 0f, 0f, android.graphics.Color.BLACK)
+            }
+        }
         Canvas(modifier = Modifier.fillMaxSize()) {
             labelPaint.textSize = min(size.width, size.height) / 20f
 
@@ -373,6 +386,51 @@ private fun MeasureResult(
                     radius = 12f,
                     center = Offset(point.x * size.width, point.y * size.height),
                 )
+            }
+
+            // Ruler along the photo's own top/left edges once calibrated, so a rough distance
+            // can be read off by eye without tapping two points every time - an overlay strip
+            // drawn inside the photo's own bounds (not extra space outside it, to keep the
+            // layout simple), so taps underneath still land normally.
+            calibration?.let { cal ->
+                val pxPerCm = pixelsPerCm(photoWidth, photoHeight, cal)
+                if (pxPerCm > 0f) {
+                    rulerPaint.textSize = min(size.width, size.height) / 32f
+                    val screenPxPerCm = pxPerCm * (size.width / photoWidth)
+                    val stepCm = niceRulerStepCm(RULER_MIN_TICK_SPACING_PX / screenPxPerCm)
+                    val stepPx = stepCm * screenPxPerCm
+                    val thickness = RULER_THICKNESS_DP.dp.toPx()
+                    val tickLength = thickness * 0.6f
+                    val scrimColor = Color.Black.copy(alpha = 0.45f)
+
+                    drawRect(color = scrimColor, topLeft = Offset.Zero, size = Size(size.width, thickness))
+                    var x = 0f
+                    var cm = 0f
+                    while (x <= size.width) {
+                        drawLine(Color.White, Offset(x, 0f), Offset(x, tickLength), strokeWidth = 2f)
+                        if (cm > 0f) {
+                            drawContext.canvas.nativeCanvas.drawText(
+                                formatRulerLabel(cm), x + 4f, tickLength + rulerPaint.textSize * 0.9f, rulerPaint,
+                            )
+                        }
+                        x += stepPx
+                        cm += stepCm
+                    }
+
+                    drawRect(color = scrimColor, topLeft = Offset.Zero, size = Size(thickness, size.height))
+                    var y = 0f
+                    cm = 0f
+                    while (y <= size.height) {
+                        drawLine(Color.White, Offset(0f, y), Offset(tickLength, y), strokeWidth = 2f)
+                        if (cm > 0f) {
+                            drawContext.canvas.nativeCanvas.drawText(
+                                formatRulerLabel(cm), tickLength + 4f, y + rulerPaint.textSize * 0.35f, rulerPaint,
+                            )
+                        }
+                        y += stepPx
+                        cm += stepCm
+                    }
+                }
             }
 
             // Zoomed loupe around the finger while it's down, so a point can be placed on the
@@ -507,3 +565,17 @@ private suspend fun PointerInputScope.detectMeasurementGestures(
         }
     }
 }
+
+/** Rounds [minStepCm] up to a "nice" tick spacing (1, 2, 5, 10, 20, 50 cm, ...) - the same 1-2-5 progression a real ruler/graph axis uses, so ruler ticks land on numbers a person would actually want to read off, not on some arbitrary fraction. */
+private fun niceRulerStepCm(minStepCm: Float): Float {
+    if (minStepCm <= NICE_RULER_STEPS_CM.first()) return NICE_RULER_STEPS_CM.first()
+    return NICE_RULER_STEPS_CM.firstOrNull { it >= minStepCm } ?: NICE_RULER_STEPS_CM.last()
+}
+
+/** "5" not "5.0" for a whole-number tick, "2,5" for a half-centimeter one - matches how [com.micha741.skener.CountingScreen]'s own formatCapLength() reads back a length the user would recognize. */
+private fun formatRulerLabel(cm: Float): String =
+    if (cm == cm.toInt().toFloat()) cm.toInt().toString() else String.format("%.1f", cm)
+
+private val NICE_RULER_STEPS_CM = floatArrayOf(0.5f, 1f, 2f, 5f, 10f, 20f, 50f, 100f, 200f, 500f, 1000f)
+private const val RULER_MIN_TICK_SPACING_PX = 56f
+private const val RULER_THICKNESS_DP = 22

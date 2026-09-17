@@ -71,6 +71,21 @@ fun distanceCm(a: PointF, b: PointF, photoWidth: Int, photoHeight: Int, calibrat
     return pxDistance * cmPerPx
 }
 
+/**
+ * True photo pixels per real-world centimeter, from [calibration] - the same scale [distanceCm]
+ * computes internally, exposed on its own for things that need to lay out along that scale
+ * directly (a ruler overlay's tick spacing) rather than measure one specific segment. 0f if
+ * [calibration] is degenerate (its two points coincide, or its length is non-positive).
+ */
+fun pixelsPerCm(photoWidth: Int, photoHeight: Int, calibration: CalibrationPoints): Float {
+    if (calibration.realLengthCm <= 0f) return 0f
+    val calibPxDistance = hypot(
+        (calibration.b.x - calibration.a.x) * photoWidth,
+        (calibration.b.y - calibration.a.y) * photoHeight,
+    )
+    return calibPxDistance / calibration.realLengthCm
+}
+
 /** Formats [cm] as "12,3 cm", switching to "1,23 m" past a meter or "3 mm" under a centimeter, matching how a person would actually read the number back. */
 fun formatCm(cm: Float): String = when {
     cm >= 100f -> String.format("%.2f m", cm / 100f)

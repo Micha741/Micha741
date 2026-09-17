@@ -533,6 +533,18 @@ natrénovaný **FastSAM** model (TFLite, AGPL-3.0 — viz sekce Funkce níže).
     plést oběma směry (fotka kolmo dolů na stůl nemá žádnou perspektivu bez
     ohledu na to, jak daleko jsou body od sebe) — nic neblokuje ani
     nepřepočítává, jen upozorní
+  - **Pravítko podél okrajů fotky** (`data/MeasurementModels.kt`'s
+    `pixelsPerCm()`, vykreslení v `MeasureScreen.kt`): jakmile je appka
+    zkalibrovaná, podél horního a levého okraje fotky se navíc zobrazí
+    stupnice s ryskami v centimetrech — jde se podle ní odhadnout vzdálenost
+    zrakem, aniž by se muselo ťukat na dva body pokaždé znovu. Rozestup rysek
+    se přepočítává za běhu (`niceRulerStepCm()`) na "hezké" kulaté hodnoty
+    (0,5 - 1 - 2 - 5 - 10 - 20 - 50 cm...) podle toho, jak moc je fotka
+    přiblížená/oddálená — stejná posloupnost 1-2-5, jakou používá pravítko
+    nebo osa grafu, ne nahodilá desetinná čísla. Pravítko je čistě
+    vizuální překryv uvnitř fotky (poloprůhledný pruh nahoře/vlevo, ne
+    přidaný prostor kolem fotky navíc), takže ťuknutí pod ním pořád fungují
+    normálně stejně jako kdekoli jinde na fotce
 
 Mezi „Skenovat“, „Počítat kusy“, „Kódy“ a „Měřit“ se přepíná spodní navigační lištou.
 
