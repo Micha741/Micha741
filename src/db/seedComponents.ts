@@ -749,6 +749,25 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'trr typ 150, max 220 ns @IF=-11 A/di/dt=-100 A/µs. Qrr typ 830, max 1200 nC.',
     tags: 'tranzistor,mosfet,p-kanál,to-220,irf9540n,spínací',
   },
+  {
+    name: 'IRF9540NS',
+    packageType:
+      'D2Pak (SMD, „IRF9540NS") nebo TO-262 (nízkoprofilová THT, „IRF9540NL") — POZOR, jiné pouzdro ' +
+      'než TO-220 „IRF9540N"! Vývody/pady: 1=gate, 2=drain, 3=source (u TO-262 i pin 4=drain).',
+    value: 'P-MOSFET, VDSS -100 V, ID -23 A (@TC=25 °C), RDS(on) max 0,117 Ω — el. shodné s IRF9540N',
+    notes:
+      'SMD (D2Pak) a nízkoprofilová THT (TO-262) verze stejného čipu jako IRF9540N — datasheet ' +
+      'International Rectifier výslovně uvádí, že elektrické charakteristiky přebírá z IRF9540N ' +
+      '(shodné VDSS, ID, RDS(on), hFE, spínací časy, náboj hradla i tělesová dioda — viz záznam „IRF9540N"). ' +
+      'Liší se hlavně tepelné/výkonové parametry podle pouzdra: RθJC max 1,1 °C/W (shoda), ' +
+      'RθJA max 40 °C/W (D2Pak, na DPS 1" čtverec, FR-4/G-10, ustálený stav) — mnohem lepší než ' +
+      'TO-220 samostatně bez chladiče. Ptot=3,8 W @TA=25 °C (D2Pak na DPS bez dalšího chlazení) / ' +
+      '140 W @TC=25 °C (na chladiči, stejně jako IRF9540N). ' +
+      'Ostatní mezní hodnoty a elektrické parametry (VGS=±20 V, EAS=430 mJ, IAR=-11 A, ' +
+      'RDS(on) max 0,117 Ω @VGS=-10 V/ID=-11 A, VGS(th) -2 až -4 V atd.) jsou shodné s „IRF9540N" — ' +
+      'viz tam pro plný výčet.',
+    tags: 'tranzistor,mosfet,p-kanál,smd,d2pak,to-262,irf9540ns,irf9540nl,spínací',
+  },
   { name: 'IRF4905', packageType: 'TO-220', value: 'P-MOSFET, -55 V, -74 A', notes: 'Výkonový spínací MOSFET', tags: 'tranzistor,mosfet,p-kanál' },
 
   { name: '2N5457', packageType: 'TO-92', value: 'N-JFET', notes: 'Unipolární (JFET) tranzistor', tags: 'tranzistor,jfet,n-kanál' },
