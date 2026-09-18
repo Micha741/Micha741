@@ -746,6 +746,41 @@ const IC_SPECS: IcSpec[] = [
       'a TC12 — není součástka, nedošlo k jejímu přidání do knihovny).',
     tags: 'io,senzor,teploměr,tc625,1-wire,telcom,pwm',
   },
+  {
+    name: 'DHT11',
+    packageType:
+      '4pin jednořadý THT modul (modrá plastová krabička), piny 1=VDD, 2=DATA, 3=nezapojen ' +
+      '(NC), 4=GND — obsahuje interní 8bit mikrokontrolér, kombinovaný odporový vlhkoměr + NTC ' +
+      'teploměr; k dispozici i speciální pouzdra na vyžádání u výrobce',
+    value:
+      'Digitální senzor vlhkosti a teploty, 20–90 %RH (±5 %RH), 0–50 °C (±2 °C), jednovodičové ' +
+      'sériové rozhraní (proprietární, ne Dallas 1-Wire), VDD 3,0–5,5 V',
+    notes:
+      '"DHT11 Humidity & Temperature Sensor" datasheet (překlad výrobce, distribuce OSEPP). ' +
+      '⚠️ Přes občasné označení "single-wire"/"1-wire" NEJDE o Dallas/Maxim 1-Wire protokol ' +
+      '(na rozdíl od DS18B20/DS1822, samostatné záznamy) — DHT11 používá vlastní proprietární ' +
+      'obousměrný jednovodičový protokol bez ROM adresace a bez možnosti více senzorů na jedné ' +
+      'sběrnici (multidrop). ⚠️ Také odlišné od TC625 (samostatný záznam, čistě pulzně-šířkový ' +
+      'výstup) — DHT11 posílá strukturovaný 40bitový datový rámec, ne prostý PWM signál. Na ' +
+      'rozdíl od obou zmíněných teploměrů DHT11 navíc měří i relativní vlhkost vzduchu. Obsahuje ' +
+      'odporový vlhkoměrný člen a NTC teploměrný člen připojené k vestavěnému 8bit ' +
+      'mikrokontroléru s kalibračními koeficienty uloženými v OTP paměti. Rozlišení 1 %RH / 1 °C ' +
+      '(8bit), opakovatelnost ±1 %RH / ±1 °C, přesnost vlhkosti ±4 %RH @25 °C (±5 %RH v celém ' +
+      'rozsahu 0–50 °C), přesnost teploty ±2 °C, hystereze vlhkosti ±1 %RH, dlouhodobá stabilita ' +
+      'typ. ±1 %RH/rok. Rozsah měření vlhkosti závisí na teplotě: @0 °C 30–90 %RH, @25 °C ' +
+      '20–90 %RH, @50 °C 20–80 %RH. Doba odezvy (63 % hodnoty, 25 °C, proudění vzduchu 1 m/s): ' +
+      'vlhkost 6–15 s, teplota 6–30 s. Komunikační protokol: MCU stáhne datovou linku na nízkou ' +
+      'úroveň min. 18 ms (start signál), pustí ji a čeká 20–40 µs na odezvu; DHT11 odpoví 80 µs ' +
+      'nízko + 80 µs vysoko, poté odešle 40 bitů dat (8bit celá část RH + 8bit desetinná část RH ' +
+      '+ 8bit celá část T + 8bit desetinná část T + 8bit kontrolní součet) — každý bit začíná ' +
+      '50 µs nízkou úrovní, délka následující vysoké úrovně určuje hodnotu bitu (26–28 µs = "0", ' +
+      '70 µs = "1"). Jeden komunikační cyklus trvá cca 4 ms, minimální perioda vzorkování 1 s ' +
+      '(nelze číst častěji). Doporučen pull-up rezistor 5 kΩ na DATA (kabel do 20 m) a ' +
+      'filtrační kondenzátor 100 nF mezi VDD a GND. Proudový odběr: měření 0,5–2,5 mA, průměr ' +
+      '0,2–1 mA, klidový (standby) 100–150 µA. Pájecí teplota max 260 °C, kontakt max 10 s. ' +
+      'Skladování 10–40 °C, <60 %RH. Nedoporučeno pro bezpečnostní/nouzové aplikace.',
+    tags: 'io,senzor,vlhkoměr,teploměr,dht11,jednovodičový',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
