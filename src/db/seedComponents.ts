@@ -1697,6 +1697,31 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'listu elektrických charakteristik, pokud bude nahrán.',
     tags: 'tranzistor,pnp,bipolární,výkonový,to-220,mje15033,audio,driver',
   },
+  {
+    name: 'BC807U',
+    packageType:
+      'SOT-363 (SC-70-6), 6 vývodů — dva galvanicky oddělené PNP tranzistory v jednom SMD ' +
+      'pouzdře (dobře spárované parametry), přesné přiřazení pinů viz diagram výrobce; značení ' +
+      'na pouzdru "S5B"',
+    value: 'Duální PNP tranzistor (2× PNP v pouzdře), VCEO -45 V, IC -0,5 A, hFE 160–400 @IC=-100 mA',
+    notes:
+      'Jiangsu Changjiang Electronics Technology (JCET) BC807U "Dual Transistor (PNP+PNP)" ' +
+      '(dok. rev. B, březen 2016) — dvojice nezávislých PNP tranzistorů BC807 integrovaná v jednom ' +
+      'malém SOT-363 pouzdře, určená pro nízkofrekvenční (AF) vstupní stupně a budicí obvody, kde ' +
+      'je výhodou dobré teplotní spárování obou tranzistorů (např. diferenciální zesilovače). ' +
+      'Mezní hodnoty: VCBO=-50 V, VCEO=-45 V, VEBO=-5 V, IC=-0,5 A, PC=0,3 W @TA=25 °C, ' +
+      'RθJA=417 °C/W, TJ max 150 °C, Tstg -55 až +150 °C. V(BR)CBO min -50 V @IC=-10 µA/IE=0. ' +
+      'V(BR)CEO min -45 V @IC=-10 mA/IB=0. V(BR)EBO min -5 V @IE=-10 µA/IC=0. ICBO max -0,1 µA ' +
+      '@VCB=-25 V/IE=0. IEBO max -0,1 µA @VEB=-4 V/IC=0. hFE(1) 160–400 @VCE=-1 V/IC=-100 mA. ' +
+      'hFE(2) min 40 @VCE=-1 V/IC=-500 mA (pokles zisku při vyšším proudu — typické pro tento ' +
+      'malosignálový tranzistor). VCE(sat) max -0,7 V @IC=-500 mA/IB=-50 mA. VBE(sat) max -1,2 V ' +
+      '@IC=-500 mA/IB=-50 mA. fT typ 200 MHz @VCE=-5 V/IC=-50 mA/f=20 MHz. Ccb typ 10 pF ' +
+      '@VCB=-10 V/f=1 MHz. Ceb typ 60 pF @VEB=-0,5 V/f=1 MHz. ⚠️ Odlišné od jednotlivého (single) ' +
+      'tranzistoru BC807 v běžném SOT-23 pouzdře (ten v knihovně zatím není zpracován) — toto je ' +
+      'duální varianta se dvěma nezávislými tranzistory v jednom SMD pouzdře, jiný počet pinů ' +
+      'a jiný footprint.',
+    tags: 'tranzistor,pnp,bipolární,duální,sot-363,sc-70-6,bc807,bc807u,smd,af',
+  },
 ];
 
 const RESISTOR_SPECS: PartSpec[] = [
