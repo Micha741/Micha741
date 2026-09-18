@@ -1822,6 +1822,32 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '180 MHz @VCE=12 V/IC=2 mA/f=100 MHz. Cob 2,0–3,5 pF @VCB=12 V/IE=0/f=1 MHz.',
     tags: 'tranzistor,pnp,npn,bipolární,duální,komplementární,sot-563,emz8,smd',
   },
+  {
+    name: 'BC857BV',
+    packageType:
+      'SOT-563, 6 vývodů (piny 1, 2, 3 dole, 4, 5, 6 nahoře) — dva PNP tranzistory ve stejném ' +
+      'miniaturním SMD pouzdře jako EMZ8 (samostatný záznam); značení na pouzdru "K5V"',
+    value: 'Duální PNP tranzistor (2× PNP v pouzdře), VCEO -45 V, IC -0,1 A, hFE 220–475 @IC=-2 mA (bin B)',
+    notes:
+      'Jiangsu Changjiang Electronics Technology (JCET) BC857BV "Dual Transistor (PNP+PNP)" ' +
+      '(dok. rev. C, červenec 2015) — na rozdíl od EMZ8 (samostatný záznam, stejné SOT-563 ' +
+      'pouzdro, ale asymetrická kombinace PNP+NPN čipů) jde o skutečný symetrický pár dvou ' +
+      'shodných PNP tranzistorů BC857B, obdoba BC807U/BC856S (samostatné záznamy), jen v menším ' +
+      'SOT-563 pouzdře místo SOT-363. Epitaxní konstrukce čipu. Komplementární NPN protějšek ' +
+      'BC847BV (v knihovně zatím nezpracován) je dostupný ve stejném pouzdře. "B" v označení = ' +
+      'hFE gain bin 220–475 (jiné giny výrobce obvykle značí jinými písmeny, zde konkrétně ' +
+      'změřeno/garantováno pro tuto binovou skupinu). Mezní hodnoty: VCBO=-50 V, VCEO=-45 V, ' +
+      'VEBO=-5 V, IC=-0,1 A (trvale), PC=0,15 W @TA=25 °C, RθJA=833 °C/W, TJ max 150 °C, Tstg ' +
+      '-55 až +150 °C. V(BR)CBO min -50 V @IC=-10 µA/IE=0. V(BR)CEO min -45 V @IC=-10 mA/IB=0. ' +
+      'V(BR)EBO min -5 V @IE=-1 µA/IC=0. ICBO max -15 nA @VCB=-30 V/IE=0. hFE min 220 max 475 ' +
+      '@VCE=-5 V/IC=-2 mA. VCE(sat) max -0,1 V @IC=-10 mA/IB=-0,5 mA; max -0,4 V @IC=-100 mA/' +
+      'IB=-5 mA. VBE(sat) typ -0,7 V @IC=-10 mA/IB=-0,5 mA; typ -0,9 V @IC=-100 mA/IB=-5 mA. ' +
+      'VBE: min -0,6 V max -0,75 V @VCE=-5 V/IC=-2 mA; max -0,82 V @VCE=-5 V/IC=-10 mA. fT min ' +
+      '100 MHz @VCE=-5 V/IC=-10 mA/f=100 MHz. Cob max 4,5 pF @VCB=-10 V/IE=0/f=1 MHz. Šumové ' +
+      'číslo (NF) typ 10 dB @VCE=-5 V/IC=-0,2 mA/f=1 kHz/Rs=2 kΩ/BW=200 Hz — parametr uváděný jen ' +
+      'u tohoto dílu z rodiny (relevantní pro malosignálové audio/mikrofonní předzesilovače).',
+    tags: 'tranzistor,pnp,bipolární,duální,sot-563,bc857,bc857bv,smd',
+  },
 ];
 
 const RESISTOR_SPECS: PartSpec[] = [
