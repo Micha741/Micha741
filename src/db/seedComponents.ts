@@ -2750,7 +2750,19 @@ const RESISTOR_SPECS: PartSpec[] = [
       '300× -55/+125 °C, vlhkostní odolnost, pájitelnost při 260 °C/bezolovnatá pájka, ohyb DPS aj.) ' +
       '— vhodné pro přesné aplikace (měřicí obvody, zpětné vazby, převodníky) vyžadující nízkou ' +
       'teplotní driftaci a vysokou dlouhodobou stabilitu (±0,5 % po 1000 h @70 °C/125 °C/155 °C). ' +
-      '⚠️ POZOR na záměnu názvů: výrobce Susumu má vlastní, zcela odlišnou "RT sérii" ' +
+      '⚠️ Aktualizace dle novějšího vydání téhož Yageo RT datasheetu (v.14, 23. 11. 2022, dok. ' +
+      '"RT series 0100 to 2512"): řada byla od r. 2009 výrazně rozšířena — přidány velikosti ' +
+      'RT0100 (0,40×0,20×0,13 mm — nejmenší běžně vyráběný SMD rezistor, 1/32 W, 15 V, hmotnost ' +
+      '0,037 mg/ks, rozsah 50 mΩ ... vlastně 50R–5k Ω, tolerance jen ±0,25/±0,5/±1 %, TCR ±25/' +
+      '±50 ppm/°C) a RT0201 (0,60×0,30×0,23 mm, 1/20 W); u existujících velikostí 0402–1206 ' +
+      'přidána extrémní přesnost ±0,01 % (kód L) a ±0,02 % (kód P) a nejnižší TCR 5 ppm/°C (kód A) ' +
+      'a 10 ppm/°C (kód B, dříve nejnižší dostupný); RT0402 nyní i s provozním rozsahem do ' +
+      '+155 °C (dříve +125 °C); rozšířeny odporové rozsahy (např. RT0603 až 1 Ω–2 MΩ); doplněna ' +
+      'hmotnost na kus (0,037 mg u RT0100 až 40,351 mg u RT2512) a pro RT2512 přidána i verze ' +
+      '1 W. Nahraný konkrétní kód RT0100LRA07XXXXL odpovídá size RT0100, tolerance L=±0,01 %, ' +
+      'reel R, TCR A=5 ppm/°C, 7" cívka — nejpřesnější/teplotně nejstabilnější a zároveň fyzicky ' +
+      'nejmenší konfigurace v celé řadě (hodnota v kódu neuvedena/proměnná "XXXX").' +
+      ' ⚠️ POZOR na záměnu názvů: výrobce Susumu má vlastní, zcela odlišnou "RT sérii" ' +
       'laditelných (trimmable) rezistorů se stejným prefixem "RT" i podobnými velikostními kódy ' +
       '(např. Susumu RT0603 = pouzdro 0201!) — viz samostatné záznamy Susumu RT0603/RT0510/' +
       'RT0816/RT1220, které s touto Yageo řadou nesouvisí.',
