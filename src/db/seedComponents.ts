@@ -620,7 +620,9 @@ const DIODE_SPECS: PartSpec[] = [
       'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, VRM 56 V, VBO 82 V, IPP 50 A ' +
       '(10/1000 µs)',
     notes:
-      'STMicroelectronics SMTPA série "TRISIL" (dok. říjen 1998, ed. 7A) — ⚠️ NENÍ to obyčejná ' +
+      'STMicroelectronics SMTPA série "TRISIL" (dok. říjen 1998, ed. 7A; ⚠️ aktualizováno a ' +
+      'potvrzeno sloučeným datasheetem SMP50/SMTPA/TPA, červen 2007, rev. 3 — beze změny ' +
+      'elektrických hodnot uvedených níže) — ⚠️ NENÍ to obyčejná ' +
       'lavinová/Zenerova dioda ani TVS s pozvolnou VA charakteristikou jako ostatní diody v této ' +
       'knihovně — TRISIL je křemíková obousměrná spínací (crowbar) ochranná součástka podobná ' +
       'symetrickému tyristoru bez řídicí elektrody: při dosažení průrazného/breakover napětí ' +
@@ -628,15 +630,26 @@ const DIODE_SPECS: PartSpec[] = [
       'čímž efektivněji svede energii přepětí než pozvolná avalanche charakteristika TVS diody. ' +
       'Navrženo pro ochranu telekomunikačních zařízení proti blesku a přepětí indukovanému ' +
       'z silových AC vedení. Zpracována celá řada 10 dílů z jednoho datasheetu (SMTPA62/68/100/' +
-      '120/130/180/200/220/240/270, samostatné záznamy), lišících se jen napěťovou třídou. ' +
+      '120/130/180/200/220/240/270, samostatné záznamy), lišících se jen napěťovou třídou; ' +
+      'novější sloučený datasheet (2007) navíc dokládá 11. díl 320 V (viz samostatný záznam ' +
+      'SMTPA320) a to, že tatáž křemíková struktura se dodává i v pouzdru SMA pod ozn. SMP50-xxx ' +
+      '(hmotnost 0,068 g) a v drátovém pouzdru DO-15 pod ozn. TPAxxx (hmotnost 0,40 g) se ' +
+      'shodnými elektrickými parametry jako SMB verze SMTPAxxx v této knihovně. ' +
       'SMTPA62: VRM (stand-off napětí) 56 V, IRM max 2 µA @VRM. VR (trvalé závěrné napětí) 62 V, ' +
-      'IR max 50 µA @VR. VBO (breakover napětí) max 82 V @IBO=800 mA. IH (přídržný proud) min ' +
-      '150 mA. C max 150 pF. Mezní hodnoty (společné pro celou řadu): výkonová ztráta P=5 W ' +
-      '@Tlead=50 °C, IPP=50 A (10/1000 µs) nebo 100 A (8/20 µs), ITSM=30 A (tp=20 ms, ' +
-      'nepovtorný ráz), kritická strmost dV/dt=5 kV/µs @VRM, Tstg -55 až +150 °C, TJ max 150 °C, ' +
-      'max. pájecí teplota vývodů 260 °C/10 s. Tepelný odpor: RθJ-vývody 20 °C/W, RθJ-okolí ' +
-      '100 °C/W (na standardní DPS). Shoda se standardy: ITU-K20/K17, VDE0433/0878, IEC-1000-4-5 ' +
-      'level 3/4, FCC Part 68 (surge typ A/B), Bellcore TR-NWT-001089 (1./2. úroveň), CNET l31-24.',
+      'IR max 50 µA @VR. VBO (breakover napětí, statický test) max 82 V @IBO=800 mA; dynamický ' +
+      'VBO (test okruh 1, 100 V/µs, IPP=50 A) max 85 V. IH (přídržný proud) min ' +
+      '150 mA. C typ 20 pF @VR=50 V / 40 pF @VR=2 V (C max dle staršího vydání 150 pF). Mezní hodnoty (společné pro celou řadu): výkonová ztráta P=5 W ' +
+      '@Tlead=50 °C; IPP (10/1000 µs)=50 A, (8/20 µs)=150 A, (10/560 µs)=55 A, (5/310 µs)=65 A, ' +
+      '(10/160 µs)=75 A, (1/20 µs)=100 A, (2/10 µs)=100 A; IFS (fail-safe zkratový režim) max ' +
+      '2,5 kA @8/20 µs; ITSM (nepovtorný sinusový ráz)=16 A@0,2 s / 11,5 A@1 s / 10 A@2 s / ' +
+      '3,5 A@15 min; I²t=6,2 A²s@16,6 ms / 6,5 A²s@20 ms; kritická strmost dV/dt=5 kV/µs @VRM, ' +
+      'Tstg -55 až +150 °C, TJ max 150 °C, ' +
+      'max. pájecí teplota vývodů 260 °C/10 s. Tepelný odpor RθJ-vývody: 20 °C/W (SMB) / ' +
+      '30 °C/W (SMA) / 60 °C/W (DO-15); RθJ-okolí: 100 °C/W (SMB, standardní DPS) / 120 °C/W ' +
+      '(SMA) / 100 °C/W (DO-15, Llead=10 mm). Shoda se standardy: GR-1089 core (1./2. úroveň, ' +
+      'intra-building), ITU-T-K20/K21, VDE0433/0878, IEC-1000-4-5/IEC61000-4-2 (ESD), ' +
+      'FCC Part 68 (surge typ A/B), Bellcore TR-NWT-001089 (1./2. úroveň), CNET l31-24, UL1950/' +
+      'IEC950/CSA C22.2, UL1459, UL94 V0 (pryskyřice), UL497B (soubor E136224).',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom',
   },
   {
@@ -651,8 +664,10 @@ const DIODE_SPECS: PartSpec[] = [
       'STMicroelectronics SMTPA série "TRISIL" (dok. říjen 1998, ed. 7A) — součást stejné řady ' +
       '10 dílů jako SMTPA62/100/120/130/180/200/220/240/270 (samostatné záznamy) — viz záznam ' +
       'SMTPA62 pro plný popis principu funkce, mezních hodnot a shody se standardy. SMTPA68: ' +
-      'VRM 61 V, IRM max 2 µA @VRM. VR 68 V, IR max 50 µA @VR. VBO max 90 V @IBO=800 mA. IH min ' +
-      '150 mA. C max 150 pF.',
+      'VRM 61 V, IRM max 2 µA @VRM. VR 68 V, IR max 50 µA @VR. VBO max 90 V @IBO=800 mA; ' +
+      'dynamický VBO max 93 V. IH min ' +
+      '150 mA. C typ 20 pF @VR=50 V / 40 pF @VR=2 V. ⚠️ Dostupné i v pouzdru SMA (SMP50-68) a ' +
+      'DO-15 (TPA68) se shodnými parametry (sloučený datasheet 2007).',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom',
   },
   {
@@ -667,9 +682,11 @@ const DIODE_SPECS: PartSpec[] = [
       'STMicroelectronics SMTPA série "TRISIL" (dok. říjen 1998, ed. 7A) — součást stejné řady ' +
       '10 dílů jako SMTPA62/68/120/130/180/200/220/240/270 (samostatné záznamy) — viz záznam ' +
       'SMTPA62 pro plný popis principu funkce, mezních hodnot a shody se standardy. SMTPA100: ' +
-      'VRM 90 V, IRM max 2 µA @VRM. VR 100 V, IR max 50 µA @VR. VBO max 133 V @IBO=800 mA. IH ' +
-      'min 150 mA. C max 100 pF (nižší než u SMTPA62/68 díky nižší kapacitě přechodu při vyšším ' +
-      'napětí).',
+      'VRM 90 V, IRM max 2 µA @VRM. VR 100 V, IR max 50 µA @VR. VBO max 133 V @IBO=800 mA; ' +
+      'dynamický VBO max 135 V. IH ' +
+      'min 150 mA. C typ 16 pF @VR=50 V / 35 pF @VR=2 V (nižší než u SMTPA62/68 díky nižší ' +
+      'kapacitě přechodu při vyšším napětí). ⚠️ Dostupné i v pouzdru SMA (SMP50-100) a DO-15 ' +
+      '(TPA100) se shodnými parametry (sloučený datasheet 2007).',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom',
   },
   {
@@ -684,8 +701,10 @@ const DIODE_SPECS: PartSpec[] = [
       'STMicroelectronics SMTPA série "TRISIL" (dok. říjen 1998, ed. 7A) — součást stejné řady ' +
       '10 dílů jako SMTPA62/68/100/130/180/200/220/240/270 (samostatné záznamy) — viz záznam ' +
       'SMTPA62 pro plný popis principu funkce, mezních hodnot a shody se standardy. SMTPA120: ' +
-      'VRM 108 V, IRM max 2 µA @VRM. VR 120 V, IR max 50 µA @VR. VBO max 160 V @IBO=800 mA. IH ' +
-      'min 150 mA. C max 100 pF.',
+      'VRM 108 V, IRM max 2 µA @VRM. VR 120 V, IR max 50 µA @VR. VBO max 160 V @IBO=800 mA; ' +
+      'dynamický VBO max 160 V. IH ' +
+      'min 150 mA. C typ 16 pF @VR=50 V / 30 pF @VR=2 V. ⚠️ Dostupné i v pouzdru SMA (SMP50-120) ' +
+      'a DO-15 (TPA120) se shodnými parametry (sloučený datasheet 2007).',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom',
   },
   {
@@ -700,8 +719,10 @@ const DIODE_SPECS: PartSpec[] = [
       'STMicroelectronics SMTPA série "TRISIL" (dok. říjen 1998, ed. 7A) — součást stejné řady ' +
       '10 dílů jako SMTPA62/68/100/120/180/200/220/240/270 (samostatné záznamy) — viz záznam ' +
       'SMTPA62 pro plný popis principu funkce, mezních hodnot a shody se standardy. SMTPA130: ' +
-      'VRM 117 V, IRM max 2 µA @VRM. VR 130 V, IR max 50 µA @VR. VBO max 173 V @IBO=800 mA. IH ' +
-      'min 150 mA. C max 100 pF.',
+      'VRM 117 V, IRM max 2 µA @VRM. VR 130 V, IR max 50 µA @VR. VBO max 173 V @IBO=800 mA; ' +
+      'dynamický VBO max 173 V. IH ' +
+      'min 150 mA. C typ 14 pF @VR=50 V / 30 pF @VR=2 V. ⚠️ Dostupné i v pouzdru SMA (SMP50-130) ' +
+      'a DO-15 (TPA130) se shodnými parametry (sloučený datasheet 2007).',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom',
   },
   {
@@ -716,10 +737,12 @@ const DIODE_SPECS: PartSpec[] = [
       'STMicroelectronics SMTPA série "TRISIL" (dok. říjen 1998, ed. 7A) — součást stejné řady ' +
       '10 dílů jako SMTPA62/68/100/120/130/200/220/240/270 (samostatné záznamy) — viz záznam ' +
       'SMTPA62 pro plný popis principu funkce, mezních hodnot a shody se standardy. SMTPA180: ' +
-      'VRM 162 V, IRM max 2 µA @VRM. VR 180 V, IR max 50 µA @VR. VBO max 240 V @IBO=800 mA. IH ' +
-      'min 150 mA. C max 100 pF. ⚠️ Test okruh IBO/VBO se u dílů s VBO≥200 V liší (VOUT=480 VRMS, ' +
+      'VRM 162 V, IRM max 2 µA @VRM. VR 180 V, IR max 50 µA @VR. VBO max 240 V @IBO=800 mA; ' +
+      'dynamický VBO max 235 V. IH ' +
+      'min 150 mA. C typ 14 pF @VR=50 V / 25 pF @VR=2 V. ⚠️ Test okruh IBO/VBO se u dílů s VBO≥200 V liší (VOUT=480 VRMS, ' +
       'R2=240 Ω) od dílů s VBO<200 V (VOUT=250 VRMS, R1=140 Ω) — SMTPA180 (VBO=240 V) patří do ' +
-      'vyšší testovací skupiny.',
+      'vyšší testovací skupiny. Dostupné i v pouzdru SMA (SMP50-180) a DO-15 (TPA180) se ' +
+      'shodnými parametry (sloučený datasheet 2007).',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom',
   },
   {
@@ -734,8 +757,10 @@ const DIODE_SPECS: PartSpec[] = [
       'STMicroelectronics SMTPA série "TRISIL" (dok. říjen 1998, ed. 7A) — součást stejné řady ' +
       '10 dílů jako SMTPA62/68/100/120/130/180/220/240/270 (samostatné záznamy) — viz záznam ' +
       'SMTPA62 pro plný popis principu funkce, mezních hodnot a shody se standardy. SMTPA200: ' +
-      'VRM 180 V, IRM max 2 µA @VRM. VR 200 V, IR max 50 µA @VR. VBO max 267 V @IBO=800 mA. IH ' +
-      'min 150 mA. C max 100 pF.',
+      'VRM 180 V, IRM max 2 µA @VRM. VR 200 V, IR max 50 µA @VR. VBO max 267 V @IBO=800 mA; ' +
+      'dynamický VBO max 262 V. IH ' +
+      'min 150 mA. C typ 12 pF @VR=50 V / 25 pF @VR=2 V. ⚠️ Dostupné i v pouzdru SMA (SMP50-200) ' +
+      'a DO-15 (TPA200) se shodnými parametry (sloučený datasheet 2007).',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom',
   },
   {
@@ -750,8 +775,10 @@ const DIODE_SPECS: PartSpec[] = [
       'STMicroelectronics SMTPA série "TRISIL" (dok. říjen 1998, ed. 7A) — součást stejné řady ' +
       '10 dílů jako SMTPA62/68/100/120/130/180/200/240/270 (samostatné záznamy) — viz záznam ' +
       'SMTPA62 pro plný popis principu funkce, mezních hodnot a shody se standardy. SMTPA220: ' +
-      'VRM 198 V, IRM max 2 µA @VRM. VR 220 V, IR max 50 µA @VR. VBO max 293 V @IBO=800 mA. IH ' +
-      'min 150 mA. C max 100 pF.',
+      'VRM 198 V, IRM max 2 µA @VRM. VR 220 V, IR max 50 µA @VR. VBO max 293 V @IBO=800 mA; ' +
+      'dynamický VBO max 285 V. IH ' +
+      'min 150 mA. C typ 12 pF @VR=50 V / 25 pF @VR=2 V. ⚠️ Dostupné i v pouzdru SMA (SMP50-220) ' +
+      'a DO-15 (TPA220) se shodnými parametry (sloučený datasheet 2007).',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom',
   },
   {
@@ -766,15 +793,17 @@ const DIODE_SPECS: PartSpec[] = [
       'STMicroelectronics SMTPA série "TRISIL" (dok. říjen 1998, ed. 7A) — součást stejné řady ' +
       '10 dílů jako SMTPA62/68/100/120/130/180/200/220/270 (samostatné záznamy) — viz záznam ' +
       'SMTPA62 pro plný popis principu funkce, mezních hodnot a shody se standardy. SMTPA240: ' +
-      'VRM 216 V, IRM max 2 µA @VRM. VR 240 V, IR max 50 µA @VR. VBO max 320 V @IBO=800 mA. IH ' +
-      'min 150 mA. C max 100 pF.',
+      'VRM 216 V, IRM max 2 µA @VRM. VR 240 V, IR max 50 µA @VR. VBO max 320 V @IBO=800 mA; ' +
+      'dynamický VBO max 300 V. IH ' +
+      'min 150 mA. C typ 12 pF @VR=50 V / 25 pF @VR=2 V. ⚠️ Dostupné i v pouzdru SMA (SMP50-240) ' +
+      'a DO-15 (TPA240) se shodnými parametry (sloučený datasheet 2007).',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom',
   },
   {
     name: 'SMTPA270',
     packageType:
       'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka), hmotnost 0,12 g; ' +
-      'značení na součástce laserem "U39" — nejvyšší napěťová třída v řadě',
+      'značení na součástce laserem "U39"',
     value:
       'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, VRM 243 V, VBO 360 V, IPP 50 A ' +
       '(10/1000 µs)',
@@ -782,8 +811,36 @@ const DIODE_SPECS: PartSpec[] = [
       'STMicroelectronics SMTPA série "TRISIL" (dok. říjen 1998, ed. 7A) — součást stejné řady ' +
       '10 dílů jako SMTPA62/68/100/120/130/180/200/220/240 (samostatné záznamy) — viz záznam ' +
       'SMTPA62 pro plný popis principu funkce, mezních hodnot a shody se standardy. SMTPA270: ' +
-      'VRM 243 V, IRM max 2 µA @VRM. VR 270 V, IR max 50 µA @VR. VBO max 360 V @IBO=800 mA. IH ' +
-      'min 150 mA. C max 100 pF — nejvyšší napěťová třída v celé řadě SMTPAxx (62–270 V).',
+      'VRM 243 V, IRM max 2 µA @VRM. VR 270 V, IR max 50 µA @VR. VBO max 360 V @IBO=800 mA; ' +
+      'dynamický VBO max 350 V. IH ' +
+      'min 150 mA. C typ 12 pF @VR=50 V / 25 pF @VR=2 V. ⚠️ Dostupné i v pouzdru SMA (SMP50-270) ' +
+      'a DO-15 (TPA270) se shodnými parametry (sloučený datasheet 2007) — ⚠️ nejvyšší napěťová ' +
+      'třída v původním 10dílném datasheetu (1998), ale novější sloučený datasheet (2007) přidal ' +
+      'ještě vyšší díl 320 V, viz samostatný záznam SMTPA320.',
+    tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom',
+  },
+  {
+    name: 'SMTPA320',
+    packageType:
+      'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka, bez elektrody gate), ' +
+      'hmotnost 0,11 g; značení na součástce laserem "U47" — nejvyšší napěťová třída v celé ' +
+      'rodině SMP50/SMTPA/TPA',
+    value:
+      'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, VRM 290 V, VBO 400 V, IPP 50 A ' +
+      '(10/1000 µs)',
+    notes:
+      'STMicroelectronics sloučený datasheet "SMP50/SMTPA/TPA — Trisil for telecom equipment ' +
+      'protection" (červen 2007, rev. 3) — 11. a nejvyšší napěťový díl rodiny SMTPAxx, doplněný ' +
+      'oproti staršímu 10dílnému datasheetu (1998, ed. 7A) z něhož vychází SMTPA62–270 (samostatné ' +
+      'záznamy — viz SMTPA62 pro plný popis principu funkce TRISIL, mezních hodnot a shody se ' +
+      'standardy). SMTPA320: VRM (stand-off napětí) 290 V, IRM max 2 µA @VRM. VR (trvalé závěrné ' +
+      'napětí) 320 V, IR max 5 µA @VR. VBO (breakover napětí, statický test) max 400 V ' +
+      '@IBO=800 mA; dynamický VBO (test okruh 1, 100 V/µs, IPP=50 A) max 400 V. IH (přídržný ' +
+      'proud) min 150 mA. C typ 12 pF @VR=50 V / 25 pF @VR=2 V. Mezní hodnoty společné pro celou ' +
+      'rodinu (viz záznam SMTPA62): P=5 W, IPP dle vlny (10/1000 µs)=50 A ... (2/10 µs)=100 A, ' +
+      'IFS=2,5 kA @8/20 µs, Tstg -55 až +150 °C, TJ max 150 °C. ⚠️ Dostupné i v pouzdru SMA ' +
+      '(ozn. SMP50-320) a v drátovém pouzdru DO-15 (ozn. TPA320) se shodnými elektrickými ' +
+      'parametry jako zde uvedená SMB verze.',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom',
   },
 ];
