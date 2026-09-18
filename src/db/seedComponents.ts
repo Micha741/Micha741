@@ -1722,6 +1722,31 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'a jiný footprint.',
     tags: 'tranzistor,pnp,bipolární,duální,sot-363,sc-70-6,bc807,bc807u,smd,af',
   },
+  {
+    name: 'BC856S',
+    packageType:
+      'SOT-363 (SC-70-6), 6 vývodů: 1=emitor T1, 2=báze T1, 3=kolektor T2, 4=emitor T2, ' +
+      '5=báze T2, 6=kolektor T1 — dva nezávislé PNP tranzistory v jednom SMD pouzdře; značení ' +
+      'na pouzdru "5Ft"',
+    value: 'Duální PNP tranzistor (2× PNP v pouzdře), VCEO -65 V, IC -0,1 A, hFE min 110 @IC=-2 mA',
+    notes:
+      'Jiangsu Changjiang Electronics Technology (JCET) BC856S "Dual Transistor (PNP+PNP)" ' +
+      '(dok. rev. D, březen 2016) — SOT-363 pouzdro stejné rodiny jako BC807U (samostatný ' +
+      'záznam, stejný výrobce/pouzdro/rozměry), ⚠️ ale elektricky odlišná varianta: vyšší napěťová ' +
+      'třída (VCEO -65 V, VCBO -80 V vs. -45/-50 V u BC807U), ale nižší proudová zatížitelnost ' +
+      '(IC -0,1 A vs. -0,5 A) a nižší výkonová ztráta (PC 0,2 W vs. 0,3 W) — jde o obecný ' +
+      'malosignálový pár (interní čip odpovídá řadě "PNP 5401"), ne o výkonovější BC807. Dva ' +
+      'nezávislé PNP tranzistory sdílející jedno pouzdro, bez vzájemného ovlivňování, s dobrým ' +
+      'teplotním spárováním pro diferenciální/proudová zrcadla. Mezní hodnoty: VCBO=-80 V, ' +
+      'VCEO=-65 V, VEBO=-5 V, IC=-0,1 A (trvale), PC=0,2 W @TA=25 °C, RθJA=625 °C/W, TJ max ' +
+      '150 °C, Tstg -55 až +150 °C. V(BR)CBO min -80 V @IC=-10 µA/IE=0. V(BR)CEO min -65 V ' +
+      '@IC=-10 mA/IB=0. V(BR)EBO min -5 V @IE=-10 µA/IC=0. ICBO max -15 nA @VCB=-30 V/IE=0. ' +
+      'IEBO max -100 nA @VEB=-5 V/IC=0. hFE min 110 @VCE=-5 V/IC=-2 mA. VCE(sat) max -0,1 V ' +
+      '@IC=-10 mA/IB=-0,5 mA (max -0,3 V @IC=-100 mA/IB=-5 mA pulzně). VBE(sat) typ 0,7 V ' +
+      '@IC=-10 mA/IB=-0,5 mA. Cobo max 2,5 pF @VCB=-10 V/f=1 MHz/IE=0. fT min 100 MHz @VCE=-5 V/' +
+      'IC=-10 mA/f=100 MHz.',
+    tags: 'tranzistor,pnp,bipolární,duální,sot-363,sc-70-6,bc856,bc856s,smd',
+  },
 ];
 
 const RESISTOR_SPECS: PartSpec[] = [
