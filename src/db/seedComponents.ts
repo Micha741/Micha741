@@ -2609,6 +2609,34 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '— při objednávání/výběru dílu je nutno specifikovat požadovaný BIN.',
     tags: 'tranzistor,fototranzistor,ir,detektor,npn,liteon,ltr-306,optoelektronika,side-looking',
   },
+  {
+    name: 'LTR-1650D',
+    packageType:
+      'THT plastové kulaté "top view" pouzdro Ø3,0 mm (kupolovitá čočka), speciální tmavě ' +
+      'transparentní barva pouzdra (optický IR filtr potlačující viditelné světlo), 2 vývody ' +
+      '(bez báze) — 1=emitor, 2=kolektor (plochá strana pouzdra označuje kolektor); rozteč ' +
+      'vývodů 2,54 mm',
+    value:
+      'IR fototranzistor (detektor), NPN, bez báze, λ=940 nm, VCEO 30 V, IC(ON) 0,2–6,4 mA dle ' +
+      'BIN třídy (A–F) @Ee=1 mW/cm² — vyšší citlivostní třídy než LTR-306',
+    notes:
+      'Lite-On Electronics "LTR-1650D — IR Emitter and Detector" (dok. DS-50-95-0016, rev. A, ' +
+      '05/2000) — ⚠️ jiné pouzdro a vyšší citlivostní rozsah než LTR-306 (samostatný záznam, ' +
+      'stejný výrobce/technologie/vlnová délka) — LTR-1650D má klasické kulaté "top view" ' +
+      'pouzdro Ø3 mm se speciální tmavou transparentní barvou (funguje jako IR propustný/' +
+      'viditelné-světlo-blokující filtr pro potlačení rušení okolním osvětlením), zatímco LTR-306 ' +
+      'má boční ("side looking") pohled a čirou čočku. Elektricky shodné mezní hodnoty (VCEO ' +
+      '30 V, VECO 5 V, PD 100 mW, provozní -40 až +85 °C) i princip (NPN fototranzistor bez báze, ' +
+      'λ=940 nm), ale BIN třídy IC(ON) posunuty výše: A=0,2–0,6 mA, B=0,4–1,2 mA, C=0,8–2,4 mA, ' +
+      'D=1,6–4,8 mA, E=3,2–9,6 mA, F=6,4 mA min (bez horní meze) — cca 2–4× vyšší citlivost v ' +
+      'odpovídajících BIN třídách oproti LTR-306, díky větší čočce/aktivní ploše. VCE(sat) max ' +
+      '0,4 V @IC=100 µA/Ee=1 mW/cm² (bez uvedené typ. hodnoty, na rozdíl od LTR-306). Doba náběhu/' +
+      'poklesu (tr/tf) max 10 µs @VCC=5 V/IC=1 mA/RL=1 kΩ (2× rychlejší než LTR-306). Kolektorový ' +
+      'temný proud ICEO max 100 nA @VCE=10 V/Ee=0. Skladovací teplota -55 až +100 °C, pájecí ' +
+      'teplota 260 °C/5 s (1,6 mm od těla). Při objednávání/výběru dílu nutno specifikovat ' +
+      'požadovaný BIN.',
+    tags: 'tranzistor,fototranzistor,ir,detektor,npn,liteon,ltr-1650d,optoelektronika,top-view',
+  },
 ];
 
 const RESISTOR_SPECS: PartSpec[] = [
