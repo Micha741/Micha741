@@ -1449,6 +1449,33 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,napájecí-obvod,tft-lcd,automotive,max25221b,vcom,boost,i2c,aec-q100',
   },
   {
+    name: 'MAX25520',
+    packageType: '16 TQFN-EP / 16 SWTQFN-EP (3×3 mm), AEC-Q100 Grade 1, -40 až +125 °C',
+    value:
+      '2kanálový (jen AVDD+NAVDD) automotive TFT-LCD napájecí obvod — symetrická/asymetrická ' +
+      'kladná/záporná napětí do ±10,5 V (±12 V u ATEC) @200 mA, bez VGON/VGOFF a bez I2C',
+    notes:
+      'Maxim/Analog Devices "MAX25520 — Automotive 2-Channel TFT-LCD Power Supply" ' +
+      '(dok. 19-100974, rev. 0, 1/2021) — ⚠️ zjednodušená, menší (16pin, 3×3 mm) sesterská ' +
+      'součástka k rodině MAX25220/MAX25221/MAX25221B (samostatné záznamy, 4kanálové, 32pin, ' +
+      's I2C řízením a NV pamětí) — MAX25520 poskytuje POUZE symetrická/asymetrická kladná ' +
+      '(AVDD) a záporná (NAVDD) napětí do ±10,5 V @200 mA (±12 V @200 mA u varianty ATEC), BEZ ' +
+      'nábojových pump VGON/VGOFF pro gate-budiče a BEZ VCOM bufferu — jde o čistě analogovou/' +
+      'pinově řízenou součástku (žádné I2C rozhraní, žádná NV paměť pro kalibraci) s jednoduchým ' +
+      'nastavením výstupů externími odporovými děliči (FBP/FBN) a nezávislými enable piny ENP/ENN ' +
+      '(umožňují buď nezávislé řízení obou výstupů, nebo jejich vzájemné sledování/"tracking"). ' +
+      'Integruje: fully-integrated current-mode synchronní boost converter pro AVDD (LXP/HVINP, ' +
+      'proudový limit 1,64–2,3 A, soft-start 5 ms) a current-mode invertující regulátor pro NAVDD ' +
+      's externím usměrňovačem (LXN/INN, proudový limit 1,55–2,25 A). Spínací frekvence 420 kHz ' +
+      '(ATEA) nebo 2,1 MHz (ATEB/ATEC) se spread-spectrum ditherem ±6 % pro nízké EMI. Ochrany: ' +
+      'UV diagnostika na obou výstupech (AVDD i NAVDD, práh 80–90 % nastavené hodnoty), zkratová ' +
+      'ochrana (40 % prahu), fault timeout 30 ms s automatickým retry po 1,9 s, FLTB chybový ' +
+      'výstup (open-drain). IN 2,65–5,5 V (ATEC vyžaduje 4,5–5,5 V), interní V18 LDO 1,8 V @50 mA. ' +
+      'Varianty: ATEA (420 kHz, AVDD/HVINP do 10,5 V), ATEB (2,1 MHz, do 10,5 V), ATEC (2,1 MHz, ' +
+      'do 12 V, vyšší min. IN 4,5 V). Dostupný v TQFN-EP i SWTQFN-EP (side-wettable) pouzdru.',
+    tags: 'io,napájecí-obvod,tft-lcd,automotive,max25520,boost,invertor,aec-q100',
+  },
+  {
     name: 'ISL97652',
     packageType: '48 Ld 7×7 mm QFN, tepelně vylepšené (exponovaný termální pad), -40 až +85 °C',
     value:
