@@ -781,6 +781,59 @@ const IC_SPECS: IcSpec[] = [
       'Skladování 10–40 °C, <60 %RH. Nedoporučeno pro bezpečnostní/nouzové aplikace.',
     tags: 'io,senzor,vlhkoměr,teploměr,dht11,jednovodičový',
   },
+  {
+    name: 'SHT71',
+    packageType:
+      'Kolíkové (pin-type) pouzdro 19,5 × 5,08 × 3,1 mm, hmotnost 168 mg (hlava senzoru 73 mg), ' +
+      '4 vývody: 1=SCK, 2=VDD, 3=GND, 4=DATA — LCP krytka s epoxidovým zálitkem na FR4 substrátu, ' +
+      'piny Cu/Be slitina pokovená Ni/Au, integrovaný 100nF kondenzátor mezi VDD/GND na rubu ' +
+      'desky; piny lze pájet nebo vsadit do patice (např. Preci-dip/Mill-Max 851-93-004-20-001)',
+    value:
+      'Digitální senzor vlhkosti a teploty, 0–100 %RH (±3,0 %RH typ.), -40 až +123,8 °C ' +
+      '(±0,4 °C typ.), digitální 2vodičové rozhraní (SCK+DATA), VDD 2,4–5,5 V',
+    notes:
+      'Sensirion "Datasheet SHT7x (SHT71, SHT75)" v4.1 (červenec 2008) — pokrývá dvě přesnostní ' +
+      'třídy téže konstrukce sensoru v jednom dokumentu, zpracovány obě (SHT71 = základní ' +
+      'přesnost, SHT75 = vyšší přesnost, samostatný záznam). ⚠️ Zcela odlišný komunikační ' +
+      'protokol než ostatní senzory v knihovně — DS18B20/DS1822 používají adresovatelnou Dallas ' +
+      '1-Wire sběrnici, DHT11 proprietární asynchronní jednovodičový protokol založený na časování ' +
+      'pulzů, TC625 čistý PWM výstup — SHT7x má skutečné synchronní 2vodičové sériové rozhraní ' +
+      '(SCK jako hodinový signál vždy řízený mikrokontrolérem, DATA obousměrný tri-state), ' +
+      'elektricky podobné I2C, ale NENÍ I2C kompatibilní (nelze adresovat více senzorů standardním ' +
+      'I2C protokolem, podporována jen adresa "000"). Kombinuje kapacitní vlhkoměrný člen a ' +
+      'band-gap teploměrný člen s 14bit A/D převodníkem a OTP kalibrační pamětí na jednom čipu ' +
+      '(CMOSens technologie). Vlhkost: rozlišení volitelné 8/12 bit (0,5/0,03 %RH), ' +
+      'opakovatelnost ±0,1 %RH, hystereze ±1 %RH, nelinearita syrových dat ±3 %RH (po linearizaci ' +
+      '<<1 %RH), doba odezvy τ63% 8 s, rozsah měření 0–100 %RH, dlouhodobý drift <0,5 %RH/rok. ' +
+      'Teplota: rozlišení volitelné 12/14 bit (0,04/0,01 °C), opakovatelnost ±0,1 °C, rozsah ' +
+      'měření -40 až +123,8 °C, doba odezvy τ63% 5–30 s, dlouhodobý drift <0,04 °C/rok. SHT71 ' +
+      'přesnost: vlhkost typ. ±3,0 %RH (max dle grafu, nejhorší v krajních bodech 0 %RH a ' +
+      '100 %RH), teplota typ. ±0,4 °C. Napájení VDD 2,4–5,5 V (doporučeno 3,3 V pro nejvyšší ' +
+      'přesnost). Spotřeba: sleep 2–5 µW, měření typ. 3 mW, průměr 150 µW. Skladování 10–50 °C ' +
+      '(krátkodobě do 80 °C), 20–60 %RH. Volitelný interní ohřívač (+5 až +10 °C nad okolí, ' +
+      'odběr cca 8 mA @5 V) pro funkční diagnostiku. Detekce nízkého napájecího napětí (<2,47 V). ' +
+      'Příkazy (přes status registr/command bity): Measure Temperature (00011), Measure RH ' +
+      '(00101), Read/Write Status Register (00111/00110), Soft reset (11110, min. 11 ms čekání ' +
+      'před dalším příkazem). Volitelný CRC-8 kontrolní součet.',
+    tags: 'io,senzor,vlhkoměr,teploměr,sht71,sht7x,sensirion,2vodičové',
+  },
+  {
+    name: 'SHT75',
+    packageType:
+      'Kolíkové (pin-type) pouzdro 19,5 × 5,08 × 3,1 mm, hmotnost 168 mg (hlava senzoru 73 mg), ' +
+      '4 vývody: 1=SCK, 2=VDD, 3=GND, 4=DATA — shodná konstrukce jako SHT71 (samostatný záznam)',
+    value:
+      'Digitální senzor vlhkosti a teploty (vyšší přesnost), 0–100 %RH (±1,8 %RH typ.), -40 až ' +
+      '+123,8 °C (±0,3 °C typ.), digitální 2vodičové rozhraní (SCK+DATA), VDD 2,4–5,5 V',
+    notes:
+      'Sensirion "Datasheet SHT7x (SHT71, SHT75)" v4.1 (červenec 2008). ⚠️ SHT75 = přesnostně ' +
+      'vyšší třída téhož senzoru jako SHT71 (samostatný záznam) — mechanicky, elektricky a ' +
+      'protokolem naprosto identická (viz záznam SHT71 pro plný popis rozhraní, rozlišení, ' +
+      'spotřeby a příkazů), liší se pouze binováním přesnosti: SHT75 typ. ±1,8 %RH (vs. ±3,0 %RH ' +
+      'u SHT71) a typ. ±0,3 °C (vs. ±0,4 °C u SHT71). Vyšší cena oproti SHT71 za lepší garantovanou ' +
+      'přesnost ze stejné výrobní linky (třídění dle kalibrace).',
+    tags: 'io,senzor,vlhkoměr,teploměr,sht75,sht7x,sensirion,2vodičové',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
