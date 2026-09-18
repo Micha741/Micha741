@@ -965,19 +965,33 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   },
   {
     name: 'BC517',
-    packageType: 'TO-92 — vývody: 1=kolektor, 2=báze, 3=emitor',
-    value: 'NPN Darlington, VCEO 30 V, IC 500 mA, hFE min 30 000 (@ IC=100 mA)',
+    packageType:
+      'TO-92 — vývody: 1=kolektor, 2=báze, 3=emitor (3L, rovné nebo ohnuté vývody dle balení)',
+    value:
+      'NPN Darlington, VCEO 30 V, IC 1,2 A (trvale, dle ON Semiconductor), hFE min 30 000 ' +
+      '(@ IC=20 mA)',
     notes:
       'Vysoce ziskový NPN Darlington pro obecné použití (např. citlivé spínání malým bázovým ' +
-      'proudem). Datasheet HSMC HBC517 (ekvivalent/druhý zdroj BC517). ' +
-      'Mezní hodnoty: VCBO=40 V, VCEO=30 V, VEBO=10 V, IC=500 mA, PD=625 mW @TA=25 °C, ' +
-      'TJ max 150 °C, Tstg -55 až +150 °C. ' +
-      'ICBO max 1 µA @VCB=40 V. IEBO max 1 µA @VEB=10 V. ' +
-      'hFE @IC=100 mA/VCE=2 V: min 30 000 (extrémně vysoký zisk typický pro dvojitý Darlington). ' +
-      'VCE(sat) @IC=100 mA/IB=1 mA: max 1 V. VBE(sat) @IC=100 mA/IB=1 mA: typ 1,5 V, max 2 V ' +
-      '(dvojnásobný úbytek, typické pro Darlington zapojení). ' +
-      'fT @IC=100 mA/VCE=2 V/f=100 MHz: typ 220 MHz. Cob=5 pF typ @VCB=10 V/f=1 MHz.',
-    tags: 'tranzistor,npn,bipolární,darlington,to-92,bc517,hbc517',
+      'proudem). ⚠️ Doplněno podle oficiálního datasheetu ON Semiconductor BC517-D74Z/D rev. 2 ' +
+      '(září 2017), který nahrazuje dříve zpracovaný datasheet HSMC HBC517 (ekvivalent/druhý ' +
+      'zdroj) — rozdíly mezi oběma zdroji jsou označeny níže. ⚠️ Trvalý kolektorový proud IC podle ' +
+      'ON Semiconductor je 1,2 A (HSMC uváděl jen 500 mA — výrazně nižší, konzervativnější ' +
+      'hodnota; při návrhu doporučeno vycházet z přísnější hodnoty 500 mA, pokud není potvrzen ' +
+      'konkrétní výrobce součástky). Mezní hodnoty (ON Semiconductor): VCBO=40 V, VCEO=30 V, ' +
+      'VEBO=10 V, IC=1,2 A, TJ/Tstg=-55 až +150 °C. PD=625 mW @TA=25 °C (odvod 5,0 mW/°C nad ' +
+      '25 °C), RθJC=83,3 °C/W, RθJA=200 °C/W (údaje o tepelném odporu v HSMC datasheetu chyběly). ' +
+      '⚠️ ICBO max 100 nA @VCB=30 V/IE=0 (HSMC uváděl max 1 µA @VCB=40 V — desetinásobně vyšší ' +
+      'hodnota při jiném testovacím napětí). VEBO (breakdown) min 10 V @IE=100 nA. VCEO ' +
+      '(breakdown) min 30 V @IC=2,0 mA/IB=0. hFE min 30 000 @IC=20 mA/VCE=2 V (⚠️ HSMC udával ' +
+      'stejnou min. hodnotu, ale při jiném testovacím proudu IC=100 mA). ⚠️ VCE(sat) max 1 V ' +
+      '@IC=100 mA/IB=0,1 mA (HSMC uváděl týž max 1 V, ale při desetinásobně vyšším IB=1 mA — ' +
+      'přísnější podmínka u ON Semiconductor naznačuje vyšší skutečný proudový zisk). VBE(on) ' +
+      'max 1,4 V @IC=10 mA/VCE=5,0 V (jiný parametr/testovací bod než dříve uvedené VBE(sat) typ ' +
+      '1,5 V/max 2 V @IC=100 mA/IB=1 mA z HSMC — obě platí, jde o odlišné pracovní body). Datasheet ' +
+      'ON Semiconductor neuvádí konkrétní číselnou hodnotu fT ani Cob (jen grafy) — dříve uvedené ' +
+      'hodnoty fT typ 220 MHz a Cob typ 5 pF (z HSMC) ponechány, nejsou v rozporu s grafem Gain ' +
+      'Bandwidth Product (špička cca 350 MHz kolem IC=50 mA).',
+    tags: 'tranzistor,npn,bipolární,darlington,to-92,bc517,hbc517,onsemi',
   },
 
   {
