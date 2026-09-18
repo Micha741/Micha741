@@ -2749,8 +2749,102 @@ const RESISTOR_SPECS: PartSpec[] = [
       'terminace Ni/matný cín). Testováno dle IEC 60115-1/60068-x/MIL-STD-202G (teplotní cyklování ' +
       '300× -55/+125 °C, vlhkostní odolnost, pájitelnost při 260 °C/bezolovnatá pájka, ohyb DPS aj.) ' +
       '— vhodné pro přesné aplikace (měřicí obvody, zpětné vazby, převodníky) vyžadující nízkou ' +
-      'teplotní driftaci a vysokou dlouhodobou stabilitu (±0,5 % po 1000 h @70 °C/125 °C/155 °C).',
+      'teplotní driftaci a vysokou dlouhodobou stabilitu (±0,5 % po 1000 h @70 °C/125 °C/155 °C). ' +
+      '⚠️ POZOR na záměnu názvů: výrobce Susumu má vlastní, zcela odlišnou "RT sérii" ' +
+      'laditelných (trimmable) rezistorů se stejným prefixem "RT" i podobnými velikostními kódy ' +
+      '(např. Susumu RT0603 = pouzdro 0201!) — viz samostatné záznamy Susumu RT0603/RT0510/' +
+      'RT0816/RT1220, které s touto Yageo řadou nesouvisí.',
     tags: 'rezistor,smd,1206,precision,tenkovrstvý,thin-film,yageo,phicomp,rt-series',
+  },
+  {
+    name: 'Susumu RT0603',
+    packageType:
+      'SMD pouzdro velikosti 0201 (L 0,60±0,05 × W 0,30±0,05 × T 0,23±0,05 mm, kontakt P ' +
+      '0,12±0,05 mm), tenkovrstvý (thin film) laditelný čipový rezistor',
+    value:
+      'Laditelný (trimmable) tenkovrstvý SMD rezistor, počáteční hodnota 150/330/1,5k Ω, ' +
+      'laserem doladitelný nahoru až na 1,0k/2,2k/10k Ω, ±20 %, 1/20 W',
+    notes:
+      'Susumu Group "RT series, high-precision trimmable chip resistors" (katalogový datasheet) ' +
+      '— ⚠️ POZOR: NEJDE o stejnou řadu jako Yageo/Phicomp "RT series" (viz záznam ' +
+      'RT1206FRE073K01L v této knihovně) — shoda prefixu "RT" i velikostních kódů (zde "0603") ' +
+      'je čistě náhodná/kolizní, jde o zcela jiného výrobce i jinou technologii. Susumu RT je ' +
+      'unikátní JEDNOKROKOVĚ laserem laditelná (in-circuit trimmable) tenkovrstvá součástka — ' +
+      'na rozdíl od běžných rezistorů, kde se hodnota nastavuje laserovým řezem při výrobě, lze ' +
+      'zde hodnotu doladit AŽ PO OSAZENÍ do obvodu (in-circuit tuning), a to bez nutnosti ' +
+      'vlhkotěsné ochrany po trimování (patent č. 1921853). Vynikající teplotní charakteristiky, ' +
+      'nízký šum a nízké zkreslení 3. harmonickou — vhodné pro přesné analogové obvody vyžadující ' +
+      'doladění po osazení (např. kalibrace zesílení, referenční napětí, filtry). Susumu RT0603 ' +
+      '(označuje pouzdro velikosti 0201, "New first in the market 0201 trimmable chip resistor") ' +
+      '— součást stejné rodiny 4 velikostí jako Susumu RT0510/RT0816/RT1220 (samostatné ' +
+      'záznamy), lišících se pouzdrem a rozsahem hodnot. Počáteční hodnoty 150/330/1,5k Ω, ' +
+      'laditelné nahoru až na horní mez 1,0k/2,2k/10k Ω (dle počáteční hodnoty). TCR ±25 ppm/°C ' +
+      '(kód P). Tolerance ±20 % (kód M). Výkon 1/20 W, max. pracovní napětí 15 V, max. přetížitelné ' +
+      'napětí 30 V. Balení 15 000 ks/cívka. RoHS, zcela bezolovnaté. Kód objednávky: RT<velikost>' +
+      '<TCR kód>-<3místný EIA odporový kód>-<tolerance kód M>, např. RT0816P-102-M = 1 kΩ, ' +
+      'TCR ±25 ppm/°C, tolerance ±20 %.',
+    tags: 'rezistor,smd,0201,trimovatelný,trimmable,laditelný,susumu,thin-film,rt-series',
+  },
+  {
+    name: 'Susumu RT0510',
+    packageType:
+      'SMD pouzdro velikosti 0402 (L 1,00±0,07 × W 0,50±0,07 × T 0,35±0,05 mm, kontakt P ' +
+      '0,20±0,10 mm), tenkovrstvý (thin film) laditelný čipový rezistor',
+    value:
+      'Laditelný (trimmable) tenkovrstvý SMD rezistor, počáteční hodnota 100/270/1,5k Ω (i 50 Ω), ' +
+      'laserem doladitelný nahoru až na 820/2,1k/10k Ω, ±20 %, 1/16 W',
+    notes:
+      'Susumu Group "RT series, high-precision trimmable chip resistors" — součást stejné rodiny ' +
+      '4 velikostí jako Susumu RT0603/RT0816/RT1220 (samostatné záznamy) — viz záznam Susumu ' +
+      'RT0603 pro plný popis principu jednokrokového laserem laditelného (in-circuit trimmable) ' +
+      'tenkovrstvého rezistoru a upozornění na kolizi názvu s nesouvisející řadou Yageo/Phicomp ' +
+      '"RT series" v této knihovně. Susumu RT0510 = pouzdro velikosti 0402. Počáteční hodnoty ' +
+      '100/270/1,5k Ω (dostupná i varianta s počáteční hodnotou 50 Ω), laditelné nahoru až na ' +
+      'horní mez 820/2,1k/10k Ω. TCR ±25 ppm/°C (kód P). Tolerance ±20 % (kód M). Výkon 1/16 W, ' +
+      'max. pracovní napětí 25 V, max. přetížitelné napětí 50 V. Balení 10 000 ks/cívka.',
+    tags: 'rezistor,smd,0402,trimovatelný,trimmable,laditelný,susumu,thin-film,rt-series',
+  },
+  {
+    name: 'Susumu RT0816',
+    packageType:
+      'SMD pouzdro velikosti 0603 (L 1,60±0,20 × W 0,80±0,20 × T 0,40±0,10 mm, kontakt P ' +
+      '0,30±0,20 mm), tenkovrstvý (thin film) laditelný čipový rezistor',
+    value:
+      'Laditelný (trimmable) tenkovrstvý SMD rezistor, počáteční hodnota 100/330/1k/3,3k/10k Ω, ' +
+      'laserem doladitelný nahoru až na 2,7k–40k Ω, ±20 %, 1/16 W',
+    notes:
+      'Susumu Group "RT series, high-precision trimmable chip resistors" — součást stejné rodiny ' +
+      '4 velikostí jako Susumu RT0603/RT0510/RT1220 (samostatné záznamy) — viz záznam Susumu ' +
+      'RT0603 pro plný popis principu jednokrokového laserem laditelného (in-circuit trimmable) ' +
+      'tenkovrstvého rezistoru a upozornění na kolizi názvu s nesouvisející řadou Yageo/Phicomp ' +
+      '"RT series" v této knihovně. Susumu RT0816 = pouzdro velikosti 0603 (např. ' +
+      'RT0816P-102-M = 1 kΩ, TCR ±25 ppm/°C, ±20 %, viz vzor kódu v záznamu RT0603). Počáteční ' +
+      'hodnoty 100/330/1k/3,3k/10k Ω, laditelné nahoru na horní meze 2,7k/8,0k/8,8k/37k/40k Ω. ' +
+      'TCR ±25 ppm/°C (kód P) nebo ±100 ppm/°C (kód R). Tolerance ±20 % (kód M). Výkon 1/16 W, ' +
+      'max. pracovní napětí 75 V, max. přetížitelné napětí 150 V. Balení 5 000 ks/cívka.',
+    tags: 'rezistor,smd,0603,trimovatelný,trimmable,laditelný,susumu,thin-film,rt-series',
+  },
+  {
+    name: 'Susumu RT1220',
+    packageType:
+      'SMD pouzdro velikosti 0805 (L 2,00±0,20 × W 1,25±0,20 × T 0,40±0,10 mm, kontakt P ' +
+      '0,40±0,20 mm), tenkovrstvý (thin film) laditelný čipový rezistor',
+    value:
+      'Laditelný (trimmable) tenkovrstvý SMD rezistor, počáteční hodnota 33 Ω–100 kΩ (8 tříd), ' +
+      'laserem doladitelný nahoru až na 4,7k–220k Ω, ±20 %, 1/10 W — nejvyšší výkonová/napěťová ' +
+      'třída v řadě',
+    notes:
+      'Susumu Group "RT series, high-precision trimmable chip resistors" — součást stejné rodiny ' +
+      '4 velikostí jako Susumu RT0603/RT0510/RT0816 (samostatné záznamy) — viz záznam Susumu ' +
+      'RT0603 pro plný popis principu jednokrokového laserem laditelného (in-circuit trimmable) ' +
+      'tenkovrstvého rezistoru a upozornění na kolizi názvu s nesouvisející řadou Yageo/Phicomp ' +
+      '"RT series" v této knihovně. Susumu RT1220 = pouzdro velikosti 0805, největší a ' +
+      'výkonově/napěťově nejvyšší třída v katalogu. Počáteční hodnoty 33/100/330/1k/3,3k/10k/' +
+      '33k/100k Ω, laditelné nahoru na horní meze 4,7k/8,2k/15k/15k/100k/120k/120k/220k Ω. TCR ' +
+      '±50 ppm/°C (kód Q), ±25 ppm/°C (kód P) nebo ±100 ppm/°C (kód R) dle konkrétní hodnoty. ' +
+      'Tolerance ±20 % (kód M). Výkon 1/10 W, max. pracovní napětí 100 V, max. přetížitelné ' +
+      'napětí 200 V. Balení 5 000 ks/cívka.',
+    tags: 'rezistor,smd,0805,trimovatelný,trimmable,laditelný,susumu,thin-film,rt-series',
   },
 ];
 
