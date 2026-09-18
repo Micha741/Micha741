@@ -1725,26 +1725,43 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   {
     name: 'BC856S',
     packageType:
-      'SOT-363 (SC-70-6), 6 vývodů: 1=emitor T1, 2=báze T1, 3=kolektor T2, 4=emitor T2, ' +
-      '5=báze T2, 6=kolektor T1 — dva nezávislé PNP tranzistory v jednom SMD pouzdře; značení ' +
-      'na pouzdru "5Ft"',
-    value: 'Duální PNP tranzistor (2× PNP v pouzdře), VCEO -65 V, IC -0,1 A, hFE min 110 @IC=-2 mA',
+      'SOT-363 (SC-70-6), 6 vývodů: 1/4=E1/E2, 2/5=B1/B2, 3/6=C2/C1 (dva nezávislé PNP ' +
+      'tranzistory TR1, TR2 v jednom SMD pouzdře) — pinout potvrzen jak JCET reissue, tak ' +
+      'originálním Siemens datasheetem; značení na pouzdru "5Ft" (JCET) nebo "3Ds" (Siemens)',
+    value: 'Duální PNP tranzistor (2× PNP v pouzdře), VCEO -65 V, IC -100 mA, hFE 200–475 @IC=2 mA',
     notes:
-      'Jiangsu Changjiang Electronics Technology (JCET) BC856S "Dual Transistor (PNP+PNP)" ' +
-      '(dok. rev. D, březen 2016) — SOT-363 pouzdro stejné rodiny jako BC807U (samostatný ' +
-      'záznam, stejný výrobce/pouzdro/rozměry), ⚠️ ale elektricky odlišná varianta: vyšší napěťová ' +
-      'třída (VCEO -65 V, VCBO -80 V vs. -45/-50 V u BC807U), ale nižší proudová zatížitelnost ' +
-      '(IC -0,1 A vs. -0,5 A) a nižší výkonová ztráta (PC 0,2 W vs. 0,3 W) — jde o obecný ' +
-      'malosignálový pár (interní čip odpovídá řadě "PNP 5401"), ne o výkonovější BC807. Dva ' +
-      'nezávislé PNP tranzistory sdílející jedno pouzdro, bez vzájemného ovlivňování, s dobrým ' +
-      'teplotním spárováním pro diferenciální/proudová zrcadla. Mezní hodnoty: VCBO=-80 V, ' +
-      'VCEO=-65 V, VEBO=-5 V, IC=-0,1 A (trvale), PC=0,2 W @TA=25 °C, RθJA=625 °C/W, TJ max ' +
-      '150 °C, Tstg -55 až +150 °C. V(BR)CBO min -80 V @IC=-10 µA/IE=0. V(BR)CEO min -65 V ' +
-      '@IC=-10 mA/IB=0. V(BR)EBO min -5 V @IE=-10 µA/IC=0. ICBO max -15 nA @VCB=-30 V/IE=0. ' +
-      'IEBO max -100 nA @VEB=-5 V/IC=0. hFE min 110 @VCE=-5 V/IC=-2 mA. VCE(sat) max -0,1 V ' +
-      '@IC=-10 mA/IB=-0,5 mA (max -0,3 V @IC=-100 mA/IB=-5 mA pulzně). VBE(sat) typ 0,7 V ' +
-      '@IC=-10 mA/IB=-0,5 mA. Cobo max 2,5 pF @VCB=-10 V/f=1 MHz/IE=0. fT min 100 MHz @VCE=-5 V/' +
-      'IC=-10 mA/f=100 MHz.',
+      '⚠️ Doplněno podle původního Siemens datasheetu "BC 856S — PNP Silicon AF Transistor ' +
+      'Array" (1998-11-01), který doplňuje/upřesňuje dříve zpracovaný reissue od Jiangsu ' +
+      'Changjiang Electronics Technology (JCET, dok. rev. D, 2016) — rozdíly mezi zdroji jsou ' +
+      'označeny níže; SOT-363 pouzdro stejné rodiny jako BC807U (samostatný záznam). Dva ' +
+      'nezávislé PNP tranzistory (TR1, TR2) sdílející jedno pouzdro, bez vzájemného ovlivňování, ' +
+      's dobrým teplotním spárováním pro diferenciální stupně/proudová zrcadla — určeno pro AF ' +
+      '(nízkofrekvenční) vstupní stupně a budicí obvody. Mezní hodnoty (Siemens): VCEO=65 V, ' +
+      'VCBO=80 V, VCES=80 V (⚠️ nový parametr, JCET jej neuváděl), VEBO=5 V, IC=100 mA (trvale), ' +
+      'ICM=200 mA (špičkově, ⚠️ JCET tento parametr neuváděl), Ptot=250 mW @TS=115 °C (pájecí ' +
+      'bod — ⚠️ JCET uváděl 200 mW @TA=25 °C, jiná referenční teplota, přímo nesrovnatelné), TJ ' +
+      'max 150 °C, Tstg -65 až +150 °C. ⚠️ Tepelný odpor RθJA≤275 K/W dle Siemens výrazně nižší ' +
+      'než RθJA=625 °C/W uváděný JCET reissue pro stejný díl — možný rozdíl v měřicí metodice ' +
+      '(deska 40×40×1,5 mm/0,5 cm² Cu u Siemens) nebo v kvalitě/konstrukci čipu druhého zdroje; ' +
+      'Siemens navíc udává RθJS (přechod–pájecí bod) ≤140 K/W. Elektrické charakteristiky na ' +
+      'tranzistor (Siemens, TA=25 °C): V(BR)CEO min 65 V @IC=10 mA/IB=0, V(BR)CBO min 80 V ' +
+      '@IC=10 µA/IB=0, V(BR)CES min 80 V @IC=10 µA/VBE=0 (nový parametr), V(BR)EBO min 5 V ' +
+      '@IE=10 µA/IC=0. ICBO max 15 nA @VCB=30 V/IE=0 (shoduje se s JCET), max 5 µA @VCB=30 V/' +
+      'IE=0/TA=150 °C (nový parametr — teplotní chování). ⚠️ hFE dle Siemens: typ 250 @IC=10 µA/' +
+      'VCE=5 V; min 200, typ 290, max 475 @IC=2 mA/VCE=5 V — výrazně vyšší minimum než JCET ' +
+      'reissue (ten uváděl jen min 110 @stejné podmínce IC=2 mA/VCE=5 V), druhý zdroj patrně ' +
+      'garantuje volnější/nižší minimální zisk. ⚠️ VCEsat dle Siemens: typ 90 mV max 300 mV ' +
+      '@IC=10 mA/IB=0,5 mA (JCET uváděl přísnější max 100 mV při stejné podmínce); typ 250 mV ' +
+      'max 650 mV @IC=100 mA/IB=5 mA (JCET uváděl přísnější max 300 mV) — reissue tedy garantuje ' +
+      'nižší (lepší) saturační napětí než originál. VBEsat typ 700 mV @IC=10 mA/IB=0,5 mA (shoduje ' +
+      'se s JCET), typ 850 mV @IC=100 mA/IB=5 mA. VBE(on) (nový parametr): min 600 typ 650 max ' +
+      '750 mV @IC=2 mA/VCE=5 V; max 820 mV @IC=10 mA/VCE=5 V. AC charakteristiky (Siemens): ' +
+      '⚠️ fT typ 250 MHz @IC=20 mA/VCE=5 V/f=100 MHz (vyšší testovací proud i vyšší hodnota než ' +
+      'JCET min 100 MHz @IC=10 mA — různé testovací podmínky, nejsou přímo srovnatelné). Ccb typ ' +
+      '3 pF @VCB=10 V/f=1 MHz (blízké JCET Cobo max 2,5 pF). Ceb typ 8 pF @VEB=0,5 V/f=1 MHz ' +
+      '(nový parametr). Malosignálové h-parametry v zapojení SE @IC=2 mA/VCE=5 V/f=1 kHz (zcela ' +
+      'nové, JCET je neuváděl): h11e typ 4,5 kΩ (vstupní impedance), h12e typ 2×10⁻⁴ (zpětný ' +
+      'napěťový přenos), h21e min 330 (proudové zesílení), h22e typ 30 µS (výstupní admitance).',
     tags: 'tranzistor,pnp,bipolární,duální,sot-363,sc-70-6,bc856,bc856s,smd',
   },
 ];
