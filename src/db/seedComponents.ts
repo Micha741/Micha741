@@ -1608,6 +1608,122 @@ const DIODE_SPECS: PartSpec[] = [
       '°C/W, RθJ-okolí 89 °C/W. TJ a Tstg -40 až +125 °C.',
     tags: 'tyristor,scr,silicon-controlled-rectifier,semiwell,d-pak,to-252,řízený-spínač',
   },
+  {
+    name: 'LD-201VR',
+    packageType:
+      'THT plochý ("flat") jednočipový displej, tenké pouzdro cca 6,0×3,68 mm, dlouhé vývody ' +
+      '(min. 24 mm) pro širokou škálu montážních možností, vhodné ke spojování více kusů vedle ' +
+      'sebe; katodová značka/seříznutí pro identifikaci pinu 1',
+    value:
+      'LED "flat display" (planární emise z jednoho čipu), červená, λp 650 nm, IV typ. 6,3 mcd ' +
+      '@IF=10 mA, VF typ. 2,0 V',
+    notes:
+      'ROHM "LD-201 Series — Flat displays" — jednočipové ploché LED displeje s planární emisí ' +
+      'a tenkým pouzdrem umožňujícím vzájemné spojování více kusů do řady/pole a montáž díky ' +
+      'dlouhým vývodům v širokém spektru aplikací (na rozdíl od běžných kulatých/pouzdrových LED ' +
+      'v této knihovně). Zpracována celá řada 4 barev z jednoho datasheetu (LD-201VR červená, ' +
+      'LD-201DU oranžová, LD-201YY žlutá, LD-201MG zelená, samostatné záznamy). LD-201VR ' +
+      '(červená): PD 60 mW, IF 20 mA, IFP 60 mA (pulz 1 ms, duty 1/5), VR 3 V. VF typ. 2,0 V/max ' +
+      '2,8 V @IF=10 mA. IR max 10 µA @VR=3 V. λp (vrcholová vlnová délka) typ. 650 nm, Δλ ' +
+      '(spektrální pološířka) typ. 40 nm @IF=10 mA. IV (svítivost) min 2,2/typ. 6,3 mcd @IF=10 mA. ' +
+      'Provozní teplota -25 až +75 °C, skladovací -30 až +85 °C. Poznámka k montáži: ohyb vývodů ' +
+      'min. 2 mm od těla pouzdra, pájet až po tvarování vývodů.',
+    tags: 'dioda,led,displej,flat-display,rohm,ld-201,červená',
+  },
+  {
+    name: 'LD-201DU',
+    packageType:
+      'THT plochý ("flat") jednočipový displej, tenké pouzdro cca 6,0×3,68 mm, dlouhé vývody ' +
+      '(min. 24 mm), vhodné ke spojování více kusů vedle sebe',
+    value:
+      'LED "flat display" (planární emise z jednoho čipu), oranžová, λp 610 nm, IV typ. 6,3 mcd ' +
+      '@IF=10 mA, VF typ. 2,0 V',
+    notes:
+      'ROHM "LD-201 Series — Flat displays" — součást stejné řady 4 barev jako LD-201VR/YY/MG ' +
+      '(samostatné záznamy) — viz záznam LD-201VR pro plný popis principu "flat display" a ' +
+      'montážní poznámky. ⚠️ Dle datasheetu "order-based production" (vyráběno na objednávku, ' +
+      'nikoli standardní skladová položka). LD-201DU (oranžová): PD 60 mW, IF 20 mA, IFP 60 mA, ' +
+      'VR 3 V. VF typ. 2,0 V/max 2,8 V @IF=10 mA. IR max 10 µA @VR=3 V. λp typ. 610 nm, Δλ typ. ' +
+      '40 nm. IV min 2,2/typ. 6,3 mcd @IF=10 mA. Provozní teplota -25 až +75 °C, skladovací -30 ' +
+      'až +85 °C.',
+    tags: 'dioda,led,displej,flat-display,rohm,ld-201,oranžová',
+  },
+  {
+    name: 'LD-201YY',
+    packageType:
+      'THT plochý ("flat") jednočipový displej, tenké pouzdro cca 6,0×3,68 mm, dlouhé vývody ' +
+      '(min. 24 mm), vhodné ke spojování více kusů vedle sebe',
+    value:
+      'LED "flat display" (planární emise z jednoho čipu), žlutá, λp 585 nm, IV typ. 4,0 mcd ' +
+      '@IF=10 mA, VF typ. 2,1 V',
+    notes:
+      'ROHM "LD-201 Series — Flat displays" — součást stejné řady 4 barev jako LD-201VR/DU/MG ' +
+      '(samostatné záznamy) — viz záznam LD-201VR pro plný popis principu "flat display" a ' +
+      'montážní poznámky. ⚠️ Dle datasheetu "order-based production" (vyráběno na objednávku). ' +
+      'LD-201YY (žlutá): PD 60 mW, IF 20 mA, IFP 60 mA, VR 3 V. VF typ. 2,1 V/max 2,8 V @IF=10 mA. ' +
+      'IR max 10 µA @VR=3 V. λp typ. 585 nm, Δλ typ. 40 nm. IV min 1,4/typ. 4,0 mcd @IF=10 mA ' +
+      '(⚠️ nejnižší svítivost v řadě). Provozní teplota -25 až +75 °C, skladovací -30 až +85 °C.',
+    tags: 'dioda,led,displej,flat-display,rohm,ld-201,žlutá',
+  },
+  {
+    name: 'LD-201MG',
+    packageType:
+      'THT plochý ("flat") jednočipový displej, tenké pouzdro cca 6,0×3,68 mm, dlouhé vývody ' +
+      '(min. 24 mm), vhodné ke spojování více kusů vedle sebe',
+    value:
+      'LED "flat display" (planární emise z jednoho čipu), zelená, λp 563 nm, IV typ. 10 mcd ' +
+      '@IF=10 mA, VF typ. 2,1 V — nejvyšší výkon/svítivost v řadě',
+    notes:
+      'ROHM "LD-201 Series — Flat displays" — součást stejné řady 4 barev jako LD-201VR/DU/YY ' +
+      '(samostatné záznamy) — viz záznam LD-201VR pro plný popis principu "flat display" a ' +
+      'montážní poznámky. LD-201MG (zelená): ⚠️ vyšší mezní hodnoty než ostatní barvy v řadě — PD ' +
+      '75 mW, IF 25 mA (vs. 60 mW/20 mA u červené/oranžové/žluté), VR 3 V. VF typ. 2,1 V/max ' +
+      '2,8 V @IF=10 mA. IR max 10 µA @VR=3 V. λp typ. 563 nm, Δλ typ. 40 nm. IV min 3,6/typ. ' +
+      '10 mcd @IF=10 mA — nejvyšší svítivost v celé řadě LD-201. Provozní teplota -25 až +75 °C, ' +
+      'skladovací -30 až +85 °C.',
+    tags: 'dioda,led,displej,flat-display,rohm,ld-201,zelená',
+  },
+  {
+    name: 'AND-5610S (red)',
+    packageType:
+      'THT 10pin DIP pouzdro, 0,56" (14,2 mm) výška znaku, rozteč vývodů 2,54 mm; dostupné jako ' +
+      'AND-5610SCL (společná katoda) nebo AND-5610SAL (společná anoda), obě s červeným čelem ' +
+      'displeje; průmyslově pin-kompatibilní s běžnými 7seg. displeji',
+    value:
+      '7segmentový LED displej, 0,56", červená (GaAsP/GaP), λp 635 nm, IV/seg typ. 3,3 mcd ' +
+      '@IF=10 mA, VF typ. 2,1 V',
+    notes:
+      'AND Optoelectronics (Purdy Electronics) "AND-5610 Series — GaAsP/GaP-Red; GaP-Green, ' +
+      '7 Segment, 0.56 Inch" (dok. 7/2007) — klasický jednomístný 7segmentový LED displej pro ' +
+      'číselné zobrazení v přístrojové a průmyslové technice, průmyslově pin-kompatibilní design. ' +
+      'Zpracována celá řada (červená i zelená varianta, každá se společnou katodou i anodou, ' +
+      'samostatné záznamy — viz AND-5610G (green) pro zelenou variantu). AND-5610S (červená, ' +
+      'GaAsP/GaP): DC IF/seg max 30 mA, pulzní IFP/seg max 100 mA, VR/seg max 3 V, provozní ' +
+      'teplota -25 až +85 °C, skladovací -25 až +100 °C. VF typ. 2,1 V/max 3,0 V @IF=10 mA. IR max ' +
+      '100 µA @VR=3 V. IV/seg (svítivost na segment) min 2,0/typ. 3,3 mcd @IF=10 mA. λp typ. ' +
+      '635 nm, Δλ typ. 40 nm. Pinout: piny 1/2/4/5/6/7/9/10 = anody/katody segmentů E/D/C/DP/B/A/' +
+      'F/G (dle CC/CA verze), piny 3 a 8 = společná katoda/anoda. Pájecí teplota max 260 °C/3 s, ' +
+      'ohyb vývodů max 5 mm od těla bez pnutí. RoHS.',
+    tags: 'dioda,led,displej,7segment,and-optoelectronics,and-5610,červená,gaasp',
+  },
+  {
+    name: 'AND-5610G (green)',
+    packageType:
+      'THT 10pin DIP pouzdro, 0,56" (14,2 mm) výška znaku, rozteč vývodů 2,54 mm; dostupné jako ' +
+      'AND-5610GCL (společná katoda) nebo AND-5610GAL (společná anoda), obě se šedým čelem ' +
+      'displeje (na rozdíl od červené varianty s červeným čelem)',
+    value:
+      '7segmentový LED displej, 0,56", zelená (GaP), λp 567 nm, IV/seg typ. 2,9 mcd @IF=10 mA, ' +
+      'VF typ. 2,1 V',
+    notes:
+      'AND Optoelectronics (Purdy Electronics) "AND-5610 Series" — zelená (GaP) varianta stejné ' +
+      'řady jako červená AND-5610S (samostatný záznam) — viz tam pro plný popis pouzdra, pinoutu ' +
+      'a společných mezních hodnot. AND-5610G (zelená, GaP): VR/seg max 5 V (⚠️ vyšší než 3 V u ' +
+      'červené varianty). VF typ. 2,1 V/max 3,0 V @IF=10 mA. IR max 100 µA @VR=5 V. IV/seg min ' +
+      '1,7/typ. 2,9 mcd @IF=10 mA. λp typ. 567 nm, Δλ typ. 30 nm (užší než 40 nm u červené). ' +
+      'Ostatní mezní hodnoty (IF/IFP, teploty) shodné s AND-5610S.',
+    tags: 'dioda,led,displej,7segment,and-optoelectronics,and-5610,zelená,gap',
+  },
 ];
 
 const TRANSISTOR_SPECS: PartSpec[] = [
