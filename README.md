@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    479 běžných součástek: 106 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    480 běžných součástek: 106 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; a laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220),
@@ -52,9 +52,9 @@ i návrh schémat obvodů a plošných spojů.
     ATM0680L2A-CT s kapacitním dotykem a ATM0680L2A bez dotyku; a polohové displeje vřetene
     Baumer IVO N 142/N 152; a znakový LCD modul PICVUE PVC200403), 1 konektor/přepěťová
     ochrana (Ethernet/PoE
-    bleskojistka ESP-100-POE) a 3 ostatní součástky (RF koaxiální směrový odbočovač SAGE
+    bleskojistka ESP-100-POE) a 4 ostatní součástky (RF koaxiální směrový odbočovač SAGE
     Millimeter/Eravant SCD-0134032010-KF-SA; pasivní segmentové LCD panely AZ Displays
-    GD-342AP a GD-458P). Tlačítkem „Knihovna”
+    GD-342AP, GD-458P a AND/Purdy FE0202W-EU). Tlačítkem „Knihovna”
     v horní liště lze kdykoli doplnit chybějící položky (např. po smazání), aniž
     by se duplikovaly už existující.
 

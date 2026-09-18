@@ -87,6 +87,33 @@ const MISC_SPECS: MiscSpec[] = [
       'úhel 12 hodin. Budicí napětí 3,0 V. Provozní teplota 0 až +55 °C, skladovací -15 až +60 °C.',
     tags: 'lcd,displej,segmentový,multiplexovaný,az-displays,gd-458p,7segment,pasivní,ikony',
   },
+  {
+    name: 'FE0202W-EU',
+    packageType:
+      'Skleněný segmentový LCD panel, rozměry pouzdra 2,0×1,2 palce (50,8×30,5 mm), výška ' +
+      'číslice 0,5" (12,7 mm), 4místný 7segmentový font (bez doplňkových ikon/prefixového ' +
+      'symbolu, na rozdíl od příbuzných FE0201W/FE0203W/FE0206W ve stejném katalogu)',
+    value:
+      '4místný 7segmentový pasivní LCD panel, transflektivní provedení ("-EU"), určeno pro ' +
+      'široký teplotní rozsah a vysokou vlhkost',
+    notes:
+      'AND / Purdy Electronics Corporation "Displays Short Form Catalog 2013" — položka z ' +
+      'tabulky "LCD — Panel-Segment Displays (Wide Temperature & High Humidity)" — ⚠️ pasivní ' +
+      'segmentové LCD sklo stejného principu jako GD-342AP/GD-458P v této knihovně (samostatné ' +
+      'záznamy, jiný výrobce AZ Displays) — vyžaduje externí LCD budicí obvod, zobrazovací sklo ' +
+      'samo neobsahuje žádnou elektroniku. Základní objednací kód "FE0202W" je v katalogu ' +
+      'dostupný ve dvou variantách podsvětlovacího/pozorovacího režimu: "-DU" = reflektivní ' +
+      '(odrazivý povrch využívající jen okolní světlo) nebo "-EU" = transflektivní (částečně ' +
+      'odrazivý povrch použitelný jak s podsvícením, tak s odraženým světlem) — nahraný díl je ' +
+      'konkrétně transflektivní varianta "-EU". Katalog nabízí celou řadu podobných panelů ' +
+      '(FE1901W, FE0201W, FE0203W, FE0202W, FE0501W, FE0502W, FE0206W, FE0208W, FE0401W, ' +
+      'FE0601W, FE1001W) lišících se počtem číslic, výškou znaku (0,4–0,7") a přítomností ' +
+      'doplňkových ikon/prefixových symbolů (např. baterie) — do knihovny přidán jen konkrétně ' +
+      'pojmenovaný díl FE0202W-EU z názvu souboru. Určeno pro provoz v širokém teplotním rozsahu ' +
+      'a vysoké vlhkosti (přesné meze v tomto souhrnném katalogu neuvedeny, jen v plném ' +
+      'datasheetu dílu).',
+    tags: 'lcd,displej,segmentový,panel,and-displays,purdy,fe0202w,7segment,pasivní,transflektivní',
+  },
 ];
 
 export function buildMiscSeed(): ComponentInput[] {
