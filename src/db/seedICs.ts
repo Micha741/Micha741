@@ -323,6 +323,37 @@ const IC_SPECS: IcSpec[] = [
     notes: 'Hodiny reálného času s I2C rozhraním a podporou záložní baterie (CR2032) pro uchování času bez napájení.',
     tags: 'io,rtc,hodiny,i2c,ds1307',
   },
+  {
+    name: 'MX25L6406E',
+    packageType:
+      '16pin SOP 300mil, 8pin SOP 200mil, nebo 8-land WSON (8×6 mm) dle objednacího kódu — ' +
+      'piny CS#, SI/SIO0, SO/SIO1, SCLK, WP#, HOLD#, VCC, GND (SPI + volitelný dual-output režim)',
+    value:
+      'Sériová NOR flash paměť (SPI), 64 Mbit (8 MB), VCC 2,7–3,6 V, hodinový kmitočet do 86 MHz',
+    notes:
+      'Macronix MX25L6406E datasheet rev. 1.1 (listopad 2010), objednací kód např. MX25L6406EMI-12G ' +
+      '(16-SOP), MX25L6406EM2I-12G (8-SOP) nebo MX25L6406EZNI-12G (8-WSON) — "X" v názvu souboru ' +
+      'zastupuje libovolné pouzdro, datasheet je společný pro celou rodinu balení. Organizace ' +
+      'paměti: 67 108 864 × 1 bit (běžný SPI režim) nebo 33 554 432 × 2 bity (dual-output režim), ' +
+      '2048 stejných sektorů po 4 KB (libovolně smazatelné jednotlivě) seskupených do 128 bloků ' +
+      'po 64 KB (rovněž smazatelných jednotlivě). Programování po bajtech nebo stránkách (256 B). ' +
+      'Podpora SPI Mode 0 a Mode 3, dual-output čtení (SIO0/SIO1) do 80 MHz. Rychlosti: hodinový ' +
+      'kmitočet čtení (FAST_READ) do 86 MHz, obyčejné READ do 33 MHz, DREAD (dual output) do ' +
+      '80 MHz. Doba programování: bajt typ. 9 µs, stránka (256 B) typ. 1,4 ms (max 5 ms). Doba ' +
+      'mazání: sektor (4 KB) typ. 60 ms, blok (64 KB) typ. 0,7 s, celý čip typ. 50 s (max 80 s). ' +
+      'Zabezpečení: softwarová ochrana bloků (bity BP0–BP3, 16 úrovní ochrany od 0 do celého ' +
+      'čipu), hardwarová ochrana přes pin WP#, 512bitová jednorázově programovatelná paměť (OTP) ' +
+      'pro unikátní identifikátor (128 bitů výrobní ESN + 384 bitů pro zákazníka, uzamykatelné ' +
+      'trvale příkazem WRSCUR). Elektronická identifikace: JEDEC 1bajtový výrobní ID + 2bajtové ' +
+      'ID zařízení (RDID), nebo REMS/RES příkazy. Mezní hodnoty: napětí na pinech -0,5 až +4,6 V, ' +
+      'provozní teplota (Industrial grade) -40 až +85 °C, skladovací -55 až +125 °C. Proudový ' +
+      'odběr: čtení @86 MHz max 25 mA, programování max 20 mA, mazání max 20–25 mA, klidový ' +
+      '(standby) max 50 µA, deep power-down typ. 5 µA (max 20 µA). Vstupní/výstupní kapacita ' +
+      'CIN max 6 pF, COUT max 8 pF. Spolehlivost: 100 000 cyklů mazání/zápisu (typicky), 20 let ' +
+      'retence dat, ochrana proti latch-up do 100 mA v rozsahu -1 V až VCC+1 V. RoHS/bezolovnaté ' +
+      'provedení (Pb-free, "G" suffix).',
+    tags: 'io,paměť,flash,spi,serial-flash,mx25l6406e,macronix,64mbit',
+  },
 
   // Mikrokontroléry / SoC
   {
