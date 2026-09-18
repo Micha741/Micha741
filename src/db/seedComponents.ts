@@ -1660,6 +1660,43 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '(zpětná přenosová kapacita v zapojení SE) max 0,34 pF @VCB=10 V/IE=0/f=1,0 MHz.',
     tags: 'tranzistor,npn,bipolární,rf,vf,vysokofrekvenční,to-92,bf240',
   },
+  {
+    name: 'MJE15032',
+    packageType: 'TO-220 (case 221A, style 1), vývody: 1=báze, 2=kolektor, 3=emitor, 4=kolektor (chladicí ploška)',
+    value: 'NPN výkonový tranzistor, VCEO 250 V, IC 8,0 A, PD 50 W @TC=25 °C — audio driver',
+    notes:
+      'ON Semiconductor MJE15032 (NPN) / MJE15033 (PNP) "Complementary Silicon Plastic Power ' +
+      'Transistors" (dok. MJE15032/D, rev. 6, prosinec 2014) — komplementární pár navržený ' +
+      'speciálně jako vysokofrekvenční budič (driver) ve výkonových audio zesilovačích (typicky ' +
+      'jako předstupeň budící koncové výkonové tranzistory). MJE15032 = NPN polovina páru, ' +
+      'komplement k MJE15033 (samostatný záznam). Mezní hodnoty: VCEO=250 V, VCB=250 V, VEB=5,0 V, ' +
+      'IC=8,0 A (trvale), ICM=16 A (špičkově), IB=2,0 A, PD=50 W @TC=25 °C (odvod 0,40 W/°C), ' +
+      'PD=2,0 W @TA=25 °C (odvod 0,016 W/°C), TJ/Tstg -65 až +150 °C. RθJC=2,5 °C/W, ' +
+      'RθJA=62,5 °C/W. ESD odolnost: HBM třída 3B, MM třída C. Pouzdro TO-220 (case 221A style 1), ' +
+      'epoxid dle UL 94 V-0 @0,125", Pb-free/RoHS. Značení na pouzdru "MJE1503xG AYWW" ' +
+      '(x=2 nebo 3, A=místo výroby, Y=rok, WW=týden, G=Pb-free). ⚠️ Datasheet neuvádí konkrétní ' +
+      'hodnoty hFE, VCE(sat) ani fT na první straně (jen mezní hodnoty a tepelné charakteristiky) ' +
+      '— doplnit při zpracování detailního listu elektrických charakteristik, pokud bude nahrán.',
+    tags: 'tranzistor,npn,bipolární,výkonový,to-220,mje15032,audio,driver',
+  },
+  {
+    name: 'MJE15033',
+    packageType: 'TO-220 (case 221A, style 1), vývody: 1=báze, 2=kolektor, 3=emitor, 4=kolektor (chladicí ploška)',
+    value: 'PNP výkonový tranzistor, VCEO -250 V, IC -8,0 A, PD 50 W @TC=25 °C — audio driver',
+    notes:
+      'ON Semiconductor MJE15032 (NPN) / MJE15033 (PNP) "Complementary Silicon Plastic Power ' +
+      'Transistors" (dok. MJE15032/D, rev. 6, prosinec 2014). MJE15033 = PNP komplement k ' +
+      'MJE15032 (samostatný záznam) — stejné pouzdro a parametry, jen opačná polarita. Určeno ' +
+      'jako vysokofrekvenční budič (driver) ve výkonových audio zesilovačích. Mezní hodnoty: ' +
+      'VCEO=-250 V, VCB=-250 V, VEB=-5,0 V, IC=-8,0 A (trvale), ICM=-16 A (špičkově), IB=-2,0 A, ' +
+      'PD=50 W @TC=25 °C (odvod 0,40 W/°C), PD=2,0 W @TA=25 °C (odvod 0,016 W/°C), TJ/Tstg -65 až ' +
+      '+150 °C. RθJC=2,5 °C/W, RθJA=62,5 °C/W. ESD odolnost: HBM třída 3B, MM třída C. Pouzdro ' +
+      'TO-220 (case 221A style 1), epoxid dle UL 94 V-0 @0,125", Pb-free/RoHS. Značení na pouzdru ' +
+      '"MJE1503xG AYWW". ⚠️ Datasheet neuvádí konkrétní hodnoty hFE, VCE(sat) ani fT na první ' +
+      'straně (jen mezní hodnoty a tepelné charakteristiky) — doplnit při zpracování detailního ' +
+      'listu elektrických charakteristik, pokud bude nahrán.',
+    tags: 'tranzistor,pnp,bipolární,výkonový,to-220,mje15033,audio,driver',
+  },
 ];
 
 const RESISTOR_SPECS: PartSpec[] = [
