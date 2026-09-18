@@ -1561,6 +1561,36 @@ const IC_SPECS: IcSpec[] = [
       'EC9223NNQ1R.',
     tags: 'io,napájecí-obvod,tft-lcd,vcom,boost,nábojová-pumpa,ec9223,e-cmos,wqfn',
   },
+  {
+    name: 'XC9516',
+    packageType: 'QFN-20 (4×4 mm), -40 až +85 °C',
+    value:
+      'Trojvýstupový napájecí obvod pro TFT-LCD (step-up DC/DC + 2× nábojová pumpa) — VOUT ' +
+      '5,5–19 V (DC/DC), VIN 2,5–5,5 V, externí N-kanálové MOSFET budiče pro VGH/VGL',
+    notes:
+      'Torex Semiconductor "XC9516 Series — Triple Output Power Supply for TFT-LCD" (dok. ' +
+      'ETR0707-009) — podobná kategorie jako EC9223/ISL78010/ISL97652/MAX2522x v této knihovně ' +
+      '(japonský výrobce). Na rozdíl od EC9223/ISL78010 (integrované nábojové pumpy s vlastním ' +
+      'budicím FET) používá XC9516 EXTERNÍ N-kanálové MOSFETy jako budiče kladné i záporné ' +
+      'nábojové pumpy (DRV1/DRV2 piny — open-drain řídicí výstupy pro externí tranzistory), což ' +
+      'umožňuje škálovat výstupní proud/napětí volbou externích součástek. Integruje: step-up ' +
+      '(boost) DC/DC měnič pro zdrojový budič (AVDD, VOUT), s nastavitelným výstupem 5,5–19 V ' +
+      '(externím odporovým děličem na FB, přesnost ±1,5 %), oscilátor nastavitelný externím ' +
+      'odporem (ROSC) v rozsahu 300 kHz–1,2 MHz, proudový limit LX spínače 1,1–1,5 A (typ. 1,3 A), ' +
+      'maximální duty cycle 92–98 %, soft-start 2–5 ms; kladnou nábojovou pumpu (FB2, error amp + ' +
+      'externí FET přes DRV2/CP2SWB) a zápornou nábojovou pumpu (FB1, error amp + externí FET ' +
+      'přes DRV1) pro generování VGH/VGL napětí pro gate budič LCD panelu — v příkladové aplikaci ' +
+      'VOUT=9,2 V, VGL=-5,3 V, VGH=12 V. Integrovaná sekvence zapínání (power-on sequencing) pro ' +
+      'omezení nárazového proudu při náběhu výstupů — step-up výstup lze navíc řadit do sekvence ' +
+      'přidáním externího P-kanálového FET, který zároveň umožňuje úplné odpojení vstupní větve ' +
+      'při CE=L. Ochrany: přepěťová ochrana step-up výstupu (nastavitelná objednacím kódem, typ. ' +
+      '21 V), zkratová ochrana step-up i obou nábojových pump (s nastavitelným zpožděním přes CD ' +
+      'pin), tepelné vypnutí 150 °C, UVLO 1,87 V (hystereze 0,44 V). Objednací kód XC9516①②③④⑤⑥-⑦ ' +
+      'kóduje UVLO práh, přepěťový a nadproudový limit a variantu balení (např. ' +
+      'XC9516A21AZR-G = UVLO 1,87 V, OVP 21 V, OCP 1,3 A, QFN-20, 1000 ks/cívka, bezhalogenová ' +
+      '"-G" verze). RoHS/Pb-free.',
+    tags: 'io,napájecí-obvod,tft-lcd,boost,nábojová-pumpa,xc9516,torex,qfn',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
