@@ -1270,6 +1270,116 @@ const IC_SPECS: IcSpec[] = [
       '(v MTP paměti). Certifikováno USB-IF (USB 2.0 Full Speed), RoHS.',
     tags: 'io,usb,i2c,most,bridge,ft200xd,ftdi,dfn10',
   },
+
+  // RS-485/RS-422 přijímače
+  {
+    name: 'ISL32173E',
+    packageType: '16 LD SOIC / 16 LD TSSOP, VCC 3,0–5,5 V',
+    value:
+      'Počtvrtý (4×) RS-485/RS-422 přijímač, 80 Mbps, ±16,5 kV ESD (IEC61000-4-2) na sběrnicových ' +
+      'pinech, společný EN/EN̄',
+    notes:
+      'Renesas (dříve Intersil) ISL32173E/32175E/32177E/32273E/32275E/32277E "Quad Receivers" ' +
+      '(dok. FN7529 rev. 4.00, duben 2016) — jedna rodina 6 čipů se stejnou základní funkcí (4× ' +
+      'RS-485/RS-422 diferenciální přijímač do jednoho pouzdra), lišících se rychlostí (80 Mbps vs. ' +
+      '20 Mbps verze), typem enable pinů a pouzdrem/počtem vývodů — zpracována celá rodina, ' +
+      'samostatné záznamy. Společné vlastnosti: ±16,5 kV IEC61000-4-2 ESD ochrana na vstupech A/B ' +
+      '(vzduchový výboj), ±8 kV kontaktní výboj, >8 kV HBM na ostatních pinech; napájení 3,0–5,5 V; ' +
+      'nízký vstupní proud ±200 µA (1/4 unit load → až 128 přijímačů na jedné RS-485 sběrnici); ' +
+      'široký rozsah souhlasného napětí sběrnice -7 až +12 V; fail-safe chování při plovoucím/' +
+      'zkratovaném vstupu (výstup RO=1 při rozpojeném vstupu); tri-state výstupy s hot-plug ' +
+      'funkcí (bezpečné připojení za provozu bez rušení sběrnice); nízký klidový (shutdown) proud. ' +
+      'ISL32173E (toto): 16vývodové pouzdro (SOIC/TSSOP), průmyslově standardní pinout, jeden ' +
+      'společný pár enable pinů EN/EN̄ pro všechny 4 kanály. Rychlost 80 Mbps, max. zpoždění ' +
+      'tPLH/tPHL 11 ns typ (16 ns max), part-to-part skew 8 ns max (klíčová vlastnost — umožňuje ' +
+      'přesné párování více kanálů/čipů). Odběr: 15 mA max (aktivní), shutdown proud max 15 µA ' +
+      '(v režimu SHDN) / 60 µA (jiný způsob vypnutí, dle poznámky výrobce). Teplotní rozsah ' +
+      '-40 až +85 °C (EIBZ/EIVZ) nebo -40 až +125 °C (EFBZ/EFVZ). Použití: telekomunikační ' +
+      'zařízení, řízení motorů/enkodéry, PLC, průmyslové/procesní sítě.',
+    tags: 'io,rs485,rs422,přijímač,receiver,isl32173e,transceiver,soic,tssop',
+  },
+  {
+    name: 'ISL32175E',
+    packageType: '16 LD SOIC / 16 LD TSSOP, VCC 3,0–5,5 V',
+    value:
+      'Počtvrtý (4×) RS-485/RS-422 přijímač, 80 Mbps, ±16,5 kV ESD, párové enable EN12/EN34 — ' +
+      '⚠️ NEDOSTUPNÝ (doporučená náhrada ISL32173E)',
+    notes:
+      'Renesas/Intersil "Quad Receivers" — součást stejné rodiny 6 čipů jako ISL32173E/32177E/' +
+      '32273E/32275E/32277E (samostatné záznamy) — viz záznam ISL32173E pro plný popis společných ' +
+      'vlastností rodiny. ISL32175E: stejné 16vývodové pouzdro a pinout jako ISL32173E, ale místo ' +
+      'jednoho společného EN/EN̄ má dvojici párových enable pinů EN12 (kanály 1+2) a EN34 (kanály ' +
+      '3+4) — umožňuje nezávisle povolit/zakázat dvě dvojice výstupů. Rychlost 80 Mbps, jinak ' +
+      'elektricky shodné s ISL32173E. ⚠️ Dle datasheetu (2016) je tento díl "No longer available" ' +
+      '— výrobcem doporučená náhrada je ISL32173E (s jiným typem enable pinů, EN/EN̄ místo EN12/' +
+      'EN34 — nutná úprava zapojení).',
+    tags: 'io,rs485,rs422,přijímač,receiver,isl32175e,transceiver,soic,tssop,nedostupné',
+  },
+  {
+    name: 'ISL32177E',
+    packageType: '24 LD QFN (4×4 mm), VCC 3,0–5,5 V, VL 1,4–VCC (samostatný logický napájecí pin)',
+    value:
+      'Počtvrtý (4×) RS-485/RS-422 přijímač, 80 Mbps, ±16,5 kV ESD, individuální + skupinové ' +
+      'enable, VL pin pro smíšené logické napětí',
+    notes:
+      'Renesas/Intersil "Quad Receivers" — součást stejné rodiny 6 čipů jako ISL32173E/32175E/' +
+      '32273E/32275E/32277E (samostatné záznamy) — viz záznam ISL32173E pro plný popis společných ' +
+      'vlastností rodiny. ISL32177E: nejvybavenější varianta — o 26 % menší QFN pouzdro (24 vývodů, ' +
+      '4×4 mm) místo SOIC/TSSOP, individuální enable pro každý kanál (EN1–EN4) i skupinové EN/EN̄, ' +
+      'navíc SHDNEN pin pro řízený vstup do nízkopříkonového shutdown režimu (klidový proud max ' +
+      '15 µA), a samostatný logický napájecí pin VL (1,4 V až VCC) pro přizpůsobení úrovní ' +
+      'vstupů/výstupů logiky nižšímu napětí (např. 1,8V mikrokontrolér při VCC=5V na sběrnici) — ' +
+      'VOH/VOL a prahy vstupů se řídí VL, ne VCC. Rychlost 80 Mbps, max. tPLH/tPHL 16 ns, part-to-' +
+      'part skew 8 ns. Odběr: 15 mA max (plné zatížení), 8,5 mA (poloviční), 2,5 mA (SHDN via ' +
+      'SHDNEN). Nutno napájet VCC dříve než VL (pokud odděleně).',
+    tags: 'io,rs485,rs422,přijímač,receiver,isl32177e,transceiver,qfn,shdn',
+  },
+  {
+    name: 'ISL32273E',
+    packageType: '16 LD SOIC / 16 LD TSSOP, VCC 3,0–5,5 V',
+    value:
+      'Počtvrtý (4×) RS-485/RS-422 přijímač, 20 Mbps (redukovaný odběr), ±16,5 kV ESD, společný ' +
+      'EN/EN̄',
+    notes:
+      'Renesas/Intersil "Quad Receivers" — součást stejné rodiny 6 čipů jako ISL32173E/32175E/' +
+      '32177E/32275E/32277E (samostatné záznamy) — viz záznam ISL32173E pro plný popis společných ' +
+      'vlastností rodiny. ISL32273E: nízkopříkonová (redukovaná rychlost) obdoba ISL32173E — ' +
+      'stejné 16vývodové pouzdro, pinout i EN/EN̄, ale max. datový tok jen 20 Mbps výměnou za ' +
+      'výrazně nižší odběr: 5,5 mA max (aktivní, plné zatížení) oproti 15 mA u 80Mbps verze. ' +
+      'tPLH/tPHL max 55 ns, part-to-part skew max 20 ns (vyšší než u 80Mbps verze — nižší nároky ' +
+      'na přesné párování kanálů při pomalejších datových tocích).',
+    tags: 'io,rs485,rs422,přijímač,receiver,isl32273e,transceiver,soic,tssop,nízký-odběr',
+  },
+  {
+    name: 'ISL32275E',
+    packageType: '16 LD SOIC / 16 LD TSSOP, VCC 3,0–5,5 V',
+    value:
+      'Počtvrtý (4×) RS-485/RS-422 přijímač, 20 Mbps (redukovaný odběr), ±16,5 kV ESD, párové ' +
+      'enable EN12/EN34',
+    notes:
+      'Renesas/Intersil "Quad Receivers" — součást stejné rodiny 6 čipů jako ISL32173E/32175E/' +
+      '32177E/32273E/32277E (samostatné záznamy) — viz záznam ISL32173E pro plný popis společných ' +
+      'vlastností rodiny. ISL32275E: nízkopříkonová (20 Mbps) obdoba ISL32175E — stejné ' +
+      '16vývodové pouzdro a párové enable piny EN12/EN34 (na rozdíl od ISL32273E se společným ' +
+      'EN/EN̄), odběr max 5,5 mA (plné zatížení) / 3,5 mA (poloviční zatížení přes EN12/EN34).',
+    tags: 'io,rs485,rs422,přijímač,receiver,isl32275e,transceiver,soic,tssop,nízký-odběr',
+  },
+  {
+    name: 'ISL32277E',
+    packageType: '24 LD QFN (4×4 mm), VCC 3,0–5,5 V, VL 1,4–VCC (samostatný logický napájecí pin)',
+    value:
+      'Počtvrtý (4×) RS-485/RS-422 přijímač, 20 Mbps (redukovaný odběr), ±16,5 kV ESD, ' +
+      'individuální + skupinové enable, VL pin',
+    notes:
+      'Renesas/Intersil "Quad Receivers" — součást stejné rodiny 6 čipů jako ISL32173E/32175E/' +
+      '32177E/32273E/32275E (samostatné záznamy) — viz záznam ISL32173E pro plný popis společných ' +
+      'vlastností rodiny. ISL32277E: nízkopříkonová (20 Mbps) obdoba ISL32177E — shodné 24LD QFN ' +
+      'pouzdro, individuální + skupinové enable, SHDNEN pin a VL logický napájecí pin pro smíšené ' +
+      'napěťové systémy, ale nižší max. datový tok (20 Mbps) výměnou za nižší odběr: max 5,5 mA ' +
+      '(plné zatížení) / 3,5 mA (poloviční) / 1,2 mA (SHDN via SHDNEN), oproti 15/8,5/2,5 mA ' +
+      'u 80Mbps verze ISL32177E.',
+    tags: 'io,rs485,rs422,přijímač,receiver,isl32277e,transceiver,qfn,shdn,nízký-odběr',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {

@@ -13,23 +13,24 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    375 běžných součástek: 93 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; a NTC
+    400 běžných součástek: 93 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; a NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu), 47 kondenzátorů (keramické,
     elektrolytické, tantalové, fóliové; vysokonapěťová 1000V keramická disková řada NTE 90000;
     přesná keramická disková řada Multicomp MCBU/MCFU; nízko/vysokonapěťová keramická
-    disková řada Illinois Capacitor GMR/GQR; a NP0 disk Meritek CCNPO101J50V5B1), 78 diod
+    disková řada Illinois Capacitor GMR/GQR; a NP0 disk Meritek CCNPO101J50V5B1), 97 diod
     (usměrňovací, spínací, Schottky, Zenerovy,
     LED včetně výkonových SMD LED LUXEON Rebel a OSLON SSL 80, obousměrné přepěťové ochrany
-    TRISIL STMicroelectronics SMTPA62-320),
+    TRISIL STMicroelectronics SMTPA62-320/SMP-0SCMC/SMP100MC/SMP75),
     71 tranzistorů (bipolární NPN/PNP, Darlington, duální, komplementární páry, výkonové, VF,
-    MOSFET, JFET), 69 integrovaných obvodů
+    MOSFET, JFET), 75 integrovaných obvodů
     (časovače, komparátory, op-zesilovače, regulátory, logická hradla, čítače,
     Wi-Fi mikrokontroléry ESP32, ESP32-C3, ESP8285, ESP8684, Wi-Fi adaptér ESP8089, 8bit AVR
     mikrokontroléry ATmega640/1280/1281/2560/2561, rodina CAN mikrokontrolérů AT90CAN32/64/128
     (AVR) a T89C51CC01/02, AT89C51CC03 (8051), digitální teploměry DS18B20, DS1822, TC625,
     senzory vlhkosti a teploty DHT11, SHT71/SHT75, SHT85 a kanálový (duct) senzor Belimo
     22DTH-51M, sériové flash paměti MX25L6406E a MX25L1026E, paralelní flash paměti řady
-    MX29GL320E (T/B/H/L), USB-I2C most FT200XD aj.), 16 modulů
+    MX29GL320E (T/B/H/L), USB-I2C most FT200XD, RS-485/RS-422 přijímače Renesas ISL32173E
+    a příbuzné (ISL32175E/32177E/32273E/32275E/32277E) aj.), 16 modulů
     (Wi-Fi/BLE: ESP32-C3-MINI-1, ESP32-C3-WROOM-02, Adafruit Feather
     HUZZAH ESP8266, ESP8684-MINI-1, ESP-12S; nízkonapěťové odpojovače baterie Alfatronix
     PowerTector PT10/PT20/PT40/PT60/PT100/PT200; LoRaWAN senzor LEO-S55 a brány USM-S67;

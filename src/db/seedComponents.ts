@@ -649,7 +649,11 @@ const DIODE_SPECS: PartSpec[] = [
       '(SMA) / 100 °C/W (DO-15, Llead=10 mm). Shoda se standardy: GR-1089 core (1./2. úroveň, ' +
       'intra-building), ITU-T-K20/K21, VDE0433/0878, IEC-1000-4-5/IEC61000-4-2 (ESD), ' +
       'FCC Part 68 (surge typ A/B), Bellcore TR-NWT-001089 (1./2. úroveň), CNET l31-24, UL1950/' +
-      'IEC950/CSA C22.2, UL1459, UL94 V0 (pryskyřice), UL497B (soubor E136224).',
+      'IEC950/CSA C22.2, UL1459, UL94 V0 (pryskyřice), UL497B (soubor E136224). ⚠️ Existuje i ' +
+      'druhý zdroj od čínského výrobce GALAXY ELECTRICAL (značka "BL", dok. č. 0286002) — ' +
+      'elektricky/rozměrově kompatibilní klon celé řady SMTPA62–270 v pouzdru SMB, shodné VRM/' +
+      'VBO/IH/C hodnoty jako u ST, liší se jen laserovým značením na součástce (Galaxy: T62–T270 ' +
+      'místo ST U01–U39) a udávanou PPP=5000 W (ST udává max. výkon jen implicitně přes IPP).',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom',
   },
   {
@@ -842,6 +846,368 @@ const DIODE_SPECS: PartSpec[] = [
       '(ozn. SMP50-320) a v drátovém pouzdru DO-15 (ozn. TPA320) se shodnými elektrickými ' +
       'parametry jako zde uvedená SMB verze.',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom',
+  },
+  {
+    name: 'SMP0720SCMC',
+    packageType:
+      'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka, bez elektrody gate), ' +
+      'hmotnost 98 mg; značení na součástce laserem "P07CM"',
+    value:
+      'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, "micro capacitance" generace, ' +
+      'VRM 65 V, VBO 88 V, VBR typ 72 V, C@50V max 45 pF',
+    notes:
+      'STMicroelectronics SMP-0SCMC série "Trisil" (dok. ID 022779 rev. 1, leden 2013) — ' +
+      'novější generace TRISIL s nižší kapacitou přechodu ("micro capacitance technology") než ' +
+      'starší řada SMTPAxx v této knihovně — určeno zejména pro širokopásmová telekomunikační ' +
+      'zařízení (DSL modemy, subscriber gateway, DSLAM), kde nízká C snižuje útlum vysokých ' +
+      'datových frekvencí. Princip funkce shodný s SMTPAxx (viz záznam SMTPA62): křemíková ' +
+      'obousměrná spínací (crowbar) součástka podobná symetrickému tyristoru bez řídicí ' +
+      'elektrody. Zpracována celá řada 10 dílů z jednoho datasheetu (SMP0720SCMC/0900/1100/' +
+      '1300/1500/1800/2100/2300/2600/3100SCMC, samostatné záznamy), lišících se jen napěťovou ' +
+      'třídou. SMP0720SCMC: VRM (stand-off napětí) 65 V, IRM max 5 µA @VRM. VBR (průrazné napětí) ' +
+      'typ 72 V. VBO (breakover napětí) max 88 V. IH (přídržný proud) min 150 mA. VT ' +
+      '(on-state napětí) max 3 V @IT=2,2 A. C max 80 pF @VR=2 V / 45 pF @VR=50 V. Teplotní ' +
+      'koeficient VBR αT=9×10⁻⁴/°C. Mezní hodnoty (společné pro celou řadu): IPP dle vlny ' +
+      '— (0,5/700 µs)=100 A, (2/10 µs)=500 A, (1,2/50 µs)=400 A, (10/160 µs)=200 A, ' +
+      '(10/560 µs)=150 A, (9/720 µs)=200 A, (10/360 µs)=175 A, (10/1000 µs)=100 A, ' +
+      '(5/310 µs)=200 A (Tamb -40 až +85 °C); ITSM (nepovtorný sinusový ráz)=61 A@10 ms / ' +
+      '18 A@0,2 s / 9 A@1 s / 7 A@2 s / 4 A@15 min; Tstg -55 až +150 °C, Tj (provozní) -40 až ' +
+      '+150 °C, max. pájecí teplota vývodů 260 °C/10 s. Shoda se standardy: Telcordia GR-1089, ' +
+      'ITU-T K20/K21/K45 (enhanced level), TIA-968, YD/T 950/993/1082, IEC61000-4-5, ' +
+      'IEC61000-4-2 level 4 (±15 kV vzduchový/±8 kV kontaktní výboj), MIL-STD-883H metoda ' +
+      '3015-8 třída 3B, UL94 V0 (pryskyřice), MIL-STD-750 metoda 2026 (pájitelnost), EIA ' +
+      'RS-481/IEC60286-3 (balení), IPC 7531 (footprint), UL497B (soubor E136224).',
+    tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
+  },
+  {
+    name: 'SMP0900SCMC',
+    packageType:
+      'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka), hmotnost 98 mg; ' +
+      'značení na součástce laserem "P09CM"',
+    value:
+      'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, "micro capacitance" generace, ' +
+      'VRM 75 V, VBO 98 V, VBR typ 90 V, C@50V max 45 pF',
+    notes:
+      'STMicroelectronics SMP-0SCMC série "Trisil" (dok. ID 022779 rev. 1, leden 2013) — ' +
+      'součást stejné řady 10 dílů jako SMP0720/1100/1300/1500/1800/2100/2300/2600/3100SCMC ' +
+      '(samostatné záznamy) — viz záznam SMP0720SCMC pro plný popis principu funkce, mezních ' +
+      'hodnot a shody se standardy. SMP0900SCMC: VRM 75 V, IRM max 5 µA @VRM. VBR typ 90 V. VBO ' +
+      'max 98 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 80 pF @VR=2 V / 45 pF @VR=50 V. ' +
+      'αT=9,1×10⁻⁴/°C.',
+    tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
+  },
+  {
+    name: 'SMP1100SCMC',
+    packageType:
+      'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka), hmotnost 98 mg; ' +
+      'značení na součástce laserem "P11CM"',
+    value:
+      'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, "micro capacitance" generace, ' +
+      'VRM 90 V, VBO 130 V, VBR typ 110 V, C@50V max 40 pF',
+    notes:
+      'STMicroelectronics SMP-0SCMC série "Trisil" (dok. ID 022779 rev. 1, leden 2013) — ' +
+      'součást stejné řady 10 dílů jako SMP0720/0900/1300/1500/1800/2100/2300/2600/3100SCMC ' +
+      '(samostatné záznamy) — viz záznam SMP0720SCMC pro plný popis principu funkce, mezních ' +
+      'hodnot a shody se standardy. SMP1100SCMC: VRM 90 V, IRM max 5 µA @VRM. VBR typ 110 V. VBO ' +
+      'max 130 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 75 pF @VR=2 V / 40 pF @VR=50 V. ' +
+      'αT=9,3×10⁻⁴/°C.',
+    tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
+  },
+  {
+    name: 'SMP1300SCMC',
+    packageType:
+      'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka), hmotnost 98 mg; ' +
+      'značení na součástce laserem "P13CM"',
+    value:
+      'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, "micro capacitance" generace, ' +
+      'VRM 120 V, VBO 160 V, VBR typ 130 V, C@50V max 40 pF',
+    notes:
+      'STMicroelectronics SMP-0SCMC série "Trisil" (dok. ID 022779 rev. 1, leden 2013) — ' +
+      'součást stejné řady 10 dílů jako SMP0720/0900/1100/1500/1800/2100/2300/2600/3100SCMC ' +
+      '(samostatné záznamy) — viz záznam SMP0720SCMC pro plný popis principu funkce, mezních ' +
+      'hodnot a shody se standardy. SMP1300SCMC: VRM 120 V, IRM max 5 µA @VRM. VBR typ 130 V. ' +
+      'VBO max 160 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 75 pF @VR=2 V / 40 pF @VR=50 V. ' +
+      'αT=9,5×10⁻⁴/°C.',
+    tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
+  },
+  {
+    name: 'SMP1500SCMC',
+    packageType:
+      'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka), hmotnost 98 mg; ' +
+      'značení na součástce laserem "P15CM"',
+    value:
+      'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, "micro capacitance" generace, ' +
+      'VRM 140 V, VBO 180 V, VBR typ 150 V, C@50V max 40 pF',
+    notes:
+      'STMicroelectronics SMP-0SCMC série "Trisil" (dok. ID 022779 rev. 1, leden 2013) — ' +
+      'součást stejné řady 10 dílů jako SMP0720/0900/1100/1300/1800/2100/2300/2600/3100SCMC ' +
+      '(samostatné záznamy) — viz záznam SMP0720SCMC pro plný popis principu funkce, mezních ' +
+      'hodnot a shody se standardy. SMP1500SCMC: VRM 140 V, IRM max 5 µA @VRM. VBR typ 150 V. ' +
+      'VBO max 180 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 75 pF @VR=2 V / 40 pF @VR=50 V. ' +
+      'αT=9,7×10⁻⁴/°C.',
+    tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
+  },
+  {
+    name: 'SMP1800SCMC',
+    packageType:
+      'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka), hmotnost 98 mg; ' +
+      'značení na součástce laserem "P18CM"',
+    value:
+      'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, "micro capacitance" generace, ' +
+      'VRM 170 V, VBO 220 V, VBR typ 180 V, C@50V max 35 pF',
+    notes:
+      'STMicroelectronics SMP-0SCMC série "Trisil" (dok. ID 022779 rev. 1, leden 2013) — ' +
+      'součást stejné řady 10 dílů jako SMP0720/0900/1100/1300/1500/2100/2300/2600/3100SCMC ' +
+      '(samostatné záznamy) — viz záznam SMP0720SCMC pro plný popis principu funkce, mezních ' +
+      'hodnot a shody se standardy. SMP1800SCMC: VRM 170 V, IRM max 5 µA @VRM. VBR typ 180 V. ' +
+      'VBO max 220 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 70 pF @VR=2 V / 35 pF @VR=50 V. ' +
+      'αT=9,9×10⁻⁴/°C.',
+    tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
+  },
+  {
+    name: 'SMP2100SCMC',
+    packageType:
+      'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka), hmotnost 98 mg; ' +
+      'značení na součástce laserem "P21CM"',
+    value:
+      'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, "micro capacitance" generace, ' +
+      'VRM 180 V, VBO 240 V, VBR typ 210 V, C@50V max 25 pF',
+    notes:
+      'STMicroelectronics SMP-0SCMC série "Trisil" (dok. ID 022779 rev. 1, leden 2013) — ' +
+      'součást stejné řady 10 dílů jako SMP0720/0900/1100/1300/1500/1800/2300/2600/3100SCMC ' +
+      '(samostatné záznamy) — viz záznam SMP0720SCMC pro plný popis principu funkce, mezních ' +
+      'hodnot a shody se standardy. SMP2100SCMC: VRM 180 V, IRM max 5 µA @VRM. VBR typ 210 V. ' +
+      'VBO max 240 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 45 pF @VR=2 V / 25 pF @VR=50 V. ' +
+      'αT=10,2×10⁻⁴/°C.',
+    tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
+  },
+  {
+    name: 'SMP2300SCMC',
+    packageType:
+      'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka), hmotnost 98 mg; ' +
+      'značení na součástce laserem "P23CM"',
+    value:
+      'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, "micro capacitance" generace, ' +
+      'VRM 190 V, VBO 260 V, VBR typ 230 V, C@50V max 25 pF',
+    notes:
+      'STMicroelectronics SMP-0SCMC série "Trisil" (dok. ID 022779 rev. 1, leden 2013) — ' +
+      'součást stejné řady 10 dílů jako SMP0720/0900/1100/1300/1500/1800/2100/2600/3100SCMC ' +
+      '(samostatné záznamy) — viz záznam SMP0720SCMC pro plný popis principu funkce, mezních ' +
+      'hodnot a shody se standardy. SMP2300SCMC: VRM 190 V, IRM max 5 µA @VRM. VBR typ 230 V. ' +
+      'VBO max 260 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 45 pF @VR=2 V / 25 pF @VR=50 V. ' +
+      'αT=10,3×10⁻⁴/°C.',
+    tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
+  },
+  {
+    name: 'SMP2600SCMC',
+    packageType:
+      'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka), hmotnost 98 mg; ' +
+      'značení na součástce laserem "P26CM"',
+    value:
+      'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, "micro capacitance" generace, ' +
+      'VRM 220 V, VBO 300 V, VBR typ 260 V, C@50V max 20 pF',
+    notes:
+      'STMicroelectronics SMP-0SCMC série "Trisil" (dok. ID 022779 rev. 1, leden 2013) — ' +
+      'součást stejné řady 10 dílů jako SMP0720/0900/1100/1300/1500/1800/2100/2300/3100SCMC ' +
+      '(samostatné záznamy) — viz záznam SMP0720SCMC pro plný popis principu funkce, mezních ' +
+      'hodnot a shody se standardy. SMP2600SCMC: VRM 220 V, IRM max 5 µA @VRM. VBR typ 260 V. ' +
+      'VBO max 300 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 40 pF @VR=2 V / 20 pF @VR=50 V. ' +
+      'αT=10,6×10⁻⁴/°C.',
+    tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
+  },
+  {
+    name: 'SMP3100SCMC',
+    packageType:
+      'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka), hmotnost 98 mg; ' +
+      'značení na součástce laserem "P31CM" — nejvyšší napěťová třída v řadě',
+    value:
+      'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, "micro capacitance" generace, ' +
+      'VRM 275 V, VBO 350 V, VBR typ 310 V, C@50V max 20 pF',
+    notes:
+      'STMicroelectronics SMP-0SCMC série "Trisil" (dok. ID 022779 rev. 1, leden 2013) — ' +
+      'součást stejné řady 10 dílů jako SMP0720/0900/1100/1300/1500/1800/2100/2300/2600SCMC ' +
+      '(samostatné záznamy) — viz záznam SMP0720SCMC pro plný popis principu funkce, mezních ' +
+      'hodnot a shody se standardy. SMP3100SCMC: VRM 275 V, IRM max 5 µA @VRM. VBR typ 310 V. ' +
+      'VBO max 350 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 40 pF @VR=2 V / 20 pF @VR=50 V. ' +
+      'αT=11×10⁻⁴/°C — nejvyšší napěťová třída v celé řadě SMP-0SCMC (72–310 V).',
+    tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
+  },
+  {
+    name: 'SMP100MC-140',
+    packageType:
+      'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka, bez elektrody gate), ' +
+      'hmotnost 98 mg; značení na součástce laserem "ML14"',
+    value:
+      'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, "micro capacitance" generace, ' +
+      'IPP 100 A (10/1000 µs), VRM 126 V, VBO 175 V (statický)',
+    notes:
+      'STMicroelectronics SMP100MC série "Trisil" (dok. ID 9699 rev. 5, únor 2012) — další, ' +
+      'vyšší-proudová "micro capacitance" TRISIL řada (IPP=100 A na rozdíl od IPP=50 A u ' +
+      'SMTPAxx a různých vln u SMP-0SCMC), pokrývá napěťové rozmezí 140–400 V; princip funkce ' +
+      'shodný s SMTPAxx (viz záznam SMTPA62): křemíková obousměrná spínací (crowbar) součástka ' +
+      'podobná symetrickému tyristoru bez řídicí elektrody. Určeno pro ochranu širokopásmových ' +
+      'telekomunikačních zařízení (ADSL2+, nízkorychlostní VDSL) a jiných citlivých zařízení ' +
+      'proti blesku a "power crossing" — datasheet dokládá funkční ověření v sériovém zapojení ' +
+      's pojistkou Cooper Bussmann TCP 1.25 A (Trisil = paralelní rychlá ochrana proti blesku, ' +
+      'pojistka = sériová ochrana proti dlouhotrvajícímu síťovému přepětí 50/60 Hz). Zpracována ' +
+      'celá řada 8 dílů z jednoho datasheetu (SMP100MC-140/160/200/230/270/320/360/400, ' +
+      'samostatné záznamy), lišících se jen napěťovou třídou. SMP100MC-140: VRM (stand-off ' +
+      'napětí) 126 V, IRM max 2 µA @VRM. VR (trvalé závěrné napětí) 140 V, IR max 5 µA @VR. VBO ' +
+      '(breakover napětí, statický test) max 175 V @IBO=800 mA; dynamický VBO (test okruh 1, ' +
+      '100 V/µs, IPP=100 A) max 180 V. IH (přídržný proud) min 150 mA. C typ 30 pF @VR=50 V / ' +
+      '60 pF @VR=2 V. Mezní hodnoty (společné pro celou řadu): IPP dle vlny — (10/1000 µs)=100 A, ' +
+      '(8/20 µs)=300 A, (10/560 µs)=140 A, (5/310 µs)=150 A, (10/160 µs)=200 A, (1/20 µs)=300 A, ' +
+      '(2/10 µs)=500 A; IFS (fail-safe zkratový režim) max 5 kA @8/20 µs; ITSM=18 A@0,2 s / ' +
+      '9 A@1 s / 7 A@2 s / 4 A@15 min; I²t=20 A²s@16,6 ms / 21 A²s@20 ms; Tstg -55 až +150 °C, Tj ' +
+      '(provozní) -40 až +150 °C, max. pájecí teplota vývodů 260 °C/10 s. Tepelný odpor: ' +
+      'RθJ-vývody 20 °C/W, RθJ-okolí 100 °C/W (na standardní DPS). Shoda se standardy: GR-1089 ' +
+      'core, ITU-T-K20/K21, IEC61000-4-5, TIA/EIA IS-968, UL60950/IEC950/CSA C22.2, UL1459, ' +
+      'UL94 V0 (pryskyřice), UL497B (soubor E136224).',
+    tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
+  },
+  {
+    name: 'SMP100MC-160',
+    packageType:
+      'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka), hmotnost 98 mg; ' +
+      'značení na součástce laserem "ML16"',
+    value:
+      'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, "micro capacitance" generace, ' +
+      'IPP 100 A (10/1000 µs), VRM 144 V, VBO 200 V (statický)',
+    notes:
+      'STMicroelectronics SMP100MC série "Trisil" (dok. ID 9699 rev. 5, únor 2012) — součást ' +
+      'stejné řady 8 dílů jako SMP100MC-140/200/230/270/320/360/400 (samostatné záznamy) — viz ' +
+      'záznam SMP100MC-140 pro plný popis principu funkce, mezních hodnot a shody se standardy. ' +
+      'SMP100MC-160: VRM 144 V, IRM max 2 µA @VRM. VR 160 V, IR max 5 µA @VR. VBO max 200 V ' +
+      '@IBO=800 mA; dynamický VBO max 205 V. IH min 150 mA. C typ 25 pF @VR=50 V / 50 pF @VR=2 V.',
+    tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
+  },
+  {
+    name: 'SMP100MC-200',
+    packageType:
+      'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka), hmotnost 98 mg; ' +
+      'značení na součástce laserem "ML20"',
+    value:
+      'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, "micro capacitance" generace, ' +
+      'IPP 100 A (10/1000 µs), VRM 180 V, VBO 250 V (statický)',
+    notes:
+      'STMicroelectronics SMP100MC série "Trisil" (dok. ID 9699 rev. 5, únor 2012) — součást ' +
+      'stejné řady 8 dílů jako SMP100MC-140/160/230/270/320/360/400 (samostatné záznamy) — viz ' +
+      'záznam SMP100MC-140 pro plný popis principu funkce, mezních hodnot a shody se standardy. ' +
+      'SMP100MC-200: VRM 180 V, IRM max 2 µA @VRM. VR 200 V, IR max 5 µA @VR. VBO max 250 V ' +
+      '@IBO=800 mA; dynamický VBO max 255 V. IH min 150 mA. C typ 20 pF @VR=50 V / 45 pF @VR=2 V.',
+    tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
+  },
+  {
+    name: 'SMP100MC-230',
+    packageType:
+      'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka), hmotnost 98 mg; ' +
+      'značení na součástce laserem "ML23"',
+    value:
+      'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, "micro capacitance" generace, ' +
+      'IPP 100 A (10/1000 µs), VRM 207 V, VBO 285 V (statický)',
+    notes:
+      'STMicroelectronics SMP100MC série "Trisil" (dok. ID 9699 rev. 5, únor 2012) — součást ' +
+      'stejné řady 8 dílů jako SMP100MC-140/160/200/270/320/360/400 (samostatné záznamy) — viz ' +
+      'záznam SMP100MC-140 pro plný popis principu funkce, mezních hodnot a shody se standardy. ' +
+      'SMP100MC-230: VRM 207 V, IRM max 2 µA @VRM. VR 230 V, IR max 5 µA @VR. VBO max 285 V ' +
+      '@IBO=800 mA; dynamický VBO max 295 V. IH min 150 mA. C typ 20 pF @VR=50 V / 40 pF @VR=2 V.',
+    tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
+  },
+  {
+    name: 'SMP100MC-270',
+    packageType:
+      'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka), hmotnost 98 mg; ' +
+      'značení na součástce laserem "ML27"',
+    value:
+      'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, "micro capacitance" generace, ' +
+      'IPP 100 A (10/1000 µs), VRM 243 V, VBO 335 V (statický)',
+    notes:
+      'STMicroelectronics SMP100MC série "Trisil" (dok. ID 9699 rev. 5, únor 2012) — součást ' +
+      'stejné řady 8 dílů jako SMP100MC-140/160/200/230/320/360/400 (samostatné záznamy) — viz ' +
+      'záznam SMP100MC-140 pro plný popis principu funkce, mezních hodnot a shody se standardy. ' +
+      'SMP100MC-270: VRM 243 V, IRM max 2 µA @VRM. VR 270 V, IR max 5 µA @VR. VBO max 335 V ' +
+      '@IBO=800 mA; dynamický VBO max 345 V. IH min 150 mA. C typ 20 pF @VR=50 V / 40 pF @VR=2 V. ' +
+      '⚠️ Datasheet dokládá funkční test tohoto konkrétního dílu (SMP100MC-270) v sérii ' +
+      's pojistkou Cooper Bussmann TCP 1.25 A proti simulovanému blesku (2/10 µs, ±2,5 a 5 kV, ' +
+      '500 A) i proti "power cross" (277 V/25 A) — Trisil i pojistka po testu funkční (GR-1089).',
+    tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
+  },
+  {
+    name: 'SMP100MC-320',
+    packageType:
+      'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka), hmotnost 98 mg; ' +
+      'značení na součástce laserem "ML32"',
+    value:
+      'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, "micro capacitance" generace, ' +
+      'IPP 100 A (10/1000 µs), VRM 290 V, VBO 390 V (statický)',
+    notes:
+      'STMicroelectronics SMP100MC série "Trisil" (dok. ID 9699 rev. 5, únor 2012) — součást ' +
+      'stejné řady 8 dílů jako SMP100MC-140/160/200/230/270/360/400 (samostatné záznamy) — viz ' +
+      'záznam SMP100MC-140 pro plný popis principu funkce, mezních hodnot a shody se standardy. ' +
+      'SMP100MC-320: VRM 290 V, IRM max 2 µA @VRM. VR 320 V, IR max 5 µA @VR. VBO max 390 V ' +
+      '@IBO=800 mA; dynamický VBO max 400 V. IH min 150 mA. C typ 15 pF @VR=50 V / 35 pF @VR=2 V.',
+    tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
+  },
+  {
+    name: 'SMP100MC-360',
+    packageType:
+      'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka), hmotnost 98 mg; ' +
+      'značení na součástce laserem "ML36"',
+    value:
+      'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, "micro capacitance" generace, ' +
+      'IPP 100 A (10/1000 µs), VRM 325 V, VBO 450 V (statický)',
+    notes:
+      'STMicroelectronics SMP100MC série "Trisil" (dok. ID 9699 rev. 5, únor 2012) — součást ' +
+      'stejné řady 8 dílů jako SMP100MC-140/160/200/230/270/320/400 (samostatné záznamy) — viz ' +
+      'záznam SMP100MC-140 pro plný popis principu funkce, mezních hodnot a shody se standardy. ' +
+      'SMP100MC-360: VRM 325 V, IRM max 2 µA @VRM. VR 360 V, IR max 5 µA @VR. VBO max 450 V ' +
+      '@IBO=800 mA; dynamický VBO max 460 V. IH min 150 mA. C typ 15 pF @VR=50 V / 35 pF @VR=2 V.',
+    tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
+  },
+  {
+    name: 'SMP100MC-400',
+    packageType:
+      'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka), hmotnost 98 mg; ' +
+      'značení na součástce laserem "ML40" — nejvyšší napěťová třída v řadě',
+    value:
+      'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, "micro capacitance" generace, ' +
+      'IPP 100 A (10/1000 µs), VRM 360 V, VBO 530 V (statický)',
+    notes:
+      'STMicroelectronics SMP100MC série "Trisil" (dok. ID 9699 rev. 5, únor 2012) — součást ' +
+      'stejné řady 8 dílů jako SMP100MC-140/160/200/230/270/320/360 (samostatné záznamy) — viz ' +
+      'záznam SMP100MC-140 pro plný popis principu funkce, mezních hodnot a shody se standardy. ' +
+      'SMP100MC-400: VRM 360 V, IRM max 2 µA @VRM. VR 400 V, IR max 5 µA @VR. VBO max 530 V ' +
+      '@IBO=800 mA; dynamický VBO max 540 V. IH min 150 mA. C typ 15 pF @VR=50 V / 30 pF @VR=2 V ' +
+      '— nejvyšší napěťová třída v celé řadě SMP100MC (140–400 V).',
+    tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
+  },
+  {
+    name: 'SMP75-8',
+    packageType:
+      'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka, bez elektrody gate), ' +
+      'hmotnost 0,11 g; značení na součástce laserem "L08"',
+    value:
+      'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, velmi nízké napětí 8 V, IPP 75 A ' +
+      '(10/1000 µs), VRM 6 V, VBO 15 V (statický)',
+    notes:
+      'STMicroelectronics SMP75-8 "Trisil" (dok. ID 5015 rev. 5, říjen 2010) — samostatný, ' +
+      'elektricky odlišný TRISIL díl (jiná napěťová i proudová třída než SMTPAxx/SMP-0SCMC/' +
+      'SMP100MC v této knihovně), princip funkce shodný (viz záznam SMTPA62): křemíková ' +
+      'obousměrná spínací (crowbar) součástka podobná symetrickému tyristoru bez řídicí ' +
+      'elektrody. Určeno speciálně pro velmi nízkonapěťovou ochranu citlivých ' +
+      'telekomunikačních rozhraní (Ethernet, T1/E1) — nízké VBO chrání linkový transformátor ' +
+      'proti přepětí, aniž by ho saturovalo. VRM (stand-off napětí) 6 V, IRM max 2 µA @VRM. VR ' +
+      '(trvalé závěrné napětí) 8 V, IR max 5 µA @VR. VBO (breakover napětí, statický test) max ' +
+      '15 V @IBO=800 mA; dynamický VBO max 20 V. IH (přídržný proud) typ 50 mA. C max 60 pF ' +
+      '@VR=2 V. Mezní hodnoty: IPP dle vlny — (10/1000 µs)=75 A, (8/20 µs)=250 A, ' +
+      '(10/560 µs)=100 A, (5/310 µs)=120 A, (10/160 µs)=150 A, (1/20 µs)=250 A, (2/10 µs)=250 A; ' +
+      'IFS (fail-safe zkratový režim) max 5 kA @8/20 µs; ITSM=14 A@0,2 s / 8 A@1 s / 6,5 A@2 s / ' +
+      '2 A@15 min; I²t=12 A²s@16,6 ms / 12,2 A²s@20 ms; Tstg -55 až +150 °C, TJ max 150 °C, ' +
+      'max. pájecí teplota vývodů 260 °C/10 s. Tepelný odpor: RθJ-vývody 20 °C/W, RθJ-okolí ' +
+      '100 °C/W (na standardní DPS). Shoda se standardy: GR-1089 core, ITU-T-K20/K21, ' +
+      'VDE0433/0878, IEC61000-4-5, FCC Part 68, UL1950/IEC950/CSA C22.2, UL1459, UL94 V0 ' +
+      '(pryskyřice).',
+    tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,ethernet',
   },
 ];
 
