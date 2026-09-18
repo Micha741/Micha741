@@ -1505,6 +1505,36 @@ const IC_SPECS: IcSpec[] = [
       'Dostupný jako ISL97652IRZ (48 Ld 7×7 QFN, i v -T/-TK verzích pro pásmo/cívku).',
     tags: 'io,napájecí-obvod,lcd-tv,vcom,boost,buck,nábojová-pumpa,isl97652,intersil,qfn',
   },
+  {
+    name: 'ISL78010',
+    packageType: '32 Ld 5×5 mm TQFP, AEC-Q100 tested, -40 až +105 °C',
+    value:
+      'Automotive TFT-LCD napájecí obvod — boost (VBOOST 5,5–20 V @2 A FET) + 2× kladné LDO ' +
+      '(VON, VLOGIC) + 1× záporné LDO (VOFF), programovatelná sekvence',
+    notes:
+      'Renesas (dříve Intersil) "ISL78010 — Automotive Grade TFT-LCD Power Supply" (dok. FN6501, ' +
+      'rev. 2.00, 4. 12. 2013) — ⚠️ jiná architektura než ostatní LCD napájecí IC v této knihovně ' +
+      '(ISL97652 používá nábojové pumpy pro VON/VOFF a buck pro VLOGIC; rodina Maxim MAX2522x ' +
+      'používá jen boost+invertor) — ISL78010 generuje VON i VOFF pomocí LINEÁRNÍCH regulátorů ' +
+      '(LDO) řízených externím tranzistorem (open-drain DRVP/DRVN/DRVL budicí výstupy, VON přes ' +
+      'externí NPN, VOFF přes externí PNP, VLOGIC přes externí N-kanál), nikoli nábojovou pumpou ' +
+      '— jednodušší, ale s nižší účinností při vyšším proudovém odběru VON/VOFF větví. Integruje: ' +
+      'jediný boost converter s integrovaným 2A spínacím FET (RDS(on) 320 mΩ, do 20 V výstup, ' +
+      'regulace ±1 %, účinnost 85–92 %, oscilátor 1 MHz), přepínatelný mezi P-mode (rychlejší ' +
+      'přechodová odezva, pin CINT na VDD) a PI-mode (lepší zátěžová regulace, CINT přes externí ' +
+      'kondenzátor 4,7 nF na SGND); VON LDO (FBP zpětná vazba, reguluje na 1,2 V, DRVP báze ' +
+      'externího NPN); VOFF LDO (FBN zpětná vazba, reguluje na 0,203 V, DRVN báze externího PNP); ' +
+      'VLOGIC LDO (FBL zpětná vazba, reguluje na 1,2 V, DRVL gate externího N-FET, do 500 mA). ' +
+      'Programovatelná startovací sekvence (přes kondenzátor CDLY): VLOGIC→VBOOST→VOFF→VON nebo ' +
+      'VLOGIC→VOFF→VBOOST→VON, s nastavitelným zpožděním mezi kroky (tDEL1/tDEL2 typ. 10/17 ms ' +
+      'při CDLY=0,22 µF). Plná poruchová ochrana na všech 4 kanálech (VBOOST/VON/VOFF/VLOGIC) — ' +
+      'při detekci poruchy se obvod zablokuje (latch-off), dokud není cyklováno VDD nebo EN pin ' +
+      '(u VLOGIC poruchy nezávisle na EN); tepelné vypnutí při 140 °C; push-pull PG výstup pro ' +
+      'externí ochranný FET. Bandgap reference VREF s bypass kondenzátorem. Vstup VDD 3–5,5 V, ' +
+      'klidový proud 1,7 mA (aktivní)/750 µA (disabled). Dostupný jako ISL78010ANZ (32 Ld 5×5 ' +
+      'TQFP), i s evaluačním kitem ISL78010EVAL1Z.',
+    tags: 'io,napájecí-obvod,tft-lcd,automotive,ldo,boost,isl78010,renesas,intersil,tqfp',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
