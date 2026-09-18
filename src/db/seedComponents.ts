@@ -2103,6 +2103,31 @@ const DIODE_SPECS: PartSpec[] = [
     tags: 'dioda,led,displej,16segment,alfanumerický,yellow-stone,bs-aa21rd,červená,gaasp,sd-43',
   },
   {
+    name: 'ELS-512UBWA',
+    packageType:
+      'THT 10pin DIP pouzdro, 0,56" (14,22 mm) výška znaku, rozteč vývodů 2,54 mm×4, šedé čelo ' +
+      'displeje s bílými segmenty, společná anoda (piny 3 a 8)',
+    value:
+      '7segmentový LED displej (jednomístný), MODRÁ (GaN/SiC), λp typ. 428 nm, IV/segment typ. ' +
+      '3,2 mcd @IF=10 mA, VF typ. 3,8 V',
+    notes:
+      'Everlight Electronics "ELS-512UBWA — 0.56" Single Digit Displays" (dok. CDDS-512-018, ' +
+      'rev. 1) — ⚠️ modrá LED na bázi GaN/SiC (galium nitrid na karbidu křemíku), zcela odlišná ' +
+      'polovodičová technologie a výrazně vyšší propustné napětí (VF typ. 3,8 V, max 4,5 V) než ' +
+      'ostatní 7/16segmentové displeje v této knihovně na bázi GaAsP/GaP/GaAlAs (VF typ. 2,0–4,0 V) ' +
+      '— typické pro modré/bílé LED, kde je potřeba vyšší energie fotonu (kratší vlnová délka) ' +
+      'než u červené/žluté/zelené. Průmyslově standardní velikost (14,22 mm/0,56"), navrženo pro ' +
+      'čitelnost ze vzdálenosti až 7 m, vhodné pro audio zařízení, přístrojové panely a číslicové ' +
+      'digitální ukazatele. Mezní hodnoty: VR max 5 V, IF max 30 mA, IFP (peak, duty 1/10 @1 kHz) ' +
+      'max 70 mA, PD max 140 mW, provozní teplota -40 až +85 °C, skladovací -40 až +100 °C, ' +
+      'pájecí teplota 260±5 °C, ESD (HBM) 1000 V. VF typ. 3,8/max 4,5 V @IF=20 mA. IR max 100 µA ' +
+      '@VR=5 V. IV/segment min 2,0/typ. 3,2 mcd @IF=10 mA; IV/desetinná tečka min 0,7/typ. ' +
+      '1,0 mcd. λp typ. 428 nm, λd (dominantní) typ. 466 nm, Δλ typ. 65 nm @IF=20 mA. Kategorizováno ' +
+      '(binováno) dle svítivosti. Piny: 1=NC, 2=katoda D, 3=společná anoda, 4=katoda C, ' +
+      '5=katoda DP, 6=katoda B, 7=katoda A, 8=společná anoda, 9=katoda F, 10=katoda G.',
+    tags: 'dioda,led,displej,7segment,modrá,gan,sic,everlight,els-512ubwa,jednomístný',
+  },
+  {
     name: 'TIL302',
     packageType:
       '14vývodové THT pouzdro, červený solid-state 7segmentový displej, výška znaku 6,9 mm ' +
