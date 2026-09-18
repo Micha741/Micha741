@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    478 běžných součástek: 106 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    479 běžných součástek: 106 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; a laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220),
@@ -44,13 +44,13 @@ i návrh schémat obvodů a plošných spojů.
     MX29GL320E (T/B/H/L), USB-I2C most FT200XD, RS-485/RS-422 přijímače Renesas ISL32173E
     a příbuzné (ISL32175E/32177E/32273E/32275E/32277E), automotive TFT-LCD napájecí obvody
     Maxim MAX25220/MAX25221/MAX25221B/MAX25520, LCD-TV napájecí obvody Intersil/Renesas
-    ISL97652 a ISL78010, TFT-LCD napájecí obvody E-CMOS EC9223 a Torex XC9516 aj.), 20 modulů
+    ISL97652 a ISL78010, TFT-LCD napájecí obvody E-CMOS EC9223 a Torex XC9516 aj.), 21 modulů
     (Wi-Fi/BLE: ESP32-C3-MINI-1, ESP32-C3-WROOM-02, Adafruit Feather
     HUZZAH ESP8266, ESP8684-MINI-1, ESP-12S; nízkonapěťové odpojovače baterie Alfatronix
     PowerTector PT10/PT20/PT40/PT60/PT100/PT200; LoRaWAN senzor LEO-S55 a brány USM-S67;
     solární bezdrátové senzory EnOcean ETHSA/ETHSU; 6,86" IPS TFT LCD moduly AZ Displays
     ATM0680L2A-CT s kapacitním dotykem a ATM0680L2A bez dotyku; a polohové displeje vřetene
-    Baumer IVO N 142/N 152), 1 konektor/přepěťová
+    Baumer IVO N 142/N 152; a znakový LCD modul PICVUE PVC200403), 1 konektor/přepěťová
     ochrana (Ethernet/PoE
     bleskojistka ESP-100-POE) a 3 ostatní součástky (RF koaxiální směrový odbočovač SAGE
     Millimeter/Eravant SCD-0134032010-KF-SA; pasivní segmentové LCD panely AZ Displays

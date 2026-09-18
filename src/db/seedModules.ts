@@ -599,6 +599,35 @@ const MODULE_SPECS: ModuleSpec[] = [
       'vpředu (B) — na rozdíl od N 142, který má jen nakloněnou variantu.',
     tags: 'modul,polohový-displej,enkodér,multiturn,rs485,baumer,ivo,n152,vřeteno,duté-hřídel',
   },
+  {
+    name: 'PVC200403',
+    packageType:
+      'PCB modul (skleněný LCD panel + budicí/řadičový čip osazený na malé DPS s pinovou ' +
+      'lištou) — rozměr modulu 98,0×60,0 mm (14,0 mm hloubka s EL podsvícením), zobrazovací ' +
+      'plocha 76,0×25,2 mm, velikost znaku 2,95×4,75 mm',
+    value:
+      'Znakový dot-matrix LCD modul, 20 sloupců × 4 řádky, technologie TN/STN šedá/STN žlutá ' +
+      '(dle varianty), duty 1/16, bez LED podsvícení (možnost EL podsvícení)',
+    notes:
+      'PICVUE Electronics Ltd. znakový LCD modul PVC200403, distribuovaný přes katalog Beck GmbH ' +
+      '& Co. Elektronik Bauelemente KG "Liquid Crystal Displays — LCD Modules and Panels" — ' +
+      'standardní znakový (character) dot-matrix LCD modul s řadičovým čipem osazeným přímo na ' +
+      'modulu (na rozdíl od holých skleněných panelů GD-342AP/GD-458P v této knihovně, samostatné ' +
+      'záznamy, které vyžadují externí budicí obvod) — proto zařazen do kategorie Modul, ne ' +
+      'Ostatní. Součást rozsáhlé produktové řady PICVUE "Dot Matrix Modules" zahrnující desítky ' +
+      'kombinací velikost (10×3 až 40×4 znaků) × technologie (TN/STN šedá/STN žlutá/FSTN ' +
+      'černobílá) × podsvícení (bez/LED/EL) × pouzdro (PCB s pinovou lištou / TCP s řadičem na ' +
+      'flexfólii) — do knihovny přidán jen konkrétní pojmenovaný díl PVC200403 z názvu souboru ' +
+      '(20×4 znaky), ne celý katalog. Duty rate (multiplex poměr) 1/16. Dostupný ve variantách ' +
+      'TN, STN šedá nebo STN žlutá technologie (volba technologie kódována 2. identifikačním ' +
+      'znakem v objednacím čísle — v datasheetu uvedeno obecně jako "**"), bez LED podsvícení, s ' +
+      'možností EL (elektroluminiscenčního) podsvícení. Pouzdro PCB (tištěný spoj s pinovou ' +
+      'lištou), na rozdíl od TCP (tape carrier package, řadič integrovaný na flex-fólii bez PCB) ' +
+      'u jiných dílů stejné řady. Distributor Beck GmbH poskytuje širokou nabídku LCD ' +
+      'modulů/panelů více výrobců (PICVUE, Ampire, Dalian Dongfu, Tianma) — tento konkrétní díl je ' +
+      'od PICVUE.',
+    tags: 'modul,displej,lcd,znakový,dot-matrix,picvue,pvc200403,beck,20x4',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
