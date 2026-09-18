@@ -39,6 +39,54 @@ const MISC_SPECS: MiscSpec[] = [
       'Doporučen speciální momentový klíč Eravant SCH-08008-S1 pro správné dotažení konektorů.',
     tags: 'rf,mikrovlny,směrový-odbočovač,directional-coupler,koaxiální,sage-millimeter,eravant,k-konektor',
   },
+  {
+    name: 'GD-342AP',
+    packageType:
+      'Skleněný segmentový LCD panel, 24 pinů (zebra/elastomer kontaktní páska po obou delších ' +
+      'stranách, rozteč 2,54 mm, 12+12), vnější rozměry 30,48×22,86 mm, aktivní/zobrazovací ' +
+      'plocha 24,13×11,43 mm, výška číslice cca 8,89 mm',
+    value:
+      '3místný 7segmentový pasivní LCD displej (statický, bez multiplexu), 2 desetinné tečky ' +
+      '(DP1, DP2), napájení 3,0 V, TN typ, reflexní polarizér',
+    notes:
+      'AZ Displays, Inc. mechanický výkres "GD-342AP" (výrobní štítek na výkresu uvádí ' +
+      '"CD-342AP" — nesrovnalost v označení mezi souborem a štítkem výkresu samotného výrobce; ' +
+      'do knihovny přidáno pod názvem odpovídajícím nahranému souboru) — ⚠️ POZOR: jde o pasivní ' +
+      'segmentové LCD sklo (skleněná "cela" s tekutými krystaly a elektrodami), NE o LED ani ' +
+      'aktivní modul s vlastní elektronikou — pro zobrazení vyžaduje externí LCD budicí obvod ' +
+      '(např. specializovaný LCD driver IC generující střídavé budicí napětí, statický režim bez ' +
+      'multiplexování znamená jednoduché přímé buzení bez COM sdílení). Kontaktování zebra páskou ' +
+      '(elastomerový konektor) k řídicí DPS, ne pájené vývody. 3 číslice, 7 segmentů + 2 ' +
+      'desetinné tečky na displej. Pozorovací úhel 6 hodin (optimální kontrast při pohledu zespodu ' +
+      'shora), duty cycle statický (přímé buzení, žádné sdílené COM elektrody), budicí napětí ' +
+      '5,0 V (typicky střídavé, pro zabránění degradaci LCD stejnosměrným polem). Provozní ' +
+      'teplota 0 až +50 °C, skladovací -15 až +60 °C.',
+    tags: 'lcd,displej,segmentový,statický,az-displays,gd-342ap,7segment,pasivní',
+  },
+  {
+    name: 'GD-458P',
+    packageType:
+      'Skleněný segmentový LCD panel, 18 pinů (zebra/elastomer kontaktní páska, rozteč 2,54 mm, ' +
+      '10+8), vnější rozměry 146×45 mm, aktivní/zobrazovací plocha 142×39 mm (V.A.), jednotlivá ' +
+      'číslice cca 19,0×12,5 mm',
+    value:
+      '6místný 7segmentový multiplexovaný LCD displej (1/4 duty, 1/3 bias) s doplňkovými ' +
+      'ikonovými/šipkovými segmenty (T1-T8) a kruhovým ikonovým polem, 6 desetinných teček ' +
+      '(DP1-DP6), napájení 3,0 V, TN typ, transflektivní',
+    notes:
+      'AZ Displays, Inc. mechanický výkres "GD-458P" (datováno 9. 1. 1997) — ⚠️ pasivní ' +
+      'segmentové LCD sklo jako GD-342AP (samostatný záznam) — viz tam pro obecné vysvětlení ' +
+      'principu (vyžaduje externí LCD budicí obvod, kontaktováno zebra páskou), ale odlišná ' +
+      'konfigurace: 6 číslic místo 3, MULTIPLEXOVANÉ buzení (4 společné elektrody COM1-4, duty ' +
+      '1/4, bias 1/3 — na rozdíl od statického buzení u GD-342AP) umožňující více segmentů na ' +
+      'méně vývodů, transflektivní (funguje jak v odraženém, tak s podsvícením procházejícím ' +
+      'světle) pozitivní displej (tmavé segmenty na světlém pozadí). Kromě 6× 7segmentové číslice ' +
+      '+ desetinná tečka obsahuje navíc 8 trojúhelníkových ikonových segmentů (T1-T8, pravděpodobně ' +
+      'směrové šipky/ukazatele stavu) a jedno kruhové ikonové pole (u T4, možný symbol napájení/ ' +
+      'stupně/baterie) — vhodné pro měřicí přístroj s doplňkovými stavovými indikátory. Pozorovací ' +
+      'úhel 12 hodin. Budicí napětí 3,0 V. Provozní teplota 0 až +55 °C, skladovací -15 až +60 °C.',
+    tags: 'lcd,displej,segmentový,multiplexovaný,az-displays,gd-458p,7segment,pasivní,ikony',
+  },
 ];
 
 export function buildMiscSeed(): ComponentInput[] {

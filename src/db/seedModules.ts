@@ -572,6 +572,33 @@ const MODULE_SPECS: ModuleSpec[] = [
       'nakloněný displej, 24 VDC, kabelový výstup 0,5m motor. kabel, RS485).',
     tags: 'modul,polohový-displej,enkodér,multiturn,rs485,baumer,ivo,n142,vřeteno,duté-hřídel',
   },
+  {
+    name: 'N 152',
+    packageType:
+      'Povrchová montáž s dutou hřídelí (hollow shaft) Ø14 mm, pouzdro 37×75×45 mm, polyamid ' +
+      'černý UL94V-0, hmotnost cca 120 g, IP65; konektory M8 (4pin napájení+RS485), M16 (12pin ' +
+      'motorový); kabelový výstup 15 cm nebo motorový kabel 0,5/1,5 m',
+    value:
+      'Polohový displej vřetene (spindle position display), menší varianta — absolutní multiturn ' +
+      'odměřovací systém, LCD 2řádkový podsvícený displej, rozlišení 1440 kroků/otáčku ±4096 ' +
+      'otáček, RS485, 24 VDC',
+    notes:
+      'Baumer IVO "N 152 — Spindle Position Displays" (dok. 11. 11. 2008) — ⚠️ menší sesterský ' +
+      'model k N 142 (samostatný záznam) pro tenčí vřetena — stejný účel a princip funkce ' +
+      '(multiconDrive automatické formátové seřízení, přímá komunikace s EC motorem, absolutní ' +
+      'multiturn měření, RS485, EEPROM + 3V lithiová záložní baterie), ale menší duté hřídel ' +
+      '(Ø14 mm vs. Ø20/25 mm u N 142), menší/lehčí pouzdro (37×75×45 mm/120 g vs. 56×100×62,5 mm/ ' +
+      '200 g), nižší rozlišení (1440 vs. 2304 kroků/otáčku), menší max. stoupání vřetene (14 mm ' +
+      'vs. 23 mm) a menší konektory (M8 4pin místo M16 5pin pro napájení/RS485). Rozsah měření ' +
+      '-99,99…+999,99 mm (nebo -9,999…+99,999 palců). Zbylé parametry shodné s N 142: rozsah ' +
+      'otáček ±4096 (12bit), dvě membránové klávesy pro formátové seřízení, kompatibilní s ' +
+      'řadičem pamětí N 242 (až 100 profilů), provozní teplota -10 až +50 °C, skladovací -20 až ' +
+      '+70 °C, vlhkost do 80 % nekondenzující, ochrana IP65, provozní otáčky do 600 ot/min ' +
+      '(krátkodobě), napájení 24 VDC ±10 %, odběr max 40 mA. Shoda s DIN EN 61010-1, EMC dle DIN ' +
+      'EN 61000-6-2/6-3, schválení UL/cUL. Displej dostupný nakloněný (A) nebo horizontální ' +
+      'vpředu (B) — na rozdíl od N 142, který má jen nakloněnou variantu.',
+    tags: 'modul,polohový-displej,enkodér,multiturn,rs485,baumer,ivo,n152,vřeteno,duté-hřídel',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
