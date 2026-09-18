@@ -2129,9 +2129,41 @@ const RESISTOR_SPECS: PartSpec[] = [
   },
 ];
 
+const CAPACITOR_PART_SPECS: PartSpec[] = [
+  {
+    name: 'NTE 90000 Series',
+    packageType:
+      'THT keramický disk, radiální vývody, rozteč (S) 7,5 mm (větší hodnoty 8,5–10,5 mm), ' +
+      'průměr disku (D) 5–20 mm dle kapacity — viz tabulka rozměrů v datasheetu pro konkrétní ' +
+      'hodnotu',
+    value:
+      'Keramický diskový kondenzátor, 1000 V DC, 1,0 pF – 0,10 µF (100 000 pF) dle konkrétního ' +
+      'typu v řadě',
+    notes:
+      'NTE Electronics "1000V Ceramic Disc — 90000 Series" katalogový list — vysokonapěťová řada ' +
+      'keramických diskových kondenzátorů, ⚠️ odlišná od generických keramických kondenzátorů ' +
+      'v této knihovně (bulk generované hodnoty 10 pF–470 nF, jmenovité napětí jen 50 V) — tato ' +
+      'řada je dimenzována na 1000 V DC (zkušební/withstand napětí 2500 V DC), typické použití ' +
+      'jako odrušovací/blokovací kondenzátory v obvodech s vyšším napětím. Zpracována jako jeden ' +
+      'souhrnný záznam pokrývající celou řadu ~80 konkrétních kapacitních hodnot (1,0 pF až ' +
+      '0,10 µF), ne jako desítky samostatných řádků — obdoba přístupu u NTC termistorů řady D-5 ' +
+      'až D-25 v této knihovně. Objednací kód kóduje kapacitu přímo v čísle typu (např. 9002D0 = ' +
+      '2,0 pF, 90220 = 2000 pF, 90347 = 0,047 µF) — formát "90" + multiplikátor + kapacita v pF. ' +
+      'Značení na součástce 3místným kódem (např. 202 = 2000 pF, 473 = 0,047 µF). Tolerance a ' +
+      'teplotní koeficient se liší dle rozsahu hodnot: 9001D0–9009D0 ±0,5 pF (TK "SL"), ' +
+      '90010–90210 ±10 % (TK "Y5F" do 90118, "Y5P" od 90122), 90212–90220 +80/−20 % (TK "Z5V"), ' +
+      '90222 ±20 % (TK "Z5U"), 90227–90410 +80/−20 % (TK "Z5V") — u konkrétního kusu je nutné ' +
+      'dohledat přesnou toleranci/TK dle jeho čísla typu v rozsahu. Provozní teplota -25 až ' +
+      '+85 °C. Izolační odpor min. 7500 MΩ (měřeno po 1 minutě při jmenovitém napětí). Rozměry ' +
+      '(průměr disku D, rozteč vývodů S) rostou s kapacitou — od D=5 mm/S=7,5 mm (malé pF hodnoty) ' +
+      'až po D=20 mm/S=10,5 mm (0,10 µF).',
+    tags: 'kondenzátor,keramický,vysokonapěťový,disk,1000v,nte,90000',
+  },
+];
+
 function buildFromSpecs(
   specs: PartSpec[],
-  category: 'Dioda' | 'Tranzistor' | 'Rezistor'
+  category: 'Dioda' | 'Tranzistor' | 'Rezistor' | 'Kondenzátor'
 ): ComponentInput[] {
   return specs.map((spec) => ({
     name: spec.name,
@@ -2151,6 +2183,7 @@ export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
   ...buildFromSpecs(RESISTOR_SPECS, 'Rezistor'),
   ...buildCapacitorSeed(),
+  ...buildFromSpecs(CAPACITOR_PART_SPECS, 'Kondenzátor'),
   ...buildFromSpecs(DIODE_SPECS, 'Dioda'),
   ...buildFromSpecs(TRANSISTOR_SPECS, 'Tranzistor'),
   ...buildIcSeed(),
