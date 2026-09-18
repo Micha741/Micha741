@@ -2725,6 +2725,33 @@ const RESISTOR_SPECS: PartSpec[] = [
       'zdrojů/UPS v řádu stovek wattů.',
     tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-25',
   },
+  {
+    name: 'RT1206FRE073K01L',
+    packageType:
+      'SMD 1206 (3,10×1,60×0,55 mm), tenkovrstvý (thin film) čipový rezistor, Ni/matný cín ' +
+      'terminace (bezolovnatá), keramický substrát; potisk hodnoty "3011" (E-96 kód pro 3,01 kΩ)',
+    value: 'Přesný tenkovrstvý SMD rezistor 3,01 kΩ, ±1 %, TC 50 ppm/°C, 1/4 W, dodán na 7" cívce',
+    notes:
+      'Yageo/Phicomp "RT series — Thin Film Chip Resistors, High precision - high stability" ' +
+      '(dok. produktová specifikace v.4, 21. 10. 2009) — katalogový datasheet celé řady RT0402 až ' +
+      'RT2512, konkrétní kód objednávky RT1206FRE073K01L dekódován dle značení výrobce: RT1206 ' +
+      '(velikost 1206) F (tolerance ±1 %) R (papírová/PE páska) E (TC 50 ppm/°C) 07 (7" cívka) ' +
+      '3K01 (3,01 kΩ) L (výchozí kód objednávky). ⚠️ Jde o obecnou katalogovou řadu přesných ' +
+      'tenkovrstvých rezistorů (technologie thin film, laserové doladění hodnoty), nikoli o ' +
+      'jediný specifický díl — zaznamenána jako reprezentativní příklad s dekódovaným kódem ' +
+      'nahraného dílu; odlišná technologie/přesnost od generické E12 řady (5 %, tlustovrstvá) ' +
+      'v této knihovně. Řada pokrývá 7 velikostí (0402/0603/0805/1206/1210/2010/2512), tolerance ' +
+      '±0,05/±0,1/±0,25/±0,5/±1 %, teplotní koeficient (TCR) 10/15/25/50 ppm/°C dle kombinace ' +
+      'velikosti a tolerance, a hodnoty v řadě E-24/E-96 (na požádání i E-192). Pro RT1206: ' +
+      'jmenovitý výkon 1/4 W @70 °C, max. pracovní napětí 200 V, max. přetížitelné napětí 400 V, ' +
+      'elektrická pevnost 300 V, provozní teplota -55 až +125 °C, odporový rozsah dle tolerance ' +
+      '10 Ω–1,5 MΩ (TC50, tol. ±0,5/1 %) až 10 Ω–100 kΩ (TC10). RoHS/Halogen Free (bezolovnaté ' +
+      'terminace Ni/matný cín). Testováno dle IEC 60115-1/60068-x/MIL-STD-202G (teplotní cyklování ' +
+      '300× -55/+125 °C, vlhkostní odolnost, pájitelnost při 260 °C/bezolovnatá pájka, ohyb DPS aj.) ' +
+      '— vhodné pro přesné aplikace (měřicí obvody, zpětné vazby, převodníky) vyžadující nízkou ' +
+      'teplotní driftaci a vysokou dlouhodobou stabilitu (±0,5 % po 1000 h @70 °C/125 °C/155 °C).',
+    tags: 'rezistor,smd,1206,precision,tenkovrstvý,thin-film,yageo,phicomp,rt-series',
+  },
 ];
 
 const CAPACITOR_PART_SPECS: PartSpec[] = [
