@@ -1512,6 +1512,45 @@ const DIODE_SPECS: PartSpec[] = [
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,tripolární,telekom,powerso-10,d2pak,i2pak,tlp270',
   },
   {
+    name: 'CLP200M',
+    packageType:
+      'PowerSO-10, 10 vývodů: 1=FS (Failure Status), 2=TIPS, 3/4/5=TIPL, 6/7/8=RINGL, 9=RINGS, ' +
+      '10=NC; TAB (chladicí ploška) = GND',
+    value:
+      'Aktivní duální obousměrný ochranný obvod telefonní linky — kombinuje přepěťovou (interní ' +
+      'ref. ±215 V, externě nastavitelná níž) i nadproudovou (přes Rsense) detekci, s výstupem ' +
+      'poruchového stavu (FS)',
+    notes:
+      'SGS-Thomson (nyní STMicroelectronics) "CLP200M — Overvoltage and Overcurrent Protection ' +
+      'for Telecom Line" (dok. únor 1998, ed. 3) — ⚠️ architektonicky pokročilejší než pasivní ' +
+      'TRISIL součástky v této knihovně (SMTPAxx/SMPxxx/TLPxx, samostatné záznamy) — CLP200M NENÍ ' +
+      'prostá crowbar struktura, ale AKTIVNÍ ochranný obvod s vnitřními komparátory/detektory ' +
+      '(přepěťový i nadproudový detektor na obou stranách TIP i RING), logickými OR hradly a ' +
+      'spínači SW1–SW4, který zkratuje linku na GND při překročení prahu — funkčně podobný účel ' +
+      '(ochrana telekomunikační linky), ale programovatelný/konfigurovatelný externími ' +
+      'součástkami: práh přepětí lze snížit z pevné interní reference ±215 V pomocí externích ' +
+      'Zenerových diod (VZ1–VZ4) nebo externího napěťového referenčního obvodu (např. LCP1511D ' +
+      'nebo řada THDTxx jako druhý ochranný stupeň u SLIC), a aktivační proud nadproudové ochrany ' +
+      'je nastavitelný externím rezistorem RSENSE. Duální (2× shodný obvod pro TIP i RING) a ' +
+      'obousměrný (kladné i záporné přepětí/proud). Výstupní pin FS (Failure Status) signalizuje ' +
+      'poruchový/sepnutý stav. Určeno pro primární ochranu na MDF (hlavní rozvodný rám) i pro ' +
+      'linkové karty (analogové, ISDN, PABX) — v aplikaci obvykle kombinováno s druhým ochranným ' +
+      'stupněm (LCP1511D/THDTxx) blíže u SLIC obvodu. Elektrické charakteristiky (RSENSE=4 Ω): ' +
+      'ILGL (svodový proud linka-GND) max 10 µA @VLG=200 V. VREF (interní přepěťová reference) ' +
+      'min 215 V @ILG=1 mA. VSWON (napětí linka-GND při sepnutí SW1/SW2) max 290 V @50 Hz. ISWOFF ' +
+      '(vypínací proud) min 150 mA. ISWON (zapínací proud): kladný pulz 180–280 mA, záporný pulz ' +
+      '220–320 mA. C (kapacita linka-GND) max 200 pF @VLG=-1 V+1 Vrms/1 MHz. Mezní hodnoty: IPP ' +
+      '(linka-GND, 10/1000 µs, otevřený obvod 1 kV)=100 A / (5/310 µs, otevřený obvod 4 kV, ' +
+      '10/700 µs)=130 A; ITSM (indukce ze sítě 300 Vrms/600 Ω/200 ms)=0,5 A; (kontakt se sítí, ' +
+      'práh poruchového stavu, 220 Vrms/10 Ω/200 ms)=22 A; (220 Vrms/600 Ω/15 min)=0,30 A; Tstg ' +
+      '-40 až +150 °C, TJ max 150 °C, max. pájecí teplota 260 °C/10 s. Shoda se standardy: CCITT ' +
+      'K20 (4 kV 10/700 µs, 100 A 5/310 µs), Bellcore TR-NWT-000974 (1 kV a 100 A, 10/1000 µs). ' +
+      'Zbytkové napětí po zásahu ochrany v testech dle CCITT K20: nepřesahuje +2,5 V/-60 V ' +
+      '(bleskový test se sekundární LCP1511D ochranou) resp. do 270 V (indukční test bez ' +
+      'sekundární ochrany).',
+    tags: 'dioda,přepěťová-ochrana,nadproudová-ochrana,telekom,powerso-10,clp200m,aktivní-ochrana',
+  },
+  {
     name: 'SMP75-8',
     packageType:
       'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka, bez elektrody gate), ' +
