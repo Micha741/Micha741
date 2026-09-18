@@ -3027,6 +3027,37 @@ const CAPACITOR_PART_SPECS: PartSpec[] = [
       '(měřeno při jmenovitém napětí, 60 s). RoHS.',
     tags: 'kondenzátor,keramický,disk,meritek,np0,c0g,class1,cc-series',
   },
+  {
+    name: 'Cornell Dubilier SCD Series',
+    packageType:
+      'Přímo montovatelný modul na pouzdro IGBT (2 ploché cínované měděné vývody/lugy pro šroubový ' +
+      'spoj), plastové pouzdro UL94V-0 s tvrzenou pryskyřicí UL94V-0; rozměry dle kapacity/napětí ' +
+      'zhruba 24,6×47,0×24,1 mm (nejmenší, 0,22–0,47 µF/600 V) až 76,2×62,9×38,1 mm (největší, ' +
+      '3 µF/1200 V); standardní roztečné varianty pro IGBT s 23/25/28 mm rozestupem vývodů (kód ' +
+      '"Z25"), jiné rozteče (22/24/28/29 mm i na zakázku) dostupné na vyžádání',
+    value:
+      'Fóliový (polypropylenový) IGBT dV/dt snubber kondenzátor pro přímou montáž na IGBT modul, ' +
+      '0,22–4,7 µF, 600–2000 Vdc, ±10 % (K) standardně',
+    notes:
+      'Cornell Dubilier (CDE) "Type SCD — IGBT Snubber Capacitor Modules, High dV/dt Direct ' +
+      'Mount IGBT Snubber" katalogový datasheet — ⚠️ celá parametrická řada cca 35 kombinací ' +
+      'kapacita/napětí (0,22–4,7 µF × 600/1000/1200/1600/2000 Vdc), do knihovny přidána jako ' +
+      'jeden souhrnný záznam (ne každá kombinace zvlášť) — konkrétní díl v katalogu identifikován ' +
+      'kódem SCD<kapacitní kód EIA><tolerance><napěťový kód><interní kód sestavy><typ sekce>-' +
+      '<rozteč vývodů>-F, např. SCD474K162A3Z25-F = 0,47 µF, ±10 %, 1600 Vdc, standardní ' +
+      'sekce/vývody, rozteč 25,4 mm C-C, RoHS. Určeno k připojení přímo mezi kolektor/emitor ' +
+      '(C1–E2 u duálního IGBT modulu) nebo mezi P–N (u six-pack modulu) pro potlačení napěťových ' +
+      'transientů při vysokém dV/dt spínání IGBT — nízkoindukční přímá montáž na pouzdro modulu ' +
+      '(místo připojení přes DPS/vodiče) minimalizuje parazitní indukčnost smyčky. Dielektrikum: ' +
+      'nízkoztrátový polypropylen se samohojicí (self-healing) vlastností. Elektrické parametry ' +
+      'závisí na konkrétní kombinaci kapacita/napětí (viz tabulka výrobce) — např. u 0,47 µF/' +
+      '1600 V: dV/dt 650 V/µs, špičkový proud IPK 306 A, ESR 10 mΩ, IRMS @100 kHz/55 °C 12,6 A. ' +
+      'Zkušební napětí mezi vývody 160 % jmenovitého napětí/60 s, mezi vývody a pouzdrem 3 kVAC ' +
+      '50/60 Hz/60 s. Životnostní test 2000 h @85 °C/125 % jmenovitého napětí. Udávaná životnost ' +
+      '60 000 h @jmenovité Vdc/70 °C nebo 30 000 h @jmenovité Vac/70 °C. Provozní teplota -55 až ' +
+      '+85 °C. Tolerance ±10 % (K) standardně, ±5 % (J) volitelně. RoHS.',
+    tags: 'kondenzátor,fóliový,polypropylen,snubber,igbt,cornell-dubilier,scd-series,dv-dt',
+  },
 ];
 
 function buildFromSpecs(
