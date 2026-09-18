@@ -13,18 +13,18 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    343 běžné součástky: 93 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; a NTC
+    344 běžné součástky: 93 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; a NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu), 39 kondenzátorů (keramické,
     elektrolytické, tantalové, fóliové), 67 diod (usměrňovací, spínací, Schottky, Zenerovy,
     LED včetně výkonových SMD LED LUXEON Rebel a OSLON SSL 80),
     71 tranzistorů (bipolární NPN/PNP, Darlington, duální, komplementární páry, výkonové, VF,
-    MOSFET, JFET), 61 integrovaných obvodů
+    MOSFET, JFET), 62 integrovaných obvodů
     (časovače, komparátory, op-zesilovače, regulátory, logická hradla, čítače,
     Wi-Fi mikrokontroléry ESP32, ESP32-C3, ESP8285, ESP8684, Wi-Fi adaptér ESP8089, 8bit AVR
     mikrokontroléry ATmega640/1280/1281/2560/2561, rodina CAN mikrokontrolérů AT90CAN32/64/128
     (AVR) a T89C51CC01/02, AT89C51CC03 (8051), digitální teploměry DS18B20, DS1822, TC625,
-    senzory vlhkosti a teploty DHT11 a SHT71/SHT75, sériová flash paměť MX25L6406E aj.),
-    11 modulů
+    senzory vlhkosti a teploty DHT11, SHT71/SHT75 a kanálový (duct) senzor Belimo 22DTH-51M,
+    sériová flash paměť MX25L6406E aj.), 11 modulů
     (Wi-Fi/BLE: ESP32-C3-MINI-1, ESP32-C3-WROOM-02, Adafruit Feather
     HUZZAH ESP8266, ESP8684-MINI-1, ESP-12S; nízkonapěťové odpojovače baterie Alfatronix
     PowerTector PT10/PT20/PT40/PT60/PT100/PT200) a 1 konektor/přepěťová ochrana (Ethernet/PoE

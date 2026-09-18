@@ -1011,6 +1011,46 @@ const IC_SPECS: IcSpec[] = [
       'přesnost ze stejné výrobní linky (třídění dle kalibrace).',
     tags: 'io,senzor,vlhkoměr,teploměr,sht75,sht7x,sensirion,2vodičové',
   },
+  {
+    name: '22DTH-51M',
+    packageType:
+      'Kanálový (duct) sondový senzor: sonda délky 140 mm, ø19,5 mm, hlava z lexanu (oranžová, ' +
+      'UV odolná) 73,2×65,6×44,8 mm, montážní příruba (přiložena, typ A-22D-A34), kabelová ' +
+      'průchodka ø6–8 mm (přiložen i 1/2" NPT adaptér), odnímatelná pružinová svorkovnice max ' +
+      '2,5 mm² (UB+, GND, AOU1, AOU2, ST+/ST-), krytí IP65/NEMA 4X, hmotnost 0,14 kg',
+    value:
+      'Aktivní snímač vlhkosti a teploty do potrubí (duct), analogový výstup DC 0–5/10 V ' +
+      '(propojkou volitelné), 0–100 %RH, teplota volitelná ze 4 rozsahů (výchozí -20 až +80 °C), ' +
+      'napájení 15–24 Vdc nebo 24 Vac ±10 %',
+    notes:
+      'Belimo 22DTH-51M "Duct Sensor Humidity/Temperature" (dok. en-us, 2019-08-20). ⚠️ Zcela ' +
+      'jiný typ senzoru než ostatní teplotní/vlhkostní senzory v knihovně (DHT11, SHT71/SHT75, ' +
+      'DS18B20/DS1822, Pt100, samostatné záznamy) — jde o kompletní aktivní převodník ' +
+      '(transduktor) s kalibrovaným ANALOGOVÝM napěťovým výstupem 0–5 V nebo 0–10 V (propojkou ' +
+      'volitelné, min. zátěž 10 kΩ), ne o digitální komunikační rozhraní. Určeno k montáži přímo ' +
+      'do vzduchotechnického potrubí (duct) pro měření v HVAC systémech, ne pro obecné DIY ' +
+      'projekty. Senzorová technologie: polymerový kapacitní vlhkoměrný člen chráněný nerezovou ' +
+      'drátěnou síťkou (vyměnitelná, náhradní díl A-22D-A06). Měřené veličiny (propojkou ' +
+      'volitelné na výstupu AOU1 — vždy jen jedna z nich současně): relativní vlhkost (rH), ' +
+      'absolutní vlhkost (absH), entalpie (EntH) nebo rosný bod (TPkt/Dew); teplota je vždy na ' +
+      'druhém výstupu AOU2. Rozsah vlhkosti 0–100 %RH nekondenzující. Rozsah teploty volitelný ' +
+      'propojkami ze 4 nastavení: S0 -40 až +60 °C, S1 0 až +50 °C, S2 -15 až +35 °C, S3 -20 až ' +
+      '+80 °C (výrobní nastavení S3). Rozsah absolutní vlhkosti nastavitelný 0–50 g/m³ (výchozí) ' +
+      'nebo 0–80 g/m³. Rozsah entalpie 0–85 kJ/kg. Rozsah rosného bodu nastavitelný 0–50 °C ' +
+      '(výchozí) nebo -20 až +80 °C. Přesnost vlhkosti ±2 % mezi 10–90 %RH @21 °C. Přesnost ' +
+      'teploty ±0,5 °C @25 °C. Napájení 15–24 Vdc ±10 % (0,4 W) nebo 24 Vac ±10 % (0,8 VA) — ' +
+      'doporučeno napájet konstantním napětím ±0,2 V, změny napájení ovlivňují přesnost kvůli ' +
+      'vlastnímu oteplení elektroniky (nejnižší chyba při standardním 24 V). Rekalibrace možná ' +
+      'trimrem přímo na desce senzoru — nedotýkat se citlivého vlhkoměrného čidla (ruší záruku). ' +
+      'Materiály: kabelová průchodka PA6 černá, kryt/tělo lexan oranžový, těsnění NBR70 černé ' +
+      '(UV odolné). Okolní/médiová teplota -35 až +50 °C, max. rychlost proudění vzduchu 12 m/s, ' +
+      'okolní vlhkost max. 95 %RH nekondenzující (krátkodobá kondenzace na médiu přípustná). ' +
+      'Třída ochrany III (SELV), UL Class 2 Supply. Certifikace IEC/EN 60730-1, cULus dle ' +
+      'UL60730-1A/-2-9/-2-13, CAN/CSA E60730. 5letá záruka na výrobek, kalibrační záruka přesnosti ' +
+      'vlhkosti 2 roky za standardních podmínek (agresivní plyny jako chlor/ozon/čpavek nebo ' +
+      'extrémní vlhkost/teplo mohou vlhkoměrný člen degradovat mimo záruku).',
+    tags: 'io,senzor,vlhkoměr,teploměr,duct,hvac,belimo,analogový,0-10v',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
