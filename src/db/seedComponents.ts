@@ -1114,12 +1114,82 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'při montáži na společný chladič s jinými součástkami použij izolační podložku a průchodku.',
     tags: 'tranzistor,npn,bipolární,výkonový,to-3,2n3055,pozor-chladič',
   },
-  { name: 'BD135', packageType: 'TO-126', value: 'NPN, 45 V, 1,5 A', notes: 'Výkonový bipolární tranzistor', tags: 'tranzistor,npn,výkonový' },
-  { name: 'BD139', packageType: 'TO-126', value: 'NPN, 80 V, 1,5 A', notes: 'Výkonový bipolární tranzistor', tags: 'tranzistor,npn,výkonový' },
+  {
+    name: 'BD135',
+    packageType: 'SOT-32 (=TO-126), vývody: 1=báze, 2=kolektor, 3=emitor',
+    value: 'NPN, VCEO 45 V, IC 1,5 A (špičkově 3 A), hFE 40–250 @IC=150 mA',
+    notes:
+      'STMicroelectronics BD135/BD136/BD139/BD140 "Complementary low voltage transistor" ' +
+      '(dok. DS, rev. 5, květen 2008) — čtveřice komplementárních tranzistorů pro audio ' +
+      'zesilovače a budiče v komplementárním/kvazikomplementárním zapojení: NPN BD135/BD139, ' +
+      'komplementární PNP BD136/BD140. Zpracována celá rodina z jednoho datasheetu. BD135 = ' +
+      'nižší napěťová třída (45 V), NPN komplement k BD136 (samostatný záznam). Mezní hodnoty: ' +
+      'VCBO=VCEO=45 V, VEBO=5 V, IC=1,5 A (trvale), ICM=3 A (špičkově), IB=0,5 A, ' +
+      'Ptot=12,5 W @Tcase≤25 °C (1,25 W @Tamb≤25 °C), Tstg -65 až 150 °C, TJ max 150 °C. ' +
+      'RθJC=10 °C/W, RθJA=100 °C/W. ICBO max 0,1 µA @VCB=30 V (10 µA @TC=125 °C). ' +
+      'IEBO max 10 µA @VEB=5 V. VCEO(sus) min 45 V @IC=30 mA. VCE(sat) max 0,5 V @IC=0,5 A/' +
+      'IB=0,05 A. VBE max 1 V @IC=0,5 A/VCE=2 V. hFE: min 25 @IC=5 mA/VCE=2 V, min 40 max 250 ' +
+      '@IC=150 mA/VCE=2 V, min 25 @IC=0,5 A/VCE=2 V (vše pulzně, 300 µs/1,5 % duty). Dostupné ' +
+      'i gain-selected varianty BD135-16 (hFE 100–250 @150 mA, stejné jinak) — pokud je gain-bin ' +
+      'kritický, je nutné objednat konkrétní suffix.',
+    tags: 'tranzistor,npn,bipolární,výkonový,sot-32,to-126,bd135,audio',
+  },
+  {
+    name: 'BD139',
+    packageType: 'SOT-32 (=TO-126), vývody: 1=báze, 2=kolektor, 3=emitor',
+    value: 'NPN, VCEO 80 V, IC 1,5 A (špičkově 3 A), hFE 40–250 @IC=150 mA',
+    notes:
+      'STMicroelectronics BD135/BD136/BD139/BD140 "Complementary low voltage transistor" ' +
+      '(dok. DS, rev. 5, květen 2008) — součást stejné rodiny jako BD135/BD136/BD140 (samostatné ' +
+      'záznamy). BD139 = vyšší napěťová třída (80 V) oproti BD135 (45 V), jinak identické ' +
+      'elektrické parametry a pouzdro; NPN komplement k BD140 (samostatný záznam). Mezní hodnoty: ' +
+      'VCBO=VCEO=80 V, VEBO=5 V, IC=1,5 A (trvale), ICM=3 A (špičkově), IB=0,5 A, ' +
+      'Ptot=12,5 W @Tcase≤25 °C (1,25 W @Tamb≤25 °C), Tstg -65 až 150 °C, TJ max 150 °C. ' +
+      'RθJC=10 °C/W, RθJA=100 °C/W. ICBO max 0,1 µA @VCB=30 V (10 µA @TC=125 °C). ' +
+      'IEBO max 10 µA @VEB=5 V. VCEO(sus) min 80 V @IC=30 mA. VCE(sat) max 0,5 V @IC=0,5 A/' +
+      'IB=0,05 A. VBE max 1 V @IC=0,5 A/VCE=2 V. hFE: min 25 @IC=5 mA/VCE=2 V, min 40 max 250 ' +
+      '@IC=150 mA/VCE=2 V, min 25 @IC=0,5 A/VCE=2 V (vše pulzně, 300 µs/1,5 % duty). Dostupné i ' +
+      'gain-selected varianty BD139-10 (hFE 63–160 @150 mA) a BD139-16 (hFE 100–250 @150 mA).',
+    tags: 'tranzistor,npn,bipolární,výkonový,sot-32,to-126,bd139,audio',
+  },
 
   { name: 'TIP42C', packageType: 'TO-220', value: 'PNP, 100 V, 6 A', notes: 'Výkonový bipolární tranzistor', tags: 'tranzistor,pnp,výkonový' },
-  { name: 'BD136', packageType: 'TO-126', value: 'PNP, 45 V, 1,5 A', notes: 'Výkonový bipolární tranzistor', tags: 'tranzistor,pnp,výkonový' },
-  { name: 'BD140', packageType: 'TO-126', value: 'PNP, 80 V, 1,5 A', notes: 'Výkonový bipolární tranzistor', tags: 'tranzistor,pnp,výkonový' },
+  {
+    name: 'BD136',
+    packageType: 'SOT-32 (=TO-126), vývody: 1=báze, 2=kolektor, 3=emitor',
+    value: 'PNP, VCEO -45 V, IC -1,5 A (špičkově -3 A), hFE 40–250 @IC=-150 mA',
+    notes:
+      'STMicroelectronics BD135/BD136/BD139/BD140 "Complementary low voltage transistor" ' +
+      '(dok. DS, rev. 5, květen 2008) — součást stejné rodiny jako BD135/BD139/BD140 (samostatné ' +
+      'záznamy). BD136 = PNP komplement k BD135 (nižší napěťová třída, 45 V), stejné pouzdro a ' +
+      'parametry jako NPN protějšek, jen opačná polarita. Mezní hodnoty: VCBO=VCEO=-45 V, ' +
+      'VEBO=-5 V, IC=-1,5 A (trvale), ICM=-3 A (špičkově), IB=-0,5 A, Ptot=12,5 W @Tcase≤25 °C ' +
+      '(1,25 W @Tamb≤25 °C), Tstg -65 až 150 °C, TJ max 150 °C. RθJC=10 °C/W, RθJA=100 °C/W. ' +
+      'ICBO max -0,1 µA @VCB=-30 V (-10 µA @TC=125 °C). IEBO max -10 µA @VEB=-5 V. VCEO(sus) ' +
+      'min -45 V @IC=-30 mA. VCE(sat) max -0,5 V @IC=-0,5 A/IB=-0,05 A. VBE max -1 V @IC=-0,5 A/' +
+      'VCE=-2 V. hFE: min 25 @IC=-5 mA/VCE=-2 V, min 40 max 250 @IC=-150 mA/VCE=-2 V, min 25 ' +
+      '@IC=-0,5 A/VCE=-2 V (vše pulzně, 300 µs/1,5 % duty). Dostupné i gain-selected varianta ' +
+      'BD136-16 (hFE 100–250 @-150 mA).',
+    tags: 'tranzistor,pnp,bipolární,výkonový,sot-32,to-126,bd136,audio',
+  },
+  {
+    name: 'BD140',
+    packageType: 'SOT-32 (=TO-126), vývody: 1=báze, 2=kolektor, 3=emitor',
+    value: 'PNP, VCEO -80 V, IC -1,5 A (špičkově -3 A), hFE 40–250 @IC=-150 mA',
+    notes:
+      'STMicroelectronics BD135/BD136/BD139/BD140 "Complementary low voltage transistor" ' +
+      '(dok. DS, rev. 5, květen 2008) — součást stejné rodiny jako BD135/BD136/BD139 (samostatné ' +
+      'záznamy). BD140 = PNP komplement k BD139 (vyšší napěťová třída, 80 V), stejné pouzdro a ' +
+      'parametry jako NPN protějšek, jen opačná polarita. Mezní hodnoty: VCBO=VCEO=-80 V, ' +
+      'VEBO=-5 V, IC=-1,5 A (trvale), ICM=-3 A (špičkově), IB=-0,5 A, Ptot=12,5 W @Tcase≤25 °C ' +
+      '(1,25 W @Tamb≤25 °C), Tstg -65 až 150 °C, TJ max 150 °C. RθJC=10 °C/W, RθJA=100 °C/W. ' +
+      'ICBO max -0,1 µA @VCB=-30 V (-10 µA @TC=125 °C). IEBO max -10 µA @VEB=-5 V. VCEO(sus) ' +
+      'min -80 V @IC=-30 mA. VCE(sat) max -0,5 V @IC=-0,5 A/IB=-0,05 A. VBE max -1 V @IC=-0,5 A/' +
+      'VCE=-2 V. hFE: min 25 @IC=-5 mA/VCE=-2 V, min 40 max 250 @IC=-150 mA/VCE=-2 V, min 25 ' +
+      '@IC=-0,5 A/VCE=-2 V (vše pulzně, 300 µs/1,5 % duty). Dostupné i gain-selected varianty ' +
+      'BD140-10 (hFE 63–160 @-150 mA) a BD140-16 (hFE 100–250 @-150 mA).',
+    tags: 'tranzistor,pnp,bipolární,výkonový,sot-32,to-126,bd140,audio',
+  },
 
   {
     name: 'IRF540N',
