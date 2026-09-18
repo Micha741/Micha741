@@ -1209,6 +1209,36 @@ const DIODE_SPECS: PartSpec[] = [
       '(pryskyřice).',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,ethernet',
   },
+  {
+    name: 'SCD4C60S',
+    packageType: 'D-PAK (TO-252), 3 vývody: 1=katoda, 2=anoda, 3=gate',
+    value:
+      'Tyristor (SCR — Silicon Controlled Rectifier), standardní hradlové spouštění, VDRM 600 V, ' +
+      'IT(RMS) 4 A, VTM 1,6 V typ. @ITM=6 A',
+    notes:
+      'SemiWell Semiconductor "SCD4C60S — Silicon Controlled Rectifiers" (dok. říjen 2005, ' +
+      '"Preliminary") — ⚠️ POZOR na záměnu s jinými díly obsahujícími prefix "SCD" v této ' +
+      'knihovně (Cornell Dubilier "Type SCD" fóliové IGBT snubber kondenzátory, Sensirion ' +
+      '"SCD4x" CO2 senzory) — čistě náhodná shoda označení, tento SCD4C60S je zcela odlišná ' +
+      'součástka od jiného výrobce: klasický třívývodový tyristor (SCR) s hradlovým (gate) ' +
+      'spouštěním — NA ROZDÍL od TRISIL součástek (SMTPAxx/SMP-0SCMC/SMP100MC/SMP75 v této ' +
+      'knihovně), které jsou dvouvývodové a spínají samovolně při dosažení breakover napětí bez ' +
+      'řídicí elektrody, SCD4C60S vyžaduje aktivní spouštěcí impulz na gate elektrodu (typicky ' +
+      'z řídicího obvodu) — jde tedy o řízený spínací prvek, ne o autonomní přepěťovou ochranu. ' +
+      'Určeno pro aplikace vyžadující vysokou obousměrnou blokovací schopnost napětí: přepěťová ' +
+      'ochrana, řízení motorů v elektrickém nářadí, omezovače nárazového proudu, systémy řízení ' +
+      'topení. VDRM (opakovatelné špičkové závěrné/blokovací napětí) 600 V. IT(AV) (střední ' +
+      'proud v propustném směru) 2 A @half-sine, Tc=106 °C. IT(RMS) 4 A @180° vodivostní úhel. ' +
+      'ITSM (nárazový proud) 33 A (1/2 cyklu, 60 Hz, nepovtorný). I²t=21 A²s @8,3 ms. Kritická ' +
+      'strmost nárůstu proudu di/dt 50 A/µs. VTM (propustné napětí) typ. 1,6 V @ITM=6 A. IGT ' +
+      '(spouštěcí proud gate) max 200 µA @VAK=6 V/RL=10 Ω/25 °C. VGT (spouštěcí napětí gate) max ' +
+      '1,5 V. VGD (nespouštěcí napětí gate) min 0,2 V @VAK=12 V/RL=100 Ω/125 °C. dv/dt (kritická ' +
+      'strmost nárůstu blokovacího napětí) min 200 V/µs @125 °C (gate otevřený). IH (přídržný ' +
+      'proud) min 100 µA. IDRM (blokovací proud) max 10 µA @25 °C / 200 µA @125 °C. Mezní gate ' +
+      'hodnoty: PGM 0,5 W, PG(AV) 0,1 W, IFGM 0,3 A, VRGM 6,0 V. Tepelný odpor RθJ-pouzdro 3,12 ' +
+      '°C/W, RθJ-okolí 89 °C/W. TJ a Tstg -40 až +125 °C.',
+    tags: 'tyristor,scr,silicon-controlled-rectifier,semiwell,d-pak,to-252,řízený-spínač',
+  },
 ];
 
 const TRANSISTOR_SPECS: PartSpec[] = [
