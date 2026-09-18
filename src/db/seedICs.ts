@@ -1098,6 +1098,47 @@ const IC_SPECS: IcSpec[] = [
       'součtem. RoHS (bez Pb/Cd/Hg), kvalifikace dle JEDEC JESD47.',
     tags: 'io,senzor,vlhkoměr,teploměr,sht85,sht3x,sensirion,i2c',
   },
+
+  // USB mosty
+  {
+    name: 'FT200XD',
+    packageType:
+      'DFN-10 (3×3 mm), piny: 4=VCC, 7=VCCIO, 3=3V3OUT, 9=GND, 11=centrální ploška (GND, nutno ' +
+      'připájet), 1=USBDM, 10=USBDP, 2=RESET# (aktivní nízká úroveň), 8=SDA (I2C data, ' +
+      'open-drain), 6=SCL (I2C hodiny, jen vstup), 5=CBUS0 (konfigurovatelný I/O pin)',
+    value:
+      'USB-I2C most (single-chip USB to I2C interface), USB 2.0 Full Speed, I2C do 3,4 MHz ' +
+      '(High Speed mode), VCC 2,97–5,5 V',
+    notes:
+      'FTDI (Future Technology Devices International) FT200XD "USB I2C Slave IC Datasheet" ' +
+      'v1.3 (dok. FT_000628). Jednočipové řešení USB↔I2C bez nutnosti psát USB firmware — celý ' +
+      'USB protokol (deskriptory, enumerace) je zpracován uvnitř čipu a uložen ve vestavěné ' +
+      '2048bajtové vícenásobně programovatelné (MTP) paměti spolu s unikátním USB sériovým ' +
+      'číslem (přednastaveným z výroby) a konfigurací CBUS I/O pinu — žádná externí EEPROM ani ' +
+      'externí krystal nejsou potřeba (plně integrovaná generace hodinového signálu z interního ' +
+      '12MHz oscilátoru). Funguje výhradně jako I2C SLAVE (ne master) — nutný externí I2C master ' +
+      '(mikrokontrolér) na sběrnici. Podpora I2C do 3,4 MHz (High Speed mode). 512bajtový RX a ' +
+      '512bajtový TX FIFO buffer s vyrovnávací technologií pro vyšší propustnost. Ovladače: ' +
+      'bezplatný FTDI VCP (Virtual COM Port) nebo D2XX (přímé USB API + DLL) pro Windows, Mac ' +
+      'OS X, Linux, Android, Windows CE — odpadá nutnost psaní vlastního USB ovladače. ' +
+      'Konfigurovatelný CBUS0 pin (funkce nastavitelná v MTP paměti nástrojem FT_PROG): ' +
+      'tri-state, pevná log. 0/1, PWREN# (řízení externího P-kanálového MOSFET spínače napájení), ' +
+      'SLEEP# (indikace USB suspend), hodinový výstup 24/12/6 MHz, bit-bang GPIO, BCD Charger ' +
+      '(detekce nabíjecího USB portu s vyšším proudem), I2C_TXE#/RXF# (stav FIFO bufferů), VBUS ' +
+      'Sense, Time Stamp (přepínání při každém USB SOF), Keep_Awake#. Tři konfigurace napájení: ' +
+      'USB bus-powered, self-powered, nebo bus-powered s přepínáním napájení (PWREN# řídí externí ' +
+      'P-MOSFET). Integrovaný +3,3V level converter pro USB I/O, interní 3V3/1V8 LDO regulátory, ' +
+      'plně integrované AVCC filtrování (bez nutnosti externích filtračních obvodů). Detekce USB ' +
+      'nabíječky (Battery Charger Detection) pro zvýšení nabíjecího proudu periferií. Mezní ' +
+      'hodnoty: VCC -0,3 až +5,5 V, VCCIO -0,3 až +4,0 V, DC vstupní napětí USBDP/USBDM -0,5 až ' +
+      '+3,63 V, DC výstupní proud 22 mA, provozní teplota (napájeno) -40 až +85 °C, skladovací ' +
+      '-65 až +150 °C. ESD: HBM >±2 kV, MM >±200 V, CDM >±500 V, latch-up >±200 mA. Provozní ' +
+      'napětí: VCC 2,97–5,5 V typ. 5 V, VCCIO 1,62–3,63 V, proudový odběr typ. 8 mA (aktivní ' +
+      'normální provoz), typ. 125 µA (USB suspend). Výstup 3V3OUT 2,97–3,63 V @ max 50 mA (může ' +
+      'napájet VCCIO nebo externí logiku). I/O výstupní proudová síla konfigurovatelná 4/8/12/16 mA ' +
+      '(v MTP paměti). Certifikováno USB-IF (USB 2.0 Full Speed), RoHS.',
+    tags: 'io,usb,i2c,most,bridge,ft200xd,ftdi,dfn10',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
