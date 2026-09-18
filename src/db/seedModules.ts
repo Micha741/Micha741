@@ -486,6 +486,36 @@ const MODULE_SPECS: ModuleSpec[] = [
       'záznam pro plný popis.',
     tags: 'modul,enocean,easyfit,senzor,teploměr,vlhkoměr,solární,bezdrátový,ethsu',
   },
+  {
+    name: 'ATM0680L2A-CT',
+    packageType:
+      '6,86" TFT-LCD modul s integrovaným kapacitním dotykovým panelem, aktivní plocha ' +
+      '60,22×160,59 mm, celkové rozměry modulu 66,6×181×6,6 mm; 40pin FPC konektor pro LCD ' +
+      '(MIPI-DSI), doporučený konektor pro dotykový panel Hirose FH12-6S-1SH(55) nebo ' +
+      'kompatibilní; struktura dotykového panelu: krycí sklo (coverlens) + FPC + ITO sklo',
+    value:
+      '6,86" IPS TFT displej 480×1280 (RGB stripe), 16,7M barev, MIPI-DSI 4-lane, jas 920 cd/m² ' +
+      'typ., s 5bodovým kapacitním dotykovým panelem (I2C, FT7311)',
+    notes:
+      'AZ Displays "ATM0680L2A-CT TFT Module" (specifikace ver. 1.1, srpen 2019) — kompletní ' +
+      'displejový modul (LCD panel + řadič + LED podsvícení + kapacitní dotykový senzor), první ' +
+      'zástupce kategorie hotových LCD/dotykových modulů v této knihovně. LCD panel: a-Si TFT ' +
+      'aktivní matice, normally black, IPS (In-Plane Switching, široký pozorovací úhel), ' +
+      'transmisivní, rozlišení 480×(RGB)×1280, dot pitch 0,04182×0,12546 mm, pixel pitch ' +
+      '0,12546×0,12546 mm, povrch čirý (clear), pozorovací úhel 80/80/80/80° (L/P/nahoru/dolů). ' +
+      'Řadič: EK79030 nebo kompatibilní, rozhraní MIPI-DSI 4-lane (piny D0P/D0N…D3P/D3N + ' +
+      'CLKP/CLKN, diferenciální). LED podsvícení: napájecí napětí 8,5–10,5 V typ. 9,0 V (6× LED ' +
+      'řetězec á 50 mA = 300 mA celkem), životnost LED 20 000 h (do poklesu jasu na 50 %), max. ' +
+      'proud/LED 80 mA, max. zpětné napětí/LED 5 V (Zenerova dioda 60 mA). Dotykový panel: ' +
+      'kapacitní, řadič FocalTech FT7311, rozhraní I2C (piny SDA/SCL/RST/INT/VDD/GND), VDD ' +
+      '2,8–3,3 V, VIO 2,8–3,3 V, podpora 5bodového multitouch. Napájení LCD: VDD (logika) ' +
+      '3,0–3,6 V typ. 3,3 V, I/O napájení (IOVcc) 1,6–2,0 V typ. 1,8 V. Mezní hodnoty: VDD -0,3 ' +
+      'až 3,6 V, VCC (I/O) -0,3 až 3,0 V, VSP (kladné napájení zdrojových budičů) 4,5–6,0 V, VSN ' +
+      '(záporné) -4,5 až -6,0 V, provozní teplota -20 až +70 °C, skladovací -30 až +80 °C. ' +
+      'Definovaná sekvence zapínání/vypínání napájení (VDD→RESETB→interní STBYB→OTP loading→ ' +
+      'VDD_IO→VCSW1/2→VSP/VSN→…→normální zobrazení). RoHS.',
+    tags: 'modul,displej,lcd,tft,ips,dotykový-panel,kapacitní,mipi-dsi,az-displays,ek79030,ft7311',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
