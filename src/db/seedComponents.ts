@@ -1904,6 +1904,31 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '(@VCC=-6 V/IC=-150 mA/IB1=IB2=-15 mA).',
     tags: 'tranzistor,pnp,bipolární,duální,sot-363,sc-70-6,mmdt2907a,2n2907,mmbt2907a,smd',
   },
+  {
+    name: 'MMDT3906',
+    packageType:
+      'SOT-363 (SC-70-6), 6 vývodů — dva nezávislé PNP tranzistory v jednom SMD pouzdře, ' +
+      'pravděpodobně shodný pinout jako MMDT2907A (1=E2, 2=B2, 3=C1, 4=E1, 5=B1, 6=C2 — stejný ' +
+      'výrobce/pouzdro/dokumentová řada, ale bez výslovného popisku písmeny na obrázku v tomto ' +
+      'konkrétním datasheetu) — ověř diagram před pájením; značení na pouzdru "K3N"',
+    value: 'Duální PNP tranzistor (2× PNP 3906 v pouzdře), VCEO -40 V, IC -0,2 A, hFE 100–300 @IC=-10 mA',
+    notes:
+      'Jiangsu Changjiang Electronics Technology (JCET) MMDT3906 "Dual Transistor (PNP+PNP)" ' +
+      '(dok. rev. D, březen 2016 / rev. A, červen 2014) — SOT-363 duální verze klasického ' +
+      '2N3906/G2N3906 (samostatný záznam „2N3906" pro jednotlivý tranzistor v této knihovně). ' +
+      'Epitaxní planární konstrukce čipu, určeno pro nízkopříkonové zesilovací a spínací obvody. ' +
+      'Mezní hodnoty: VCBO=-40 V, VCEO=-40 V, VEBO=-5 V, IC=-0,2 A (trvale), PC=0,2 W @TA=25 °C, ' +
+      'RθJA=625 °C/W, TJ max 150 °C, Tstg -55 až +150 °C. V(BR)CBO min -40 V @IC=-10 µA/IE=0. ' +
+      'V(BR)CEO min -40 V @IC=-1 mA/IB=0. V(BR)EBO min -5 V @IE=-10 µA/IC=0. ICEX max -50 nA ' +
+      '@VCE=-30 V/VEB(off)=-3 V. IEBO max -50 nA @VEB=-5 V/IC=0. hFE (@VCE=-1 V): min 60 ' +
+      '@IC=-0,1 mA, min 80 @IC=-1 mA, min 100 max 300 @IC=-10 mA, min 60 @IC=-50 mA, min 30 ' +
+      '@IC=-100 mA. VCE(sat) max -0,25 V @IC=-10 mA/IB=-1 mA; max -0,4 V @IC=-50 mA/IB=-5 mA. ' +
+      'VBE(sat) min -0,65 V max -0,85 V @IC=-10 mA/IB=-1 mA; max -0,95 V @IC=-50 mA/IB=-5 mA. ' +
+      'fT typ 250 MHz @VCE=-20 V/IC=-10 mA/f=100 MHz. Cob max 4,5 pF @VCB=-5 V/IE=0/f=1 MHz. ' +
+      'NF typ 4 dB @VCE=-5 V/IC=-0,1 mA/f=1 kHz/Rg=1 kΩ. Spínací časy (VCC=-3 V, IC=-10 mA, ' +
+      'IB1=-IB2=-1 mA): td max 35 ns, tr max 35 ns (VBE=0,5 V), ts max 225 ns, tf max 75 ns.',
+    tags: 'tranzistor,pnp,bipolární,duální,sot-363,sc-70-6,mmdt3906,2n3906,smd',
+  },
 ];
 
 const RESISTOR_SPECS: PartSpec[] = [
