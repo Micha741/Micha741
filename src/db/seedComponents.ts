@@ -1789,6 +1789,39 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '"SGR") — konkrétní kus odpovídá jedné ze dvou skupin, ne celému rozsahu 120–400 najednou.',
     tags: 'tranzistor,pnp,bipolární,duální,sot-353,sc-88,2sa1873,smd',
   },
+  {
+    name: 'EMZ8',
+    packageType:
+      'SOT-563, 6 vývodů (piny 1, 2, 3 dole, 4, 5, 6 nahoře), miniaturní SMD pouzdro menší než ' +
+      'SOT-363 — dva tranzistory v jednom pouzdře, přesné přiřazení pinů k Tr1/Tr2 viz diagram ' +
+      'výrobce před pájením; značení na pouzdru "Z8"',
+    value:
+      'Komplementární duální tranzistor v jednom pouzdře: Tr1 = PNP (VCEO -12 V, IC -150 mA, ' +
+      'hFE 270–680), Tr2 = NPN (VCEO 50 V, IC 150 mA, hFE 120–560)',
+    notes:
+      'Jiangsu Changjiang Electronics Technology (JCET) EMZ8 (dok. rev. C, květen 2015) — ' +
+      'kombinuje čip 2SA2018 (PNP) a čip 2SC2412K (NPN) v jednom SOT-563 pouzdře. ⚠️ Nadpis ' +
+      'datasheetu chybně uvádí "DUAL TRANSISTOR (PNP+PNP)" — ve skutečnosti jde dle vlastní ' +
+      'tabulky mezních hodnot a elektrických charakteristik výrobce o KOMPLEMENTÁRNÍ pár PNP+NPN ' +
+      '(Tr1 má záporná napětí typická pro PNP, Tr2 má kladná napětí typická pro NPN) — zjevná ' +
+      'chyba v hlavičce dokumentu (pravděpodobně šablona zkopírovaná z jiného dílu), knihovna ' +
+      'vychází z reálných dat v tabulkách, ne z chybného nadpisu. ⚠️ Na rozdíl od BC807U/BC856S/' +
+      '2SA1873 (samostatné záznamy, shodné páry stejné polarity) je EMZ8 asymetrický pár dvou ' +
+      'zcela odlišných čipů — Tr1 a Tr2 mají naprosto odlišné mezní hodnoty i elektrické ' +
+      'charakteristiky, nejde o vzájemně zaměnitelné/symetrické tranzistory. Společné mezní ' +
+      'hodnoty: PC=150 mW (TOTAL, sdíleno oběma čipy), TJ max 150 °C, Tstg -55 až +150 °C. ' +
+      'Tr1 (PNP, 2SA2018): VCBO=-15 V, VCEO=-12 V, VEBO=-6 V, IC=-150 mA (trvale). V(BR)CBO ' +
+      'min -15 V @IC=-10 µA/IE=0. V(BR)CEO min -12 V @IC=-1 mA/IB=0. V(BR)EBO min -6 V @IE=-10 µA/' +
+      'IC=0. ICBO max -0,1 µA @VCB=-15 V/IE=0. IEBO max -0,1 µA @VEB=-6 V/IC=0. hFE min 270 max ' +
+      '680 @VCE=-2 V/IC=-10 mA (velmi vysoký zisk). VCEsat max -0,25 V @IC=-200 mA/IB=-10 mA. ' +
+      'fT typ 260 MHz @VCE=-2 V/IC=-10 mA/f=100 MHz. Cob typ 6,5 pF @VCB=-10 V/IE=0/f=1 MHz. ' +
+      'Tr2 (NPN, 2SC2412K): VCBO=60 V, VCEO=50 V, VEBO=7 V, IC=150 mA (trvale) — výrazně vyšší ' +
+      'napěťová třída než Tr1. V(BR)CBO min 60 V @IC=50 µA/IE=0. V(BR)CEO min 50 V @IC=1 mA/IB=0. ' +
+      'V(BR)EBO min 7 V @IE=50 µA/IC=0. ICBO max 0,1 µA @VCB=60 V/IE=0. IEBO max 0,1 µA @VEB=7 V/' +
+      'IC=0. hFE min 120 max 560 @VCE=6 V/IC=1 mA. VCE(sat) max 0,4 V @IC=50 mA/IB=5 mA. fT typ ' +
+      '180 MHz @VCE=12 V/IC=2 mA/f=100 MHz. Cob 2,0–3,5 pF @VCB=12 V/IE=0/f=1 MHz.',
+    tags: 'tranzistor,pnp,npn,bipolární,duální,komplementární,sot-563,emz8,smd',
+  },
 ];
 
 const RESISTOR_SPECS: PartSpec[] = [
