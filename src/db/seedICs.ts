@@ -385,6 +385,107 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,paměť,flash,spi,serial-flash,mx25l1026e,macronix,1mbit',
   },
 
+  // Paralelní flash paměti
+  {
+    name: 'MX29GL320ET',
+    packageType:
+      '48pin TSOP nebo 48-ball LFBGA (6×8 mm) — piny A0–A20 (adresa), Q0–Q15/A-1 (data/LSB ' +
+      'adresy v byte módu), CE#, OE#, WE#, RESET#, WP#/ACC, RY/BY#, BYTE#, VCC, GND ' +
+      '(⚠️ na rozdíl od H/L variant, samostatné záznamy, nemá samostatný pin VI/O — I/O úroveň ' +
+      'je vždy shodná s VCC)',
+    value:
+      'Paralelní NOR flash paměť, 32 Mbit, byte/word (x8/x16) přepínatelná, "Top Boot" ' +
+      '(nesymetrické sektory nahoře), VCC 2,7–3,6 V, přístupová doba 70 ns',
+    notes:
+      'Macronix MX29GL320E T/B datasheet rev. 1.5 (říjen 2015), objednací kód např. ' +
+      'MX29GL320ETTI-70G (48-TSOP) nebo MX29GL320ETXEI-70G (48-LFBGA). ⚠️ Zcela odlišná ' +
+      'architektura od SPI sériových flash MX25L1026E/MX25L6406E (samostatné záznamy) — jde o ' +
+      'PARALELNÍ flash s 21bitovou adresní sběrnicí (A0–A20) a 16bitovou datovou sběrnicí ' +
+      '(Q0–Q15), řízenou signály CE#/OE#/WE#, ne o SPI. Zpracována celá rodina MX29GL320E ' +
+      'z jednoho datasheetu — 4 varianty: ET (Top Boot, tento záznam), EB (Bottom Boot), EH ' +
+      '(uniform, Highest Address Sector Protected), EL (uniform, Lowest Address Sector ' +
+      'Protected) — všechny samostatné záznamy. MX29GL320ET = "Top Boot" — sektorová architektura ' +
+      'asymetrická: 63× 64KB (32Kword) uniformních sektorů + 8× 8KB (4Kword) malých boot sektorů ' +
+      'umístěných na VRCHU adresního prostoru (na rozdíl od EB, kde jsou boot sektory na SPODU). ' +
+      'Organizace paměti: 4 194 304 × 8 bit (byte mode) nebo 2 097 152 × 16 bit (word mode), ' +
+      'volitelné pinem BYTE#. 16bajtový/8slovní stránkový čtecí buffer (page read, 25 ns), ' +
+      '32bajtový/16slovní zápisový buffer (write buffer programming). Extra 128slovní bezpečnostní ' +
+      'sektor (z výroby zamčený a identifikovatelný, nebo zamykatelný zákazníkem). Pokročilá ' +
+      'ochrana sektorů (Persistent a Password Protect metody). WP#/ACC=Vil chrání horní dva ' +
+      'sektory (boot blok) proti zápisu/mazání; stejný pin ve zvýšeném napětí (ACC, 9,5–10,5 V) ' +
+      'zrychluje programování. RY/BY# výstup indikuje probíhající program/mazání. RESET# hardwarový ' +
+      'reset. Kompatibilní s JEDEC standardním pinoutem/softwarem pro jednonapěťové flash paměti. ' +
+      'Podpora CFI (Common Flash Memory Interface). Doba přístupu 70 ns, doba stránkového ' +
+      'přístupu 25 ns, doba programování typ. 10 µs/slovo, doba mazání sektoru typ. 0,5 s (max ' +
+      '3,5 s). Proudový odběr: čtení 5/15 mA @1 MHz, 10/20 mA @5 MHz, 15/30 mA @10 MHz (typ/max, ' +
+      'byte mode), zápis 14/30 mA, klidový (standby) 20/100 µA, reset 20/100 µA, sleep mode ' +
+      '20/100 µA, deep power-down 1/15 µA. Mezní hodnoty: skladovací teplota -65 až +150 °C, VCC ' +
+      '-0,5 až +4,0 V, VI/O -0,5 až +4,0 V, A9/WP#/ACC -0,5 až +10,5 V, ostatní piny -0,5 až ' +
+      'VCC+0,5 V, zkratový výstupní proud max 200 mA. Provozní: Industrial grade -40 až +85 °C, ' +
+      'VCC 2,7–3,6 V. Latch-up ochrana do 100 mA v rozsahu -1 V až 1,5×VCC. Spolehlivost: typ. ' +
+      '100 000 cyklů mazání/zápisu, 20 let retence dat. RoHS/bezhalogenové provedení.',
+    tags: 'io,paměť,flash,paralelní,parallel-flash,mx29gl320e,macronix,32mbit,top-boot',
+  },
+  {
+    name: 'MX29GL320EB',
+    packageType:
+      '48pin TSOP nebo 48-ball LFBGA (6×8 mm) — stejné piny jako MX29GL320ET (samostatný ' +
+      'záznam), bez samostatného pinu VI/O (I/O úroveň vždy shodná s VCC)',
+    value:
+      'Paralelní NOR flash paměť, 32 Mbit, byte/word (x8/x16) přepínatelná, "Bottom Boot" ' +
+      '(nesymetrické sektory dole), VCC 2,7–3,6 V, přístupová doba 70 ns',
+    notes:
+      'Macronix MX29GL320E T/B datasheet rev. 1.5 (říjen 2015), objednací kód např. ' +
+      'MX29GL320EBTI-70G (48-TSOP) nebo MX29GL320EBXEI-70G (48-LFBGA). ⚠️ Součást stejné rodiny ' +
+      'jako MX29GL320ET/EH/EL (samostatné záznamy) — MX29GL320EB je "Bottom Boot" varianta: ' +
+      'stejná sektorová architektura jako ET (63× 64KB + 8× 8KB), ale malé 8KB boot sektory jsou ' +
+      'umístěny na SPODU adresního prostoru (na rozdíl od ET, kde jsou nahoře) — WP#/ACC=Vil ' +
+      'chrání dolní dva sektory. Všechny ostatní parametry (organizace paměti, buffery, ' +
+      'bezpečnostní sektor, ochrana sektorů, elektrické charakteristiky, mezní hodnoty) shodné ' +
+      's MX29GL320ET — viz jeho záznam pro plný popis.',
+    tags: 'io,paměť,flash,paralelní,parallel-flash,mx29gl320e,macronix,32mbit,bottom-boot',
+  },
+  {
+    name: 'MX29GL320EH',
+    packageType:
+      '56pin TSOP nebo 64-ball LFBGA (11×13 mm) — piny A0–A20, Q0–Q15/A-1, CE#, OE#, WE#, ' +
+      'RESET#, WP#/ACC, RY/BY#, BYTE#, VCC, GND, ⚠️ navíc samostatný pin VI/O (na rozdíl od T/B ' +
+      'variant, samostatné záznamy) — přesto musí být elektricky spojen se stejným napětím jako ' +
+      'VCC (2,7–3,6 V), nejde o nezávislé napájení I/O',
+    value:
+      'Paralelní NOR flash paměť, 32 Mbit, byte/word (x8/x16) přepínatelná, uniformní sektory ' +
+      '(Highest Address Sector Protected), VCC 2,7–3,6 V, přístupová doba 70 ns',
+    notes:
+      'Macronix MX29GL320E H/L datasheet rev. 1.5 (říjen 2015), objednací kód např. ' +
+      'MX29GL320EHT2I-70G (56-TSOP) nebo MX29GL320EHXFI-70G (64-LFBGA). ⚠️ Součást stejné rodiny ' +
+      'jako MX29GL320ET/EB/EL (samostatné záznamy), ale s uniformní sektorovou architekturou ' +
+      '(64× 64KB stejně velkých sektorů, žádné malé boot sektory na rozdíl od T/B variant) — ' +
+      'MX29GL320EH: WP#/ACC=Vil chrání NEJVYŠŠÍ adresní sektor (na rozdíl od EL, kde chrání ' +
+      'nejnižší). Organizace paměti, buffery, bezpečnostní sektor, elektrické charakteristiky a ' +
+      'mezní hodnoty jinak shodné s MX29GL320ET (viz jeho záznam pro plný popis) — 4 194 304 × ' +
+      '8 bit / 2 097 152 × 16 bit, 16B/8slovní page read buffer, 32B/16slovní write buffer, ' +
+      'extra 128slovní bezpečnostní sektor, CFI podpora, RY/BY#, RESET#, doba přístupu 70 ns, ' +
+      'Industrial -40 až +85 °C, 100 000 cyklů, 20 let retence.',
+    tags: 'io,paměť,flash,paralelní,parallel-flash,mx29gl320e,macronix,32mbit,uniform',
+  },
+  {
+    name: 'MX29GL320EL',
+    packageType:
+      '56pin TSOP nebo 64-ball LFBGA (11×13 mm) — stejné piny jako MX29GL320EH (samostatný ' +
+      'záznam), včetně samostatného pinu VI/O (musí být spojen se stejným napětím jako VCC)',
+    value:
+      'Paralelní NOR flash paměť, 32 Mbit, byte/word (x8/x16) přepínatelná, uniformní sektory ' +
+      '(Lowest Address Sector Protected), VCC 2,7–3,6 V, přístupová doba 70 ns',
+    notes:
+      'Macronix MX29GL320E H/L datasheet rev. 1.5 (říjen 2015), objednací kód např. ' +
+      'MX29GL320ELT2I-70G (56-TSOP) nebo MX29GL320ELXFI-70G (64-LFBGA). ⚠️ Součást stejné rodiny ' +
+      'jako MX29GL320ET/EB/EH (samostatné záznamy) — MX29GL320EL má stejnou uniformní sektorovou ' +
+      'architekturu jako EH (64× 64KB), ale WP#/ACC=Vil chrání NEJNIŽŠÍ adresní sektor (na rozdíl ' +
+      'od EH, kde chrání nejvyšší). Všechny ostatní parametry shodné s MX29GL320ET/EH — viz jejich ' +
+      'záznamy pro plný popis.',
+    tags: 'io,paměť,flash,paralelní,parallel-flash,mx29gl320e,macronix,32mbit,uniform',
+  },
+
   // Mikrokontroléry / SoC
   {
     name: 'ESP32-C3',
