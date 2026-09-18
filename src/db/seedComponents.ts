@@ -1662,7 +1662,46 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   },
 ];
 
-function buildFromSpecs(specs: PartSpec[], category: 'Dioda' | 'Tranzistor'): ComponentInput[] {
+const RESISTOR_SPECS: PartSpec[] = [
+  {
+    name: 'Pt100',
+    packageType:
+      'Kabelová sonda (cable sensor): pouzdro nerezová ocel AISI 316 Ti (W 1.4571), ø5,8 × 60 mm, ' +
+      '4vodičový vysoce ohebný silikonový kabel (2× červený, 2× bílý), délka kabelu volitelná ' +
+      'do 99,99 m — "standard sensor" pro zasunutí do jímky/trubky ø6 mm, nebo "air sensor" ' +
+      '(8 otvorů ø3 mm v plášti) pro rychlou odezvu na volném vzduchu, krytí IP65',
+    value:
+      'Platinový odporový teplotní senzor (RTD), Pt100 = 100 Ω @0 °C dle DIN/EN/IEC 60751, ' +
+      'rozsah měření sondy -50 až +205 °C',
+    notes:
+      'Baumer "Cable Sensor, Pt100/Pt1000" (dok. 2902-1) — kompletní kabelová teplotní sonda ' +
+      's platinovým odporovým prvkem (RTD), ne holý keramický čip. Odpor prvku roste s teplotou ' +
+      'dle normalizované křivky DIN/EN/IEC 60751 (100 Ω @0 °C, cca 138,5 Ω @100 °C). ⚠️ Prvek je ' +
+      'dostupný i jako Pt1000 (1000 Ω @0 °C, desetinásobná citlivost) se stejnou konstrukcí sondy ' +
+      'a kabelu — jde o odlišný objednací kód (jiný odporový prvek), ne o bin/variantu Pt100, ' +
+      'nepřidáno jako samostatný záznam, protože jde jen o jiný snímací prvek ve stejné sondě. ' +
+      'Třídy přesnosti prvku (volitelné dle objednacího kódu): 1/1 DIN B ±(0,3+0,005×t) °C ' +
+      '(rozsah prvku -50 až +400 °C), 1/3 DIN B ±1/3×(0,3+0,005×t) °C (0 až 150 °C), 1/6 DIN B ' +
+      '±1/6×(0,3+0,005×t) °C (0 až 100 °C), 1/1 DIN A (-50 až +400 °C). Provedení "standard ' +
+      'sensor" (do jímky/trubky ø6 mm, navíc odolá tlaku <25 bar při průtoku vody 3 m/s) nebo ' +
+      '"air sensor" (bez jímky, 8 otvorů ø3 mm v plášti pro rychlou odezvu na vzduchu) — obě ' +
+      'varianty mají stejný rozsah měření -50 až +205 °C, štítek značení dimenzován na -30 až ' +
+      '+105 °C. Vlhkost <98 % RH kondenzující, krytí IP65. Časová konstanta τ0,5 dle způsobu ' +
+      'montáže: kapalina 0,4 m/s 8 s (bez jímky) / 17 s (v nerezové jímce se silikonovou pastou), ' +
+      'vzduch 3 m/s 35 s (standard) / 25 s (air sensor), nehybný vzduch 135 s (standard) / 105 s ' +
+      '(air sensor). 4vodičové zapojení (Kelvinovo) eliminuje chybu odporu přívodních vodičů — ' +
+      'při připojení na 3vodičový teplotní převodník zůstává jeden z párů vodičů nezapojen. ' +
+      'Volitelné příslušenství: nerezová jímka (AISI 316L, závit R1/2 s M12 kabelovou průchodkou) ' +
+      'pro instalaci standardní sondy do potrubí/nádrže — prodává se samostatně, není součástí ' +
+      'této položky.',
+    tags: 'rezistor,senzor,teploměr,rtd,pt100,platinový,baumer',
+  },
+];
+
+function buildFromSpecs(
+  specs: PartSpec[],
+  category: 'Dioda' | 'Tranzistor' | 'Rezistor'
+): ComponentInput[] {
   return specs.map((spec) => ({
     name: spec.name,
     category,
@@ -1679,6 +1718,7 @@ function buildFromSpecs(specs: PartSpec[], category: 'Dioda' | 'Tranzistor'): Co
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
+  ...buildFromSpecs(RESISTOR_SPECS, 'Rezistor'),
   ...buildCapacitorSeed(),
   ...buildFromSpecs(DIODE_SPECS, 'Dioda'),
   ...buildFromSpecs(TRANSISTOR_SPECS, 'Tranzistor'),
