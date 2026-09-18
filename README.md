@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    488 běžných součástek: 106 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    492 běžných součástek: 106 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; a laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220),
@@ -21,7 +21,7 @@ i návrh schémat obvodů a plošných spojů.
     elektrolytické, tantalové, fóliové; vysokonapěťová 1000V keramická disková řada NTE 90000;
     přesná keramická disková řada Multicomp MCBU/MCFU; nízko/vysokonapěťová keramická
     disková řada Illinois Capacitor GMR/GQR; NP0 disk Meritek CCNPO101J50V5B1; a fóliová IGBT
-    snubber řada Cornell Dubilier SCD), 146 diod
+    snubber řada Cornell Dubilier SCD), 147 diod
     (usměrňovací, spínací, Schottky, Zenerovy,
     LED včetně výkonových SMD LED LUXEON Rebel, OSLON SSL 80, OSRAM TOPLED Black LO T64F/LR
     T66F (černé pouzdro pro VMS displeje) a OSRAM Mini TOPLED LY M67K, ploché LED displeje
@@ -34,9 +34,10 @@ i návrh schémat obvodů a plošných spojů.
     ELS-2326SYGWA, obousměrné přepěťové ochrany TRISIL
     STMicroelectronics
     SMTPA62-320/SMP-0SCMC/SMP100MC/SMP100LC/SMP75, tripolární TLP140/200/270 a aktivní
-    přepěťová/nadproudová ochrana CLP200M, tyristor SemiWell SCD4C60S),
+    přepěťová/nadproudová ochrana CLP200M, tyristor SemiWell SCD4C60S, laserová dioda Roithner
+    LaserTechnik QL85H6S-A/B/C),
     73 tranzistorů (bipolární NPN/PNP, Darlington, duální, komplementární páry, výkonové, VF,
-    MOSFET, JFET, IR fototranzistory Lite-On LTR-306 a LTR-1650D), 85 integrovaných obvodů
+    MOSFET, JFET, IR fototranzistory Lite-On LTR-306 a LTR-1650D), 87 integrovaných obvodů
     (časovače, komparátory, op-zesilovače, regulátory, logická hradla, čítače,
     Wi-Fi mikrokontroléry ESP32, ESP32-C3, ESP8285, ESP8684, Wi-Fi adaptér ESP8089, 8bit AVR
     mikrokontroléry ATmega640/1280/1281/2560/2561, rodina CAN mikrokontrolérů AT90CAN32/64/128
@@ -47,7 +48,8 @@ i návrh schémat obvodů a plošných spojů.
     MX29GL320E (T/B/H/L), USB-I2C most FT200XD, RS-485/RS-422 přijímače Renesas ISL32173E
     a příbuzné (ISL32175E/32177E/32273E/32275E/32277E), automotive TFT-LCD napájecí obvody
     Maxim MAX25220/MAX25221/MAX25221B/MAX25520, LCD-TV napájecí obvody Intersil/Renesas
-    ISL97652 a ISL78010, TFT-LCD napájecí obvody E-CMOS EC9223 a Torex XC9516 aj.), 24 modulů
+    ISL97652 a ISL78010, TFT-LCD napájecí obvody E-CMOS EC9223 a Torex XC9516, senzory
+    vlhkosti/teploty HOPERF TH10 a duální PIR pohybový senzor Murata IRA-S410ST03 aj.), 24 modulů
     (Wi-Fi/BLE: ESP32-C3-MINI-1, ESP32-C3-WROOM-02, Adafruit Feather
     HUZZAH ESP8266, ESP8684-MINI-1, ESP-12S; nízkonapěťové odpojovače baterie Alfatronix
     PowerTector PT10/PT20/PT40/PT60/PT100/PT200; LoRaWAN senzor LEO-S55 a brány USM-S67;
@@ -56,10 +58,11 @@ i návrh schémat obvodů a plošných spojů.
     Baumer IVO N 142/N 152; znakový LCD modul PICVUE PVC200403; a křemenné tlakové senzory
     Seiko Epson TSU-20G/TSU-70G/TSU-100G), 2 konektory/přepěťové
     ochrany (Ethernet/PoE
-    bleskojistka ESP-100-POE; kolíková lišta Foxconn HB12201) a 4 ostatní součástky (RF
+    bleskojistka ESP-100-POE; kolíková lišta Foxconn HB12201) a 5 ostatních součástek (RF
     koaxiální směrový odbočovač SAGE
     Millimeter/Eravant SCD-0134032010-KF-SA; pasivní segmentové LCD panely AZ Displays
-    GD-342AP, GD-458P a AND/Purdy FE0202W-EU). Tlačítkem „Knihovna”
+    GD-342AP, GD-458P a AND/Purdy FE0202W-EU; Fresnelova čočka Murata IML-0638). Tlačítkem
+    „Knihovna”
     v horní liště lze kdykoli doplnit chybějící položky (např. po smazání), aniž
     by se duplikovaly už existující.
 

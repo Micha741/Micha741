@@ -1689,6 +1689,36 @@ const DIODE_SPECS: PartSpec[] = [
     tags: 'tyristor,scr,silicon-controlled-rectifier,semiwell,d-pak,to-252,řízený-spínač',
   },
   {
+    name: 'QL85H6S-A/B/C',
+    packageType:
+      'TO-18/5,6 mm kovové pouzdro s integrovanou monitorovací fotodiodou, planární okénko, 3 ' +
+      'vývody (varianty A/B/C se liší vzájemným zapojením katody/anody laserové diody a ' +
+      'fotodiody uvnitř společného pouzdra)',
+    value:
+      'AlGaAs polovodičový laser (laserová dioda) s vestavěnou monitorovací fotodiodou, λp 855 nm ' +
+      'typ. (845–865 nm), Po 20 mW typ. (22 mW max, CW), Ith 20 mA typ. (5–35 mA), Iop 55 mA typ. ' +
+      '(40–70 mA), Vop 2,0 V typ. (max 2,5 V)',
+    notes:
+      'Roithner LaserTechnik "QL85H6S-A/B/C" — 850nm AlGaAs polovodičový laser v TO-18/5,6mm ' +
+      'pouzdru s vestavěnou monitorovací (zpětnovazební) fotodiodou pro řízení výkonu — MUSÍ být ' +
+      'provozován v režimu APC (Automatic Power Control, zpětnovazební regulace výkonu přes ' +
+      'monitorovací fotodiodu), NIKOLI v režimu konstantního proudu (ACC), jinak hrozí degradace/ ' +
+      'zničení čipu při změnách teploty. Tři varianty A/B/C se liší pouze vnitřním zapojením ' +
+      '(sdílená katoda/anoda mezi laserovou diodou a monitorovací fotodiodou) při jinak identických ' +
+      'optických/elektrických parametrech — do knihovny přidán jako jeden souhrnný záznam pro celou ' +
+      'trojici, konkrétní varianta se volí dle požadovaného zapojení pinů v aplikaci. Optický výkon ' +
+      '(CW): Po typ. 20 mW, max 22 mW. Prahový proud Ith typ. 20 mA (rozsah 5–35 mA dle kusu). ' +
+      'Provozní proud Iop typ. 55 mA (rozsah 40–70 mA). Diferenciální účinnost SE (slope efficiency) ' +
+      'typ. 0,5 mW/mA. Provozní napětí Vop typ. 2,0 V (max 2,5 V). Vlnová délka λp typ. 855 nm ' +
+      '(rozsah 845–865 nm). Úhel vyzařování (beam divergence) θ∥ 9° (rovnoběžně s přechodem), θ⊥ ' +
+      '32° (kolmo k přechodu) — eliptický svazek typický pro hranově vyzařující laserové diody. ' +
+      'Monitorovací fotodioda: Im (monitorovací proud) typ. 0,6 mA @Po. Závěrná napětí: VR(LD) ' +
+      '(laserová dioda) max 2 V, VR(PD) (monitorovací fotodioda) max 30 V. Provozní teplota -10 až ' +
+      '+60 °C, skladovací -40 až +85 °C. Typické použití: čárové skenery, dálkoměry, zaměřovací ' +
+      'laserové moduly, optické senzory.',
+    tags: 'dioda,laser,laserová-dioda,algaas,to-18,monitorovací-fotodioda,apc,roithner,ql85h6s',
+  },
+  {
     name: 'LD-201VR',
     packageType:
       'THT plochý ("flat") jednočipový displej, tenké pouzdro cca 6,0×3,68 mm, dlouhé vývody ' +

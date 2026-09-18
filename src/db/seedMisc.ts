@@ -114,6 +114,29 @@ const MISC_SPECS: MiscSpec[] = [
       'datasheetu dílu).',
     tags: 'lcd,displej,segmentový,panel,and-displays,purdy,fe0202w,7segment,pasivní,transflektivní',
   },
+  {
+    name: 'IML-0638',
+    packageType:
+      'Kruhová Fresnelova čočka, materiál HDPE (polyetylen s vysokou hustotou), barva přírodní/ ' +
+      'bílá (natural/white), určeno k montáži před optické okénko lead-type senzorů řady "IRA-E"',
+    value:
+      'Fresnelova čočka pro PIR (pyroelektrické) pohybové senzory, formuje/segmentuje zorné pole ' +
+      'senzoru do detekčních zón',
+    notes:
+      'Murata "IML-0638" — pasivní optická součástka (Fresnelova čočka z HDPE), NENÍ elektronická ' +
+      'součástka ani senzor sám — doplňkový optický prvek montovaný před PIR pohybové senzory ' +
+      'Murata řady "IRA-E" (lead-type, drátové vývody) pro rozdělení zorného pole senzoru do ' +
+      'více detekčních zón/paprsků a zaostření IR záření na pyroelektrické elementy, čímž ' +
+      'zvyšuje citlivost a dosah detekce pohybu. ⚠️ Společně s touto knihovnou obsahuje i senzor ' +
+      'IRA-S410ST03 (Murata), ten ovšem patří do jiné, mechanicky odlišné řady TO-5 (kovové ' +
+      'pouzdro s vlastním vestavěným optickým filtrem, bez potřeby externí Fresnelovy čočky) — ' +
+      'IML-0638 je určena konkrétně pro řadu "IRA-E" (jiný mechanický formát), nejde tedy o přímý ' +
+      'doplněk k IRA-S410ST03, pouze o příbuzný produkt ze stejné produktové rodiny PIR senzorů ' +
+      'od téhož výrobce. Provozní teplota -25 až +60 °C, skladovací teplota -30 až +80 °C. ' +
+      'Zařazeno do kategorie "Ostatní" jako čistě pasivní optická/mechanická součástka bez ' +
+      'vlastní elektroniky.',
+    tags: 'optika,fresnelova-čočka,hdpe,pir,murata,ira-e,pohybový-senzor,pasivní',
+  },
 ];
 
 export function buildMiscSeed(): ComponentInput[] {

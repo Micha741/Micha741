@@ -1230,6 +1230,71 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,senzor,vlhkoměr,teploměr,sht85,sht3x,sensirion,i2c',
   },
   {
+    name: 'TH10',
+    packageType:
+      'SMD pouzdro (malý QFN/DFN-like čip na kondenzátorové aplikační destičce dle fotografie ' +
+      'datasheetu), piny VDD, SDA, SCL, GND (+ v absolutních mezních hodnotách zmíněny i ADDR a ' +
+      'ALERT/nRESET piny pro plnou 6pinovou variantu)',
+    value:
+      'Digitální I2C senzor vlhkosti a teploty, plně kalibrovaný/linearizovaný, přesnost ±1,5 % ' +
+      'RH a ±0,2 °C, I2C do 1 MHz, VDD 2,4–5,5 V',
+    notes:
+      'HOPERF (Hope Microelectronics) "TH10" senzor vlhkosti a teploty (dok. TH10_DataSheet_EN_' +
+      'V1.0) — podobná kategorie jako SHT85/DHT11 v této knihovně (plně kalibrovaný digitální ' +
+      'I2C senzor RH/teploty), od výrobce s 15letou historií ve výrobě vlhkostních senzorů. Dva ' +
+      'uživatelsky volitelné I2C adresy (pin ADDR), komunikační rychlost až 1 MHz (⚠️ výrazně ' +
+      'vyšší než standardní 400 kHz Fast Mode u SHT85), alert výstupní pin s nastavitelnou budicí ' +
+      'silou (0,8–2,1×VDD, do cca 1,5 mA typ.), integrovaný ohřívač (heater) pro kontrolu ' +
+      'funkčnosti/odstranění kondenzace (výkon 4,5–33 mW dle napájecího napětí). Napájení VDD ' +
+      '2,4–5,5 V, VPOR (power-up práh) typ. 2,3 V. Proudový odběr: klidový v single-shot módu ' +
+      'typ. 0,2 µA (max 2,0 µA), klidový v periodickém módu typ. 45 µA (max 70 µA), při měření ' +
+      'typ. 800 µA (max 1500 µA), průměrný typ. 2 µA (1 měření/s, nejnižší repeatabilita). ' +
+      'Timing: power-up doba typ. 0,5 ms (max 1 ms), soft reset doba typ. 0,5 ms (max 1 ms), ' +
+      'doba měření dle repeatability: nízká typ. 2,5 ms (max 4 ms), střední typ. 4,5 ms (max ' +
+      '6 ms), vysoká typ. 12,5 ms (max 15 ms). Vlhkost: přesnost typ. ±1,5 %RH, opakovatelnost ' +
+      'nízká/střední/vysoká 0,25/0,15/0,1 %RH, rozlišení 0,01 %RH, hystereze ±0,8 %RH @25 °C, ' +
+      'rozsah 0–100 %RH, doba odezvy τ63% 86 s, dlouhodobý drift <0,25 %RH/rok. Teplota: přesnost ' +
+      '±0,2 °C (-40 až 90 °C), opakovatelnost nízká/střední/vysoká 0,24/0,12/0,06 °C, rozlišení ' +
+      '0,015 °C, rozsah -40 až +125 °C, doba odezvy τ63% >2 s, dlouhodobý drift <0,03 °C/rok. ' +
+      'Doporučený provozní rozsah pro nejlepší výkon 5–60 °C/20–80 %RH — dlouhodobé vystavení ' +
+      'mimo tento rozsah (zejména vysoká vlhkost) může dočasně posunout signál, senzor se sám ' +
+      'postupně vrátí do kalibrovaného stavu. Mezní hodnoty: VDD -0,3 až 6 V, napětí na pinech ' +
+      '-0,3 až VDD+0,3 V, vstupní proud ±100 mA, provozní teplota -40 až +125 °C, skladovací -40 ' +
+      'až +150 °C, ESD HBM 4 kV/CDM 750 V. Max. rychlost změny napájecího napětí 20 V/ms (rychlejší ' +
+      'změny mohou vést k nechtěnému resetu).',
+    tags: 'io,senzor,vlhkoměr,teploměr,th10,hoperf,i2c',
+  },
+  {
+    name: 'IRA-S410ST03',
+    packageType:
+      'TO-5 kovové pouzdro (metal-can), 3 vývody (drátové, "lead type"), Ø8,2 mm, s optickým ' +
+      'filtrem a výstupkem (tab) pro orientaci vůči Fresnelově čočce; piny d (drain — napájení), ' +
+      's (source — výstup), g (ground — zem); niklované vývody',
+    value:
+      'Duální pyroelektrický (PIR) pohybový senzor s integrovaným JFET zesilovačem, zorné pole ' +
+      '38°/45°, citlivost typ. 7,0 mV, napájení 2–15 V',
+    notes:
+      'Murata "IRA-S410ST03" (dok. Product Search Data Sheet, staženo z murata.com, ' +
+      'aktualizováno 27. 10. 2017 — pozn. výrobce: může být neaktuální, doporučeno stáhnout ' +
+      'nejnovější verzi) — pasivní infračervený (PIR) pohybový senzor s DVĚMA pyroelektrickými ' +
+      'elementy zapojenými diferenčně (elektrody 2,3 mm mezera 0,3 mm × 1,0 mm × 2) — pohyb ' +
+      'tepelného zdroje (osoby) přes zorné pole způsobí postupnou nerovnováhu signálu mezi oběma ' +
+      'elementy, zatímco statické pozadí/souhlasné rušení (např. teplotní drift okolí) se ' +
+      'diferenčně potlačí. Integrovaný JFET v zapojení source-follower (piny d/s/g) pro impedanční ' +
+      'přizpůsobení vysokoimpedančního pyroelektrického výstupu k dalšímu zpracování (typicky ' +
+      'externí OZ/komparátor). Optický filtr typu "5 micro meter Long Pass" (propouští jen ' +
+      'dlouhovlnné IR záření nad ~5 µm, odpovídající tepelnému záření lidského těla, blokuje ' +
+      'viditelné/blízké IR světlo a tím falešné spouštění). Zorné pole (bez čočky) theta1=38°, ' +
+      'theta2=45°. Citlivost (responsivity) typ. 7,0 mV. Napájecí napětí 2–15 V. Provozní teplota ' +
+      '-40 až +70 °C, skladovací -40 až +85 °C. Určeno pro detektory pohybu/přítomnosti osob ' +
+      '(bezpečnostní čidla, automatické osvětlení, HVAC) — ⚠️ NENÍ určeno pro automobilové ' +
+      'aplikace ("Not available for Automotive usage" dle datasheetu). Pro rozšíření/tvarování ' +
+      'zorného pole se typicky kombinuje s externí Fresnelovou čočkou — viz související záznam ' +
+      'Murata IML-0638 v kategorii Ostatní (čočka pro příbuznou "IRA-E" řadu se stejným ' +
+      'mechanickým TO-5 pouzdrem).',
+    tags: 'io,senzor,pir,pyroelektrický,pohybový,murata,ira-s410st03,jfet',
+  },
+  {
     name: 'SCD40',
     packageType:
       'LGA 10,1×10,1×6,5 mm, 21 vývodů (VDD, VDDH, GND, SDA, SCL, zbytek DNC — nutno pájet i ' +
