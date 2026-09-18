@@ -1684,6 +1684,83 @@ const DIODE_SPECS: PartSpec[] = [
     tags: 'dioda,led,displej,flat-display,rohm,ld-201,zelená',
   },
   {
+    name: 'LD-001VR',
+    packageType:
+      'THT plochý ("flat") DVOUčipový displej, plocha emise 4,5×9,5 mm (větší než jednočipový ' +
+      'LD-201, samostatné záznamy), tenké pouzdro s dlouhými vývody, cathode mark pro ' +
+      'identifikaci pinu 1',
+    value:
+      'LED "flat display" (planární emise ze 2 čipů zapojených sériově), červená, λp 650 nm, ' +
+      'IV typ. 6,3 mcd @IF=10 mA (na 1 čip), VF typ. 2,0 V (na 1 čip)',
+    notes:
+      'ROHM "LD-001 Series — Flat displays" — středně velký DVOUčipový sourozenec jednočipové ' +
+      'řady LD-201 (samostatné záznamy) — stejná koncepce ploché planární emise a možnosti ' +
+      'skládání více kusů vedle sebe, ale LD-001 má dva čipy zapojené SÉRIOVĚ v jednom pouzdře ' +
+      '(větší emisní plocha 4,5×9,5 mm, vyšší PD/IF) místo jednoho čipu u LD-201 — uvedené ' +
+      'elektrické/optické hodnoty (VF, IV, λp, Δλ) jsou dle datasheetu měřeny "per element" ' +
+      '(na 1 čip), proud prochází oběma čipy v sérii. Zpracována celá řada 4 barev z jednoho ' +
+      'datasheetu (LD-001VR červená, LD-001DU oranžová, LD-001YY žlutá, LD-001MG zelená, ' +
+      'samostatné záznamy). LD-001VR (červená): PD 120 mW (vs. 60 mW u LD-201VR), IF 20 mA, ' +
+      'IFP 60 mA (pulz 1 ms, duty 1/5), VR 3 V. VF typ. 2,0 V/max 2,8 V @IF=10 mA (na čip). IR ' +
+      'max 10 µA @VR=3 V. λp typ. 650 nm, Δλ typ. 40 nm. IV min 2,2/typ. 6,3 mcd @IF=10 mA — ' +
+      'shodná svítivost na čip jako LD-201VR (protože jde o stejný čip, jen zdvojený v sérii). ' +
+      'Provozní teplota -25 až +75 °C, skladovací -30 až +85 °C.',
+    tags: 'dioda,led,displej,flat-display,rohm,ld-001,červená,dvoučipový',
+  },
+  {
+    name: 'LD-001DU',
+    packageType:
+      'THT plochý ("flat") DVOUčipový displej, plocha emise 4,5×9,5 mm, tenké pouzdro s ' +
+      'dlouhými vývody',
+    value:
+      'LED "flat display" (planární emise ze 2 čipů zapojených sériově), oranžová, λp 610 nm, ' +
+      'IV typ. 6,3 mcd @IF=10 mA (na 1 čip), VF typ. 2,0 V (na 1 čip)',
+    notes:
+      'ROHM "LD-001 Series — Flat displays" — součást stejné řady 4 barev jako LD-001VR/YY/MG ' +
+      '(samostatné záznamy) — viz záznam LD-001VR pro plný popis dvoučipové koncepce a vztahu k ' +
+      'jednočipové řadě LD-201. ⚠️ Dle datasheetu "order-based production" (na objednávku). ' +
+      'LD-001DU (oranžová): PD 120 mW, IF 20 mA, IFP 60 mA, VR 3 V. VF typ. 2,0 V/max 2,8 V ' +
+      '@IF=10 mA (na čip). IR max 10 µA @VR=3 V. λp typ. 610 nm, Δλ typ. 40 nm. IV min 2,2/typ. ' +
+      '6,3 mcd @IF=10 mA. Provozní teplota -25 až +75 °C, skladovací -30 až +85 °C.',
+    tags: 'dioda,led,displej,flat-display,rohm,ld-001,oranžová,dvoučipový',
+  },
+  {
+    name: 'LD-001YY',
+    packageType:
+      'THT plochý ("flat") DVOUčipový displej, plocha emise 4,5×9,5 mm, tenké pouzdro s ' +
+      'dlouhými vývody',
+    value:
+      'LED "flat display" (planární emise ze 2 čipů zapojených sériově), žlutá, λp 585 nm, IV ' +
+      'typ. 4,0 mcd @IF=10 mA (na 1 čip), VF typ. 2,1 V (na 1 čip)',
+    notes:
+      'ROHM "LD-001 Series — Flat displays" — součást stejné řady 4 barev jako LD-001VR/DU/MG ' +
+      '(samostatné záznamy) — viz záznam LD-001VR pro plný popis dvoučipové koncepce a vztahu k ' +
+      'jednočipové řadě LD-201. ⚠️ Dle datasheetu "order-based production" (na objednávku). ' +
+      'LD-001YY (žlutá): PD 120 mW, IF 20 mA, IFP 60 mA, VR 3 V. VF typ. 2,1 V/max 2,8 V ' +
+      '@IF=10 mA (na čip). IR max 10 µA @VR=3 V. λp typ. 585 nm, Δλ typ. 40 nm. IV min 1,4/typ. ' +
+      '4,0 mcd @IF=10 mA (⚠️ nejnižší svítivost v řadě). Provozní teplota -25 až +75 °C, ' +
+      'skladovací -30 až +85 °C.',
+    tags: 'dioda,led,displej,flat-display,rohm,ld-001,žlutá,dvoučipový',
+  },
+  {
+    name: 'LD-001MG',
+    packageType:
+      'THT plochý ("flat") DVOUčipový displej, plocha emise 4,5×9,5 mm, tenké pouzdro s ' +
+      'dlouhými vývody',
+    value:
+      'LED "flat display" (planární emise ze 2 čipů zapojených sériově), zelená, λp 563 nm, IV ' +
+      'typ. 10 mcd @IF=10 mA (na 1 čip), VF typ. 2,1 V (na 1 čip) — nejvyšší svítivost/výkon v řadě',
+    notes:
+      'ROHM "LD-001 Series — Flat displays" — součást stejné řady 4 barev jako LD-001VR/DU/YY ' +
+      '(samostatné záznamy) — viz záznam LD-001VR pro plný popis dvoučipové koncepce a vztahu k ' +
+      'jednočipové řadě LD-201. LD-001MG (zelená): ⚠️ vyšší mezní hodnoty než ostatní barvy v ' +
+      'řadě — PD 150 mW, IF 25 mA (vs. 120 mW/20 mA u ostatních barev), VR 3 V. VF typ. 2,1 V/max ' +
+      '2,8 V @IF=10 mA (na čip). IR max 10 µA @VR=3 V. λp typ. 563 nm, Δλ typ. 40 nm. IV min ' +
+      '3,6/typ. 10 mcd @IF=10 mA — nejvyšší svítivost v celé řadě LD-001. Provozní teplota -25 ' +
+      'až +75 °C, skladovací -30 až +85 °C.',
+    tags: 'dioda,led,displej,flat-display,rohm,ld-001,zelená,dvoučipový',
+  },
+  {
     name: 'AND-5610S (red)',
     packageType:
       'THT 10pin DIP pouzdro, 0,56" (14,2 mm) výška znaku, rozteč vývodů 2,54 mm; dostupné jako ' +
