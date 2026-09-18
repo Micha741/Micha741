@@ -641,6 +641,58 @@ const DIODE_SPECS: PartSpec[] = [
     tags: 'dioda,led,výkonová,smd,oranžová,plcc-2,černé-pouzdro,vms,osram,topled-black',
   },
   {
+    name: 'LR T66F',
+    packageType:
+      'PLCC-2 (SMD), černé pouzdro s bezbarvou (colorless) čočkou/zálivkou — shodné pouzdro ' +
+      'jako sesterský LO T64F',
+    value:
+      'OSRAM TOPLED Black — výkonová SMD LED, červená (InGaAlP Thinfilm), λdom 625 nm typ., ' +
+      'IV typ. 1260–3550 mcd dle jasové skupiny @IF=20 mA',
+    notes:
+      'OSRAM Opto Semiconductors "TOPLED Black — LR T66F" datasheet (verze 1.5, 11. 5. 2017) — ' +
+      'červená varianta stejné rodiny "TOPLED Black" jako oranžový LO T64F (samostatný záznam) ' +
+      '— shodný účel (černé pouzdro pro vysoký kontrast VMS/cenových displejů), shodné pouzdro ' +
+      'PLCC-2 a téměř identické mezní hodnoty — viz záznam LO T64F pro plný popis konstrukce a ' +
+      'aplikace. LR T66F (červená): vyzařovací úhel při 50 % IV 55° (⚠️ širší než 30° u ' +
+      'oranžového LO T64F). Mezní hodnoty shodné s LO T64F: Top/Tstg -40 až +100 °C, TJ max ' +
+      '125 °C, IF max 50 mA, IFM (nárazový) max 100 mA, VR max 12 V, ESD do 2 kV (HBM). λpeak ' +
+      'typ. 634 nm. λdom min 619/typ. 625/max 631 nm. Δλ typ. 16 nm. VF min 1,80/typ. 1,95/max ' +
+      '2,40 V @IF=20 mA (shodné napěťové skupiny 3A/3B/4A/4B jako LO T64F). IR typ. 0,2/max ' +
+      '10 µA @VR=12 V. TCλpeak 0,14 nm/K, TCλdom 0,07 nm/K. RθJS max 280 K/W. Binováno do 5 ' +
+      'jasových skupin (AA/AB/BA/BB/CA, IV min-max 1120–3550 mcd, odpovídající typ. světelný tok ' +
+      '1260–3180 mlm) a 1 skupiny dominantní vlnové délky (619–631 nm) — ⚠️ na rozdíl od ' +
+      'oranžového LO T64F, který má 3 vlnové skupiny, LR T66F má jen jednu (užší výrobní rozptyl ' +
+      'nebo novější/zjednodušený binning). Objednací kódy např. LR T66F-BABB-1, ' +
+      'LR T66F-ABBA-1-1, LR T66F-AACA-1-3A4B.',
+    tags: 'dioda,led,výkonová,smd,červená,plcc-2,černé-pouzdro,vms,osram,topled-black',
+  },
+  {
+    name: 'LY M67K',
+    packageType:
+      'SMT pouzdro "Mini TOPLED", bílé s bezbarvou/čirou (colorless clear) zálivkou pryskyřicí',
+    value:
+      'OSRAM Mini TOPLED — SMD LED, žlutá (InGaAlP), λdom 587 nm typ., vyzařovací úhel 120° ' +
+      '(Lambertův zářič), IF max 20 mA',
+    notes:
+      'OSRAM Opto Semiconductors "Mini TOPLED — LY M67K" datasheet (verze 1.2, 31. 10. 2014) — ' +
+      '⚠️ POZOR na záměnu s rodinou "TOPLED Black" (LO T64F, LR T66F, samostatné záznamy) — ' +
+      'navzdory podobnému stylu označení (barva-písmeno + pouzdro-kód) jde o ZCELA JINOU rodinu ' +
+      'stejného výrobce: "Mini TOPLED" má BÍLÉ pouzdro s ČIROU zálivkou a široký vyzařovací úhel ' +
+      '120° (Lambertův zářič), určené pro obecné indikátory, podsvícení, navázání do světlovodů a ' +
+      'automobilové vnitřní osvětlení — na rozdíl od černého úzkoúhlého (30–55°) pouzdra "TOPLED ' +
+      'Black" specializovaného na kontrastní VMS/cenové displeje. Technologie InGaAlP. Mezní ' +
+      'hodnoty: Top/Tstg -40 až +100 °C, TJ max 125 °C, IF (trvalý) max 20 mA, IFM (nárazový, ' +
+      't≤10 µs, D=0,005) max 100 mA, VR max 12 V, ESD odolnost 2 kV (HBM, třída 2). λpeak typ. ' +
+      '591 nm. λdom min 580/typ. 587/max 595 nm. Δλ typ. 15 nm. VF (měřeno @IF=2 mA, ⚠️ nižší ' +
+      'testovací proud než 20 mA u TOPLED Black) min 1,70/typ. 1,80/max 2,20 V. IR typ. 0,01/max ' +
+      '10 µA @VR=12 V. Teplotní koeficienty: TCλpeak 0,12 nm/K, TCλdom 0,09 nm/K, TCV -2,10 mV/K. ' +
+      'Tepelný odpor: RθJA (přechod-okolí) max 530 K/W, RθJS (přechod-pájecí ploška) max 280 K/W. ' +
+      'Binováno do 6 jasových skupin (J1/J2/K1/K2/L1/L2, IV 4,5–18 mcd @IF=2 mA, světelný tok ' +
+      'typ. 15,2–48 mlm) a 5 skupin dominantní vlnové délky (2–6, 580–595 nm). Objednací kód ' +
+      'např. LY M67K-J1L2-26.',
+    tags: 'dioda,led,smd,žlutá,mini-topled,indikátor,podsvícení,automotive,osram',
+  },
+  {
     name: 'SMTPA62',
     packageType:
       'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka, bez elektrody gate), ' +
@@ -1828,6 +1880,50 @@ const DIODE_SPECS: PartSpec[] = [
       '1,7/typ. 2,9 mcd @IF=10 mA. λp typ. 567 nm, Δλ typ. 30 nm (užší než 40 nm u červené). ' +
       'Ostatní mezní hodnoty (IF/IFP, teploty) shodné s AND-5610S.',
     tags: 'dioda,led,displej,7segment,and-optoelectronics,and-5610,zelená,gap',
+  },
+  {
+    name: 'AND-8010-B (red)',
+    packageType:
+      'THT 18pin DIP pouzdro, 0,8" (20,3 mm) výška znaku, rozteč vývodů 2,54 mm; dostupné jako ' +
+      'AND-8010SCLB (společná katoda) nebo AND-8010SALB (společná anoda), obě s červeným čelem ' +
+      'displeje',
+    value:
+      '16segmentový alfanumerický LED displej, 0,8", červená (GaAsP/GaP), λp 635 nm, IV/seg ' +
+      'typ. 3,8 mcd @IF=10 mA, VF typ. 2,1 V',
+    notes:
+      'AND Optoelectronics (Purdy Electronics) "AND-8010-B Series — GaAsP/GaP-Red; GaP-Green, ' +
+      '16 Segment, Single Digit, 0.8 Inch" (dok. 6/2007) — ⚠️ jiný typ displeje než AND-5610 ' +
+      '(samostatné záznamy, 7segmentový) od stejného výrobce — AND-8010-B je 16segmentový ' +
+      'alfanumerický displej (zobrazuje písmena i číslice, ne jen číslice), větší znak (0,8" vs ' +
+      '0,56") a více pinů (18 vs 10), určený pro počítačové periferie a terminálové displeje ' +
+      'čitelné z větší vzdálenosti. Segmenty označeny A1/A2/B/C/D1/D2/E/F/G/H/J/K/M/N/P/R + ' +
+      'desetinná tečka. Zpracována celá řada (červená i zelená varianta, každá se společnou ' +
+      'katodou i anodou — viz AND-8010-B (green) pro zelenou variantu). AND-8010-B červená ' +
+      '(GaAsP/GaP): DC IF/seg max 30 mA, pulzní IFP/seg max 100 mA (1µs pulz, 0,3 % duty), VR/seg ' +
+      'max 3 V, provozní teplota -25 až +85 °C, skladovací -25 až +100 °C. VF typ. 2,1 V/max ' +
+      '3,0 V @IF=10 mA. IR max 100 µA @VR=3 V. IV/seg min 2,3/typ. 3,8 mcd @IF=10 mA. λp typ. ' +
+      '635 nm, Δλ typ. 40 nm. Pájecí teplota max 260 °C/3 s, ohyb vývodů max 5 mm od těla bez ' +
+      'pnutí. RoHS.',
+    tags: 'dioda,led,displej,16segment,alfanumerický,and-optoelectronics,and-8010,červená,gaasp',
+  },
+  {
+    name: 'AND-8010-B (green)',
+    packageType:
+      'THT 18pin DIP pouzdro, 0,8" (20,3 mm) výška znaku, rozteč vývodů 2,54 mm; dostupné jako ' +
+      'AND-8010GCLB (společná katoda) nebo AND-8010GALB (společná anoda), obě se šedým čelem ' +
+      'displeje',
+    value:
+      '16segmentový alfanumerický LED displej, 0,8", zelená (GaP), λp 567 nm, IV/seg typ. ' +
+      '3,3 mcd @IF=10 mA, VF typ. 2,1 V',
+    notes:
+      'AND Optoelectronics (Purdy Electronics) "AND-8010-B Series" — zelená (GaP) varianta ' +
+      'stejné řady jako červená AND-8010-B (red) (samostatný záznam) — viz tam pro plný popis ' +
+      'pouzdra, 16segmentového alfanumerického principu, pinoutu a společných mezních hodnot. ' +
+      'AND-8010-B zelená (GaP): VR/seg max 5 V (⚠️ vyšší než 3 V u červené varianty). VF typ. ' +
+      '2,1 V/max 3,0 V @IF=10 mA. IR max 100 µA @VR=5 V. IV/seg min 2,0/typ. 3,3 mcd @IF=10 mA. ' +
+      'λp typ. 567 nm, Δλ typ. 30 nm (užší než 40 nm u červené). Ostatní mezní hodnoty (IF/IFP, ' +
+      'teploty) shodné s AND-8010-B (red).',
+    tags: 'dioda,led,displej,16segment,alfanumerický,and-optoelectronics,and-8010,zelená,gap',
   },
   {
     name: 'TIL302',
