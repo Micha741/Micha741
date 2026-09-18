@@ -354,6 +354,36 @@ const IC_SPECS: IcSpec[] = [
       'provedení (Pb-free, "G" suffix).',
     tags: 'io,paměť,flash,spi,serial-flash,mx25l6406e,macronix,64mbit',
   },
+  {
+    name: 'MX25L1026E',
+    packageType:
+      '8pin SOP 150mil — piny 1=CS#, 2=SO/SIO1, 3=WP#, 4=GND, 5=SI/SIO0, 6=SCLK, 7=HOLD#, 8=VCC ' +
+      '(SPI + volitelný dual-output režim)',
+    value:
+      'Sériová NOR flash paměť (SPI), 1 Mbit (128 kB), VCC 2,7–3,6 V, hodinový kmitočet do 104 MHz',
+    notes:
+      'Macronix MX25L1026E datasheet rev. 1.3 (listopad 2013), objednací kód např. ' +
+      'MX25L1026EM1I-10G (8-SOP 150mil, Industrial, Pb-free). ⚠️ Součást stejné produktové rodiny ' +
+      'jako MX25L6406E (samostatný záznam), ale výrazně menší kapacita (1 Mbit vs. 64 Mbit — ' +
+      '64× méně) a odlišné pouzdro (jen 8-SOP 150mil, na rozdíl od MX25L6406E dostupného i v ' +
+      '16-SOP 300mil nebo WSON). Organizace paměti: 131 072 × 8 bit (1 048 576 × 1 bit), 32 ' +
+      'stejných sektorů po 4 KB (libovolně smazatelné jednotlivě) seskupených do 2 bloků po 64 KB ' +
+      '(rovněž smazatelných jednotlivě). Programování po bajtech nebo stránkách (256 B). Podpora ' +
+      'SPI Mode 0 a Mode 3, dual-output čtení (SIO0/SIO1). Rychlosti: hodinový kmitočet FAST_READ ' +
+      'a ostatní příkazy do 104 MHz, obyčejné READ do 33 MHz, DREAD (dual output) do 80 MHz. Doba ' +
+      'programování: bajt typ. 9 µs, stránka (256 B) typ. 0,6 ms (max 3 ms). Doba mazání: sektor ' +
+      '(4 KB) typ. 40 ms, blok (64 KB) typ. 0,4 s (max 2 s), celý čip typ. 0,8 s (max 2 s). ' +
+      'Zabezpečení: softwarová ochrana bloků (bity BP0–BP1, 4 úrovně ochrany: žádná/blok 1/oba ' +
+      'bloky/oba bloky), hardwarová ochrana přes pin WP#, podpora SFDP (Serial Flash Discoverable ' +
+      'Parameters). Elektronická identifikace: JEDEC 2bajtové Device ID (RDID), nebo REMS/RES ' +
+      'příkazy (1bajtové Device ID). Mezní hodnoty: napětí na pinech -0,5 až +4,6 V, provozní ' +
+      'teplota (Industrial grade) -40 až +85 °C, skladovací -65 až +150 °C. Proudový odběr: čtení ' +
+      '@104 MHz max 12 mA (@33 MHz max 4 mA), programování max 20 mA, mazání sektoru max 15 mA, ' +
+      'mazání čipu max 20 mA, klidový (standby) max 25 µA, deep power-down max 10 µA. Vstupní/' +
+      'výstupní kapacita CIN max 6 pF, COUT max 8 pF. Spolehlivost: min. 100 000 cyklů mazání/' +
+      'zápisu, 20 let retence dat. RoHS/bezolovnaté a bezhalogenové provedení.',
+    tags: 'io,paměť,flash,spi,serial-flash,mx25l1026e,macronix,1mbit',
+  },
 
   // Mikrokontroléry / SoC
   {
