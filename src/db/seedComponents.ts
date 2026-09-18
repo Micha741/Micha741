@@ -1764,6 +1764,31 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'napěťový přenos), h21e min 330 (proudové zesílení), h22e typ 30 µS (výstupní admitance).',
     tags: 'tranzistor,pnp,bipolární,duální,sot-363,sc-70-6,bc856,bc856s,smd',
   },
+  {
+    name: '2SA1873',
+    packageType:
+      'SOT-353 (SC-88, 5 vývodů: 1, 2, 3 dole, 4, 5 nahoře) — dva PNP tranzistory v jednom ' +
+      'pouzdře; kvůli pouze 5 pinům (na rozdíl od 6pinového SOT-363 u BC807U/BC856S) je jeden ' +
+      'vývod pravděpodobně sdílený mezi oběma tranzistory — přesné přiřazení pinů ověř v diagramu ' +
+      'výrobce před pájením; značení na pouzdru "SY" (rank Y) nebo "SGR" (rank GR)',
+    value:
+      'Duální PNP tranzistor (2× PNP v pouzdře), VCEO -50 V, IC -150 mA, hFE 120–400 ' +
+      '@IC=-2 mA (dle binu)',
+    notes:
+      'Jiangsu Changjiang Electronics Technology (JCET) 2SA1873 "Dual Transistor (PNP+PNP)" ' +
+      '(dok. rev. D, březen 2016) — menší SOT-353 pouzdro (na rozdíl od 6pinového SOT-363 ' +
+      'u BC807U/BC856S, samostatné záznamy), určeno pro aplikace vyžadující vysoké napětí, ' +
+      'vysoký proud a vysoký lineární hFE (např. proudová zrcadla, diferenciální vstupní stupně). ' +
+      'Komplementární NPN protějšek je 2SC4944 (v knihovně zatím nezpracován). Mezní hodnoty: ' +
+      'VCBO=-50 V, VCEO=-50 V, VEBO=-5 V, IC=-150 mA (trvale), PC=200 mW @TA=25 °C, TJ max 150 °C, ' +
+      'Tstg -55 až +150 °C. V(BR)CBO min -50 V @IC=-100 µA/IE=0. V(BR)CEO min -50 V @IC=-1 mA/' +
+      'IB=0. V(BR)EBO min -5 V @IE=-10 µA/IC=0. ICBO max -0,1 µA @VCB=-50 V/IE=0. IEBO max ' +
+      '-0,1 µA @VEB=-5 V/IC=0. hFE min 120 max 400 @VCE=-6 V/IC=-2 mA. VCE(sat) max -0,3 V ' +
+      '@IC=-100 mA/IB=-10 mA. fT min 80 MHz @VCE=-10 V/IC=-1 mA. Cob max 7 pF @VCB=-10 V/IE=0/' +
+      'f=1 MHz. Binování dle hFE: rank Y = 120–240 (značení "SY"), rank GR = 200–400 (značení ' +
+      '"SGR") — konkrétní kus odpovídá jedné ze dvou skupin, ne celému rozsahu 120–400 najednou.',
+    tags: 'tranzistor,pnp,bipolární,duální,sot-353,sc-88,2sa1873,smd',
+  },
 ];
 
 const RESISTOR_SPECS: PartSpec[] = [
