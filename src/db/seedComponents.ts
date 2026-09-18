@@ -2159,6 +2159,35 @@ const CAPACITOR_PART_SPECS: PartSpec[] = [
       'až po D=20 mm/S=10,5 mm (0,10 µF).',
     tags: 'kondenzátor,keramický,vysokonapěťový,disk,1000v,nte,90000',
   },
+  {
+    name: 'Multicomp MCBU/MCFU Series',
+    packageType:
+      'THT keramický disk, radiální rovné vývody, průměr disku 5/6/7/8 mm dle kapacity, ' +
+      'rozteč vývodů (F) 2,5 mm (5mm disk) nebo 5,0 mm (6/7/8mm disk), tloušťka disku max 3,5 mm ' +
+      '— objednací kód např. MCBU5101K5 (100 pF, disk 5 mm, tolerance K=±10 %)',
+    value:
+      'Keramický diskový kondenzátor, 50 V, 100 pF – 47 nF (47 000 pF), dvě přesnostní třídy: ' +
+      'MCBU (Y5P, ±10 %) a MCFU (Z5V, +80/−20 %)',
+    notes:
+      'Multicomp (Premier Farnell/Newark) "MCBU, MCFU Series — Ceramic Disc Capacitors" datasheet ' +
+      'V1.0 (31.8.2006). ⚠️ Elektricky se rozsah kapacity/napětí značně překrývá s generickými ' +
+      '50V keramickými kondenzátory bulk-generovanými v této knihovně (10 pF–470 nF) — hlavní ' +
+      'rozdíl je v pojmenovaném/značeném produktu se dvěma jasně definovanými přesnostními ' +
+      'třídami: MCBU s dielektrikem Y5P (nelineární teplotní koeficient, těsná tolerance ±10 %, ' +
+      'ztrátový činitel tan δ ≤2,5 %) a MCFU s dielektrikem Z5V (širší tolerance +80/−20 %, ' +
+      'tan δ ≤5 %, nižší cena) — u obecných bulk položek v knihovně tato volba není rozlišena. ' +
+      'Provozní teplota -25 až +85 °C (MCB/Y5P) nebo +10 až +85 °C (MCF/Z5V, užší rozsah zdola). ' +
+      'Izolační odpor při 25 °C min. 10 000 MΩ nebo 200 MΩ/µF (podle toho, co je menší). ' +
+      'Dielektrická pevnost 2,5× jmenovité napětí (tedy 125 V zkušebně při 50V dílu). Testovací ' +
+      'podmínky kapacity: 1 kHz ±20 %, 1,0 ±0,2 Vrms. Rozměry dle kapacitního rozsahu: disk 5 mm ' +
+      '(1200–2200 pF u MCB, celý rozsah 1000–5600 pF u MCF), 6 mm (2700–3300 pF), 7 mm ' +
+      '(3900–4700 pF), 8 mm (5600–6800 pF) — u menších kapacit (100–470 pF, 1 nF) rovněž disk ' +
+      '5 mm. Objednací kód kóduje: teplotní charakteristiku (MCB/MCF) + jmenovité napětí (U=50 V) ' +
+      '+ průměr disku (5/6/7/8) + kód kapacity (EIA 3místný, např. 102=1000 pF) + toleranci ' +
+      '(K=±10 %, Z=+80/−20 %) + typ vývodů (5=rovné rozteč 2,5 mm, 6=rovné rozteč 5,0 mm, ' +
+      'G=ammo balení, L=cívka).',
+    tags: 'kondenzátor,keramický,disk,multicomp,mcbu,mcfu,y5p,z5v',
+  },
 ];
 
 function buildFromSpecs(
