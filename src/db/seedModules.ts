@@ -342,6 +342,91 @@ const MODULE_SPECS: ModuleSpec[] = [
       'přechodové jevy, externí vstupní pojistka (dle aplikace) + zemnicí pojistka 1 A.',
     tags: 'modul,alfatronix,powertector,battery-guard,low-voltage-disconnect,odpojovač-baterie',
   },
+  {
+    name: 'LEO-S55',
+    packageType:
+      'Samostatná bezdrátová jednotka (ne modul k pájení na DPS), plastové pouzdro 88,5 × 85,3 × ' +
+      '27 mm, hmotnost 130 g, IP67 (UV odolné, vodotěsné), vnitřní tlačítko napájení, integrovaná ' +
+      'NFC anténa pro konfiguraci, 2× vyměnitelná lithiová baterie ER18505 (4000 mAh každá)',
+    value:
+      'LoRaWAN bezdrátový senzor teploty a vlhkosti, dosah 100 m+ (přímá viditelnost), ' +
+      '-30 až +70 °C (±0,3/±0,6 °C), 0–100 %RH (±3/±5 %), výdrž baterie ~5 let',
+    notes:
+      'Advantech LEO-S55 "LoRaWAN Temperature/Humidity Sensor" (datasheet, aktualizace ' +
+      '19-05-2023). ⚠️ Na rozdíl od ostatních modulů v této knihovně (ESP32-C3-MINI-1 apod., ' +
+      'určených k pájení na vlastní DPS) jde o hotovou bateriovou bezdrátovou jednotku pro ' +
+      'monitoring IoT/průmyslových prostor — komunikuje protokolem LoRaWAN s bránou (gateway), ' +
+      'ne přímo s mikrokontrolérem po sběrnici. Vyžaduje kompatibilní LoRaWAN bránu, např. ' +
+      'Advantech USM-S67 (samostatné záznamy — plná verze podporuje až 100 senzorů LEO-S, ' +
+      'kompaktní/kotoučová verze až 20). Frekvenční pásma dle regionu (objednací kód): ' +
+      'LEO-S552-THG0 = US915/AU915/KR920/AS923 (915MHz skupina pásem), LEO-S552-THC0 = CN470. ' +
+      'Konfigurace přes NFC (bez nutnosti otevírat kryt). Napájení 2× lithiová baterie ER18505 ' +
+      '(3,6 V, 4000 mAh, vyměnitelná), typická výdrž baterie 5 let při intervalu hlášení 10 min ' +
+      '@25 °C (laboratorní údaj, orientační). Bezdrátový dosah 100 m+ při přímé viditelnosti ' +
+      '(laboratorní podmínky, orientační). Teplota: rozsah -30 až +70 °C, přesnost ±0,3 °C ' +
+      '(0 až 70 °C) / ±0,6 °C (-30 až 0 °C), rozlišení 0,1 °C. Vlhkost: rozsah 0–100 %RH, přesnost ' +
+      '±3 % (10–90 %RH) / ±5 % (pod 10 % nebo nad 90 %RH), rozlišení 0,5 %. Provozní teplota ' +
+      '-30 až +70 °C, provozní vlhkost 0–100 % nekondenzující @25 °C. Certifikace FCC, TELEC, ' +
+      'CE (dle konkrétního projektu). Kompatibilní se standardními LoRaWAN bránami a síťovými ' +
+      'servery (ne jen s Advantech USM-S67).',
+    tags: 'modul,lorawan,senzor,teploměr,vlhkoměr,iot,advantech,baterie,ip67',
+  },
+  {
+    name: 'USM-S67 (LoRaWAN & Wi-Fi Gateway)',
+    packageType:
+      'Plastové pouzdro pro montáž na stůl/stěnu/stožár, 180 × 110 × 56,5 mm, IP65, DC jack ' +
+      'konektor (9–24 Vdc) + RJ45 (Ethernet, podporuje 802.3af PoE), 2× interní + 1× externí ' +
+      'anténa (SMA), 1× tlačítko reset, LED indikátory POWER/STATUS/LoRa/Wi-Fi/Ethernet',
+    value:
+      'LoRaWAN + Wi-Fi brána (gateway), čtyřjádrový ARM Cortex-A53 1,5 GHz, 512 MB RAM, 8 GB ' +
+      'eMMC, čip SX1302 (8 kanálů), podporuje až 100 senzorů LEO-S',
+    notes:
+      'Advantech USM-S67 "LoRaWAN Gateway" (datasheet, aktualizace 17-10-2022) — plnohodnotná ' +
+      '(větší) varianta brány, určená k příjmu dat z bezdrátových senzorů řady LEO-S (např. ' +
+      'LEO-S55, samostatný záznam) a jejich přeposílání do LoRaWAN síťového serveru. ⚠️ Pod stejným ' +
+      'označením "USM-S67" existuje i zcela odlišná fyzická varianta — kompaktní kotoučová brána ' +
+      '(samostatný záznam "USM-S67 (Compact)") se slabším procesorem, bez Wi-Fi, s nižším krytím ' +
+      'IP30 a jinými rozměry — objednací kódy se liší příponou ("-G0WP0"/"-C0WP0" pro tuto plnou ' +
+      'verzi vs. "-G00P0"/"-C00P0" pro kompaktní), ale samotné číslo modelu je shodné, což může ' +
+      'vést k záměně. CPU: čtyřjádrový 64bit ARM Cortex-A53 @1,5 GHz, 512 MB DDR4 RAM, 8 GB eMMC ' +
+      'flash. LoRaWAN čip SX1302, 8 poloduplexních/plně duplexních kanálů, frekvenční pásma dle ' +
+      'objednacího kódu US915/AU915/KR920/AS923 (915MHz skupina, kód "-G0WP0") nebo CN470 (kód ' +
+      '"-C0WP0"). 2× interní + 1× externí anténa, dosah 100 m+ (přímá viditelnost, laboratorní ' +
+      'údaj). Připojitelnost: Ethernet 10/100/1000 Base-T, Wi-Fi 802.11 b/g/n 2,4 GHz (záložní ' +
+      'konektivita/backhaul). Podporuje až 100 senzorů LEO-S (závisí na scénáři použití). ' +
+      'Napájení: DC jack 9–24 Vdc, nebo 802.3af PoE. Provozní teplota -40 až +70 °C, skladovací ' +
+      '-40 až +85 °C, provozní vlhkost 0–95 % nekondenzující @25 °C. Zabezpečení: vestavěná ' +
+      'podpora VPN (IPsec/OpenVPN/L2TP/PPTP/DMVPN). Vestavěný síťový server, MQTT/HTTP/HTTPS API, ' +
+      'vestavěné Python SDK pro vlastní vývoj, programovatelné přes Node-RED. Certifikace CE, FCC.',
+    tags: 'modul,lorawan,gateway,brána,wifi,advantech,arm,sx1302,iot',
+  },
+  {
+    name: 'USM-S67 (Compact)',
+    packageType:
+      'Kompaktní kotoučové (kulaté) pouzdro pro montáž na strop/stěnu, ø115 × 21 mm, IP30 (jen ' +
+      'vnitřní použití), RJ45 (Ethernet, podporuje 802.3af PoE) + USB Type-C (napájení), ' +
+      '2× interní anténa (bez externí anténní přípojky), 1× tlačítko reset, LED SYS/LoRa',
+    value:
+      'LoRaWAN brána (gateway), kompaktní verze, ARM Cortex-A7 528 MHz, 256 MB RAM, 4 GB eMMC, ' +
+      'podporuje až 20 senzorů LEO-S, IP30 (jen vnitřní prostory)',
+    notes:
+      'Advantech USM-S67 "Compact LoRaWAN Gateway" (datasheet, aktualizace 17-10-2022). ⚠️ Sdílí ' +
+      'označení modelu "USM-S67" s plnohodnotnou (větší) verzí brány (samostatný záznam "USM-S67 ' +
+      '(LoRaWAN & Wi-Fi Gateway)"), ale jde o fyzicky i výkonově zcela odlišné zařízení — menší ' +
+      'CPU, méně RAM/flash, bez Wi-Fi a bez externí antény, nižší krytí IP30 (vhodné jen do ' +
+      'vnitřních prostor, ne venku jako IP65 plná verze), a podporuje jen 20 senzorů LEO-S místo ' +
+      '100. Rozlišuje se objednacím kódem: "-G00P0"/"-C00P0" (kompaktní) vs. "-G0WP0"/"-C0WP0" ' +
+      '(plná). CPU: ARM Cortex-A7 @528 MHz, 256 MB DDR4 RAM, 4 GB eMMC flash. Frekvenční pásma ' +
+      'dle objednacího kódu US915/AU915/KR920/AS923 (kód "-G00P0") nebo CN470 (kód "-C00P0"). ' +
+      '2× interní anténa, dosah 100 m+ (přímá viditelnost, laboratorní údaj). Připojitelnost: jen ' +
+      'Ethernet 10/100 Base-T (bez Wi-Fi). Podporuje až 20 senzorů LEO-S. Napájení: 802.3af PoE, ' +
+      'nebo 5 V/1 A přes USB Type-C. Provozní teplota -20 až +50 °C (užší rozsah než plná verze), ' +
+      'skladovací -40 až +85 °C, provozní vlhkost 0–95 % nekondenzující @25 °C. Umí detekovat a ' +
+      'analyzovat úroveň rušení (noise level) s přehledným diagramem pro plánování instalace — ' +
+      'funkce, kterou plná verze v datasheetu neuvádí. Stejná podpora VPN, vestavěný síťový ' +
+      'server a MQTT/HTTP/HTTPS API jako plná verze.',
+    tags: 'modul,lorawan,gateway,brána,advantech,arm,iot,kompaktní',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
