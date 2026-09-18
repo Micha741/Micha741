@@ -636,16 +636,31 @@ const IC_SPECS: IcSpec[] = [
   {
     name: 'AT90CAN128',
     packageType:
-      '64pin TQFP (64A, gull-wing) nebo 64pin QFN (64M1) — 53 programovatelných GPIO, porty ' +
-      'A–G (A/B/C/D/E 8bit, F 8bit sdílený s ADC, G 5bit)',
+      '64pin TQFP (balení "A2 64", gull-wing) nebo 64pin QFN (balení "Z64-2", exponovaná ' +
+      'chladicí ploška 6,0×6,0 mm, interně spojená s GND, nutno připájet/přilepit pro mechanickou ' +
+      'stabilitu) — 53 programovatelných GPIO, porty A–G (A/B/C/D/E 8bit, F 8bit sdílený s ADC, ' +
+      'G 5bit)',
     value:
-      '8bit AVR mikrokontrolér s vestavěným CAN 2.0A/2.0B řadičem, 128 KB flash, 4 KB EEPROM, ' +
-      '4 KB SRAM, do 16 MIPS @16 MHz, VCC 2,7–5,5 V',
+      '8bit AVR mikrokontrolér s vestavěným CAN 2.0A/2.0B řadičem (ISO 16845 certifikován), ' +
+      '128 KB flash, 4 KB EEPROM, 4 KB SRAM, do 16 MIPS @16 MHz, VCC 2,7–5,5 V',
     notes:
-      'Atmel AT90CAN128 (datasheet "Preliminary Summary", dok. 4250CS-CAN, rev. 03/04). ⚠️ Stejné ' +
-      'jádro AVR RISC jako rodina ATmega640/1280/1281/2560/2561 (samostatné záznamy), ale navíc ' +
-      'obsahuje vestavěný CAN řadič 2.0A/2.0B — funkce, kterou ATmega640 řada nemá; výrobce navíc ' +
-      'uvádí, že ATmega128 lze zpětně zkompatibilnit s AT90CAN128 dle aplikační poznámky AVR096. ' +
+      'Atmel AT90CAN128 (datasheet "Preliminary Summary", dok. 4250CS-CAN, rev. 03/04). ' +
+      '⚠️ Doplněno dle novějšího společného datasheetu "AT90CAN32/64/128" (dok. 7679HS-CAN, ' +
+      'rev. 08/08), který AT90CAN32/64/128 popisuje jednotně: CAN 2.0A/2.0B řadič je ISO 16845 ' +
+      'certifikován (nezmíněno v původním 2004 datasheetu). ⚠️ Přesné objednací/pouzdrové kódy: ' +
+      'TQFP64 = "A2 64", QFN64 pro AT90CAN128/64 = "Z64-2" (exponovaná ploška 6,0 mm — odlišná ' +
+      'od AT90CAN32, který má menší QFN "Z64-1" s exponovanou ploškou 5,4 mm, viz záznam ' +
+      'AT90CAN32). Dostupné i bezolovnaté "Green"/RoHS varianty (přípona "U" v objednacím kódu, ' +
+      'např. AT90CAN128-16AU/16MU) vedle standardních "I" variant. ⚠️ Rozpor mezi zdroji: brožura ' +
+      'Atmel "Microcontroller Solutions for CAN Networking" (dok. 4012D-CAN, 07/05) uváděla i ' +
+      'automotive gradovanou variantu -40 až +125 °C, ale společný datasheet 7679HS-CAN (2008) ' +
+      'v objednací tabulce uvádí jen "Industrial (-40° to +85°C)" a jeho disclaimer explicitně ' +
+      'píše "Atmels products are not intended, authorized, or warranted for use in automotive ' +
+      'applications" — u aktuálně kupované součástky je třeba ověřit u výrobce, zda automotive ' +
+      'varianta skutečně existuje/je stále vyráběna. Stejné jádro AVR RISC jako rodina ' +
+      'ATmega640/1280/1281/2560/2561 (samostatné záznamy), ale navíc obsahuje vestavěný CAN ' +
+      'řadič 2.0A/2.0B — funkce, kterou ATmega640 řada nemá; výrobce navíc uvádí, že ATmega128 ' +
+      'lze zpětně zkompatibilnit s AT90CAN128 dle aplikační poznámky AVR096. ' +
       '133 instrukcí (většina v 1 cyklu), 32×8 obecných pracovních registrů, on-chip 2cyklová ' +
       'násobička, do 16 MIPS @16 MHz. Paměť: 128 KB In-System programovatelná flash (10 000 ' +
       'cyklů) s volitelnou Boot Loader sekcí (1K/2K/4K/8K bytů, programovatelná přes CAN nebo ' +
@@ -670,9 +685,6 @@ const IC_SPECS: IcSpec[] = [
       'Summary" — elektrické charakteristiky (DC parametry, přesné mezní hodnoty) v něm chybí, ' +
       'typické hodnoty vycházejí ze simulací a charakterizace příbuzných AVR čipů na stejné ' +
       'technologii, min/max hodnoty budou doplněny po charakterizaci konkrétního čipu výrobcem. ' +
-      '⚠️ Doplněno dle brožury Atmel "Microcontroller Solutions for CAN Networking" (dok. ' +
-      '4012D-CAN, 07/05): existuje i automotive gradovaná varianta s rozšířeným teplotním ' +
-      'rozsahem -40 až +125 °C (nad rámec industrial -40 až +85 °C uvedené v hlavním datasheetu). ' +
       'Součást produktové řady AT90CAN32/64/128 (AVR jádro) a T89C51CC01/02, AT89C51CC03 (8051 ' +
       'jádro, samostatné záznamy) — všech 6 typů sdílí kompatibilní CAN periferii a jsou ' +
       'doporučeny s párovým CAN transceiverem ATA6660.',
@@ -681,46 +693,60 @@ const IC_SPECS: IcSpec[] = [
   {
     name: 'AT90CAN32',
     packageType:
-      'TQFP64, QFN64 nebo BGA64 (dle dostupnosti) — porty A/B/C/D/E/F/G shodné s AT90CAN128',
+      '64pin TQFP (balení "A2 64", gull-wing) nebo 64pin QFN (balení "Z64-1", ⚠️ menší exponovaná ' +
+      'chladicí ploška 5,4×5,4 mm — odlišná od AT90CAN64/128, které mají "Z64-2" s plochou ' +
+      '6,0×6,0 mm) — porty A/B/C/D/E/F/G shodné s AT90CAN128',
     value:
-      '8bit AVR mikrokontrolér s vestavěným CAN 2.0A/2.0B řadičem, 32 KB flash, 1 KB EEPROM, ' +
-      '2 KB SRAM, do 16 MIPS @16 MHz, VCC 2,7–5,5 V',
+      '8bit AVR mikrokontrolér s vestavěným CAN 2.0A/2.0B řadičem (ISO 16845 certifikován), ' +
+      '32 KB flash, 1 KB EEPROM, 2 KB SRAM, do 16 MIPS @16 MHz, VCC 2,7–5,5 V',
     notes:
       'Atmel AT90CAN32 — nejmenší člen řady AT90CAN32/64/128 (samostatné záznamy AT90CAN64, ' +
       'AT90CAN128; plný popis architektury, periferií a CAN řadiče viz záznam AT90CAN128). ' +
-      'Zpracováno dle srovnávací tabulky v brožuře Atmel "Microcontroller Solutions for CAN ' +
-      'Networking" (dok. 4012D-CAN, 07/05) — obsahuje jen souhrnné parametry, ne plný detailní ' +
-      'datasheet. Flash 32 KB (+ volitelná boot sekce do 8 KB), EEPROM 1 KB, SRAM 2 KB. CAN ' +
-      'řadič: 15 programovatelných message objektů. Sebeprogramování přes CAN i UART jen pomocí ' +
-      'vlastního (custom) bootloaderu. SPI, JTAG, detekce výpadku napájení (power fail detect) — ' +
-      'vše přítomno stejně jako u AT90CAN128. 4× 16bit časovač (0/1/2/3), 8kanálový PWM, ' +
-      '8kanálový 10bit ADC, 21bit watchdog, 2× UART, TWI (I2C kompatibilní). Napájení 2,7–5,5 V, ' +
-      'max. 16 MHz. Provozní teplota -40 až +85 °C (industrial), dostupná i automotive gradovaná ' +
-      'varianta -40 až +125 °C. Dle brožury plánovaná dostupnost 1Q/2006 (v době vydání dokumentu ' +
-      'ještě nebyl v prodeji) — u aktuálně nakupovaného kusu ověř na stránkách výrobce, zda je ' +
-      'stále vyráběn (starší AVR čipy bývají postupně nahrazovány novějšími řadami, např. ' +
-      'AT90CAN32/64/128 byly později z velké části nahrazeny řadou ATmega32/64/128M1 s CAN).',
+      '⚠️ Doplněno dle společného datasheetu "AT90CAN32/64/128" (dok. 7679HS-CAN, rev. 08/08), ' +
+      'který nahrazuje dříve zpracovanou brožuru Atmel "Microcontroller Solutions for CAN ' +
+      'Networking" (dok. 4012D-CAN, 07/05, jen souhrnná tabulka) — nyní k dispozici skutečný ' +
+      'sdílený datasheet pro AT90CAN32/64/128 (registrová mapa, pinout, pouzdra), byť stále bez ' +
+      'detailní tabulky DC elektrických charakteristik. Flash 32 KB (+ volitelná boot sekce do ' +
+      '8 KB), EEPROM 1 KB, SRAM 2 KB. CAN řadič: 15 programovatelných message objektů, ISO 16845 ' +
+      'certifikován. Sebeprogramování přes CAN i UART jen pomocí vlastního (custom) bootloaderu. ' +
+      'SPI, JTAG, detekce výpadku napájení (power fail detect) — vše přítomno stejně jako u ' +
+      'AT90CAN128. 4× 16bit časovač (0/1/2/3), 8kanálový PWM, 8kanálový 10bit ADC, 21bit ' +
+      'watchdog, 2× UART, TWI (I2C kompatibilní). Napájení 2,7–5,5 V, max. 16 MHz. Provozní ' +
+      'teplota dle objednací tabulky jen -40 až +85 °C (Industrial) — ⚠️ dřívější brožura uváděla ' +
+      'i automotive variantu -40 až +125 °C, ale ta v tomto novějším oficiálním datasheetu není ' +
+      'uvedena a jeho disclaimer výslovně říká, že produkty nejsou určeny pro automotive aplikace; ' +
+      'u konkrétního nakupovaného kusu ověř aktuální stav u výrobce. Dostupné i bezolovnaté ' +
+      '"Green"/RoHS varianty (přípona "U", např. AT90CAN32-16AU/16MU). Starší AVR čipy tohoto ' +
+      'typu bývají postupně nahrazovány novějšími řadami (např. ATmega32/64/128M1 s CAN) — ověř ' +
+      'aktuální dostupnost u výrobce.',
     tags: 'io,mikrokontrolér,avr,at90can32,can,8bit,tqfp64,qfn64',
   },
   {
     name: 'AT90CAN64',
     packageType:
-      'TQFP64, QFN64 nebo BGA64 (dle dostupnosti) — porty A/B/C/D/E/F/G shodné s AT90CAN128',
+      '64pin TQFP (balení "A2 64", gull-wing) nebo 64pin QFN (balení "Z64-2", exponovaná ' +
+      'chladicí ploška 6,0×6,0 mm — shodné s AT90CAN128) — porty A/B/C/D/E/F/G shodné s ' +
+      'AT90CAN128',
     value:
-      '8bit AVR mikrokontrolér s vestavěným CAN 2.0A/2.0B řadičem, 64 KB flash, 2 KB EEPROM, ' +
-      '4 KB SRAM, do 16 MIPS @16 MHz, VCC 2,7–5,5 V',
+      '8bit AVR mikrokontrolér s vestavěným CAN 2.0A/2.0B řadičem (ISO 16845 certifikován), ' +
+      '64 KB flash, 2 KB EEPROM, 4 KB SRAM, do 16 MIPS @16 MHz, VCC 2,7–5,5 V',
     notes:
       'Atmel AT90CAN64 — prostřední člen řady AT90CAN32/64/128 (samostatné záznamy AT90CAN32, ' +
       'AT90CAN128; plný popis architektury, periferií a CAN řadiče viz záznam AT90CAN128). ' +
-      'Zpracováno dle srovnávací tabulky v brožuře Atmel "Microcontroller Solutions for CAN ' +
-      'Networking" (dok. 4012D-CAN, 07/05). Flash 64 KB (+ volitelná boot sekce do 8 KB), ' +
-      'EEPROM 2 KB, SRAM 4 KB — shodná paměť SRAM jako AT90CAN128, ale poloviční flash. CAN ' +
-      'řadič: 15 programovatelných message objektů. Sebeprogramování přes CAN i UART jen pomocí ' +
-      'vlastního (custom) bootloaderu. SPI, JTAG, detekce výpadku napájení — vše přítomno stejně ' +
-      'jako u AT90CAN128. 4× 16bit časovač (0/1/2/3), 8kanálový PWM, 8kanálový 10bit ADC, 21bit ' +
-      'watchdog, 2× UART, TWI. Napájení 2,7–5,5 V, max. 16 MHz. Provozní teplota -40 až +85 °C ' +
-      '(industrial), dostupná i automotive gradovaná varianta -40 až +125 °C. Dle brožury ' +
-      'plánovaná dostupnost 4Q/2005 (v době vydání dokumentu ještě nebyl v prodeji).',
+      '⚠️ Doplněno dle společného datasheetu "AT90CAN32/64/128" (dok. 7679HS-CAN, rev. 08/08), ' +
+      'který nahrazuje dříve zpracovanou brožuru Atmel "Microcontroller Solutions for CAN ' +
+      'Networking" (dok. 4012D-CAN, 07/05, jen souhrnná tabulka). Flash 64 KB (+ volitelná boot ' +
+      'sekce do 8 KB), EEPROM 2 KB, SRAM 4 KB — shodná paměť SRAM jako AT90CAN128, ale poloviční ' +
+      'flash. CAN řadič: 15 programovatelných message objektů, ISO 16845 certifikován. ' +
+      'Sebeprogramování přes CAN i UART jen pomocí vlastního (custom) bootloaderu. SPI, JTAG, ' +
+      'detekce výpadku napájení — vše přítomno stejně jako u AT90CAN128. 4× 16bit časovač ' +
+      '(0/1/2/3), 8kanálový PWM, 8kanálový 10bit ADC, 21bit watchdog, 2× UART, TWI. Napájení ' +
+      '2,7–5,5 V, max. 16 MHz. Provozní teplota dle objednací tabulky jen -40 až +85 °C ' +
+      '(Industrial) — ⚠️ dřívější brožura uváděla i automotive variantu -40 až +125 °C, ale ta ' +
+      'v tomto novějším oficiálním datasheetu není uvedena a jeho disclaimer výslovně říká, že ' +
+      'produkty nejsou určeny pro automotive aplikace; u konkrétního nakupovaného kusu ověř ' +
+      'aktuální stav u výrobce. Dostupné i bezolovnaté "Green"/RoHS varianty (přípona "U", ' +
+      'např. AT90CAN64-16AU/16MU).',
     tags: 'io,mikrokontrolér,avr,at90can64,can,8bit,tqfp64,qfn64',
   },
 
