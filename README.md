@@ -13,12 +13,12 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    363 běžné součástky: 93 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; a NTC
+    364 běžné součástky: 93 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; a NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu), 46 kondenzátorů (keramické,
     elektrolytické, tantalové, fóliové; vysokonapěťová 1000V keramická disková řada NTE 90000;
-    přesná keramická disková řada Multicomp MCBU/MCFU; a nízko/vysokonapěťová keramická
-    disková řada Illinois Capacitor GMR/GQR), 67 diod (usměrňovací, spínací, Schottky,
-    Zenerovy,
+    přesná keramická disková řada Multicomp MCBU/MCFU; nízko/vysokonapěťová keramická
+    disková řada Illinois Capacitor GMR/GQR; a NP0 disk Meritek CCNPO101J50V5B1), 67 diod
+    (usměrňovací, spínací, Schottky, Zenerovy,
     LED včetně výkonových SMD LED LUXEON Rebel a OSLON SSL 80),
     71 tranzistorů (bipolární NPN/PNP, Darlington, duální, komplementární páry, výkonové, VF,
     MOSFET, JFET), 69 integrovaných obvodů

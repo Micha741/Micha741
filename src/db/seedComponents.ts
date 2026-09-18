@@ -2270,6 +2270,32 @@ const CAPACITOR_PART_SPECS: PartSpec[] = [
       'jmenovitého napětí. Shoda s E.I.A. RS 198, Class III.',
     tags: 'kondenzátor,keramický,disk,illinois-capacitor,gqr,vysokonapěťový,z5v,500v',
   },
+  {
+    name: 'CCNPO101J50V5B1',
+    packageType:
+      'THT keramický disk, tělo Ø cca 6 mm (dle tabulky rozsahu kapacit pro NP0 při 50–100 pF), ' +
+      'kompletně durezem potažené (celoplošně krytované) vývody, rozteč vývodů 5,08 mm (kód "5"), ' +
+      'nominální průměr vývodu 0,6 mm, izolační fenolický povlak (namáčecí metoda)',
+    value: 'Keramický diskový kondenzátor, 100 pF, ±5 pF (kód J), 50 V, dielektrikum NP0 (Class 1)',
+    notes:
+      'Meritek "Ceramic Disc Capacitors CC Series" katalogový list rev. 6a. Konkrétní díl dle ' +
+      'systému značení výrobce: CC (řada) + NPO (teplotní charakteristika, Class 1) + 101 ' +
+      '(kapacitní kód EIA: 10×10¹ pF = 100 pF) + J (tolerance ±5 pF) + 50V (jmenovité napětí) + ' +
+      '5 (rozteč vývodů 5,08 mm) + B (bulk balení) + 1 (vývody s kompletním durezovým krytím). ' +
+      'NP0 (též C0G) je "Class 1" teplotně kompenzovaný dielektrik s předvídatelnou lineární ' +
+      'změnou kapacity s teplotou — vhodný pro přesné/kritické obvody jako laděné obvody a ' +
+      'oscilátory (na rozdíl od "Class 2/3" dielektrik jako Y5V/Z5U určených jen pro obecné ' +
+      'blokovací/vazební účely, kde není stabilita kapacity kritická). ⚠️ Tento datasheet ' +
+      'dokumentuje celou širokou produktovou řadu CC (Class 1 NP0/N-řady, Class 2 Y5E/Y5P/Z5U/Z5V, ' +
+      'Class 3 "semiconductor type" Y5P/Y5T/Y5U/Y5V) s desítkami kombinací kapacit/napětí/pouzder ' +
+      '— do knihovny přidán jen konkrétní pojmenovaný díl CCNPO101J50V5B1 z názvu souboru, ne ' +
+      'celá matice kombinací. Provozní teplota -25 až +85 °C. Kapacita měřena @1±0,1 MHz/1 Vrms/' +
+      '25 °C. Činitel jakosti (Q) @1±0,1 MHz/1 Vrms/25 °C: pro C<30 pF je Q=400+20×C, pro C≥30 pF ' +
+      '(platí pro tento díl, 100 pF) je Q min. 1000. Zkušební napětí 250 % jmenovitého napětí ' +
+      '(max. nabíjecí proud 50 mA) = 125 V pro tento 50V díl. Izolační odpor min. 10 000 MΩ ' +
+      '(měřeno při jmenovitém napětí, 60 s). RoHS.',
+    tags: 'kondenzátor,keramický,disk,meritek,np0,c0g,class1,cc-series',
+  },
 ];
 
 function buildFromSpecs(
