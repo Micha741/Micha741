@@ -2128,6 +2128,61 @@ const DIODE_SPECS: PartSpec[] = [
     tags: 'dioda,led,displej,7segment,modrá,gan,sic,everlight,els-512ubwa,jednomístný',
   },
   {
+    name: 'BT-M511RD / BT-N511RD',
+    packageType:
+      'THT 12pin DIP pouzdro "TD-09" (0,56" výška znaku, 3místný displej), tělo 37,50×18,90 mm, ' +
+      'rozteč vývodů 2,54 mm; BT-M511RD = společná anoda, BT-N511RD = společná katoda (piny D1/' +
+      'D2/D3 vyvedeny odděleně pro multiplexní buzení, segmenty A-G+DP sdíleny mezi číslicemi)',
+    value:
+      '3místný 7segmentový LED displej (multiplexovaný), červená (GaAsP), λp 655 nm, IV/seg ' +
+      'typ. 0,6 mcd @IF=10 mA, VF typ. 1,7 V',
+    notes:
+      'Yellow Stone Corp "Three Digit LED Displays" katalogový datasheet — ⚠️ rozsáhlý katalog ' +
+      'pokrývající 2 typy pouzder (TD-09: multiplexované, sdílené segmenty A-G+DP mezi číslicemi, ' +
+      'jen 12 pinů; TD-10: plně nezávislé, každá číslice má vlastní sadu segmentových pinů, 27+ ' +
+      'pinů) × 7 barevných/materiálových variant (GaAsP červená, GaP jasně červená, GaP zelená, ' +
+      'GaAsP/GaP žlutá, GaAsP/GaP hi-eff červená/oranžová, GaAlAs SH super červená, GaAlAs DH ' +
+      'super červená) × 2 polarity (společná anoda/katoda) — do knihovny přidán jen konkrétní ' +
+      'pojmenovaný pár BT-M511RD/BT-N511RD z názvu souboru (pouzdro TD-09, GaAsP červená). ' +
+      'Multiplexované zapojení (TD-09): segmentové elektrody A-G+DP jsou společné pro všechny 3 ' +
+      'číslice, každá číslice má samostatný vyvedený pin D1/D2/D3 pro postupné rozsvěcování ' +
+      '(časový multiplex) — nižší počet pinů (12) než u plně statického TD-10 pouzdra (27+), ale ' +
+      'vyžaduje řízení s obnovovací frekvencí (multiplex driver). VF typ. 1,7/max 2,0 V @IF=10 mA ' +
+      '(⚠️ nižší napětí než u jednomístného BS-AA21RD/BS-CA21RD v této knihovně, přestože stejný ' +
+      'materiál GaAsP a λp 655 nm — patrně jiná konstrukce čipu/přechodu). IV/segment typ. ' +
+      '0,6 mcd @IF=10 mA. λp 655 nm, Δλ 40 nm. Mezní hodnoty: PD 80 mW, IF max 40 mA, IFP max ' +
+      '200 mA. Ostatní varianty stejného TD-09 pouzdra (BT-M512RD až BT-M51DRD / BT-N512RD až ' +
+      'BT-N51DRD) pokrývají zelenou (568 nm), žlutou (585 nm), oranžovou/hi-eff červenou (635 nm) ' +
+      'a dvě varianty super červené GaAlAs (660 nm, IV až 7 mcd/seg).',
+    tags: 'dioda,led,displej,7segment,3místný,multiplex,yellow-stone,bt-m511rd,červená,gaasp,td-09',
+  },
+  {
+    name: 'ELT-511USOWA/S530-A3',
+    packageType:
+      'THT 12pin DIP pouzdro (0,56" výška znaku, 3 číslice), tělo 37,7×19,0 mm, rozteč vývodů ' +
+      '2,54 mm×5, šedé čelo displeje s bílými segmenty, společná katoda; multiplexované zapojení ' +
+      '(segmenty A-G+DP sdíleny, samostatné piny D1/D2/D3 pro jednotlivé číslice)',
+    value:
+      '3místný 7segmentový LED displej (multiplexovaný), načervenalá oranžová (AlGaInP), λp ' +
+      '621 nm, IV/seg typ. 17,6 mcd @IF=10 mA, VF typ. 2,0 V',
+    notes:
+      'Everlight Electronics "ELT-511USOWA/S530-A3 — 0.56" Triple Digit Displays" (dok. ' +
+      'CDDT-511-049, rev. 1, květen 2007) — konkrétní jeden díl (na rozdíl od rozsáhlého katalogu ' +
+      'Yellow Stone BT-M511RD/BT-N511RD v této knihovně, samostatný záznam, se kterým sdílí ' +
+      'stejnou aplikační kategorii — 0,56" 3místný multiplexovaný 7seg. displej pro audio ' +
+      'zařízení, přístrojové panely a číslicové ukazatele) — ale zcela jiný výrobce, materiál ' +
+      'čipu (AlGaInP místo GaAsP) a výrazně vyšší svítivost. Multiplexované zapojení: segmentové ' +
+      'elektrody A-G+DP společné pro všechny 3 číslice, samostatné anody D1/D2/D3 (piny 12/9/8) ' +
+      'pro postupné rozsvěcování. Mezní hodnoty: VR max 5 V, IF max 25 mA, provozní teplota -40 ' +
+      'až +85 °C, skladovací -40 až +100 °C, pájecí teplota 260±5 °C/5 s, ESD (HBM) 2000 V, PD ' +
+      'max 60 mW. VF typ. 2,0/max 2,4 V @IF=20 mA. IR max 100 µA @VR=5 V. IV/segment typ. ' +
+      '4,0 mcd @IF=2 mA / 7,8 min-17,6 typ. mcd @IF=10 mA; IV/desetinná tečka typ. 1,0 mcd @IF=2 mA ' +
+      '/ min 2,0-typ. 4,0 mcd @IF=10 mA. λp typ. 621 nm, λd (dominantní) typ. 615 nm, Δλ typ. ' +
+      '18 nm @IF=20 mA — bílé segmenty na šedém čele pouzdra pro dobrý kontrast na jasném ' +
+      'okolním světle, čitelnost do 7 m. Balení 13 ks/tuba, 54 tub/box.',
+    tags: 'dioda,led,displej,7segment,3místný,multiplex,everlight,elt-511usowa,oranžová,algainp',
+  },
+  {
     name: 'TIL302',
     packageType:
       '14vývodové THT pouzdro, červený solid-state 7segmentový displej, výška znaku 6,9 mm ' +
