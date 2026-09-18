@@ -1724,6 +1724,83 @@ const DIODE_SPECS: PartSpec[] = [
       'Ostatní mezní hodnoty (IF/IFP, teploty) shodné s AND-5610S.',
     tags: 'dioda,led,displej,7segment,and-optoelectronics,and-5610,zelená,gap',
   },
+  {
+    name: 'TIL302',
+    packageType:
+      '14vývodové THT pouzdro, červený solid-state 7segmentový displej, výška znaku 6,9 mm ' +
+      '(0,270"), montovatelný na roztečích 11,43 mm (0,450") pro vícemístné sestavy; interní ' +
+      'zapojení redukuje počet pinů z 16 na 14 slučováním segmentů A+B (pin 14) a C+D (pin 9), ' +
+      'zatímco E/F/G/DP jsou vyvedeny společně na pin 3 (piny 4, 5, 12 nevyužity)',
+    value:
+      '7segmentový LED displej (číslicový), červená, λp 660 nm, IV/segment typ. 275 µcd ' +
+      '@IF=20 mA, VF typ. 3,4 V',
+    notes:
+      'Texas Instruments "TIL302, TIL303, TIL304 — Numeric Displays" (dok. SOES010A, duben ' +
+      '1971, revidováno prosinec 1993) — vintage červený solid-state 7segmentový displej, ' +
+      'kompatibilní s většinou TTL/DTL obvodů. Zpracována celá řada 3 dílů z jednoho datasheetu ' +
+      '(TIL302, TIL303 — samostatné záznamy, standardní 7segmentové číslicové displeje lišící se ' +
+      'jen vnitřním propojením segmentů/pozicí desetinné tečky; TIL304 — samostatný záznam, ' +
+      'speciální znaménkový/přetokový "±1." displej). TIL302: interní zapojení sdružuje segmenty ' +
+      'A+B a C+D do společných párů (viz packageType) pro úsporu pinů, zatímco E, F, G a desetinná ' +
+      'tečka (vlevo) jsou spojeny na jeden společný pin — typicky pro aplikace, kde tyto segmenty ' +
+      'svítí vždy současně (např. zobrazení číslice "8" nebo řízení přes dekodér, který tyto ' +
+      'kombinace segmentů stejně sdružuje). Elektrické parametry (společné pro segmenty všech tří ' +
+      'dílů): reverzní napětí 6 V/segment, 3 V/desetinná tečka. Špičkový propustný proud 200 mA ' +
+      '(PRR≥60 Hz, duty≤10 %). Trvalý propustný proud 30 mA/segment nebo tečku, celkem max 240 mA ' +
+      '(TIL302/303). Provozní teplota 0 až +70 °C, skladovací -25 až +85 °C. Segment: IV min ' +
+      '100/typ. 275 µcd @IF=20 mA, λp typ. 660 nm, Δλ typ. 20 nm, VF min 3/typ. 3,4/max 3,8 V, ' +
+      'αVF typ. -2,7 mV/°C, IR max 100 µA @VR=6 V, C typ. 85 pF @VR=0/1 MHz. Desetinná tečka: IV ' +
+      'min 40/typ. 110 µcd, VF min 1,5/typ. 1,65/max 2 V, αVF typ. -1,4 mV/°C, IR max 100 µA ' +
+      '@VR=3 V, C typ. 120 pF.',
+    tags: 'dioda,led,displej,7segment,texas-instruments,til302,červená,vintage',
+  },
+  {
+    name: 'TIL303',
+    packageType:
+      '14vývodové THT pouzdro, červený solid-state 7segmentový displej, výška znaku 6,9 mm ' +
+      '(0,270"), montovatelný na roztečích 11,43 mm (0,450"); jiné vnitřní sloučení segmentů než ' +
+      'TIL302 — A+F (pin 2) a B+C+G (pin 13) tvoří společné páry/trojici, D/E/desetinná tečka ' +
+      '(vpravo) sdruženy na pin 7 (piny 5, 11, 12 nevyužity)',
+    value:
+      '7segmentový LED displej (číslicový), červená, λp 660 nm, IV/segment typ. 275 µcd ' +
+      '@IF=20 mA, VF typ. 3,4 V — odlišné vnitřní zapojení segmentů než TIL302',
+    notes:
+      'Texas Instruments "TIL302, TIL303, TIL304" (dok. SOES010A, 1971/rev. 1993) — součást ' +
+      'stejné řady jako TIL302 a TIL304 (samostatné záznamy) — viz záznam TIL302 pro plný popis ' +
+      'shodných elektrických parametrů a mezních hodnot (VF/IV/λp/kapacita segmentu i tečky, ' +
+      'proudová omezení, teploty). TIL303 se od TIL302 liší pouze vnitřním sloučením segmentů do ' +
+      'společných pinů (viz packageType) — jiná kombinace segmentů svítí společně, a poloha ' +
+      'desetinné tečky je na opačné (pravé) straně znaku oproti TIL302 (levá tečka). Fyzicky ' +
+      'shodné pouzdro/rozměry jako TIL302, mechanicky zaměnitelné, ale vyžaduje odlišné řídicí ' +
+      'zapojení kvůli jinému sdružení segmentových pinů.',
+    tags: 'dioda,led,displej,7segment,texas-instruments,til303,červená,vintage',
+  },
+  {
+    name: 'TIL304',
+    packageType:
+      '14vývodové THT pouzdro, červený solid-state displej, výška znaku 6,9 mm (0,270"); ' +
+      'NEJDE o plný 7segmentový znak — zobrazuje jen tvar "±1." (znaménko/přetokový symbol + ' +
+      'desetinná tečka), piny 2, 3, 4, 5, 6, 12, 13 nevyužity (jen 7 aktivních pinů)',
+    value:
+      'Znaménkový/přetokový LED displej ("±1." symbol pro kalkulačky/číselníky), červená, ' +
+      'λp 660 nm, VF typ. 3,4 V (segmenty A/B/C/D) — max. celkový proud 150 mA (nižší než ' +
+      'TIL302/303)',
+    notes:
+      'Texas Instruments "TIL302, TIL303, TIL304" (dok. SOES010A, 1971/rev. 1993) — ⚠️ ' +
+      'ZÁSADNĚ odlišný účel od TIL302/TIL303 (samostatné záznamy, plné 7segmentové číslicové ' +
+      'displeje) — TIL304 zobrazuje pouze speciální kombinaci tvarů "+", "−", "1" a desetinnou ' +
+      'tečku (typicky značeno segmenty A, B, C, D v datasheetu, ale jde o jinak tvarované ' +
+      'segmenty než u běžné "8" v 7seg. displeji) — používáno jako znaménkový (sign) a přetokový ' +
+      '(overflow) indikátor v kalkulačkách a číselnících vedle hlavních číslicových pozic ' +
+      '(TIL302/TIL303 nebo obdobných), ne jako samostatná číslice. Elektrické parametry segmentu ' +
+      'i desetinné tečky shodné s TIL302/TIL303 (viz záznam TIL302 pro plné hodnoty VF/IV/λp/ ' +
+      'kapacita/αVF), pouze celkový trvalý propustný proud je nižší — max 150 mA (vs. 240 mA u ' +
+      'TIL302/303), odpovídající menšímu počtu aktivních segmentů/pinů. Reverzní napětí 6 V/' +
+      'segment, 3 V/tečka, špičkový propustný proud 200 mA/segment (PRR≥60 Hz, duty≤10 %), ' +
+      'provozní teplota 0 až +70 °C, skladovací -25 až +85 °C. Piny: 1=C+D, 7=D, 8=C, 9=DP, ' +
+      '10=B, 11=A, 14=A+B+DP.',
+    tags: 'dioda,led,displej,znaménkový,přetokový,texas-instruments,til304,červená,vintage',
+  },
 ];
 
 const TRANSISTOR_SPECS: PartSpec[] = [
