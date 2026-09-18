@@ -427,6 +427,65 @@ const MODULE_SPECS: ModuleSpec[] = [
       'server a MQTT/HTTP/HTTPS API jako plná verze.',
     tags: 'modul,lorawan,gateway,brána,advantech,arm,iot,kompaktní',
   },
+  {
+    name: 'ETHSA',
+    packageType:
+      'Samostatná bezdrátová jednotka (ne modul k pájení), bílé pouzdro (RAL 9010), rozměry bez ' +
+      'nástěnné destičky 76,2 × 22 × 15 mm, s nástěnnou destičkou 79 × 23,8 × 18,6 mm, se stojánkem ' +
+      'a trojúhelníkovým krytem (jen jednotlivé balení) 85 × 30 × 30 mm, vnitřní helix anténa, ' +
+      'IP40, jen pro vnitřní použití; přiložena nalepovací podložka, u jednotlivého balení i kovový ' +
+      'stojánek a náhradní trojúhelníkový kryt',
+    value:
+      'Bezdrátový solární senzor teploty a vlhkosti (EnOcean, 868,300 MHz, +5 dBm), -20 až +60 °C ' +
+      '(±0,5 K), 0–100 %RH (±4,5 %), bez baterie (jen záložní CR1225), dosah 300 m volný prostor',
+    notes:
+      'EnOcean ETHSA/ETHSU "EASYFIT Temperature & Humidity Sensor" (datasheet, duben 2022) — ' +
+      'zpracovány oba typy z jednoho dokumentu (ETHSA pro EU/UK, ETHSU pro US/CA, samostatný ' +
+      'záznam). ⚠️ Solárně napájený bezúdržbový bezdrátový senzor s energy harvesting technologií ' +
+      '— na rozdíl od LEO-S55 (samostatný záznam, primárně bateriové napájení 2× ER18505) nemá ' +
+      'žádnou baterii v základní výbavě, jen volitelnou zálohu CR1225 (neobsažena v balení) pro ' +
+      'provoz ve tmě. ETHSA: EnOcean rádio 868,300 MHz, +5 dBm vysílací výkon, schválení EU/UK ' +
+      'CE/UKCA, objednací kódy S3001-C350 (jednotlivé balení) a S3001-T350 (tray balení, 56 ks). ' +
+      'Primární napájení: vnitřní osvětlení min. 50 lx (solární článek). Vnitřní helix anténa, ' +
+      'dosah 300 m volný prostor, typ. 30 m ve vnitřních prostorách. EnOcean Equipment Profile ' +
+      '(EEP) A5-04-03 (naměřená teplota a vlhkost), SIGNAL 0x06 (hlášení úrovně energie), SIGNAL ' +
+      '0x0E (vstup do transportního režimu). Zabezpečení: VAES 128, CMAC, RLC čítač proti replay ' +
+      'útokům. Teplota: rozsah -20 až +60 °C, rozlišení 0,1 K, přesnost ±0,5 K v celém rozsahu. ' +
+      'Vlhkost: rozsah 0–100 %RH, rozlišení 0,4 %RH, přesnost ±4,5 %RH v celém rozsahu (±3 %RH ' +
+      'mezi 20–80 %RH). Měřicí cyklus jednou za 100 s. Okamžité vysílání při změně >±0,5 K nebo ' +
+      '>±3 %RH oproti poslední zprávě; jinak pravidelné "sign-of-life" hlášení každých 11–24 min ' +
+      '(náhodně). Doba náběhu z vybitého úložiště energie typ. <2,5 min @400 lx/25 °C. Minimální ' +
+      'podmínka pro bezbateriový provoz: 1200 lx·h/den @25 °C. Provozní doba ve tmě >10 dní (plně ' +
+      'nabité úložiště, jen sign-of-life zprávy, 25 °C) — dlouhodobé vystavení >30 °C postupně ' +
+      'degraduje kapacitu úložiště energie, nutno dobít po max. 36 měsících v transportním režimu. ' +
+      'Teach-in (párování) tlačítkem s LED indikací. Provozní podmínky -20 až +60 °C, 0–93 %RH ' +
+      'nekondenzující, IP40, jen vnitřní použití. Skladovací podmínky doporučeně +10 až 30 °C, ' +
+      '<60 %RH, max. 36 měsíců v transportním režimu.',
+    tags: 'modul,enocean,easyfit,senzor,teploměr,vlhkoměr,solární,bezdrátový,ethsa',
+  },
+  {
+    name: 'ETHSU',
+    packageType:
+      'Samostatná bezdrátová jednotka (ne modul k pájení), bílé pouzdro (RAL 9010), rozměry bez ' +
+      'nástěnné destičky 76,2 × 22 × 15 mm, s nástěnnou destičkou 79 × 23,8 × 18,6 mm, se stojánkem ' +
+      'a trojúhelníkovým krytem (jen jednotlivé balení) 85 × 30 × 30 mm, vnitřní helix anténa, ' +
+      'IP40, jen pro vnitřní použití',
+    value:
+      'Bezdrátový solární senzor teploty a vlhkosti (EnOcean, 902,875 MHz, +99 dBµV/m), -20 až ' +
+      '+60 °C (±0,5 K), 0–100 %RH (±4,5 %), bez baterie (jen záložní CR1225), dosah 300 m ' +
+      'volný prostor',
+    notes:
+      'EnOcean ETHSA/ETHSU "EASYFIT Temperature & Humidity Sensor" (datasheet, duben 2022). ' +
+      '⚠️ ETHSU = severoamerická/kanadská regionální varianta ETHSA (samostatný záznam) — ' +
+      'shodná konstrukce, mechanika a senzorové parametry, liší se jen frekvencí/výkonem rádia ' +
+      'a certifikací: EnOcean rádio 902,875 MHz, vysílací výkon +99 dBµV/m (jiná jednotka než ' +
+      'ETHSA kvůli odlišné regulaci FCC/ISED oproti evropské +5 dBm), schválení US/CA FCC/ISED. ' +
+      'Objednací kód S3051-C350 (jen jednotlivé balení, na rozdíl od ETHSA nemá v datasheetu ' +
+      'uvedenou tray varientu). Všechny ostatní parametry (senzor teploty/vlhkosti, EEP profil, ' +
+      'zabezpečení, napájení, mechanika, provozní/skladovací podmínky) shodné s ETHSA — viz jeho ' +
+      'záznam pro plný popis.',
+    tags: 'modul,enocean,easyfit,senzor,teploměr,vlhkoměr,solární,bezdrátový,ethsu',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {

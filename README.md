@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    348 běžných součástek: 93 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; a NTC
+    350 běžných součástek: 93 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; a NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu), 39 kondenzátorů (keramické,
     elektrolytické, tantalové, fóliové), 67 diod (usměrňovací, spínací, Schottky, Zenerovy,
     LED včetně výkonových SMD LED LUXEON Rebel a OSLON SSL 80),
@@ -24,11 +24,11 @@ i návrh schémat obvodů a plošných spojů.
     mikrokontroléry ATmega640/1280/1281/2560/2561, rodina CAN mikrokontrolérů AT90CAN32/64/128
     (AVR) a T89C51CC01/02, AT89C51CC03 (8051), digitální teploměry DS18B20, DS1822, TC625,
     senzory vlhkosti a teploty DHT11, SHT71/SHT75, SHT85 a kanálový (duct) senzor Belimo
-    22DTH-51M, sériová flash paměť MX25L6406E aj.), 14 modulů
+    22DTH-51M, sériová flash paměť MX25L6406E aj.), 16 modulů
     (Wi-Fi/BLE: ESP32-C3-MINI-1, ESP32-C3-WROOM-02, Adafruit Feather
     HUZZAH ESP8266, ESP8684-MINI-1, ESP-12S; nízkonapěťové odpojovače baterie Alfatronix
-    PowerTector PT10/PT20/PT40/PT60/PT100/PT200; LoRaWAN senzor LEO-S55 a brány USM-S67)
-    a 1 konektor/přepěťová ochrana (Ethernet/PoE
+    PowerTector PT10/PT20/PT40/PT60/PT100/PT200; LoRaWAN senzor LEO-S55 a brány USM-S67;
+    solární bezdrátové senzory EnOcean ETHSA/ETHSU) a 1 konektor/přepěťová ochrana (Ethernet/PoE
     bleskojistka ESP-100-POE). Tlačítkem „Knihovna”
     v horní liště lze kdykoli doplnit chybějící položky (např. po smazání), aniž
     by se duplikovaly už existující.
