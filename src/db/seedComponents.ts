@@ -1926,6 +1926,79 @@ const DIODE_SPECS: PartSpec[] = [
     tags: 'dioda,led,displej,16segment,alfanumerický,and-optoelectronics,and-8010,zelená,gap',
   },
   {
+    name: 'MV53164',
+    packageType:
+      '20pin DIP pouzdro (0,3" rozteč vývodů), end-stackable (montovatelné do řady vedle sebe) ' +
+      '— 10 segmentů se samostatnou anodou i katodou pro každý segment, piny 1-10=anody segmentů ' +
+      'Bar1-10, piny 11-20=katody segmentů Bar10-1 (opačné pořadí)',
+    value:
+      '10segmentový LED bargraf displej (sloupcový ukazatel), žlutá, λp 585 nm, IV (průměr) typ. ' +
+      '1800 µcd @IF=10 mA, VF typ. 2,0 V',
+    notes:
+      'QT Optoelectronics "Yellow MV53164, High Efficiency Green MV54164, High Efficiency Red ' +
+      'MV57164 — Bargraph Displays" — 10segmentový LED bargraf (sloupcový/úrovňový ukazatel, ' +
+      'typicky buzený obvodem LM3914/podobným) se samostatnou anodou a katodou pro každý ze 10 ' +
+      'segmentů (20 aktivních pinů), vysoce vhodný pro multiplexování díky rychlému přepínání ' +
+      '(500 ns). Zpracována celá řada 3 barevných variant ve stejném mechanickém pouzdře z ' +
+      'jednoho datasheetu (MV53164 žlutá, MV54164 vysoce účinná zelená, MV57164 vysoce účinná ' +
+      'červená, samostatné záznamy). MV53164 (žlutá): PD 750 mW @25 °C (derating -14,3 mW/°C nad ' +
+      '50 °C), provozní/skladovací teplota -40 až +85 °C, celkový propustný proud (trvalý) max ' +
+      '200 mA, na segment max 25 mA, reverzní napětí/segment max 6 V, pájecí teplota 260 °C/5 s. ' +
+      'VF typ. 2,0/max 2,5 V @IF=10 mA. IV (průměrná svítivost přes všechny segmenty, Note 1) min ' +
+      '510/typ. 1800 µcd @IF=10 mA — rozptyl svítivosti mezi segmenty v rámci jednoho kusu max ' +
+      '±33,3 %, díly kategorizovány (binovány) dle svítivosti, kategorie značena písmenným ' +
+      'sufixem na součástce. λp typ. 585 nm, Δλ typ. 40 nm. Dynamický odpor segmentu typ. 26 Ω ' +
+      '@IF=20 mA. Kapacita typ. 35 pF @V=0/1 MHz. Doba přepnutí typ. 500 ns @IF=10 mA. Reverzní ' +
+      'napětí max 6,0 V @IR=100 µA. Tepelný odpor přechod-okolí ΘJA 160 °C/W, teplotní koeficient ' +
+      'VF typ. -1,5 mV/°C. Doporučený kontrastní filtr: Panelgraphic Yellow 25 nebo Amber 23 ' +
+      '(příp. Homalite 190-1720 nebo 100-1726).',
+    tags: 'dioda,led,bargraf,displej,žlutá,qt-optoelectronics,mv53164,dip-20',
+  },
+  {
+    name: 'MV54164',
+    packageType:
+      '20pin DIP pouzdro (0,3" rozteč vývodů), end-stackable — shodné mechanické pouzdro jako ' +
+      'MV53164/MV57164, 10 segmentů se samostatnou anodou i katodou',
+    value:
+      '10segmentový LED bargraf displej, vysoce účinná (high efficiency) zelená, λp 562 nm, IV ' +
+      'typ. 1800 µcd @IF=10 mA, VF typ. 2,2 V',
+    notes:
+      'QT Optoelectronics "MV53164/MV54164/MV57164 — Bargraph Displays" — součást stejné řady ' +
+      'jako žlutá MV53164 a červená MV57164 (samostatné záznamy) — viz záznam MV53164 pro plný ' +
+      'popis principu bargraf displeje, mechanického pouzdra a pinoutu. MV54164 (zelená, "high ' +
+      'efficiency"): PD 750 mW @25 °C, provozní/skladovací teplota -40 až +85 °C, celkový ' +
+      'propustný proud max 300 mA (⚠️ vyšší než 200 mA u žluté MV53164), na segment max 30 mA, ' +
+      'reverzní napětí/segment max 6 V. VF typ. 2,2/max 3,0 V @IF=10 mA. IV min 510/typ. ' +
+      '1800 µcd @IF=10 mA; navíc jako jediná v řadě udává datasheet i pulzní svítivost min ' +
+      '710/typ. 2500 µcd @IF=60 mA (špičkový proud, duty factor 1:6). λp typ. 562 nm, Δλ typ. ' +
+      '30 nm (užší než 40 nm u žluté/červené). Dynamický odpor segmentu typ. 12 Ω @IF=20 mA ' +
+      '(nižší než 26 Ω u žluté/červené). Kapacita typ. 40 pF. Teplotní koeficient VF typ. ' +
+      '-1,4 mV/°C. Ostatní parametry (ΘJA, doba přepnutí, reverzní napětí) shodné s MV53164. ' +
+      'Doporučený kontrastní filtr: Panelgraphic Green 48 (příp. Homalite 100-1440 Green).',
+    tags: 'dioda,led,bargraf,displej,zelená,vysoce-účinná,qt-optoelectronics,mv54164,dip-20',
+  },
+  {
+    name: 'MV57164',
+    packageType:
+      '20pin DIP pouzdro (0,3" rozteč vývodů), end-stackable — shodné mechanické pouzdro jako ' +
+      'MV53164/MV54164, 10 segmentů se samostatnou anodou i katodou',
+    value:
+      '10segmentový LED bargraf displej, vysoce účinná (high efficiency) červená, λp 630 nm, IV ' +
+      'typ. 1800 µcd @IF=10 mA, VF typ. 2,2 V',
+    notes:
+      'QT Optoelectronics "MV53164/MV54164/MV57164 — Bargraph Displays" — součást stejné řady ' +
+      'jako žlutá MV53164 a zelená MV54164 (samostatné záznamy) — viz záznam MV53164 pro plný ' +
+      'popis principu bargraf displeje, mechanického pouzdra a pinoutu. MV57164 (červená, "high ' +
+      'efficiency"): PD 750 mW @25 °C, provozní/skladovací teplota -40 až +85 °C, celkový ' +
+      'propustný proud max 300 mA, na segment max 30 mA, reverzní napětí/segment max 6 V. VF ' +
+      'typ. 2,2/max 3,0 V @IF=10 mA. IV min 510/typ. 1800 µcd @IF=10 mA. λp typ. 630 nm, Δλ typ. ' +
+      '40 nm. Dynamický odpor segmentu typ. 26 Ω @IF=20 mA. Kapacita typ. 35 pF. Teplotní ' +
+      'koeficient VF typ. -2,0 mV/°C (⚠️ nejvyšší teplotní drift v řadě). Ostatní parametry (ΘJA, ' +
+      'doba přepnutí, reverzní napětí) shodné s MV53164/MV54164. Doporučený kontrastní filtr: ' +
+      'Panelgraphic Red 60 (příp. Homalite 100-1605).',
+    tags: 'dioda,led,bargraf,displej,červená,vysoce-účinná,qt-optoelectronics,mv57164,dip-20',
+  },
+  {
     name: 'TIL302',
     packageType:
       '14vývodové THT pouzdro, červený solid-state 7segmentový displej, výška znaku 6,9 mm ' +
