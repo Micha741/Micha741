@@ -516,6 +516,29 @@ const MODULE_SPECS: ModuleSpec[] = [
       'VDD_IO→VCSW1/2→VSP/VSN→…→normální zobrazení). RoHS.',
     tags: 'modul,displej,lcd,tft,ips,dotykový-panel,kapacitní,mipi-dsi,az-displays,ek79030,ft7311',
   },
+  {
+    name: 'ATM0680L2A',
+    packageType:
+      '6,86" TFT-LCD modul BEZ dotykového panelu, aktivní plocha 60,22×160,59 mm, celkové ' +
+      'rozměry modulu 66,6×181×4,5 mm (⚠️ tenčí než dotyková verze -CT, 4,5 mm vs. 6,6 mm — bez ' +
+      'vrstvy krycího skla/ITO dotykového senzoru), hmotnost 81 g typ., 40pin FPC konektor ' +
+      '(MIPI-DSI) — shodný s -CT verzí',
+    value:
+      '6,86" IPS TFT displej 480×1280 (RGB stripe), 16,7M barev, MIPI-DSI 4-lane, jas 1100 cd/m² ' +
+      'typ. — bez dotykové vrstvy',
+    notes:
+      'AZ Displays "ATM0680L2A TFT Module" (specifikace ver. 1.3, srpen 2019) — ⚠️ stejný LCD ' +
+      'panel/řadič/podsvícení jako dotyková verze ATM0680L2A-CT (samostatný záznam), ale BEZ ' +
+      'integrovaného kapacitního dotykového panelu (touch panel/touch controller: "N.A." v ' +
+      'datasheetu) — viz záznam ATM0680L2A-CT pro plný popis LCD parametrů, řadiče a ' +
+      'podsvícení, které jsou identické. Rozdíly oproti -CT verzi: bez dotykové vrstvy je modul ' +
+      'tenčí (4,5 mm vs. 6,6 mm hloubka) a má vyšší udávaný jas 1100 cd/m² typ. (vs. 920 cd/m² u ' +
+      '-CT — dotyková vrstva/krycí sklo u -CT verze část světla pohlcuje/odráží). Pinout ' +
+      '40pinového LCD FPC konektoru identický s -CT verzí (piny GND/D0P-D3N/CLKP-CLKN/VCC_1V8/ ' +
+      'BIST/RST/STBYB/K/A/VDD). Elektrické parametry (VDD, IOVcc, VSP/VSN, mezní hodnoty, ' +
+      'sekvence zapínání) shodné s ATM0680L2A-CT.',
+    tags: 'modul,displej,lcd,tft,ips,mipi-dsi,az-displays,ek79030,bez-dotyku',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
