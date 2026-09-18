@@ -1999,6 +1999,34 @@ const DIODE_SPECS: PartSpec[] = [
     tags: 'dioda,led,bargraf,displej,červená,vysoce-účinná,qt-optoelectronics,mv57164,dip-20',
   },
   {
+    name: 'BS-AA21RD / BS-CA21RD',
+    packageType:
+      'THT 20pin DIP pouzdro "SD-43" (1,00" výška znaku), tělo 13,70×33,00 mm, rozteč vývodů ' +
+      '2,54 mm (řada)/5,08 mm; NC pin 1, NP piny 5/8/17/20; 16 segmentů (A1/A2/B/C/D1/D2/E/F/G1/' +
+      'G2/J/K/L/M/N/P) + desetinná tečka — BS-AA21RD = společná anoda, BS-CA21RD = společná ' +
+      'katoda (elektricky/opticky identické, jen opačná polarita zapojení)',
+    value:
+      '16segmentový alfanumerický LED displej, červená (GaAsP), λp 655 nm, IV/seg typ. 2,5 mcd ' +
+      '@IF=10 mA, VF typ. 3,4 V',
+    notes:
+      'Yellow Stone Corp "Single Digit LED Displays" katalogový datasheet — ⚠️ rozsáhlý katalog ' +
+      'pokrývající 6 velikostí/tvarů pouzder (SD-43 až SD-48, výška znaku 1,00" nebo 1,20", ' +
+      'jednomístné i více-pinové alfanumerické provedení) × 8 barevných/materiálových variant ' +
+      '(GaAsP červená, GaP jasně červená, GaP zelená, GaAsP/GaP žlutá, GaAsP/GaP vysoce účinná ' +
+      'červená/oranžová, GaAlAs SH super červená, GaAlAs DDH super červená) × 2 polarity ' +
+      '(společná anoda/katoda) — do knihovny přidán jen konkrétní pojmenovaný pár BS-AA21RD/' +
+      'BS-CA21RD z názvu souboru (pouzdro SD-43, GaAsP červená), ne celá kombinatorická matice. ' +
+      'Funkčně podobný typ displeje jako AND-8010-B (samostatné záznamy, jiný výrobce) — 16 ' +
+      'segmentů umožňuje zobrazení písmen i číslic, ne jen číslic jako u 7seg. displejů. VF typ. ' +
+      '3,4/max 4,0 V @IF=10 mA. IV/segment typ. 2,5 mcd @IF=10 mA. λp 655 nm, Δλ 40 nm. Mezní ' +
+      'hodnoty: PD 160 mW, IF (trvalý) max 40 mA, IFP (pulzní) max 200 mA (⚠️ nejvyšší proudová ' +
+      'třída v celém katalogu — ostatní barevné varianty mají IF max 15–30 mA, IFP max 50–150 mA). ' +
+      'Ostatní varianty stejného SD-43 pouzdra (BS-AA22RD až BS-AA2FRD/BS-CA22RD až BS-CA2FRD) ' +
+      'pokrývají zelenou (568 nm), žlutou (585 nm), oranžovou/hi-eff červenou (635 nm) a dvě ' +
+      'varianty super červené GaAlAs (660 nm, IV až 15 mcd/seg).',
+    tags: 'dioda,led,displej,16segment,alfanumerický,yellow-stone,bs-aa21rd,červená,gaasp,sd-43',
+  },
+  {
     name: 'TIL302',
     packageType:
       '14vývodové THT pouzdro, červený solid-state 7segmentový displej, výška znaku 6,9 mm ' +
