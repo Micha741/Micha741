@@ -1873,6 +1873,37 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '@VCB=-10 V/IE=0/f=1 MHz. NF typ 2,5 dB @VCE=-5 V/IC=-0,2 mA/f=1 kHz/Rs=2 kΩ/BW=200 Hz.',
     tags: 'tranzistor,pnp,bipolární,duální,sot-363,sc-70-6,bc857,bc857s,smd,nízký-šum',
   },
+  {
+    name: 'MMDT2907A',
+    packageType:
+      'SOT-363 (SC-70-6), 6 vývodů: 1=emitor T2, 2=báze T2, 3=kolektor T1, 4=emitor T1, ' +
+      '5=báze T1, 6=kolektor T2 — dva nezávislé PNP tranzistory v jednom SMD pouzdře; značení ' +
+      'na pouzdru "K2F"',
+    value:
+      'Duální PNP tranzistor (2× PNP 2907A v pouzdře), VCEO -60 V, IC -600 mA, hFE 100–300 ' +
+      '@IC=-150 mA',
+    notes:
+      'Jiangsu Changjiang Electronics Technology (JCET) MMDT2907A "Dual Transistor (PNP+PNP)" ' +
+      '(dok. rev. E, březen 2016) — SOT-363 duální verze klasického 2N2907A/MMBT2907A ' +
+      '(samostatný záznam pro jednotlivý SOT-23 tranzistor MMBT2907A). ⚠️ Odlišný pinout od ' +
+      'BC807U/BC856S/BC857S (samostatné záznamy, stejné SOT-363 pouzdro) — u MMDT2907A je pin1 ' +
+      '=E2 (ne E1), tzn. číslování tranzistorů T1/T2 je na desce zrcadlově otočené oproti ' +
+      'konvenci JCET u BC-řady; při návrhu DPS ověř konkrétní diagram. Komplementární NPN duál ' +
+      'je MMDT2222A (v knihovně zatím nezpracován). Mezní hodnoty: VCBO=-60 V, VCEO=-60 V, ' +
+      'VEBO=-5 V, IC=-600 mA (trvale), PC=200 mW @TA=25 °C, TJ max 150 °C, Tstg -55 až +150 °C. ' +
+      'V(BR)CBO min -60 V @IC=-10 µA/IE=0. V(BR)CEO min -60 V @IC=-10 mA/IB=0. V(BR)EBO min ' +
+      '-5 V @IE=-10 µA/IC=0. ICBO max -10 nA @VCB=-50 V/IE=0. ICEX max -50 nA @VCE=-30 V/' +
+      'VEB(off)=-0,5 V. IEBO max -10 nA @VEB=-5 V/IC=0. hFE: min 75 @IC=-0,1 mA, min 100 ' +
+      '@IC=-1 mA, min 100 @IC=-10 mA, min 100 max 300 @IC=-150 mA, min 50 @IC=-500 mA (vše ' +
+      '@VCE=-10 V) — pětibodová specifikace zisku napříč širokým proudovým rozsahem, typická pro ' +
+      'kvalitní obecný spínací/zesilovací tranzistor. VCE(sat) max -0,4 V @IC=-150 mA/IB=-15 mA; ' +
+      'max -1,6 V @IC=-500 mA/IB=-50 mA. VBE(sat) max -1,3 V @IC=-150 mA/IB=-15 mA; max -2,6 V ' +
+      '@IC=-500 mA/IB=-50 mA. fT min 200 MHz @VCE=-20 V/IC=-50 mA/f=100 MHz. Cob max 8 pF ' +
+      '@VCB=-10 V/IE=0/f=1 MHz. Cib max 30 pF @VEB=-2 V/IC=0/f=1 MHz. Spínací časy: td max ' +
+      '10 ns, tr max 40 ns (@VCC=-30 V/IC=-150 mA/IB1=-15 mA); ts max 225 ns, tf max 60 ns ' +
+      '(@VCC=-6 V/IC=-150 mA/IB1=IB2=-15 mA).',
+    tags: 'tranzistor,pnp,bipolární,duální,sot-363,sc-70-6,mmdt2907a,2n2907,mmbt2907a,smd',
+  },
 ];
 
 const RESISTOR_SPECS: PartSpec[] = [
