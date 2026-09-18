@@ -13,9 +13,10 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    314 běžných součástek: 85 rezistorů (řada E12, 1 Ω – 8,2 MΩ, a teplotní senzor Pt100),
-    39 kondenzátorů (keramické, elektrolytické, tantalové, fóliové), 67 diod (usměrňovací,
-    spínací, Schottky, Zenerovy, LED včetně výkonových SMD LED LUXEON Rebel a OSLON SSL 80),
+    322 běžné součástky: 93 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; a NTC
+    termistory řady D-5 až D-25 pro omezení nárazového proudu), 39 kondenzátorů (keramické,
+    elektrolytické, tantalové, fóliové), 67 diod (usměrňovací, spínací, Schottky, Zenerovy,
+    LED včetně výkonových SMD LED LUXEON Rebel a OSLON SSL 80),
     60 tranzistorů (bipolární NPN/PNP, Darlington, výkonové, VF, MOSFET, JFET), 51 integrovaných obvodů
     (časovače, komparátory, op-zesilovače, regulátory, logická hradla, čítače,
     Wi-Fi mikrokontroléry ESP32, ESP32-C3, ESP8285, ESP8684, Wi-Fi adaptér ESP8089, 8bit AVR

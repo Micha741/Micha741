@@ -1696,6 +1696,142 @@ const RESISTOR_SPECS: PartSpec[] = [
       'této položky.',
     tags: 'rezistor,senzor,teploměr,rtd,pt100,platinový,baumer',
   },
+  {
+    name: 'NTC D-5',
+    packageType:
+      'Diskový termistor Ø6,5 mm max., 2 radiální vývody (rozteč 5±1 mm) nebo axiální provedení ' +
+      '(Ø5 mm max.), operační rozsah -55 až +200 °C',
+    value:
+      'NTC termistor (záporný teplotní koeficient), R25 5–200 Ω dle typu (5D-5/10D-5/60D-5/' +
+      '200D-5), Imax 0,1–1,0 A @25 °C',
+    notes:
+      'Shanghai Leiditech "NTC Thermistor" katalogový datasheet (rev. 01.06.2018) — pokrývá celou ' +
+      'produktovou řadu diskových výkonových NTC termistorů rozlišených průměrem pouzdra (D-5 až ' +
+      'D-25), použitelných jako omezovač nárazového proudu (inrush current limiter) při zapnutí ' +
+      'spínaných zdrojů/UPS/zátěží, nebo jako teplotní čidlo/ochrana vlákna CRT a žárovek. ' +
+      'Zpracována celá řada v jednom kroku — každý průměr pouzdra (D-5, D-7, D-9, D-11, D-13, ' +
+      'D-15, D-20, D-25, samostatné záznamy) nabízí desítky konkrétních objednacích kódů lišících ' +
+      'se jen jmenovitým odporem R25 (např. "10D-5" = R25 10 Ω, průměr pouzdra D-5), proto zde ' +
+      'uveden jako rozsah, ne jako desítky samostatných řádků. D-5 = nejmenší pouzdro v řadě: ' +
+      'R25 5/10/60/200 Ω, Imax 1,0/0,7/0,3/0,1 A, disipační konstanta δ 6 mW/°C, tepelná časová ' +
+      'konstanta 18–20 s. Materiál: sintrované oxidy kovů (železo, nikl, kobalt, mangan, měď) při ' +
+      '1200–1500 °C. Rt = odpor při dané teplotě (nulový výkon), R25 = jmenovitý odpor při 25 °C ' +
+      '(nulový výkon, uváděn na součástce), Imax = max. trvalý proud @25 °C, δ = disipační ' +
+      'konstanta (poměr změny ztrátového výkonu ku změně teploty okolí).',
+    tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-5',
+  },
+  {
+    name: 'NTC D-7',
+    packageType:
+      'Diskový termistor Ø8,5 mm max., 2 radiální vývody (rozteč 5±1 mm) nebo axiální provedení ' +
+      '(Ø5,5 mm max.), operační rozsah -55 až +200 °C',
+    value:
+      'NTC termistor, R25 5–200 Ω dle typu (5D-7…200D-7), Imax 0,2–2,0 A @25 °C',
+    notes:
+      'Shanghai Leiditech "NTC Thermistor" katalogový datasheet (rev. 01.06.2018) — ⚠️ součást ' +
+      'stejné řady jako NTC D-5/D-9/D-11/D-13/D-15/D-20/D-25 (samostatné záznamy), liší se jen ' +
+      'průměrem pouzdra a odpovídajícím rozsahem parametrů. Dostupné typy: 5D-7, 8D-7, 10D-7, ' +
+      '12D-7, 16D-7, 22D-7, 33D-7, 200D-7 (R25 5–200 Ω). Imax 2,0–0,2 A, disipační konstanta δ ' +
+      '9–11 mW/°C, tepelná časová konstanta 27–28 s. Operační rozsah -55 až +200 °C. Použití: ' +
+      'omezení nárazového proudu ve spínaných zdrojích/UPS/ballastech, ochrana filamentu CRT/' +
+      'žárovek, obecná teplotní ochrana obvodů.',
+    tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-7',
+  },
+  {
+    name: 'NTC D-9',
+    packageType:
+      'Diskový termistor Ø10,5 mm max., 2 radiální vývody (rozteč 5±1 mm) nebo axiální provedení ' +
+      '(Ø5,5 mm max.), operační rozsah -55 až +200 °C',
+    value:
+      'NTC termistor, R25 3–400 Ω dle typu (3D-9…400D-9), Imax 0,2–4,0 A @25 °C',
+    notes:
+      'Shanghai Leiditech "NTC Thermistor" katalogový datasheet (rev. 01.06.2018) — ⚠️ součást ' +
+      'stejné řady jako NTC D-5/D-7/D-11/D-13/D-15/D-20/D-25 (samostatné záznamy). Nejširší nabídka ' +
+      'hodnot v katalogu: 3, 4, 5, 6, 8, 9, 10, 12, 16, 20, 22, 30, 33, 50, 60, 80, 120, 200, 400 Ω. ' +
+      'Imax 4,0–0,2 A (klesá s rostoucím R25), disipační konstanta δ 11 mW/°C (konstantní napříč ' +
+      'celou řadou), tepelná časová konstanta 30–35 s. Operační rozsah -55 až +200 °C. Typické ' +
+      'použití: omezovač nárazového proudu ve spínaných zdrojích (nejběžnější velikost pro tuto ' +
+      'aplikaci v malých/středních spotřebičích).',
+    tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-9',
+  },
+  {
+    name: 'NTC D-11',
+    packageType:
+      'Diskový termistor Ø12,5 mm max., 2 radiální vývody (rozteč 7,5/5 mm) nebo axiální provedení ' +
+      '(Ø5,5 mm max.), operační rozsah -55 až +200 °C',
+    value:
+      'NTC termistor, R25 2,5–120 Ω dle typu (2,5D-11…120D-11), Imax 1,2–5,0 A @25 °C',
+    notes:
+      'Shanghai Leiditech "NTC Thermistor" katalogový datasheet (rev. 01.06.2018) — ⚠️ součást ' +
+      'stejné řady jako NTC D-5/D-7/D-9/D-13/D-15/D-20/D-25 (samostatné záznamy). Dostupné ' +
+      'hodnoty: 2,5; 3; 4; 5; 6; 8; 10; 12; 16; 20; 22; 30; 33; 50; 60; 80; 120 Ω. Imax 5,0–1,2 A, ' +
+      'disipační konstanta δ 13–16 mW/°C, tepelná časová konstanta 43–65 s. Operační rozsah -55 ' +
+      'až +200 °C. Vhodné pro omezení nárazového proudu u výkonnějších spotřebičů než D-9.',
+    tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-11',
+  },
+  {
+    name: 'NTC D-13',
+    packageType:
+      'Diskový termistor Ø14,5 mm max., 2 radiální vývody (rozteč 7,5/5 mm) nebo axiální provedení ' +
+      '(Ø6 mm max.), operační rozsah -55 až +200 °C',
+    value:
+      'NTC termistor, R25 1,3–120 Ω dle typu (1,3D-13…120D-13), Imax 1,2–7,0 A @25 °C',
+    notes:
+      'Shanghai Leiditech "NTC Thermistor" katalogový datasheet (rev. 01.06.2018) — ⚠️ součást ' +
+      'stejné řady jako NTC D-5/D-7/D-9/D-11/D-15/D-20/D-25 (samostatné záznamy). Dostupné ' +
+      'hodnoty: 1,3; 1,5; 2,5; 3; 4; 5; 6; 7; 8; 10; 12; 15; 16; 20; 30; 47; 120 Ω. Imax 7,0–1,2 A, ' +
+      'disipační konstanta δ 13–17 mW/°C, tepelná časová konstanta 60–68 s. Operační rozsah -55 ' +
+      'až +200 °C.',
+    tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-13',
+  },
+  {
+    name: 'NTC D-15',
+    packageType:
+      'Diskový termistor Ø16,5 mm max., 2 radiální vývody (rozteč 7,5±0,1 mm) nebo axiální ' +
+      'provedení (Ø7 mm max.), operační rozsah -55 až +200 °C',
+    value:
+      'NTC termistor, R25 1,3–120 Ω dle typu (1,3D-15…120D-15), Imax 1,8–8,0 A @25 °C',
+    notes:
+      'Shanghai Leiditech "NTC Thermistor" katalogový datasheet (rev. 01.06.2018) — ⚠️ součást ' +
+      'stejné řady jako NTC D-5/D-7/D-9/D-11/D-13/D-20/D-25 (samostatné záznamy). Dostupné ' +
+      'hodnoty: 1,3; 1,5; 3; 5; 6; 7; 8; 10; 12; 15; 16; 20; 30; 47; 120 Ω. Imax 8,0–1,8 A, ' +
+      'disipační konstanta δ 18–22 mW/°C, tepelná časová konstanta 68–87 s. Operační rozsah -55 ' +
+      'až +200 °C. Vyšší proudová zatížitelnost vhodná pro omezení nárazového proudu u výkonnějších ' +
+      'zdrojů/spotřebičů.',
+    tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-15',
+  },
+  {
+    name: 'NTC D-20',
+    packageType:
+      'Diskový termistor Ø22 mm max., 2 radiální vývody (rozteč 7,5/10 mm) nebo axiální provedení ' +
+      '(Ø7 mm max.), operační rozsah -55 až +200 °C',
+    value:
+      'NTC termistor, R25 0,7–16 Ω dle typu (0,7D-20…16D-20), Imax 5,0–11,0 A @25 °C',
+    notes:
+      'Shanghai Leiditech "NTC Thermistor" katalogový datasheet (rev. 01.06.2018) — ⚠️ součást ' +
+      'stejné řady jako NTC D-5/D-7/D-9/D-11/D-13/D-15/D-25 (samostatné záznamy). Dostupné hodnoty: ' +
+      '0,7; 1,3; 3; 5; 6; 8; 10; 12; 16 Ω — výrazně nižší odpory než menší pouzdra, typické pro ' +
+      'omezení nárazového proudu u vyšších výkonů (desítky až stovky W spínaných zdrojů). ' +
+      'Imax 11,0–5,0 A, disipační konstanta δ 24–25 mW/°C, tepelná časová konstanta 87–105 s. ' +
+      'Operační rozsah -55 až +200 °C.',
+    tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-20',
+  },
+  {
+    name: 'NTC D-25',
+    packageType:
+      'Diskový termistor Ø26,5 mm max., 2 radiální vývody (rozteč 10 mm) nebo axiální provedení ' +
+      '(Ø8 mm max.), operační rozsah -55 až +200 °C',
+    value:
+      'NTC termistor, R25 1–16 Ω dle typu (1D-25…16D-25), Imax 6,0–12,0 A @25 °C',
+    notes:
+      'Shanghai Leiditech "NTC Thermistor" katalogový datasheet (rev. 01.06.2018) — ⚠️ součást ' +
+      'stejné řady jako NTC D-5/D-7/D-9/D-11/D-13/D-15/D-20 (samostatné záznamy) — největší a ' +
+      'proudově nejvýkonnější pouzdro v katalogu. Dostupné hodnoty: 1; 1,5; 3; 5; 8; 10; 12; 16 Ω. ' +
+      'Imax 12,0–6,0 A, disipační konstanta δ 30–35 mW/°C, tepelná časová konstanta 120–126 s. ' +
+      'Operační rozsah -55 až +200 °C. Určeno pro omezení nárazového proudu u výkonných spínaných ' +
+      'zdrojů/UPS v řádu stovek wattů.',
+    tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-25',
+  },
 ];
 
 function buildFromSpecs(
