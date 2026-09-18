@@ -3178,6 +3178,155 @@ const RESISTOR_SPECS: PartSpec[] = [
     tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-25',
   },
   {
+    name: 'B59081G1120A161',
+    packageType:
+      'SMD "Gamma I" pouzdro, kupolovitý tvar Ø8±0,2 mm, výška 3,3 mm max., 2 ploché SMD ' +
+      'kontakty (rozteč 10,8 mm mezi středy pájecích plošek), balení 16mm páska/cívka (330 mm)',
+    value:
+      'PTC termistor pro nadproudovou ochranu (samočinně zotavitelná "polyfuse"), RR 9 Ω ±20 %, ' +
+      'ISmax 1,0 A @230 V AC',
+    notes:
+      'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications, ' +
+      'Single SMDs" (dok. listopad 2009) — ⚠️ jiný typ termistoru než NTC řada D-5…D-25 v této ' +
+      'knihovně (samostatné záznamy): PTC (kladný teplotní koeficient) prudce ZVYŠUJE odpor při ' +
+      'zahřátí nadproudem a přejde do vysokoimpedančního "tripped" stavu, čímž omezí proud na ' +
+      'bezpečnou hodnotu (samočinně zotavitelná pojistka, opak funkce NTC, který odpor se zahřátím ' +
+      'SNIŽUJE a slouží k omezení nárazového/zapínacího proudu) — po odstranění poruchy a poklesu ' +
+      'napětí/proudu se PTC samovolně vrátí do nízkoodporového stavu. Určeno pro ochranu ' +
+      'telekomunikačních zařízení (linkové karty POTS, přístupové sítě, CPE, IVD) proti ' +
+      'přetížení/zkratu linky v souladu s ITU-T K20/K21/K45 (základní i "enhanced" úroveň pro ' +
+      'indukci ze sítě, kontakt se sítí i bleskový výboj) a GR-1089 (120 V/50 Hz/zkrat 25 A/15 min). ' +
+      'Zpracována celá řada 8 typů ze stejného datasheetu (Gamma I: G1080/G1081/G1083/G1084/G1085/' +
+      'G1086; Gamma L: G1012/G1040, samostatné záznamy pod objednacími kódy), lišících se ' +
+      'jmenovitým odporem/proudovou třídou a pouzdrem. Konkrétní nahraný díl B59081G1120A161 = typ ' +
+      'G1081: RR (jmenovitý odpor @25 °C) 9 Ω ±20 %, shoda odporu v páru (R25,match, pro ' +
+      'vyvážené linky TIP/RING) max 0,5 Ω. IR (zbytkový proud v "tripped" stavu) max 180 mA ' +
+      '@25 °C / 120 mA @70 °C. IS (spínací/trip proud) typ. 400 mA @25 °C. ISmax (max. trvale ' +
+      'snesitelný proud) 1,0 A @230 V AC. Doba přepnutí (switching time) typ. 4,4 s @ISmax/230 V ' +
+      'AC, 4,4 s @1 A/230 V AC, 23,0 s @500 mA/230 V AC. Max. provozní napětí 245 V AC. Provozní ' +
+      'teplota -20 až +125 °C (bez napětí) / 0 až +70 °C (@230 V, trvale ve vypnutém/tripped ' +
+      'stavu). UL schválení dle UL1434 (soubor E69802, jen Gamma I). RoHS.',
+    tags: 'rezistor,ptc,termistor,nadproudová-ochrana,polyfuse,telekom,epcos,tdk,gamma-i',
+  },
+  {
+    name: 'B59085G1120A161',
+    packageType:
+      'SMD "Gamma I" pouzdro, kupolovitý tvar Ø8±0,2 mm, výška 3,3 mm max., 2 ploché SMD ' +
+      'kontakty, balení 16mm páska/cívka',
+    value: 'PTC termistor pro nadproudovou ochranu, RR 10 Ω ±20 %, ISmax 1,0 A @230 V AC',
+    notes:
+      'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications" ' +
+      '(dok. listopad 2009) — součást stejné řady 8 typů jako B59081/83/84/86/40/12-... (Gamma I: ' +
+      'G1080/G1081/G1083/G1084/G1086; Gamma L: G1012/G1040, samostatné záznamy) — viz záznam ' +
+      'B59081G1120A161 (typ G1081) pro plný popis principu funkce PTC a shody se standardy. Typ ' +
+      'G1085: RR 10 Ω ±20 %, R25,match max 0,5 Ω. IR max 180 mA @25 °C / 120 mA @70 °C. IS typ. ' +
+      '400 mA @25 °C. ISmax 1,0 A @230 V AC. Doba přepnutí typ. 3,9 s @ISmax/230 V AC, 3,9 s ' +
+      '@1 A/230 V AC, 19,0 s @500 mA/230 V AC.',
+    tags: 'rezistor,ptc,termistor,nadproudová-ochrana,polyfuse,telekom,epcos,tdk,gamma-i',
+  },
+  {
+    name: 'B59083G1120A161',
+    packageType:
+      'SMD "Gamma I" pouzdro, kupolovitý tvar Ø8±0,2 mm, výška 3,3 mm max., 2 ploché SMD ' +
+      'kontakty, balení 16mm páska/cívka',
+    value: 'PTC termistor pro nadproudovou ochranu, RR 16 Ω ±20 %, ISmax 1,5 A @230 V AC',
+    notes:
+      'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications" ' +
+      '(dok. listopad 2009) — součást stejné řady 8 typů jako B59081/85/84/86/40/12-... (Gamma I: ' +
+      'G1080/G1081/G1084/G1085/G1086; Gamma L: G1012/G1040, samostatné záznamy) — viz záznam ' +
+      'B59081G1120A161 (typ G1081) pro plný popis principu funkce PTC a shody se standardy. Typ ' +
+      'G1083: RR 16 Ω ±20 %, R25,match max 0,5 Ω. IR max 150 mA @25 °C / 100 mA @70 °C. IS typ. ' +
+      '300 mA @25 °C. ISmax 1,5 A @230 V AC. Doba přepnutí typ. 2,5 s @ISmax/230 V AC, 2,4 s ' +
+      '@1 A/230 V AC, 11,0 s @500 mA/230 V AC.',
+    tags: 'rezistor,ptc,termistor,nadproudová-ochrana,polyfuse,telekom,epcos,tdk,gamma-i',
+  },
+  {
+    name: 'B59080G1120B262',
+    packageType:
+      'SMD "Gamma I" pouzdro, kupolovitý tvar Ø8±0,2 mm, výška 3,3 mm max., 2 ploché SMD ' +
+      'kontakty, balení 16mm páska/cívka',
+    value: 'PTC termistor pro nadproudovou ochranu, RR 25 Ω ±20 %, ISmax 2,8 A @230 V AC',
+    notes:
+      'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications" ' +
+      '(dok. listopad 2009) — součást stejné řady 8 typů jako B59081/83/84/85/86/40/12-... (Gamma ' +
+      'I: G1081/G1083/G1084/G1085/G1086; Gamma L: G1012/G1040, samostatné záznamy) — viz záznam ' +
+      'B59081G1120A161 (typ G1081) pro plný popis principu funkce PTC a shody se standardy. Typ ' +
+      'G1080: RR 25 Ω ±20 %, R25,match max 1,0 Ω. IR max 130 mA @25 °C / 85 mA @70 °C. IS typ. ' +
+      '270 mA @25 °C. ISmax 2,8 A @230 V AC. Doba přepnutí typ. 0,2 s @ISmax/230 V AC, 1,5 s ' +
+      '@1 A/230 V AC, 6,5 s @500 mA/230 V AC.',
+    tags: 'rezistor,ptc,termistor,nadproudová-ochrana,polyfuse,telekom,epcos,tdk,gamma-i',
+  },
+  {
+    name: 'B59086G1120B262',
+    packageType:
+      'SMD "Gamma I" pouzdro, kupolovitý tvar Ø8±0,2 mm, výška 3,3 mm max., 2 ploché SMD ' +
+      'kontakty, balení 16mm páska/cívka',
+    value: 'PTC termistor pro nadproudovou ochranu, RR 29 Ω ±20 %, ISmax 2,8 A @230 V AC',
+    notes:
+      'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications" ' +
+      '(dok. listopad 2009) — součást stejné řady 8 typů jako B59081/83/84/85/80/40/12-... (Gamma ' +
+      'I: G1080/G1081/G1083/G1084/G1085; Gamma L: G1012/G1040, samostatné záznamy) — viz záznam ' +
+      'B59081G1120A161 (typ G1081) pro plný popis principu funkce PTC a shody se standardy. Typ ' +
+      'G1086: RR 29 Ω ±20 %, R25,match max 1,0 Ω. IR max 125 mA @25 °C / 80 mA @70 °C. IS typ. ' +
+      '260 mA @25 °C. ISmax 2,8 A @230 V AC. Doba přepnutí typ. 0,18 s @ISmax/230 V AC, 1,3 s ' +
+      '@1 A/230 V AC, 5,5 s @500 mA/230 V AC.',
+    tags: 'rezistor,ptc,termistor,nadproudová-ochrana,polyfuse,telekom,epcos,tdk,gamma-i',
+  },
+  {
+    name: 'B59084G1120A161',
+    packageType:
+      'SMD "Gamma I" pouzdro, kupolovitý tvar Ø8±0,2 mm, výška 3,3 mm max., 2 ploché SMD ' +
+      'kontakty, balení 16mm páska/cívka — nejvyšší jmenovitý odpor v podřadě Gamma I',
+    value: 'PTC termistor pro nadproudovou ochranu, RR 50 Ω ±15 %, ISmax 2,5 A @230 V AC',
+    notes:
+      'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications" ' +
+      '(dok. listopad 2009) — součást stejné řady 8 typů jako B59081/83/85/86/80/40/12-... (Gamma ' +
+      'I: G1080/G1081/G1083/G1085/G1086; Gamma L: G1012/G1040, samostatné záznamy) — viz záznam ' +
+      'B59081G1120A161 (typ G1081) pro plný popis principu funkce PTC a shody se standardy. Typ ' +
+      'G1084: RR 50 Ω ±15 % (⚠️ užší tolerance než ostatní díly Gamma I, které mají ±20 %), ' +
+      'R25,match max 1,0 Ω. IR max 90 mA @25 °C / 60 mA @70 °C. IS typ. 190 mA @25 °C. ISmax ' +
+      '2,5 A @230 V AC. Doba přepnutí typ. 0,13 s @ISmax/230 V AC, 0,8 s @1 A/230 V AC, 3,1 s ' +
+      '@500 mA/230 V AC.',
+    tags: 'rezistor,ptc,termistor,nadproudová-ochrana,polyfuse,telekom,epcos,tdk,gamma-i',
+  },
+  {
+    name: 'B59040G1120B161',
+    packageType:
+      'SMD "Gamma L" pouzdro, kupolovitý tvar Ø7±0,2 mm, výška 3,8 mm max., 2 ploché SMD ' +
+      'kontakty (rozteč 11 mm mezi středy pájecích plošek), balení 24mm páska/cívka',
+    value: 'PTC termistor pro nadproudovou ochranu, RR 25 Ω ±20 %, ISmax 4,0 A @230 V AC',
+    notes:
+      'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications" ' +
+      '(dok. listopad 2009) — součást stejné řady 8 typů jako B59081/83/84/85/86/80/12-... (Gamma ' +
+      'I: G1080/G1081/G1083/G1084/G1085/G1086; Gamma L: G1012, samostatné záznamy) — viz záznam ' +
+      'B59081G1120A161 (typ G1081) pro plný popis principu funkce PTC a shody se standardy. ⚠️ ' +
+      'Gamma L má odlišné, mírně větší pouzdro (Ø7 mm, výška 3,8 mm) než Gamma I (Ø8 mm, výška ' +
+      '3,3 mm) — nezaměnitelné rozměry pájecí plošky (11 mm rozteč u Gamma L vs. 10,8 mm u Gamma ' +
+      'I). Typ G1040: RR 25 Ω ±20 %, R25,match max 1,0 Ω. IR max 120 mA @25 °C / 80 mA @70 °C. IS ' +
+      'typ. 250 mA @25 °C. ISmax 4,0 A @230 V AC — vyšší proudová třída než shodně označený ' +
+      'G1080 v podřadě Gamma I (2,8 A). Doba přepnutí typ. 0,08 s @ISmax/230 V AC, 1,1 s @1 A/' +
+      '230 V AC, 5,0 s @500 mA/230 V AC.',
+    tags: 'rezistor,ptc,termistor,nadproudová-ochrana,polyfuse,telekom,epcos,tdk,gamma-l',
+  },
+  {
+    name: 'B59012G1120A161',
+    packageType:
+      'SMD "Gamma L" pouzdro, kupolovitý tvar Ø7±0,2 mm, výška 3,8 mm max., 2 ploché SMD ' +
+      'kontakty, balení 24mm páska/cívka — nejvyšší proudová třída v celé řadě',
+    value: 'PTC termistor pro nadproudovou ochranu, RR 35 Ω +15/−20 %, ISmax 4,6 A @230 V AC',
+    notes:
+      'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications" ' +
+      '(dok. listopad 2009) — součást stejné řady 8 typů jako B59081/83/84/85/86/80/40 (Gamma I: ' +
+      'G1080/G1081/G1083/G1084/G1085/G1086; Gamma L: G1040, samostatné záznamy) — viz záznam ' +
+      'B59081G1120A161 (typ G1081) pro plný popis principu funkce PTC, pouzdra Gamma L a shody se ' +
+      'standardy. Typ G1012: RR 35 Ω, ⚠️ nesymetrická tolerance +15/−20 % (jediný díl v řadě s ' +
+      'nesymetrickou tolerancí), R25,match max 1,0 Ω. IR max 100 mA @25 °C / 65 mA @70 °C. IS ' +
+      'typ. 250 mA @25 °C. ISmax 4,6 A @230 V AC — nejvyšší proudová zatížitelnost v celé řadě ' +
+      'B590**. Doba přepnutí typ. 0,05 s @ISmax/230 V AC, 0,8 s @1 A/230 V AC, 3,5 s @500 mA/' +
+      '230 V AC.',
+    tags: 'rezistor,ptc,termistor,nadproudová-ochrana,polyfuse,telekom,epcos,tdk,gamma-l',
+  },
+  {
     name: 'RT1206FRE073K01L',
     packageType:
       'SMD 1206 (3,10×1,60×0,55 mm), tenkovrstvý (thin film) čipový rezistor, Ni/matný cín ' +
