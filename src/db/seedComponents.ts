@@ -2183,6 +2183,32 @@ const DIODE_SPECS: PartSpec[] = [
     tags: 'dioda,led,displej,7segment,3místný,multiplex,everlight,elt-511usowa,oranžová,algainp',
   },
   {
+    name: 'ELS-2326SYGWA/S530-E2',
+    packageType:
+      'THT 10pin DIP pouzdro, velký formát 2,3" (57,0 mm) výška znaku, tělo 47,7×69,7 mm, ' +
+      'rozteč vývodů 2,54 mm×4, šedé čelo displeje s bílými segmenty, společná anoda (piny 1 a 5)',
+    value:
+      'Jednomístný 7segmentový LED displej, VELKÝ formát (2,3"), brilantní žlutozelená (AlGaInP), ' +
+      'λp 575 nm, IV/seg typ. 12,5 mcd @IF=10 mA, VF/seg typ. 8,0 V (⚠️ víceřetězcový segment)',
+    notes:
+      'Everlight Electronics "ELS-2326SYGWA/S530-E2 — 2.3" Single Digit Displays" (dok. ' +
+      'CDDS-232-032, rev. 1, duben 2007) — velkoformátový displej (2,3"/57 mm, čitelný do 7 m), ' +
+      'výrazně větší než ostatní jednomístné displeje v této knihovně (ELS-512UBWA 0,56", ' +
+      'BS-AA21RD 1,00"). ⚠️ Každý segment je vnitřně tvořen TŘEMI LED čipy zapojenými sériově ' +
+      '(viz schéma zapojení — 3 řady diodových symbolů na segment), proto neobvykle vysoké ' +
+      'propustné napětí na segment (VF typ. 8,0 V, cca 3× vyšší než u jednočipových segmentů ' +
+      'malých displejů) — nutno zohlednit při návrhu budicího/proudově omezovacího obvodu. Mezní ' +
+      'hodnoty: VR max 5 V, IF max 25 mA, provozní teplota -40 až +85 °C, skladovací -40 až ' +
+      '+100 °C, pájecí teplota 260±5 °C/5 s, ESD (HBM) 2000 V, PD max 60 mW. VF/segment typ. ' +
+      '8,0/max 9,6 V @IF=20 mA; VF/desetinná tečka typ. 4,0/max 4,8 V (odpovídá cca poloviční ' +
+      'sériové kombinaci vůči plnému segmentu). IR max 100 µA @VR=5 V. IV/segment typ. 2,5 mcd ' +
+      '@IF=2 mA / min 5,6-typ. 12,5 mcd @IF=10 mA; IV/desetinná tečka typ. 0,7 mcd @IF=2 mA / min ' +
+      '1,4-typ. 3,0 mcd @IF=10 mA. λp typ. 575 nm, λd (dominantní) typ. 573 nm, Δλ typ. 20 nm ' +
+      '@IF=20 mA. Bílé segmenty na šedém čele pouzdra pro dobrý kontrast na jasném okolním ' +
+      'světle. Určeno pro audio zařízení, přístrojové panely, digitální ukazatele.',
+    tags: 'dioda,led,displej,7segment,jednomístný,velký,žlutozelená,everlight,els-2326sygwa,algainp',
+  },
+  {
     name: 'TIL302',
     packageType:
       '14vývodové THT pouzdro, červený solid-state 7segmentový displej, výška znaku 6,9 mm ' +
