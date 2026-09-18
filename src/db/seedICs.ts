@@ -669,8 +669,120 @@ const IC_SPECS: IcSpec[] = [
       'teplotní rozsah). Provozní teplota -40 až +85 °C (industrial). ⚠️ Datasheet je "Preliminary ' +
       'Summary" — elektrické charakteristiky (DC parametry, přesné mezní hodnoty) v něm chybí, ' +
       'typické hodnoty vycházejí ze simulací a charakterizace příbuzných AVR čipů na stejné ' +
-      'technologii, min/max hodnoty budou doplněny po charakterizaci konkrétního čipu výrobcem.',
+      'technologii, min/max hodnoty budou doplněny po charakterizaci konkrétního čipu výrobcem. ' +
+      '⚠️ Doplněno dle brožury Atmel "Microcontroller Solutions for CAN Networking" (dok. ' +
+      '4012D-CAN, 07/05): existuje i automotive gradovaná varianta s rozšířeným teplotním ' +
+      'rozsahem -40 až +125 °C (nad rámec industrial -40 až +85 °C uvedené v hlavním datasheetu). ' +
+      'Součást produktové řady AT90CAN32/64/128 (AVR jádro) a T89C51CC01/02, AT89C51CC03 (8051 ' +
+      'jádro, samostatné záznamy) — všech 6 typů sdílí kompatibilní CAN periferii a jsou ' +
+      'doporučeny s párovým CAN transceiverem ATA6660.',
     tags: 'io,mikrokontrolér,avr,at90can128,can,8bit,tqfp64,qfn64',
+  },
+  {
+    name: 'AT90CAN32',
+    packageType:
+      'TQFP64, QFN64 nebo BGA64 (dle dostupnosti) — porty A/B/C/D/E/F/G shodné s AT90CAN128',
+    value:
+      '8bit AVR mikrokontrolér s vestavěným CAN 2.0A/2.0B řadičem, 32 KB flash, 1 KB EEPROM, ' +
+      '2 KB SRAM, do 16 MIPS @16 MHz, VCC 2,7–5,5 V',
+    notes:
+      'Atmel AT90CAN32 — nejmenší člen řady AT90CAN32/64/128 (samostatné záznamy AT90CAN64, ' +
+      'AT90CAN128; plný popis architektury, periferií a CAN řadiče viz záznam AT90CAN128). ' +
+      'Zpracováno dle srovnávací tabulky v brožuře Atmel "Microcontroller Solutions for CAN ' +
+      'Networking" (dok. 4012D-CAN, 07/05) — obsahuje jen souhrnné parametry, ne plný detailní ' +
+      'datasheet. Flash 32 KB (+ volitelná boot sekce do 8 KB), EEPROM 1 KB, SRAM 2 KB. CAN ' +
+      'řadič: 15 programovatelných message objektů. Sebeprogramování přes CAN i UART jen pomocí ' +
+      'vlastního (custom) bootloaderu. SPI, JTAG, detekce výpadku napájení (power fail detect) — ' +
+      'vše přítomno stejně jako u AT90CAN128. 4× 16bit časovač (0/1/2/3), 8kanálový PWM, ' +
+      '8kanálový 10bit ADC, 21bit watchdog, 2× UART, TWI (I2C kompatibilní). Napájení 2,7–5,5 V, ' +
+      'max. 16 MHz. Provozní teplota -40 až +85 °C (industrial), dostupná i automotive gradovaná ' +
+      'varianta -40 až +125 °C. Dle brožury plánovaná dostupnost 1Q/2006 (v době vydání dokumentu ' +
+      'ještě nebyl v prodeji) — u aktuálně nakupovaného kusu ověř na stránkách výrobce, zda je ' +
+      'stále vyráběn (starší AVR čipy bývají postupně nahrazovány novějšími řadami, např. ' +
+      'AT90CAN32/64/128 byly později z velké části nahrazeny řadou ATmega32/64/128M1 s CAN).',
+    tags: 'io,mikrokontrolér,avr,at90can32,can,8bit,tqfp64,qfn64',
+  },
+  {
+    name: 'AT90CAN64',
+    packageType:
+      'TQFP64, QFN64 nebo BGA64 (dle dostupnosti) — porty A/B/C/D/E/F/G shodné s AT90CAN128',
+    value:
+      '8bit AVR mikrokontrolér s vestavěným CAN 2.0A/2.0B řadičem, 64 KB flash, 2 KB EEPROM, ' +
+      '4 KB SRAM, do 16 MIPS @16 MHz, VCC 2,7–5,5 V',
+    notes:
+      'Atmel AT90CAN64 — prostřední člen řady AT90CAN32/64/128 (samostatné záznamy AT90CAN32, ' +
+      'AT90CAN128; plný popis architektury, periferií a CAN řadiče viz záznam AT90CAN128). ' +
+      'Zpracováno dle srovnávací tabulky v brožuře Atmel "Microcontroller Solutions for CAN ' +
+      'Networking" (dok. 4012D-CAN, 07/05). Flash 64 KB (+ volitelná boot sekce do 8 KB), ' +
+      'EEPROM 2 KB, SRAM 4 KB — shodná paměť SRAM jako AT90CAN128, ale poloviční flash. CAN ' +
+      'řadič: 15 programovatelných message objektů. Sebeprogramování přes CAN i UART jen pomocí ' +
+      'vlastního (custom) bootloaderu. SPI, JTAG, detekce výpadku napájení — vše přítomno stejně ' +
+      'jako u AT90CAN128. 4× 16bit časovač (0/1/2/3), 8kanálový PWM, 8kanálový 10bit ADC, 21bit ' +
+      'watchdog, 2× UART, TWI. Napájení 2,7–5,5 V, max. 16 MHz. Provozní teplota -40 až +85 °C ' +
+      '(industrial), dostupná i automotive gradovaná varianta -40 až +125 °C. Dle brožury ' +
+      'plánovaná dostupnost 4Q/2005 (v době vydání dokumentu ještě nebyl v prodeji).',
+    tags: 'io,mikrokontrolér,avr,at90can64,can,8bit,tqfp64,qfn64',
+  },
+
+  // Mikrokontroléry 8051
+  {
+    name: 'T89C51CC02',
+    packageType: 'SOIC24, SOIC28, PLCC28 nebo TQFP32',
+    value:
+      '8051 (C51) mikrokontrolér s vestavěným CAN 2.0A/2.0B řadičem, 16 KB flash, 2 KB EEPROM, ' +
+      '0,5 KB RAM, do 5 MIPS @30 MHz, VCC 3–5,5 V',
+    notes:
+      'Atmel T89C51CC02 — nejmenší/nejlevnější člen řady CAN mikrokontrolérů na architektuře ' +
+      'Intel 8051 (na rozdíl od AVR jádra u AT90CAN32/64/128, samostatné záznamy). Zpracováno ' +
+      'dle srovnávací tabulky v brožuře Atmel "Microcontroller Solutions for CAN Networking" ' +
+      '(dok. 4012D-CAN, 07/05) — obsahuje jen souhrnné parametry, ne plný detailní datasheet. ' +
+      '5 MIPS @30 MHz (6 hodinových cyklů/instrukce — díky tomu dosahuje 1 Mbit/s CAN přenosové ' +
+      'rychlosti už s levným 8MHz krystalem a nižším EMI rušením). Flash 16 KB (+ 2 KB boot ' +
+      'sekce), EEPROM 2 KB, RAM jen 0,5 KB. CAN řadič: pouze 4 programovatelné message objekty ' +
+      '(oproti 15 u ostatních dílů řady — nejomezenější CAN implementace v rodině). Sebeprogramování ' +
+      'přes CAN i UART. Bez SPI, bez JTAG, bez detekce výpadku napájení. 3× 16bit časovač ' +
+      '(0/1/2), 2 kanály PCA (Programmable Counter Array), 2kanálový PWM, 8kanálový 10bit ADC, ' +
+      '21bit watchdog, 1× UART. Porty 0/1/2/3 (standardní 8051 značení). Napájení 3–5,5 V, max. ' +
+      '60 MHz. Provozní teplota -40 až +85 °C (bez uvedené automotive varianty na rozdíl od ' +
+      'ostatních dílů řady). Podpora vyšších protokolových vrstev CANopen, DeviceNet, J1939, OSEK.',
+    tags: 'io,mikrokontrolér,8051,c51,t89c51cc02,can',
+  },
+  {
+    name: 'T89C51CC01',
+    packageType: 'TQFP44, PLCC44, BGA64, TQFP64 nebo PLCC52',
+    value:
+      '8051 (C51) mikrokontrolér s vestavěným CAN 2.0A/2.0B řadičem, 32 KB flash, 2 KB EEPROM, ' +
+      '1,2 KB RAM, do 5 MIPS @30 MHz, VCC 3–5,5 V',
+    notes:
+      'Atmel T89C51CC01 — střední člen řady 8051 CAN mikrokontrolérů (viz T89C51CC02 pro ' +
+      'nejmenší a AT89C51CC03 pro největší; oba samostatné záznamy). Zpracováno dle srovnávací ' +
+      'tabulky v brožuře Atmel "Microcontroller Solutions for CAN Networking" (dok. 4012D-CAN, ' +
+      '07/05). 5 MIPS @30 MHz. Flash 32 KB (+ 2 KB boot sekce, dostupná i ROM verze), EEPROM ' +
+      '2 KB, RAM 1,2 KB. CAN řadič: 15 programovatelných message objektů (na rozdíl od jen 4 ' +
+      'u T89C51CC02). Sebeprogramování přes CAN i UART. Bez SPI, bez JTAG, bez detekce výpadku ' +
+      'napájení. 3× 16bit časovač (0/1/2), 5 kanálů PCA, 5kanálový PWM, 8kanálový 10bit ADC, ' +
+      '21bit watchdog, 1× UART. Porty 0/1/2/3. Napájení 3–5,5 V, max. 60 MHz. Provozní teplota ' +
+      '-40 až +85 °C (industrial), dostupná i automotive gradovaná varianta -40 až +125 °C.',
+    tags: 'io,mikrokontrolér,8051,c51,t89c51cc01,can',
+  },
+  {
+    name: 'AT89C51CC03',
+    packageType: 'TQFP44, PLCC44 nebo BGA64',
+    value:
+      '8051 (C51) mikrokontrolér s vestavěným CAN 2.0A/2.0B řadičem, 64 KB flash, 2 KB EEPROM, ' +
+      '2,2 KB RAM, do 5 MIPS @30 MHz, VCC 3–5,5 V',
+    notes:
+      'Atmel AT89C51CC03 — největší/nejvybavenější člen řady 8051 CAN mikrokontrolérů (viz ' +
+      'T89C51CC01/T89C51CC02, samostatné záznamy). Zpracováno dle srovnávací tabulky v brožuře ' +
+      'Atmel "Microcontroller Solutions for CAN Networking" (dok. 4012D-CAN, 07/05). 5 MIPS ' +
+      '@30 MHz. Flash 64 KB (+ 2 KB boot sekce), EEPROM 2 KB, RAM 2,2 KB — nejvíc RAM z celé ' +
+      '8051 CAN řady. CAN řadič: 15 programovatelných message objektů. Sebeprogramování přes ' +
+      'CAN i UART. ⚠️ Jediný z 8051 trojice s vestavěným SPI a s detekcí výpadku napájení (Power ' +
+      'Fail Detect) — T89C51CC01/CC02 tyto periferie nemají. Bez JTAG. 3× 16bit časovač (0/1/2), ' +
+      '5 kanálů PCA, 5kanálový PWM, 8kanálový 10bit ADC, 21bit watchdog, 1× UART. Porty 0/1/2/3. ' +
+      'Napájení 3–5,5 V, max. 60 MHz. Provozní teplota -40 až +85 °C (industrial), dostupná i ' +
+      'automotive gradovaná varianta -40 až +125 °C.',
+    tags: 'io,mikrokontrolér,8051,c51,at89c51cc03,can',
   },
 
   // Senzory
