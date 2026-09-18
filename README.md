@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    417 běžných součástek: 98 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    418 běžných součástek: 98 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; přesný tenkovrstvý SMD rezistor
     Yageo RT1206; a laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220),
     48 kondenzátorů (keramické,
@@ -41,8 +41,9 @@ i návrh schémat obvodů a plošných spojů.
     (Wi-Fi/BLE: ESP32-C3-MINI-1, ESP32-C3-WROOM-02, Adafruit Feather
     HUZZAH ESP8266, ESP8684-MINI-1, ESP-12S; nízkonapěťové odpojovače baterie Alfatronix
     PowerTector PT10/PT20/PT40/PT60/PT100/PT200; LoRaWAN senzor LEO-S55 a brány USM-S67;
-    solární bezdrátové senzory EnOcean ETHSA/ETHSU) a 1 konektor/přepěťová ochrana (Ethernet/PoE
-    bleskojistka ESP-100-POE). Tlačítkem „Knihovna”
+    solární bezdrátové senzory EnOcean ETHSA/ETHSU), 1 konektor/přepěťová ochrana (Ethernet/PoE
+    bleskojistka ESP-100-POE) a 1 ostatní součástka (RF koaxiální směrový odbočovač SAGE
+    Millimeter/Eravant SCD-0134032010-KF-SA). Tlačítkem „Knihovna”
     v horní liště lze kdykoli doplnit chybějící položky (např. po smazání), aniž
     by se duplikovaly už existující.
 
