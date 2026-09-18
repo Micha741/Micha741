@@ -185,6 +185,163 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Certifikace FCC, CE.',
     tags: 'modul,esp8266,esp-12,esp-12s,wifi,smd,pcb-anténa,tensilica',
   },
+  {
+    name: 'PT10 (Alfatronix PowerTector)',
+    packageType:
+      '155 × 30 × 15 mm, 45 g, izolované faston konektory 6,3 mm, montáž stahovací páskou ' +
+      'přímo na kabeláž (bez nutnosti šasi) — nejmenší model řady, in-line zapojení do jednoho ' +
+      'konkrétního spotřebiče',
+    value:
+      'Programovatelný nízkonapěťový odpojovač baterie (Low Voltage Disconnect), 10 A trvale, ' +
+      'VIN 9–32 Vdc (auto. reference), IP65',
+    notes:
+      'Alfatronix PowerTector Series "Low Voltage Disconnect" / solidstátový "Battery Guard" ' +
+      '(dok. EU-EN-PV-0710). Elektronický modul, který sleduje napětí baterie a při poklesu pod ' +
+      'naprogramovanou mez odpojí připojenou zátěž — chrání olověnou baterii (typ. startovací ' +
+      'baterii vozidla) před hlubokým vybitím. ⚠️ Součást šestičlenné řady PT10/PT20/PT40/PT60/' +
+      'PT100/PT200 (samostatné záznamy) lišící se proudovou zátěží, konektory a rozměry/hmotností ' +
+      '— PT10 je nejmenší model, elektricky shodný s PT20 (stejné rozměry/konektory/montáž, jen ' +
+      'nižší jmenovitý proud). Vstupní napětí 9–32 Vdc s automatickou referencí, výstupní napětí ' +
+      '= vstupní (max. úbytek 100 mV na svorkách při sepnutí). Přechodová nadproudová odolnost: ' +
+      '110 % jmen. proudu 10 s, 200 % 1 s, 300 % <0,5 ms; po vybavení nadproudové ochrany ' +
+      'automatický pokus o restart každých 30 s. Klidový odběr typ. 2 mA @13,6 V (vypnuto). ' +
+      'Galvanické oddělení vstup/výstup/kryt >400 Vrms. Odolnost proti rázům dle ISO 7637-2 ' +
+      '(24V vozidla), ESD dle ISO 10605/ISO 14892 (>8 kV kontaktní, 15 kV vzduchová). Provozní ' +
+      'teplota -25 až +60 °C, skladovací -25 až +100 °C, krytí IP65 (pružná zalévací hmota, ' +
+      'odolnější dlouhodobě než tvrdý epoxid). Odpojovací napětí programovatelné přes ' +
+      'programovací terminál (kabel součástí dodávky), stav indikuje zelená LED. Vývod pro ' +
+      'externí alarm (zvukový/optický v přístrojové desce). ⚠️ Na rozdíl od modelů PT40 a vyšších ' +
+      'nemá PT10/PT20 vývod pro ovládání přes zapalování/ruční spínač (ten je až od 40 A výše). ' +
+      'Ochrany: nadproud (proudové čidlo), přehřátí (teplotní čidlo), přechodové jevy (filtry), ' +
+      'katastrofická porucha řešena externí vstupní pojistkou (dle aplikace) + zemnicí pojistkou ' +
+      '1 A.',
+    tags: 'modul,alfatronix,powertector,battery-guard,low-voltage-disconnect,odpojovač-baterie',
+  },
+  {
+    name: 'PT20 (Alfatronix PowerTector)',
+    packageType:
+      '155 × 30 × 15 mm, 45 g, izolované faston konektory 6,3 mm, montáž stahovací páskou ' +
+      'přímo na kabeláž (bez nutnosti šasi)',
+    value:
+      'Programovatelný nízkonapěťový odpojovač baterie (Low Voltage Disconnect), 20 A trvale, ' +
+      'VIN 9–32 Vdc (auto. reference), IP65',
+    notes:
+      'Alfatronix PowerTector Series (dok. EU-EN-PV-0710). ⚠️ Součást řady PT10/PT20/PT40/PT60/' +
+      'PT100/PT200 (samostatné záznamy) — PT20 sdílí s PT10 (samostatný záznam) stejné pouzdro, ' +
+      'konektory, montáž i klidový odběr, liší se pouze jmenovitým proudem (20 A vs 10 A). Funkce ' +
+      'a elektrické parametry shodné jako u PT10: vstupní napětí 9–32 Vdc s automatickou ' +
+      'referencí, výstup = vstup (max. úbytek 100 mV), přechodová nadproudová odolnost 110 %/10 s, ' +
+      '200 %/1 s, 300 %/<0,5 ms s automatickým restartem po 30 s, klidový odběr typ. 2 mA @13,6 V, ' +
+      'galvanické oddělení >400 Vrms, ISO 7637-2 (rázy), ISO 10605/ISO 14892 (ESD >8 kV kontaktní/' +
+      '15 kV vzduchová), provozní teplota -25 až +60 °C, skladovací -25 až +100 °C, IP65. ' +
+      'Programovatelná odpojovací mez, zelená LED indikace, vývod pro externí alarm. Bez vývodu ' +
+      'pro zapalování/ruční spínač (dostupné až od PT40 výše). Ochrany: nadproud, přehřátí, ' +
+      'přechodové jevy, externí vstupní pojistka (dle aplikace) + zemnicí pojistka 1 A.',
+    tags: 'modul,alfatronix,powertector,battery-guard,low-voltage-disconnect,odpojovač-baterie',
+  },
+  {
+    name: 'PT40 (Alfatronix PowerTector)',
+    packageType:
+      '76 × 78 × 33 mm, 155 g, konektory M6 mosazné šrouby (ring tongues), třibodová montáž ' +
+      '(3× pozi šroub) na šasi/desku pro potlačení mechanického namáhání na nerovném povrchu, ' +
+      'litá hliníková skříň s krytem z polykarbonátu plněného sklem, odvod tepla do skříně bez ' +
+      'nutnosti externího chladiče',
+    value:
+      'Programovatelný nízkonapěťový odpojovač baterie (Low Voltage Disconnect), 40 A trvale, ' +
+      'VIN 9–32 Vdc (auto. reference), IP65',
+    notes:
+      'Alfatronix PowerTector Series (dok. EU-EN-PV-0710). ⚠️ Součást řady PT10/PT20/PT40/PT60/' +
+      'PT100/PT200 (samostatné záznamy) — PT40 je elektricky shodný s PT60 (stejné rozměry/' +
+      'konektory/montáž, jen nižší jmenovitý proud), ale ⚠️ odlišný od PT10/PT20 (jiné pouzdro — ' +
+      'litá hliníková skříň místo tie-wrap in-line pouzdra, jiné konektory — M6 šrouby místo ' +
+      'faston, vyšší klidový odběr, navíc má vývod pro zapalování/ruční spínač). Vstupní napětí ' +
+      '9–32 Vdc s automatickou referencí, výstup = vstup (max. úbytek 100 mV). Přechodová ' +
+      'nadproudová odolnost 110 %/10 s, 200 %/1 s, 300 %/<0,5 ms, automatický restart po 30 s. ' +
+      'Klidový odběr typ. 4 mA @13,6 V (vyšší než u PT10/PT20). Galvanické oddělení >400 Vrms, ' +
+      'ISO 7637-2 (rázy), ISO 10605/ISO 14892 (ESD >8 kV kontaktní/15 kV vzduchová). Provozní ' +
+      'teplota -25 až +60 °C, skladovací -25 až +100 °C, IP65. ⚠️ Od 40 A výše nabízí navíc ' +
+      '"Manual Shutdown Facility" — vývod pro spínaný kabel k přímému ovládání přes zapalování ' +
+      'nebo ruční spínač (u PT10/PT20 chybí). Programovatelná odpojovací mez, zelená LED indikace, ' +
+      'vývod pro externí alarm. Ochrany: nadproud, přehřátí, přechodové jevy, externí vstupní ' +
+      'pojistka (dle aplikace) + zemnicí pojistka 1 A.',
+    tags: 'modul,alfatronix,powertector,battery-guard,low-voltage-disconnect,odpojovač-baterie',
+  },
+  {
+    name: 'PT60 (Alfatronix PowerTector)',
+    packageType:
+      '76 × 78 × 33 mm, 155 g, konektory M6 mosazné šrouby (ring tongues), třibodová montáž ' +
+      '(3× pozi šroub) na šasi/desku, litá hliníková skříň s krytem z polykarbonátu plněného ' +
+      'sklem',
+    value:
+      'Programovatelný nízkonapěťový odpojovač baterie (Low Voltage Disconnect), 60 A trvale, ' +
+      'VIN 9–32 Vdc (auto. reference), IP65',
+    notes:
+      'Alfatronix PowerTector Series (dok. EU-EN-PV-0710). ⚠️ Součást řady PT10/PT20/PT40/PT60/' +
+      'PT100/PT200 (samostatné záznamy) — PT60 sdílí s PT40 (samostatný záznam) stejné pouzdro, ' +
+      'konektory, montáž i klidový odběr, liší se pouze jmenovitým proudem (60 A vs 40 A). Funkce ' +
+      'a elektrické parametry shodné jako u PT40: vstupní napětí 9–32 Vdc s automatickou ' +
+      'referencí, výstup = vstup (max. úbytek 100 mV), přechodová nadproudová odolnost 110 %/10 s, ' +
+      '200 %/1 s, 300 %/<0,5 ms s automatickým restartem po 30 s, klidový odběr typ. 4 mA @13,6 V, ' +
+      'galvanické oddělení >400 Vrms, ISO 7637-2 (rázy), ISO 10605/ISO 14892 (ESD >8 kV kontaktní/' +
+      '15 kV vzduchová), provozní teplota -25 až +60 °C, skladovací -25 až +100 °C, IP65. Vývod ' +
+      '"Manual Shutdown Facility" pro zapalování/ruční spínač (dostupné od 40 A výše). ' +
+      'Programovatelná odpojovací mez, zelená LED indikace, vývod pro externí alarm. Ochrany: ' +
+      'nadproud, přehřátí, přechodové jevy, externí vstupní pojistka (dle aplikace) + zemnicí ' +
+      'pojistka 1 A.',
+    tags: 'modul,alfatronix,powertector,battery-guard,low-voltage-disconnect,odpojovač-baterie',
+  },
+  {
+    name: 'PT100 (Alfatronix PowerTector)',
+    packageType:
+      '124 × 97 × 51 mm, 530 g, konektory M10 ring tongues + přepínač pro ruční override, ' +
+      'třibodová montáž (3× pozi šroub) na šasi/desku, litá hliníková skříň s krytem ' +
+      'z polykarbonátu plněného sklem',
+    value:
+      'Programovatelný nízkonapěťový odpojovač baterie (Low Voltage Disconnect), 100 A trvale, ' +
+      'VIN 9–32 Vdc (auto. reference), IP65',
+    notes:
+      'Alfatronix PowerTector Series (dok. EU-EN-PV-0710). ⚠️ Součást řady PT10/PT20/PT40/PT60/' +
+      'PT100/PT200 (samostatné záznamy) — ⚠️ NEZAMĚŇOVAT s "Pt100" v kategorii Rezistor (samostatný ' +
+      'záznam) — jde o naprosto odlišný produkt: platinový teplotní senzor vs. tento výkonový ' +
+      'odpojovač baterie 100 A, shoda je jen v názvu/čísle. PT100 je elektricky obdobný PT200 ' +
+      '(stejné rozměry/konektory/montáž, jen nižší jmenovitý proud), ale ⚠️ odlišný od PT40/PT60 ' +
+      '(větší/těžší pouzdro, M10 místo M6 konektorů, vyšší klidový odběr) i od PT10/PT20 (zcela ' +
+      'jiné pouzdro a konektory). Vstupní napětí 9–32 Vdc s automatickou referencí, výstup = ' +
+      'vstup (max. úbytek 100 mV). Přechodová nadproudová odolnost 110 %/10 s, 200 %/1 s, ' +
+      '300 %/<0,5 ms, automatický restart po 30 s. Klidový odběr typ. 6 mA @13,6 V (nejvyšší ' +
+      'v řadě). Galvanické oddělení >400 Vrms, ISO 7637-2 (rázy), ISO 10605/ISO 14892 (ESD ' +
+      '>8 kV kontaktní/15 kV vzduchová). Provozní teplota -25 až +60 °C, skladovací -25 až ' +
+      '+100 °C, IP65. ⚠️ Jen modely PT100 a PT200 mají navíc ruční přepínač (manual override ' +
+      'switch) pro nucené odblokování po vybavení ochrany — vynucuje, aby obsluha nejprve ' +
+      'prošetřila příčinu odpojení před resetem. Programovatelná odpojovací mez, zelená LED ' +
+      'indikace, vývod pro externí alarm i zapalování/ruční spínač. Ochrany: nadproud, přehřátí, ' +
+      'přechodové jevy, externí vstupní pojistka (dle aplikace) + zemnicí pojistka 1 A.',
+    tags: 'modul,alfatronix,powertector,battery-guard,low-voltage-disconnect,odpojovač-baterie',
+  },
+  {
+    name: 'PT200 (Alfatronix PowerTector)',
+    packageType:
+      '124 × 97 × 51 mm, 530 g, konektory M10 ring tongues + přepínač pro ruční override, ' +
+      'třibodová montáž (3× pozi šroub) na šasi/desku, litá hliníková skříň s krytem ' +
+      'z polykarbonátu plněného sklem',
+    value:
+      'Programovatelný nízkonapěťový odpojovač baterie (Low Voltage Disconnect), 200 A trvale, ' +
+      'VIN 9–32 Vdc (auto. reference), IP65',
+    notes:
+      'Alfatronix PowerTector Series (dok. EU-EN-PV-0710). ⚠️ Součást řady PT10/PT20/PT40/PT60/' +
+      'PT100/PT200 (samostatné záznamy) — nejvýkonnější a poslední model řady, sdílí s PT100 ' +
+      '(samostatný záznam) stejné pouzdro, konektory, montáž i klidový odběr, liší se pouze ' +
+      'jmenovitým proudem (200 A vs 100 A). Funkce a elektrické parametry shodné jako u PT100: ' +
+      'vstupní napětí 9–32 Vdc s automatickou referencí, výstup = vstup (max. úbytek 100 mV), ' +
+      'přechodová nadproudová odolnost 110 %/10 s, 200 %/1 s, 300 %/<0,5 ms s automatickým ' +
+      'restartem po 30 s, klidový odběr typ. 6 mA @13,6 V, galvanické oddělení >400 Vrms, ' +
+      'ISO 7637-2 (rázy), ISO 10605/ISO 14892 (ESD >8 kV kontaktní/15 kV vzduchová), provozní ' +
+      'teplota -25 až +60 °C, skladovací -25 až +100 °C, IP65. Ruční přepínač (manual override) ' +
+      'pro nucené odblokování po vybavení ochrany. Programovatelná odpojovací mez, zelená LED ' +
+      'indikace, vývod pro externí alarm i zapalování/ruční spínač. Ochrany: nadproud, přehřátí, ' +
+      'přechodové jevy, externí vstupní pojistka (dle aplikace) + zemnicí pojistka 1 A.',
+    tags: 'modul,alfatronix,powertector,battery-guard,low-voltage-disconnect,odpojovač-baterie',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
