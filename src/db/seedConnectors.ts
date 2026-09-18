@@ -35,6 +35,32 @@ const CONNECTOR_SPECS: ConnectorSpec[] = [
       '0–95 % nekondenzující. Shoda s IEC 61643-21.',
     tags: 'konektor,rj45,ethernet,poe,přepěťová-ochrana,bleskojistka,surge-protector',
   },
+  {
+    name: 'HB12201',
+    packageType:
+      'THT kolíková lišta (pin header), 1 řada, přímé (straight) vývody, rozteč 2,54 mm (0,1"), ' +
+      'čtvercové kolíky 0,64 mm (0,025"), 20 pozic/pinů, izolátor termoplastický nylon UL94V-0 ' +
+      '(černý), kontakty fosforový bronz s tvrdým zlacením 15 µ" (gold flash)',
+    value:
+      'Nešroubovaná (break-away) jednořadá kolíková lišta, 20 pinů, rozteč 2,54 mm, pozlacené ' +
+      'kontakty, 250 V AC, do +105 °C',
+    notes:
+      'Foxconn "HB/HC Series — Non-Shrouded Headers, Break Away Header, .025" (0,64 mm) Square ' +
+      'Posts" katalogový datasheet — rozsáhlá modulární řada kolíkových lišt/hlavic dekódovaná ' +
+      'dle vlastního číslování výrobce: HB12201 = HB (jednořadá provedení, řada HC by byla ' +
+      'dvouřadá) + 12 (styl ukončení "Single Row Straight", mating length C=0,230"/tail length ' +
+      'D=0,125") + 20 (počet kontaktních pozic, 1–40 dle objednávky) + 1 (povrchová úprava ' +
+      'kontaktů: gold flash — tenká zlatá vrstva; ostatní dostupné úpravy dle katalogu: 0=cín/' +
+      'olovo, 7=15µ" tvrdé zlato, 3=30µ" tvrdé zlato). "Break away" znamená, že lištu lze podle ' +
+      'potřeby zlomit/zkrátit na menší počet pozic. Elektrické parametry (společné pro celou ' +
+      'řadu): izolační odpor min 5000 MΩ, dielektrická pevnost min 1000 V AC (na hladině moře), ' +
+      'jmenovité napětí 250 V AC, provozní teplota -55 až +105 °C, retenční síla kontaktu min ' +
+      '2 lb. Součást širší modulární řady zahrnující i variantu s pravoúhlými (right angle) ' +
+      'vývody (HB02/04/14/15) a dvouřadé varianty HC (přímé HC11/12/08/13, pravoúhlé HC02/04/14/' +
+      '15) se stejným systémem kódování stylu/pozic/povrchové úpravy — do knihovny přidán jen ' +
+      'konkrétní pojmenovaný díl HB12201 z názvu souboru.',
+    tags: 'konektor,pin-header,kolíková-lišta,break-away,foxconn,hb-series,tht,2,54mm',
+  },
 ];
 
 export function buildConnectorSeed(): ComponentInput[] {

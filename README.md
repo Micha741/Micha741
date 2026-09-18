@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    484 běžné součástky: 106 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    485 běžných součástek: 106 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; a laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220),
@@ -53,9 +53,10 @@ i návrh schémat obvodů a plošných spojů.
     PowerTector PT10/PT20/PT40/PT60/PT100/PT200; LoRaWAN senzor LEO-S55 a brány USM-S67;
     solární bezdrátové senzory EnOcean ETHSA/ETHSU; 6,86" IPS TFT LCD moduly AZ Displays
     ATM0680L2A-CT s kapacitním dotykem a ATM0680L2A bez dotyku; a polohové displeje vřetene
-    Baumer IVO N 142/N 152; a znakový LCD modul PICVUE PVC200403), 1 konektor/přepěťová
-    ochrana (Ethernet/PoE
-    bleskojistka ESP-100-POE) a 4 ostatní součástky (RF koaxiální směrový odbočovač SAGE
+    Baumer IVO N 142/N 152; a znakový LCD modul PICVUE PVC200403), 2 konektory/přepěťové
+    ochrany (Ethernet/PoE
+    bleskojistka ESP-100-POE; kolíková lišta Foxconn HB12201) a 4 ostatní součástky (RF
+    koaxiální směrový odbočovač SAGE
     Millimeter/Eravant SCD-0134032010-KF-SA; pasivní segmentové LCD panely AZ Displays
     GD-342AP, GD-458P a AND/Purdy FE0202W-EU). Tlačítkem „Knihovna”
     v horní liště lze kdykoli doplnit chybějící položky (např. po smazání), aniž
