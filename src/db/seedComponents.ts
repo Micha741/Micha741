@@ -613,6 +613,34 @@ const DIODE_SPECS: PartSpec[] = [
     tags: 'dioda,led,výkonová,smd,bílá,oslon,oslon-ssl-80,osram',
   },
   {
+    name: 'LO T64F',
+    packageType:
+      'PLCC-2 (SMD), černé pouzdro s bezbarvou (colorless) čočkou/zálivkou pro vysoký kontrast ' +
+      'panelu při vypnutém stavu — na rozdíl od běžných čirých/bílých pouzder',
+    value:
+      'OSRAM TOPLED Black — výkonová SMD LED, oranžová (InGaAlP Thinfilm), λdom 606 nm typ., ' +
+      'IV typ. 3300–8270 mcd dle jasové skupiny (binningu) @IF=20 mA',
+    notes:
+      'OSRAM Opto Semiconductors "TOPLED Black — LO T64F" datasheet (verze 2.4, OS-PCN-2016-025-A, ' +
+      'listopad 2016) — ⚠️ jiný účel/konstrukce než ostatní výkonové LED v této knihovně (LUXEON ' +
+      'Rebel, OSLON SSL 80, samostatné záznamy) — LO T64F má speciálně ČERNÉ pouzdro PLCC-2 (s ' +
+      'bezbarvou zálivkou) navržené pro elektronické textové/proměnné informační tabule (VMS — ' +
+      'Variable Message Signs) a cenové displeje, kde černé pouzdro poskytuje vysoký kontrast ' +
+      'panelu (LED nesvítící nejsou vidět jako světlé tečky). Technologie InGaAlP Thinfilm, barva ' +
+      'oranžová (606 nm), vylepšená odolnost proti korozi. Vyzařovací úhel při 50 % IV: 30°. ' +
+      'Mezní hodnoty: Top/Tstg -40 až +100 °C, TJ max 125 °C, IF (trvalý) max 50 mA, IFM ' +
+      '(nárazový, t≤10 µs, D=0,1) max 100 mA, VR max 12 V, ESD odolnost do 2 kV (HBM, dle ANSI/' +
+      'ESDA/JEDEC JS-001). λpeak typ. 610 nm. λdom (dominantní vlnová délka) min 600/typ. 606/max ' +
+      '609 nm. Δλ (spektrální šířka @50 % Irel) typ. 17 nm. VF min 1,80/typ. 1,95/max 2,40 V ' +
+      '@IF=20 mA. IR typ. 0,2/max 10 µA @VR=12 V. Teplotní koeficienty: TCλpeak 0,12 nm/K, TCλdom ' +
+      '0,08 nm/K (-10 až +100 °C). Reálný tepelný odpor přechod/pájecí ploška RθJS max 280 K/W. ' +
+      'Binováno do 5 jasových skupin (CB/DA/DB/EA/EB, partial flux Ev 3550–11200 lux @IF=20 mA, ' +
+      'odpovídající IV typ. 3300–8270 mcd), 3 skupin dominantní vlnové délky (2/3/4, 600–609 nm) ' +
+      'a 4 skupin propustného napětí (3A/3B/4A/4B, 1,80–2,40 V) — zákazník obdrží v jedné baleny ' +
+      'jednotce vždy jen jednu konkrétní kombinaci skupin (např. LO T64F-CBEB-24-1).',
+    tags: 'dioda,led,výkonová,smd,oranžová,plcc-2,černé-pouzdro,vms,osram,topled-black',
+  },
+  {
     name: 'SMTPA62',
     packageType:
       'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka, bez elektrody gate), ' +
