@@ -1051,6 +1051,53 @@ const IC_SPECS: IcSpec[] = [
       'extrémní vlhkost/teplo mohou vlhkoměrný člen degradovat mimo záruku).',
     tags: 'io,senzor,vlhkoměr,teploměr,duct,hvac,belimo,analogový,0-10v',
   },
+  {
+    name: 'SHT85',
+    packageType:
+      '4pinové jednořadé kolíkové pouzdro (SIL), pouzdro epoxidová licí hmota (housing shodné se ' +
+      'SHT35-DIS), 1,27 mm rozteč pinů, celková výška 17,8 mm, čip 3,7×2,3 mm, PTFE membrána nad ' +
+      'otvorem senzoru (ochrana IP67 proti kapalinám/prachu). Piny: 1=SCL (jen vstup), 2=VDD, ' +
+      '3=VSS, 4=SDA (obousměrný) — pozlacená zadní strana hlavy senzoru je interně spojena s VSS, ' +
+      'integrovaný 100nF kondenzátor mezi VDD/GND. Lze pájet nebo vsadit do patice (Preci-Dip ' +
+      '851-87-004-10-001101/-20-001101, Harwin M50-3030442 nebo podobné)',
+    value:
+      'Vysoce přesný digitální senzor vlhkosti a teploty, standardní I2C rozhraní (adresa 0x44), ' +
+      '±1,5 %RH / ±0,1 °C typ. přesnost, 0–100 %RH, -40 až +105 °C (čip do 125 °C), VDD 2,15–5,5 V',
+    notes:
+      'Sensirion Datasheet SHT85 v3 (srpen 2020) — nejpřesnější "pin-type" senzor vlhkosti/teploty ' +
+      'Sensirion, postavený na novější generaci čipu SHT3x-DIS (CMOSens technologie). ⚠️ Zcela ' +
+      'odlišné komunikační rozhraní než SHT71/SHT75 (samostatné záznamy, starší generace SHT7x) ' +
+      '— ty používají proprietární 2vodičové SCK/DATA rozhraní bez skutečné I2C adresace (jen ' +
+      '"000"), zatímco SHT85 komunikuje standardním I2C (I2C Fast Mode do 400 kHz, volitelně až ' +
+      '1 MHz), pevná 7bit adresa 0x44 (binárně 1000100) — lze sdílet I2C sběrnici s dalšími ' +
+      'zařízeními. Rovněž odlišné od DHT11 (proprietární asynchronní jednovodičový protokol) a od ' +
+      'DS18B20/DS1822 (Dallas 1-Wire), samostatné záznamy. ⚠️ Výrazně vyšší přesnost než DHT11 ' +
+      '(±1,5 %RH/±0,1 °C zde vs. ±5 %RH/±2 °C u DHT11) a navíc IP67 ochrana senzorového otvoru ' +
+      'PTFE membránou (odolnost proti stříkající vodě a prachu) — na rozdíl od holých senzorových ' +
+      'elementů ostatních dílů v knihovně. Vlhkost: přesnost typ. ±1,5 %RH (max. dle grafu, ' +
+      'nejhorší v krajních bodech; ±2 %RH @40 °C/40–70 %RH, ±1,5 %RH @40 °C/40–60 %RH), ' +
+      'opakovatelnost 0,21/0,15/0,08 %RH (nízká/střední/vysoká repeatabilita), rozlišení 0,01 %RH, ' +
+      'rozsah 0–100 %RH nekondenzující, doba odezvy τ63% 8 s (s aktivovanou ART funkcí 2× rychlejší), ' +
+      'dlouhodobý drift typ. <0,25 %RH/rok. Teplota: přesnost typ. ±0,1 °C (20–50 °C), ' +
+      'opakovatelnost 0,15/0,08/0,04 °C, rozlišení 0,01 °C, rozsah -40 až +105 °C (čip a DPS do ' +
+      '125 °C, konektor limitován na 105 °C), doba odezvy τ63% >2 s, dlouhodobý drift max ' +
+      '<0,03 °C/rok. Doporučený provozní rozsah pro nejlepší výkon 5–60 °C / 20–80 %RH — dlouhodobé ' +
+      'vystavení mimo tento rozsah (zejména vysoká vlhkost) může dočasně posunout signál (např. ' +
+      '+3 %RH po 60 h @>80 %RH), senzor se sám postupně vrátí do kalibrovaného stavu. Napájení: ' +
+      'VDD 2,15–5,5 V, VPOR (power-up práh) typ. 2,1 V, max. slew rate napájení 20 V/ms. Proudový ' +
+      'odběr: klidový (single-shot mód) typ. 0,2 µA @25 °C (max 12 µA, max 6 µA @125 °C), klidový ' +
+      '(periodický mód) typ. 45 µA, měření typ. 600 µA (max 1500 µA), průměr typ. 1,7 µA ' +
+      '(1 měření/s, nejnižší repeatabilita). Výkon vestavěného ohřívače (jen pro kontrolu ' +
+      'funkčnosti, ne pro běžné odstranění kondenzace) 3,6–33 mW. Mezní hodnoty: VDD -0,3 až 6 V, ' +
+      'napětí na SCL/SDA -0,3 až VDD+0,5 V, vstupní proud ±100 mA, provozní/skladovací teplota ' +
+      '-40 až +105 °C (doporučené skladování 10–50 °C), ESD HBM 4 kV / CDM 750 V. Podporuje ' +
+      'jednorázová měření (single shot, 3 úrovně repeatability) i periodická měření (0,5/1/2/4/10 ' +
+      'měření/s × 3 úrovně repeatability), ART funkci (Accelerated Response Time, 4 Hz), softwarový ' +
+      'i hardwarový reset, čtecí stavový registr a unikátní 32bit výrobní sériové číslo (příkaz ' +
+      '0x3682) pro individuální identifikaci kusu. Všechny příkazy a data chráněny CRC kontrolním ' +
+      'součtem. RoHS (bez Pb/Cd/Hg), kvalifikace dle JEDEC JESD47.',
+    tags: 'io,senzor,vlhkoměr,teploměr,sht85,sht3x,sensirion,i2c',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
