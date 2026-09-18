@@ -1380,6 +1380,74 @@ const IC_SPECS: IcSpec[] = [
       'u 80Mbps verze ISL32177E.',
     tags: 'io,rs485,rs422,přijímač,receiver,isl32277e,transceiver,qfn,shdn,nízký-odběr',
   },
+
+  // Napájecí IC pro TFT-LCD displeje (automotive)
+  {
+    name: 'MAX25220',
+    packageType: '32 TQFN-EP / 32 SWTQFN-EP (5×5 mm), AEC-Q100 Grade 1, -40 až +125 °C',
+    value:
+      '4kanálový automotive TFT-LCD napájecí obvod (BEZ VCOM bufferu) — AVDD 4,2–10,5 V @200 mA, ' +
+      'NAVDD do -200 mA, VGON 7,6–20,2 V @15 mA, VGOFF -18,2 až -5,6 V @15 mA',
+    notes:
+      'Maxim Integrated (nyní Analog Devices) "MAX25220/MAX25221/MAX25221B — Automotive ' +
+      '4-Channel TFT-LCD Power Supply with VCOM Buffer" (dok. 19-100803, rev. 4, 11/2020) — ' +
+      'jednočipový zdroj všech napětí potřebných pro TFT-LCD panel (zdrojové/gate budiče) v ' +
+      'automotive infotainmentech, přístrojových deskách a centrálních displejích. Integruje: ' +
+      'synchronní boost regulátor pro symetrické kladné AVDD (4,2–10,5 V, do 200 mA, nastavitelné ' +
+      'v krocích 0,1 V přes I2C); invertující regulátor NAVDD (záporné napětí, do -200 mA, ' +
+      'regulace NAVDD vůči AVDD ±34 mV); pozitivní nábojovou pumpu VGON (gate-on napětí pro TFT ' +
+      'budiče, 7,6–20,2 V @ 15 mA, krok 0,2 V, 3× násobič); negativní nábojovou pumpu VGOFF ' +
+      '(gate-off napětí, -18,2 až -5,6 V @ 15 mA, zdvojovač). Spínací frekvence 420 kHz nebo ' +
+      '2,1 MHz s volitelným spread-spectrum ditherem (±6 %) pro nízké EMI. Řízené sekvenční ' +
+      'zapínání/vypínání všech výstupů (programovatelné pořadí). I2C řídicí/diagnostické rozhraní ' +
+      's FLTB (přerušovacím) výstupem, podvýkonová (UV) diagnostika na všech výstupech, tepelné ' +
+      'varování a vypnutí. Nezávislý stand-alone režim po naprogramování (bez nutnosti trvalého ' +
+      'I2C řízení) i I2C-only (read-only) režim. Nevolatilní paměť (NV memory) umožňuje uložit ' +
+      'kalibrované hodnoty všech výstupů (AVDD/NAVDD/VGON/VGOFF/sekvenci) — zapisovatelná ' +
+      'max. 5× za život součástky (BURN příkaz), s auto-refresh funkcí. IN 2,65–5,5 V, interní ' +
+      'V18 LDO 1,8 V @60 mA pro logiku. MAX25220 je základní varianta BEZ integrovaného VCOM ' +
+      'bufferu (jen 4kanálové napájení TFT budičů) — viz samostatné záznamy MAX25221 (s VCOM ' +
+      'bufferem a NTC teplotní kompenzací) a MAX25221B (s VCOM bufferem a odlišným chováním EN ' +
+      'pinu při zapnutí) pro rozdíly v rámci rodiny.',
+    tags: 'io,napájecí-obvod,tft-lcd,automotive,max25220,boost,i2c,aec-q100',
+  },
+  {
+    name: 'MAX25221',
+    packageType: '32 TQFN-EP / 32 SWTQFN-EP (5×5 mm), AEC-Q100 Grade 1, -40 až +125 °C',
+    value:
+      '4kanálový automotive TFT-LCD napájecí obvod S VCOM bufferem a NTC teplotní kompenzací — ' +
+      'VCOM +1 V až -2,49 V v krocích 6,83 mV, jinak shodné s MAX25220',
+    notes:
+      'Maxim/Analog Devices "MAX25220/MAX25221/MAX25221B" (dok. 19-100803, rev. 4, 11/2020) — ' +
+      'součást stejné rodiny jako MAX25220 (bez VCOM bufferu) a MAX25221B (samostatné záznamy) — ' +
+      'viz záznam MAX25220 pro plný popis společných funkcí (boost AVDD, NAVDD, VGON/VGOFF ' +
+      'nábojové pumpy, sekvenování, I2C, NV paměť, AEC-Q100). MAX25221 navíc integruje VCOM ' +
+      'buffer (výstupní zesilovač pro řízení referenčního napětí LCD panelu VCOM) s výstupním ' +
+      'rozsahem +1 V až -2,49 V v krocích 6,83 mV, a blok měření teploty (8bit ADC) s podporou ' +
+      'externího NTC senzoru pro teplotní kompenzaci VCOM napětí (kompenzace driftu VCOM v ' +
+      'závislosti na teplotě panelu — typicky nutné pro udržení konstantního kontrastu/potlačení ' +
+      'flickeru LCD napříč provozní teplotou). Dostupný i v 32 TQFN-EP i 32 SWTQFN-EP (side-' +
+      'wettable, pro AOI kontrolu pájených spojů) pouzdru — SWTQFN varianta byla v době ' +
+      'vydání datasheetu označena jako "future product".',
+    tags: 'io,napájecí-obvod,tft-lcd,automotive,max25221,vcom,boost,i2c,aec-q100,ntc',
+  },
+  {
+    name: 'MAX25221B',
+    packageType: '32 TQFN-EP (5×5 mm), AEC-Q100 Grade 1, -40 až +125 °C',
+    value:
+      '4kanálový automotive TFT-LCD napájecí obvod S VCOM bufferem, varianta s odlišným ' +
+      'chováním EN pinu při zapnutí — jinak shodné s MAX25221',
+    notes:
+      'Maxim/Analog Devices "MAX25220/MAX25221/MAX25221B" (dok. 19-100803, rev. 4, 11/2020) — ' +
+      'součást stejné rodiny jako MAX25220 (bez VCOM bufferu) a MAX25221 (samostatné záznamy) — ' +
+      'viz záznamy MAX25220 a MAX25221 pro plný popis společných funkcí. MAX25221B je elektricky ' +
+      'shodný s MAX25221 (VCOM buffer + NTC teplotní kompenzace), liší se pouze chováním ' +
+      'startovací sekvence řízené EN pinem ("EN pin turn-on" varianta dle objednacího kódu ' +
+      'výrobce) — určeno pro aplikace vyžadující odlišné řízení zapínání oproti standardnímu ' +
+      'I2C/stand-alone sekvenování MAX25221. Dostupný pouze v 32 TQFN-EP pouzdru (bez SWTQFN ' +
+      'varianty).',
+    tags: 'io,napájecí-obvod,tft-lcd,automotive,max25221b,vcom,boost,i2c,aec-q100',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
