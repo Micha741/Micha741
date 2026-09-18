@@ -1535,6 +1535,32 @@ const IC_SPECS: IcSpec[] = [
       'TQFP), i s evaluačním kitem ISL78010EVAL1Z.',
     tags: 'io,napájecí-obvod,tft-lcd,automotive,ldo,boost,isl78010,renesas,intersil,tqfp',
   },
+  {
+    name: 'EC9223',
+    packageType: '16-pin WQFN 3×3 mm (exponovaný termální pad)',
+    value:
+      'Malý integrovaný TFT-LCD napájecí obvod — boost (20 V/1,8 A NFET, 1,2 MHz) + VGH/VGL ' +
+      'nábojové pumpy + unity-gain VCOM buffer (±150 mA), VIN 2,5–5,5 V',
+    notes:
+      'E-CMOS Corp. (Tchaj-wan) "EC9223 — Multi-Channel TFT LCD Supply" (dok. 5E26N-Rev. F001) ' +
+      '— kompaktní (16pin WQFN 3×3 mm) all-in-one napájecí řešení pro malé až středně velké TFT ' +
+      'LCD panely (notebooky, tablety, navigace, přenosná zařízení) — podobná kategorie jako ' +
+      'ISL78010/ISL97652/MAX2522x v této knihovně, ale menší/jednodušší a od jiného (tchajwanského) ' +
+      'výrobce. Integruje: proudově řízený (current-mode) PWM boost converter s integrovaným ' +
+      '20V/1,8A N-kanálovým FET (RDS(on) 700 mΩ), pevná spínací frekvence 1,2 MHz, účinnost do ' +
+      '90 %, výstupní přesnost ±1 % (FB reguluje na 1,2 V, nastavení AVDD externím odporovým ' +
+      'děličem), soft-start 7 ms, proudový limit 1,4–2,2 A; kladnou nábojovou pumpu VGH (FBP ' +
+      'reguluje na 1,2 V, AVDD napájení 6–16 V, spínací frekvence 600 kHz, nastavení externím ' +
+      'děličem); zápornou nábojovou pumpu VGL (FBN reguluje na 0,24 V nominal); integrovaný ' +
+      'unity-gain operační zesilovač pro buzení LCD VCOM (napájení AVDD 6–16 V, výstupní zkratový ' +
+      'proud ±100–150 mA, slew rate 8–12 V/µs, šířka pásma 12 MHz, vstupní offset ±15 mV); a ' +
+      'obvod detekce podpětí (low-voltage detector) generující reset signál RSTnn (aktivní v ' +
+      'L, open-drain) při poklesu VIN pod 2,6 V, s 120ms blanking dobou při power-on. Soft-start ' +
+      'a časované zpožděné poruchové zablokování (fault latch) na všech výstupech, tepelné ' +
+      'vypnutí. VIN 2,5–5,5 V, aktivní enable pin (EN) se 4µA pull-down. Dostupný jako ' +
+      'EC9223NNQ1R.',
+    tags: 'io,napájecí-obvod,tft-lcd,vcom,boost,nábojová-pumpa,ec9223,e-cmos,wqfn',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
