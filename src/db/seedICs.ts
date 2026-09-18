@@ -1229,6 +1229,61 @@ const IC_SPECS: IcSpec[] = [
       'součtem. RoHS (bez Pb/Cd/Hg), kvalifikace dle JEDEC JESD47.',
     tags: 'io,senzor,vlhkoměr,teploměr,sht85,sht3x,sensirion,i2c',
   },
+  {
+    name: 'SCD40',
+    packageType:
+      'LGA 10,1×10,1×6,5 mm, 21 vývodů (VDD, VDDH, GND, SDA, SCL, zbytek DNC — nutno pájet i ' +
+      'nepoužité DNC piny na plovoucí plošku), MSL 3',
+    value:
+      'Miniaturní fotoakustický CO2 senzor s integrovaným senzorem vlhkosti/teploty (SHT4x), I2C ' +
+      'rozhraní (adr. 0x62), rozsah 0–40 000 ppm, přesnost ±(50 ppm + 5 %) v 400–2000 ppm, VDD 2,4–5,5 V',
+    notes:
+      'Sensirion "SCD4x — Breaking the size barrier in CO2 sensing" (verze 1.1, duben 2021) — ' +
+      'nejmenší CO2 senzorový modul Sensirion, založený na patentované fotoakustické senzorové ' +
+      'technologii PASens® (IR vysílač + akustický snímač tlakové vlny vzniklé absorpcí IR záření ' +
+      'molekulami CO2, místo klasické NDIR optické lavice) — umožňuje SMD/reflow montáž a výrazně ' +
+      'menší rozměry než tradiční NDIR CO2 senzory. Integruje i senzor relativní vlhkosti a teploty ' +
+      '(postavený na čipu SHT4x) pro on-chip kompenzaci CO2 výstupu. SCD40 = základní přesnostní ' +
+      'třída, specifikovaný rozsah 400–2000 ppm (viz odlišná, přesnější varianta SCD41 v ' +
+      'samostatném záznamu, s rozšířeným rozsahem 400–5000 ppm a podporou single-shot měření). ' +
+      'CO2: výstupní rozsah 0–40 000 ppm, přesnost ±(50 ppm + 5 % z hodnoty) v rozsahu 400–2000 ppm, ' +
+      'opakovatelnost typ. ±10 ppm, doba odezvy τ63% typ. 60 s, drift přesnosti při aktivním ASC ' +
+      '(Automatic Self-Calibration) typ. ±(5 ppm + 0,5 %)/rok — ASC vyžaduje pravidelné vystavení ' +
+      'senzoru venkovnímu vzduchu (~400 ppm). Vlhkost: 0–100 %RH, přesnost typ. ±6 %RH ' +
+      '(15–35 °C/20–65 %RH) až ±9 %RH (celý rozsah), opakovatelnost ±0,4 %RH, doba odezvy 90 s. ' +
+      'Teplota: -10 až +60 °C, přesnost typ. ±0,8 °C (15–35 °C) až ±1,5 °C (celý rozsah), ' +
+      'opakovatelnost ±0,1 °C, doba odezvy 120 s. Napájení VDD=VDDH 2,4–5,5 V (typ. 3,3 nebo 5 V, ' +
+      'oba piny nutno propojit blízko senzoru); průměrný odběr při periodickém měření 15–18 mA ' +
+      '(3,3 V) / 11–13 mA (5 V), v low-power periodickém režimu jen 3,2–3,5 mA (3,3 V), špičkový ' +
+      'odběr až 175–205 mA (3,3 V). I2C standard-mode do 100 kHz (adresa 0x62), 16bit ' +
+      'příkazy/data + 8bit CRC kontrolní součet, power-up doba 1000 ms po dosažení VDD≥2,25 V. ' +
+      'Provozní teplota -10 až +60 °C, MSL úroveň 3, ESD HBM 2 kV/CDM 500 V, udávaná životnost ' +
+      '>10 let. REACH a RoHS compliant.',
+    tags: 'io,senzor,co2,vlhkoměr,teploměr,scd40,scd4x,sensirion,i2c,pasens',
+  },
+  {
+    name: 'SCD41',
+    packageType:
+      'LGA 10,1×10,1×6,5 mm, 21 vývodů (VDD, VDDH, GND, SDA, SCL, zbytek DNC — nutno pájet i ' +
+      'nepoužité DNC piny na plovoucí plošku), MSL 3',
+    value:
+      'Miniaturní fotoakustický CO2 senzor, vyšší přesnostní třída s podporou single-shot měření ' +
+      '— rozsah 400–5000 ppm, přesnost ±(40 ppm + 5 %), jinak elektricky shodný se SCD40',
+    notes:
+      'Sensirion "SCD4x" (verze 1.1, duben 2021) — vyšší přesnostní varianta ve stejné rodině ' +
+      'jako SCD40 (samostatný záznam, viz tam pro plný popis fotoakustické PASens® technologie, ' +
+      'integrovaného SHT4x senzoru vlhkosti/teploty, napájení, I2C rozhraní a mezních hodnot — ' +
+      'elektricky/rozměrově shodné pouzdro i piny). SCD41: CO2 přesnost ±(40 ppm + 5 % z hodnoty) ' +
+      've specifikovaném rozsahu 400–5000 ppm (oproti ±(50 ppm + 5 %) v 400–2000 ppm u SCD40). ' +
+      'Navíc jako jediný díl v rodině podporuje "low power single shot" měřicí režim (příkazy ' +
+      'measure_single_shot / measure_single_shot_rht_only) — jednorázové měření na vyžádání s ' +
+      'volitelným intervalem místo kontinuálního periodického měření, s odběrem již jen ' +
+      '0,36–0,5 mA průměrně při 1 měření/5 minut (@3,3–5 V) — výhodné pro bateriové aplikace s ' +
+      'řídkým vzorkováním (např. bateriové monitory kvality vzduchu). Sdílí stejnou paletu ' +
+      'příkazů jako SCD40 (field kalibrace, ASC, nastavení výškové/tlakové kompenzace, teplotní ' +
+      'offset, persist_settings do NVM, self-test, factory reset, unikátní sériové číslo).',
+    tags: 'io,senzor,co2,vlhkoměr,teploměr,scd41,scd4x,sensirion,i2c,pasens,single-shot',
+  },
 
   // USB mosty
   {
