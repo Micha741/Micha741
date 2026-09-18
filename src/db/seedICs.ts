@@ -633,6 +633,45 @@ const IC_SPECS: IcSpec[] = [
       'jeho záznam pro plný popis). 4 KB EEPROM, 8 KB SRAM.',
     tags: 'io,mikrokontrolér,avr,atmega,atmega2561,8bit',
   },
+  {
+    name: 'AT90CAN128',
+    packageType:
+      '64pin TQFP (64A, gull-wing) nebo 64pin QFN (64M1) — 53 programovatelných GPIO, porty ' +
+      'A–G (A/B/C/D/E 8bit, F 8bit sdílený s ADC, G 5bit)',
+    value:
+      '8bit AVR mikrokontrolér s vestavěným CAN 2.0A/2.0B řadičem, 128 KB flash, 4 KB EEPROM, ' +
+      '4 KB SRAM, do 16 MIPS @16 MHz, VCC 2,7–5,5 V',
+    notes:
+      'Atmel AT90CAN128 (datasheet "Preliminary Summary", dok. 4250CS-CAN, rev. 03/04). ⚠️ Stejné ' +
+      'jádro AVR RISC jako rodina ATmega640/1280/1281/2560/2561 (samostatné záznamy), ale navíc ' +
+      'obsahuje vestavěný CAN řadič 2.0A/2.0B — funkce, kterou ATmega640 řada nemá; výrobce navíc ' +
+      'uvádí, že ATmega128 lze zpětně zkompatibilnit s AT90CAN128 dle aplikační poznámky AVR096. ' +
+      '133 instrukcí (většina v 1 cyklu), 32×8 obecných pracovních registrů, on-chip 2cyklová ' +
+      'násobička, do 16 MIPS @16 MHz. Paměť: 128 KB In-System programovatelná flash (10 000 ' +
+      'cyklů) s volitelnou Boot Loader sekcí (1K/2K/4K/8K bytů, programovatelná přes CAN nebo ' +
+      'UART), 4 KB EEPROM (100 000 cyklů), 4 KB interní SRAM, do 64 KB volitelné externí paměti, ' +
+      'zámek programu proti kopírování. CAN řadič 2.0A/2.0B: 15 plně nezávislých message objektů ' +
+      's vlastními identifikátory a maskami, režimy Transmit/Receive/Automatic Reply/Frame Buffer ' +
+      'Receive, max. přenosová rychlost 1 Mbit/s @8 MHz, časové razítko zpráv, TTC (Time Trigger ' +
+      'Communication) a Listening mode s podporou autobaud detekce. JTAG (IEEE std. 1149.1) ' +
+      's boundary-scan, on-chip debug, programování flash/EEPROM/zámkových/fuse bitů přes JTAG. ' +
+      'Periferie: 8bit synchronní časovač/čítač T/C0 (10bit prescaler, output compare/8bit PWM), ' +
+      '8bit asynchronní T/C2 (10bit prescaler, output compare/8bit PWM, 32,768kHz oscilátor pro ' +
+      'RTC), 2× 16bit synchronní T/C1 a T/C3 (10bit prescaler, input capture s potlačením šumu, ' +
+      '3× output compare/16bit PWM, output compare modulator), 8kanálový 10bit SAR ADC (8 ' +
+      'single-ended, 7 diferenciálních, 2 diferenciální s programovatelným ziskem 1×/10×/200×), ' +
+      'analogový komparátor, 2vodičové sériové rozhraní (TWI/I2C kompatibilní), 2× programovatelný ' +
+      'USART, master/slave SPI (hardwarové ISP programování). Zabezpečení: Power-on Reset, ' +
+      'programovatelná Brown-out detekce, interní kalibrovaný RC oscilátor, 8 externích zdrojů ' +
+      'přerušení, 5 režimů spánku (Idle, ADC Noise Reduction, Power-save, Power-down, Standby), ' +
+      'softwarově volitelný hodinový kmitočet, globální vypnutí interních pull-up rezistorů. ' +
+      'Napájení/rychlost: VCC 2,7–5,5 V, max. 8 MHz @2,7 V nebo 16 MHz @4,5 V (průmyslový ' +
+      'teplotní rozsah). Provozní teplota -40 až +85 °C (industrial). ⚠️ Datasheet je "Preliminary ' +
+      'Summary" — elektrické charakteristiky (DC parametry, přesné mezní hodnoty) v něm chybí, ' +
+      'typické hodnoty vycházejí ze simulací a charakterizace příbuzných AVR čipů na stejné ' +
+      'technologii, min/max hodnoty budou doplněny po charakterizaci konkrétního čipu výrobcem.',
+    tags: 'io,mikrokontrolér,avr,at90can128,can,8bit,tqfp64,qfn64',
+  },
 
   // Senzory
   {
