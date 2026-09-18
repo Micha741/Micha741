@@ -1620,6 +1620,27 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'Tělesová dioda: VSD typ 0,75 max 1,2 V @IS=1,7 A/VGS=0, IS max 1,7 A.',
     tags: 'tranzistor,mosfet,n-kanál,dual,tssop-8,smd,ace8205a,battery-protection,logická-úroveň,spínací',
   },
+  {
+    name: 'KSE13009F',
+    packageType: 'TO-220F, vývody: 1=báze, 2=kolektor, 3=emitor (plastové pouzdro, izolovaná ploška)',
+    value:
+      'NPN vysokonapěťový spínací tranzistor, VCEO 400 V, VCBO 700 V, IC 12 A (pulzně 24 A), ' +
+      'hFE 8–40 @IC=5 A',
+    notes:
+      'Fairchild Semiconductor KSE13009F (dok. rev. A, únor 2000) — vysokonapěťový rychlospínací ' +
+      'NPN tranzistor z rodiny "13009", typicky používaný ve spínaných zdrojích (SMPS) a řízení ' +
+      'motorů. Mezní hodnoty: VCBO=700 V, VCEO=400 V, VEBO=9 V, IC=12 A (DC), ICP=24 A (pulzně), ' +
+      'IB=6 A, PC=50 W @TC=25 °C (lineárně klesá k 0 W při TC=150 °C), TJ max 150 °C, ' +
+      'Tstg -65 až +150 °C. VCEO(sus) min 400 V @IC=10 mA/IB=0. IEBO max 1 mA @VEB=7 V. ' +
+      'hFE: 8–40 @VCE=5 V/IC=5 A, 6–30 @VCE=5 V/IC=8 A (výrazný pokles zisku při vyšším proudu, ' +
+      'typické pro vysokonapěťové spínací tranzistory). VCE(sat): max 1 V @IC=5 A/IB=1 A, ' +
+      'max 1,5 V @IC=8 A/IB=1,6 A, max 3 V @IC=12 A/IB=3 A. VBE(sat): max 1,2 V @IC=5 A/IB=1 A, ' +
+      'max 1,6 V @IC=8 A/IB=1,6 A. Cob typ 180 pF @VCB=10 V/f=0,1 MHz. fT min 4 MHz @VCE=10 V/' +
+      'IC=0,5 A. Spínací časy (VCC=125 V, IC=8 A, IB1=-IB2=1,6 A, RL=15,6 Ω): tON max 1,1 µs, ' +
+      'tSTG (storage) max 3 µs, tF max 0,7 µs — relativně pomalé vypínání typické pro tuto ' +
+      'kategorii vysokonapěťových bipolárních spínačů (na rozdíl od MOSFETů).',
+    tags: 'tranzistor,npn,bipolární,vysokonapěťový,spínací,to-220,13009,smps',
+  },
 ];
 
 function buildFromSpecs(specs: PartSpec[], category: 'Dioda' | 'Tranzistor'): ComponentInput[] {
