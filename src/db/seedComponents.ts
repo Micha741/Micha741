@@ -2584,6 +2584,31 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'NF max 8,0 dB @VCE=-5,0 V/IC=-200 µA/RS=10 Ω/f=1,0 kHz.',
     tags: 'tranzistor,pnp,bipolární,duální,sot-363,sc-70-6,mmdt5401,2n5401,vysokonapěťový,smd',
   },
+  {
+    name: 'LTR-306',
+    packageType:
+      'THT plastové "side looking" pouzdro (boční pohled — čočka směřuje kolmo k ose vývodů), ' +
+      '2 vývody (bez báze) — 1=emitor, 2=kolektor; rozteč vývodů 2,54 mm',
+    value:
+      'IR fototranzistor (detektor), NPN, bez báze, λ=940 nm, VCEO 30 V, IC(ON) 0,2–2,4 mA dle ' +
+      'BIN třídy (A–F) @Ee=1 mW/cm²',
+    notes:
+      'Lite-On Electronics "LTR-306 — IR Emitter and Detector" (dok. DS-50-92-0116, rev. B, ' +
+      '05/2000) — NPN křemíkový fototranzistor (IR detektor) citlivý na infračervené záření ' +
+      '(λ=940 nm), bez vyvedené báze (jen kolektor a emitor, optické buzení nahrazuje bázový ' +
+      'proud) — typicky používán v páru s IR LED vysílačem (přerušovač paprsku, reflexní senzor, ' +
+      'IR dálkové ovládání apod.). "Side looking" pouzdro — optická osa čočky je kolmá k ose ' +
+      'vývodů (boční snímání), na rozdíl od axiálních/"top view" fototranzistorů. Mezní hodnoty: ' +
+      'výkonová ztráta 100 mW, VCEO 30 V, VECO 5 V, provozní teplota -40 až +85 °C, skladovací ' +
+      '-55 až +100 °C, pájecí teplota 260 °C/5 s (1,6 mm od těla). V(BR)CEO min 30 V @IC=1 mA/' +
+      'Ee=0. V(BR)ECO min 5 V @IE=100 µA/Ee=0. VCE(sat) typ 0,1 V/max 0,4 V @IC=100 µA/Ee=1 mW/cm². ' +
+      'Doba náběhu/poklesu (tr/tf) max 20 µs @VCC=5 V/IC=1 mA/RL=1 kΩ. Kolektorový temný proud ' +
+      'ICEO max 100 nA @VCE=10 V/Ee=0. Spínací kolektorový proud IC(ON) @VCE=5 V/Ee=1 mW/cm²/' +
+      'λ=940 nm — binování dle citlivosti do 6 skupin (BIN A–F): A=0,20–0,60 mA, B=0,40–1,08 mA, ' +
+      'C=0,72–1,56 mA, D=1,04–1,80 mA, E=1,20–2,40 mA, F=1,60 mA min (bez horní meze v datasheetu) ' +
+      '— při objednávání/výběru dílu je nutno specifikovat požadovaný BIN.',
+    tags: 'tranzistor,fototranzistor,ir,detektor,npn,liteon,ltr-306,optoelektronika,side-looking',
+  },
 ];
 
 const RESISTOR_SPECS: PartSpec[] = [
