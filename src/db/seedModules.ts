@@ -628,6 +628,64 @@ const MODULE_SPECS: ModuleSpec[] = [
       'od PICVUE.',
     tags: 'modul,displej,lcd,znakový,dot-matrix,picvue,pvc200403,beck,20x4',
   },
+  {
+    name: 'TSU-20G',
+    packageType:
+      'Kovové pouzdro z nerezové oceli SUS304, cca 40×34×22,5 mm, hmotnost 200 g, tlakový ' +
+      'přívod 1/8" závitová přípojka (fitting), 3vodičový kabelový výstup (červený=Vcc, ' +
+      'černý=GND, modrý=P_OUT)',
+    value:
+      'Křemenný (kmitočtový) tlakový senzor, rozsah 0–200 kPa, výstup 39 kHz typ. (bez tlaku), ' +
+      'změna kmitočtu 4 kHz typ. (plný rozsah), 12 V',
+    notes:
+      'Seiko Epson "TSU series — Quartz Pressure Sensor/Transducer" — tlakový senzor založený ' +
+      'na křemenném rezonátoru, jehož kmitočet se mění úměrně přiloženému tlaku (frekvenční ' +
+      'výstup místo analogového napěťového/proudového) — vysoké rozlišení a přesnost, výborná ' +
+      'opakovatelnost s minimální hysterezí, vysoká teplotní stabilita, výstupní kmitočet ' +
+      'neovlivněný délkou přívodního/výstupního kabelu (na rozdíl od analogových napěťových ' +
+      'senzorů citlivých na úbytek/kapacitu vedení). Určeno pro průmyslové měření tlaku. ' +
+      'Zpracována celá řada 3 tlakových rozsahů z jednoho datasheetu (TSU-20G, TSU-70G, ' +
+      'TSU-100G, samostatné záznamy), lišících se jen tlakovým rozsahem a max. změnou kmitočtu. ' +
+      'TSU-20G: rozsah 0–200 kPa. Společné parametry celé řady: linearita po linearizaci max ' +
+      '0,01 %FS, přesnost (linearita+opakovatelnost+hystereze) max 0,023 %FS, provozní teplota ' +
+      '-10 až +70 °C, skladovací -20 až +80 °C, korekce náklonu (tilt correction) integrována, ' +
+      'volitelný vestavěný teplotní senzor, výstupní kmitočet bez tlaku typ. 39 kHz, výstupní ' +
+      'napětí min 3,2 Vpp (zátěž 600 Ω, useknutá sinusovka, DC odděleno kondenzátorem), napájení ' +
+      '12 V (standardní), odběr typ. 2 mA (4 mA typ. s vestavěným teplotním senzorem). TSU-20G: ' +
+      'max. změna kmitočtu (na plném rozsahu) typ. 4 kHz. RoHS.',
+    tags: 'modul,senzor,tlak,křemenný,frekvenční,seiko-epson,tsu-20g,průmyslový',
+  },
+  {
+    name: 'TSU-70G',
+    packageType:
+      'Kovové pouzdro z nerezové oceli SUS304, cca 40×34×22,5 mm, hmotnost 200 g, tlakový ' +
+      'přívod 1/8" fitting, 3vodičový kabelový výstup (Vcc/GND/P_OUT)',
+    value:
+      'Křemenný (kmitočtový) tlakový senzor, rozsah 0–700 kPa, výstup 39 kHz typ. (bez tlaku), ' +
+      'změna kmitočtu 7 kHz typ. (plný rozsah), 12 V',
+    notes:
+      'Seiko Epson "TSU series — Quartz Pressure Sensor/Transducer" — součást stejné řady 3 ' +
+      'tlakových rozsahů jako TSU-20G a TSU-100G (samostatné záznamy) — viz záznam TSU-20G pro ' +
+      'plný popis principu funkce (křemenný rezonátor s tlakově závislým kmitočtem) a společných ' +
+      'parametrů (přesnost, teplotní rozsah, napájení, mechanika). TSU-70G: rozsah 0–700 kPa, ' +
+      'max. změna kmitočtu typ. 7 kHz (shodná s TSU-100G).',
+    tags: 'modul,senzor,tlak,křemenný,frekvenční,seiko-epson,tsu-70g,průmyslový',
+  },
+  {
+    name: 'TSU-100G',
+    packageType:
+      'Kovové pouzdro z nerezové oceli SUS304, cca 40×34×22,5 mm, hmotnost 200 g, tlakový ' +
+      'přívod 1/8" fitting, 3vodičový kabelový výstup (Vcc/GND/P_OUT)',
+    value:
+      'Křemenný (kmitočtový) tlakový senzor, rozsah 0–1 MPa, výstup 39 kHz typ. (bez tlaku), ' +
+      'změna kmitočtu 7 kHz typ. (plný rozsah), 12 V — nejvyšší tlakový rozsah v řadě',
+    notes:
+      'Seiko Epson "TSU series — Quartz Pressure Sensor/Transducer" — součást stejné řady 3 ' +
+      'tlakových rozsahů jako TSU-20G a TSU-70G (samostatné záznamy) — viz záznam TSU-20G pro ' +
+      'plný popis principu funkce a společných parametrů. TSU-100G: rozsah 0–1 MPa (nejvyšší v ' +
+      'řadě), max. změna kmitočtu typ. 7 kHz (shodná s TSU-70G).',
+    tags: 'modul,senzor,tlak,křemenný,frekvenční,seiko-epson,tsu-100g,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
