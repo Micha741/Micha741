@@ -1848,6 +1848,31 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'u tohoto dílu z rodiny (relevantní pro malosignálové audio/mikrofonní předzesilovače).',
     tags: 'tranzistor,pnp,bipolární,duální,sot-563,bc857,bc857bv,smd',
   },
+  {
+    name: 'BC857S',
+    packageType:
+      'SOT-363 (SC-70-6), 6 vývodů (piny 1, 2, 3 dole, 4, 5, 6 nahoře), pravděpodobně shodný ' +
+      'pinout 1/4=E1/E2, 2/5=B1/B2, 3/6=C2/C1 jako u BC856S (stejný výrobce/pouzdro/kresba, ' +
+      'ověřeno u BC856S i originálním Siemens datasheetem) — dva nezávislé PNP tranzistory bez ' +
+      'vzájemného ovlivňování; značení na pouzdru "3C"',
+    value: 'Duální PNP tranzistor (2× PNP v pouzdře), VCEO -45 V, IC -0,2 A, hFE 125–630 @IC=-2 mA (bin S)',
+    notes:
+      'Jiangsu Changjiang Electronics Technology (JCET) BC857S "Dual Transistor (PNP+PNP)" ' +
+      '(dok. rev. E, březen 2016) — ⚠️ na rozdíl od BC857BV (samostatný záznam, menší SOT-563 ' +
+      'pouzdro, IC max -0,1 A, hFE bin B 220–475) je BC857S ve větším SOT-363 pouzdře (stejném ' +
+      'jako BC807U/BC856S) s vyšší proudovou zatížitelností (-0,2 A) a širokým "S" ' +
+      'binem hFE 125–630 (nerozlišený/"spread" bin pokrývající rozsah více užších binů). ' +
+      '⚠️ Výrazně lepší šumové číslo NF typ 2,5 dB (vs. 10 dB u BC857BV, stejné testovací ' +
+      'podmínky) — vhodnější pro nízkošumové audio/mikrofonní předzesilovače. Mezní hodnoty: ' +
+      'VCBO=-50 V, VCEO=-45 V, VEBO=-5 V, IC=-0,2 A (trvale), PC=0,3 W @TA=25 °C, RθJA=417 °C/W, ' +
+      'TJ max 150 °C, Tstg -55 až +150 °C. V(BR)CBO min -50 V @IC=-10 µA/IE=0. V(BR)CEO min ' +
+      '-45 V @IC=-10 mA/IB=0. V(BR)EBO min -5 V @IE=-10 µA/IC=0. ICBO max -15 nA @VCB=-30 V/' +
+      'IE=0. hFE min 125 max 630 @VCE=-5 V/IC=-2 mA. VCE(sat) max -0,3 V @IC=-10 mA/IB=-0,5 mA; ' +
+      'max -0,65 V @IC=-100 mA/IB=-5 mA. VBE: min -0,6 V max -0,75 V @VCE=-5 V/IC=-2 mA; max ' +
+      '-0,82 V @VCE=-5 V/IC=-10 mA. fT typ 200 MHz @VCE=-5 V/IC=-10 mA/f=100 MHz. Cob max 3,5 pF ' +
+      '@VCB=-10 V/IE=0/f=1 MHz. NF typ 2,5 dB @VCE=-5 V/IC=-0,2 mA/f=1 kHz/Rs=2 kΩ/BW=200 Hz.',
+    tags: 'tranzistor,pnp,bipolární,duální,sot-363,sc-70-6,bc857,bc857s,smd,nízký-šum',
+  },
 ];
 
 const RESISTOR_SPECS: PartSpec[] = [
