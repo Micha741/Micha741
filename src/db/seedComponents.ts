@@ -1641,6 +1641,25 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'kategorii vysokonapěťových bipolárních spínačů (na rozdíl od MOSFETů).',
     tags: 'tranzistor,npn,bipolární,vysokonapěťový,spínací,to-220,13009,smps',
   },
+  {
+    name: 'BF240',
+    packageType:
+      '⚠️ TO-92, vývody: 1=kolektor, 2=emitor, 3=báze (neobvyklé pořadí C-E-B — odlišné od ' +
+      'typického pořadí E-B-C nebo C-B-E, snadná záměna, ověř si zapojení v datasheetu před pájením)',
+    value: 'NPN RF (VF) tranzistor, VCEO 40 V, IC 50 mA, fT min 1100 MHz, hFE 65–225 @IC=1 mA',
+    notes:
+      'Fairchild Semiconductor BF240 "NPN RF Transistor" (dok. rev. A, září 2003) — malosignálový ' +
+      'vysokofrekvenční tranzistor pro VF/VKV zesilovače a oscilátory (fT přes 1 GHz). Mezní ' +
+      'hodnoty: VCEO=40 V, VCBO=40 V, VEBO=4,0 V, IC=50 mA (trvale), TJ/Tstg -55 až +150 °C. ' +
+      'PD=350 mW @TA=25 °C (odvod 2,8 mW/°C nad 25 °C), RθJC=125 °C/W, RθJA=357 °C/W. ' +
+      'V(BR)CEO min 40 V @IC=1,0 mA/IB=0. V(BR)CBO min 40 V @IC=100 µA/IE=0. V(BR)EBO min 4,0 V ' +
+      '@IE=10 µA/IC=0. ICBO max 100 nA @VCB=20 V/IE=0. hFE 65–225 @IC=1 mA/VCE=10 V. VCE(sat) ' +
+      'max 0,65 V @IC=1 mA/IB=0,1 mA. VBE(sat) max 0,74 V @IC=1 mA/IB=0,1 mA. fT min 1100 MHz ' +
+      '@IC=7,0 mA/VCE=10 V/f=100 MHz (velmi vysoký tranzitní kmitočet, typický pro VF aplikace ' +
+      'jako FM/VKV přijímače, směšovače a oscilátory — nevhodné pro výkonové spínání). Cre ' +
+      '(zpětná přenosová kapacita v zapojení SE) max 0,34 pF @VCB=10 V/IE=0/f=1,0 MHz.',
+    tags: 'tranzistor,npn,bipolární,rf,vf,vysokofrekvenční,to-92,bf240',
+  },
 ];
 
 function buildFromSpecs(specs: PartSpec[], category: 'Dioda' | 'Tranzistor'): ComponentInput[] {
