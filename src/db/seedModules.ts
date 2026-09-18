@@ -539,6 +539,39 @@ const MODULE_SPECS: ModuleSpec[] = [
       'sekvence zapínání) shodné s ATM0680L2A-CT.',
     tags: 'modul,displej,lcd,tft,ips,mipi-dsi,az-displays,ek79030,bez-dotyku',
   },
+  {
+    name: 'N 142',
+    packageType:
+      'Povrchová montáž s dutou hřídelí (hollow shaft) Ø20 mm nebo Ø25 mm, pouzdro 56×100×62,5 mm, ' +
+      'polykarbonát černý UL94V-0, hmotnost cca 200 g, IP65; konektory M16 (5pin SPA/napájení+ ' +
+      'RS485, 12pin motorový), kabelový výstup 30 cm nebo přímo motorový kabel 0,5/1,5 m',
+    value:
+      'Polohový displej vřetene (spindle position display) — absolutní multiturn odměřovací ' +
+      'systém, LCD 2řádkový podsvícený displej, rozlišení 2304 kroků/otáčku ±4096 otáček, ' +
+      'RS485, 24 VDC',
+    notes:
+      'Baumer IVO "N 142 — Spindle Position Displays" (dok. 30. 10. 2008) — kompaktní modul pro ' +
+      'automatické polohování/formátové seřízení vřeten obráběcích strojů (např. přestavování ' +
+      'dorazů/pilových kotoučů na míru), montuje se přímo na hřídel skrz dutý střed. Absolutní ' +
+      'multiturn odměřovací systém (nevyžaduje homing po výpadku napájení) s rozlišením 2304 ' +
+      'kroků/otáčku a rozsahem ±4096 otáček (12bit), stoupání vřetene do 23 mm. LCD displej ' +
+      '(7segmentový, 2 řádky, podsvícený) zobrazuje aktuální i cílovou hodnotu, rozsah měření ' +
+      '-999,99…+9999,99 mm (nebo -99,999…+999,999 palců). Dvě membránové ovládací klávesy pro ' +
+      'formátové seřízení "touch by touch" — "multiconDrive" systém: modul komunikuje přímo s EC ' +
+      'motorem (signály clockwise/counterclockwise/rotation speed přes motorový konektor), ' +
+      'operátor edituje polohu s přesností ±1/100 mm pod přímou vizuální kontrolou; nastavené ' +
+      'polohy lze uložit jako profil (s externím řadičem pamětí N 242, až 100 profilů teach-in). ' +
+      'Rozhraní RS485 (ASCII protokol), síť až 32 modulů na PC/PLC. Data: parametrická paměť ' +
+      'EEPROM, aktuální hodnota zálohována integrovanou 3V lithiovou baterií (>10 let). Napájení ' +
+      '24 VDC ±10 %, odběr max 40 mA. Programovatelné parametry: orientace displeje, měrná ' +
+      'jednotka mm/palec, směr počítání, stoupání a tolerance vřetene, směr polohování, ' +
+      'zaokrouhlování aj. Provozní teplota -10 až +50 °C, skladovací -20 až +70 °C, vlhkost do ' +
+      '80 % nekondenzující, ochrana IP65, provozní otáčky do 600 ot/min (krátkodobě). Shoda s ' +
+      'DIN EN 61010-1 (třída ochrany II, kategorie přepětí II, stupeň znečištění 2), EMC dle DIN ' +
+      'EN 61000-6-2/6-3, schválení UL/cUL. Objednací kód např. N 142.13A01 (Ø25mm hřídel, ' +
+      'nakloněný displej, 24 VDC, kabelový výstup 0,5m motor. kabel, RS485).',
+    tags: 'modul,polohový-displej,enkodér,multiturn,rs485,baumer,ivo,n142,vřeteno,duté-hřídel',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {

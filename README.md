@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    470 běžných součástek: 106 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    475 běžných součástek: 106 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; a laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220),
@@ -21,11 +21,12 @@ i návrh schémat obvodů a plošných spojů.
     elektrolytické, tantalové, fóliové; vysokonapěťová 1000V keramická disková řada NTE 90000;
     přesná keramická disková řada Multicomp MCBU/MCFU; nízko/vysokonapěťová keramická
     disková řada Illinois Capacitor GMR/GQR; NP0 disk Meritek CCNPO101J50V5B1; a fóliová IGBT
-    snubber řada Cornell Dubilier SCD), 138 diod
+    snubber řada Cornell Dubilier SCD), 142 diod
     (usměrňovací, spínací, Schottky, Zenerovy,
     LED včetně výkonových SMD LED LUXEON Rebel, OSLON SSL 80, OSRAM TOPLED Black LO T64F/LR
     T66F (černé pouzdro pro VMS displeje) a OSRAM Mini TOPLED LY M67K, ploché LED displeje
-    ROHM LD-201 a LD-001, 7segmentové LED displeje AND Optoelectronics AND-5610, 16segmentové
+    ROHM LD-201, LD-001 a LD-701, 7segmentové LED displeje AND Optoelectronics AND-5610,
+    16segmentové
     alfanumerické displeje AND-8010-B a Yellow Stone BS-AA21RD/BS-CA21RD, Texas Instruments
     TIL302/303/304, bargraf displeje QT Optoelectronics MV53164/MV54164/MV57164, obousměrné
     přepěťové ochrany TRISIL STMicroelectronics
@@ -43,12 +44,13 @@ i návrh schémat obvodů a plošných spojů.
     MX29GL320E (T/B/H/L), USB-I2C most FT200XD, RS-485/RS-422 přijímače Renesas ISL32173E
     a příbuzné (ISL32175E/32177E/32273E/32275E/32277E), automotive TFT-LCD napájecí obvody
     Maxim MAX25220/MAX25221/MAX25221B/MAX25520, LCD-TV napájecí obvody Intersil/Renesas
-    ISL97652 a ISL78010, TFT-LCD napájecí obvody E-CMOS EC9223 a Torex XC9516 aj.), 18 modulů
+    ISL97652 a ISL78010, TFT-LCD napájecí obvody E-CMOS EC9223 a Torex XC9516 aj.), 19 modulů
     (Wi-Fi/BLE: ESP32-C3-MINI-1, ESP32-C3-WROOM-02, Adafruit Feather
     HUZZAH ESP8266, ESP8684-MINI-1, ESP-12S; nízkonapěťové odpojovače baterie Alfatronix
     PowerTector PT10/PT20/PT40/PT60/PT100/PT200; LoRaWAN senzor LEO-S55 a brány USM-S67;
-    solární bezdrátové senzory EnOcean ETHSA/ETHSU; a 6,86" IPS TFT LCD moduly AZ Displays
-    ATM0680L2A-CT s kapacitním dotykem a ATM0680L2A bez dotyku), 1 konektor/přepěťová
+    solární bezdrátové senzory EnOcean ETHSA/ETHSU; 6,86" IPS TFT LCD moduly AZ Displays
+    ATM0680L2A-CT s kapacitním dotykem a ATM0680L2A bez dotyku; a polohový displej vřetene
+    Baumer IVO N 142), 1 konektor/přepěťová
     ochrana (Ethernet/PoE
     bleskojistka ESP-100-POE) a 1 ostatní součástka (RF koaxiální směrový odbočovač SAGE
     Millimeter/Eravant SCD-0134032010-KF-SA). Tlačítkem „Knihovna”
