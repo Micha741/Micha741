@@ -1440,6 +1440,78 @@ const DIODE_SPECS: PartSpec[] = [
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
+    name: 'TLP140M/G/G-1',
+    packageType:
+      'Dostupné ve 3 pouzdrech se shodným čipem: PowerSO-10 (ozn. "M"), D²PAK (ozn. "G") nebo ' +
+      'I²PAK/TO-220 (ozn. "G-1") — 3 aktivní vývody TIP, RING, GND (+ mechanické/tepelné piny ' +
+      'dle pouzdra); RθJ-pouzdro 1,0 °C/W u všech tří variant',
+    value:
+      'TRIPOLÁRNÍ TRISIL — 3fázová (TIP-RING, TIP-GND, RING-GND) přepěťová ochrana telefonní ' +
+      'linky v jednom pouzdře, VRM 120 V, IPP 100 A (10/1000 µs)',
+    notes:
+      'STMicroelectronics "TLPxxM/G/G-1 — Tripolar Overvoltage Protection for Telecom Line" ' +
+      '(dok. září 1998, ed. 3C) — ⚠️ zásadně odlišná topologie od ostatních TRISIL dílů v této ' +
+      'knihovně (SMTPAxx/SMP-0SCMC/SMP100MC/SMP100LC/SMP75, samostatné záznamy) — ty všechny ' +
+      'chrání jen JEDEN pár vodičů (2 vývody), zatímco TLPxx je TRIPOLÁRNÍ součástka se 3 ' +
+      'aktivními vývody (TIP, RING, GND) obsahující interně 3 samostatné obousměrné crowbar ' +
+      'struktury (TIP↔RING, TIP↔GND, RING↔GND) — chrání celou telefonní linku (analogovou i ' +
+      'ISDN) najednou proti diferenciálním i souhlasným (podélným) přepětím v jediném pouzdře, ' +
+      'místo kombinování více samostatných 2vývodových TRISILů. Princip spínání shodný s ostatními ' +
+      'TRISIL díly (viz záznam SMTPA62): křemíková crowbar struktura bez řídicí elektrody. Určeno ' +
+      'pro primární i sekundární ochranu citlivých telekomunikačních zařízení (náhrada plynových ' +
+      'bleskojistek — "gas-tube replacement"): analogové a ISDN linkové karty, hlavní rozvodné ' +
+      'rámy (MDF), koncová a přenosová zařízení. Zpracována celá řada 3 napěťových tříd z jednoho ' +
+      'datasheetu (TLP140/200/270, samostatné záznamy), každá dostupná ve 3 pouzdrech (M/G/G-1) ' +
+      'se shodnými elektrickými parametry. TLP140: mezi TIP-RING: VRM 120 V, IRM max 5 µA @VRM; ' +
+      'VR 140 V, IR max 50 µA @VR; C typ 35 pF. Mezi TIP-GND i RING-GND (symetricky): VRM 120 V, ' +
+      'IRM max 5 µA; VR 140 V, IR max 50 µA; VBO (breakover, měřeno @50 Hz) max 200 V @IBO=500 mA; ' +
+      'IH min 150 mA; C typ 110 pF @VR=0 V / 40 pF @VR=50 V. Mezní hodnoty (společné pro celou ' +
+      'řadu): IPP=100 A (10/1000 µs, otevřený obvod 1 kV) / 250 A (8/20 µs, 4 kV) / 500 A ' +
+      '(2/10 µs, 2,5 kV); ITSM (indukce ze sítě 300 Vrms/600 Ω/200 ms)=0,7 A; ITSM (kontakt se ' +
+      'sítí, fail-safe práh 220 Vrms/10 Ω/200 ms)=31 A, (220 Vrms/600 Ω/15 min)=0,42 A; Tstg -55 ' +
+      'až +150 °C, TJ max 150 °C, provozní teplota -40 až +85 °C, max. pájecí teplota 260 °C/10 s. ' +
+      'Shoda se standardy: CCITT K20, VDE0433/0878, IEC-1000-4-5 level 4, FCC Part 68 (surge ' +
+      'typ A/B), Bellcore TR-NWT-001089 (1./2. úroveň), CNET I31-24. Objednací kód TPL140<M/G/G-1>' +
+      '[-TR] (TR = páska/cívka, jen pro "M" verzi 600 ks; jinak trubička 50 ks).',
+    tags: 'dioda,trisil,crowbar,přepěťová-ochrana,tripolární,telekom,powerso-10,d2pak,i2pak,tlp140',
+  },
+  {
+    name: 'TLP200M/G/G-1',
+    packageType:
+      'Dostupné ve 3 pouzdrech se shodným čipem: PowerSO-10 (ozn. "M"), D²PAK (ozn. "G") nebo ' +
+      'I²PAK/TO-220 (ozn. "G-1") — 3 aktivní vývody TIP, RING, GND; RθJ-pouzdro 1,0 °C/W',
+    value:
+      'TRIPOLÁRNÍ TRISIL — 3fázová (TIP-RING, TIP-GND, RING-GND) přepěťová ochrana telefonní ' +
+      'linky v jednom pouzdře, VRM 180 V, IPP 100 A (10/1000 µs)',
+    notes:
+      'STMicroelectronics "TLPxxM/G/G-1" (dok. září 1998, ed. 3C) — součást stejné řady 3 ' +
+      'napěťových tříd jako TLP140 a TLP270 (samostatné záznamy) — viz záznam TLP140M/G/G-1 pro ' +
+      'plný popis tripolární topologie, principu funkce, mezních hodnot a shody se standardy. ' +
+      'TLP200: mezi TIP-RING: VRM 180 V, IRM max 5 µA @VRM; VR 200 V, IR max 50 µA @VR; ' +
+      'C typ 35 pF. Mezi TIP-GND i RING-GND: VRM 180 V, IRM max 5 µA; VR 200 V, IR max 50 µA; ' +
+      'VBO max 290 V @IBO=500 mA; IH min 150 mA; C typ 110 pF @VR=0 V / 40 pF @VR=50 V.',
+    tags: 'dioda,trisil,crowbar,přepěťová-ochrana,tripolární,telekom,powerso-10,d2pak,i2pak,tlp200',
+  },
+  {
+    name: 'TLP270M/G/G-1',
+    packageType:
+      'Dostupné ve 3 pouzdrech se shodným čipem: PowerSO-10 (ozn. "M"), D²PAK (ozn. "G") nebo ' +
+      'I²PAK/TO-220 (ozn. "G-1") — 3 aktivní vývody TIP, RING, GND; RθJ-pouzdro 1,0 °C/W — ' +
+      'nejvyšší napěťová třída v řadě',
+    value:
+      'TRIPOLÁRNÍ TRISIL — 3fázová (TIP-RING, TIP-GND, RING-GND) přepěťová ochrana telefonní ' +
+      'linky v jednom pouzdře, VRM 230 V, IPP 100 A (10/1000 µs)',
+    notes:
+      'STMicroelectronics "TLPxxM/G/G-1" (dok. září 1998, ed. 3C) — součást stejné řady 3 ' +
+      'napěťových tříd jako TLP140 a TLP200 (samostatné záznamy) — viz záznam TLP140M/G/G-1 pro ' +
+      'plný popis tripolární topologie, principu funkce, mezních hodnot a shody se standardy. ' +
+      'TLP270: mezi TIP-RING: VRM 230 V, IRM max 5 µA @VRM; VR 270 V, IR max 50 µA @VR; ' +
+      'C typ 35 pF. Mezi TIP-GND i RING-GND: VRM 230 V, IRM max 5 µA; VR 270 V, IR max 50 µA; ' +
+      'VBO max 400 V @IBO=500 mA; IH min 150 mA; C typ 110 pF @VR=0 V / 40 pF @VR=50 V — ' +
+      'nejvyšší napěťová třída v celé řadě TLPxx (140–270 V).',
+    tags: 'dioda,trisil,crowbar,přepěťová-ochrana,tripolární,telekom,powerso-10,d2pak,i2pak,tlp270',
+  },
+  {
     name: 'SMP75-8',
     packageType:
       'SMB (JEDEC DO-214AA), 2 vývody (symetrická/obousměrná součástka, bez elektrody gate), ' +
