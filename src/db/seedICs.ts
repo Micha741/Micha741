@@ -1448,6 +1448,36 @@ const IC_SPECS: IcSpec[] = [
       'varianty).',
     tags: 'io,napájecí-obvod,tft-lcd,automotive,max25221b,vcom,boost,i2c,aec-q100',
   },
+  {
+    name: 'ISL97652',
+    packageType: '48 Ld 7×7 mm QFN, tepelně vylepšené (exponovaný termální pad), -40 až +85 °C',
+    value:
+      '4kanálový integrovaný LCD napájecí obvod s duálními VCOM zesilovači — AVDD boost do ' +
+      '19,5 V (OVP), VON až 34 V, VOFF do -15 V, VLOGIC buck 1,5–3,3 V, vstup 8–15 V',
+    notes:
+      'Intersil (nyní Renesas) "ISL97652 — 4-Channel Integrated LCD Supply with Dual VCOM ' +
+      'Amplifiers" (dok. FN9287.1, 2. 11. 2007) — vysoce výkonný integrovaný napájecí obvod pro ' +
+      'velkoplošné LCD panely (LCD-TV do 40", průmyslové/zdravotnické displeje) — funkčně ' +
+      'podobná kategorie jako novější automotive rodina Maxim MAX25220/21/21B v této knihovně, ' +
+      'ale odlišný (starší generace, non-automotive) výrobek. Integruje: vysokovýkonný boost ' +
+      'měnič pro AVDD generaci s integrovaným 2,8A špičkovým boost FET (typ. účinnost 91 %, ' +
+      'rDS(on) 125–200 mΩ, OVP práh 18,8–20 V/typ. 19,5 V s hysterezí 0,8 V); AVDD zpožďovací ' +
+      '("delay") spínač s integrovaným 2A FET pro sekvenování a zkratovou ochranu výstupu (RDS(on) ' +
+      '180–240 mΩ, RMS proudový limit 1,5–2 A); duální řadiče nábojových pump pro VON (2× nebo 3× ' +
+      'násobič, rozsah VSUP+2 V až 34 V) a VOFF (1× invertor, rozsah VSUP+1,4 V až 0 V); ' +
+      'asynchronní buck regulátor pro VLOGIC (logické napájení panelu) s integrovaným 2,5A ' +
+      'špičkovým FET (typ. účinnost 85 %, rozsah výstupu 1,5–3,3 V); VON-SLICE obvod pro potlačení ' +
+      'flickeru (ořezávání VON signálu); dva rychlé VCOM operační zesilovače (trvale aktivní, ' +
+      'pokud je přítomno AVIN) s vysokým slew rate 50 V/µs, gain-bandwidth 30 MHz, CMRR 70 dB, ' +
+      'PSRR 85 dB, offset max 20 mV, výstupní proud do 50 mA/kanál (zkratový limit 300–400 mA). ' +
+      'Spínací frekvence volitelná pinem FREQ: 650 kHz (FREQ=GND) nebo 1,3 MHz (FREQ=VIN) — sdílená ' +
+      'pro boost, buck, VON i VOFF. Vstupní napětí PVIN 8–15 V (typ. 12 V), VSUP (napájení ' +
+      'nábojových pump) 8–20 V, VGH (napájení VON-SLICE) 8–30 V, AVIN (napájení op-zesilovačů) ' +
+      '4,5–20 V. Ochrany: UVLO (7,6–8,0 V na PVIN), tepelné vypnutí při 150 °C (reset při 100 °C), ' +
+      'programovatelný soft-start (SS/SSB/DLY1/DLY2 piny) pro řízené sekvenování všech výstupů. ' +
+      'Dostupný jako ISL97652IRZ (48 Ld 7×7 QFN, i v -T/-TK verzích pro pásmo/cívku).',
+    tags: 'io,napájecí-obvod,lcd-tv,vcom,boost,buck,nábojová-pumpa,isl97652,intersil,qfn',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
