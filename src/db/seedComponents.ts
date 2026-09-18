@@ -2188,6 +2188,88 @@ const CAPACITOR_PART_SPECS: PartSpec[] = [
       'G=ammo balení, L=cívka).',
     tags: 'kondenzátor,keramický,disk,multicomp,mcbu,mcfu,y5p,z5v',
   },
+  {
+    name: '473GMR012M',
+    packageType:
+      'THT keramický disk, radiální rovné vývody, D max 6,0 mm, T max 3,5 mm, rozteč vývodů ' +
+      'S 5,0±1,5 mm, průměr vývodu d 0,47±0,02 mm',
+    value: 'Keramický diskový kondenzátor, 47 nF (0,047 µF), ±20 % (M), 12 WVDC, dielektrikum Y5T',
+    notes:
+      'Illinois Capacitor Inc. "GMR/GQR Ceramic Disc Capacitors" katalogový list — GMR série je ' +
+      '⚠️ nízkonapěťová (jen 12 WVDC), výrazně nižší než generické 50V keramické kondenzátory ' +
+      'v této knihovně i než ostatní diskové série (Multicomp MCBU/MCFU 50 V, NTE 90000 1000 V, ' +
+      'samostatné záznamy) — vhodná jen pro nízkonapěťové obvody. Provozní teplota -30 až +85 °C. ' +
+      'Izolační odpor ≥1 MΩ (měřeno @12 WVDC/1 min). Ztrátový činitel max 5,0 % @1 kHz/+20 °C. ' +
+      'Dielektrická pevnost 250 % jmenovitého napětí (60 s). Životnostní test 1000 h @200 % ' +
+      'jmenovitého napětí.',
+    tags: 'kondenzátor,keramický,disk,illinois-capacitor,gmr,nízkonapěťový,y5t',
+  },
+  {
+    name: '104GMR012M',
+    packageType:
+      'THT keramický disk, radiální rovné vývody, D max 9,0 mm, T max 3,5 mm, rozteč vývodů ' +
+      'S 5,0±1,5 mm, průměr vývodu d 0,47±0,02 mm',
+    value: 'Keramický diskový kondenzátor, 100 nF (0,1 µF), ±20 % (M), 12 WVDC, dielektrikum Y5U',
+    notes:
+      'Illinois Capacitor Inc. "GMR/GQR Ceramic Disc Capacitors" katalogový list — součást stejné ' +
+      'nízkonapěťové (12 WVDC) série GMR jako 473GMR012M/204GMR012Z (samostatné záznamy), větší ' +
+      'kapacita ve větším pouzdře (D 9,0 mm oproti 6,0 mm). Provozní teplota -30 až +85 °C. ' +
+      'Izolační odpor ≥1 MΩ (měřeno @12 WVDC/1 min). Ztrátový činitel max 5,0 % @1 kHz/+20 °C. ' +
+      'Dielektrická pevnost 250 % jmenovitého napětí (60 s). Životnostní test 1000 h @200 % ' +
+      'jmenovitého napětí.',
+    tags: 'kondenzátor,keramický,disk,illinois-capacitor,gmr,nízkonapěťový,y5u',
+  },
+  {
+    name: '204GMR012Z',
+    packageType:
+      'THT keramický disk, radiální rovné vývody, D max 9,0 mm, T max 3,5 mm, rozteč vývodů ' +
+      'S 7,5±1,5 mm, průměr vývodu d 0,47±0,02 mm',
+    value:
+      'Keramický diskový kondenzátor, 200 nF (0,2 µF), -20/+80 % (Z), 12 WVDC, dielektrikum Y5U',
+    notes:
+      'Illinois Capacitor Inc. "GMR/GQR Ceramic Disc Capacitors" katalogový list — součást stejné ' +
+      'nízkonapěťové (12 WVDC) série GMR jako 473GMR012M/104GMR012M (samostatné záznamy) — ' +
+      '⚠️ na rozdíl od nich má širokou toleranci -20/+80 % (kód Z) místo těsné ±20 % (kód M), ' +
+      'jinak stejné pouzdro (D 9,0 mm) jako 104GMR012M, jen delší rozteč vývodů (S 7,5 mm místo ' +
+      '5,0 mm). Provozní teplota -30 až +85 °C. Izolační odpor ≥1 MΩ. Ztrátový činitel max 5,0 % ' +
+      '@1 kHz/+20 °C. Dielektrická pevnost 250 % jmenovitého napětí (60 s). Životnostní test ' +
+      '1000 h @200 % jmenovitého napětí.',
+    tags: 'kondenzátor,keramický,disk,illinois-capacitor,gmr,nízkonapěťový,y5u',
+  },
+  {
+    name: '102GQR500Z',
+    packageType:
+      'THT keramický disk, radiální rovné vývody, D max 6,0 mm, T max 3,0 mm, rozteč vývodů ' +
+      'S 5,0±1,5 mm, průměr vývodu d 0,58±0,02 mm',
+    value:
+      'Keramický diskový kondenzátor, 1 nF (0,001 µF), -20/+80 % (Z), 500 WVDC, dielektrikum Y5P',
+    notes:
+      'Illinois Capacitor Inc. "GMR/GQR Ceramic Disc Capacitors" katalogový list — GQR série je ' +
+      'vysokonapěťová (500 WVDC) — ⚠️ zcela odlišná napěťová třída od nízkonapěťové GMR série ' +
+      '(12 WVDC, samostatné záznamy 473GMR012M/104GMR012M/204GMR012Z), přesto o řád nižší napětí ' +
+      'než 1000V série NTE 90000 (samostatný záznam). Dielektrikum Y5P (EIA třída II), ztrátový ' +
+      'činitel max 2,5 % @1 kHz/+20 °C. Provozní teplota -30 až +85 °C (Y5P varianta). Izolační ' +
+      'odpor ≥1000 MΩ. Dielektrická pevnost 250 % jmenovitého napětí (60 s). Životnostní test ' +
+      '1000 h @200 % jmenovitého napětí. Shoda s E.I.A. RS 198, Class II.',
+    tags: 'kondenzátor,keramický,disk,illinois-capacitor,gqr,vysokonapěťový,y5p,500v',
+  },
+  {
+    name: '103GQR500Z',
+    packageType:
+      'THT keramický disk, radiální rovné vývody, D max 8,0 mm, T max 3,0 mm, rozteč vývodů ' +
+      'S 6,35±1,5 mm, průměr vývodu d 0,58±0,02 mm',
+    value:
+      'Keramický diskový kondenzátor, 10 nF (0,01 µF), -20/+80 % (Z), 500 WVDC, dielektrikum Z5V',
+    notes:
+      'Illinois Capacitor Inc. "GMR/GQR Ceramic Disc Capacitors" katalogový list — součást stejné ' +
+      'vysokonapěťové (500 WVDC) série GQR jako 102GQR500Z (samostatný záznam), ale ⚠️ jiné ' +
+      'dielektrikum: Z5V (EIA třída III, ztrátový činitel max 3,0 % @1 kHz/+20 °C, užší provozní ' +
+      'teplota +10 až +85 °C) místo Y5P (třída II, 2,5 %, -30 až +85 °C) u 102GQR500Z — vyšší ' +
+      'kapacita v poměru k rozměru díky odlišnému dielektriku. Izolační odpor ≥1000 MΩ. ' +
+      'Dielektrická pevnost 250 % jmenovitého napětí (60 s). Životnostní test 1000 h @200 % ' +
+      'jmenovitého napětí. Shoda s E.I.A. RS 198, Class III.',
+    tags: 'kondenzátor,keramický,disk,illinois-capacitor,gqr,vysokonapěťový,z5v,500v',
+  },
 ];
 
 function buildFromSpecs(
