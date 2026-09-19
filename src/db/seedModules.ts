@@ -910,6 +910,42 @@ const MODULE_SPECS: ModuleSpec[] = [
       'MTTF 2283 let dle SN 29500 @40°C. Průměr aktivní plochy Ø5 mm.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,turck,npn,m5,ip67,průmyslový',
   },
+  {
+    name: 'Q130RA',
+    packageType:
+      'Kompaktní pouzdro ABS/polykarbonát, integrovaný 5pinový M12/Euro-style konektor (quick ' +
+      'disconnect), nerezové montážní závity a konektor, 4 LED indikátory (zelená=napájení, ' +
+      'červená=síla signálu, 2× žlutá=výstup 1/2), pinout: 1=hnědý (+), 2=bílý (NPN výstup 1), ' +
+      '3=modrý (-), 4=černý (PNP výstup 2), 5=šedý (dálkové TEACH)',
+    value:
+      'Radarový (FMCW) senzor pro detekci pohybujících se i stacionárních cílů, kmitočet ' +
+      '24,050–24,250 GHz (pásmo ISM), dosah 1–24 m (model -9076) nebo 1–40 m (model -2450), ' +
+      'bipolární NPN/PNP výstup, 12–30 V DC',
+    notes:
+      'Banner Engineering "R-GAGE® Q130RA Sensor" (Quick Start Guide, P/N 208830 Rev. B, ' +
+      '15. 5. 2019) — kompletní průmyslový radarový snímač s vlastní elektronikou, konektorem a ' +
+      'konfiguračním softwarem (Banner Radar Configuration), proto zařazen do kategorie "Modul". ' +
+      'Princip funkce: FMCW (Frequency Modulated Continuous-Wave) radar v pásmu 24 GHz (ISM), ' +
+      'na rozdíl od optických/indukčních senzorů v této knihovně detekuje objekty na dálku bez ' +
+      'ohledu na světelné podmínky nebo optickou průzračnost prostředí — reaguje na objekty ' +
+      'obsahující kov, vodu nebo podobné vysoce dielektrické materiály. Dostupné dvě varianty ' +
+      'dosahu: "-9076" (1–24 m) a "-2450" (1–40 m), obě se stejnou elektronikou/konektorem, liší ' +
+      'se jen anténním/zpracovacím nastavením pro danou vzdálenost — do knihovny přidán jako ' +
+      'jeden souhrnný záznam "Q130RA" (přesná varianta -9076/-2450 nespecifikována v tomto Quick ' +
+      'Start Guide, plné specifikace v samostatném Instruction Manual p/n 208831 — nejistota ' +
+      'uvedena explicitně). Maximální vysílací výkon: ERP 3,3 mW (5 dBm), EIRP 100 mW (20 dBm). ' +
+      'Výstupy: bipolární — Load 1 na pinu 2 (bílý) = NPN, Load 2 na pinu 4 (černý) = PNP, max ' +
+      '50 mA na výstup, saturace <3,5V @50mA, ochrana proti zkratu. Doba odezvy softwarově ' +
+      'volitelná (50/50, 100/100, 50/500, 50/1000 ms ON/OFF). Napájení 12–30 V DC, odběr <50 mA ' +
+      '@24V (normální režim, 1,2 W), ochrana proti přepólování a přechodovým přepětím, zpoždění ' +
+      'po zapnutí <3 s. Konfigurace/diagnostika přes PC software (Banner Radar Configuration, ' +
+      'USB přes Pro Converter Cable) nebo přímo přes červenou LED síly signálu na zařízení. ' +
+      'Odolnost proti vibracím (10–55 Hz, 1mm p-p) a rázům (30g, 11ms) dle IEC 60947-5-2. Krytí ' +
+      'IEC IP67. Provozní teplota -40 až +65 °C. UL certifikace (E224071), ETSI/EN 300 440, FCC ' +
+      'ID UE3RGAGE1XX. ⚠️ Výrobcem výslovně vyloučeno pro aplikace ochrany osob (nemá redundantní ' +
+      'bezpečnostní obvody).',
+    tags: 'modul,senzor,radar,fmcw,proximity,detekce-pohybu,banner,r-gage,q130ra,24ghz,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
