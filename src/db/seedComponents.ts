@@ -4556,6 +4556,38 @@ const CAPACITOR_PART_SPECS: PartSpec[] = [
       '+85 °C. Tolerance ±10 % (K) standardně, ±5 % (J) volitelně. RoHS.',
     tags: 'kondenzátor,fóliový,polypropylen,snubber,igbt,cornell-dubilier,scd-series,dv-dt',
   },
+  {
+    name: 'TRA10-103',
+    packageType:
+      'Radiální vývody (drop/kapkovitý tvar), epoxidový povlak UL94V-0 (samozhášivý), případ ' +
+      '(case) velikosti A: D(max) 4,5 mm, H(max) 7,1 mm, průměr vývodu 0,5 mm, rozteč vývodů ' +
+      '2,54 mm (styl vývodů "10")',
+    value:
+      'Tantalový kondenzátor řady TangoldTM (RCD Components "TR Series"), kapacitní kód 103 = ' +
+      '10 000 pF (0,01 µF), pouzdro velikosti A',
+    notes:
+      'RCD Components Inc. "Radial Lead TangoldTM Capacitors, Epoxy Resin Coated, Tantalum — TR ' +
+      'Series" (dok. FA059B) — ⚠️ POZOR NA ZÁMĚNU NÁZVU: kód "TRA1..." zde NENÍ nijak spojen s ' +
+      'relé Tianbo TRA1 (kategorie Spínač/Relé) ani s DC/DC měničem TRACO POWER TRA 1 Series ' +
+      '(kategorie IO) v této knihovně — jde o TŘETÍ zcela odlišný produkt čtvrtého výrobce ' +
+      'sdílející podobný alfanumerický prefix čistě náhodou (zde "TR" = RCD interní typové ' +
+      'označení "Tantalum Radial", "A" = kód velikosti pouzdra, "10" = styl vývodů, "103" = ' +
+      'kapacitní kód). Objednací kód dle katalogu: TR<velikost pouzdra: A/B/C/D/E/F>' +
+      '<styl vývodů: 10/20/25/10K>-<kapacitní kód (pF, 2 platné číslice + násobitel, např. ' +
+      '103=10000pF/0,01µF, 104=100000pF/0,1µF, 105=1µF, 106=10µF, 107=100µF)>-<tolerance: ' +
+      'K=10%/J=5%/M=20%>-<napěťový kód: 3 číslice, např. 003=3V, 016=16V, 025=25V>-<balení: ' +
+      'B=volně ložené/A=ammo páska>-<zakončení: W=bezolovnaté (std)/Q=cín-olovo> — ⚠️ z názvu ' +
+      'souboru "TRA10-103" chybí poslední tři segmenty kódu (tolerance/napětí/balení/zakončení), ' +
+      'do knihovny tedy přidán jen částečně specifikovaný díl s určitelnými parametry (pouzdro A, ' +
+      'styl vývodů 10 se standardní roztečí 2,54 mm, kapacita 0,01 µF) — jmenovité napětí a ' +
+      'tolerance NEJSOU z dostupného označení jednoznačně určeny (⚠️ neuváděno, nutno ověřit u ' +
+      'konkrétní objednávky). Tolerance na kapacitu (ΔC) dle rozsahu: <1,0 µF → ±10/15/25 % ' +
+      '(při -55/+85/+125°C), ztrátový činitel (DF @25°C/120Hz) 4–6 % pro <1µF. Epoxidový povlak ' +
+      'dipovaný (UL94V-0 samozhášivý), nízký svodový proud a impedance, vysoká odolnost proti ' +
+      'vlhkosti/teplu, laserem značené tělo kondenzátoru. Zakončení "W" (bezolovnaté, std.) je ' +
+      'RoHS kompatibilní a odolné pájení do 260°C.',
+    tags: 'kondenzátor,tantalový,radiální,epoxidový,rcd-components,tr-series,tangold',
+  },
 ];
 
 function buildFromSpecs(
