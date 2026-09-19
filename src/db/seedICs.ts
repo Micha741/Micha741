@@ -1743,6 +1743,40 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,senzor,reflexní,optický,photodarlington,ired,honeywell,hoa0709,proximity',
   },
   {
+    name: 'SFH 7051',
+    packageType:
+      'COB ("chip on board") vícečipové SMD pouzdro 4,7×2,5×0,9 mm, 8 vývodů (piny 1,2=LED1 ' +
+      'anoda/katoda, 3=LED2 katoda, 4,5=fotodioda anoda/katoda, 6=LED2 anoda, 7,8=LED3 katoda/ ' +
+      'anoda), vestavěná optická přepážka (light barrier) mezi emitory a detektorem proti ' +
+      'optickému přeslechu, hmotnost cca 18 mg, MSL úroveň 4',
+    value:
+      '"BioMon" optický senzor pro tepovou frekvenci (PPG) — 3 zelené LED (530 nm) + 1 PIN ' +
+      'fotodioda v jednom pouzdře, IF max 25 mA (jeden emitor)/15 mA (všechny emitory), ' +
+      'fotoproud typ. 0,42 µA @0,1 mW/cm²',
+    notes:
+      'OSRAM Opto Semiconductors "SFH 7051 — BioMon Sensor" (Datasheet v1.1, 25. 4. 2016) — ' +
+      'vícečipová optoelektronická sestava pro optické měření tepové frekvence (fotopletysmografie ' +
+      '— PPG), obsahující TŘI zelené LED emitory (λpeak=530nm, poloviční úhel ±60°) a JEDNU PIN ' +
+      'fotodiodu (spektrální rozsah citlivosti 400–1100 nm, špička @920nm, citlivost 0,27 A/W ' +
+      '@535nm) integrované do jednoho miniaturního COB pouzdra s vestavěnou světelnou přepážkou ' +
+      'bránící přímému optickému přeslechu mezi emitory a detektorem (nutnou podmínkou funkčního ' +
+      'PPG měření — signál musí procházet tkání/kůží, ne přímou cestou uvnitř pouzdra). ⚠️ Bez ' +
+      'jakékoli vlastní zesilovací/vyhodnocovací elektroniky (čistě pasivní optický front-end) — ' +
+      'koncepčně analogický optickému senzorovému bloku MAX86141 uvnitř zdravotního náramku Maxim ' +
+      'MAXREFDES103# v této knihovně (tam ovšem MAX86141 zahrnuje i analogový front-end/zesilovač ' +
+      'přímo na čipu, zatímco SFH 7051 je čistě diskrétní optická sestava vyžadující externí ' +
+      'zesilovací/vyhodnocovací obvod). Určeno pro nositelnou elektroniku (chytré hodinky, fitness ' +
+      'náramky) a mobilní zařízení s funkcí měření tepové frekvence. Zelený emitor (jednotlivě): ' +
+      'λpeak typ. 530 nm, centroidní vlnová délka 535 nm (±10), spektrální šířka 34 nm, VF typ. ' +
+      '3,2 V (max 3,7 V), IF max 25 mA (jeden emitor) / 15 mA (všechny 3 aktivní současně), doba ' +
+      'náběhu/poklesu typ. 32 ns, zářivá intenzita typ. 1,4 mW/sr, celkový zářivý tok typ. 3,4 mW ' +
+      '@IF=20mA. Detektor (fotodioda): plocha 1,7 mm² (1,3×1,3 mm), fotoproud typ. 0,42 µA ' +
+      '@Ee=0,1mW/cm²/535nm/VR=5V, temný proud typ. 1 nA (max 5 nA) @VR=5V, kapacita typ. 5 pF ' +
+      '@VR=5V/1MHz, VR max 16 V. Provozní/skladovací teplota -40 až +85 °C. ESD odolnost 2 kV ' +
+      '(HBM).',
+    tags: 'io,senzor,ppg,biomon,tepová-frekvence,fotodioda,zelená-led,osram,sfh7051,wearable,optický',
+  },
+  {
     name: 'SCD40',
     packageType:
       'LGA 10,1×10,1×6,5 mm, 21 vývodů (VDD, VDDH, GND, SDA, SCL, zbytek DNC — nutno pájet i ' +
