@@ -3834,6 +3834,52 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,pnp,bipolární,duální,sot-363,sc-70-6,bc807,bc807u,smd,af',
   },
   {
+    name: 'BC817-16LT1G',
+    packageType: 'SOT-23 (SMD), 3 vývody: 1=báze, 2=emitor, 3=kolektor; značení na pouzdře "6A"',
+    value: 'NPN tranzistor, VCEO 45 V, IC 500 mA, hFE 100–250 @IC=100 mA',
+    notes:
+      'onsemi "BC817-16L, SBC817-16L, BC817-25L, SBC817-25L, BC817-40L, SBC817-40L — General ' +
+      'Purpose Transistors NPN Silicon" (dok. BC817-16LT1/D, rev. 19, 2026). Nejnižší proudová ' +
+      '(hFE) varianta z trojice BC817-16L/25L/40L (společný datasheet, liší se jen třídou hFE) — ' +
+      'viz sourozenecké záznamy BC817-25LT1G a BC817-40LT1G. ⚠️ Existuje i automotive-kvalifikovaná ' +
+      'varianta SBC817-16L (AEC-Q101, PPAP capable, S/NSV prefix pro řízení výroby) se stejnými ' +
+      'elektrickými parametry a stejným pouzdrem/značením — nepřidána jako samostatný záznam, jde ' +
+      'jen o odlišnou kvalifikaci stejného čipu. ' +
+      'Mezní hodnoty: VCEO=45 V, VCBO=50 V, VEBO=5,0 V, IC=500 mA (trvalý). PD=225 mW @TA=25°C ' +
+      '(FR-5 deska, derating 1,8 mW/°C, RθJA=556°C/W) nebo 300 mW (Al2O3 substrát, derating ' +
+      '2,4 mW/°C, RθJA=417°C/W). TJ/Tstg=-65 až +150°C. ' +
+      'V(BR)CEO min 45 V @IC=10mA. V(BR)CES min 50 V @VEB=0/IC=10µA. V(BR)EBO min 5,0 V @IE=1µA. ' +
+      'ICBO max 100 nA @VCB=20V (max 5,0 µA @VCB=20V/TA=150°C). hFE 100–250 @IC=100mA/VCE=1,0V ' +
+      '(min 40, bez udaného max, @IC=500mA/VCE=1,0V — pokles zisku při vyšším proudu). VCE(sat) ' +
+      'max 0,7 V @IC=500mA/IB=50mA. VBE(on) max 1,2 V @IC=500mA/VCE=1,0V. fT min 100 MHz ' +
+      '@IC=10mA/VCE=5,0V/f=100MHz. Cobo typ 10 pF @VCB=10V/f=1MHz. Spínací časy (VCC=3,0V/ ' +
+      'VBE=0,5V/IC=10mA): td typ 85ns, tr typ 30ns, ts typ 1000ns, tf typ 300ns. Pb-free, ' +
+      'halogen/BFR free, RoHS.',
+    tags: 'tranzistor,npn,bipolární,sot-23,onsemi,bc817,bc817-16l,smd',
+  },
+  {
+    name: 'BC817-25LT1G',
+    packageType: 'SOT-23 (SMD), 3 vývody: 1=báze, 2=emitor, 3=kolektor; značení na pouzdře "6B"',
+    value: 'NPN tranzistor, VCEO 45 V, IC 500 mA, hFE 160–400 @IC=100 mA',
+    notes:
+      'Součást trojice BC817-16L/25L/40L (onsemi, společný datasheet) — viz poznámka u ' +
+      'BC817-16LT1G pro plné společné specifikace (mezní hodnoty, pouzdro, spínací časy). Střední ' +
+      'proudová (hFE) varianta. ⚠️ Automotive ekvivalent SBC817-25L (AEC-Q101) má shodné elektrické ' +
+      'parametry.',
+    tags: 'tranzistor,npn,bipolární,sot-23,onsemi,bc817,bc817-25l,smd',
+  },
+  {
+    name: 'BC817-40LT1G',
+    packageType: 'SOT-23 (SMD), 3 vývody: 1=báze, 2=emitor, 3=kolektor; značení na pouzdře "6C"',
+    value: 'NPN tranzistor, VCEO 45 V, IC 500 mA, hFE 250–600 @IC=100 mA',
+    notes:
+      'Součást trojice BC817-16L/25L/40L (onsemi, společný datasheet) — viz poznámka u ' +
+      'BC817-16LT1G pro plné společné specifikace (mezní hodnoty, pouzdro, spínací časy). Nejvyšší ' +
+      'proudová (hFE) varianta. ⚠️ Automotive ekvivalent SBC817-40L (AEC-Q101) má shodné elektrické ' +
+      'parametry.',
+    tags: 'tranzistor,npn,bipolární,sot-23,onsemi,bc817,bc817-40l,smd',
+  },
+  {
     name: 'BC856S',
     packageType:
       'SOT-363 (SC-70-6), 6 vývodů: 1/4=E1/E2, 2/5=B1/B2, 3/6=C2/C1 (dva nezávislé PNP ' +
