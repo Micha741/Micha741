@@ -3073,6 +3073,33 @@ const MODULE_SPECS: ModuleSpec[] = [
       'až +70 °C. MTTF 1080 let dle SN 29500 (Ed. 99) @40°C. UL certifikace (registrace E210608).',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,turck,dc,npn,q20,m12,konektor,ip67,průmyslový',
   },
+  {
+    name: 'CBB4-12GH60-E2-V1',
+    packageType:
+      'Válcové závitové pouzdro M12×1 (threaded barrel), vysoce legovaná nerezová ocel 1.4404/ ' +
+      'AISI 316L, délka 59,8 mm, aktivní čelo PEEK, integrální zásuvný konektor M12×1 (4piny), ' +
+      'potenciometr pro nastavení citlivosti, indikační žlutá LED',
+    value:
+      'Kapacitní (bezkontaktní) přibližovací spínač, zapustitelný ("flush"), spínací vzdálenost ' +
+      '4 mm (nastavitelná potenciometrem), 3vodičové DC zapojení, PNP výstup, spínací (NO) ' +
+      'kontakt, 10–36 V DC',
+    notes:
+      'Pepperl+Fuchs "Capacitive sensor CBB4-12GH60-E2-V1" (210621_eng.xml, vydáno 23.9.2016) — ' +
+      'elektricky/mechanicky TOTOŽNÝ kapacitní senzor jako CBB4-12GH60-E0-V1 (210622_eng.xml) v ' +
+      'této knihovně (stejné pouzdro z nerezi 316L, stejné aktivní čelo PEEK, stejná spínací ' +
+      'vzdálenost 4 mm nastavitelná potenciometrem, stejný M12 konektor, stejné potravinářské ' +
+      'určení a odolnost proti agresivním médiím) — ⚠️ liší se POUZE polaritou výstupu: PNP u ' +
+      'typu "-E2-" (tato varianta) místo NPN u typu "-E0-" — standardní výrobní pár variant pro ' +
+      'odlišné vstupní obvody PLC (sourcing vs sinking logika), stejná konvence "E0=NPN/E2=PNP" ' +
+      'jako u indukčních senzorů NBB v této knihovně. Nízký spínací kmitočet 0–50 Hz (typické ' +
+      'pro kapacitní senzory). Ochrana proti přepólování a pulzní zkratová ochrana. Úbytek napětí ' +
+      'max 2,5 V. Provozní proud 0–100 mA, klidový proud max 12 mA. Krytí IP65. Provozní teplota ' +
+      '-25 až +70 °C. Zařazeno do kategorie "Modul" jako kompletní osazený produkt s vlastním ' +
+      'konektorem, stejně jako ostatní přibližovací spínače v této knihovně. Shoda EN/IEC ' +
+      '60947-5-2, UL/CSA certifikace. Dostupné příslušenství: montážní příruba BF 12, konektory/ ' +
+      'kabely V1-G/V1-W/V1-G-2M-PUR/V1-W-2M-PUR.',
+    tags: 'modul,senzor,kapacitní,přibližovací,proximity,pepperl-fuchs,cbb4,pnp,nerez,potravinářský,m12,konektor,ip65',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
