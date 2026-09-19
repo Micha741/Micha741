@@ -1870,6 +1870,42 @@ const MODULE_SPECS: ModuleSpec[] = [
       'snímače SICK WTB250-2N1131/WTB250-2N1151 v této knihovně.',
     tags: 'modul,senzor,fotoelektrický,optický,through-beam,jednocestná-závora,sick,gr18-inox,nerez,m18,ip69k,průmyslový',
   },
+  {
+    name: 'LI-OS05A20-MIPI-110H',
+    packageType:
+      'Kompletní kamerový modul s objektivem, rozměry 40,5×22,0×24,4 mm, FPC 24pinový konektor, ' +
+      'M12×0,5P závit objektivu, kovová (Steel) konstrukce, ohniskovost 2,8 mm, F/2,4, RoHS',
+
+    value:
+      'MIPI CSI-2 (2-lane) kamerový modul s barevným snímačem OmniVision OS05A20 (5 Mpx, ' +
+      '2688×1944), zorný úhel 110°(H), SCCB (I2C-kompatibilní) řídicí rozhraní, napájení ' +
+      'AVDD 2,8 V / DVDD 1,2 V / DOVDD 1,8 V',
+    notes:
+      'Leopard Imaging Inc. "LI-OS05A20-MIPI-110H Specification" (rev. 1.0, 12.12.2018) — ⚠️ NOVÁ ' +
+      'TŘÍDA v této knihovně: první kompletní kamerový modul (image sensor module) s vlastním ' +
+      'objektivem a MIPI CSI-2 sériovým video výstupem — dosud žádný podobný typ nebyl ' +
+      'katalogizován (odlišné od bare optických/proximity senzorů jako LTR-706PS-01/LTR-329ALS-01 ' +
+      'v kategorii IO, které nemají zobrazovací funkci ani objektiv). Zařazeno do kategorie ' +
+      '"Modul" jako kompletní osazený produkt s vlastní deskou/FPC konektorem a namontovanou ' +
+      'optikou, obdobně jako evaluační deska ROHM RPR-0521RS-EVK-001 nebo wearable modul Maxim ' +
+      'MAXREFDES103# v této knihovně. Snímač OmniVision OS05A20: 1/2,7" formát, velikost pixelu ' +
+      '2×2 µm, citlivost 13 000 e-/Lux-sec, dynamický rozsah 74 dB @16x gain, rolling shutter, ' +
+      'max. S/N poměr 39 dB, max. přenosová rychlost obrazu 2688×1944 @60fps, výstup surová RGB ' +
+      'data (RGB Raw). Objektiv: ohnisková vzdálenost 2,8 mm, clona F/2,4, zorný úhel 110°(H), TV ' +
+      'distorze < -25 %, rozsah zaostření 20 cm–nekonečno, hlavní paprskový úhel (CRA) 11° ' +
+      'lineárně, integrovaný IR cut filtr. Rozhraní: MIPI CSI-2 2-lane (diferenciální páry ' +
+      'MCP/MCN hodiny + MDP0/MDN0, MDP1/MDN1 data), SCCB řídicí sběrnice (SDA/SCL, ' +
+      'kompatibilní s I2C, max 400 kHz), vstupní hodinový kmitočet XCLK 6–27 MHz (doporučeno, ' +
+      'absolutní rozsah snímače 6–64 MHz). Řídicí piny: XSHUTDOWN (reset/power down, aktivní ' +
+      'nízký), PWDN (power down, aktivní nízký), STROBE (I/O, blesk/synchronizace), SID (výběr ' +
+      'ID čipu). Spotřeba: aktivní režim 210 mW, standby 2 mA, XSHUTDOWN (vypnuto) 2 µA. Provozní ' +
+      'teplota (do 90 fps) -30 až +85 °C (junction), stabilní obrazová teplota 0 až +60 °C. ' +
+      'Absolutní max.: VDD-A 4,5 V, VDD-D 3 V, VDD-IO 4,5 V, ESD (HBM) 2000 V, skladovací teplota ' +
+      '-40 až +125 °C. 24pinový FPC konektor (piny 1-SDA, 2-SCL, 3-DOVDD1.8V, 4-MCP, 5-MCN, ' +
+      '6/9/12/24-DGND, 7-MDP0, 8-MDN0, 10-MDP1, 11-MDN1, 13-PWDN, 14-ATEST, 15-AGND, 16/23-NC, ' +
+      '17-SID, 18-DVDD1.2V, 19-XCLK, 20-STROBE, 21-XSHUTDOWN, 22-AVDD2.8).',
+    tags: 'modul,kamera,kamerový-modul,mipi,csi-2,os05a20,leopard-imaging,snímač-obrazu,sccb,objektiv',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
