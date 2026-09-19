@@ -3595,6 +3595,38 @@ const MODULE_SPECS: ModuleSpec[] = [
       'H32G-2/ORR50G-2) a reflexní páska OFR-100/100.',
     tags: 'modul,senzor,fotoelektrický,optický,reflexní,retroreflexní,io-link,pepperl-fuchs,obg5000,r100,transparentní-objekty,m8,ip69k',
   },
+  {
+    name: 'OBG5000-R101-2EP1-IO',
+    packageType:
+      'Kompaktní pouzdro řady R101 (mezi velikostí R100 a R103), polykarbonát (PC), optické čelo ' +
+      'PMMA, rozměry 13,9×33,8×18,3 mm, hmotnost ~36 g, integrální kabel 2 m, otočný 5polohový ' +
+      'volič režimu, teach-in tlačítko, žlutá + zelená LED indikace, krytí IP67/IP69/IP69K',
+    value:
+      'Reflexní (retroreflective) optoelektronický senzor s IO-Link rozhraním, modulované ' +
+      'viditelné červené LED světlo, dosah 0–3,5 m (režim TEACH) / 0–5 m (režim "N"), ' +
+      'nastavitelná úroveň kontrastu pro detekci průhledných objektů (sklo, PET), 10–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Retroreflective sensor OBG5000-R101-2EP1-IO" (267075-100541_eng.xml, ' +
+      'vydáno 19.12.2018) — TŘETÍ velikostní/konstrukční varianta ze stejné rodiny IO-Link ' +
+      'reflexních senzorů jako OBG4000-R103-2EP-IO a OBG5000-R100-EP-IO-V3 v této knihovně — ' +
+      'kombinuje vlastnosti obou: má DELŠÍ dosah v normálním režimu 0–5 m a vyšší prahovou ' +
+      'vzdálenost 6 m (shodné s R100 sérií, oproti 0–4 m/5 m u R103), ale DVA nezávislé push-pull ' +
+      'výstupy C/Q+/Q (shodné s R103, oproti jen jednomu výstupu u R100) A ZÁROVEŇ pevně ' +
+      'integrovaný 2m kabel (shodné s R103, oproti odnímatelnému M8 konektoru u R100). ' +
+      'Mechanicky nejmenší z celé "2-output" skupiny — pouzdro 13,9×33,8×18,3 mm (menší než R103 ' +
+      's 15×36,5×26,7 mm), hmotnost ~36 g. Odlišné Device ID 0x110A07 (oproti 0x110A03 u R103 a ' +
+      '0x110A01 u R100) — každá varianta má vlastní identifikátor pro IO-Link master ' +
+      'konfiguraci. Jinak shodné IO-Link parametry (verze 1.1, COM2 38,4 kBd, min. cyklus ' +
+      '2,3 ms), shodná optika (modulované červené LED, stopa ~170mm@3,5m), shodné kontrastní ' +
+      'režimy (10%/18%/40%) a ovládací prvky (teach-in, keylock, light-on/dark-on přepínání). ' +
+      'Max. výstupní proud 100 mA, spínací kmitočet 500 Hz, doba odezvy 1 ms. Provozní teplota ' +
+      '-20 až +60 °C (pohyblivý kabel nevhodný pro dopravníkové řetězy), skladovací -40 až ' +
+      '+70 °C. Zařazeno do kategorie "Modul" jako kompletní osazený produkt s vlastním kabelem, ' +
+      'stejně jako ostatní přibližovací/fotoelektrické senzory v této knihovně. MTTFd 600 let. UL ' +
+      'certifikace (E87056). Dostupné příslušenství shodné s R103 sérií (montážní svorky OMH-R101/ ' +
+      'OMH-4.1/OMH-ML6, reflektory H33/H50/H85-2, reflexní páska OFR-100/100).',
+    tags: 'modul,senzor,fotoelektrický,optický,reflexní,retroreflexní,io-link,pepperl-fuchs,obg5000,r101,transparentní-objekty,ip69k',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
