@@ -748,6 +748,35 @@ const MODULE_SPECS: ModuleSpec[] = [
       'díl WTB250-2N1131 je konkrétně kabelová 10–30 V DC verze.',
     tags: 'modul,senzor,optoelektronický,fotoelektrický,přiblížení,proximity,background-suppression,sick,wtb250,npn,ip67,průmyslový',
   },
+  {
+    name: 'WTB250-2N1151',
+    packageType:
+      'Pravoúhlé plastové pouzdro (ABS) 20 × 65 × 43,9 mm, hmotnost 150 g, optika PMMA, kryt IP67, ' +
+      'montážní otvory Ø4,2 mm pro M4 šroub (na obou stranách, dodávána montážní konzole ' +
+      'BEF-W250), 4vodičový kabel 2 m (hnědý=+, modrý=-, černý=Q výstup, bílý=L/D volba režimu), ' +
+      'na čelní straně potenciometr pro nastavení dosahu (2 otáčky, poziční ukazatel 270°), ' +
+      'zelená LED (indikace stability) a žlutá LED (indikace přijatého signálu)',
+    value:
+      'Optoelektronický (fotoelektrický) snímač přiblížení s potlačením pozadí (background ' +
+      'suppression), viditelné červené světlo (BrightLight LED), dosah 200–1000 mm nastavitelný, ' +
+      'NPN výstup s otevřeným kolektorem, 10–30 V DC',
+    notes:
+      'SICK AG "W250-2, Photoelectric proximity sensor, Background suppression — WTB250-2N1151" ' +
+      '(Online Data Sheet, díl. č. 6044686, staženo 15. 3. 2016) — ⚠️ dlouhodosahová varianta ' +
+      'WTB250-2N1131 v této knihovně (samostatný záznam): naprosto shodné mechanické provedení, ' +
+      'elektrické parametry výstupu, napájení, krytí i certifikace, LIŠÍ SE POUZE v nastavitelném ' +
+      'dosahu (200–1000 mm zde vs. 100–300 mm u WTB250-2N1131) a odpovídající velikosti světelné ' +
+      'stopy (Ø35 mm @1000mm zde vs. Ø30 mm @300mm) — jiný optický systém/čočka pro delší dosah, ' +
+      'jinak identická produktová řada "W250-2" se stejným principem potlačení pozadí (background ' +
+      'suppression) — viz záznam WTB250-2N1131 pro plný popis principu funkce a společných ' +
+      'elektrických parametrů. Výstup NPN s otevřeným kolektorem, volitelný režim spínání ' +
+      'světlo/tma přes ovládací vodič L/D, max. výstupní proud 100 mA, doba odezvy max 3 ms, ' +
+      'spínací kmitočet 160 Hz. Napájení 10–30 V DC, odběr max 35 mA. Krytí IP67, třída ochrany ' +
+      'III. Provozní teplota -25 až +55 °C, skladovací -40 až +70 °C. UL certifikace, shoda EN ' +
+      '60947-5-2. Kabelová verze s 10–30 V DC napájením (existují i M12 konektor a univerzální ' +
+      'AC/DC varianty dle produktové řady).',
+    tags: 'modul,senzor,optoelektronický,fotoelektrický,přiblížení,proximity,background-suppression,sick,wtb250,npn,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
