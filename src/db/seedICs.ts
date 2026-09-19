@@ -1706,6 +1706,43 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,senzor,proud,hallův-jev,proudový-senzor,galvanické-oddělení,allegro,acs755,izolovaný,chopper,jednosměrný,automotive',
   },
   {
+    name: 'HOA0709-011',
+    packageType:
+      'THT černé termoplastické (polykarbonátové) pouzdro s vestavěnou optikou, IRED a detektor ' +
+      'zabudovány vedle sebe se sbíhajícími se optickými osami (zaostřeno na společný bod před ' +
+      'čelní stranou), integrovaný IR propustný filtr blokující viditelné světlo a hladké optické ' +
+      'čelo bránící usazování prachu, seřiditelný montážní otvor (slot), 4 čtvercové vývody ' +
+      '(A=anoda IRED, K=katoda IRED, E=emitor detektoru, C=kolektor detektoru), pájecí teplota ' +
+      '240 °C/5 s',
+    value:
+      'Reflexní (odrazový) optický senzor — IR LED vysílač + NPN fotodarlingtonový detektor v ' +
+      'jednom pouzdře se vzájemně sbíhajícími optickými osami, s integrovaným filtrem okolního ' +
+      'světla, VCEO(detektor) 15 V, IC(ON) 1,0 mA min @IF=40mA',
+    notes:
+      'Honeywell "HOA0708/0709 — Reflective Sensor" (katalogový list, str. 232–235) — kombinovaný ' +
+      'optoelektronický senzor obsahující ve společném pouzdře IR vysílací diodu (IRED) a ' +
+      'detektor uspořádané bok po boku se sbíhajícími optickými osami tak, že detektor reaguje na ' +
+      'záření IRED pouze tehdy, když se v zorném poli objeví odrazivý objekt (na rozdíl od ' +
+      'přerušovacích/slotových optických závor, kde vysílač a přijímač míří proti sobě přes ' +
+      'štěrbinu) — typicky pro detekci přítomnosti/pozice reflexních značek, počítadla otáček, ' +
+      'detekci konce pásky/papíru apod. Datasheet pokrývá celou rodinu: HOA0708-xxx (výstup ' +
+      'fototranzistor, VCEO 30V) vs. HOA0709-xxx (výstup fotodarlington, VCEO 15V, vyšší ' +
+      'citlivost/pomalejší odezva) × "-001" (bez filtru) vs. "-011" (integrovaný IR propustný/ ' +
+      'viditelné-světlo-blokující filtr + hladké čelo proti prachu) — do knihovny přidán konkrétně ' +
+      'pojmenovaný díl HOA0709-011 (fotodarlington + filtr) z názvu souboru. IR emitor: VF typ. ' +
+      '1,6 V @IF=20mA, IR reverse leakage max 10 µA @VR=3V, max výkonová ztráta 70 mW, max trvalý ' +
+      'proud 50 mA. Detektor (fotodarlington, HOA0709): V(BR)CEO min 15 V @IC=100µA, V(BR)ECO min ' +
+      '5,0 V @IE=100µA, temný proud ICEO max 250 nA @VCE=10V, max výkonová ztráta 70 mW, max ' +
+      'kolektorový proud 30 mA. Spřažené (coupled) parametry: spínací proud IC(ON) min 1,0 mA ' +
+      '@VCE=5V/IF=40mA (test na Eastman Kodak bílé testovací kartě, 90% odrazivost, 3,80 mm od ' +
+      'čela), saturační napětí VCE(sat) max 1,1 V, doba náběhu/poklesu (tr/tf) typ. 75 µs @VCC=5V/ ' +
+      'IC=1mA/RL=100Ω — výrazně pomalejší než u ekvivalentní fototranzistorové varianty HOA0708 ' +
+      '(typ. 15 µs), typické pro darlingtonové zapojení (vyšší zesílení na úkor rychlosti). ' +
+      'Provozní/skladovací teplota -40 až +85 °C. Optimální detekční vzdálenost od odrazné plochy ' +
+      'cca 0,15" (3,8 mm) dle grafu závislosti kolektorového proudu na vzdálenosti.',
+    tags: 'io,senzor,reflexní,optický,photodarlington,ired,honeywell,hoa0709,proximity',
+  },
+  {
     name: 'SCD40',
     packageType:
       'LGA 10,1×10,1×6,5 mm, 21 vývodů (VDD, VDDH, GND, SDA, SCL, zbytek DNC — nutno pájet i ' +
