@@ -4588,6 +4588,33 @@ const CAPACITOR_PART_SPECS: PartSpec[] = [
       'RoHS kompatibilní a odolné pájení do 260°C.',
     tags: 'kondenzátor,tantalový,radiální,epoxidový,rcd-components,tr-series,tangold',
   },
+  {
+    name: 'HCPB Series',
+    packageType:
+      'Radiální vývody, kompaktní pryskyřicové (resin case) pouzdro, rozměry W 26,0 × H 17,5 × ' +
+      'T 8,0 mm, rozteč vývodů 21,5±1,0 mm, vývody UL1007 AWG20 (bílá izolace, pájené)',
+    value:
+      'Vysokonapěťový fóliový kondenzátor pro spínané zdroje/měniče, 1250 V DC, rozsah kapacity ' +
+      '0,0047–0,013 µF (6 hodnot v řadě), tolerance ±5 % (J)',
+    notes:
+      'Okaya Electric Industries "HCPB Series" (katalogový list, str. 11) — vysokonapěťový ' +
+      'kondenzátor kompaktního provedení s pryskyřicovým (resin) pouzdrem, určený pro spínané ' +
+      'zdroje (switching power supply), měniče (inverter) a servo napájecí zdroje, tedy podobná ' +
+      'kategorie aplikace jako vysokonapěťová keramická disková řada NTE 90000 a fóliová IGBT ' +
+      'snubber řada Cornell Dubilier SCD v této knihovně, ale ODLIŠNÁ konstrukce — HCPB je ' +
+      'KOMPAKTNÍ RADIÁLNÍ pryskyřicově zalitý kondenzátor (ne diskový keramický jako NTE 90000, ' +
+      'ne přímo montovaný modul na IGBT pouzdro jako CDE SCD) — určen pro standardní vsazení do ' +
+      'DPS jako běžná pasivní součástka. ⚠️ Datasheet dokumentuje CELOU ŘADU 6 kapacitních hodnot ' +
+      '(472=0,0047µF, 682=0,0068µF, 822=0,0082µF, 113=0,011µF, 123=0,012µF, 133=0,013µF), všechny ' +
+      'se shodným jmenovitým napětím 1250 V DC a shodnými rozměry pouzdra — do knihovny přidána ' +
+      'jako jeden souhrnný záznam pro celou řadu, ne každá hodnota zvlášť. Objednací kód: HCPB- ' +
+      '<napětí, např. 1250V>-<kapacitní kód pF, 2 platné číslice + počet nul>-<tolerance, J=±5%>, ' +
+      'např. HCPB1250V822J = 1250V, 0,0082µF, ±5 %. Ztrátový činitel (dissipation factor) max ' +
+      '0,001 @1000±100Hz. Zkušební napětí 1,75× jmenovité napětí (2-5s). Izolační odpor min ' +
+      '50 kMΩ @20°C/100VDC. Provozní teplota -40 až +85 °C. Kruhový (o) symbol v patičce ' +
+      'datasheetu indikuje UL/CSA schválení pro daný typ.',
+    tags: 'kondenzátor,fóliový,vysokonapěťový,okaya,hcpb-series,spínaný-zdroj,radiální',
+  },
 ];
 
 function buildFromSpecs(
