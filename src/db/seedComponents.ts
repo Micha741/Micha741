@@ -4323,6 +4323,38 @@ const RESISTOR_SPECS: PartSpec[] = [
       'napětí 200 V. Balení 5 000 ks/cívka.',
     tags: 'rezistor,smd,0805,trimovatelný,trimmable,laditelný,susumu,thin-film,rt-series',
   },
+  {
+    name: 'TRA06E',
+    packageType:
+      '8vývodové SMD pouzdro rezistorové sítě, tenkovrstvá (thin film) technologie, obalové ' +
+      '(wrap around) zakončení vývodů, rozměry L 3,2±0,3 × W 1,6±0,15 mm, izolované vnitřní ' +
+      'elektrody',
+    value:
+      'Tenkovrstvá rezistorová síť (izolovaná, schéma "03" — 4 nezávislé rezistory), rozsah 10 Ω ' +
+      'až 330 kΩ, tolerance 0,1–1 %, výkon 0,063 W/rezistor, TCR ±25 až ±100 ppm/°C',
+    notes:
+      'Vishay Dale "TRA06E — Thin Film, Resistor Array" (dok. č. 31054, rev. 05.4.2004) — ⚠️ NOVÁ ' +
+      'TŘÍDA rezistorové součástky v této knihovně: první REZISTOROVÁ SÍŤ/POLE (resistor array) — ' +
+      'na rozdíl od jednotlivých rezistorů (E12 řada, Susumu RT/laditelné, Yageo RT1206 aj.) v ' +
+      'této knihovně jde o JEDNO SMD pouzdro obsahující 4 VZÁJEMNĚ IZOLOVANÉ rezistory (schéma ' +
+      '"03" — každý rezistor má vlastní pár vývodů, žádný společný/sdílený vývod), určené pro ' +
+      'aplikace vyžadující více přesně přizpůsobených rezistorů na malé ploše (např. děliče ' +
+      'napětí, pull-up sítě, RC filtry) s vysokou vzájemnou shodou teplotního součinitele ' +
+      '(TCR tracking ±10 ppm/°C mezi rezistory v poli — výrazně těsnější než absolutní TCR ' +
+      '±50 až ±100 ppm/°C jednotlivého rezistoru). Tenkovrstvá technologie s vnitřní ochranou ' +
+      'elektrod a obalovým (wrap around) zakončením vývodů pro průtokové pájení (flow solderable) ' +
+      'a automatické osazování. Objednací kód TRA06E-08-03-<R-hodnota><tolerance>-<balení>, např. ' +
+      'TRA06E080310 1FRT1 = 8 vývodů, obvod 03, 100 Ω, ±1 %, papírová páska 5000 ks. Rozsah ' +
+      'odporu dle TCR třídy: 100R–33K (TCR ±25 ppm/°C, tol. 0,1/0,5/1 %), 10R–91R (TCR ±50 ppm/°C, ' +
+      'tol. 0,5/1 %), 36K–330K (TCR ±100 ppm/°C, tol. 0,5/1 %). Jmenovité napětí max. 50 V ' +
+      '(limiting element voltage, √(P×R)), napěťový koeficient < 0,1 ppm/V (velmi nízký, typické ' +
+      'pro tenkovrstvou technologii oproti tlustovrstvé). Kategorie teplotní rozsah -55 až +150 °C ' +
+      '(derating od 70 °C lineárně k 0 % @150 °C). Rozteč vývodů (pitch) 0,8 mm. Zkoušky dle EIA ' +
+      '575: endurance test 1000 h @70 °C (±3,0 %), přetížení (±2,0 %), teplotní šok (±1,0 %), ' +
+      'vlhkostní odolnost (±1,0 %), odolnost pájecímu teplu 10 s @260 °C (±2,0 %), pájitelnost ' +
+      '95% pokrytí.',
+    tags: 'rezistor,rezistorová-síť,resistor-array,smd,tenkovrstvý,thin-film,vishay-dale,tra06e,izolovaný',
+  },
 ];
 
 const CAPACITOR_PART_SPECS: PartSpec[] = [
