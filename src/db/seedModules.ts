@@ -1045,6 +1045,34 @@ const MODULE_SPECS: ModuleSpec[] = [
       'až +70 °C. MTTF 1080 let dle SN 29500 @40°C. Průměr aktivní plochy Ø20 mm.',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,turck,dc,npn,plochý,qf5,ip67,průmyslový',
   },
+  {
+    name: 'BC20-Q20-RZ3X2',
+    packageType:
+      'Pravoúhlé kvádrové pouzdro "Q20" (aktivní plocha nahoře), rozměry 68×40×20 mm (větší než ' +
+      'Q14), plast PBT-GF30-V0, potenciometr pro jemné doladění citlivosti, zelená LED (napájení) ' +
+      '+ červená LED (spínací stav — na rozdíl od žluté u ostatních BC senzorů v této knihovně), ' +
+      'kabelový výstup (Ø5,2 mm, LifYY, PVC, 2 m, 3×0,34 mm²), v balení přiložena montážní ' +
+      'konzole MH-Q20',
+    value:
+      'Kapacitní (bezkontaktní) přibližovací spínač, vyšší dosahová řada "BC20", spínací ' +
+      'vzdálenost 20 mm, AC 2vodičové zapojení, rozpínací (NC) kontakt, 20–250 V AC',
+    notes:
+      'TURCK "Capacitive Sensor BC20-Q20-RZ3X2" (Ident-No. 4352001, 2019-02-08) — ⚠️ POZOR na ' +
+      'záměnu s produktovou řadou "BC10" v této knihovně (BC10-PT30-AZ3X, BC10-Q14-VN4X2, ' +
+      'BC10-QF5.5-RN6X2, samostatné záznamy) — BC20-Q20-RZ3X2 patří do VYŠŠÍ dosahové řady "BC20" ' +
+      's dvojnásobnou jmenovitou spínací vzdáleností Sn 20 mm (oproti 10 mm u řady BC10), a to ' +
+      'shodně pro zápustnou i nezápustnou montáž. Elektricky nejbližší BC10-PT30-AZ3X — oba AC ' +
+      '2vodičové (20–250 V AC, 50–60 Hz), ale BC20-Q20-RZ3X2 má rovnou rozpínací (NC) kontakt bez ' +
+      'alternativy (BC10-PT30-AZ3X má spínací/NO), a pravoúhlé kvádrové pouzdro Q20 (68×40×20mm) ' +
+      'místo válcového závitového M30 — mechanicky odpovídá spíše bloku BC10-Q14-VN4X2 (ale ten je ' +
+      'DC, ne AC). Citlivost jemně nastavitelná potenciometrem. Zajištěná spínací vzdálenost max ' +
+      '0,72×Sn, hystereze 2–20 %, teplotní drift typ. 20 %, opakovatelnost max 2 %FS. Výstup: ' +
+      '2vodičové AC zapojení, rozpínací (NC) kontakt, max. proud 500 mA, min. provozní proud ' +
+      '5 mA, zbytkový proud max 1,7 mA, úbytek napětí max 7 V, spínací kmitočet 0,02 kHz (20 Hz). ' +
+      'Izolační zkušební napětí 1,5 kV. Odolnost proti vibracím 55 Hz (1 mm), proti rázům 30 g ' +
+      '(11 ms). Krytí IP67. Provozní teplota -25 až +70 °C. MTTF 1080 let dle SN 29500 @40°C.',
+    tags: 'modul,senzor,kapacitní,přibližovací,proximity,turck,ac,nc,q20,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
