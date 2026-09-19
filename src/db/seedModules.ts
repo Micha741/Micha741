@@ -3019,6 +3019,34 @@ const MODULE_SPECS: ModuleSpec[] = [
       'BF 12, konektory/kabely V1-G/V1-W/V1-G-2M-PUR/V1-W-2M-PUR.',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,pepperl-fuchs,cbb4,npn,nerez,potravinářský,m12,konektor,ip65',
   },
+  {
+    name: 'BC20-Q20-AN4X2/S400',
+    packageType:
+      'Pravoúhlé kvádrové pouzdro "Q20" (aktivní plocha nahoře), rozměry 68×40×20 mm, plast ' +
+      'PBT-GF30-V0, potenciometr pro jemné doladění citlivosti, zelená LED (napájení) + žlutá ' +
+      'LED (spínací stav), kabelový výstup (Ø5,2 mm, LifYY, PVC, 2 m, 3×0,34 mm²), v balení ' +
+      'přiložena montážní konzole MH-Q20',
+    value:
+      'Kapacitní (bezkontaktní) přibližovací spínač, vyšší dosahová řada "BC20", spínací ' +
+      'vzdálenost 20 mm, DC 3vodičové zapojení, NPN výstup, spínací (NO) kontakt, 10–65 V DC',
+    notes:
+      'TURCK "Capacitive sensor BC20-Q20-AN4X2/S400" (Ident-No. 2530104, 8.2.2019) — DC varianta ' +
+      'ze stejné "BC20" produktové řady a stejného pravoúhlého pouzdra Q20 (68×40×20 mm) jako ' +
+      'BC20-Q20-RZ3X2 v této knihovně — ⚠️ zásadní elektrický rozdíl: zatímco BC20-Q20-RZ3X2 má ' +
+      'AC 2vodičové zapojení (20–250 V AC) s rozpínacím (NC) kontaktem, tato varianta ' +
+      'BC20-Q20-AN4X2/S400 má DC 3VODIČOVÉ zapojení (samostatný napájecí pár + spínaný výstupní ' +
+      'pin, 10–65 V DC) se SPÍNACÍM (NO) NPN výstupem — standardní PLC vstupní zapojení místo ' +
+      'sériového zapojení zátěže do AC větve. Vyšší spínací kmitočet 0,1 kHz (100 Hz, oproti ' +
+      '20 Hz u AC varianty BC20-Q20-RZ3X2). Stejná jmenovitá spínací vzdálenost 20 mm (shodná pro ' +
+      'zápustnou i nezápustnou montáž), stejná mechanika/pouzdro/montážní konzole MH-Q20, stejná ' +
+      'citlivost nastavitelná potenciometrem. Zajištěná spínací vzdálenost max 0,72×Sn, hystereze ' +
+      '2–20 %, teplotní drift typ. 20 %, opakovatelnost max 2 %FS. Max. proud 200 mA, klidový ' +
+      'proud max 15 mA, zbytkový proud max 0,1 mA, úbytek napětí max 1,8 V. Zkratová ochrana ' +
+      'cyklická, ochrana proti přepólování a přerušení vodiče kompletní. Izolační zkušební napětí ' +
+      '0,5 kV. Odolnost proti vibracím 55 Hz (1 mm), proti rázům 30 g (11 ms). Krytí IP67. ' +
+      'Provozní teplota -25 až +70 °C. MTTF 1080 let dle SN 29500 (Ed. 99) @40°C. UL certifikace.',
+    tags: 'modul,senzor,kapacitní,přibližovací,proximity,turck,dc,npn,q20,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
