@@ -1747,6 +1747,37 @@ const DIODE_SPECS: PartSpec[] = [
     tags: 'dioda,laser,laserová-dioda,algaas,to-18,monitorovací-fotodioda,apc,roithner,ql78i6s',
   },
   {
+    name: 'QL78F6S-A/B/C',
+    packageType:
+      'TO-18/5,6 mm kovové pouzdro s integrovanou monitorovací fotodiodou, planární okénko, 3 ' +
+      'vývody (varianty A/B/C se liší vzájemným zapojením katody/anody laserové diody a ' +
+      'fotodiody uvnitř společného pouzdra)',
+    value:
+      'AlGaAs polovodičový laser (laserová dioda) s vestavěnou monitorovací fotodiodou, λp 788 nm ' +
+      'typ. (775–800 nm), Po 10 mW typ., Ith 12 mA typ. (8–18 mA), Iop 22 mA typ. (max 40 mA), ' +
+      'Vop 1,8 V typ. (1,5–2,4 V)',
+    notes:
+      'Roithner LaserTechnik "QL78F6S-A/B/C" (Ver. 0, 2004) — ⚠️ příbuzný, ale výkonově odlišný díl ' +
+      'od QL78I6S-A/B/C v této knihovně (samostatný záznam): oba pracují ve stejném vlnovém pásmu ' +
+      '780 nm a mají stejné mechanické pouzdro TO-18/5,6mm s monitorovací fotodiodou, ale QL78F6S ' +
+      'je SLABŠÍ (nižší výkonová) varianta (10 mW typ./12 mW max vs. 30 mW typ./35 mW max u ' +
+      'QL78I6S) s odpovídajícně nižším prahovým i provozním proudem (Ith 12 mA typ. vs. 20 mA; ' +
+      'Iop 22 mA typ. vs. 55 mA) — jde o odlišný produkt v rámci téže produktové řady, ne o ' +
+      'ekvivalent. ⚠️ Zapojení pinů A/B/C u QL78F6S odpovídá konvenci QL85J6S-A/B/C-L v této ' +
+      'knihovně (A = LD katoda/PD anoda), tedy OPAČNÉ vůči QL78I6S-A/B/C (kde A = LD anoda/PD ' +
+      'katoda) — při náhradě dílu nutno pečlivě zkontrolovat konkrétní písmenný sufix a odpovídající ' +
+      'schéma zapojení v datasheetu, ne jen mechanické pouzdro a vlnovou délku. Optický výkon: Po ' +
+      'typ. 10 mW (abs. max 12 mW). Prahový proud Ith typ. 12 mA (rozsah 8–18 mA). Provozní proud ' +
+      'Iop typ. 22 mA (max 40 mA). Diferenciální účinnost η typ. 0,75 mW/mA (rozsah 0,55–0,95, ' +
+      '@5mW/I(10mW)-I(5mW)). Provozní napětí Vop typ. 1,8 V (rozsah 1,5–2,4 V). Vlnová délka λp ' +
+      'typ. 788 nm (rozsah 775–800 nm). Úhel vyzařování θ∥ 8° typ. (6–11°), θ⊥ 31° typ. (25–35°). ' +
+      'Úhel svazku tolerance Δθ∥ ±2°, Δθ⊥ ±3°. Monitorovací fotodioda: Im typ. 0,7 mA (rozsah ' +
+      '0,5–1,5 mA) @Po=10mW. Astigmatismus max 10 µm. Optická vzdálenost max ±60 µm. Závěrná ' +
+      'napětí: laserová dioda max 2 V, monitorovací fotodioda max 30 V. Provozní teplota -10 až ' +
+      '+60 °C, skladovací -40 až +85 °C. MUSÍ být provozována v režimu APC.',
+    tags: 'dioda,laser,laserová-dioda,algaas,to-18,monitorovací-fotodioda,apc,roithner,ql78f6s',
+  },
+  {
     name: 'QL85J6S-A/B/C-L',
     packageType:
       'TO-18/5,6 mm kovové pouzdro s integrovanou monitorovací fotodiodou, skleněné okénko ' +
