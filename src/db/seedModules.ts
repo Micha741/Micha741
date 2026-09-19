@@ -1293,6 +1293,34 @@ const MODULE_SPECS: ModuleSpec[] = [
       'V3-WM-2M-PUR, rychloupínací konzole EXG-08 (shodné s NBB2-8GM25-E0-V3).',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,pnp,3vodičový,m8,konektor,ip67,průmyslový',
   },
+  {
+    name: 'NBB2-8GM40-E2-V1',
+    packageType:
+      'Válcové závitové pouzdro M8×1 (snímací závitová část), stupňovité tělo prodloužené na ' +
+      'zadní straně na větší M12×1 konektorovou objímku, mosaz s niklovým povlakem, celková ' +
+      'délka 65 mm (delší než NBB2-8GM25-E0-V3/E2-V3 kvůli většímu konektoru), hmotnost 20 g, ' +
+      'aktivní čelo LCP, indikační vícedírková žlutá LED, zásuvný konektor M12×1, 4pinový, piny ' +
+      '1=BN(hnědý)/L+, 4=BK(černý)/výstup, 3=BU(modrý)/L-, 2=WH(bílý) nezapojen, v balení 2 ' +
+      'šestihranné matice',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, spínací vzdálenost 2 mm (zápustná montáž), ' +
+      'rozšířený teplotní rozsah -40 až +85 °C, 3vodičové DC zapojení, PNP výstup, spínací (NO) ' +
+      'kontakt, 5–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBB2-8GM40-E2-V1" (304615-0058_eng.xml, vydáno 8.–9. 1. ' +
+      '2018) — ⚠️ elektricky IDENTICKÝ s NBB2-8GM25-E2-V3 v této knihovně (samostatný záznam) — ' +
+      'stejná spínací vzdálenost, korekční faktory (rAl=0,4/rCu=0,3/r304=0,75/rBrass=0,45), ' +
+      'spínací kmitočet 6000 Hz, teplotní rozsah i PNP výstup — LIŠÍ SE POUZE délkou a typem ' +
+      'konektoru: "GM40" (namísto "GM25") značí delší tělo (65 mm vs 40 mm) kvůli VĚTŠÍMU 4pinovému ' +
+      'M12 konektoru (namísto 3pinového M8 konektoru u "V3" varianty — kód "V1" v označení dílu ' +
+      'odpovídá konektorové rodině M12, "V3" rodině M8), přičemž samotné snímací závitové ' +
+      'M8-závitové čelo zůstává stejné jako u NBB2-8GM25 dvojice. M12 konektor umožňuje použití ' +
+      'standardizovaných průmyslových M12 kabelů/konektorů (příslušenství V1-G/V1-W/V1-G-2M-PUR/ ' +
+      'V1-W-2M-PUR) — stejná konektorová rodina jako u NBB5-18GM40-Z0-V1 v této knihovně. Viz ' +
+      'záznam NBB2-8GM25-E2-V3 pro plný popis společných elektrických parametrů. Dostupné ' +
+      'příslušenství: montážní příruba BF 8, rychloupínací konzole EXG-08.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,pnp,m8,m12,konektor,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
