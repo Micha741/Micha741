@@ -1506,6 +1506,33 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,senzor,akcelerometr,gyroskop,imu,mems,6osý,i2c,spi,st,lsm330dl',
   },
   {
+    name: 'XV-8000CB',
+    packageType:
+      'SMD pouzdro 5,0×3,2×1,3 mm, 8 vývodů (rozteč 1,27 mm): 1=N.C., 2=GND, 3=VDD, 4=N.C., ' +
+      '5=N.C., 6=VOUT, 7=VTEMP, 8=N.C. (nezapojené "N.C." piny nesmí být připojeny k žádnému ' +
+      'externímu obvodu)',
+    value:
+      'Jednoosý vibrační křemenný (piezoelektrický) gyroskop (senzor úhlové rychlosti), ' +
+      'analogový ratiometrický výstup, rozsah ±60°/s, citlivost 25 mV/(°/s) typ., napájení ' +
+      '5,0 V ±0,25 V',
+    notes:
+      'Epson Toyocom "XV-8000CB — Ultra Miniature Size Gyro Sensor (for Car Navigation System)" — ' +
+      'jednoosý (yaw rate) analogový gyroskop založený na vibrujícím křemenném rezonátoru ' +
+      '(QMEMS — Quartz MEMS, na rozdíl od klasického křemíkového MEMS), NA ROZDÍL od digitálního ' +
+      '6osého MEMS akcelerometru/gyroskopu LSM330DL v této knihovně (ten má I2C/SPI digitální ' +
+      'výstup a integruje i akcelerometr) — XV-8000CB je jednoosý, čistě analogový (napěťový ' +
+      'ratiometrický výstup úměrný VDD) senzor bez akcelerometru. Určeno primárně pro navigační ' +
+      'systémy vozidel (dead-reckoning navigace při ztrátě GPS signálu, detekce natočení/zatáčení ' +
+      'vozidla). Rozsah měřené úhlové rychlosti ±60°/s. Citlivost (scale factor) typ. 25 mV/(°/s). ' +
+      'Klidové napětí (bias, výstup bez rotace) 50 % VDD @25 °C. Nelinearita max ±0,5 % FS @25 °C. ' +
+      'Šířka pásma (frekvenční odezva) typ. 10 Hz (fázové zpoždění 90°). Křížová citlivost (cross ' +
+      'axes) max ±5 % @25 °C. Proudový odběr typ. 4 mA (výstup nezatížen). Klidový šum typ. 3 mVpp. ' +
+      'Dodatečný výstupní pin VTEMP pro integrovaný teplotní senzor (pro teplotní kompenzaci ' +
+      'citlivosti v externím obvodu). Napájení VDD 5,0 V ±0,25 V (VSS=0V). Provozní/skladovací ' +
+      'teplota -40 až +85 °C. RoHS.',
+    tags: 'io,senzor,gyroskop,úhlová-rychlost,křemenný,qmems,epson-toyocom,xv-8000cb,analogový,automotive',
+  },
+  {
     name: 'SCD40',
     packageType:
       'LGA 10,1×10,1×6,5 mm, 21 vývodů (VDD, VDDH, GND, SDA, SCL, zbytek DNC — nutno pájet i ' +
