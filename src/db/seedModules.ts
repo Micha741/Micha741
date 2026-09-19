@@ -1136,6 +1136,39 @@ const MODULE_SPECS: ModuleSpec[] = [
       'EXG-12 s pevným dorazem.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb4,ac-dc,m12,mosaz,ip67,průmyslový',
   },
+  {
+    name: 'NBB5-18GM40-Z0-V1',
+    packageType:
+      'Válcové závitové pouzdro M18×1 (threaded barrel), mosaz s niklovým povlakem, délka 45 mm ' +
+      '(40 mm závitové části), aktivní čelo PBT, indikační vícedírková ("Multihole") žlutá LED, ' +
+      'zásuvný konektor M12×1, 4pinový (device connector, NE integrální kabel — na rozdíl od ' +
+      'NBB3-V3-Z4/NBB4-12GM75-US v této knihovně), piny 1=BN(hnědý)/L+, 3=BU(modrý)/L-, 2,4 ' +
+      'nezapojeny (2vodičové zapojení využívá jen piny 1 a 3)',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, klasický feritový typ, spínací vzdálenost ' +
+      '5 mm (zápustná montáž), rozšířený teplotní rozsah -40 až +70 °C, 2vodičové DC zapojení, ' +
+      'spínací (NO) kontakt, 5–60 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBB5-18GM40-Z0-V1" (088201_eng.xml, vydáno 21. 5. 2012) — ' +
+      '⚠️ třetí sourozenecký díl v rámci řady Pepperl+Fuchs NBB v této knihovně (spolu s ' +
+      'NBB3-V3-Z4 a NBB4-12GM75-US, samostatné záznamy): stejný princip (klasický feritový ' +
+      'senzor s korekčními faktory dle materiálu cíle — zde rAl=0,34, rCu=0,31, r304/nerez=0,72), ' +
+      'ale jde o VĚTŠÍ senzor v M18×1 pouzdře (vs M12×1 u NBB4-12GM75-US) s vyšší jmenovitou ' +
+      'spínací vzdáleností 5 mm (vs 4 mm u NBB4, 3 mm u NBB3), a hlavně MÁ ZÁSUVNÝ M12 KONEKTOR ' +
+      'místo integrálního kabelu (NBB3-V3-Z4) nebo pevně připojeného kabelu (NBB4-12GM75-US) — ' +
+      'vyžaduje samostatně objednaný konektorový kabel (např. příslušenství V1-G-2M-PUR/ ' +
+      'V1-W-2M-PUR) nebo pole-montovatelný konektor V1-G/V1-W. Elektricky nejbližší NBB3-V3-Z4 ' +
+      '(oba čistě DC, 5–60 V), ale s pulzní (pulsing) zkratovou ochranou (na rozdíl od NBB3-V3-Z4 ' +
+      'bez zkratové ochrany a NBB4-12GM75-US se standardní zkratovou ochranou). "Extended ' +
+      'temperature range" -40 až +70 °C. Zajištěná spínací vzdálenost 0–4,05 mm (-25 až 70°C) ' +
+      'nebo 0–3,8 mm (-40 až -25°C, užší rozsah za extrémně nízkých teplot). Spínací kmitočet ' +
+      '0–500 Hz. Hystereze 1–10 % (typ. 5 %). Provozní proud 2–100 mA, min. provozní proud 2 mA, ' +
+      'zbytkový proud typ. 0–0,5 mA. Úbytek napětí max 5 V. Funkční bezpečnostní parametry: ' +
+      'MTTFd 1870 let, doba mise 20 let, diagnostické pokrytí 0 %. Krytí IP67. Shoda EN/IEC ' +
+      '60947-5-2, UL/CSA/CCC certifikace. Dostupné příslušenství: montážní příruba BF 18, ' +
+      'rychloupínací konzole EXG-18.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb5,m18,mosaz,konektor,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
