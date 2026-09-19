@@ -2266,6 +2266,39 @@ const MODULE_SPECS: ModuleSpec[] = [
       'RCM.',
     tags: 'modul,senzor,proximity,poloha-pístu,reed,jazýčkový-kontakt,magnetický,festo,smeo-8e,pneumatika,m12,síťové-napětí',
   },
+  {
+    name: 'SMPO-8E',
+    packageType:
+      'Kompaktní kvádrové pouzdro s pneumatickou přípojkou M5, pouzdro eloxovaný hliník + PA + ' +
+      'vysoce legovaná nerezová ocel, montáž průchozím otvorem/příslušenstvím se zasunutím do ' +
+      'T-drážky shora, hmotnost 11 g',
+    value:
+      'Magneticky ovládaný PNEUMATICKÝ (nikoliv elektrický) polohový snímač pístu ve funkci ' +
+      '3/2 ventilu, provozní tlak 2–8 bar, ATEX certifikace pro zóny 1/2/21/22',
+    notes:
+      'Festo AG & Co. KG "Proximity sensor SMPO-8E" (obj. č. 178563, datový list 5.3.2021) — ⚠️ ' +
+      'ZÁSADNĚ jiný princip než ostatní snímače polohy pístu v této knihovně (SME-8/SME-8M/' +
+      'SMT-8M/SDBT-BSW/SMEO-8E): SMPO-8E NEMÁ ŽÁDNÉ ELEKTRICKÉ PŘIPOJENÍ ani elektrický výstup ' +
+      '— místo elektrického reed/magnetorezistivního snímače jde o čistě PNEUMATICKÝ prvek — ' +
+      'magneticky ovládaný 3/2 ventil (Valve function "3/2", pneumatická přípojka M5), který ' +
+      'magnet v pístu válce (stejný typ magnetu jako u elektrických snímačů SME/SMT řad) přímo ' +
+      'PŘEPÍNÁ TLAKOVÝ VZDUCH (bez elektroniky/elektřiny) — typické využití pro čistě pneumatické ' +
+      'logické obvody nebo v prostředích, kde je elektrické jiskření nepřípustné i s Ex ' +
+      'certifikací (zde ATEX zóny 1/2 pro plyny i 21/22 pro prach — ŠIRŠÍ pokrytí zón než ' +
+      'elektrický Festo SMT-8M-A-ZS-24V-E-5,0-OE-EX2, který pokrývá jen zóny 2/22, protože ' +
+      'čistě pneumatický prvek je z principu jiskrově bezpečný ve všech zónách). Vizuální ' +
+      '(optická, ne LED elektrická) indikace přepnutí. Provozní médium: stlačený vzduch dle ISO ' +
+      '8573-1:2010 [6:4:4], BEZ olejového mazání (nekompatibilní s mazaným vzduchem). Montáž ' +
+      'průchozím otvorem s příslušenstvím, zasunutí do T-drážky shora. Zapínací doba 22 ms / ' +
+      'vypínací 52 ms (výrazně pomalejší než elektrické reed/magnetorezistivní varianty — typické ' +
+      'pro pneumatické přepínání). Opakovatelnost polohy ±0,2 mm. Provozní teplota -15 až +60 °C. ' +
+      'Krytí IP65. Zařazeno do kategorie "Modul" jako kompletní osazený produkt pro montáž na ' +
+      'pneumatický válec, stejně jako elektrické Festo SME/SMT/SDBT-BSW/SMEO snímače polohy ' +
+      'pístu v této knihovně — i přes odlišný (čistě pneumatický) princip funkce jde o ' +
+      'mechanicky/aplikačně identickou kategorii produktů (snímače polohy pístu pro T-drážku ' +
+      'pneumatického válce).',
+    tags: 'modul,senzor,proximity,poloha-pístu,pneumatický,ventil,magnetický,atex,festo,smpo-8e,pneumatika',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
