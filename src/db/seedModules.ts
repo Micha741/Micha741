@@ -2392,6 +2392,37 @@ const MODULE_SPECS: ModuleSpec[] = [
       'RCM. Odolný proti oleji, bez mědi/PTFE, bez halogenu, RoHS.',
     tags: 'modul,senzor,proximity,poloha-pístu,reed,jazýčkový-kontakt,magnetický,festo,sme-10m,pneumatika,kruhová-drážka',
   },
+  {
+    name: 'SIEH-3B-PS-S-L',
+    packageType:
+      'Válcové pouzdro Ø3 mm, vysoce legovaná nerezová ocel, konektor M8×1 (3piny) na konci ' +
+      '0,15m kabelu (plášť TPE-U/PUR, izolace PVC), zápustná montáž (flush), upevnění svorkou, ' +
+      'hmotnost 4 g',
+    value:
+      'Miniaturní indukční přibližovací spínač, jmenovitá spínací vzdálenost 1 mm (zaručená ' +
+      '0,81 mm), PNP výstup (N/O), 10–30 V DC, max. spínací kmitočet 3000 Hz',
+    notes:
+      'Festo AG & Co. KG "Proximity sensor SIEH-3B-PS-S-L" (obj. č. 538263, datový list ' +
+      '5.6.2021) — ⚠️ ZCELA JINÁ kategorie senzoru než ostatní Festo snímače v této knihovně ' +
+      '(SME/SMT/SDBT-BSW/SMEO/SMPO/SMTSO), které jsou specificky konstruovány pro SNÍMÁNÍ POLOHY ' +
+      'PÍSTU pneumatického válce skrz jeho stěnu (reagují na magnet v pístu) — SIEH-3B-PS-S-L je ' +
+      'naproti tomu OBECNÝ MALOROZMĚROVÝ INDUKČNÍ přibližovací spínač (princip vířivých proudů, ' +
+      'reaguje na jakýkoliv kovový objekt v dosahu, ne specificky na magnet), určený pro obecné ' +
+      'průmyslové snímání přítomnosti kovových předmětů — funkčně a principiálně analogický spíše ' +
+      'k TURCK BI1/Pepperl+Fuchs NBB1 (nejmenší velikosti) v této knihovně než ke zbytku Festo ' +
+      'snímačů. Extrémně malé pouzdro Ø3 mm (menší než nejmenší NBB1-4GM22-E0 v knihovně), ' +
+      'redukční faktory pro různé kovy udané explicitně (hliník 0,5, nerez ocel 0,8, měď 0,45, ' +
+      'mosaz 0,6, ocel St37 = referenční 1,0). Rychlá odezva (zapínací doba jen 0,02 ms, max. ' +
+      'spínací kmitočet 3000 Hz — výrazně rychlejší než piston-position varianty). Vestavěný ' +
+      'induktivní ochranný obvod (aktivní při výstupním proudu <100 mA a spínacím kmitočtu ' +
+      '<10 Hz). Zkratová ochrana pulzní, ochrana proti přepólování na všech vývodech. Krytí IP67, ' +
+      'korozní odolnost CRC třída 1 (nízké korozní namáhání). Zařazeno do kategorie "Modul" jako ' +
+      'kompletní osazený produkt s vlastním kabelem/konektorem, stejně jako ostatní indukční ' +
+      'přibližovací spínače (TURCK/Pepperl+Fuchs/Festo) v této knihovně. Žlutá LED indikace ' +
+      'sepnutí. Provozní teplota -25 až +70 °C (pevná instalace), -5 až +70 °C (pohyblivá ' +
+      'instalace kabelu). Certifikace: c UL us (Listed), CE (EU EMC), RCM. Bez mědi a PTFE.',
+    tags: 'modul,senzor,proximity,indukční,pnp,festo,sieh-3b,miniaturní,m8,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
