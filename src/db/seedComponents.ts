@@ -3403,6 +3403,44 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,mosfet,p-kanál,smd,d2pak,to-262,irf9540ns,irf9540nl,spínací',
   },
   {
+    name: 'AFGB40T65SPD-BW',
+    packageType:
+      'D²PAK (TO-263AB, case 221BQ), 3 vývody: 1=gate, 2=kolektor (i chladicí TAB), 3=emitor',
+    value:
+      '⚠️ NOVÝ TYP součástky v této knihovně (IGBT) — Field Stop Trench IGBT, BVCES 650 V, ' +
+      'VCE(sat) typ. 2,0 V @IC=40 A, IC max 120 A (pulzní), integrovaná antiparalelní rychlá dioda',
+    notes:
+      'onsemi "AFGB40T65SPD-BW — Field Stop Trench IGBT, 650 V, 40 A" (dok. ' +
+      'AFGB40T65SPD-BW/D, rev. 1, 2026) — na rozdíl od ostatních spínacích tranzistorů v této ' +
+      'knihovně (bipolární BJT, MOSFET) jde o IGBT (Insulated Gate Bipolar Transistor): hradlo ' +
+      'řízené jako u MOSFETu (vysoká vstupní impedance), ale výstupní charakteristika bipolární ' +
+      '(nižší úbytek napětí při vysokém proudu než srovnatelný MOSFET, na úkor pomalejšího ' +
+      'vypínání) — vhodné pro vyšší napětí/proudy než běžné výkonové MOSFETy v této knihovně. ' +
+      'AEC-Q101 kvalifikováno, 100 % dílů dynamicky testováno, zkratová odolnost >5 µs @25 °C, ' +
+      'kladný teplotní koeficient VCE(sat) usnadňuje paralelní řazení více kusů. Copackováno s ' +
+      'měkkou rychlou (soft, fast recovery) antiparalelní diodou (freewheeling). ' +
+      'Mezní hodnoty: VCES=650 V, VGES=±20 V (přechodně ±30 V), IC=80 A @TC=25°C (40 A @TC=100°C), ' +
+      'ICM=120 A (pulzní), IF diody=40 A @TC=25°C (20 A @TC=100°C), IFM=120 A (pulzní), ' +
+      'PD=267 W @TC=25°C (134 W @TC=100°C), SCWT (short circuit withstand time)=5 µs @TC=25°C, ' +
+      'TJ/Tstg=-55 až +175°C, pájecí teplota max 300°C/5s (1/8" od pouzdra). RθJC (IGBT)=0,56°C/W, ' +
+      'RθJC (dioda)=1,71°C/W, RθJA=40°C/W. ' +
+      'BVCES min 650 V @VGE=0/IC=1mA (teplotní koeficient +0,6 V/°C typ). ICES max 250 µA ' +
+      '@VCE=VCES/VGE=0. IGES max ±400 nA. VGE(th) 4,0–7,5 V typ 5,8 V @IC=40mA. VCE(sat) typ 2,0 V ' +
+      '(max 2,4 V) @IC=40A/VGE=15V/TC=25°C, typ 2,9 V @TC=125°C. ' +
+      'Ciss typ 1520 pF, Coss typ 92 pF, Crss typ 15 pF @VCE=30V/VGE=0/f=1MHz. ' +
+      'Spínání @TC=25°C (VCC=400V/IC=40A/RG=6Ω/VGE=15V, indukční zátěž): td(on) typ 18ns, tr typ ' +
+      '26ns, td(off) typ 35ns, tf typ 10ns, Eon typ 0,97mJ, Eoff typ 0,28mJ, Ets typ 1,25mJ. ' +
+      '@TC=175°C: td(on) typ 14ns, tr typ 35ns, td(off) typ 38ns, tf typ 13ns, Eon typ 1,61mJ, ' +
+      'Eoff typ 0,47mJ, Ets typ 2,08mJ. Náboj hradla (VCE=400V/IC=40A/VGE=15V): Qg typ 36nC, Qge ' +
+      'typ 12nC, Qgc typ 11nC. ' +
+      'Integrovaná dioda: VFM typ 2,0V (max 2,7V) @IF=20A/TC=25°C, typ 1,8V @TC=175°C. Reverse ' +
+      'recovery @IF=20A/diF/dt=200A/µs: trr typ 34ns/Qrr typ 56nC @TC=25°C, trr typ 206ns/Qrr typ ' +
+      '731nC @TC=175°C (výrazně horší zotavení za horka). Erec typ 51µJ @TC=175°C. ' +
+      'Aplikace: palubní nabíječky (OBC), kompresory klimatizace, PTC topení, pohony motorů a ' +
+      'další automotive napájecí/pomocné aplikace. Pb-free, RoHS.',
+    tags: 'tranzistor,igbt,field-stop-trench,onsemi,afgb40t65spd,d2pak,to-263,650v,automotive,aec-q101',
+  },
+  {
     name: 'IRF4905',
     packageType:
       'TO-220AB, 4 vývody: 1=gate, 2=drain, 3=source, 4=drain (chladicí ploška = drain)',
