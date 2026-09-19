@@ -1594,6 +1594,32 @@ const MODULE_SPECS: ModuleSpec[] = [
       'příslušenství: montážní příruba BF 30, rychloupínací konzole EXG-30.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb10,npn,m30,velký-dosah,ip67,průmyslový',
   },
+  {
+    name: 'NBB4-12GM30-E3',
+    packageType:
+      'Válcové závitové pouzdro M12×1 (threaded barrel), mosaz s niklovým povlakem, délka 30 mm, ' +
+      'hmotnost 30 g, aktivní čelo PBT (Ø10,4 mm), indikační vícedírková žlutá LED, integrální ' +
+      'kabel PVC 2 m (0,14 mm², 3 žíly: BN=L+, BK=výstup, BU=L-)',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, spínací vzdálenost 4 mm (zápustná montáž), ' +
+      '3vodičové DC zapojení, PNP výstup, ROZPÍNACÍ (NC) kontakt, 10–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBB4-12GM30-E3" (087742_eng.xml, vydáno 15. 1. 2015) — ⚠️ ' +
+      'POZOR na záměnu s NBB4-12GM30-E2-V3 v této knihovně (samostatný záznam) — přes velmi ' +
+      'podobné označení (liší se jen "-E3" vs "-E2-V3") jde o odlišný díl: NBB4-12GM30-E3 má ' +
+      'ROZPÍNACÍ (NC) kontakt (přípona "E3"), zatímco NBB4-12GM30-E2-V3 má spínací (NO) kontakt ' +
+      '(přípona "E2") — opačná spínací logika při stejném PNP výstupním tranzistoru; navíc ' +
+      'NBB4-12GM30-E3 má integrální kabel PVC 2m místo zásuvného M8 konektoru (bez kódu "V3" v ' +
+      'označení). Mechanicky shodné pouzdro M12 se stejnými korekčními faktory (rAl=0,45, ' +
+      'rCu=0,35, r304/nerez=0,7). Zajištěná spínací vzdálenost 0–3,24 mm. Spínací kmitočet ' +
+      '0–500 Hz. Hystereze typ. 5 %. Ochrana proti přepólování a pulzní zkratová ochrana. Úbytek ' +
+      'napětí max 3 V. Provozní proud 0–150 mA, klidový proud max 15 mA, zbytkový proud typ. ' +
+      '0,5 mA (0,1 µA @25°C). Zpoždění dostupnosti po zapnutí max 20 ms. Funkční bezpečnostní ' +
+      'parametry: MTTFd 1770 let, doba mise 20 let, diagnostické pokrytí 0 %. Krytí IP67. ' +
+      'Provozní teplota -25 až +70 °C. Shoda EN/IEC 60947-5-2, UL/CSA certifikace. Dostupné ' +
+      'příslušenství: montážní příruba BF 12, rychloupínací konzole EXG-12.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb4,pnp,nc,m12,kabel,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
