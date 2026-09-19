@@ -3280,6 +3280,35 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Certifikace: c UL us (Listed), CE (EU EMC), RCM, KC EMC. RoHS.',
     tags: 'modul,kamera,vizuální-senzor,vision-sensor,object-sensor,monochromní,ethernet,festo,sbsi,průmyslový',
   },
+  {
+    name: 'SPAW-P25R-G12M-2NV-M12',
+    packageType:
+      'Válcové pouzdro s LED displejem, materiál ABS + vysoce legovaná nerezová ocel (smáčené ' +
+      'díly celokovové z nerezi), těsnicí kroužek NBR, pneumatická přípojka vnější závit G1/2, ' +
+      'konektor M12×1 (5PINŮ — o jeden více než ostatní SPAW senzory v této knihovně, kruhové ' +
+      'provedení), montáž vnějším závitem, hmotnost 230 g',
+    value:
+      'Vysokotlaký průmyslový tlakový senzor/spínač s displejem (kovový tenkovrstvý princip), ' +
+      'měřicí rozsah 0–25 bar (max. přetížení 50 bar), 2× NPN volně programovatelný spínací ' +
+      'výstup PLUS analogový výstup 0–10 V současně, 15–35 V DC',
+    notes:
+      'Festo AG & Co. KG "Pressure sensor SPAW-P25R-G12M-2NV-M12" (obj. č. 8022845, datový list ' +
+      '25.5.2021) — nový mezilehlý tlakový rozsah 0–25 bar/50 bar přetížení ze SPAW rodiny v ' +
+      'této knihovně (mezi SPAW-B11R -1 až 10 bar, SPAW-P50R 0–50 bar a SPAW-P100R 0–100 bar) — ' +
+      '⚠️ navíc PRVNÍ SPAW varianta v této knihovně kombinující SOUČASNĚ spínací i analogový ' +
+      'výstup: typový kód "2NV" (2× NPN + V=napěťový analogový výstup) oproti "2N"/"2P" u ' +
+      'ostatních SPAW variant (pouze spínací) — proto i konektor M12 s 5 PINY místo obvyklých 4 ' +
+      'u čistě spínacích SPAW-P100R/P50R/B11R/B2R variant v této knihovně (pátý pin nese ' +
+      'analogový signál nezávisle na obou spínacích výstupech). Analogový výstup 0–10 V lineárně ' +
+      'úměrný tlaku, doba náběhu 3 ms. Jinak mechanicky/funkčně shodná s ostatními "P" ' +
+      '(vysokotlakými) SPAW variantami v této knihovně: celokovové pouzdro ABS+nerez, LED ' +
+      'displej, IP65/67, CRC třída 4, max. proud 250 mA. Zařazeno do kategorie "Modul" jako ' +
+      'kompletní přístroj s vlastním displejem/ovládáním/konektorem, stejně jako ostatní Festo ' +
+      'SPAW/SPAN/SDE5 tlakové senzory v této knihovně. Teplota média -20 až +85 °C, okolí 0 až ' +
+      '+80 °C. Zkratová ochrana, ochrana proti přepólování napájení. Obsahuje látky ovlivňující ' +
+      'smáčivost nátěru. Certifikace: c UL us (Listed), CE (EU EMC), RCM. RoHS.',
+    tags: 'modul,senzor,tlak,vysokotlaký,tenkovrstvý,npn,analogový,festo,spaw-p25r,displej,g12,nerez',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
