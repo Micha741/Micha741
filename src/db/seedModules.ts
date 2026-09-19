@@ -3379,6 +3379,39 @@ const MODULE_SPECS: ModuleSpec[] = [
       '60947-5-2 a 60947-5-6 (NAMUR), UL/CSA/CCC certifikace.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,namur,jiskrově-bezpečný,pepperl-fuchs,nj4,atex,zóna-20,nerez,ip67',
   },
+  {
+    name: 'RaDec-M',
+    packageType:
+      'Kompaktní oválné kupolovité pouzdro (nástěnná/stropní montáž), černý polykarbonát (PC), ' +
+      'rozměry 101×60×59 mm, hmotnost 130 g, vyjímatelná anténa (otočná pro širokou/úzkou ' +
+      'detekční zónu), potenciometr citlivosti, červená LED indikace funkce, přiložený ' +
+      'připojovací kabel 2,5 m',
+    value:
+      'Radarový (Dopplerův) pohybový senzor pro detekci osob a vozidel, kmitočet 24,15–24,25 GHz ' +
+      '(pásmo K), relé výstup (NO/NC), 12–36 V DC / 12–28 V AC',
+    notes:
+      'Pepperl+Fuchs "Radar sensor RaDec-M" (dok. 214959_eng.pdf, vydáno 8.10.2020) — ⚠️ jiný ' +
+      'radarový princip než Banner Q130RA v této knihovně: RaDec-M využívá klasický DOPPLERŮV ' +
+      'radar (Doppler radar, mikrovlnný modul reagující na FREKVENČNÍ POSUV odraženého signálu ' +
+      'od POHYBUJÍCÍHO se cíle — stacionární osoby/objekty NEJSOU detekovány vůbec, min. detekční ' +
+      'rychlost 0,1 m/s), zatímco Q130RA používá FMCW radar schopný detekovat i STACIONÁRNÍ cíle ' +
+      'a měřit přesnou vzdálenost. RaDec-M je proto určen výhradně pro APLIKACE POHYBOVÉHO ' +
+      'SNÍMÁNÍ (automatické/průmyslové dveře, eskalátory, výtahové prostory, obecné bezpečnostní ' +
+      'osvětlení) — ne pro měření vzdálenosti/přítomnosti stojícího objektu jako Q130RA. Výstup ' +
+      'RELÉOVÝ (přepínací kontakt NO/NC, max. 48V/0,5A AC nebo 48V/1A DC, spínací výkon max ' +
+      '24W/60VA, zpoždění odpadu 0,5s) — jednodušší galvanicky oddělený výstup oproti bipolárnímu ' +
+      'NPN/PNP tranzistorovému výstupu Q130RA. Nastavitelná šířka detekční zóny VÝMĚNOU/OTOČENÍM ' +
+      'zásuvné antény (široká 2×4,5 m nebo úzká 4,5×2 m při výšce montáže 2,2 m a náklonu 30°), ' +
+      'naklápění hlavy senzoru 0–90° v krocích 5° (10 poloh), citlivost nastavitelná ' +
+      'potenciometrem. Max. výška montáže 4 m. Vysílací výkon (EIRP) <20 dBm (100 mW, nižší než ' +
+      'Q130RA). Provozní teplota -20 až +60 °C, skladovací -30 až +70 °C, vlhkost max 90 % ' +
+      'nekondenzující. Krytí IP54 (nižší než Q130RA, určeno pro vnitřní/kryté použití). ' +
+      'Dostupné příslušenství: povětrnostní kryt RaDec Weather Cap, stropní montážní sada RMS/ ' +
+      'RaDec Ceiling Kit. Zařazeno do kategorie "Modul" jako kompletní osazený produkt s vlastním ' +
+      'kabelem/konektorem, stejně jako Q130RA v této knihovně. CE (2014/53/EU), EAC. FCC ' +
+      'schválení NENÍ uděleno — použití v Severní Americe zakázáno.',
+    tags: 'modul,senzor,radar,doppler,pohybový,relé,pepperl-fuchs,radec-m,24ghz,dveře',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
