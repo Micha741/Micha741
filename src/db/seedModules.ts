@@ -2823,6 +2823,32 @@ const MODULE_SPECS: ModuleSpec[] = [
       '(Listed), CE (EU EMC), RCM. RoHS.',
     tags: 'modul,senzor,tlak,vysokotlaký,tenkovrstvý,npn,festo,spaw-p100r,displej,g14,nerez',
   },
+  {
+    name: 'SPAW-P50R-G12M-2N-M12',
+    packageType:
+      'Válcové pouzdro s LED displejem, materiál ABS + vysoce legovaná nerezová ocel (smáčené ' +
+      'díly celokovové z nerezi), těsnicí kroužek NBR, pneumatická přípojka vnější závit G1/2, ' +
+      'konektor M12×1 (4piny, kruhové provedení), montáž vnějším závitem, hmotnost 230 g',
+    value:
+      'Vysokotlaký průmyslový tlakový senzor/spínač s displejem (kovový tenkovrstvý princip), ' +
+      'měřicí rozsah 0–50 bar (max. přetížení 100 bar), 2× NPN volně programovatelný spínací ' +
+      'výstup, 15–35 V DC',
+    notes:
+      'Festo AG & Co. KG "Pressure sensor SPAW-P50R-G12M-2N-M12" (obj. č. 8022774, datový list ' +
+      '25.5.2021) — třetí tlakový rozsah ze SPAW rodiny v této knihovně (vedle SPAW-B2R -1 až ' +
+      '1 bar, SPAW-B11R -1 až 10 bar a SPAW-P100R 0–100 bar) — typový kód "P50R" značí střední ' +
+      'vysokotlaký rozsah 0–50 bar/100 bar přetížení, přesně mezi rozsahy "B11R" a "P100R". ' +
+      'Mechanicky a funkčně shodná se SPAW-P100R-G12M-2N-M12 (obj. č. 8022775) v této knihovně ' +
+      '(stejný kovový tenkovrstvý princip, stejné celokovové pouzdro ABS+nerez, LED displej, ' +
+      'vnější závit G1/2, M12 konektor, 2× NPN volně programovatelný výstup, IP65/67, CRC ' +
+      'třída 4) — liší se pouze samotným měřicím rozsahem (0–50 bar místo 0–100 bar). Max. proud ' +
+      '250 mA, doba náběhu 3 ms. Zařazeno do kategorie "Modul" jako kompletní přístroj s vlastním ' +
+      'displejem/ovládáním/konektorem, stejně jako ostatní Festo SPAW/SPAN/SDE5 tlakové senzory v ' +
+      'této knihovně. Teplota média -20 až +85 °C, okolí 0 až +80 °C. Zkratová ochrana, ochrana ' +
+      'proti přepólování napájení. Obsahuje látky ovlivňující smáčivost nátěru. Certifikace: ' +
+      'c UL us (Listed), CE (EU EMC), RCM. RoHS.',
+    tags: 'modul,senzor,tlak,vysokotlaký,tenkovrstvý,npn,festo,spaw-p50r,displej,g12,nerez',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
