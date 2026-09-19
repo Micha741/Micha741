@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    612 běžných součástek: 106 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    613 běžných součástek: 106 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; a laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220),
@@ -61,7 +61,7 @@ i návrh schémat obvodů a plošných spojů.
     ACS754xCB-150/ACS755xCB-050 (Hallův jev), reflexní optický senzor Honeywell
     HOA0709-011, optické PPG senzory OSRAM SFH 7051 (tepová frekvence), SFH7050
     (tepová frekvence + SpO2) a SFH7060 (5 emitorů, tepová frekvence + SpO2), a proudové
-    senzory CUI CSXX05B series aj.), 114 modulů
+    senzory CUI CSXX05B series aj.), 115 modulů
     (Wi-Fi/BLE: ESP32-C3-MINI-1, ESP32-C3-WROOM-02, Adafruit Feather
     HUZZAH ESP8266, ESP8684-MINI-1, ESP-12S; nízkonapěťové odpojovače baterie Alfatronix
     PowerTector PT10/PT20/PT40/PT60/PT100/PT200; LoRaWAN senzor LEO-S55 a brány USM-S67;
@@ -94,8 +94,8 @@ i návrh schémat obvodů a plošných spojů.
     (potravinářský, nerez 316L, PNP) a CBB8-18GS75-E2 (M18, nastavitelný rozsah 1-8mm, kabel);
     a fotoelektrická jednocestná závora
     (through-beam pár vysílač+přijímač) SICK GRSE18S-N2421V (GR18 Inox); reflexní fotoelektrický
-    senzor s IO-Link Pepperl+Fuchs OBG4000-R103-2EP-IO (detekce transparentních objektů); a MIPI
-    CSI-2 kamerový
+    senzory s IO-Link Pepperl+Fuchs OBG4000-R103-2EP-IO a OBG5000-R100-EP-IO-V3 (detekce
+    transparentních objektů); a MIPI CSI-2 kamerový
     modul Leopard Imaging LI-OS05A20-MIPI-110H (OmniVision OS05A20, 5 Mpx); průmyslový vizuální
     senzor (smart kamera) Festo SBSC-U-AF-R2B (čtení kódů, OCR, Ethernet) a barevný vizuální
     senzory Festo SBSI-F-R3C-F6-W a SBSI-F-AF-R3C-F12-W (integrovaná optika/osvětlení, plná

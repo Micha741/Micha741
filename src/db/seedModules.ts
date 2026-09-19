@@ -3561,6 +3561,40 @@ const MODULE_SPECS: ModuleSpec[] = [
       'H85-2, H32G-2, ORR50G-2) a reflexní páska OFR-100/100.',
     tags: 'modul,senzor,fotoelektrický,optický,reflexní,retroreflexní,io-link,pepperl-fuchs,obg4000,r103,transparentní-objekty,ip69k',
   },
+  {
+    name: 'OBG5000-R100-EP-IO-V3',
+    packageType:
+      'Miniaturní pouzdro řady R100 (menší než R103), polykarbonát (PC), optické čelo PMMA, ' +
+      'rozměry 11×44,5×21,5 mm, hmotnost ~10 g, integrální zásuvný konektor M8×1 (3piny), otočný ' +
+      '5polohový volič režimu, teach-in tlačítko, žlutá + zelená LED indikace, krytí IP67/IP69/ ' +
+      'IP69K',
+    value:
+      'Reflexní (retroreflective) optoelektronický senzor s IO-Link rozhraním, modulované ' +
+      'viditelné červené LED světlo, dosah 0–3,5 m (režim TEACH) / 0–5 m (režim "N"), ' +
+      'nastavitelná úroveň kontrastu pro detekci průhledných objektů (sklo, PET), 10–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Retroreflective sensor OBG5000-R100-EP-IO-V3" (267075-100040_eng.xml, ' +
+      'vydáno 26.3.2019) — stejná koncepce IO-Link reflexního senzoru pro detekci transparentních ' +
+      'objektů (teach-in, kontrastní režimy 10%/18%/40%, Multi Pixel Technology) jako ' +
+      'OBG4000-R103-2EP-IO v této knihovně, ale MENŠÍ série "R100" (místo "R103") — ⚠️ klíčové ' +
+      'rozdíly: (1) INTEGRÁLNÍ ZÁSUVNÝ KONEKTOR M8×1 (3piny) místo pevně přivedeného 2m kabelu u ' +
+      'R103 — kompaktnější a lehčí (~10 g oproti ~38 g, rozměry 11×44,5×21,5 mm místo ' +
+      '15×36,5×26,7 mm); (2) POUZE JEDEN push-pull výstup ("1 push-pull (4 in 1)" — jediný ' +
+      'signálový pin C/Q na pinu 4, oproti DVĚMA nezávislým push-pull výstupům C/Q+/Q u R103); ' +
+      '(3) DELŠÍ dosah v normálním režimu 0–5 m (oproti 0–4 m u R103) a vyšší prahová detekční ' +
+      'vzdálenost 6 m (oproti 5 m). Shodné IO-Link parametry (verze 1.1, COM2 38,4 kBd, min. ' +
+      'cyklus 2,3 ms), ale odlišné Device ID (0x110A01 oproti 0x110A03 u R103 — odlišuje typ ' +
+      'zařízení v IO-Link master konfiguraci). Elektricky jinak shodný: max. výstupní proud ' +
+      '100 mA, spínací kmitočet 500 Hz, doba odezvy 1 ms, softwarově přepínatelný light-on/ ' +
+      'dark-on a NPN/PNP, teach-in/keylock/reset funkce identické. Zdroj světla shodný (modulované ' +
+      'červené LED, stopa ~170 mm @3,5m, divergence ~5°). Provozní teplota -20 až +60 °C, ' +
+      'skladovací -40 až +70 °C. Zařazeno do kategorie "Modul" jako kompletní osazený produkt s ' +
+      'vlastním konektorem, stejně jako ostatní přibližovací/fotoelektrické senzory v této ' +
+      'knihovně. MTTFd 600 let. UL certifikace (E87056). Dostupné příslušenství: konektorové ' +
+      'kabely V31-GM/WM-2M-PUR, IO-Link master, montážní úchyty, reflektory (H33/H50/H85-2/ ' +
+      'H32G-2/ORR50G-2) a reflexní páska OFR-100/100.',
+    tags: 'modul,senzor,fotoelektrický,optický,reflexní,retroreflexní,io-link,pepperl-fuchs,obg5000,r100,transparentní-objekty,m8,ip69k',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
