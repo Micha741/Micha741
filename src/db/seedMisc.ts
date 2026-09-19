@@ -195,6 +195,32 @@ const MISC_SPECS: MiscSpec[] = [
       'pasivní optická/mechanická součástka bez vlastní elektroniky.',
     tags: 'optika,fresnelova-čočka,hdpe,pir,murata,smd,pohybový-senzor,pasivní',
   },
+  {
+    name: 'IML-0660',
+    packageType:
+      'Kruhová kupolovitá SMD Fresnelova čočka, Ø11,0 mm (spodní), výška cca 10,4 mm nad DPS, ' +
+      'materiál HDPE (polyetylen s vysokou hustotou), barva přírodní/bílá, SMD patky pro ' +
+      'povrchovou montáž, balení volné (bulk/bag) po 200 ks',
+    value:
+      'Fresnelova čočka pro PIR (pyroelektrické) pohybové senzory, formuje/segmentuje zorné pole ' +
+      'senzoru do detekčních zón',
+    notes:
+      'Murata "IML-0660" (dok. Product Search Data Sheet, staženo z murata.com, aktualizováno ' +
+      '15. 2. 2024) — ⚠️ POZOR: díl je dle datasheetu v režimu "Discontinued" (výrobcem ukončen), ' +
+      'na rozdíl od ostatních Fresnelových čoček v této knihovně (IML-0637, IML-0638, ' +
+      'IML-0662N000-T1), které jsou aktivní ("In Production"/"Recommended") — pro nový návrh ' +
+      'nevhodné, uvedeno jen pro referenci/servis existujících zařízení. ⚠️ Další záměna v rámci ' +
+      'stejné produktové rodiny "IML" — shodně s IML-0662N000-T1 jde o "For SMD TYPE" variantu ' +
+      '(na rozdíl od IML-0637/IML-0638 pro lead-type senzory), ale s ODLIŠNOU geometrií: IML-0660 ' +
+      'je kruhová kupolovitá čočka Ø11,0 mm (podobného tvaru jako lead-type IML-0637, ale s SMD ' +
+      'montáží), zatímco IML-0662N000-T1 je hranatá čočka s půdorysem 8,0×9,0 mm — odlišný tvar i ' +
+      'balení (bulk/bag 200 ks u IML-0660 vs. tray 1000 ks u IML-0662N000-T1). Materiál HDPE ' +
+      '(vysokohustotní polyetylen), barva přírodní/bílá. Provozní teplota -25 až +60 °C, ' +
+      'skladovací teplota -30 až +80 °C (shodné s ostatními čočkami řady IML v této knihovně). ' +
+      'Zařazeno do kategorie "Ostatní" jako čistě pasivní optická/mechanická součástka bez ' +
+      'vlastní elektroniky.',
+    tags: 'optika,fresnelova-čočka,hdpe,pir,murata,smd,pohybový-senzor,pasivní,discontinued',
+  },
 ];
 
 export function buildMiscSeed(): ComponentInput[] {
