@@ -3344,6 +3344,41 @@ const MODULE_SPECS: ModuleSpec[] = [
       '(ATEX + Low Voltage Directive), RoHS.',
     tags: 'modul,senzor,poloha,mechanický-spínač,ventilová-jednotka,pneumatický-pohon,atex,sil2,festo,srbe,ip67',
   },
+  {
+    name: 'NJ4-12GM-N-5M-Y123257',
+    packageType:
+      'Válcové závitové pouzdro M12×1 (threaded barrel), nerezová ocel 1.4305/AISI 303, aktivní ' +
+      'čelo PBT, integrální kabel PUR 5 m (bezhalogenový, žíly 0,34 mm²: BN=L+, BU=L-), ' +
+      'minimální poloměr ohybu kabelu >10× průměr',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač s NAMUR výstupem (proudově signalizující, ' +
+      'jiskrově bezpečný pro ATEX), nezápustný typ, spínací vzdálenost 4 mm, 2vodičové zapojení, ' +
+      'rozpínací (NC) funkce, jmenovité napětí 8,2 V',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NJ4-12GM-N-5M-Y123257" (123257_eng.xml, vydáno 15.5.2019) ' +
+      '— ⚠️ ZCELA NOVÁ produktová řada v této knihovně: "NJ" typový kód značí NAMUR VÝSTUP (dle ' +
+      'EN 60947-5-6/IEC 60947-5-6) — na rozdíl od PNP/NPN spínacích senzorů NBB/NBN/NEN v této ' +
+      'knihovně, NJ4-12GM-N NEPŘEPÍNÁ napětí ani nesepíná zátěž přímo, ale mění SVŮJ VLASTNÍ ' +
+      'ODBĚR PROUDU podle přítomnosti cíle (≤1 mA při detekovaném objektu / ≥3 mA při ' +
+      'nedetekovaném, jmenovité napětí Uo=8,2 V, vnitřní odpor Ri≈1 kΩ) — musí být napájen z ' +
+      'certifikovaného NAMUR jiskrově bezpečného izolačního zesilovače (switching amplifier) v ' +
+      'bezpečné zóně, senzor samotný pak smí pracovat přímo uvnitř výbušné zóny bez vlastního ' +
+      'zdroje energie schopného vznícení směsi ("intrinsic safety" — jiskrová bezpečnost, ' +
+      'nejpřísnější a nejrozšířenější typ ATEX ochrany pro senzory v samotné nebezpečné zóně). ' +
+      'Certifikace: II 2G Ex ia IIC T6...T1 Gb (plyny, zóny 1/2) A NAVÍC II 1D Ex ia IIIC T135°C ' +
+      'Da (prach, ZÓNA 20 — nejpřísnější kategorie 1D, širší pokrytí než ATEX zóny 21/22 u ' +
+      'elektronických PNP/NPN senzorů SMT-8M-A-ZS-24V-E-5,0-OE-EX2/SRBE-CA3-... v této knihovně). ' +
+      'Efektivní vnitřní kapacita Ci≤45 nF (plynová verze)/45 µF (prachová verze), induktance ' +
+      'Li≤50 µH (při délce kabelu 10 m). Korekční faktory dle materiálu cíle: rAl=0,4, rCu=0,3, ' +
+      'r304/nerez=0,85. Zajištěná spínací vzdálenost 0–3,24 mm. Spínací kmitočet 0–1500 Hz. ' +
+      'Hystereze 3 %. Rozšířený teplotní rozsah -25 až +100 °C (nejširší mezi NBB/NBN/NEN/NJ ' +
+      'senzory v této knihovně). Funkční bezpečnostní parametry: MTTFd 11774 let (extrémně ' +
+      'vysoké díky jednoduchosti obvodu bez aktivní elektroniky), doba mise 20 let, diagnostické ' +
+      'pokrytí 0 %. Krytí IP67. Zařazeno do kategorie "Modul" jako kompletní osazený produkt s ' +
+      'vlastním kabelem, stejně jako ostatní indukční senzory v této knihovně. Shoda EN/IEC ' +
+      '60947-5-2 a 60947-5-6 (NAMUR), UL/CSA/CCC certifikace.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,namur,jiskrově-bezpečný,pepperl-fuchs,nj4,atex,zóna-20,nerez,ip67',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
