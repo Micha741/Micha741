@@ -1706,6 +1706,42 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,senzor,proud,hallův-jev,proudový-senzor,galvanické-oddělení,allegro,acs755,izolovaný,chopper,jednosměrný,automotive',
   },
   {
+    name: 'CSXX05B series',
+    packageType:
+      'THT SIP pouzdro 15×15×20 mm, plast PBT, 6 vývodů (piny fosforová bronz s cínovým ' +
+      'povlakem, rozteč 2,54 mm): 1=+5V, 2=NC, 3=výstup (V), 4=0V/GND, 5=+vstup (A, primární ' +
+      'proud), 6=-vstup (A) — primární vodič integrován v pouzdře jako průchozí otvory Ø0,6–1,7 ' +
+      'mm dle proudového rozsahu, hmotnost 8 g',
+    value:
+      'Hallův (open loop) izolovaný senzor proudu, obousměrný (bipolární), detekuje směr proudu, ' +
+      'jeden kanál, napájení 5 V, analogový napěťový výstup — dostupný v rozsazích ±3/±5/±10/ ' +
+      '±15/±20 A dle modelu',
+    notes:
+      'CUI Inc "CSXX05B Series — Current Sensor" (dok. rev. 1.0, 9. 3. 2019) — ⚠️ další rodina ' +
+      'Hallových izolovaných proudových senzorů v této knihovně vedle Allegro ACS752/ACS754/ ' +
+      'ACS755 (samostatné záznamy), ale zásadně odlišné konstrukční řešení: CSXX05B je typu ' +
+      '"open loop" s malým THT pouzdrem SIP a primárním vodičem vedeným přímo skrz otvory v ' +
+      'pouzdře (bez integrovaného měděného vodivého můstku jako u Allegro ACS75x) — kompaktnější, ' +
+      'ale bez vestavěného výstupního zesilovače/filtru na takové úrovni integrace jako ACS75x ' +
+      '(žádný interní trim regulátor zisku/offsetu zmíněný v datasheetu). Datasheet pokrývá celou ' +
+      'modelovou řadu lišící se jmenovitým proudovým rozsahem (a průměrem otvoru pro primární ' +
+      'vodič): CS0305B (±3A, ØA 0,6mm/ØB 1,2mm), CS0505B (±5A, 0,9/1,5mm), CS1005B (±10A, 1,1/ ' +
+      '1,7mm), CS1505B (±15A, 1,4/2,0mm), CS2005B (±20A, 1,7/2,3mm) — do knihovny přidán jako ' +
+      'jeden souhrnný záznam pro celou "CSXX05B" řadu, konkrétní proudový rozsah se volí dle ' +
+      'požadované aplikace. Výstupní napětí: 4,50 V typ. @+If (plný jmenovitý proud v kladném ' +
+      'směru), 0,50 V typ. @-If (plný proud v záporném směru), klidové (nulový proud) napětí ' +
+      '2,50 V typ. (po demagnetizaci). Linearita výstupu ±0,5 %. Doba odezvy typ. 7 µs. ' +
+      'Teplotní koeficient výstupního napětí ±0,1 %/°C, ofsetu ±1,5 mV/°C. Hystereze 8 mV ' +
+      '(@+If→0A). Max. primární přetížení proudu 10×If po dobu max 50 ms (bez poškození). ' +
+      'Napájecí napětí 5,00 V (4,75–5,25 V), odběr max 25 mA. Izolační pevnost (výdrž) 2000 VAC/ ' +
+      '1 minuta mezi cívkou a každým vývodem, izolační odpor min 500 MΩ @500VDC. Provozní ' +
+      'teplota -10 až +75 °C (derating křivka — plný jmenovitý proud jen do +45°C, nad touto ' +
+      'teplotou klesá lineárně na cca 60 % @75°C), skladovací -30 až +90 °C. Bezpečnostní ' +
+      'certifikace UL 508, hořlavost UL94V-0. Doporučen externí blokovací kondenzátor 1 µF mezi ' +
+      'piny 4 (GND) a 1 (+5V) pro potlačení šumu.',
+    tags: 'io,senzor,proud,hallův-jev,proudový-senzor,galvanické-oddělení,cui,csxx05b,open-loop,izolovaný,sip',
+  },
+  {
     name: 'HOA0709-011',
     packageType:
       'THT černé termoplastické (polykarbonátové) pouzdro s vestavěnou optikou, IRED a detektor ' +
