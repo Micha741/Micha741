@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    556 běžných součástek: 106 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    559 běžných součástek: 106 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; a laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220),
@@ -38,7 +38,7 @@ i návrh schémat obvodů a plošných spojů.
     LaserTechnik QL85H6S-A/B/C, QL78I6S-A/B/C, QL78F6S-A/B/C, QL78J6S-A/B/C a QL85J6S-A/B/C-L),
     74 tranzistorů (bipolární NPN/PNP, Darlington, duální, komplementární páry, výkonové, VF,
     MOSFET, JFET, IR fototranzistory Lite-On LTR-306 a LTR-1650D, fototranzistor pro viditelné
-    světlo (náhrada CdS) Kodenshi PT23GP11), 105 integrovaných obvodů
+    světlo (náhrada CdS) Kodenshi PT23GP11), 108 integrovaných obvodů
     (časovače, komparátory, op-zesilovače, regulátory, logická hradla, čítače,
     Wi-Fi mikrokontroléry ESP32, ESP32-C3, ESP8285, ESP8684, Wi-Fi adaptér ESP8089, 8bit AVR
     mikrokontroléry ATmega640/1280/1281/2560/2561, rodina CAN mikrokontrolérů AT90CAN32/64/128
@@ -51,7 +51,9 @@ i návrh schémat obvodů a plošných spojů.
     Maxim MAX25220/MAX25221/MAX25221B/MAX25520, LCD-TV napájecí obvody Intersil/Renesas
     ISL97652 a ISL78010, TFT-LCD napájecí obvody E-CMOS EC9223 a Torex XC9516, senzory
     vlhkosti/teploty HOPERF TH10, PIR pohybové senzory Murata IRA-S410ST03, IRA-S230ST01 a
-    kvadrátní IRA-S510ST01, piezoelektrické rázové/vibrační senzory Murata PKGS-00LDP1-R,
+    kvadrátní IRA-S510ST01, plynový (SnO2) senzor ozónu Hanwei MQ-131, I2C senzory LITE-ON
+    LTR-706PS-01 (proximity s VCSEL emitorem) a LTR-329ALS-01 (okolní osvětlení, duální kanál),
+    piezoelektrické rázové/vibrační senzory Murata PKGS-00LDP1-R,
     PKGS-25WXP1-R a automotive TPMS PKGS-45TAV-R, zesilovací IC pro rázový senzor ROHM
     BD3852MUZ-Z, 6osý MEMS akcelerometr/gyroskop STMicroelectronics LSM330DL, jednoosý
     analogový křemenný automotive gyroskop Epson Toyocom XV-8000CB, a galvanicky oddělené

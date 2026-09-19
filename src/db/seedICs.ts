@@ -2299,6 +2299,98 @@ const IC_SPECS: IcSpec[] = [
       '"-G" verze). RoHS/Pb-free.',
     tags: 'io,napájecí-obvod,tft-lcd,boost,nábojová-pumpa,xc9516,torex,qfn',
   },
+  {
+    name: 'LTR-706PS-01',
+    packageType:
+      'Ultra-malé ChipLed L pouzdro (SMD), 8 vývodů, rozměry cca 2,36×3,94×1,35 mm (bez čoček), ' +
+      'výška profilu 2,10 mm, integrovaný VCSEL emitor + fotodioda detektor, olovnaté-free',
+    value:
+      'I2C proximity senzor (PS) s vestavěným VCSEL emitorem, napájení 2,7–3,6 V, I2C rozhraní ' +
+      '(Fast Mode 400 kbit/s), 11bitové rozlišení, detekční vzdálenost ~100 mm (18% šedá karta)',
+    notes:
+      'LITE-ON Optoelectronics "LTR-706PS-01 — Optical Sensor Product Data Sheet" (Spec. č. ' +
+      'DS86-2017-0014, účinnost 30.6.2017) — integrovaný nízkonapěťový I2C proximity senzor s ' +
+      'vestavěným emitorem (VCSEL 850 nm) i detektorem (PS dioda) v jednom miniaturním SMD ' +
+      'pouzdře — zařazeno do kategorie "IO" jako bare package s digitálním I2C rozhraním (bez ' +
+      'vlastní PCB/konektoru), podobně jako OSRAM SFH7050/SFH7051/SFH7060 (PPG optické senzory) ' +
+      'a Honeywell HOA0709-011 (reflexní senzor) v této knihovně — narozdíl od těch je LTR-706PS-01 ' +
+      'čistě proximity (vzdálenostní) senzor bez funkce měření okolního osvětlení (ALS), s ' +
+      'digitálním I2C výstupem (ne analogovým). VCSEL budič integrován na čipu s programovatelným ' +
+      'nastavením budicího proudu (2–14 mA) a počtem pulzů (1–64), pulzní frekvence VCSEL 125 kHz, ' +
+      'duty cycle 25 %. Funkce 2úrovňové detekce poruchy VCSEL (fault detection) — chrání proti ' +
+      'neúmyslnému spuštění VCSEL proudu nebo zkratovému přepětí, s digitálním výstupem En-b pro ' +
+      'řízení externího PMOS spínače VCSEL napájení (doporučeno NTA4151PT1G nebo ekvivalent). ' +
+      'Přerušovací výstup INT (open-drain) eliminuje nutnost pollingu. Vysoké potlačení okolního ' +
+      'světla až 50 klux (přímé sluneční záření). Vlastní teplotní kompenzační obvod a tovární ' +
+      'jednorázové trimování pro minimalizaci rozptylu mezi kusy. Piny: 1-SDA, 2-INT, 3-NC, ' +
+      '4-En-b (řízení externího PMOS), 5-LEDA (anoda VCSEL), 6-GND, 7-SCL, 8-VDD. Absolutní max.: ' +
+      'VDD 3,8 V, VCSEL proud 15 mA, ESD (HBM) 2000 V (200 V na LEDA pinu kvůli VCSEL). Provozní ' +
+      'teplota -30 až +70 °C. Aplikace: detekce přiblížení objektu, touch panel control v mobilních/' +
+      'přenosných zařízeních. RoHS a bez halogenu.',
+    tags: 'io,senzor,proximity,i2c,vcsel,liteon,ltr-706ps-01,optický,chipled',
+  },
+  {
+    name: 'LTR-329ALS-01',
+    packageType:
+      'Ultra-malé ChipLED pouzdro (SMD), 4 vývody, rozměry 2,00×2,00×1,00 mm (bez čoček), plocha ' +
+      'detektoru 0,32×0,29 mm², olovnaté-free',
+    value:
+      'I2C digitální senzor okolního osvětlení (ALS), duální kanál (viditelné+IR / pouze IR), ' +
+      'napájení 2,4–3,6 V, rozsah 0,01–64 klux, 16bitové rozlišení, 6 nastavitelných zesílení ' +
+      '(1×/2×/4×/8×/48×/96×)',
+    notes:
+      'LITE-ON Optoelectronics "LTR-329ALS-01 — Optical Sensor Product Data Sheet" (Spec. č. ' +
+      'DS86-2014-0006, rev. B, účinnost 9.4.2014) — digitální senzor okolního osvětlení (ambient ' +
+      'light sensor), přímý párový/rodinný protějšek k proximity senzoru LTR-706PS-01 v této ' +
+      'knihovně (stejná řada LTR-3xx/7xx od LITE-ON, podobná I2C architektura a ChipLED pouzdro), ' +
+      'ale zcela odlišná funkce — ⚠️ LTR-329ALS-01 NEMÁ vlastní emitor (žádný VCSEL/LED), pouze ' +
+      'DVA fotodetektory (Ch0 = viditelné+IR spektrum, Ch1 = pouze IR spektrum), zatímco ' +
+      'LTR-706PS-01 je aktivní proximity senzor s vestavěným VCSEL emitorem i detektorem — jde ' +
+      'tedy o měření okolního osvětlení (pasivní), ne o detekci přiblížení objektu (aktivní). ' +
+      'Zařazeno do kategorie "IO" jako bare package s I2C rozhraním, podobně jako LTR-706PS-01. ' +
+      'Spektrální odezva blízká lidskému oku (Ch0, špička ~460 nm) + separátní IR kanál (Ch1, ' +
+      'špička ~800 nm) umožňují výpočtem poměru Ch1/(Ch0+Ch1) kompenzovat různé typy světelných ' +
+      'zdrojů (denní světlo/žárovka/LED) při převodu ADC počtu na lux. Automatické potlačení ' +
+      'blikání zářivkového osvětlení 50/60 Hz, odolnost vůči IR/UV zdrojům světla. Piny: 1-VDD, ' +
+      '2-GND, 3-SDA (I2C data, open-drain), 4-SCL (I2C hodiny, open-drain vstup). Plný rozsah ADC ' +
+      '0–65535 count, temný proud (dark count) max 6 count na obou kanálech. Absolutní max.: VDD ' +
+      '3,8 V, skladovací teplota -40 až +100 °C. Provozní teplota -30 až +70 °C, I2C Fast Mode ' +
+      '400 kbit/s. Aplikace: automatické řízení jasu podsvícení displeje (mobilní telefony, ' +
+      'notebooky, monitory, TV, navigace, digitální fotorámečky, palubní desky). RoHS a bez ' +
+      'halogenu.',
+    tags: 'io,senzor,als,okolní-osvětlení,i2c,liteon,ltr-329als-01,optický,chipled',
+  },
+  {
+    name: 'MQ-131',
+    packageType:
+      'Kovové TO-like pouzdro s antiexplozní síťkou (nerezová ocel SUS316, 100mesh), pryskyřičná ' +
+      '(bakelitová) základna, 6 pinů (4 signálové + 2 topné), Ø16,8×9,2 mm',
+    value:
+      'Polovodičový (SnO2) plynový senzor ozónu (O3), odporový typ, detekční rozsah 10 ppb–2 ppm ' +
+      'O3, napájení senzoru Vc 5 V AC/DC, topné napětí Vh 6 V AC/DC, topný odpor 31 Ω, spotřeba ' +
+      'topení < 1100 mW',
+    notes:
+      'Hanwei Electronics "MQ-131 Gas Sensor — Technical Data" — ⚠️ NOVÁ TŘÍDA senzoru v této ' +
+      'knihovně: první polovodičový (metal-oxidový) plynový senzor, dosud žádný podobný typ ' +
+      'nebyl katalogizován. Princip: aktivní vrstva SnO2 (oxid cíničitý) na mikro trubičkové ' +
+      'keramice Al2O3, se zlatými elektrodami (Au), platinovou elektrodovou linkou (Pt) a topnou ' +
+      'cívkou z Ni-Cr slitiny — mění svůj elektrický odpor (Rs) v přítomnosti plynu O3, princip je ' +
+      'čistě chemicko-odporový (heated metal-oxide gas sensor), NE optický/kapacitní/indukční jako ' +
+      'ostatní senzory v knihovně. Vyžaduje neustálé předehřátí (>24 h před prvním použitím) a ' +
+      'externí zátěžový rezistor RL (doporučeno ~100 kΩ, rozsah 50–200 kΩ) pro převod odporové ' +
+      'změny na měřitelné napětí — bez vlastní elektroniky pro digitalizaci/kompenzaci (na rozdíl ' +
+      'od IO senzorů s integrovaným ADC/I2C jako LTR-329ALS-01/LTR-706PS-01), proto zařazeno do ' +
+      'kategorie "IO" jako bare senzorový element vyžadující externí měřicí obvod (doporučené ' +
+      'zapojení s LM7806 regulátorem, LM324 komparátory a NPN tranzistorem pro buzení relé/bzučáku ' +
+      'je v datasheetu uvedeno jako referenční aplikační obvod). Citlivostní odezva Rs/Ro klesá s ' +
+      'rostoucí koncentrací O3 (typický sklon 0,65 dekády mezi 50 a 100 ppb), senzor reaguje také ' +
+      '(křížová citlivost) na NOx a Cl2, i když s nižší citlivostí než na O3 — nutná selektivní ' +
+      'kalibrace pro cílovou aplikaci. Provozní teplota -10 až +50 °C, skladovací -20 až +70 °C, ' +
+      'relativní vlhkost < 95 % RH. 2 kruhové otvory v horní/dolní straně pouzdra umožňují lepší ' +
+      'výměnu plynu s okolím (rychlejší odezva/zotavení, zejména s ventilátorem). Aplikace: ' +
+      'monitorování kvality vzduchu v budovách/kancelářích (detekce ozónu).',
+    tags: 'io,senzor,plyn,ozón,o3,sno2,polovodičový,hanwei,mq-131,gas-sensor',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
