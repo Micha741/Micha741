@@ -1770,6 +1770,36 @@ const MODULE_SPECS: ModuleSpec[] = [
       'uvedené přímo výrobcem). Provozní teplota -25 až +70 °C. Krytí IP67. UL/CSA certifikace.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,ventilová-jednotka,pneumatický-pohon,solenoid,pepperl-fuchs,nbn3,f31,dvoukanálový,ip67,průmyslový',
   },
+  {
+    name: 'NEN6-8GM40-E2-PUR',
+    packageType:
+      'Válcové závitové pouzdro M8×1 (threaded barrel), mosaz s niklovým povlakem, délka 40 mm, ' +
+      'hmotnost 33 g, aktivní čelo LCP (Ø6,4 mm), indikační žlutá LED, integrální kabel PUR 2 m ' +
+      '(Ø3,3 mm, 3 žíly 0,14 mm²: BN=L+, BK=výstup, BU=L-), v balení 2 šestihranné matice',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, NEZÁPUSTNÝ ("non-flush") typ montáže, ' +
+      'spínací vzdálenost 6 mm, rozšířený teplotní rozsah -40 až +85 °C, 3vodičové DC zapojení, ' +
+      'PNP výstup, spínací (NO) kontakt, 5–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NEN6-8GM40-E2-PUR" (304615-0186_eng.xml, vydáno 5. 8. ' +
+      '2019) — ⚠️ POZOR: jiná produktová řada "NEN" (ne "NBB" ani "NBN") v této knihovně — ' +
+      'písmeno "E" v "NEN" signalizuje NEZÁPUSTNÝ ("non-flush") typ montáže, na rozdíl od ' +
+      '"flush" (zápustných) senzorů řady NBB v této knihovně (např. NBB2-8GM25-E0-V3/E2-V3, ' +
+      'stejné M8 pouzdro) — nezápustná montáž vyžaduje volný prostor kolem senzoru bez okolního ' +
+      'kovu (senzor nesmí být zapuštěn do kovové desky), ale výměnou získává VYŠŠÍ spínací ' +
+      'vzdálenost pro daný průměr závitu (zde 6 mm u M8×1, oproti max 2 mm u zápustných NBB2-8GM ' +
+      'senzorů stejného závitu v této knihovně — cca 3× větší dosah). Referenční akční prvek: ' +
+      'měkká ocel, 18×18×1 mm (větší než 8×8×1mm u zápustné NBB2-8GM skupiny, odpovídá širšímu ' +
+      'elektromagnetickému poli nezápustné konstrukce). Korekční faktory dle materiálu cíle: ' +
+      'rAl=0,5, rCu=0,45, r304/nerez=0,75, rBrass/mosaz=0,55. Zajištěná spínací vzdálenost ' +
+      '0–4,86 mm. Spínací kmitočet až 1500 Hz. Hystereze typ. 5 %. Ochrana proti přepólování a ' +
+      'pulzní zkratová ochrana. Úbytek napětí max 1,5 V. Provozní proud 0–100 mA, klidový proud ' +
+      'max 10 mA, zbytkový proud max 0,2 mA. Zpoždění dostupnosti po zapnutí max 100 ms. Funkční ' +
+      'bezpečnostní parametry: MTTFd 960 let, doba mise 20 let, diagnostické pokrytí 0 %. Krytí ' +
+      'IP67. Rozšířený provozní rozsah -25 až +85 °C (skladovací -40 až +85 °C). UL certifikace ' +
+      '(Class 2 Power Source). Dostupné příslušenství: montážní příruba BF 8.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nen6,pnp,nezápustný,non-flush,m8,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
