@@ -327,12 +327,39 @@ const IC_SPECS: IcSpec[] = [
   },
   {
     name: 'LM317',
-    packageType: 'TO-220 — vývody: 1=ADJ, 2=výstup (OUT), 3=vstup (IN)',
-    value: 'Nastavitelný lineární regulátor +1,25 až +37 V / 1,5 A',
+    packageType:
+      'TO-220 (T suffix, case 221AB/221A) — vývody: 1=ADJ, 2=výstup (Vout), 3=vstup (Vin), ' +
+      'chladicí ploška spojena s pinem 2 (Vout); dostupné i v D²PAK-3 (D2T suffix, case 936, ' +
+      'stejný pinout a stejně spojená chladicí ploška)',
+    value:
+      'Nastavitelný kladný lineární regulátor, výstup 1,2 až 37 V, výstupní proud přes 1,5 A, ' +
+      'Vref 1,25 V typ.',
     notes:
-      'Nastavitelný kladný regulátor — výstupní napětí se nastavuje odporovým děličem mezi OUT a ADJ ' +
-      '(Vout = 1,25 V × (1 + R2/R1)).',
-    tags: 'io,regulátor,lm317,napájení,nastavitelný',
+      'onsemi "LM317, NCV317 — Voltage Regulator, Adjustable Output, Positive, 1.5 A" (dok. ' +
+      'LM317/D, rev. 18, 2026) — nastavitelný kladný regulátor, výstupní napětí se nastavuje ' +
+      'odporovým děličem mezi Vout a Adjust (Vout = Vref×(1+R2/R1) + IAdj×R2, Vref=1,25V typ). ' +
+      'Interní tepelná ochrana (thermal shutdown, typ 180°C), zkratová proudová ochrana s ' +
+      'teplotní kompenzací, safe-area kompenzace výstupního tranzistoru, plovoucí (floating) ' +
+      'zapojení umožňuje provoz i při vysokých napětích vůči zemi. ⚠️ Existuje automotive verze ' +
+      'NCV317 (AEC-Q100, PPAP capable, širší teplotní rozsah TJ -55 až +150°C) se stejnými ' +
+      'elektrickými parametry. ' +
+      'Mezní hodnoty: VI-VO=-0,3 až 40 V. TJ provozní 0 až +125°C (T/D2T standard), -40 až +125°C ' +
+      '(BT/BD2T), nebo -55 až +150°C (NCV317 BT/BD2T). Tstg -65 až +150°C. PD interně omezen, ' +
+      'θJA=65°C/W, θJC=5,0°C/W (TO-220); θJA=70°C/W, θJC=5,0°C/W (D²PAK-3). ' +
+      'Vref min 1,2 V/typ 1,25 V/max 1,3 V (3,0≤VI-VO≤40V, 10mA≤IO≤Imax). Line regulation typ ' +
+      '0,01 %/V (max 0,04 %/V, 3,0≤VI-VO≤40V). Load regulation (VO≤5V) typ 5,0 mV (max 25 mV); ' +
+      '(VO≥5V) typ 0,1 %VO (max 0,5 %VO), 10mA≤IO≤Imax. Thermal regulation typ 0,03 %VO/W (max ' +
+      '0,07 %VO/W, 20ms pulz). Proud pinu Adjust typ 50 µA (max 100 µA), jeho změna ΔIAdj typ ' +
+      '0,2 µA (max 5,0 µA). Minimální zátěžový proud pro udržení regulace typ 3,5 mA (max 10 mA, ' +
+      'VI-VO=40V). Imax (T pouzdro): typ 2,2 A/min 1,5 A @VI-VO≤15V; typ 0,4 A/min 0,15 A ' +
+      '@VI-VO=40V/TA=25°C. RMS šum typ 0,003 %VO. Ripple rejection (VO=10V/f=120Hz): typ 65 dB ' +
+      'bez CAdj, typ 80 dB s CAdj=10µF. Dlouhodobá stabilita typ 0,3 %VO/1000h (max 1,0 %VO/1000h). ' +
+      'Doporučené externí součástky: Cin=0,1µF (pokud je regulátor dál od filtračního ' +
+      'kondenzátoru zdroje), Co=1,0µF (zlepšuje přechodovou odezvu, není nutný pro stabilitu), ' +
+      'R1 typicky 240Ω. Ochranné diody (1N400x) doporučeny při Vout>25V nebo Co>25µF/CAdj>10µF, ' +
+      'aby se kondenzátory nevybíjely zpět do IC při zkratu vstupu/výstupu. Pb-free, halogen/BFR ' +
+      'free, RoHS.',
+    tags: 'io,regulátor,lm317,ncv317,napájení,nastavitelný,onsemi,to-220,d2pak',
   },
   {
     name: 'LM337',
