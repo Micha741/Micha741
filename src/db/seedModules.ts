@@ -1565,6 +1565,35 @@ const MODULE_SPECS: ModuleSpec[] = [
       'rychloupínací konzole EXG-12.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb4,pnp,atex,ex,výbušné-prostředí,m12,ip67,průmyslový',
   },
+  {
+    name: 'NBB10-30GM50-E0',
+    packageType:
+      'Válcové závitové pouzdro M30×1,5 (threaded barrel — největší v rodině NBB v této ' +
+      'knihovně), mosaz s niklovým povlakem, délka 50 mm, aktivní čelo PBT, indikační ' +
+      'kruhová/všesměrová ("all direction") žlutá LED, integrální kabel PVC 2 m (0,34 mm², ' +
+      '3 žíly: BN=L+, BK=výstup, BU=L-)',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, spínací vzdálenost 10 mm (zápustná montáž — ' +
+      'nejvyšší v rodině NBB v této knihovně), 3vodičové DC zapojení, NPN výstup, spínací (NO) ' +
+      'kontakt, 10–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBB10-30GM50-E0" (083998_eng.xml, vydáno 5.–7. 2. 2018) — ' +
+      'NEJVĚTŠÍ a NEJDÁLEDOSAHOVĚJŠÍ senzor v rámci rodiny Pepperl+Fuchs NBB v této knihovně ' +
+      '(závit M30×1,5, oproti M4/M8/M12/M18 u ostatních sourozenců NBB1/NBB2/NBB4/NBB5/NBB8, ' +
+      'samostatné záznamy) se jmenovitou spínací vzdáleností 10 mm (vs max 8 mm u NBB8-18GM50-E2) ' +
+      '— "Basic series" (standardní provedení bez rozšířeného teplotního rozsahu, ATEX certifikace ' +
+      'nebo automotive homologace, na rozdíl od specializovaných variant NBB4-12GM35-A2-V1-M1 a ' +
+      'NBB4-12GM50-E2-3G-3D). Korekční faktory dle materiálu cíle: rAl=0,3, rCu=0,3 (shodné, na ' +
+      'rozdíl od menších senzorů kde bývá rCu obvykle nižší než rAl), r304/nerez=0,8. Zajištěná ' +
+      'spínací vzdálenost 0–8,1 mm. Spínací kmitočet jen 0–200 Hz (nejnižší v rodině — typický ' +
+      'kompromis za větší dosah u velkých indukčních senzorů, delší doba náběhu magnetického ' +
+      'pole ve větší cívce). Hystereze typ. 5 %. Úbytek napětí max 3 V. Provozní proud 0–200 mA, ' +
+      'klidový proud max 20 mA, zbytkový proud max 10 µA (velmi nízký). Funkční bezpečnostní ' +
+      'parametry: MTTFd 1374 let, doba mise 20 let, diagnostické pokrytí 0 %. Krytí IP67. ' +
+      'Provozní teplota -25 až +70 °C. Shoda EN/IEC 60947-5-2, UL/CSA certifikace. Dostupné ' +
+      'příslušenství: montážní příruba BF 30, rychloupínací konzole EXG-30.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb10,npn,m30,velký-dosah,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
