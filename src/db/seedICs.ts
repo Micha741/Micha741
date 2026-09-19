@@ -77,6 +77,89 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,operační-zesilovač,lm741,ua741',
   },
 
+  // Video obvody
+  {
+    name: 'ISL59837',
+    packageType: '16 Ld QSOP (MDP0040)',
+    value:
+      'Trojitý (RGB/YPbPr) single-supply video buffer/driver s integrovanou nábojovou pumpou, ' +
+      'fixní zisk 2×, 200 MHz (-3dB), napájení +3,0 až +3,6 V',
+    notes:
+      'Renesas/Intersil "ISL59837 — 200MHz Single Supply Video Driver with Charge Pump and Power ' +
+      'Down" (FN6335 rev. 1.00, 5.3.2007). Revoluční vlastnost: umožňuje skutečně jednonapájecí ' +
+      'provoz video zesilovačů, které potřebují výstup pod úrovní GND (typicky pro NTSC video se ' +
+      'synchronizačními impulzy jdoucími do záporu), aniž by byl potřeba záporný zdroj — interní ' +
+      'nábojová pumpa (charge pump) generuje zápornou napájecí větev VEE až -1,6 V pod GND (rozsah ' +
+      '4,9 V při jediném napájení 3,3 V). DC-přesná vazba na 75Ω zdvojeně zakončené lince, bez ' +
+      'výstupního blokovacího kondenzátoru. Tři jednotky s pevným ziskem 2× (6dB), integrovaný ' +
+      'gain-setting odpor (netřeba externí rezistory). Napěťová reference (pin REF) posouvá úroveň ' +
+      'video signálu na výstupu o zadanou hodnotu (Vout = 2×Vin - Vref). ' +
+      'Šířka pásma: 200 MHz (-3dB, Vout=200mVpp), 100 MHz (-3dB, Vout=2Vpp), 0,1dB pásmo 50 MHz. ' +
+      'Slew rate min 500 V/µs. Diferenciální zisk 0,07 %, diferenciální fáze 0,06°. Zkřížený ' +
+      'přeslech (hostile crosstalk) -90 dB @6MHz, vstup-výstup izolace -70 dB @6MHz. Kmitočet ' +
+      'nábojové pumpy typ. 168 MHz. Výstupní proud +80/-40 mA typ (do 10Ω zátěže). Zesílení výkonu ' +
+      'chybí (gain error) max 1,5 %, zesílení mezi kanály (matching) max 0,5 %. Napájecí proud typ. ' +
+      '97 mA (zapnuto), 60 mA (jen zesilovače vypnuty přes EN), 0,1 mA typ (power-down přes PD — ' +
+      'vypne i nábojovou pumpu). Funkce Power-Down (PD, pin 10) vypíná zesilovače i nábojovou ' +
+      'pumpu (vyšší úspora), Enable (EN, pin 12, aktivní v L) vypíná jen zesilovače. Turn-off ' +
+      'doba cca 25 ns, turn-on cca 200 ns. Výstupy ve vysoké impedanci (500 kΩ typ) v power-down ' +
+      'stavu. Bez interní zkratové ochrany — max. výstupní proud ±40 mA trvale (elektromigrační ' +
+      'limit), krátkodobě 80 mA (sourcing)/150 mA (sinking) přes interní 10Ω výstupní odpor. ' +
+      'Absolutní max.: VCC 5 V (mezi VS a GND), Vin/Vref VCC+0,3V/VEE-0,3V, napětí mezi Vin a Vref ' +
+      '±2 V, max. trvalý výstupní proud 30 mA, provozní teplota -40 až +85 °C, Tj max 150 °C, ' +
+      'skladovací -65 až +150 °C, pájecí teplota +260 °C. ESD: HBM 2000V, MM 200V. ' +
+      'Zapojení pinů (16 Ld QSOP): 1=RIN, 2=GIN, 3=BIN, 4=REF, 5=VEE (substrát, záporné napájení ' +
+      'zesilovačů), 6=GND, 7=VEEOUT (výstup nábojové pumpy), 8=DGND (zem nábojové pumpy), ' +
+      '9=DVCC (napájení nábojové pumpy), 10=PD (power-down, aktivní H), 11,13=VCC, 12=EN ' +
+      '(enable, aktivní L), 14=BOUT, 15=GOUT, 16=ROUT. Doporučené blokování: 4,7µF tantalový + ' +
+      '0,1µF keramický na VS-/VCC pin. Pb-free verze dostupná (ISL59837IAZ, ISL59837IAZ-T7 na ' +
+      'pásce/cívce 7").',
+    tags: 'io,video,zesilovač,buffer,rgb,ypbpr,charge-pump,nábojová-pumpa,renesas,intersil,isl59837,qsop,ntsc',
+  },
+  {
+    name: 'MT9V135C12STC',
+    packageType: '48-pin CLCC (Ceramic Leadless Chip Carrier), Pb-free',
+    value:
+      '1/4" SOC VGA NTSC/PAL CMOS obrazový snímač (kompletní kamerový systém na čipu), 640×480 ' +
+      'aktivních pixelů, 30 fps (NTSC)/25 fps (PAL), kompozitní video + LVDS + CCIR 656 výstupy',
+    notes:
+      'Micron "MT9V135 — 1/4-Inch System-On-A-Chip (SOC) VGA NTSC/PAL CMOS Digital Image Sensor" ' +
+      '(dok. MT9V135_LDS, rev. B, 3/2007, Preliminary) — kompletní jednočipový kamerový systém ' +
+      '(SOC), vyžaduje jen napájení, objektiv a hodinový signál 27 MHz. Micron DigitalClarity CMOS ' +
+      'technologie (nízký šum, CCD-kvalitní obraz při výhodách CMOS — velikost, cena, spotřeba). ' +
+      'Interně: sensor core (pixelové pole 695×512, analogový řetězec, 10bit ADC) + Image Flow ' +
+      'Processor (IFP, dělí se na colorpipe a camera controller — koriguje barvy/expozici) + ' +
+      'NTSC/PAL enkodér a DAC + LVDS formatter. Tři nezávislé/současné výstupní porty: kompozitní ' +
+      'analogové video (single-ended nebo diferenciální), LVDS sériový výstup, CCIR 656 ' +
+      'prokládaný digitální výstup (paralelní 8bit). Umožňuje současný kompozitní+digitální ' +
+      'výstup pro instalaci/zaostření síťových kamer pomocí analogového monitoru. Automatické ' +
+      'funkce: auto exposure, auto white balance (AWB), auto black reference (ABR), auto flicker ' +
+      'avoidance (50/60Hz), auto color saturation, auto defekt identification/correction (2D). ' +
+      'Lens shading correction, barevná korekční matice (CCM) programovatelná uživatelem, gamma ' +
+      'korekce, ostření (aperture correction). Barevný filtr RGB Paired Bayer pattern. Elektronická ' +
+      'rolling shutter (ERS) závěrka. Konfigurace přes 2vodičové sériové rozhraní (I²C-like). ' +
+      'Klíčové parametry: optický formát 1/4" (4:3), aktivní snímací plocha 3,63×2,78mm (4,57mm ' +
+      'úhlopříčka), pixel 5,6×5,6µm, NTSC výstup 720×486, PAL výstup 720×576, max. datová rychlost ' +
+      '13,5 Mp/s (master clock 27 MHz), integrační čas 16µs-33ms (NTSC)/16µs-40ms (PAL), 10bit ' +
+      'ADC, responsivita 5 V/lux-sec @550nm, dynamický rozsah pixelu 70dB, SNRmax 39dB, spotřeba ' +
+      '320 mW @2,8V/25°C (v aktivním módu; NTSC/PAL a LVDS nelze provozovat současně), standby ' +
+      '0,56 mW. Napájení: I/O digital, core digital i analog 2,5-3,1V (2,8V nominal, všechny musí ' +
+      'být na stejném potenciálu VDD=VAA=VAAPIX kvůli proudovým ztrátám). Provozní teplota -30 až ' +
+      '+70°C (⚠️ pro širší rozsah teplot výrobce doporučuje příbuzný model MT9V125), skladovací ' +
+      '-30 až +125°C. Leakage proud v STANDBY (bez hodin) max 10µA. Video DAC: rozlišení 10 bit, ' +
+      'výstupní proud 0,6-37,9mA dle kódu, diferenciální výstupní mid-level 0,72V. ' +
+      'Zapojení pinů (48pin CLCC, klíčové): 17=EXTCLK (master clock vstup), 19=RESET_BAR (aktivní ' +
+      'L, asynchronní reset), 22=SADDR (volba I2C adresy: 1=0xBA, 0=0x90), 21=SCLK, 20=SDATA, ' +
+      '18=STANDBY, 24=HORIZ_FLIP, 25=NTSC_PAL_SELECT, 27=PEDESTAL, 26=LVDS_ENABLE (musí být H pro ' +
+      'použití LVDS), 6-13=DIN[7:0] (externí video vstup pro overlay), 14=DIN_CLK, piny ' +
+      '1-5,46-48=DOUT[7:0] (CCIR656 výstup), 42=FRAME_VALID, 41=LINE_VALID, 43=PIXCLK, ' +
+      '35/33/31=DAC_POS/DAC_NEG/DAC_REF (kompozitní video DAC), 39/38=LVDS_POS/LVDS_NEG, ' +
+      '29=AGND, 15/32/37=DGND, 28=VAA, 30=VAAPIX, 16/36=VDD, 34=VDDDAC, 40=VDDPLL. Aplikace: ' +
+      'bezpečnostní/CCTV kamery, síťové (IP) kamery s aktivním/pasivním overlay, 900MHz/2,4GHz ' +
+      'bezdrátové kamery, "smart" kamery.',
+    tags: 'io,senzor,obrazový-senzor,kamera,cmos,soc,vga,ntsc,pal,lvds,ccir656,micron,mt9v135,clcc',
+  },
+
   // Komparátory
   {
     name: 'LM393',
@@ -127,6 +210,108 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,regulátor,7815,napájení',
   },
   {
+    name: 'KA78L05AZ',
+    packageType: 'TO-92, 3 vývody: 1=výstup (OUT), 2=GND, 3=vstup (IN)',
+    value: 'Pevný LDO lineární regulátor +5 V / max. 100 mA, tolerance ±5 %',
+    notes:
+      'Fairchild Semiconductor "KA78LXXA/KA78L05AA — 3-Terminal 0.1A Positive Voltage Regulator" ' +
+      '(rev. 1.0.4, 2002) — nízkoproudá TO-92 obdoba řady 7805/78xx (ta zvládá 1A, tahle jen ' +
+      '100 mA). Součást 9dílné TO-92 modelové řady (KA78L05AZ–KA78L24AZ, tolerance ±5 %), stejný ' +
+      'datasheet pokrývá i verze v pouzdrech 8-SOP (KA78L05AD/08AD/12AD) a SOT-89 ' +
+      '(KA78L05AM/08AM/12AM) se stejnými elektrickými parametry, jen jiné pouzdro/pinout, a ' +
+      'přesnější TO-92 variantu KA78L05AAZ (tolerance ±2 % místo ±5 %) — viz sourozenecké záznamy ' +
+      'KA78L06AZ–KA78L24AZ pro zbytek napěťové řady. Tepelná ochrana (thermal shutdown) a proudové ' +
+      'omezení (short-circuit protection) integrované na čipu. ' +
+      'Výstupní napětí 4,8–5,0–5,2 V (@TJ=25°C). Dropout napětí typ. 1,7 V. Klidový proud (Iq) typ. ' +
+      '2,0 mA (max 5,5 mA). Line regulation typ 8 mV (max 150 mV, 7-20V), load regulation typ ' +
+      '11 mV (max 60 mV, 1-100mA). Ripple rejection typ 80 dB (min 41 dB) @120Hz. Výstupní šumové ' +
+      'napětí typ 40 µV/Vo (10Hz-100kHz). Absolutní max.: Vin 30 V (pro Vo=5V/8V), TJ provozní ' +
+      '0 až +150 °C, skladovací -65 až +150 °C. Doporučené blokovací kondenzátory: 0,33 µF na ' +
+      'vstupu, 0,1 µF na výstupu (co nejblíže pouzdru).',
+    tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l05az,to-92,5v',
+  },
+  {
+    name: 'KA78L06AZ',
+    packageType: 'TO-92, 3 vývody: 1=výstup (OUT), 2=GND, 3=vstup (IN)',
+    value: 'Pevný LDO lineární regulátor +6 V / max. 100 mA, tolerance ±5 %',
+    notes:
+      'Součást 9dílné TO-92 řady KA78LXXA (Fairchild) — viz poznámka u KA78L05AZ pro plné společné ' +
+      'specifikace. Výstupní napětí 5,75–6,0–6,25 V. Ripple rejection typ 46 dB (min 40 dB) @120Hz ' +
+      '(nižší než ostatní hodnoty řady dle datasheetu).',
+    tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l06az,to-92,6v',
+  },
+  {
+    name: 'KA78L08AZ',
+    packageType: 'TO-92, 3 vývody: 1=výstup (OUT), 2=GND, 3=vstup (IN)',
+    value: 'Pevný LDO lineární regulátor +8 V / max. 100 mA, tolerance ±5 %',
+    notes:
+      'Součást 9dílné TO-92 řady KA78LXXA (Fairchild) — viz poznámka u KA78L05AZ pro plné společné ' +
+      'specifikace. Výstupní napětí 7,7–8,0–8,3 V. Ripple rejection typ 70 dB (min 39 dB) @120Hz. ' +
+      'Dostupná i v pouzdrech 8-SOP (KA78L08AD) a SOT-89 (KA78L08AM).',
+    tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l08az,to-92,8v',
+  },
+  {
+    name: 'KA78L09AZ',
+    packageType: 'TO-92, 3 vývody: 1=výstup (OUT), 2=GND, 3=vstup (IN)',
+    value: 'Pevný LDO lineární regulátor +9 V / max. 100 mA, tolerance ±5 %',
+    notes:
+      'Součást 9dílné TO-92 řady KA78LXXA (Fairchild) — viz poznámka u KA78L05AZ pro plné společné ' +
+      'specifikace. Výstupní napětí 8,64–9,0–9,36 V. Ripple rejection typ 44 dB (min 38 dB) @120Hz.',
+    tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l09az,to-92,9v',
+  },
+  {
+    name: 'KA78L10AZ',
+    packageType: 'TO-92, 3 vývody: 1=výstup (OUT), 2=GND, 3=vstup (IN)',
+    value: 'Pevný LDO lineární regulátor +10 V / max. 100 mA, tolerance ±5 %',
+    notes:
+      'Součást 9dílné TO-92 řady KA78LXXA (Fairchild) — viz poznámka u KA78L05AZ pro plné společné ' +
+      'specifikace. Výstupní napětí 9,6–10,0–10,4 V. Ripple rejection typ 43 dB (min 38 dB) @120Hz.',
+    tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l10az,to-92,10v',
+  },
+  {
+    name: 'KA78L12AZ',
+    packageType: 'TO-92, 3 vývody: 1=výstup (OUT), 2=GND, 3=vstup (IN)',
+    value: 'Pevný LDO lineární regulátor +12 V / max. 100 mA, tolerance ±5 %',
+    notes:
+      'Součást 9dílné TO-92 řady KA78LXXA (Fairchild) — viz poznámka u KA78L05AZ pro plné společné ' +
+      'specifikace. Výstupní napětí 11,5–12,0–12,5 V. Ripple rejection typ 65 dB (min 37 dB) ' +
+      '@120Hz. Abs. max Vin=35V (od 12V verze výše). Dostupná i v pouzdrech 8-SOP (KA78L12AD) a ' +
+      'SOT-89 (KA78L12AM).',
+    tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l12az,to-92,12v',
+  },
+  {
+    name: 'KA78L15AZ',
+    packageType: 'TO-92, 3 vývody: 1=výstup (OUT), 2=GND, 3=vstup (IN)',
+    value: 'Pevný LDO lineární regulátor +15 V / max. 100 mA, tolerance ±5 %',
+    notes:
+      'Součást 9dílné TO-92 řady KA78LXXA (Fairchild) — viz poznámka u KA78L05AZ pro plné společné ' +
+      'specifikace. Výstupní napětí 14,4–15,0–15,6 V. Ripple rejection typ 60 dB (min 34 dB) ' +
+      '@120Hz. Abs. max Vin=35V.',
+    tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l15az,to-92,15v',
+  },
+  {
+    name: 'KA78L18AZ',
+    packageType: 'TO-92, 3 vývody: 1=výstup (OUT), 2=GND, 3=vstup (IN)',
+    value: 'Pevný LDO lineární regulátor +18 V / max. 100 mA, tolerance ±5 %',
+    notes:
+      'Součást 9dílné TO-92 řady KA78LXXA (Fairchild) — viz poznámka u KA78L05AZ pro plné společné ' +
+      'specifikace. Výstupní napětí 17,3–18,0–18,7 V. Ripple rejection typ 48 dB (min 34 dB) ' +
+      '@120Hz. Abs. max Vin=35V.',
+    tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l18az,to-92,18v',
+  },
+  {
+    name: 'KA78L24AZ',
+    packageType: 'TO-92, 3 vývody: 1=výstup (OUT), 2=GND, 3=vstup (IN)',
+    value: 'Pevný LDO lineární regulátor +24 V / max. 100 mA, tolerance ±5 %',
+    notes:
+      'Součást 9dílné TO-92 řady KA78LXXA (Fairchild) — viz poznámka u KA78L05AZ pro plné společné ' +
+      'specifikace. Výstupní napětí 23–24–25 V (@TJ=25°C). Line regulation typ 160 mV (max 300 mV, ' +
+      '27-38V), load regulation typ 40 mV (max 200 mV, 1-100mA). Ripple rejection typ 45 dB (min ' +
+      '34 dB) @120Hz. Klidový proud typ 2,2 mA (max 6,0 mA). Nejvyšší napěťová varianta řady — abs. ' +
+      'max Vin=40 V (jediná v této hodnotě, ostatní verze 30 nebo 35 V).',
+    tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l24az,to-92,24v',
+  },
+  {
     name: '7905',
     packageType: 'TO-220 — vývody: 1=GND, 2=vstup (IN), 3=výstup (OUT)',
     value: 'Lineární regulátor -5 V / 1 A',
@@ -155,6 +340,212 @@ const IC_SPECS: IcSpec[] = [
     value: 'Nastavitelný lineární regulátor -1,25 až -37 V / 1,5 A',
     notes: 'Záporná obdoba LM317, pro symetrická napájení operačních zesilovačů.',
     tags: 'io,regulátor,lm337,napájení,nastavitelný',
+  },
+  {
+    name: 'L1117L',
+    packageType: 'SOT-223 (SMD), 3 vývody: 1=Adjust/GND, 2=výstup (OUT, i TAB), 3=vstup (IN)',
+    value: 'Nastavitelný LDO lineární regulátor, VREF=1,25 V, 1 A, dropout 1,2 V typ. (max 1,45 V @1 A)',
+    notes:
+      'NIKO-SEM "L1117 Series — 1A Fixed and Adjustable Low Dropout Linear Regulator (LDO)" ' +
+      '(dok. FN..., rev. 27.7.2001). Nízkoúbytkový (LDO) regulátor s referencí trimovanou na ±2 %. ' +
+      'Chráněn proti nadproudu, přehřátí, přepólování vstupu i obráceně vloženým vývodům, přepětím. ' +
+      'Součást 12dílné modelové řady lišící se pouzdrem (SOT-223/TO-220/TO-252/TO-263) a výstupním ' +
+      'napětím (nastavitelné ADJ, nebo pevné 2,5/2,85/3,3/5 V) — viz sourozenecké záznamy L1117D, ' +
+      'L1117L-2.5, L1117L-2.85, L1117L-3.3, L1117D-3.3, L1117L-5, L1117D-5, L1117T, L1117T-3.3, ' +
+      'L1117T-5, L1117S-5. Tento model (L1117L, SOT-223, ADJ) je základní/referenční záznam s ' +
+      'plnými specifikacemi společnými pro celou řadu. ' +
+      'Reference VREF 1,25 V typ. (1,23–1,27 V), nastavení výstupu Vo = Vref×(1+R2/R1) + Iadj×R2. ' +
+      'Line regulation 0,5 % typ (max 2 %), load regulation 0,5 % typ (max 2,5 %, ADJ verze; ' +
+      '0,5–2,0 % dle napětí u fixních verzí). Proud pinu Adjust 55 µA typ (max 100 µA). Proudové ' +
+      'omezení 1,2 A typ (min 1,1 A) @Vin-Vout=2V. RMS výstupní šum 0,003 % Vout. Ripple rejection ' +
+      '72 dB typ (min 60 dB) @120Hz, Cadj/Co=22µF. Minimální zátěžový proud 10 mA. ' +
+      'Absolutní max.: Vin max 15 V (⚠️ při trvalém zkratu na GND a Vin>10V nesmí rozdíl Vin-Vout ' +
+      'překročit cca 2-3V, jinak hrozí překročení ztrátového výkonu a zničení součástky), Tj ' +
+      'provozní 0 až 125 °C, skladovací -40 až 150 °C, pájecí teplota (10s) 260 °C. ' +
+      'θJC (junction-to-case) 16 °C/W shodné pro všechna pouzdra. θJA (junction-to-ambient): ' +
+      'SOT-223 158 °C/W, TO-252 70 °C/W, TO-220 50 °C/W, TO-263 60 °C/W. ' +
+      'Pinout shodný napříč pouzdry: 1=Adjust/GND (u fixních verzí = GND), 2=výstup (OUT, shodné ' +
+      's TAB pouzdra), 3=vstup (IN). Aplikace: 2,85V aktivní SCSI terminátory, 8-15V→5V regulace, ' +
+      '5V→2,5V/3,3V regulace, nízkonapěťové mikrokontroléry, nabíječky baterií, post-regulátor za ' +
+      'spínaným zdrojem. Typické zapojení vyžaduje Cin 10µF a Cout 10-22µF (elektrolytické/ ' +
+      'tantalové) pro stabilitu.',
+    tags: 'io,regulátor,ldo,nastavitelný,niko-sem,l1117,l1117l,sot-223',
+  },
+  {
+    name: 'L1117D',
+    packageType: 'TO-252/DPAK (SMD), 3 vývody: 1=Adjust/GND, 2=výstup (OUT, i TAB), 3=vstup (IN)',
+    value: 'Nastavitelný LDO lineární regulátor, VREF=1,25 V, 1 A, dropout 1,2 V typ. (max 1,45 V @1 A)',
+    notes:
+      'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — TO-252 verze nastavitelného (ADJ) ' +
+      'modelu, elektricky shodná s L1117L (SOT-223). Viz poznámka u L1117L pro plné společné ' +
+      'specifikace. θJA (TO-252) = 70 °C/W.',
+    tags: 'io,regulátor,ldo,nastavitelný,niko-sem,l1117,l1117d,to-252',
+  },
+  {
+    name: 'L1117L-2.5',
+    packageType: 'SOT-223 (SMD), 3 vývody: 1=GND, 2=výstup (OUT, i TAB), 3=vstup (IN)',
+    value: 'Pevný LDO lineární regulátor +2,5 V, 1 A, dropout 1,2 V typ. (max 1,45 V @1 A)',
+    notes:
+      'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — pevná 2,5V verze v SOT-223. Viz ' +
+      'poznámka u L1117L pro plné společné specifikace. Výstupní napětí 2,45–2,55 V (@Vin=5V, ' +
+      'Iout=10mA).',
+    tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117l-2.5,sot-223,2.5v',
+  },
+  {
+    name: 'L1117L-2.85',
+    packageType: 'SOT-223 (SMD), 3 vývody: 1=GND, 2=výstup (OUT, i TAB), 3=vstup (IN)',
+    value: 'Pevný LDO lineární regulátor +2,85 V, 1 A, dropout 1,2 V typ. (max 1,45 V @1 A)',
+    notes:
+      'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — pevná 2,85V verze v SOT-223, ' +
+      'určená mj. pro aktivní SCSI terminátory (18-27 linek). Viz poznámka u L1117L pro plné ' +
+      'společné specifikace. Výstupní napětí 2,793–2,907 V (@Vin=5V, Iout=10mA), max Vin pro tuto ' +
+      'variantu jen 8V (ne 15V jako ostatní).',
+    tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117l-2.85,sot-223,scsi',
+  },
+  {
+    name: 'L1117L-3.3',
+    packageType: 'SOT-223 (SMD), 3 vývody: 1=GND, 2=výstup (OUT, i TAB), 3=vstup (IN)',
+    value: 'Pevný LDO lineární regulátor +3,3 V, 1 A, dropout 1,2 V typ. (max 1,45 V @1 A)',
+    notes:
+      'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — pevná 3,3V verze v SOT-223, časté ' +
+      'napájení pro FPGA/mikrokontroléry z 5V. Viz poznámka u L1117L pro plné společné specifikace. ' +
+      'Výstupní napětí 3,234–3,367 V (@Vin=5V, Iout=10mA).',
+    tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117l-3.3,sot-223,3.3v',
+  },
+  {
+    name: 'L1117D-3.3',
+    packageType: 'TO-252/DPAK (SMD), 3 vývody: 1=GND, 2=výstup (OUT, i TAB), 3=vstup (IN)',
+    value: 'Pevný LDO lineární regulátor +3,3 V, 1 A, dropout 1,2 V typ. (max 1,45 V @1 A)',
+    notes:
+      'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — TO-252 verze pevné 3,3V varianty, ' +
+      'elektricky shodná s L1117L-3.3. Viz poznámka u L1117L pro plné společné specifikace. θJA ' +
+      '(TO-252) = 70 °C/W.',
+    tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117d-3.3,to-252,3.3v',
+  },
+  {
+    name: 'L1117L-5',
+    packageType: 'SOT-223 (SMD), 3 vývody: 1=GND, 2=výstup (OUT, i TAB), 3=vstup (IN)',
+    value: 'Pevný LDO lineární regulátor +5 V, 1 A, dropout 1,2 V typ. (max 1,45 V @1 A)',
+    notes:
+      'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — pevná 5V verze v SOT-223. Viz ' +
+      'poznámka u L1117L pro plné společné specifikace. Výstupní napětí 4,90–5,10 V (@Vin=8V, ' +
+      'Iout=10mA), vyžaduje Vin>6,5V.',
+    tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117l-5,sot-223,5v',
+  },
+  {
+    name: 'L1117D-5',
+    packageType: 'TO-252/DPAK (SMD), 3 vývody: 1=GND, 2=výstup (OUT, i TAB), 3=vstup (IN)',
+    value: 'Pevný LDO lineární regulátor +5 V, 1 A, dropout 1,2 V typ. (max 1,45 V @1 A)',
+    notes:
+      'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — TO-252 verze pevné 5V varianty, ' +
+      'elektricky shodná s L1117L-5. Viz poznámka u L1117L pro plné společné specifikace. θJA ' +
+      '(TO-252) = 70 °C/W.',
+    tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117d-5,to-252,5v',
+  },
+  {
+    name: 'L1117T',
+    packageType: 'TO-220, 3 vývody: 1=Adjust/GND, 2=výstup (OUT, i TAB), 3=vstup (IN)',
+    value: 'Nastavitelný LDO lineární regulátor, VREF=1,25 V, 1 A, dropout 1,2 V typ. (max 1,45 V @1 A)',
+    notes:
+      'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — TO-220 verze nastavitelného (ADJ) ' +
+      'modelu, elektricky shodná s L1117L (SOT-223). Viz poznámka u L1117L pro plné společné ' +
+      'specifikace. θJA (TO-220) = 50 °C/W (nejnižší z celé řady).',
+    tags: 'io,regulátor,ldo,nastavitelný,niko-sem,l1117,l1117t,to-220',
+  },
+  {
+    name: 'L1117T-3.3',
+    packageType: 'TO-220, 3 vývody: 1=GND, 2=výstup (OUT, i TAB), 3=vstup (IN)',
+    value: 'Pevný LDO lineární regulátor +3,3 V, 1 A, dropout 1,2 V typ. (max 1,45 V @1 A)',
+    notes:
+      'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — TO-220 verze pevné 3,3V varianty. ' +
+      'Viz poznámka u L1117L pro plné společné specifikace. θJA (TO-220) = 50 °C/W.',
+    tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117t-3.3,to-220,3.3v',
+  },
+  {
+    name: 'L1117T-5',
+    packageType: 'TO-220, 3 vývody: 1=GND, 2=výstup (OUT, i TAB), 3=vstup (IN)',
+    value: 'Pevný LDO lineární regulátor +5 V, 1 A, dropout 1,2 V typ. (max 1,45 V @1 A)',
+    notes:
+      'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — TO-220 verze pevné 5V varianty. ' +
+      'Viz poznámka u L1117L pro plné společné specifikace. θJA (TO-220) = 50 °C/W.',
+    tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117t-5,to-220,5v',
+  },
+  {
+    name: 'L1117S-5',
+    packageType: 'TO-263/D²PAK (SMD), 3 vývody: 1=GND, 2=výstup (OUT, i TAB), 3=vstup (IN)',
+    value: 'Pevný LDO lineární regulátor +5 V, 1 A, dropout 1,2 V typ. (max 1,45 V @1 A)',
+    notes:
+      'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — TO-263 (D²PAK, SMD) verze pevné 5V ' +
+      'varianty, jediná v pouzdru pro povrchovou montáž s výkonovou tabulí. Viz poznámka u L1117L ' +
+      'pro plné společné specifikace. θJA (TO-263) = 60 °C/W.',
+    tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117s-5,to-263,d2pak,5v,smd',
+  },
+
+  // Spínané napájecí řadiče
+  {
+    name: 'TPS51716',
+    packageType: '20-pin QFN (RUK), 3×3 mm, s termální podložkou (thermal pad na GND)',
+    value:
+      'Kompletní napájecí řešení pro DDR2/DDR3/DDR3L/LPDDR3 paměti: synchronní buck řadič ' +
+      '(VDDQ) + 2A sink/source sledovací LDO (VTT) + pufferovaná reference (VTTREF)',
+    notes:
+      'Texas Instruments "TPS51716 — Complete DDR2, DDR3, DDR3L, and LPDDR3 Memory Power ' +
+      'Solution" (dok. SLUSB94, říjen 2012). Integruje synchronní buck regulátor (D-CAP2™ mód, ' +
+      'bez potřeby externí kompenzace, funguje jen s keramickými výstupními kondenzátory) pro ' +
+      'VDDQ (0,7–1,8 V, konverzní napětí 3–28 V), sledovací LDO pro VTT (sleduje VDDQ/2 s ±0,8% ' +
+      'přesností, 2A špičkový zdrojový/propadový proud, stačí jen 10 µF keramický výstupní ' +
+      'kondenzátor) a pufferovaný nízkošumový výstup VTTREF (10 mA, ±0,8% přesnost). Přepínatelná ' +
+      'spínací frekvence 500 kHz nebo 670 kHz (volba rezistorem na pin MODE). Auto-skip funkce pro ' +
+      'optimalizaci účinnosti při lehké zátěži. Podporuje soft-off (postupné vybití VDDQ/VTT/ ' +
+      'VTTREF) ve stavech S4/S5, vysokou impedanci výstupů ve stavu S3. Ochrany: OCL/OCP (nastavení ' +
+      'rezistorem na pin TRIP, sense přes RDS(on) spodního FETu), negative OCL, OVP (120% typ), UVP ' +
+      '(68% typ), V5IN UVLO (4,4V typ wake-up/3,9V shutdown), tepelná ochrana (140°C typ, ' +
+      'hystereze 10°C). Powergood výstup (PGOOD, open-drain) sleduje VDDQ v rozsahu 92-108% ' +
+      '(vstup) / 84-116% (výstup z okna). ' +
+      'Absolutní max.: VBST -0,3 až 36V (33,5V doporučeno max), SW -5 až 30V, VLDOIN/VDDQSNS/REFIN/ ' +
+      'VTTSNS -0,3 až 3,6V, V5IN/S3/S5/TRIP/MODE -0,3 až 6V, TJ 125°C, Tstg -55 až +150°C. ' +
+      'Doporučené provozní podmínky: V5IN 4,5-5,5V, TA -40 až +85°C. ' +
+      'Klidová spotřeba V5IN: 590 µA (S0, no load), 500 µA (S3), 1 µA (shutdown). VLDOIN: 5 µA ' +
+      '(S0/S3), 5 µA (shutdown). ' +
+      'Zapojení pinů (20-pin QFN): 1=VTTSNS, 2=VLDOIN, 3=VTT (výstup), 4=VTTGND, 5=VTTREF (výstup), ' +
+      '6=VREF (1,8V referenční výstup), 7=GND, 8=REFIN (referenční vstup pro VDDQ, typ. dělič z ' +
+      'VREF), 9=VDDQSNS, 10=PGND, 11=DRVL (výstup budiče spodního FETu), 12=V5IN (5V napájení ' +
+      'budičů a logiky), 13=SW, 14=DRVH (výstup budiče horního FETu), 15=VBST (bootstrap), ' +
+      '16=S5, 17=S3, 18=TRIP, 19=MODE, 20=PGOOD, + termální podložka (GND, nutno propojit vícero ' +
+      'prokovy na zemní rovinu). Aplikace: napájení DDR2/DDR3/DDR3L/LPDDR3 pamětí, SSTL_18/15/135 ' +
+      'a HSTL terminace.',
+    tags: 'io,řadič,spínaný-zdroj,buck,ldo,ddr,vtt,vddq,pamětový-zdroj,texas-instruments,ti,tps51716,qfn,d-cap2',
+  },
+
+  // Napájecí/osvětlovací řadiče
+  {
+    name: 'IRS2580DSPbF',
+    packageType: '8pin SOIC',
+    value:
+      '"COMBO8" — kombinovaný PFC (boost, critical-conduction mode) + poloviční most (half-bridge) ' +
+      'řadič pro elektronické předřadníky (balastní jednotky) zářivek, VOFFSET 600 V',
+    notes:
+      'International Rectifier "IRS2580DSPbF — COMBO8 PFC + Half-Bridge Ballast IC" (produktový ' +
+      'přehled, 2011) — ⚠️ jde jen o jednostránkový produktový souhrn (product summary), ne o ' +
+      'plný datasheet s tabulkou vývodů a elektrickými parametry — pro detailní návrh (přesné meze, ' +
+      'zapojení pinů 1-8) je potřeba plný datasheet od výrobce (dnes Infineon, po akvizici IR). ' +
+      'Integruje v jednom čipu: PFC řadič (kritický vodivostní režim, boost topologie, interní ' +
+      'snímání a regulace VBUS, interní kompenzace smyčky, programovatelná nadproudová ochrana) + ' +
+      'řadič předřadníku zářivky (ballast control) + budič polovičního mostu (half-bridge driver). ' +
+      'Funkce: regulace zapalovacího napětí (proudová nebo napěťová), ochrana proti non-ZVS ' +
+      '(zero-voltage switching) polovičního mostu, nadproudová ochrana mostu přes RDS(on) spodního ' +
+      'MOSFETu, programovatelná doba/kmitočet předehřevu (preheat), programovatelná rampa zapálení ' +
+      '(ignition ramp), programovatelný běžný kmitočet (run frequency), analogový VCO vstup, ' +
+      'latchovaný EOL (end-of-life) okenní komparátor na VCC s interním EOL časovačem, pevná mrtvá ' +
+      'doba (dead-time) 1,7 µs typ., podpětová ochrana DC sběrnice s resetem, auto-restart při ' +
+      'vložení lampy, mikro-výkonový start-up proud, UVLO (under-voltage lock-out) režim. ' +
+      'Topologie: Boost (PFC) + Half-Bridge (rezonanční výstup pro lampu). VOFFSET 600 V (max. ' +
+      'napětí mezi VS a COM/GND budiče horního spínače). Výstupní budicí proud IO+ 180 mA / IO- ' +
+      '260 mA (typ.). Bezolovnaté (Pb-free) provedení. Typická aplikace: elektronický předřadník ' +
+      '(balast) zářivkových trubic — blokové schéma: EMI filtr → usměrňovač → Boost PFC → ' +
+      'rezonanční výstupní obvod (half-bridge) → lampa, s řídicím IC poskytujícím PFC control, ' +
+      'UVLO, Resonant control a zpracování Lamp Fault signálu.',
+    tags: 'io,řadič,ballast,pfc,half-bridge,předřadník,zářivka,international-rectifier,ir,irs2580,soic',
   },
 
   // Logická hradla (74HC řada, 5V CMOS)

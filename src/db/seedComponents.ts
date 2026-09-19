@@ -120,6 +120,107 @@ const DIODE_SPECS: PartSpec[] = [
   { name: '1N5399', packageType: 'DO-15', value: '1,5 A / 1000 V', notes: 'Usměrňovací dioda', tags: 'dioda,usměrňovací' },
   { name: '1N5408', packageType: 'DO-27', value: '3 A / 1000 V', notes: 'Usměrňovací dioda', tags: 'dioda,usměrňovací' },
 
+  {
+    name: 'GP1120',
+    packageType: 'DO-41, plastové pouzdro (UL 94V-0), barevný pruh = katoda',
+    value: '⚠️ 1 A / 1200 V (odvozeno, viz poznámka) — vysokonapěťová usměrňovací dioda',
+    notes:
+      'Diotec Electronics Corp. "High Voltage Diode Rectifiers" (dok. HVGP-1000-1C/2B) — mechanická ' +
+      'sekce datasheetu popisuje "SERIES GP1120 - GP1500", ale ⚠️ tabulka elektrických parametrů v ' +
+      'této revizi datasheetu explicitně uvádí jen GP1150 až GP1600 (GP1120 v tabulce chybí — ' +
+      'nekonzistence v samotném zdrojovém dokumentu, patrně z předchozí revize řady). VRM=1200 V ' +
+      'odvozeno z jednoznačného vzorce platného pro všech 8 tabulkových dílů (VRM = číslo za "GP1" ' +
+      '× 10 V: GP1150→1500V, GP1180→1800V, GP1200→2000V, ... GP1600→6000V), elektrické parametry ' +
+      '(Io, IFSM, VFM) převzaty ze skupiny GP1150-1200 (nejnižší napěťové pásmo), do které by ' +
+      'GP1120 podle napětí spadal. Pro jistotu doporučeno ověřit u výrobce/na jiném revize ' +
+      'datasheetu před nákupem/návrhem. Sourozenecké záznamy GP1150–GP1600 mají hodnoty přímo z ' +
+      'tabulky (bez ⚠️). Společné pro celou řadu: proprietární "Soft Glass" pasivace přechodu, ' +
+      'vakuové pájení čipu bez dutin (void-free), IRM max 1,0 µA @25°C při jmenovitém VDC, CJ typ ' +
+      '12 pF @1MHz/4V, TJ/Tstg -65 až +150°C. Io=1000 mA (@TA=50°C, délka vývodu 9,5mm), IFSM=35 A ' +
+      '(8,3ms půlvlna), VFM max 1,5 V (při jmenovitém proudu).',
+    tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1120,do-41',
+  },
+  {
+    name: 'GP1150',
+    packageType: 'DO-41, plastové pouzdro (UL 94V-0), barevný pruh = katoda',
+    value: '1 A / 1500 V — vysokonapěťová usměrňovací dioda',
+    notes:
+      'Diotec Electronics Corp. "High Voltage Diode Rectifiers" (dok. HVGP-1000-1C/2B) — součást ' +
+      'řady GP1120–GP1600, viz poznámka u GP1120 pro společné specifikace. VRM=1500 V, VRRM=1500 V, ' +
+      'VRMS=1050 V. Io=1000 mA (@TA=50°C), IFSM=35 A, VFM max 1,5 V.',
+    tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1150,do-41',
+  },
+  {
+    name: 'GP1180',
+    packageType: 'DO-41, plastové pouzdro (UL 94V-0), barevný pruh = katoda',
+    value: '1 A / 1800 V — vysokonapěťová usměrňovací dioda',
+    notes:
+      'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
+      'poznámka u GP1120 pro společné specifikace. VRM=1800 V, VRRM=1800 V, VRMS=1260 V. Io=1000 mA ' +
+      '(@TA=50°C), IFSM=35 A, VFM max 1,5 V.',
+    tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1180,do-41',
+  },
+  {
+    name: 'GP1200',
+    packageType: 'DO-41, plastové pouzdro (UL 94V-0), barevný pruh = katoda',
+    value: '1 A / 2000 V — vysokonapěťová usměrňovací dioda',
+    notes:
+      'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
+      'poznámka u GP1120 pro společné specifikace. VRM=2000 V, VRRM=2000 V, VRMS=1400 V. Io=1000 mA ' +
+      '(@TA=50°C), IFSM=35 A, VFM max 1,5 V.',
+    tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1200,do-41',
+  },
+  {
+    name: 'GP1250',
+    packageType: 'DO-41, plastové pouzdro (UL 94V-0), barevný pruh = katoda',
+    value: '0,5 A / 2500 V — vysokonapěťová usměrňovací dioda',
+    notes:
+      'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
+      'poznámka u GP1120 pro společné specifikace. VRM=2500 V, VRRM=2500 V, VRMS=1750 V. Io=500 mA ' +
+      '(@TA=50°C), IFSM=25 A, VFM max 3,0 V.',
+    tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1250,do-41',
+  },
+  {
+    name: 'GP1300',
+    packageType: 'DO-41, plastové pouzdro (UL 94V-0), barevný pruh = katoda',
+    value: '0,5 A / 3000 V — vysokonapěťová usměrňovací dioda',
+    notes:
+      'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
+      'poznámka u GP1120 pro společné specifikace. VRM=3000 V, VRRM=3000 V, VRMS=2100 V. Io=500 mA ' +
+      '(@TA=50°C), IFSM=25 A, VFM max 3,0 V.',
+    tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1300,do-41',
+  },
+  {
+    name: 'GP1400',
+    packageType: 'DO-41, plastové pouzdro (UL 94V-0), barevný pruh = katoda',
+    value: '0,5 A / 4000 V — vysokonapěťová usměrňovací dioda',
+    notes:
+      'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
+      'poznámka u GP1120 pro společné specifikace. VRM=4000 V, VRRM=4000 V, VRMS=2800 V. Io=500 mA ' +
+      '(@TA=50°C), IFSM=25 A, VFM max 3,0 V.',
+    tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1400,do-41',
+  },
+  {
+    name: 'GP1500',
+    packageType: 'DO-41, plastové pouzdro (UL 94V-0), barevný pruh = katoda',
+    value: '0,2 A / 5000 V — vysokonapěťová usměrňovací dioda',
+    notes:
+      'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
+      'poznámka u GP1120 pro společné specifikace. VRM=5000 V, VRRM=5000 V, VRMS=3500 V. Io=200 mA ' +
+      '(@TA=50°C), IFSM=15 A, VFM max 4,5 V.',
+    tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1500,do-41',
+  },
+  {
+    name: 'GP1600',
+    packageType: 'DO-41, plastové pouzdro (UL 94V-0), barevný pruh = katoda',
+    value: '0,2 A / 6000 V — vysokonapěťová usměrňovací dioda',
+    notes:
+      'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
+      'poznámka u GP1120 pro společné specifikace. VRM=6000 V, VRRM=6000 V, VRMS=4200 V. Io=200 mA ' +
+      '(@TA=50°C), IFSM=15 A, VFM max 6,0 V.',
+    tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1600,do-41',
+  },
+
   { name: '1N4148', packageType: 'DO-35', value: '150 mA / 100 V', notes: 'Spínací (signálová) dioda', tags: 'dioda,spínací,signálová' },
   { name: '1N914', packageType: 'DO-35', value: '100 mA / 100 V', notes: 'Spínací (signálová) dioda', tags: 'dioda,spínací,signálová' },
 
@@ -3084,6 +3185,23 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   },
 
   {
+    name: 'H5N6001P',
+    packageType:
+      'TO-3P — vývody: 1=gate, 2=drain, 3=source (chladicí ploška je spojena s drainem)',
+    value: 'N-MOSFET, VDSS 600 V, ID 20 A (@TC=25 °C), RDS(on) max 0,38 Ω (@VGS=10 V)',
+    notes:
+      'ISC (Inchange Semiconductor) "H5N6001P — N-Channel MOSFET Transistor" datasheet. Výkonový ' +
+      'vysokonapěťový spínací N-MOSFET pro DC/DC měniče, obecné průmyslové aplikace a řízení ' +
+      'výkonových motorů. Mezní hodnoty: VDSS=600 V, VGS=±30 V (trvale), ID=20 A (trvalý proud, ' +
+      '@TC=25°C), IDM=80 A (jednorázový pulz), Ptot=150 W (@TC=25°C), TJ max 150 °C, Tstg -55 až ' +
+      '+150 °C. RθJC max 0,83 °C/W. ' +
+      'BVDSS min 600 V @VGS=0/ID=10 mA. IDSS max 1 µA @VDS=600 V/VGS=0. IGSS max ±100 nA ' +
+      '@VGS=±20V/VDS=0. VGS(th) 3,0–4,0 V @VDS=VGS/ID=1 mA. RDS(on) max 0,38 Ω @VGS=10 V/ID=10 A. ' +
+      'VSD (dioda těla) max 1,4 V @IS=20 A/VGS=0.',
+    tags: 'tranzistor,mosfet,n-kanál,výkonový,to-3p,isc,inchange,h5n6001p,600v',
+  },
+
+  {
     name: 'IRF540N',
     packageType:
       'TO-220AB — vývody: 1=gate, 2=drain, 3=source (chladicí ploška je spojena s drainem)',
@@ -4530,6 +4648,69 @@ const RESISTOR_SPECS: PartSpec[] = [
       'TRA06E v této knihovně. RoHS kompatibilní verze "W" (bezolovnaté zakončení) odolná pájení ' +
       'do 260°C.',
     tags: 'rezistor,kondenzátor,rezistorová-síť,rc-network,sip,rcd-components,rc-series,kombinovaná-síť',
+  },
+  {
+    name: 'Otočný potenciometr 1 kΩ (lineární)',
+    packageType: 'THT, panelový, hřídel Ø6 mm, 3 piny',
+    value: '1 kΩ, lineární průběh (B)',
+    notes: 'Obecný jednootáčkový otočný potenciometr pro panelovou montáž.',
+    tags: 'rezistor,potenciometr,lineární,otočný',
+  },
+  {
+    name: 'Otočný potenciometr 10 kΩ (lineární)',
+    packageType: 'THT, panelový, hřídel Ø6 mm, 3 piny',
+    value: '10 kΩ, lineární průběh (B)',
+    notes: 'Obecný jednootáčkový otočný potenciometr pro panelovou montáž.',
+    tags: 'rezistor,potenciometr,lineární,otočný',
+  },
+  {
+    name: 'Otočný potenciometr 100 kΩ (lineární)',
+    packageType: 'THT, panelový, hřídel Ø6 mm, 3 piny',
+    value: '100 kΩ, lineární průběh (B)',
+    notes: 'Obecný jednootáčkový otočný potenciometr pro panelovou montáž.',
+    tags: 'rezistor,potenciometr,lineární,otočný',
+  },
+  {
+    name: 'Otočný potenciometr 10 kΩ (logaritmický, audio)',
+    packageType: 'THT, panelový, hřídel Ø6 mm, 3 piny',
+    value: '10 kΩ, logaritmický průběh (A) — audio taper',
+    notes: 'Logaritmický potenciometr pro regulaci hlasitosti/audio aplikace.',
+    tags: 'rezistor,potenciometr,logaritmický,audio,otočný',
+  },
+  {
+    name: 'Otočný potenciometr 100 kΩ (logaritmický, audio)',
+    packageType: 'THT, panelový, hřídel Ø6 mm, 3 piny',
+    value: '100 kΩ, logaritmický průběh (A) — audio taper',
+    notes: 'Logaritmický potenciometr pro regulaci hlasitosti/audio aplikace.',
+    tags: 'rezistor,potenciometr,logaritmický,audio,otočný',
+  },
+  {
+    name: 'Trimr 1 kΩ',
+    packageType: 'THT, ležatý nebo stojatý, rozteč 5 mm (typ 3296 nebo obdobný)',
+    value: '1 kΩ',
+    notes: 'Podstavný trimovací potenciometr pro nastavení na DPS.',
+    tags: 'rezistor,trimr,trimovací',
+  },
+  {
+    name: 'Trimr 10 kΩ',
+    packageType: 'THT, ležatý nebo stojatý, rozteč 5 mm (typ 3296 nebo obdobný)',
+    value: '10 kΩ',
+    notes: 'Podstavný trimovací potenciometr pro nastavení na DPS.',
+    tags: 'rezistor,trimr,trimovací',
+  },
+  {
+    name: 'Trimr 100 kΩ',
+    packageType: 'THT, ležatý nebo stojatý, rozteč 5 mm (typ 3296 nebo obdobný)',
+    value: '100 kΩ',
+    notes: 'Podstavný trimovací potenciometr pro nastavení na DPS.',
+    tags: 'rezistor,trimr,trimovací',
+  },
+  {
+    name: 'Trimr SMD 10 kΩ',
+    packageType: 'SMD, 3 piny, cca 4×4 mm (typ 3314/TC33X)',
+    value: '10 kΩ',
+    notes: 'SMD podstavný trimovací potenciometr.',
+    tags: 'rezistor,trimr,trimovací,smd',
   },
 ];
 
