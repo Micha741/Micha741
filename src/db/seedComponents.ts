@@ -3,6 +3,7 @@ import { buildIcSeed } from './seedICs';
 import { buildModuleSeed } from './seedModules';
 import { buildConnectorSeed } from './seedConnectors';
 import { buildMiscSeed } from './seedMisc';
+import { buildCoilSeed } from './seedCoils';
 
 function formatResistance(ohms: number): string {
   if (ohms >= 1_000_000) {
@@ -4553,4 +4554,5 @@ export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildModuleSeed(),
   ...buildConnectorSeed(),
   ...buildMiscSeed(),
+  ...buildCoilSeed(),
 ];
