@@ -221,6 +221,31 @@ const MISC_SPECS: MiscSpec[] = [
       'vlastní elektroniky.',
     tags: 'optika,fresnelova-čočka,hdpe,pir,murata,smd,pohybový-senzor,pasivní,discontinued',
   },
+  {
+    name: 'WXair MODUL 100-230V US/MX/J B',
+    packageType:
+      'Stolní přístrojová skříňka, rozměry 195×154×87 mm, hmotnost 1,28 kg, 2 otočné ovladače na ' +
+      'čelním panelu, síťový vypínač, výstupní hadicové/vzduchové konektory na spodní straně',
+    value:
+      '2kanálový rework modul pro pájecí stanici Weller WXsmart — integrovaná rotační lamelová ' +
+      'pumpa pro horký vzduch (kapacita 18 l/min) a vakuum (70 kPa), 100–240 V AC 50/60 Hz, 70 W',
+    notes:
+      'Weller Tools GmbH "WXair MODUL 100-230V US/MX/J B" (dok. Product Information, obj. č. ' +
+      'T0053452299) — ⚠️ POZOR: NEJDE o elektronickou součástku pro stavbu obvodů, ale o ' +
+      'DÍLENSKÉ VYBAVENÍ (pracovní nástroj/tool) — dvoukanálový přídavný modul, který rozšiřuje ' +
+      'pájecí stanici Weller WXsmart na plnohodnotnou "All-in-One" rework stanici s integrovanou ' +
+      'vysokovýkonnou rotační lamelovou vývěvou (poskytuje jak tlakový vzduch pro horkovzdušné ' +
+      'pero, tak podtlak/vakuum pro odpájecí nástroje) bez nutnosti externího zdroje stlačeného ' +
+      'vzduchu v dílně — "World\'s First Self-Contained, 2-in-1 Rework Module". Zařazeno do ' +
+      'kategorie "Ostatní" jako výjimka mimo standardní elektronické součástky v této knihovně ' +
+      '(na uživatelovo přání, i přes nesoulad s primárním zaměřením knihovny na součástky pro ' +
+      'BOM/inventář stavěných obvodů). Kompatibilní nástroje: Weller WXDP 120 (odpájecí pero pro ' +
+      'horizontální použití, 120 W), WXDV 120 (odpájecí pero pro vertikální použití, 120 W), ' +
+      'WXHAP 200 (horkovzdušné pero, 200 W). Vyměnitelné filtry prodlužují životnost pumpy. Plná ' +
+      'zpětná kompatibilita se staršími Weller WX stanicemi. Volitelná aktivace nožním spínačem. ' +
+      'Celý modul i připojené nástroje jsou plně ESD bezpečné (ESD Safe).',
+    tags: 'ostatní,dílenské-vybavení,pájecí-stanice,rework,weller,wxair,vzduchová-pumpa,vakuum,tool',
+  },
 ];
 
 export function buildMiscSeed(): ComponentInput[] {
