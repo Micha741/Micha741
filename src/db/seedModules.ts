@@ -714,6 +714,40 @@ const MODULE_SPECS: ModuleSpec[] = [
       'deska s vlastním řídicím čipem, ne jako holý senzorový element.',
     tags: 'modul,senzor,přiblížení,proximity,okolní-osvětlení,als,rohm,rpr-0521rs,i2c,eval-board,arduino',
   },
+  {
+    name: 'WTB250-2N1131',
+    packageType:
+      'Pravoúhlé plastové pouzdro (ABS) 20 × 65 × 43,9 mm, hmotnost 150 g, optika PMMA, kryt IP67, ' +
+      'montážní otvory Ø4,2 mm pro M4 šroub (na obou stranách, dodávána montážní konzole ' +
+      'BEF-W250), 4vodičový kabel 2 m (hnědý=+, modrý=-, černý=Q výstup, bílý=L/D volba režimu), ' +
+      'na čelní straně potenciometr pro nastavení dosahu (2 otáčky, poziční ukazatel 270°), ' +
+      'zelená LED (indikace stability) a žlutá LED (indikace přijatého signálu)',
+    value:
+      'Optoelektronický (fotoelektrický) snímač přiblížení s potlačením pozadí (background ' +
+      'suppression), viditelné červené světlo (BrightLight LED), dosah 100–300 mm nastavitelný, ' +
+      'NPN výstup s otevřeným kolektorem, 10–30 V DC',
+    notes:
+      'SICK AG "W250-2, Photoelectric proximity sensor, Background suppression — WTB250-2N1131" ' +
+      '(Online Data Sheet, díl. č. 6044672, staženo 15. 3. 2016) — kompletní průmyslový ' +
+      'optoelektronický senzor s vlastní elektronikou/výstupním obvodem v uzavřeném pouzdře, ' +
+      'proto zařazen do kategorie "Modul", ne "IO". Princip "background suppression" (potlačení ' +
+      'pozadí) umožňuje spolehlivě detekovat objekt v nastaveném dosahu bez ohledu na odrazivost ' +
+      'pozadí za ním (na rozdíl od jednoduchého difuzního senzoru citlivého i na jasné pozadí za ' +
+      'objektem) — viz charakteristické křivky v datasheetu pro černý/šedý/bílý objekt na bílém ' +
+      'pozadí. Světelný zdroj: viditelné červené světlo, BrightLight LED (průměrná životnost ' +
+      '100 000 h @25 °C), úhel rozptylu cca 3°, velikost světelné stopy Ø30 mm @300 mm. Dosah ' +
+      'nastavitelný potenciometrem v rozsahu 100–300 mm. Výstup NPN s otevřeným kolektorem, ' +
+      'volitelný režim spínání světlo/tma (light/dark) přes ovládací vodič (L/D), max. výstupní ' +
+      'proud 100 mA, doba odezvy max 3 ms, spínací kmitočet 160 Hz (poměr světlo/tma 1:1). ' +
+      'Napájení 10–30 V DC (zvlnění max 5 Vpp), odběr max 35 mA (bez zátěže). Ochrany: A ' +
+      '(přepólování napájení), B (přepólování vstupů/výstupu), C (odrušení), D (nadproudová/ ' +
+      'zkratová ochrana výstupů). Krytí IP67, třída ochrany III. Provozní teplota -25 až +55 °C, ' +
+      'skladovací -40 až +70 °C. UL certifikace (NRKH2.E300503 a NRKH8.E300503), shoda EN ' +
+      '60947-5-2. Existuje i varianta se šroubovacím otočným M12 konektorem místo kabelu a ' +
+      'varianta pro univerzální 24–240 V AC/DC napájení (dle popisu produktové řady) — nahraný ' +
+      'díl WTB250-2N1131 je konkrétně kabelová 10–30 V DC verze.',
+    tags: 'modul,senzor,optoelektronický,fotoelektrický,přiblížení,proximity,background-suppression,sick,wtb250,npn,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
