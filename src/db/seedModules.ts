@@ -3769,6 +3769,36 @@ const MODULE_SPECS: ModuleSpec[] = [
       'riziko poškození sluchu při nesprávné instalaci (odkaz na normu OSHA 1910.95).',
     tags: 'modul,signalizace,zvukový,houkačka,tower-light,mp3,wav,programovatelný,banner,tl70,usb',
   },
+  {
+    name: 'LED-TLM-AUD-02',
+    packageType:
+      'Válcový segment/nástavec, průměr Ø70 mm, výška 53 mm, černý ABS plast, 5pinový konektor ' +
+      '(GND, R, Y, G, B/W — piny pro propojení do modulární věže Moflash LED-TLM)',
+    value:
+      'Zvukový (audible) signalizační segment pro modulární věž Moflash LED-TLM Eco, pulzní tón ' +
+      '(60/80 pulzů/min), výstup 100 dB, 24 V DC',
+    notes:
+      'Moflash Signalling "ECO TLM Audible Modules — LED-TLM-AUD-02" (katalogový list, aktuální ' +
+      'verze) — ⚠️ jiný VÝROBCE a jiný modulární systém věžových majáků než Banner TL70 v této ' +
+      'knihovně (SG-TL70-RGB14, SG-TL70-AP) — Moflash "LED-TLM Eco Tower Light" je samostatná ' +
+      'produktová řada s vlastním mechanickým rozhraním (Ø70mm segmenty, 5pinový konektor GND/R/ ' +
+      'Y/G/B-W), nekompatibilní s Banner TL70 systémem. Funkčně podobný Banner SG-TL70-AP ' +
+      '(zvukový segment doplňující vizuální LED signalizaci téže věže), ale JEDNODUŠŠÍ princip — ' +
+      'LED-TLM-AUD-02 je klasický ELEKTROMECHANICKÝ/PIEZO BZUČÁK s pevně danou pulzní frekvencí ' +
+      '(60 nebo 80 pulzů/min, přepínatelné), NE programovatelný MP3/WAV přehrávač jako Banner ' +
+      'SG-TL70-AP — nelze nahrát vlastní zvukový soubor, pouze zvolit pulzní vs. kontinuální tón. ' +
+      'Datasheet uvádí i sesterské varianty stejné řady (nekatalogizovány samostatně, pro ' +
+      'informaci): LED-TLM-AUD-04 (AC verze 85–275V, 80 dB, IP54, nižší krytí kvůli AC provedení) ' +
+      'a vysokovýkonná verze TLM-AUD120-04 (AC, volitelný výstup 100–120 dB přepínatelný ' +
+      'posuvným přepínačem uvnitř pouzdra, IP65, výrazně větší pouzdro Ø70,5×84,2 mm s vodorovnými ' +
+      'ventilačními/akustickými drážkami místo hladkého ECO pouzdra). LED-TLM-AUD-02 (tento ' +
+      'katalogizovaný díl) je "Eco" verze určená pouze pro LOKÁLNÍ indikaci (nižší výstupní výkon ' +
+      'v porovnání s vysokovýkonnou AUD120 variantou). Nízký odběr proudu 55 mA. Provozní teplota ' +
+      '-25 až +55 °C. Krytí IP65. Zařazeno do kategorie "Modul" jako kompletní osazený produkt s ' +
+      'vlastním konektorem, stejně jako Banner TL70 signalizační segmenty v této knihovně. ' +
+      'Materiál: černý ABS plast. Certifikace: UKCA, RoHS, CE.',
+    tags: 'modul,signalizace,zvukový,houkačka,tower-light,bzučák,moflash,led-tlm,eco,ip65',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
