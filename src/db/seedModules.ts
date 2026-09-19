@@ -2492,6 +2492,35 @@ const MODULE_SPECS: ModuleSpec[] = [
       '(EU EMC + RoHS), RCM.',
     tags: 'modul,senzor,tlak,tlakový-spínač,piezorezistivní,pnp,npn,festo,span-b-b11r,displej,basic',
   },
+  {
+    name: 'SDE5-D10-C3-Q6E-P-K',
+    packageType:
+      'Kompaktní kvádrové pouzdro, materiál PA + POM, pneumatická přípojka zásuvná QS-6 (rychlo' +
+      'spojka pro hadičku Ø6 mm), integrovaný kabel, délka 2,5 m, 3 vodiče, montáž ' +
+      'příslušenstvím, hmotnost 47 g',
+    value:
+      'Jednoduchý tlakový spínač bez displeje (piezorezistivní princip), měřicí rozsah 0–10 bar, ' +
+      '1× PNP spínací výstup (okenní komparátor, N/C), 15–30 V DC',
+    notes:
+      'Festo AG & Co. KG "Pressure sensor SDE5-D10-C3-Q6E-P-K" (obj. č. 542896, datový list ' +
+      '14.5.2021) — ⚠️ JINÁ produktová řada tlakových spínačů než SPAN-B11R-M5F-PNLK-PNVBA-L1/ ' +
+      'SPAN-B-B11R-R18M-PN-L1+2.5S v této knihovně (typový kód "SDE5" místo "SPAN") — narozdíl ' +
+      'od obou SPAN variant NEMÁ ŽÁDNÝ DISPLEJ ani ovládací tlačítka (jen žlutá LED indikace ' +
+      'sepnutí), prahová hodnota se tedy nastavuje jinak (přes potenciometr/servisní vstup, v ' +
+      'datasheetu blíže nespecifikováno, jen rozsah nastavení 0–100 %) — jde o jednodušší, ' +
+      'levnější typ tlakového spínače bez interaktivního uživatelského rozhraní. Měřicí rozsah je ' +
+      'navíc jen KLADNÝ 0–10 bar (na rozdíl od SPAN variant s rozsahem -1 až 10 bar zahrnujícím i ' +
+      'podtlak). Pneumatické připojení řešeno zásuvnou rychlospojkou QS-6 pro hadičku 6 mm (na ' +
+      'rozdíl od závitového M5/R1/8 u SPAN variant) — přímé zasunutí hadičky bez nutnosti ' +
+      'šroubení. Integrovaný pevný 2,5m kabel (na rozdíl od odnímatelného zásuvného konektoru u ' +
+      'SPAN variant). Jediný spínací výstup (PNP, okenní komparátor, N/C kontakt) — bez volby ' +
+      'PNP/NPN přepínání, bez analogového výstupu, bez IO-Link. Zkratová ochrana, ochrana proti ' +
+      'přepólování na všech vývodech. Zařazeno do kategorie "Modul" jako kompletní osazený ' +
+      'produkt s vlastním kabelem, stejně jako SPAN tlakové senzory v této knihovně. Krytí IP40, ' +
+      'korozní odolnost CRC třída 2. Provozní teplota média i okolí 0 až +50 °C. Certifikace: ' +
+      'c UL us (Recognized), CE (EU EMC + RoHS), RCM.',
+    tags: 'modul,senzor,tlak,tlakový-spínač,piezorezistivní,pnp,festo,sde5,qs-konektor',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
