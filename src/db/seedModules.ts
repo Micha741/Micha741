@@ -978,6 +978,39 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Průměr aktivní plochy Ø30 mm.',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,hladina,turck,ac,m30,pvdf,ip67,průmyslový',
   },
+  {
+    name: 'BC10-Q14-VN4X2',
+    packageType:
+      'Pravoúhlé kvádrové pouzdro "Q14" (aktivní plocha nahoře), rozměry 55,5×30×14 mm, plast ' +
+      'PBT-GF30-V0, potenciometr pro jemné doladění citlivosti, zelená LED (napájení) + žlutá ' +
+      'LED (spínací stav), kabelový výstup (Ø5,2 mm, LifYY-11Y, PUR, 2 m, 4×0,34 mm²), v balení ' +
+      'přiložena montážní konzole MH-Q14',
+    value:
+      'Kapacitní (bezkontaktní) přibližovací spínač, spínací vzdálenost 10 mm (zápustná i ' +
+      'nezápustná montáž), 4vodičové DC zapojení, komplementární NPN výstup (NO+NC současně), ' +
+      '10–65 V DC',
+    notes:
+      'TURCK "Capacitive Sensor BC10-Q14-VN4X2" (Ident-No. 2530030, 2019-02-08) — ⚠️ POZOR na ' +
+      'záměnu s BC10-PT30-AZ3X v této knihovně (samostatný záznam): oba jsou kapacitní ' +
+      'přibližovací spínače stejného výrobce se stejnou jmenovitou spínací vzdáleností Sn 10 mm, ' +
+      'ale mechanicky i elektricky zcela odlišné — BC10-Q14-VN4X2 má pravoúhlé kvádrové pouzdro ' +
+      '"Q14" (55,5×30×14mm, aktivní plocha nahoře) místo válcového závitového M30, je napájen ' +
+      'stejnosměrně (10–65 V DC, 4vodičové zapojení) místo střídavě (20–250 V AC, 2vodičové), a ' +
+      'má KOMPLEMENTÁRNÍ NPN výstup — tzn. SOUČASNĚ poskytuje jak spínací (NO), tak ' +
+      'rozpínací (NC) signál na oddělených vodičích (BK a WH dle schématu zapojení), zatímco ' +
+      'BC10-PT30-AZ3X má jen jediný spínací (NO) 2vodičový AC výstup. Citlivost jemně ' +
+      'nastavitelná potenciometrem. Jmenovitá spínací vzdálenost Sn 10 mm (shodná pro zápustnou i ' +
+      'nezápustnou montáž, na rozdíl od BC10-PT30-AZ3X kde se liší 10mm/15mm), zajištěná spínací ' +
+      'vzdálenost max 0,72×Sn, hystereze 2–20 %, teplotní drift typ. 20 %, opakovatelnost max ' +
+      '2 %FS. Výstup: 4vodičové DC zapojení, komplementární kontakt NPN, max. proud 200 mA, ' +
+      'klidový proud max 15 mA, zbytkový proud max 0,1 mA, úbytek napětí max 1,8 V, spínací ' +
+      'kmitočet 0,1 kHz (5× rychlejší než BC10-PT30-AZ3X), ochrana proti zkratu (cyklická), ' +
+      'přepólování a přerušení vodiče (kompletní). Napájení 10–65 V DC, zvlnění max 10 %. ' +
+      'Izolační zkušební napětí 0,5 kV. UL certifikace. Odolnost proti vibracím 55 Hz (1 mm), ' +
+      'proti rázům 30 g (11 ms). Krytí IP67. Provozní teplota -25 až +70 °C. MTTF 1080 let dle ' +
+      'SN 29500 @40°C.',
+    tags: 'modul,senzor,kapacitní,přibližovací,proximity,turck,dc,npn,komplementární,q14,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
