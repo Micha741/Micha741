@@ -3047,6 +3047,32 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Provozní teplota -25 až +70 °C. MTTF 1080 let dle SN 29500 (Ed. 99) @40°C. UL certifikace.',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,turck,dc,npn,q20,ip67,průmyslový',
   },
+  {
+    name: 'BC20-Q20-AN4X2-H1141',
+    packageType:
+      'Pravoúhlé kvádrové pouzdro "Q20" (aktivní plocha nahoře), rozměry 68×40×20 mm, plast ' +
+      'PBT-GF30-V0, potenciometr pro jemné doladění citlivosti, integrální zásuvný konektor ' +
+      'M12×1 (4piny), zelená LED (napájení) + žlutá LED (spínací stav), v balení 2 montážní ' +
+      'objímky MH-Q20',
+    value:
+      'Kapacitní (bezkontaktní) přibližovací spínač, vyšší dosahová řada "BC20", spínací ' +
+      'vzdálenost 20 mm, DC 3vodičové zapojení, NPN výstup, spínací (NO) kontakt, 10–65 V DC',
+    notes:
+      'TURCK "BC20-Q20-AN4X2-H1141 Capacitive Sensor" (ID 2530111, dok. 11.7.2023) — elektricky ' +
+      'TOTOŽNÝ kapacitní senzor jako BC20-Q20-AN4X2/S400 (ID 2530104) v této knihovně (stejná ' +
+      'DC 3vodičová NPN NO elektronika, stejný rozsah 10–65 V DC, stejné pouzdro Q20 68×40×20 mm, ' +
+      'stejná citlivost nastavitelná potenciometrem, stejné parametry hystereze/driftu/ ' +
+      'opakovatelnosti) — ⚠️ liší se POUZE typem elektrického připojení: zatímco "/S400" varianta ' +
+      'má integrovaný 2m kabel, tato varianta "-H1141" má ODNÍMATELNÝ zásuvný konektor M12×1 — ' +
+      'shodný vztah jako mezi kabelovými a konektorovými variantami u ostatních TURCK/Pepperl' +
+      '+Fuchs senzorů v této knihovně. Max. proud 200 mA, klidový proud max 15 mA, zbytkový ' +
+      'proud max 0,1 mA, úbytek napětí max 1,8 V. Spínací kmitočet 0,1 kHz (100 Hz). Oscilační ' +
+      'kmitočet dle EN 60947-5-2 (tabulka 9) 0,1–2,0 MHz. Zkratová ochrana cyklická, ochrana ' +
+      'proti přepólování a přerušení vodiče kompletní. Izolační zkušební napětí 0,5 kV. Odolnost ' +
+      'proti vibracím 55 Hz (1 mm), proti rázům 30 g (11 ms). Krytí IP67. Provozní teplota -25 ' +
+      'až +70 °C. MTTF 1080 let dle SN 29500 (Ed. 99) @40°C. UL certifikace (registrace E210608).',
+    tags: 'modul,senzor,kapacitní,přibližovací,proximity,turck,dc,npn,q20,m12,konektor,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
