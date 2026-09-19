@@ -2987,6 +2987,38 @@ const MODULE_SPECS: ModuleSpec[] = [
       'schválení 10R-04. Dostupné příslušenství: modulární montážní konzole MHW 01.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbn40,npn,3vodičový,otočná-hlava,varikont,e1,automotive,ip68,ip69k',
   },
+  {
+    name: 'CBB4-12GH60-E0-V1',
+    packageType:
+      'Válcové závitové pouzdro M12×1 (threaded barrel), vysoce legovaná nerezová ocel 1.4404/ ' +
+      'AISI 316L, délka 59,8 mm, aktivní čelo PEEK, integrální zásuvný konektor M12×1 (4piny), ' +
+      'potenciometr pro nastavení citlivosti, indikační žlutá LED',
+    value:
+      'Kapacitní (bezkontaktní) přibližovací spínač, zapustitelný ("embeddable"), spínací ' +
+      'vzdálenost 4 mm (nastavitelná potenciometrem), 3vodičové DC zapojení, NPN výstup, ' +
+      'spínací (NO) kontakt, 10–36 V DC',
+    notes:
+      'Pepperl+Fuchs "Capacitive sensor CBB4-12GH60-E0-V1" (210622_eng.xml, vydáno 2.8.2011) — ' +
+      'první Pepperl+Fuchs KAPACITNÍ senzor v této knihovně (dosud pouze indukční řady NBB/NBN/ ' +
+      'NEN od Pepperl+Fuchs a kapacitní řady TURCK BC10/BC20 v této knihovně) — princip měření ' +
+      'kapacitní (reaguje na jakýkoliv materiál měnící dielektrickou konstantu v blízkosti čela, ' +
+      'ne jen na kov jako indukční NBB/NBN senzory) — funkčně analogický TURCK BC10/BC20 v této ' +
+      'knihovně, ale odlišný výrobce/konstrukce: menší M12 závit (oproti M18/M20 u TURCK BC10/ ' +
+      'BC20), celokovové pouzdro z NEREZI 316L (potravinářská jakost) s aktivním čelem PEEK — ' +
+      'výslovně určeno pro POTRAVINÁŘSKÉ APLIKACE ("suitable for foodstuff conditions") a ' +
+      'ODOLNOST PROTI AGRESIVNÍM MÉDIÍM (aggressive media resistant), podobně jako TURCK BC10 ' +
+      'řada v této knihovně, ale s kapacitní vzdáleností nastavitelnou přímo potenciometrem na ' +
+      'těle senzoru (stejně jako TURCK BC10/BC20). Nízký spínací kmitočet 0–50 Hz (typické pro ' +
+      'kapacitní senzory kvůli pomalejšímu ustálení kapacitního pole). Ochrana proti přepólování ' +
+      'a pulzní zkratová ochrana. Úbytek napětí max 2,5 V. Provozní proud 0–100 mA, klidový ' +
+      'proud max 12 mA. Krytí IP65 (nižší než indukční NBB řada s IP67/68/69K v této knihovně — ' +
+      'typické omezení kapacitních senzorů kvůli citlivé elektronice detekující i vlhkost). ' +
+      'Provozní teplota -25 až +70 °C. Zařazeno do kategorie "Modul" jako kompletní osazený ' +
+      'produkt s vlastním konektorem, stejně jako ostatní přibližovací spínače v této knihovně. ' +
+      'Shoda EN/IEC 60947-5-2, UL/CSA certifikace. Dostupné příslušenství: montážní příruba ' +
+      'BF 12, konektory/kabely V1-G/V1-W/V1-G-2M-PUR/V1-W-2M-PUR.',
+    tags: 'modul,senzor,kapacitní,přibližovací,proximity,pepperl-fuchs,cbb4,npn,nerez,potravinářský,m12,konektor,ip65',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
