@@ -2521,6 +2521,32 @@ const MODULE_SPECS: ModuleSpec[] = [
       'c UL us (Recognized), CE (EU EMC + RoHS), RCM.',
     tags: 'modul,senzor,tlak,tlakový-spínač,piezorezistivní,pnp,festo,sde5,qs-konektor',
   },
+  {
+    name: 'SDE5-D10-C-Q4E-P-M8',
+    packageType:
+      'Kompaktní kvádrové pouzdro, materiál PA + POM, pneumatická přípojka zásuvná QS-4 (rychlo' +
+      'spojka pro hadičku Ø4 mm), elektrický konektor M8×1 (3piny, kruhové provedení), montáž ' +
+      'příslušenstvím, hmotnost 19 g',
+    value:
+      'Jednoduchý tlakový spínač bez displeje (piezorezistivní princip), měřicí rozsah 0–10 bar, ' +
+      '1× PNP spínací výstup (prahová hodnota s pevnou hysterezí, N/C), 15–30 V DC',
+    notes:
+      'Festo AG & Co. KG "Pressure sensor SDE5-D10-C-Q4E-P-M8" (obj. č. 542889, datový list ' +
+      '14.5.2021) — elektricky/funkčně velmi podobný SDE5-D10-C3-Q6E-P-K (obj. č. 542896) v této ' +
+      'knihovně (stejná "SDE5" řada, stejný piezorezistivní princip, stejný rozsah 0–10 bar, PNP ' +
+      'N/C výstup, bez displeje, jen LED indikace) — ⚠️ liší se ve třech ohledech: (1) elektrické ' +
+      'připojení ZÁSUVNÝM KONEKTOREM M8×1 (odnímatelný, kruhové provedení) místo INTEGROVANÉHO ' +
+      '2,5m kabelu u "-C3-...-K" varianty — proto výrazně nižší hmotnost (19 g vs 47 g); (2) menší ' +
+      'pneumatická rychlospojka QS-4 pro hadičku Ø4 mm místo QS-6 pro Ø6 mm; (3) spínací funkce ' +
+      '"Threshold value with fixed hysteresis" (jednoduchý prahový komparátor s pevnou hysterezí) ' +
+      'místo "Window comparator" (okenní komparátor s nastavitelnými dvěma mezemi) u "-C3-...-K" ' +
+      'varianty — jednodušší spínací logika. Zkratová ochrana, ochrana proti přepólování na všech ' +
+      'vývodech. Zařazeno do kategorie "Modul" jako kompletní osazený produkt s vlastním ' +
+      'konektorem, stejně jako ostatní Festo SDE5/SPAN tlakové senzory v této knihovně. Krytí ' +
+      'IP40, korozní odolnost CRC třída 2. Provozní teplota média i okolí 0 až +50 °C. ' +
+      'Certifikace: c UL us (Recognized), CE (EU EMC + RoHS), RCM.',
+    tags: 'modul,senzor,tlak,tlakový-spínač,piezorezistivní,pnp,festo,sde5,qs-konektor,m8',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
