@@ -2074,6 +2074,41 @@ const MODULE_SPECS: ModuleSpec[] = [
       'bez mědi/PTFE, bez halogenu, RoHS.',
     tags: 'modul,senzor,proximity,poloha-pístu,magnetorezistivní,atex,ex,festo,smt-8m,pneumatika,výbušné-prostředí',
   },
+  {
+    name: 'SDBT-BSW-1L-PU-W-0.3-N-M12',
+    packageType:
+      'Tyčinkové pouzdro pro vsazení do T-drážky pneumatického válce shora, pouzdro epoxidová ' +
+      'pryskyřice + PA výztuž + vysoce legovaná nerezová ocel, převlečná matice niklovaná mosaz, ' +
+      'černá barva, konektor M12×1 A-kódovaný (pozlacené kontakty) na konci 0,3m kabelu ' +
+      '(šedý plášť PVC, síťovaný ozářením, odolný proti svařovacím jiskrám), 3 vodiče, ' +
+      'hmotnost 23,3 g',
+    value:
+      'Polohový snímač pístu pneumatického válce odolný proti svařovacímu poli (weld-field ' +
+      'resistant), princip magnetorezistivní, PNP spínací výstup (N/O), 10–30 V DC, max. spínací ' +
+      'kmitočet 25 Hz',
+    notes:
+      'Festo AG & Co. KG "Proximity sensor SDBT-BSW-1L-PU-W-0.3-N-M12" (obj. č. 2476855, datový ' +
+      'list 5.3.2021) — magnetorezistivní snímač polohy pístu, stejný snímací princip jako ' +
+      'Festo SMT-8M-xxx v této knihovně, ale zcela JINÁ produktová řada (typový kód "SDBT-BSW" ' +
+      'místo "SMT") specificky konstruovaná pro provoz V BLÍZKOSTI SVAŘOVACÍCH PRACOVIŠŤ ' +
+      '(analogicky ke svařovacímu provedení "Weld Immune" u indukčního snímače Pepperl+Fuchs ' +
+      'NBB20-L3M-A2-C3-V1 v této knihovně, zde ale u magnetorezistivního snímače polohy pístu) ' +
+      '— ⚠️ POZOR: má výrazně POMALEJŠÍ spínací charakteristiky než standardní SMT-8M-A-PS ' +
+      'varianty (zapínací ≤15 ms/vypínací ≤25 ms, max. 25 Hz oproti ≤1,3/1,4 ms a 180 Hz u ' +
+      'SMT-8M) — kompromis nutný kvůli odolnosti proti rušení svářecím polem: výstupní signál ' +
+      'se během svařovacího procesu "zamrzne" (zachová poslední platný stav) místo chybného ' +
+      'přepnutí. Necitlivost na magnetická pole: AC (50–60 Hz) < 200 mT, MFDC (1000 Hz) < 200 mT, ' +
+      'konstrukčně necitlivý i na permanentní magnetická pole pod prahovou hodnotou Bon. Odolnost ' +
+      'proti UV záření, oleji, svařovacím jiskrám (kabel síťovaný ozářením). Max. rychlost pohybu ' +
+      'snímaného pístu 1 m/s. Zařazeno do kategorie "Modul" jako kompletní osazený produkt s ' +
+      'vlastním kabelem/konektorem, stejně jako ostatní Festo SME-8M/SMT-8M snímače polohy pístu ' +
+      'v této knihovně. Konstrukce pro zasunutí do T-drážky válce shora, max. utahovací moment ' +
+      '0,6 Nm, libovolná montážní poloha. Dvojí LED indikace — žlutá (sepnutí) a oranžová ' +
+      '(funkční rezerva). Provozní teplota -25 až +85 °C (pevná instalace), -5 až +80 °C ' +
+      '(pohyblivá instalace kabelu). Krytí IP65/IP68. Certifikace: c UL us (Listed), CE (EU EMC), ' +
+      'KC EMC, RCM. Bez mědi/PTFE, RoHS.',
+    tags: 'modul,senzor,proximity,poloha-pístu,magnetorezistivní,svařování,weld-resistant,festo,sdbt-bsw,pneumatika,m12',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
