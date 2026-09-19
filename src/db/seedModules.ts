@@ -2037,6 +2037,43 @@ const MODULE_SPECS: ModuleSpec[] = [
       'oleji, bez mědi/PTFE, bez halogenu, RoHS.',
     tags: 'modul,senzor,proximity,poloha-pístu,magnetorezistivní,pnp,festo,smt-8m,pneumatika,m12',
   },
+  {
+    name: 'SMT-8M-A-ZS-24V-E-5,0-OE-EX2',
+    packageType:
+      'Tyčinkové pouzdro pro vsazení do T-drážky pneumatického válce shora, pouzdro PA výztuž + ' +
+      'vysoce legovaná nerezová ocel (bez mosazi), černá barva, integrovaný kabel s volným ' +
+      'koncem, délka 5 m (šedý plášť TPE-U/PUR), 2 vodiče, hmotnost 57,1 g',
+    value:
+      'ATEX certifikovaný polohový snímač pístu pneumatického válce (proximity sensor) pro ' +
+      'výbušné prostředí, princip magnetorezistivní, bezkontaktní 2vodičový výstup (N/O), ' +
+      '7–30 V DC, max. spínací kmitočet 180 Hz',
+    notes:
+      'Festo AG & Co. KG "Proximity sensor SMT-8M-A-ZS-24V-E-5,0-OE-EX2" (obj. č. 574341, ' +
+      'datový list 5.3.2021) — ATEX (Ex) varianta magnetorezistivního snímače polohy pístu z ' +
+      'řady Festo SMT-8M v této knihovně (SMT-8M-A-PS-24V-E-0,3-M8D/2,5-OE/0,3-M12) — ⚠️ oproti ' +
+      'PS variantám (typový kód "-PS-", 3vodičové PNP zapojení s N/O tranzistorovým výstupem, ' +
+      'BEZ certifikace do výbušného prostředí) má tato ZS varianta typový kód "-ZS-" a zásadně ' +
+      'odlišné elektrické zapojení: BEZKONTAKTNÍ 2VODIČOVÝ výstup (jen BN/BU, bez odděleného ' +
+      'napájecího a signálového vodiče — zátěž RL zapojena v sérii s napájecí smyčkou, typické ' +
+      'pro jiskrově bezpečné/Ex aplikace kde se minimalizuje počet průchozích vodičů), vyšší ' +
+      'napájecí rozsah (7–30 V DC oproti 5–30 V DC u PS variant kvůli úbytku napětí na zátěži), ' +
+      'úbytek napětí na snímači až 6 V (výrazně vyšší než <1,5 V u PS variant — typické pro ' +
+      '2vodičové zapojení), nižší max. výstupní proud (80 mA vs 100 mA) a rychlejší spínací časy ' +
+      '(≤1 ms/≤1 ms vs ≤1,3/1,4 ms). ATEX certifikace: kategorie II 3G pro plyny (zóna 2, typ ' +
+      'ochrany Ex nA IIC T4 X Gc) a II 3D pro prach (zóna 22, typ ochrany Ex tc IIIC T120°C X ' +
+      'Dc), provozní teplota ve výbušném prostředí -40 až +70 °C. Zařazeno do kategorie "Modul" ' +
+      'jako kompletní osazený produkt s vlastním kabelem, stejně jako ostatní Festo SME-8M/' +
+      'SMT-8M snímače polohy pístu v této knihovně — obdobně jako u indukčního snímače Pepperl' +
+      '+Fuchs NBB4-12GM50-E2-3G-3D (rovněž ATEX 3G/3D) jde o certifikovanou variantu pro použití ' +
+      'v prostředí s nebezpečím výbuchu (např. chemický/farmaceutický/potravinářský průmysl s ' +
+      'hořlavým prachem nebo plyny). Konstrukce pro zasunutí do T-drážky válce shora, max. ' +
+      'utahovací moment 0,6 Nm, libovolná montážní poloha. Kabel testován na cyklickou ohybovou ' +
+      '(5 milionů cyklů, poloměr 28 mm) i torzní odolnost (>300000 cyklů, ±270°/0,1 m). Dvojí LED ' +
+      'indikace — žlutá (sepnutí) a oranžová (funkční rezerva). Krytí IP65/IP68/IP69K. ' +
+      'Certifikace: c UL us (Listed), CE (EU EMC + ATEX + RoHS), KC EMC, RCM. Odolný proti oleji, ' +
+      'bez mědi/PTFE, bez halogenu, RoHS.',
+    tags: 'modul,senzor,proximity,poloha-pístu,magnetorezistivní,atex,ex,festo,smt-8m,pneumatika,výbušné-prostředí',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
