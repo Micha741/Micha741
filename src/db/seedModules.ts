@@ -3732,6 +3732,43 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Tower Light (182214), TL70 Wireless (185469), TL70 AC voltage (191349).',
     tags: 'modul,signalizace,majáček,tower-light,rgb,led,banner,tl70,vícebarevný,ip65',
   },
+  {
+    name: 'SG-TL70-AP',
+    packageType:
+      'Modulární segment signálního majáku (tower light), válcový, průměr 70 mm, výška 79,6 mm, ' +
+      'pouzdro/kryt polykarbonát, barva černá nebo šedá (volitelně), odnímatelný horní kryt ' +
+      '(otočný zámek) pro přístup k programovacímu USB mini konektoru, DIP přepínač SW1 pro ' +
+      'volbu vstupního kanálu (pozice 1–6, 7/8 nevyužity)',
+    value:
+      'Programovatelný zvukový (audible) segment signálního majáku, přehrává jeden nahraný MP3/ ' +
+      'WAV soubor (max. 130 s), max. intenzita 85 dB @1m při 2,5 kHz, 12–30 V DC nebo (s AC ' +
+      'základnou B-TL70-Z) 100–240 V AC',
+    notes:
+      'Banner Engineering Corp. "TL70 Programmable Audible Tower Light Module" (dok. 196627 ' +
+      'Rev. B, 14.12.2018) — ⚠️ jiná FUNKCE než SG-TL70-RGB14 (RGB světelný segment) v této ' +
+      'knihovně, i přes shodnou modulární "TL70" konstrukční řadu — SG-TL70-AP je AUDIO segment ' +
+      '(zvuková signalizace/houkačka), NE světelný — kombinuje se s RGB segmenty ve stejné ' +
+      'modulární věži pro současnou vizuální i zvukovou signalizaci. Programovatelná paměť flash ' +
+      '(pouze 1 soubor uložen najednou, opakovaně přeprogramovatelná) — vlastní MP3/WAV soubor ' +
+      'se nahrává PŘES USB (kabel USB-USBM-1, USB-A na USB mini) pomocí PC softwaru "Banner ' +
+      'Audio GUI" (Windows 2000/XP/Vista/7/8) — během programování musí být modul odpojen od ' +
+      'napájení. Přehrávání kontinuální/opakované (smyčka), restart přehrávání při ztrátě a ' +
+      'obnově napájení. Tovární přednastavený soubor: ustálený tón 2,5 kHz. Vzorkovací kmitočet ' +
+      '12 kHz, frekvenční rozsah přehrávání 100 Hz–6 kHz (tóny nad 2 kHz mohou znít zkresleně ' +
+      'kvůli vzorkovací frekvenci). Hlasitost lze upravit editací zdrojového audio souboru (např. ' +
+      'volně dostupným software Audacity) — modul sám nemá potenciometr hlasitosti. DIP přepínač ' +
+      'SW1 volí VSTUPNÍ KANÁL (1–6) pro řízení modulu z centrální základny věže (analogicky k ' +
+      'bílým DIP přepínačům pro pořadí modulu u SG-TL70-RGB14, zde ale volba řídicího kanálu, ne ' +
+      'fyzické pozice). Napájecí proud (s DC základnou B-TL70): max 250 mA @12V / 110 mA @30V; ' +
+      '(s univerzální AC základnou B-TL70-Z): max 65 mA @120VAC/60Hz / 45 mA @230VAC/50Hz. ' +
+      'Ochrana proti přechodovým napěťovým špičkám. Krytí IEC IP50 (nižší než IP65 u RGB segmentu ' +
+      'SG-TL70-RGB14 — reproduktorový otvor snižuje těsnost). Provozní teplota -20 až +50 °C, ' +
+      'vlhkost max 95 % @50°C nekondenzující. Konstrukce: segmenty/kryty polykarbonát. Odolnost ' +
+      'proti vibracím/rázům dle IEC 60068-2-6/2-27. Zařazeno do kategorie "Modul" jako kompletní ' +
+      'osazený produkt s vlastní elektronikou. Certifikace: CE, cULus Listed. Výstraha výrobce: ' +
+      'riziko poškození sluchu při nesprávné instalaci (odkaz na normu OSHA 1910.95).',
+    tags: 'modul,signalizace,zvukový,houkačka,tower-light,mp3,wav,programovatelný,banner,tl70,usb',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
