@@ -1235,6 +1235,39 @@ const MODULE_SPECS: ModuleSpec[] = [
       'příruba BF 4.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb1,npn,miniaturní,m4,nerez,ip67,průmyslový',
   },
+  {
+    name: 'NBB2-8GM25-E0-V3',
+    packageType:
+      'Válcové závitové pouzdro M8×1 (threaded barrel), mosaz s niklovým povlakem, délka 40 mm ' +
+      '(25 mm závitové části), aktivní čelo LCP, indikační vícedírková žlutá LED, zásuvný ' +
+      'konektor M8×1, 3pinový (device connector, NE integrální kabel), piny 1=BN(hnědý)/L+, ' +
+      '4=BK(černý)/výstup, 3=BU(modrý)/L-, v balení 2 šestihranné matice',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, spínací vzdálenost 2 mm (zápustná montáž, ' +
+      '"increased operating distance" pro M8), rozšířený teplotní rozsah -40 až +85 °C, ' +
+      '3vodičové DC zapojení, NPN výstup, spínací (NO) kontakt, 5–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBB2-8GM25-E0-V3" (304615-0029_eng.xml, vydáno 8.–9. 1. ' +
+      '2018) — ⚠️ další sourozenecký díl v rámci řady Pepperl+Fuchs NBB v této knihovně, v ' +
+      'menším M8×1 pouzdru (mezi miniaturním M4 u NBB1-4GM22-E0 a M12 u NBB4-12GM75-US, ' +
+      'samostatné záznamy). Elektricky nejbližší NBB8-18GM50-E2/NBB1-4GM22-E0 (3vodičové DC s ' +
+      'klasickým výstupním tranzistorem), zde NPN výstup (shodně s NBB1-4GM22-E0, opačně vůči ' +
+      'PNP u NBB8-18GM50-E2). Má ZÁSUVNÝ M8 konektor (jako NBB5-18GM40-Z0-V1 s M12 konektorem) — ' +
+      'vyžaduje samostatně objednaný konektorový kabel (příslušenství V3-WM-2M-PUR) nebo pole- ' +
+      'montovatelný konektor V3-GM/V3-WM. Korekční faktory dle materiálu cíle: rAl=0,4, rCu=0,3, ' +
+      'r304/nerez=0,75, rBrass/mosaz=0,45. Referenční akční prvek pro test dosahu: měkká ocel ' +
+      '(1.0037/SR235JR, dříve St37-2), 8×8×1 mm. Jmenovitá spínací vzdálenost sn 2 mm, zajištěná ' +
+      'spínací vzdálenost 0–1,62 mm. Spínací kmitočet až 6000 Hz (nejvyšší z celé rodiny NBB v ' +
+      'této knihovně, díky malému rozměru a nízké indukčnosti cívky). Hystereze typ. 5 %. Úbytek ' +
+      'napětí max 1,5 V (nejnižší v rodině). Provozní proud 0–100 mA, klidový proud max 10 mA, ' +
+      'zbytkový proud max 0,2 mA. Zpoždění dostupnosti po zapnutí max 100 ms. Funkční ' +
+      'bezpečnostní parametry: MTTFd 960 let, doba mise 20 let, diagnostické pokrytí 0 %. ' +
+      'Rozšířený provozní/skladovací teplotní rozsah -40 až +85 °C (shodně s NBB5-18GM40-Z0-V1 ' +
+      'variantou pro nízké teploty, ale zde navíc s vyšší horní mezí +85°C). Krytí IP67. UL ' +
+      'certifikace (Class 2 Power Source). Dostupné příslušenství: montážní příruba BF 8, ' +
+      'rychloupínací konzole EXG-08.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,npn,3vodičový,m8,konektor,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
