@@ -3207,6 +3207,42 @@ const MODULE_SPECS: ModuleSpec[] = [
       'EMC), RCM, KC EMC. RoHS.',
     tags: 'modul,kamera,vizuální-senzor,vision-sensor,barevný,color-sensor,ethernet,festo,sbsi,průmyslový',
   },
+  {
+    name: 'SBSI-F-AF-R3C-F12-W',
+    packageType:
+      'Kompaktní kvádrové pouzdro s chladicími žebry, tvářená hliníková slitina (eloxovaná) + ' +
+      'kryt ABS s výztuží, rozměry 45×45×76,7 mm, hmotnost 160 g, INTEGROVANÁ pevná optika ' +
+      '(ohnisko 12 mm) s vestavěným bílým LED osvětlením, zaostření nastavitelným šroubem, ' +
+      'konektory M12 (Ethernet 4pin, sériové rozhraní 5pin, napájení/IO 12pin)',
+    value:
+      'Plnohodnotný průmyslový BAREVNÝ vizuální senzor s integrovanou optikou a osvětlením, ' +
+      'barevný CMOS snímač 736×480 px (WideVGA), 40 fps, pracovní vzdálenost 30 mm–nekonečno, ' +
+      'kompletní sada detektorů (tvar, kontura, hrany, BLOB, barva), Ethernet, 24 V DC',
+    notes:
+      'Festo AG & Co. KG "Color sensor SBSI-F-AF-R3C-F12-W" (obj. č. 8058734, datový list ' +
+      '2.6.2021, typový kód "SBSI") — "plná" verze barevného senzoru ze stejné SBSI rodiny jako ' +
+      'SBSI-F-R3C-F6-W v této knihovně, se stejnou koncepcí integrované optiky+osvětlení (na ' +
+      'rozdíl od univerzálního senzoru SBSC-U-AF-R2B s vyměnitelným CS mount objektivem bez ' +
+      'vlastního osvětlení) — ⚠️ oproti "zjednodušené" F6-W variantě má TATO F12-W varianta PLNOU ' +
+      'programovací kapacitu 255 inspekčních programů / 255 testovacích kritérií (stejně jako ' +
+      'univerzální senzor SBSC-U-AF-R2B, oproti jen 8/2 u F6-W) a KOMPLETNÍ sadu detektorů ' +
+      '(sledování polohy přes kontur, porovnávání vzorů, porovnávání kontur, detekce hran, ' +
+      'kontrast, jas, prahování šedé úrovně, Vernier caliper, BLOB, PLUS barevné detektory — ' +
+      'hodnota barvy, barevná plocha, seznam barev) — oproti jen 3 základním detektorům (poloha, ' +
+      'kontrast, barevná plocha) u F6-W. Delší ohnisková vzdálenost 12 mm (oproti 6 mm) s delší ' +
+      'pracovní vzdáleností 30 mm–nekonečno (oproti 6 mm–nekonečno) a větším zorným polem min. ' +
+      '8×6 mm (oproti 5×4 mm) — vhodné pro inspekci z větší vzdálenosti. Má navíc sériové ' +
+      'rozhraní RS232/RS422 (5pin M12), které F6-W neuvádí. Stejné digitální I/O jako univerzální ' +
+      'senzor (2 vstupy + 2 výstupy + 4 volitelné, PNP/NPN přepínatelné, max. 50 mA), stejné ' +
+      'napájení 24 V DC (-25 %/+10 %), max. spotřeba 550 mA. CHYBÍ (stejně jako u F6-W) čtení ' +
+      'čárových/2D kódů a OCR — na rozdíl od SBSC-U-AF-R2B je toto čistě detekční/měřicí senzor ' +
+      'bez funkce dekódování. Provozní teplota 0 až +50 °C, skladovací -20 až +60 °C. Krytí IP67. ' +
+      'Zařazeno do kategorie "Modul" jako kompletní osazený přístroj s vlastním procesorem/optice/ ' +
+      'osvětlením/konektory, stejně jako ostatní Festo vizuální senzory v této knihovně. Odolnost ' +
+      'proti vibracím dle EN 60068-2-6, proti rázům dle EN 60068-2-27. Certifikace: c UL us ' +
+      '(Listed), CE (EU EMC), RCM, KC EMC. RoHS.',
+    tags: 'modul,kamera,vizuální-senzor,vision-sensor,barevný,color-sensor,ethernet,festo,sbsi,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
