@@ -3171,6 +3171,42 @@ const MODULE_SPECS: ModuleSpec[] = [
       'CE (EU EMC), RCM, KC EMC. RoHS.',
     tags: 'modul,kamera,vizuální-senzor,vision-sensor,čtečka-kódů,barcode,ocr,ethernet,festo,sbsc,průmyslový',
   },
+  {
+    name: 'SBSI-F-R3C-F6-W',
+    packageType:
+      'Kompaktní kvádrové pouzdro s chladicími žebry, tvářená hliníková slitina (eloxovaná) + ' +
+      'kryt ABS s výztuží, rozměry 45×45×76,7 mm, hmotnost 160 g, INTEGROVANÁ pevná optika ' +
+      '(ohnisko 6 mm) s vestavěným bílým LED osvětlením (kruh kolem objektivu), zaostření ' +
+      'nastavitelným šroubem, konektory M12 (Ethernet 4pin, napájení/IO/sériové 12pin)',
+    value:
+      'Průmyslový BAREVNÝ vizuální senzor (smart kamera) s integrovanou optikou a osvětlením, ' +
+      'barevný CMOS snímač 736×480 px (WideVGA), 40 fps, detekce barevných ploch/kontrastu/ ' +
+      'polohy přes kontur, Ethernet (100 Mbit/s), 24 V DC',
+    notes:
+      'Festo AG & Co. KG "Color sensor SBSI-F-R3C-F6-W" (obj. č. 8058731, datový list 2.6.2021, ' +
+      'typový kód "SBSI") — stejná fyzická platforma/pouzdro/rozhraní jako univerzální vizuální ' +
+      'senzor SBSC-U-AF-R2B (typový kód rovněž "SBSI") v této knihovně, ale ZJEDNODUŠENÁ ' +
+      '"COLOR SENSOR" varianta specializovaná na BAREVNOU inspekci — ⚠️ hlavní rozdíly: (1) ' +
+      'BAREVNÝ (ne monochromní) snímač nižšího rozlišení 736×480 WideVGA (oproti 1280×1024 SXGA ' +
+      'monochrom u univerzálního senzoru); (2) INTEGROVANÁ PEVNÁ optika s vestavěným bílým LED ' +
+      'kruhovým osvětlením přímo v pouzdře (ohnisko 6 mm, zaostření jen jemným šroubem) místo ' +
+      'vyměnitelného CS mount objektivu bez vlastního osvětlení u univerzálního senzoru; (3) ' +
+      'VÝRAZNĚ OMEZENĚJŠÍ programovací kapacita — max. 8 inspekčních programů a jen 2 testovací ' +
+      'kritéria/detektory (oproti 255/255 u univerzálního senzoru); (4) OMEZENÁ sada detektorů ' +
+      '— jen sledování polohy přes kontur, kontrast a BAREVNÁ PLOCHA (color surface) — ⚠️ ' +
+      'CHYBÍ veškeré čtení čárových/2D kódů a OCR funkce dostupné u SBSC-U-AF-R2B, sensor je ' +
+      'určen čistě pro kontrolu barvy/přítomnosti barevných značek, ne pro identifikaci kódů. ' +
+      'Vyšší krytí IP67 (oproti IP65 univerzálního senzoru, zde bez nutnosti ochranné trubice ' +
+      'objektivu díky integrované optice bez vyměnitelných dílů). Stejné digitální I/O (2 vstupy ' +
+      '+ 2 výstupy + 2 dodatečně volitelné — o něco méně voleb než 4 u univerzálního senzoru), ' +
+      'PNP/NPN přepínatelné, max. výstupní proud 50 mA. Stejné napájení 24 V DC (-25 %/+10 %), ' +
+      'max. spotřeba 550 mA. Provozní teplota 0 až +50 °C, skladovací -20 až +60 °C. Zařazeno do ' +
+      'kategorie "Modul" jako kompletní osazený přístroj s vlastním procesorem/optikou/ ' +
+      'osvětlením/konektory, stejně jako SBSC-U-AF-R2B v této knihovně. Odolnost proti vibracím ' +
+      'dle EN 60068-2-6, proti rázům dle EN 60068-2-27. Certifikace: c UL us (Listed), CE (EU ' +
+      'EMC), RCM, KC EMC. RoHS.',
+    tags: 'modul,kamera,vizuální-senzor,vision-sensor,barevný,color-sensor,ethernet,festo,sbsi,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
