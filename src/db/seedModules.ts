@@ -777,6 +777,42 @@ const MODULE_SPECS: ModuleSpec[] = [
       'AC/DC varianty dle produktové řady).',
     tags: 'modul,senzor,optoelektronický,fotoelektrický,přiblížení,proximity,background-suppression,sick,wtb250,npn,ip67,průmyslový',
   },
+  {
+    name: 'MAXREFDES103#',
+    packageType:
+      'Kompletní náramkový (wristband) referenční design — dvě desky (Micro board + Sensor ' +
+      'board) v uzavřeném plastovém pouzdře na silikonovém řemínku, USB Type-C konektor pro ' +
+      'nabíjení/PC komunikaci, 2× tlačítko (napájení + "F"/logování), stavová RGB LED, zadní ' +
+      'strana s optickými okénky pro LED/fotodiody (kontakt s pokožkou), vestavěná baterie',
+    value:
+      'Wearable reference-design zdravotní senzorový náramek — optický PPG biosenzor (tep, SpO2, ' +
+      'HRV, dechová frekvence) + IMU + Bluetooth LE, embedded algoritmy pro výpočet srdečních ' +
+      'parametrů',
+    notes:
+      'Maxim Integrated "MAXREFDES103# Health Sensor Band User Guide" (UG7145, Rev 0, leden 2020) ' +
+      '— komplexní hotový referenční produkt/vývojová platforma, ne jednotlivá součástka — do ' +
+      'knihovny přidán jako jeden souhrnný záznam kategorie "Modul" (obdobně jako ostatní hotové ' +
+      'moduly/eval-boardy v této knihovně), namísto rozepisování všech dílčích integrovaných ' +
+      'obvodů zvlášť. Systém tvoří dvě desky: "Micro board" (řídicí/komunikační) obsahuje MCU ' +
+      'MAX32630 (Arm Cortex-M4F, hlavní řadič), PMIC MAX20303 (správa napájení/nabíjení), modul ' +
+      'PAN1326B (duální Bluetooth Classic/BLE), sériovou flash paměť MX25U51245GZ4I54 (64 MB, ' +
+      'QSPI), hostitelský akcelerometr BMI160 a USB-C konektor. "Sensor board" (senzorový ' +
+      'subsystém, "Sensor Hub") obsahuje samostatný MCU MAX32664 s vestavěným (embedded) ' +
+      'algoritmem výpočtu tepové frekvence, optický analogový front-end/PPG senzor MAX86141 ' +
+      '(1× zelená LED, 1× červená LED, 1× IR LED, 2 fotodiody), volitelný 3osý akcelerometr ' +
+      'KX122, a MAX4740 (čtyřnásobný SPDT přepínač pro konfiguraci zapojení LED/fotodiod dle ' +
+      'aktuálně měřeného parametru). Funkce: optické měření tepové frekvence (PPG), pulzní ' +
+      'oxymetrie (SpO2), variabilita srdečního tepu (HRV), dechová frekvence, hodnocení kvality ' +
+      'spánku — vyhodnocováno buď algoritmy na palubě (MAX32664), nebo streamováno do PC GUI ' +
+      '(Maxim DeviceStudio) či Android aplikace (Maxim Health Sensor Platform) přes USB nebo ' +
+      'Bluetooth LE. Ovládání: tlačítko napájení (krátký stisk = zap/vyp LED, 3s = vypnutí ' +
+      'zařízení, 12s = tvrdý reset), tlačítko "F" (start/stop záznamu do flash paměti). Stavová ' +
+      'RGB LED signalizuje mj. stav USB/BLE připojení, stav baterie, chybové stavy. K programování/ ' +
+      'aktualizaci firmwaru micro-boardu je potřeba přídavná deska MAXDAP Pico Adapter (není ' +
+      'součástí balení senzorového náramku samotného, uvedena v seznamu vybavení datasheetu). ' +
+      'Napájeno interní baterií, nabíjení přes USB Type-C.',
+    tags: 'modul,senzor,ppg,biosenzor,tepová-frekvence,spo2,wearable,náramek,maxim,maxrefdes103,bluetooth,ble,imu',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
