@@ -2299,6 +2299,39 @@ const MODULE_SPECS: ModuleSpec[] = [
       'pneumatického válce).',
     tags: 'modul,senzor,proximity,poloha-pístu,pneumatický,ventil,magnetický,atex,festo,smpo-8e,pneumatika',
   },
+  {
+    name: 'SMTSO-8E-NS-M12-LED-24',
+    packageType:
+      'Kompaktní kvádrové pouzdro s integrovaným zásuvným konektorem M12×1 A-kódovaným ' +
+      '(EN 61076-2-101, 3piny) přímo na těle senzoru, pouzdro tvářená hliníková slitina + PA + ' +
+      'PUR + vysoce legovaná nerezová ocel, upnutí do T-drážky svorkou s příslušenstvím ' +
+      '(zasunutí shora), příčný výstup konektoru, hmotnost 10 g',
+    value:
+      'Polohový snímač pístu pneumatického válce odolný proti svařovacímu poli, princip ' +
+      'magnetoindukční, NPN spínací výstup (N/O), 10–30 V DC',
+    notes:
+      'Festo AG & Co. KG "Proximity sensor SMTSO-8E-NS-M12-LED-24" (obj. č. 175825, datový list ' +
+      '5.3.2021) — ⚠️ NOVÁ produktová řada snímačů polohy pístu v této knihovně (typový kód ' +
+      '"SMTSO", odlišný od SME/SME-8M/SMT-8M/SDBT-BSW/SMEO-8E/SMPO-8E) a NOVÝ snímací princip — ' +
+      '"magneto-inductive" (magnetoindukční), odlišný jak od magnetického jazýčkového kontaktu ' +
+      '(SME/SME-8M/SMEO-8E), tak od magnetorezistivního principu (SMT-8M/SDBT-BSW) — indukční ' +
+      'cívka reaguje na změnu magnetického pole od pístního magnetu, výstup zpracován elektronicky ' +
+      'na NPN tranzistorový spínací výstup (N/O). Podobně jako Festo SDBT-BSW-1L-PU-W-0.3-N-M12 v ' +
+      'této knihovně je i SMTSO-8E-NS konstruován pro odolnost proti SVAŘOVACÍMU POLI (weld field ' +
+      'resistant, odolný proti svařovacím jiskrám) a stejně pomalejší spínací charakteristiky ' +
+      '(zapínací ≤38 ms/vypínací ≤20 ms — ještě pomalejší než SDBT-BSW s ≤15/25 ms) kvůli filtraci ' +
+      'rušení od svářecího pole (udávaná konkrétní odolnost proti střídavému magnetickému poli ' +
+      '45–65 Hz). Na rozdíl od SDBT-BSW (integrovaný kabel s M12 konektorem na konci) má ' +
+      'SMTSO-8E-NS konektor M12 PŘÍMO NA TĚLE senzoru (bez kabelu, "Electrical connection type: ' +
+      'Plug"). Zkratová ochrana pulzní (Pulsed), přepěťová ochrana k dispozici, ochrana proti ' +
+      'přepólování na všech vývodech. Max. výstupní proud 200 mA, max. spínací výkon DC 6 W, ' +
+      'zbytkový proud ≤0,01 mA, úbytek napětí ≤3 V. Žlutá LED indikace sepnutí. Zařazeno do ' +
+      'kategorie "Modul" jako kompletní osazený produkt s integrovaným konektorem, stejně jako ' +
+      'ostatní Festo snímače polohy pístu v této knihovně. Krytí IP65/IP67, opakovatelnost ' +
+      '±0,2 mm, max. utahovací moment upevňovacího příslušenství 0,5 Nm. Provozní teplota -25 až ' +
+      '+70 °C. Bez mědi a PTFE. Certifikace: CE (EU EMC), RCM.',
+    tags: 'modul,senzor,proximity,poloha-pístu,magnetoindukční,svařování,weld-resistant,npn,festo,smtso-8e,pneumatika,m12',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
