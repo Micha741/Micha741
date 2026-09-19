@@ -2547,6 +2547,33 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Certifikace: c UL us (Recognized), CE (EU EMC + RoHS), RCM.',
     tags: 'modul,senzor,tlak,tlakový-spínač,piezorezistivní,pnp,festo,sde5,qs-konektor,m8',
   },
+  {
+    name: 'SDE5-D10-NF-Q6E-V-K',
+    packageType:
+      'Kompaktní kvádrové pouzdro, materiál PA + POM, pneumatická přípojka zásuvná QS-6 (rychlo' +
+      'spojka pro hadičku Ø6 mm), integrovaný kabel, délka 2,5 m, 3 vodiče, montáž ' +
+      'příslušenstvím, hmotnost 47 g',
+    value:
+      'Analogový tlakový snímač bez displeje (piezorezistivní princip), měřicí rozsah 0–10 bar, ' +
+      'lineární napěťový výstup 0–10 V, 15–30 V DC',
+    notes:
+      'Festo AG & Co. KG "Pressure sensor SDE5-D10-NF-Q6E-V-K" (obj. č. 567471, datový list ' +
+      '14.5.2021) — ⚠️ ANALOGOVÝ tlakový SNÍMAČ (transmitter), ne spínač — na rozdíl od ' +
+      'SDE5-D10-C3-Q6E-P-K (obj. č. 542896) v této knihovně (typový kód "-C3-...-P-", PNP spínací ' +
+      'výstup s oknovým komparátorem, žlutá LED indikace SEPNUTÍ) má tato varianta typový kód ' +
+      '"-NF-...-V-" a poskytuje POUZE spojitý lineární analogový napěťový výstup 0–10 V úměrný ' +
+      'tlaku (0 bar → 0 V, 10 bar → 10 V) — BEZ jakékoliv spínací/prahové funkce, přesnost ' +
+      'analogového výstupu ±3 %FS, chyba linearity ±0,3 %FS. Zelená LED indikuje pouze stav ' +
+      'připravenosti přístroje ("Ready status"), ne stav spínání (protože žádný spínací výstup ' +
+      'neexistuje). Jinak mechanicky a v základních parametrech shodné se SDE5-D10-C3-Q6E-P-K ' +
+      '(stejné pouzdro PA/POM, stejná QS-6 pneumatická přípojka, stejný 2,5m integrovaný kabel, ' +
+      'stejný piezorezistivní princip a rozsah 0–10 bar, stejná hmotnost 47 g). Zkratová ochrana, ' +
+      'ochrana proti přepólování na všech vývodech. Zařazeno do kategorie "Modul" jako kompletní ' +
+      'osazený produkt s vlastním kabelem, stejně jako ostatní Festo SDE5/SPAN tlakové senzory v ' +
+      'této knihovně. Krytí IP40, korozní odolnost CRC třída 2. Provozní teplota média i okolí ' +
+      '0 až +50 °C. Certifikace: c UL us (Recognized), CE (EU EMC + RoHS), RCM.',
+    tags: 'modul,senzor,tlak,analogový,piezorezistivní,festo,sde5,qs-konektor,transmitter',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
