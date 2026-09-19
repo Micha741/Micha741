@@ -4356,6 +4356,38 @@ const RESISTOR_SPECS: PartSpec[] = [
       '95% pokrytí.',
     tags: 'rezistor,rezistorová-síť,resistor-array,smd,tenkovrstvý,thin-film,vishay-dale,tra06e,izolovaný',
   },
+  {
+    name: 'RC0801-100J100J',
+    packageType:
+      'THT SIP pouzdro (single in-line), 8 pinů (konfigurace RC-01), rozteč pinů 2,54 mm, ' +
+      'délka pouzdra 0,1"×počet pinů max., výška max 8,9 mm (nízkoprofilová verze dostupná)',
+    value:
+      'Kombinovaná rezistorová/kapacitní síť (RC network), rezistor 10 Ω ±5 %, kondenzátor 10 pF ' +
+      '±5 % (NPO/COG dielektrikum, 50 V), zapojení dle schématu RC-01',
+    notes:
+      'RCD Components Inc. "RC Series — Capacitor and Resistor/Capacitor Networks" (dok. FA100) ' +
+      '— ⚠️ NOVÁ TŘÍDA v této knihovně: KOMBINOVANÁ rezistorová+kapacitní síť v jednom SIP ' +
+      'pouzdru — na rozdíl od Vishay Dale TRA06E v této knihovně (čistě rezistorová síť, 4 ' +
+      'izolované rezistory, SMD) obsahuje RC Series jak REZISTOROVÉ, tak KAPACITNÍ prvky ' +
+      'současně v jednom pouzdru, propojené dle jednoho z 16 standardních schémat (RC-01 až ' +
+      'RC-16, každé s jiným zapojením/počtem vývodů 4-14 pinů — možné i zákaznické obvody). Z ' +
+      'názvu souboru identifikován konkrétní díl RC0801-100J100J = pouzdro RC-08 (8 pinů), ' +
+      'konfigurace obvodu "01" (schéma RC-01), rezistorový kód 100 = 10 Ω ±5 % (J), kapacitní kód ' +
+      '100 = 10 pF ±5 % (J), výchozí napětí 50 V a dielektrikum NPO/COG (nejsou v P/N explicitně ' +
+      'přepsány, tedy standardní). Rezistorový rozsah celé řady: 22 Ω–1 MΩ standardně (1 Ω–100 MΩ ' +
+      'na vyžádání), tolerance ±5 % std (±2 %/±1 % dostupné), TCR ±100 ppm/°C typ. (±250 ppm pro ' +
+      '<50Ω a >2,2MΩ), napětí 50V std (do 1kV dostupné), výkon 0,2 W @25°C (0,125 W/pin balíku). ' +
+      'Kapacitní rozsah celé řady: 10 pF–0,1 µF standardně (0,5 pF–10 µF na vyžádání), napětí ' +
+      '50V std (6,3V–2kV dostupné), dielektrika COG(NPO)/X7R/X5R/Y5V/Z5U. Objednací kód: RC<počet ' +
+      'pinů><konfigurace>-<rezistorový kód Ω, 2 platné číslice+násobitel><tol. rezistoru: J=5%/ ' +
+      'G=2%><kapacitní kód pF, 2 platné číslice+násobitel><tol. kondenzátoru: J=5%/K=10%/M=20%/ ' +
+      'Z=+80%-20%><volitelně napětí kondenzátoru pokud jiné než 50V><volitelně dielektrikum: ' +
+      'G=COG/R=X7R/X=X5R/U=Z5U/V=Y5V><volitelně balení/zakončení>. Provozní teplota -55 až ' +
+      '+125 °C. Zařazeno do kategorie "Rezistor" jako pasivní síťová součástka, obdobně jako ' +
+      'TRA06E v této knihovně. RoHS kompatibilní verze "W" (bezolovnaté zakončení) odolná pájení ' +
+      'do 260°C.',
+    tags: 'rezistor,kondenzátor,rezistorová-síť,rc-network,sip,rcd-components,rc-series,kombinovaná-síť',
+  },
 ];
 
 const CAPACITOR_PART_SPECS: PartSpec[] = [
