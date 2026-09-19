@@ -1800,6 +1800,40 @@ const MODULE_SPECS: ModuleSpec[] = [
       '(Class 2 Power Source). Dostupné příslušenství: montážní příruba BF 8.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nen6,pnp,nezápustný,non-flush,m8,ip67,průmyslový',
   },
+  {
+    name: 'NBB8-18GM50-A0-V1-M1',
+    packageType:
+      'Válcové závitové pouzdro M18×1 (snímací závitová část), stupňovité tělo zúžené na zadní ' +
+      'straně na M12×1 konektorovou objímku, mosaz s niklovým povlakem, celková délka 65 mm, ' +
+      'hmotnost 45 g, aktivní čelo PBT, indikační žlutá LED, zásuvný konektor M12×1, 4pinový, ' +
+      'piny 1=BN(hnědý)/L+, 4=BK(černý)/NO výstup, 3=BU(modrý)/L-, 2=WH(bílý)/NC výstup, v ' +
+      'balení 2 pojistné matice',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, AUTOMOTIVE provedení (E1-Type approval), ' +
+      'spínací vzdálenost 8 mm (zápustná montáž), krytí IP68/IP69K, 4vodičové DC zapojení, ' +
+      'KOMPLEMENTÁRNÍ NPN výstup (současně NO i NC), 7–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBB8-18GM50-A0-V1-M1" (293454-0030_eng.xml, vydáno 7. 3. ' +
+      '2017) — ⚠️ M18 automotive protějšek NBB4-12GM35-A2-V1-M1 v této knihovně (samostatný ' +
+      'záznam) — obě mají E1-Type approval (10R-04), rozšířenou EMC odolnost dle automotive ' +
+      'standardů (ISO 7637-2, EN 61000-4-2/3/4/6, EN 55011 Class A), krytí IP68/IP69K a ' +
+      'KOMPLEMENTÁRNÍ výstup na 4 vodičích, ale NBB8-18GM50-A0-V1-M1 má větší M18 snímací závit ' +
+      '(vs M12), vyšší spínací vzdálenost 8 mm (vs 4 mm) a NPN výstup (vs PNP u ' +
+      'NBB4-12GM35-A2-V1-M1). Zároveň mechanicky nejbližší standardnímu (neautomotive) ' +
+      'NBB8-18GM50-E2 v této knihovně (shodný M18 snímací závit a stupňovité tělo s M12 ' +
+      'konektorem, shodná spínací vzdálenost 8 mm), ale s KOMPLEMENTÁRNÍM NPN výstupem místo ' +
+      'jednoduchého PNP NO, rozšířeným teplotním rozsahem -40 až +85°C (vs -25 až +70°C) a ' +
+      'vyšším krytím IP68/IP69K (vs IP67) — cena za automotive kvalifikaci. Korekční faktory ' +
+      'dle materiálu cíle: rAl=0,4, rCu=0,3, r304/nerez=0,7, rBrass/mosaz=0,45. Referenční akční ' +
+      'prvek: měkká ocel, 24×24×1 mm. Zajištěná spínací vzdálenost 0–6,48 mm. Spínací kmitočet ' +
+      'až 1600 Hz. Hystereze typ. 5 %. Úbytek napětí max 2 V. Provozní proud 0–200 mA, klidový ' +
+      'proud max 10 mA, zbytkový proud typ. 0,5 mA (4 µA @25°C). Zpoždění dostupnosti po zapnutí ' +
+      'max 100 ms. Funkční bezpečnostní parametry: MTTFd 1484 let, doba mise 20 let, ' +
+      'diagnostické pokrytí 0 %. Shoda EN/IEC 60947-5-2, EN 12895:2015, UL certifikace (Class 2 ' +
+      'Power Source). Dostupné příslušenství: montážní příruba BF 18, konektorové kabely V1-G/ ' +
+      'V1-W/V1-G-2M-PUR/V1-W-2M-PUR.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb8,npn,komplementární,automotive,e1,ip68,ip69k,m18,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
