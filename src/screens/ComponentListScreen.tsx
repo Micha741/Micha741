@@ -116,6 +116,13 @@ export default function ComponentListScreen({ navigation }: Props) {
       />
 
       <Pressable
+        style={styles.smdFab}
+        onPress={() => navigation.navigate('SmdCodeCalculator')}
+      >
+        <Text style={styles.smdFabText}>#</Text>
+      </Pressable>
+
+      <Pressable
         style={styles.scanFab}
         onPress={() => navigation.navigate('ResistorScanner')}
       >
@@ -203,4 +210,21 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
   },
   scanFabText: { fontSize: 22 },
+  smdFab: {
+    position: 'absolute',
+    right: 20,
+    bottom: 152,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#333',
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  smdFabText: { color: '#fff', fontSize: 22, fontWeight: '700' },
 });

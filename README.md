@@ -175,6 +175,15 @@ i návrh schémat obvodů a plošných spojů.
     zařízení — mapování vodicího rámečku na ořez fotky a prahové hodnoty pro detekci hran
     mohou vyžadovat doladění
 
+- **Kalkulačka kódu SMD rezistoru** — ruční zadání kódu vytištěného na pouzdře SMD
+  rezistoru (tlačítko „#” na seznamu součástek), okamžitý přepočet na hodnotu:
+  - **3místný kód** (tolerance 5 %) — první dvě číslice platné, třetí počet nul
+  - **4místný kód** (tolerance 1 %) — první tři číslice platné, čtvrtá počet nul
+  - **R-zápis** — písmeno R nahrazuje desetinnou čárku (např. „4R7” = 4,7 Ω)
+  - **EIA-96 kód** — dvě číslice (01–96, tabulka řady E96) + písmeno násobitele
+  - **0 / 000** — rozpozná se jako 0 Ω (propojka)
+  - rozpoznaná hodnota jde tlačítkem „Použít” rovnou do formuláře nové součástky
+
 ## Plánováno dál
 
 - Návrh schémat obvodů (schematic capture)
@@ -198,8 +207,9 @@ src/db/seedComponents.ts    — výchozí knihovna běžných součástek
 src/types/component.ts      — typy a seznam kategorií součástek
 src/utils/resistorColorCode.ts — tabulka barevného kódu rezistorů, dekódování pásků
 src/utils/imageColorScan.ts — zpracování ořezané fotky (JPEG dekódování, segmentace pásků)
+src/utils/smdResistorCode.ts — dekódování SMD kódů (3místný, 4místný, EIA-96)
 src/navigation/             — React Navigation stack
-src/screens/                — obrazovky (seznam, detail, formulář, sken rezistoru)
+src/screens/                — obrazovky (seznam, detail, formulář, sken rezistoru, SMD kalkulačka)
 ```
 
 <!---
