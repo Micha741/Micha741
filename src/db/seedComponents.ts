@@ -3837,6 +3837,37 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'požadovaný BIN.',
     tags: 'tranzistor,fototranzistor,ir,detektor,npn,liteon,ltr-1650d,optoelektronika,top-view',
   },
+  {
+    name: 'PT23GP11',
+    packageType:
+      'THT plastové pouzdro s vrchním čočkovým okénkem (kupolovitý tvar, šířka cca 4,6 mm, výška ' +
+      'cca 4,6 mm, délka vývodů 14,8 mm), 2 vývody (bez báze) rozteč 2,54 mm, plochá strana ' +
+      'pouzdra a delší vývod = kolektor, kratší = emitor',
+    value:
+      'Fototranzistor pro viditelné světlo (senzor okolního osvětlení/soumraku, "daylight ' +
+      'sensor"), NPN, bez báze, špičková citlivost λp=560 nm (odpovídá lidskému oku), VCEO 10 V, ' +
+      'IL 100 µA typ. @Vce=5V/10lx, náhrada za CdS fotorezistor',
+    notes:
+      'Kodenshi Corp. "PT23GP11 — Daylight Sensor" (dok. květen 2004) — ⚠️ POZOR na záměnu s IR ' +
+      'fototranzistory Lite-On LTR-306/LTR-1650D v této knihovně (samostatné záznamy): jde o ' +
+      'zcela odlišnou aplikační kategorii — LTR-306/LTR-1650D jsou IR fototranzistory (λ=940 nm) ' +
+      'určené pro páry s IR LED vysílačem (přerušení/odraz paprsku, IR dálkové ovládání apod.), ' +
+      'zatímco PT23GP11 je fototranzistor CITLIVÝ NA VIDITELNÉ SVĚTLO se spektrální odezvou ' +
+      '400–650 nm a špičkou @560 nm — záměrně navržený tak, aby napodoboval spektrální citlivost ' +
+      'lidského oka (křivka relativní citlivosti v datasheetu téměř kopíruje standardní křivku ' +
+      'fotopického vidění) — určen jako přímá náhrada za klasický CdS fotorezistor (sírník ' +
+      'kademnatý) v obvodech reagujících na okolní osvětlení/soumrak, ale bez toxického kadmia a ' +
+      's lepší linearitou výstupu vůči intenzitě osvětlení. Kolektor-emitorové napětí VCEO max ' +
+      '10 V. Temný proud (dark current) ICEO typ. 10 nA (max 500 nA) @VCE=5V — velmi nízký, pro ' +
+      'spolehlivou detekci i při nízké intenzitě osvětlení. Světelný proud IL typ. 100 µA ' +
+      '@VCE=5V/10lx (světelný zdroj typu A). Rozdíl výstupu mezi světelnými zdroji A a B (poměr ' +
+      'IL) typ. 1,3 — citlivost mírně závislá na spektru osvětlení. Doporučený provozní rozsah ' +
+      'osvětlení 1–500 lx (nízké až středně nízké osvětlení — soumrakové spínače, stmívání ' +
+      'podsvícení displejů). Bezolovnaté pájení. Určeno pro soumrakové spínače domácího osvětlení, ' +
+      'stmívání podsvícení LCD monitorů/displejů, automatickou expozici (AE) fotoaparátů, ' +
+      'náhradu CdS senzorů.',
+    tags: 'tranzistor,fototranzistor,viditelné-světlo,daylight-sensor,npn,kodenshi,pt23gp11,cds-náhrada,optoelektronika',
+  },
 ];
 
 const RESISTOR_SPECS: PartSpec[] = [
