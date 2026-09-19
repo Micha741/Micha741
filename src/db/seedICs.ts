@@ -1777,6 +1777,42 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,senzor,ppg,biomon,tepová-frekvence,fotodioda,zelená-led,osram,sfh7051,wearable,optický',
   },
   {
+    name: 'SFH7050',
+    packageType:
+      'COB ("chip on board") vícečipové SMD pouzdro 4,7×2,5×0,9 mm, 8 vývodů (piny 1,2=zelená ' +
+      'LED katoda/anoda, 3=červená LED anoda, 4,5=fotodioda anoda/katoda, 6=červená LED katoda, ' +
+      '7,8=IR LED anoda/katoda), vestavěná optická přepážka (light barrier) mezi emitory a ' +
+      'detektorem proti optickému přeslechu',
+    value:
+      '"BioMon" multispektrální optický senzor pro tepovou frekvenci a pulzní oxymetrii (PPG + ' +
+      'SpO2) — 1× zelená LED (525 nm) + 1× červená LED (660 nm) + 1× IR LED (950 nm) + 1 PIN ' +
+      'fotodioda v jednom pouzdře',
+    notes:
+      'OSRAM Opto Semiconductors "SFH7050 — BioMon Sensor" (Datasheet v1.1, 20. 4. 2016) — ⚠️ ' +
+      'sourozenecký díl SFH 7051 v této knihovně (samostatný záznam): stejné mechanické pouzdro ' +
+      '(COB, 4,7×2,5×0,9 mm, stejný typ fotodiodového detektoru — shodná plocha 1,7 mm²/1,3×1,3mm, ' +
+      'temný proud typ. 1 nA, kapacita typ. 5 pF), ale zásadně odlišná sada emitorů: SFH 7051 má ' +
+      'TŘI STEJNÉ zelené LED (pouze pro tepovou frekvenci), zatímco SFH7050 má TŘI RŮZNOBAREVNÉ ' +
+      'emitory — zelenou (525 nm), červenou (660 nm) a infračervenou (950 nm) — kombinace nutná ' +
+      'pro pulzní oxymetrii (SpO2), kde se saturace kyslíku v krvi počítá z poměru absorpce ' +
+      'červeného a IR záření okysličeným/neokysličeným hemoglobinem, zatímco zelená složka slouží ' +
+      'pro přesnější detekci tepové frekvence (menší citlivost na pohybové artefakty u povrchových ' +
+      'cév). Bez vlastní zesilovací elektroniky (čistě diskrétní optický front-end, vyžaduje ' +
+      'externí analogový front-end/zesilovač — viz koncepčně příbuzný MAX86141 uvnitř Maxim ' +
+      'MAXREFDES103# v této knihovně). Emitory (jednotlivě, IF=20mA): Zelená — λpeak 525 nm, VF ' +
+      'typ. 3,4 V (max 4,4 V), Ie typ. 1,3 mW/sr, Φe typ. 2,9 mW, tr/tf typ. 32 ns, IF max 25 mA. ' +
+      'Červená — λpeak 660 nm, VF typ. 2,1 V (max 2,8 V), Ie typ. 2,6 mW/sr, Φe typ. 6,4 mW, tr/tf ' +
+      'typ. 17 ns, IF max 40 mA. Infračervená — λpeak 950 nm, VF typ. 1,3 V (max 1,8 V), Ie typ. ' +
+      '2 mW/sr, Φe typ. 5,3 mW, tr/tf typ. 16 ns, IF max 60 mA (nejvyšší z trojice, odpovídá i ' +
+      'nejvyššímu povolenému surge proudu 1 A). Detektor: fotoproud typ. 0,42 µA @530nm, 0,76 µA ' +
+      '@655nm, 1,3 µA @940nm (všechny @Ee=0,1mW/cm²/VR=5V) — spektrální citlivost roste s vlnovou ' +
+      'délkou (0,26 A/W @530nm až 0,77 A/W @940nm), špička citlivosti @920nm, rozsah 400–1100 nm. ' +
+      'Provozní/skladovací teplota -40 až +85 °C. ESD odolnost 2 kV (HBM). Určeno pro nositelnou ' +
+      'elektroniku (chytré hodinky, fitness náramky) a mobilní zařízení s funkcí měření tepové ' +
+      'frekvence a saturace kyslíku v krvi.',
+    tags: 'io,senzor,ppg,spo2,pulzní-oxymetrie,biomon,tepová-frekvence,fotodioda,osram,sfh7050,wearable,optický',
+  },
+  {
     name: 'SCD40',
     packageType:
       'LGA 10,1×10,1×6,5 mm, 21 vývodů (VDD, VDDH, GND, SDA, SCL, zbytek DNC — nutno pájet i ' +
