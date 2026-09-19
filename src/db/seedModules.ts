@@ -1438,6 +1438,35 @@ const MODULE_SPECS: ModuleSpec[] = [
       'EXG-08.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,pnp,nerez,kabel,5m,pur,m8,ip67,průmyslový',
   },
+  {
+    name: 'NBB2-12GM60-A2',
+    packageType:
+      'Válcové závitové pouzdro M12×1 (threaded barrel), mosaz s niklovým povlakem, délka 60 mm, ' +
+      'aktivní čelo PBT, indikační žlutá LED, integrální kabel PVC 2 m (0,14 mm², 4 žíly: ' +
+      'BN=L+, BK=NO výstup, WH=NC výstup, BU=L-), v balení 2 pojistné matice',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, zapustitelný ("embeddable"), spínací ' +
+      'vzdálenost 2 mm, 4vodičové DC zapojení, KOMPLEMENTÁRNÍ PNP výstup (současně NO i NC), ' +
+      '10–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBB2-12GM60-A2" (083762_eng.xml, vydáno 2011/2012) — ⚠️ ' +
+      'jiné pouzdro (M12 místo M8) a JINÝ typ instalace než skupina "NBB2-8GM/GS" v této knihovně ' +
+      '(NBB2-8GM25-E0-V3/E2-V3, NBB2-8GM40-E2-V1, NBB2-8GM50-E0/E2-5M, NBB2-8GS35-E2-V1, ' +
+      'NBB2-8GS40-E2-5M-PUR, samostatné záznamy) — přestože číslo "2" v označení v obou případech ' +
+      'značí jmenovitou spínací vzdálenost 2 mm, "NBB2-12" je zapustitelný ("embeddable" — jako ' +
+      'NBB1-4GM22-E0, na rozdíl od zápustného/"flush" NBB2-8) a má navíc KOMPLEMENTÁRNÍ PNP ' +
+      'výstup (současně poskytuje NO i NC signál na oddělených vodičích BK/WH) — analogický ' +
+      'princip jako komplementární NPN výstup u kapacitního senzoru TURCK BC10-Q14-VN4X2 v této ' +
+      'knihovně, zde ovšem PNP a u indukčního senzoru. Korekční faktory dle materiálu cíle: ' +
+      'rAl=0,25, rCu=0,15, r304/nerez=0,66. Zajištěná spínací vzdálenost 0–1,62 mm. Spínací ' +
+      'kmitočet 0–1000 Hz. Hystereze typ. 5 %. Úbytek napětí max 3 V. Provozní proud 0–200 mA, ' +
+      'klidový proud max 20 mA, zbytkový proud typ. 0,5 mA (0,1 µA @25°C). Funkční bezpečnostní ' +
+      'parametry: MTTFd 3220 let (nejvyšší v celé rodině NBB v této knihovně), doba mise 20 let, ' +
+      'diagnostické pokrytí 0 %. Krytí IP67. Provozní teplota -25 až +70 °C. Shoda EN/IEC ' +
+      '60947-5-2, UL/CSA certifikace. Dostupné příslušenství: montážní příruba BF 12, ' +
+      'rychloupínací konzole EXG-12 (shodné s NBB4-12GM75-US).',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,pnp,komplementární,m12,embeddable,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
