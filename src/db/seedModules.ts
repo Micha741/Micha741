@@ -3309,6 +3309,41 @@ const MODULE_SPECS: ModuleSpec[] = [
       'smáčivost nátěru. Certifikace: c UL us (Listed), CE (EU EMC), RCM. RoHS.',
     tags: 'modul,senzor,tlak,vysokotlaký,tenkovrstvý,npn,analogový,festo,spaw-p25r,displej,g12,nerez',
   },
+  {
+    name: 'SRBE-CA3-YR90-MW-22A-1W-C2M20-EX',
+    packageType:
+      'Kruhová skříň s montážní přírubou dle ISO 5211/VDI-VDE 3845 (velikost AA1) pro montáž na ' +
+      'čtvrtotáčkové pohony ventilů, pouzdro tlakově lité hliníkové (ATEX Ex db pevný závěr), ' +
+      'hřídel/šrouby/montážní konzole/pojistný kroužek/disk z vysoce legované nerezi, ukazatel ' +
+      'polohy PC (žlutý/červený), těsnění NBR, kabelová průchodka M20×1,5, hmotnost 1700 g',
+    value:
+      'Mechanická senzorová skříň ("sensor box") pro zpětnou vazbu polohy čtvrtotáčkového ' +
+      'ventilového pohonu — 1× mechanický přepínací (toggle) spínač s jedním pólem, rozsah ' +
+      'detekce úhlu 0–90°, AC/DC univerzální zapojení 0–250 V AC / 0–30 V DC, ATEX certifikace ' +
+      'pro zóny 1/2/21/22',
+    notes:
+      'Festo AG & Co. KG "Sensor box SRBE-CA3-YR90-MW-22A-1W-C2M20-EX" (obj. č. 3471009, datový ' +
+      'list 28.7.2021) — ⚠️ jiná koncepce polohové zpětné vazby než NBN3-F31K-E8-K (kompaktní ' +
+      'jednotka se DVĚMA indukčními kanály + integrovaný budič solenoidového ventilu, pro pohony ' +
+      'řady F31) v této knihovně: SRBE-CA3-... je MECHANICKÁ snímací skříň s klasickým ' +
+      'PŘEPÍNACÍM (toggle) KONTAKTNÍM spínačem (ne bezkontaktní indukční jako NBN3-F31K), montovaná ' +
+      'dle PRŮMYSLOVÉHO STANDARDU ISO 5211/VDI-VDE 3845 (univerzální pro širokou škálu ' +
+      'čtvrtotáčkových pohonů, ne specificky pro řadu F31), BEZ integrovaného ventilového budiče ' +
+      '(čistě polohová zpětná vazba, ovládání ventilu řeší samostatný poziciner/solenoid). ' +
+      'Certifikace ATEX pro zóny 1/2/21/22 (kategorie II 2G Ex db IIC T6 Gb pro plyny, II 2D Ex ' +
+      'tb IIIC T75°C Db pro prach) — širší pokrytí (zóny 1/2, ne jen 2 jako u elektronických ' +
+      'senzorů SMT-8M-A-ZS/SMPO-8E v této knihovně) díky "pevnému závěru" (flameproof enclosure) ' +
+      'hliníkové skříně, plus certifikace mimo EU (Brazílie, Čína, Jižní Korea, IECEx, Indie) a ' +
+      'bezpečnostní úroveň SIL 2. Mechanický přepínací kontakt: univerzální AC/DC zapojení, max. ' +
+      'proud 10 A AC / 6 A DC — výrazně vyšší spínací výkon než elektronické proximity senzory v ' +
+      'této knihovně (max. stovky mA), typické pro přímé spínání signalizačních obvodů/houkaček ' +
+      'bez meziobvodu. Připojení šroubovými svorkami (10pin, průřez vodiče 0,25–2,5 mm², kabelová ' +
+      'průchodka M20×1,5). Zařazeno do kategorie "Modul" jako kompletní osazený produkt. Krytí ' +
+      'IP67, stupeň znečištění 3. Odolnost proti vibracím/rázům dle EN 60068-2-6/2-27. Provozní/ ' +
+      'skladovací teplota -20 až +60 °C (výbušné prostředí rovněž -20 až +60 °C). Certifikace: CE ' +
+      '(ATEX + Low Voltage Directive), RoHS.',
+    tags: 'modul,senzor,poloha,mechanický-spínač,ventilová-jednotka,pneumatický-pohon,atex,sil2,festo,srbe,ip67',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {

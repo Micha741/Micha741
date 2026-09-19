@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    605 běžných součástek: 106 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    606 běžných součástek: 106 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; a laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220),
@@ -61,7 +61,7 @@ i návrh schémat obvodů a plošných spojů.
     ACS754xCB-150/ACS755xCB-050 (Hallův jev), reflexní optický senzor Honeywell
     HOA0709-011, optické PPG senzory OSRAM SFH 7051 (tepová frekvence), SFH7050
     (tepová frekvence + SpO2) a SFH7060 (5 emitorů, tepová frekvence + SpO2), a proudové
-    senzory CUI CSXX05B series aj.), 107 modulů
+    senzory CUI CSXX05B series aj.), 108 modulů
     (Wi-Fi/BLE: ESP32-C3-MINI-1, ESP32-C3-WROOM-02, Adafruit Feather
     HUZZAH ESP8266, ESP8684-MINI-1, ESP-12S; nízkonapěťové odpojovače baterie Alfatronix
     PowerTector PT10/PT20/PT40/PT60/PT100/PT200; LoRaWAN senzor LEO-S55 a brány USM-S67;
@@ -121,8 +121,9 @@ i návrh schémat obvodů a plošných spojů.
     SPAW-B11R-G14F-2N-M12 (tenkovrstvý senzor -1 až 10 bar, celokovový, NPN) a
     SPAW-P100R-G14F-2N-M12 (vysokotlaký tenkovrstvý senzor 0-100 bar, celokovový, G1/4) a
     SPAW-P50R-G12M-2N-M12 (vysokotlaký tenkovrstvý senzor 0-50 bar, celokovový),
-    SPAW-P25R-G12M-2NV-M12 (0-25 bar, spínací + analogový výstup současně) a optický senzor
-    prachu/PM2.5 Winsen ZPH02), 2 konektory/přepěťové
+    SPAW-P25R-G12M-2NV-M12 (0-25 bar, spínací + analogový výstup současně), optický senzor
+    prachu/PM2.5 Winsen ZPH02 a ATEX senzorová skříň polohy ventilu Festo
+    SRBE-CA3-YR90-MW-22A-1W-C2M20-EX (mechanický přepínací spínač)), 2 konektory/přepěťové
     ochrany (Ethernet/PoE
     bleskojistka ESP-100-POE; kolíková lišta Foxconn HB12201) a 8 ostatních součástek (RF
     koaxiální směrový odbočovač SAGE
