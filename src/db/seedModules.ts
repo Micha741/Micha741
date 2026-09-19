@@ -1410,6 +1410,34 @@ const MODULE_SPECS: ModuleSpec[] = [
       'konektorové kabely V1-G/V1-W/V1-G-2M-PUR/V1-W-2M-PUR, rychloupínací konzole EXG-08.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,pnp,nerez,m8,m12,konektor,ip67,průmyslový',
   },
+  {
+    name: 'NBB2-8GS40-E2-5M-PUR',
+    packageType:
+      'Válcové závitové pouzdro M8×1 (threaded barrel), NEREZOVÁ OCEL 1.4305/AISI 303, délka ' +
+      '40 mm, aktivní čelo LCP, indikační žlutá LED, integrální kabel PUR 5 m (Ø3,3 mm, 3 žíly ' +
+      '0,14 mm²: BN=L+, BK=výstup, BU=L-), v balení 2 šestihranné matice',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, NEREZOVÉ provedení, spínací vzdálenost 2 mm ' +
+      '(zápustná montáž), rozšířený teplotní rozsah -40 až +85 °C, 3vodičové DC zapojení, PNP ' +
+      'výstup, spínací (NO) kontakt, 5–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBB2-8GS40-E2-5M-PUR" (304615-0091_eng.xml, vydáno 5. 8. ' +
+      '2019) — ⚠️ kabelová (integrální PUR kabel 5 m) obdoba konektorového NBB2-8GS35-E2-V1 v ' +
+      'této knihovně (samostatný záznam) — shodné nerezové pouzdro a korekční faktory (rAl=0,2, ' +
+      'rCu=0,1, r304/nerez=0,55, rBrass=0,25), shodná elektrika (PNP, 2mm, 5–30V DC, 6000 Hz), ' +
+      'ale bez konektoru — kratší tělo (40 mm vs 60 mm u konektorové verze, protože chybí M12 ' +
+      'konektorová objímka) s přímo vyvedeným kabelem PUR (odolnější vůči olejům/chemikáliím než ' +
+      'PVC) namísto zásuvného M12 konektoru. Zároveň nerezová obdoba mosazného NBB2-8GM50-E2-5M v ' +
+      'této knihovně (oba PNP s integrálním 5m kabelem) — liší se materiálem pouzdra (nerez vs ' +
+      'mosaz) a tím i korekčními faktory (viz NBB2-8GS35-E2-V1 pro srovnání s "GM" mosaznou ' +
+      'skupinou). Zajištěná spínací vzdálenost 0–1,62 mm. Hystereze typ. 5 %. Úbytek napětí max ' +
+      '1,5 V. Provozní proud 0–100 mA, klidový proud max 10 mA, zbytkový proud max 0,2 mA. ' +
+      'Zpoždění dostupnosti po zapnutí max 100 ms. Funkční bezpečnostní parametry: MTTFd 960 ' +
+      'let, doba mise 20 let, diagnostické pokrytí 0 %. Krytí IP67. UL certifikace (Class 2 ' +
+      'Power Source). Dostupné příslušenství: montážní příruba BF 8, rychloupínací konzole ' +
+      'EXG-08.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,pnp,nerez,kabel,5m,pur,m8,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
