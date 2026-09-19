@@ -1635,6 +1635,41 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,senzor,proud,hallův-jev,proudový-senzor,galvanické-oddělení,allegro,acs754,izolovaný,chopper,automotive',
   },
   {
+    name: 'ACS754xCB-150',
+    packageType:
+      'Pouzdro "CB" ve 3 variantách tvaru vývodů: CB-PFF (formované signálové piny i silové ' +
+      'terminály), CB-PSF (formované piny, rovné terminály), CB-PSS (rovné piny i terminály) — ' +
+      'shodné mechanické provedení jako ACS754xCB-050 v této knihovně, 3 signálové piny ' +
+      '(1=VCC, 2=GND, 3=VOUT) + 2 silové terminály primárního vodiče (4=IP+, 5=IP-)',
+    value:
+      'Hallův lineární izolovaný senzor proudu (chopper-stabilizovaný BiCMOS Hall IC), obousměrný ' +
+      '±150 A, citlivost 13,3 mV/A typ., napájení 5,0 V, izolační napětí 3 kVRMS, dostupný v ' +
+      'průmyslové (S, -20 až +85 °C) i automotive (K, -40 až +125 °C) teplotní verzi',
+    notes:
+      'Allegro MicroSystems "ACS754xCB-150" katalogový datasheet (ACS754150-DS, Rev. 4) — ⚠️ ' +
+      'vyšší-proudová varianta ACS754xCB-050 v této knihovně (samostatný záznam): stejné ' +
+      'mechanické pouzdro (CB-PFF/PSF/PSS), stejný princip funkce (chopper-stabilizovaný Hall IC ' +
+      's integrovaným měděným vodivým můstkem primárního proudu, typ. odpor 100 µΩ) a stejné ' +
+      'napájení/izolace, ale rozsah měřeného proudu ±150 A (oproti ±50 A u -050 verze) za cenu ' +
+      'úměrně nižší citlivosti 13,3 mV/A typ. (oproti 40 mV/A u -050 verze) — daný stejným ' +
+      'napěťovým rozkmitem výstupu roztaženým na širší proudový rozsah. ⚠️ POZOR: teplotní verze ' +
+      'automotive rozsahu je zde označena písmenem "K" (-40 až +125 °C), NIKOLI "L" jako u ' +
+      'ACS754xCB-050 (tam "L" = -40 až +150 °C) — odlišné písmenné kódy pro odlišné rozsahy v ' +
+      'rámci téže produktové řady, nutno pečlivě rozlišovat při objednávání. Objednací kódy: ' +
+      'ACS754KCB-150-PFF/PSF/PSS (automotive, -40 až +125 °C) a ACS754SCB-150-PFF/PSF/PSS ' +
+      '(standardní, -20 až +85 °C) — do knihovny přidán jako jeden souhrnný záznam pro celou ' +
+      '"xCB-150" řadu. Citlivost: S řada 12,8–14,0 mV/A @-20~85°C; K řada 12,3–14,2 mV/A ' +
+      '@-40~125°C. Nelinearita max ±0,8 % (S) / ±1,3 % (K). Symetrie 98–102 %. Celková chyba ' +
+      'výstupu max ±1,0 % @25°C / ±5,0 % (S) resp. ±7,4 % (K). Magnetický offset (po přebuzení ' +
+      '150 A) max ±0,30 A (S) / ±0,40 A (K). Šířka pásma (-3dB) 35 kHz, doba náběhu typ. 10 µs, ' +
+      'doba odezvy typ. 11 µs, doba zpoždění typ. 4 µs. Napájení VCC 4,5–5,5 V (typ. 5,0 V), ' +
+      'odběr typ. 8 mA (max 10 mA). Izolační napětí 3 kVRMS (60 Hz, 1 minuta), TÜV certifikace ' +
+      '(certifikát U8V 04 11 54214 001, shodný s ACS754xCB-050). Max. teplota přechodu 165 °C, ' +
+      'max. skladovací teplota 170 °C. Určeno pro řízení motorů, servo systémy, konverzi výkonu, ' +
+      'monitorování baterií, průmyslové a automotive aplikace.',
+    tags: 'io,senzor,proud,hallův-jev,proudový-senzor,galvanické-oddělení,allegro,acs754,izolovaný,chopper,automotive',
+  },
+  {
     name: 'SCD40',
     packageType:
       'LGA 10,1×10,1×6,5 mm, 21 vývodů (VDD, VDDH, GND, SDA, SCL, zbytek DNC — nutno pájet i ' +
