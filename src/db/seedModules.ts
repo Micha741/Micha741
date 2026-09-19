@@ -1834,6 +1834,42 @@ const MODULE_SPECS: ModuleSpec[] = [
       'V1-W/V1-G-2M-PUR/V1-W-2M-PUR.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb8,npn,komplementární,automotive,e1,ip68,ip69k,m18,průmyslový',
   },
+  {
+    name: 'GRSE18S-N2421V',
+    packageType:
+      'Sada 2 válcových závitových pouzder M18×1 (vysílač + přijímač), nerezová ocel V4A ' +
+      '(1.4404, 316L), délka 55,9 mm, optika PMMA, zásuvný konektor M12×1, 4pinový (na obou ' +
+      'jednotkách), 4× LED indikátor, dodávané upevňovací matice (4×), max. utahovací moment ' +
+      '90 Nm',
+    value:
+      'Jednocestná závora (through-beam) fotoelektrický senzor, pár vysílač+přijímač, IR světlo ' +
+      '850 nm, dosah 0–10 m (max 15 m), komplementární NPN výstup (přijímač), 10–30 V DC',
+    notes:
+      'SICK AG "GRSE18S-N2421V — GR18 Inox" (Online Data Sheet, díl. č. 1085766, 7. 12. 2017) — ' +
+      '⚠️ jde o SADU DVOU samostatných jednotek (vysílač + přijímač) prodávanou pod jedním ' +
+      'objednacím číslem — "S" (vysílač, samostatný díl 2091197 "GRS18S-D2421V") a "E" (přijímač, ' +
+      'samostatný díl 2091200 "GRE18S-N2411V") — narozdíl od reflexního senzoru Honeywell ' +
+      'HOA0709-011 v této knihovně (kde jsou emitor i detektor v JEDNOM společném pouzdře), tady ' +
+      'jde o DVĚ FYZICKY ODDĚLENÉ jednotky umístěné proti sobě přes sledovanou dráhu — princip ' +
+      '"through-beam" (jednocestná závora): paprsek musí projít od vysílače k přijímači bez ' +
+      'překážky, objekt detekován přerušením paprsku — umožňuje výrazně delší dosah (až 15 m) ' +
+      'než reflexní/difuzní senzory, ale vyžaduje instalaci a zapojení obou jednotek na ' +
+      'protilehlých stranách sledované dráhy. Nerezové pouzdro V4A (potravinářský/chemický ' +
+      'průmysl), IR LED zdroj (životnost 100 000 h @25°C), vlnová délka 850 nm, velikost ' +
+      'světelné stopy Ø420 mm @10m. Bez možnosti seřízení citlivosti ("Adjustment: None"). ' +
+      'Přijímač: výstup NPN, KOMPLEMENTÁRNÍ funkce (Q=spínací + NOT_Q=rozpínací současně na ' +
+      'oddělených pinech), signálové napětí HIGH≈VS/LOW≤3V, max. výstupní proud 100 mA (50 mA ' +
+      'při VS>24V nebo teplotě >49°C), doba odezvy <500 µs, spínací kmitočet ±1000 Hz. Test ' +
+      'vstup na vysílači (BK pin) umožňuje vypnutí vysílače pro diagnostiku ("Test" = 0V vypne ' +
+      'sender). Napájení 10–30 V DC, odběr max 30 mA. Ochrany: A (přepólování napájení), B ' +
+      '(přepólování vstupů/výstupu), D (nadproudová/zkratová ochrana výstupů). Krytí IP67/IP68 ' +
+      '(10m/24h dle EN 60529)/IP69K (dle ISO 20653) — vysoký stupeň krytí vhodný pro mytí pod ' +
+      'tlakem. Certifikace ECOLAB (odolnost vůči čisticím prostředkům v potravinářství), UL. ' +
+      'Provozní teplota -25 až +55 °C, skladovací -30 až +75 °C. Zařazeno do kategorie "Modul" ' +
+      'jako kompletní osazený produkt s vlastní elektronikou/konektorem, obdobně jako fotoelektrické ' +
+      'snímače SICK WTB250-2N1131/WTB250-2N1151 v této knihovně.',
+    tags: 'modul,senzor,fotoelektrický,optický,through-beam,jednocestná-závora,sick,gr18-inox,nerez,m18,ip69k,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
