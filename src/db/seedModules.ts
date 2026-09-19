@@ -3243,6 +3243,43 @@ const MODULE_SPECS: ModuleSpec[] = [
       '(Listed), CE (EU EMC), RCM, KC EMC. RoHS.',
     tags: 'modul,kamera,vizuální-senzor,vision-sensor,barevný,color-sensor,ethernet,festo,sbsi,průmyslový',
   },
+  {
+    name: 'SBSI-Q-AF-R2B-F12-W',
+    packageType:
+      'Kompaktní kvádrové pouzdro s chladicími žebry, tvářená hliníková slitina (eloxovaná) + ' +
+      'kryt ABS s výztuží, rozměry 45×45×76,7 mm, hmotnost 160 g, INTEGROVANÁ pevná optika ' +
+      '(ohnisko 12 mm) s vestavěným bílým LED osvětlením, zaostření nastavitelným šroubem, ' +
+      'konektory M12 (Ethernet 4pin, sériové rozhraní 5pin, napájení/IO 12pin), lze doplnit ' +
+      'ochrannou trubicí objektivu',
+    value:
+      'Průmyslový MONOCHROMNÍ vizuální senzor ("object sensor") s integrovanou optikou a ' +
+      'osvětlením, monochromní CMOS snímač 1280×1024 px (SXGA), 40 fps, plná sada geometrických ' +
+      'detektorů (tvar, kontura, hrany, BLOB), BEZ čtení kódů, Ethernet, 24 V DC',
+    notes:
+      'Festo AG & Co. KG "Object sensor SBSI-Q-AF-R2B-F12-W" (obj. č. 8058730, datový list ' +
+      '2.6.2021, typový kód "SBSI") — třetí varianta ve stejné SBSI/SBSC vizuální rodině Festo v ' +
+      'této knihovně, umístěná mezi univerzálním senzorem SBSC-U-AF-R2B a barevnými senzory ' +
+      'SBSI-F-R3C-F6-W/SBSI-F-AF-R3C-F12-W — ⚠️ "Object sensor" kombinuje vlastnosti obou: má ' +
+      'stejný MONOCHROMNÍ snímač vysokého rozlišení 1280×1024 SXGA jako univerzální senzor ' +
+      'SBSC-U-AF-R2B (na rozdíl od barevných senzorů SBSI-F.../SBSI-F-AF... s nižším rozlišením ' +
+      '736×480), ale INTEGROVANOU pevnou optiku s vestavěným bílým LED osvětlením (ohnisko 12 mm, ' +
+      'shodné s SBSI-F-AF-R3C-F12-W) místo vyměnitelného CS mount objektivu bez vlastního ' +
+      'osvětlení u univerzálního senzoru. Plná programovací kapacita 255 programů/255 detektorů ' +
+      '(shodně s univerzálním senzorem a s plnou barevnou variantou F12-W). Detektory: sledování ' +
+      'polohy přes kontur, porovnávání vzorů, porovnávání kontur, detekce hran, kontrast, jas, ' +
+      'prahování šedé úrovně, Vernier caliper, BLOB — STEJNÁ geometrická sada jako univerzální ' +
+      'senzor, ale ⚠️ BEZ ČTENÍ ČÁROVÝCH/2D KÓDŮ A OCR (na rozdíl od SBSC-U-AF-R2B) a přirozeně ' +
+      'bez barevných detektorů (na rozdíl od SBSI-F.../SBSI-F-AF..., protože jde o monochromní ' +
+      'snímač) — určeno čistě pro geometrickou/tvarovou inspekci objektů bez identifikace kódů ' +
+      'nebo barvy. Zorné pole min. 16×13 mm. Stejné digitální I/O (2+2+4 volitelné, PNP/NPN ' +
+      'přepínatelné, max. 50 mA), stejné napájení 24 V DC (-25 %/+10 %), max. spotřeba 550 mA. ' +
+      'Provozní teplota 0 až +50 °C, skladovací -20 až +60 °C. Krytí IP67 (s ochrannou trubicí ' +
+      'objektivu). Zařazeno do kategorie "Modul" jako kompletní osazený přístroj s vlastním ' +
+      'procesorem/optikou/osvětlením/konektory, stejně jako ostatní Festo vizuální senzory v ' +
+      'této knihovně. Odolnost proti vibracím dle EN 60068-2-6, proti rázům dle EN 60068-2-27. ' +
+      'Certifikace: c UL us (Listed), CE (EU EMC), RCM, KC EMC. RoHS.',
+    tags: 'modul,kamera,vizuální-senzor,vision-sensor,object-sensor,monochromní,ethernet,festo,sbsi,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
