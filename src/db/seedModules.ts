@@ -1531,6 +1531,40 @@ const MODULE_SPECS: ModuleSpec[] = [
       'příruba BF 12, konektorové kabely V1-G/V1-W/V1-G-2M-PUR/V1-W-2M-PUR.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb4,pnp,komplementární,automotive,e1,ip68,ip69k,m12,průmyslový',
   },
+  {
+    name: 'NBB4-12GM50-E2-3G-3D',
+    packageType:
+      'Válcové závitové pouzdro M12×1 (threaded barrel), mosaz s niklovým povlakem, délka 50 mm, ' +
+      'aktivní čelo PBT, indikační žlutá LED, integrální kabel PVC 2 m (Ø3,5 mm, 3 žíly ' +
+      '0,14 mm²: BN=L+, BK=výstup, BU=L-)',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, ATEX certifikovaný pro výbušné prostředí ' +
+      '(zóna 2 — plyny, zóna 22 — prach), spínací vzdálenost 4 mm (zápustná montáž), 3vodičové ' +
+      'DC zapojení, PNP výstup, spínací (NO) kontakt, 10–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBB4-12GM50-E2-3G-3D" (212060_eng.xml, vydáno 5. 8. 2019) ' +
+      '— ⚠️ PRVNÍ ATEX certifikovaný senzor v rámci rodiny NBB v této knihovně — na rozdíl od ' +
+      'automotive varianty NBB4-12GM35-A2-V1-M1 (E1-Type approval, ISO 7637-2/EMC pro palubní ' +
+      'sítě vozidel) jde o certifikaci pro PROSTŘEDÍ S NEBEZPEČÍM VÝBUCHU: kategorie 3G (zóna 2 ' +
+      '— občasný výskyt výbušné atmosféry plynů/par, ochrana "Ex nA IIC T6 Gc" dle EN 60079-0/ ' +
+      'EN 60079-15, "ignition protection category n" — bezjiskrové provedení) a 3D (zóna 22 — ' +
+      'občasný výskyt hořlavého prachu, ochrana "Ex tc IIIC T80°C Dc" dle EN 60079-0/EN 60079-31 ' +
+      '— ochrana krytem). Certifikát PF 15CERT3754 X. ⚠️ ZVLÁŠTNÍ PODMÍNKY POUŽITÍ: max. ' +
+      'přípustná okolní teplota závisí na zátěžovém proudu a napájecím napětí — @UBmax=30V/ ' +
+      'IL=150mA max 45°C, @UBmax=30V/IL=100mA max 49°C (vyšší proudy/napětí nejsou v Ex prostředí ' +
+      'přípustné, zkraty zátěže zakázány) — pro plné podmínky nutno konzultovat instrukční ' +
+      'manuál výrobce, ne jen tento datasheet. Elektricky/mechanicky nejbližší NBB4-12GM30-E2-V3 ' +
+      'v této knihovně (oba PNP, 3vodičové, M12 snímací pouzdro), ale s integrálním kabelem ' +
+      'místo konektoru a nižším spínacím kmitočtem 1000 Hz (vs 500 Hz u GM30 — pozor, zde je ' +
+      'VYŠŠÍ). Korekční faktory: rAl=0,45, rCu=0,35, r304/nerez=0,7. Zajištěná spínací vzdálenost ' +
+      '0–3,24 mm. Hystereze typ. 5 %. Úbytek napětí max 3 V. Doba dostupnosti po zapnutí max ' +
+      '5 ms (nejrychlejší v rodině NBB4-12 v této knihovně). Funkční bezpečnostní parametry: ' +
+      'MTTFd 1820 let, doba mise 20 let, diagnostické pokrytí 0 %. Krytí IP67. Provozní teplota ' +
+      '-25 až +70 °C (standardní, viz ovšem výše uvedené Ex-specifické teplotní omezení dle ' +
+      'proudu/napětí). UL/CSA certifikace. Dostupné příslušenství: montážní příruba BF 12, ' +
+      'rychloupínací konzole EXG-12.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb4,pnp,atex,ex,výbušné-prostředí,m12,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
