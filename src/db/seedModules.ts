@@ -2600,6 +2600,56 @@ const MODULE_SPECS: ModuleSpec[] = [
       '+ RoHS), RCM.',
     tags: 'modul,senzor,tlak,analogový,piezorezistivní,festo,sde5,qs-konektor,m8,transmitter',
   },
+  {
+    name: 'SDE5-D10-O-Q6E-P-M8',
+    packageType:
+      'Kompaktní kvádrové pouzdro, materiál PA + POM, pneumatická přípojka zásuvná QS-6 (rychlo' +
+      'spojka pro hadičku Ø6 mm), elektrický konektor M8×1 (3piny, kruhové provedení), montáž ' +
+      'příslušenstvím, hmotnost 19 g',
+    value:
+      'Jednoduchý tlakový spínač bez displeje (piezorezistivní princip), měřicí rozsah 0–10 bar, ' +
+      '1× PNP spínací výstup (prahová hodnota s pevnou hysterezí, N/O), 15–30 V DC',
+    notes:
+      'Festo AG & Co. KG "Pressure sensor SDE5-D10-O-Q6E-P-M8" (obj. č. 527467, datový list ' +
+      '14.5.2021) — velmi podobný SDE5-D10-C-Q4E-P-M8 (obj. č. 542889) v této knihovně (stejná ' +
+      'SDE5 řada, stejný piezorezistivní princip, rozsah 0–10 bar, M8×1 konektor, spínací funkce ' +
+      '"threshold value with fixed hysteresis") — ⚠️ liší se ve dvou detailech: (1) spínací ' +
+      'element je N/O (spínací) kontakt, zatímco SDE5-D10-C-Q4E-P-M8 má N/C (rozpínací) kontakt — ' +
+      'opačná polarita spínání; (2) větší pneumatická rychlospojka QS-6 pro hadičku Ø6 mm místo ' +
+      'QS-4 pro Ø4 mm. Zkratová ochrana, ochrana proti přepólování na všech vývodech, max. ' +
+      'výstupní proud 100 mA. Žlutá LED indikace sepnutí. Zařazeno do kategorie "Modul" jako ' +
+      'kompletní osazený produkt s vlastním konektorem, stejně jako ostatní Festo SDE5/SPAN ' +
+      'tlakové senzory v této knihovně. Krytí IP40, korozní odolnost CRC třída 2. Provozní ' +
+      'teplota média i okolí 0 až +50 °C. Certifikace: c UL us (Recognized), CE (EU EMC + RoHS), ' +
+      'RCM.',
+    tags: 'modul,senzor,tlak,tlakový-spínač,piezorezistivní,pnp,festo,sde5,qs-konektor,m8,no-kontakt',
+  },
+  {
+    name: 'SDE5-V1-NF-Q6-V-M8',
+    packageType:
+      'Kompaktní kvádrové pouzdro, materiál PA + POM, pneumatická přípojka zásuvná QS-6 (rychlo' +
+      'spojka pro hadičku Ø6 mm), elektrický konektor M8×1 (3piny, kruhové provedení), montáž ' +
+      'příslušenstvím, hmotnost 19 g',
+    value:
+      'Analogový VAKUOVÝ tlakový snímač bez displeje (piezorezistivní princip), měřicí rozsah ' +
+      '0 až -1 bar (podtlak), lineární napěťový výstup 0–10 V, 15–30 V DC',
+    notes:
+      'Festo AG & Co. KG "Pressure sensor SDE5-V1-NF-Q6-V-M8" (obj. č. 567464, datový list ' +
+      '14.5.2021) — ⚠️ VAKUOVÁ (podtlaková) varianta analogového tlakového snímače ze stejné SDE5 ' +
+      'rodiny jako SDE5-D10-NF-Q6E-V-M8 (obj. č. 567465) v této knihovně — typový kód "V1" místo ' +
+      '"D10" signalizuje měřicí rozsah OD 0 DO -1 BAR (čistý podtlak/vakuum), zatímco "D10" ' +
+      'varianta měří KLADNÝ tlak 0 až +10 bar — jde tedy o senzor pro zcela jiný typ aplikace ' +
+      '(měření podtlaku, typicky u vakuových přísavek/manipulátorů, na rozdíl od měření tlaku ' +
+      'stlačeného vzduchu). Jinak elektricky/mechanicky shodný s "D10-...-M8" analogovou variantou ' +
+      '— stejný piezorezistivní princip, lineární analogový výstup 0–10 V (0 bar → 0 V, -1 bar → ' +
+      '10 V), přesnost ±3 %FS, linearita ±0,3 %FS, zelená LED "ready", stejné pouzdro PA/POM, ' +
+      'stejný M8×1 konektor a QS-6 přípojka, stejná hmotnost 19 g. Zkratová ochrana, ochrana ' +
+      'proti přepólování na všech vývodech. Zařazeno do kategorie "Modul" jako kompletní osazený ' +
+      'produkt s vlastním konektorem, stejně jako ostatní Festo SDE5/SPAN tlakové senzory v této ' +
+      'knihovně. Krytí IP40, korozní odolnost CRC třída 2. Provozní teplota média i okolí 0 až ' +
+      '+50 °C. Certifikace: c UL us (Recognized), CE (EU EMC + RoHS), RCM.',
+    tags: 'modul,senzor,tlak,vakuum,podtlak,analogový,piezorezistivní,festo,sde5,qs-konektor,m8,transmitter',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
