@@ -3485,6 +3485,40 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Weather Cap, stropní montážní sada RMS/RaDec Ceiling Kit.',
     tags: 'modul,senzor,radar,doppler,pohybový,relé,pepperl-fuchs,rms-g,24ghz,dveře,ce,fcc',
   },
+  {
+    name: 'RMS-M-RC',
+    packageType:
+      'Kompaktní polokulovité pouzdro s otvorem pro LED displej, ABS antracitové barvy, rozměry ' +
+      '123×65×57 mm, hmotnost 120 g, potenciometr citlivosti, programovací tlačítko, LED ' +
+      'indikace (červená/zelená), integrovaný IR přijímač/vysílač pro dálkové ovládání, zásuvné ' +
+      'šroubové svorky (4pin), přiložený připojovací kabel 5 m',
+    value:
+      'Základní radarový (Dopplerův) pohybový senzor s dálkovým ovládáním, jeden relé výstup ' +
+      '(NO/NC), kmitočet 24,15–24,25 GHz (pásmo K), 12–36 V DC / 12–24 V AC, pouze CE (bez FCC)',
+    notes:
+      'Pepperl+Fuchs "Radar sensor RMS-M-RC" (dok. 194554_eng.pdf, vydáno 8.10.2020) — základní ' +
+      '"M" (motion) varianta stejné RMS produktové řady/pouzdra jako RMS-G-RC v této knihovně ' +
+      '(shodná polokulovitá ABS skořepina 123×65×57 mm, hmotnost 120 g) — ⚠️ na rozdíl od ' +
+      'RMS-G-RC (dvě relé, rozlišení osob/vozidel, DUÁLNÍ CE+FCC certifikace) má RMS-M-RC jen ' +
+      'JEDEN relé výstup BEZ rozlišení typu cíle a je certifikován POUZE pro EU (CE 2014/53/EU, ' +
+      'explicitně "FCC approval: No - použití v Severní Americe není povoleno") — funkčně tedy ' +
+      'blíže odpovídá základnímu RaDec-M v této knihovně (stejný detekční rozsah 2×4,5 m / ' +
+      '4,5×2 m při výšce 2200 mm a náklonu 30°, stejný jediný relé výstup, stejné vysílací pásmo ' +
+      'EIRP <20 dBm) — ⚠️ HLAVNÍ ROZDÍL oproti RaDec-M je právě přípona "-RC" (Remote Control): ' +
+      'RMS-M-RC lze na rozdíl od RaDec-M programovat i DÁLKOVĚ přes IR ovladač RMS Remote Control ' +
+      '(RaDec-M nemá IR přijímač, nastavuje se jen potenciometrem na těle) a má více ' +
+      'nastavitelných parametrů přes programovací tlačítko (způsob připojení, doba odpadu, doba ' +
+      'odezvy, chování při rušení) a nastavitelné zpoždění odpadu relé 0,2–10 s (oproti pevným ' +
+      '0,5 s u RaDec-M). Mechanicky odlišné pouzdro od RaDec-M (ABS antracit vs černý ' +
+      'polykarbonát, 123×65×57mm vs 101×60×59mm, 120g vs 130g), zásuvné šroubové svorky (4pin) ' +
+      'místo pevně integrovaného kabelu. Úzký nastavitelný úhel naklopení 0–40° v krocích 5° ' +
+      '(stejné jako RMS-G-RC, užší než 0–90° u RaDec-M). Provozní teplota -20 až +60 °C, ' +
+      'skladovací -30 až +70 °C. Krytí IP54. Zařazeno do kategorie "Modul" jako kompletní osazený ' +
+      'produkt s vlastním kabelem/svorkami, stejně jako ostatní radarové senzory Pepperl+Fuchs v ' +
+      'této knihovně. Dostupné příslušenství: povětrnostní kryt RMS Weather Cap, IR dálkový ' +
+      'ovladač RMS Remote Control, stropní montážní sada RMS/RaDec Ceiling Kit.',
+    tags: 'modul,senzor,radar,doppler,pohybový,relé,pepperl-fuchs,rms-m,24ghz,dveře,ce,dálkové-ovládání',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
