@@ -3665,6 +3665,36 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Power Source), CCC.',
     tags: 'modul,kamera,vizuální-senzor,vision-sensor,polohování,regálový-zakladač,profinet,pepperl-fuchs,pha400,ir-osvětlení,skladová-automatizace',
   },
+  {
+    name: 'PHA400-F200-B17-V1D',
+    packageType:
+      'Kompaktní kvádrové pouzdro, materiál PC/ABS, optické čelo plastová destička, rozměry ' +
+      '70×70×50 mm (housing), celková instalační výška 80 mm kvůli JINÉ ORIENTACI konektorů — ' +
+      'zadní/spodní vyvedení (M12×1, 9 mm protažení, montáž 4× M6) — místo bočního vyvedení u ' +
+      '"F200A" varianty, hmotnost ~200 g, integrovaný IR LED prstenec, 7 stavových LED, 2 ' +
+      'tlačítka pro parametrizaci',
+    value:
+      'Specializovaný vizuální senzor ("Vision Sensor") pro přesné polohování regálových ' +
+      'zakladačů — detekce kruhových indexovacích otvorů (Ø 13 mm) a jejich odchylky od nominální ' +
+      'polohy ve 2D, CMOS kamera 752×480 px, čtecí vzdálenost 400 mm, PROFINET, 24 V DC',
+    notes:
+      'Pepperl+Fuchs "Vision Sensor PHA400-F200-B17-V1D" (dok. 257498_eng.pdf, vydáno 11.6.2021) ' +
+      '— ELEKTRICKY/FUNKČNĚ ZCELA TOTOŽNÝ vizuální senzor jako PHA400-F200A-B17-V1D (dok. ' +
+      '270875_eng.pdf) v této knihovně — identická kamera (CMOS global shutter 752×480px, 256 ' +
+      'stupňů šedi), identický záběrový rozsah 120×100mm, hloubka ostrosti ±50mm, čtecí ' +
+      'vzdálenost 400mm, odezva 100ms, PROFINET IO RT tř. A 100Mbit/s, napájení 24V DC/6W, IP67, ' +
+      'MTTFd 95 let, stejné jádrové rozměry pouzdra (70×70×50mm dle tabulky mechanických ' +
+      'specifikací) — ⚠️ jediný rozdíl je v ORIENTACI/UMÍSTĚNÍ ELEKTRICKÝCH KONEKTORŮ na pouzdru: ' +
+      'zatímco "F200A" varianta má konektory M12 vyvedené BOČNĚ (tři konektory naskládané ' +
+      'vertikálně na boku, celková šířka s konektory 94,5 mm), tato varianta "F200" (bez "A") má ' +
+      'konektory vyvedené ZEZADU/ZESPODU (protažení 9 mm od zadní stěny), což zvyšuje celkovou ' +
+      'instalační výšku na 80 mm místo 70 mm — jde tedy o dvě mechanicky odlišné konfigurace ' +
+      'vyvedení kabeláže pro RŮZNÉ MONTÁŽNÍ ORIENTACE/PROSTOROVÉ OMEZENÍ na zakladači (boční vs ' +
+      'zadní přístup ke konektorům), ne o rozdílnou funkci senzoru. Zařazeno do kategorie "Modul" ' +
+      'jako kompletní osazený přístroj, stejně jako PHA400-F200A-B17-V1D v této knihovně. ' +
+      'Certifikace shodné: CE, UL (cULus Listed, Class 2 Power Source), CCC.',
+    tags: 'modul,kamera,vizuální-senzor,vision-sensor,polohování,regálový-zakladač,profinet,pepperl-fuchs,pha400,ir-osvětlení,skladová-automatizace',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
