@@ -2488,6 +2488,39 @@ const IC_SPECS: IcSpec[] = [
       'elektronické hudební nástroje.',
     tags: 'io,zesilovač,audio,class-d,dsp,digitální,rohm,bm28723muv,reproduktor,i2s,vqfn',
   },
+  {
+    name: 'BMP280',
+    packageType:
+      '8pin LGA kovové víko (metal-lid), rozměry pouzdra 2,0×2,5 mm, výška 0,95 mm',
+    value:
+      'Digitální absolutní barometrický tlakový senzor (piezorezistivní + mixed-signal ASIC), ' +
+      'rozsah 300–1100 hPa, I²C (do 3,4 MHz) nebo SPI (3/4-vodičové, do 10 MHz), 1,71–3,6 V',
+    notes:
+      'Bosch Sensortec "BMP280 — Digital Pressure Sensor" (dok. BST-BMP280-DS001-26, rev. 1.26, ' +
+      'říjen 2021) — nástupce staršího BMP180 (viz srovnávací tabulka v datasheetu), stejná ' +
+      'proprietární Bosch APSM (Advanced Porous Silicon Membrane) MEMS technologie plně CMOS ' +
+      'kompatibilní s hermeticky utěsněnou kavitou. Pouzdro o 63 % menší než BMP180 (2,0×2,5 mm ' +
+      'vs 3,6×3,8 mm), přidána SPI sběrnice (BMP180 měla jen I²C) a nové IIR filtrovací režimy. ' +
+      'Relativní přesnost ±0,12 hPa (ekv. ±1 m) v rozsahu 700–900 hPa @25°C, absolutní přesnost ' +
+      'typ. ±1 hPa (950–1050 hPa, 0–40°C), teplotní koeficient offsetu 1,5 Pa/K (ekv. 12,6 cm/K). ' +
+      'Spotřeba 2,7 µA @1 Hz vzorkovací rychlosti (nejnižší výkonový režim), špičkový proud během ' +
+      'měření tlaku typ. 720 µA. Tři výkonové režimy: sleep (žádné měření), forced (jedno měření ' +
+      'a návrat do sleep), normal (automatický cyklus měření/nečinnost). Volitelný oversampling ' +
+      'tlaku i teploty nezávisle 0–16× (kombinace ultra low power až ultra high resolution, max. ' +
+      'rozlišení 20 bit/0,16 Pa u tlaku, 20 bit/0,0003°C u teploty). Vestavěný IIR filtr ' +
+      '(koeficient 0/2/4/8/16) pro potlačení krátkodobých rušení (např. bouchnutí dveří). Datový ' +
+      'výstup přes surové ADC hodnoty + kompenzační koeficienty uložené ve výrobě (NVM), ' +
+      'vyžadující výpočet kompenzačního vzorce hostitelským MCU (vzorce pro plovoucí řádovou ' +
+      'čárku i 32bit pevnou řádovou čárku uvedeny v příloze datasheetu). Doba náběhu (start-up) ' +
+      '2 ms max. Max. vzorkovací kmitočet 157–182 Hz (osrs_t=osrs_p=1). Provozní teplota -40 až ' +
+      '+85 °C (plná přesnost 0–65°C), tlak 300–1100 hPa (ekv. +9000 až -500 m nad/pod hladinou ' +
+      'moře). Absolutní max.: napájení -0,3 až 4,25 V, tlak 0–20000 hPa, ESD HBM ±2kV/CDM ±500V/ ' +
+      'MM ±200V. RoHS, bez halogenů, MSL 1. Aplikace: vylepšení GPS navigace (time-to-first-fix, ' +
+      'dead-reckoning), detekce podlaží ve výtahu, outdoor navigace, předpověď počasí, indikace ' +
+      'vertikální rychlosti (výstup/sestup). Cílová zařízení: mobilní telefony, tablety, GPS ' +
+      'zařízení, domácí meteostanice, letecké hračky, hodinky.',
+    tags: 'io,senzor,tlak,barometrický,i2c,spi,mems,piezorezistivní,bosch,bmp280,lga',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
