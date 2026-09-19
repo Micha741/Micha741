@@ -1467,6 +1467,36 @@ const MODULE_SPECS: ModuleSpec[] = [
       'rychloupínací konzole EXG-12 (shodné s NBB4-12GM75-US).',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,pnp,komplementární,m12,embeddable,ip67,průmyslový',
   },
+  {
+    name: 'NBB4-12GM30-E2-V3',
+    packageType:
+      'Válcové závitové pouzdro M12×1 (snímací závitová část), stupňovité tělo zúžené na zadní ' +
+      'straně na menší M8×1 konektorovou objímku (opačná kombinace než NBB2-8GM40-E2-V1 v této ' +
+      'knihovně, kde je snímací závit M8 a konektor M12), mosaz s niklovým povlakem, celková ' +
+      'délka 44 mm, hmotnost 30 g, aktivní čelo PBT, indikační vícedírková žlutá LED, zásuvný ' +
+      'konektor M8×1, 3pinový, piny 1=BN(hnědý)/L+, 4=BK(černý)/výstup, 3=BU(modrý)/L-',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, spínací vzdálenost 4 mm (zápustná montáž, ' +
+      '"increased operating distance" pro M12), 3vodičové DC zapojení, PNP výstup, spínací (NO) ' +
+      'kontakt, 10–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBB4-12GM30-E2-V3" (087737_eng.xml, vydáno 16. 6. 2016) — ' +
+      '⚠️ POZOR na záměnu s dalšími M12 senzory řady NBB v této knihovně: na rozdíl od ' +
+      'NBB4-12GM75-US (stejný snímací závit M12, ale 2vodičové UNIVERZÁLNÍ AC/DC 20–250V/20–300V ' +
+      's integrálním kabelem, bez konektoru) je NBB4-12GM30-E2-V3 čistě DC (10–30 V), 3vodičové ' +
+      'PNP se zásuvným M8 konektorem; na rozdíl od NBB2-12GM60-A2 (stejné M12 pouzdro, ale 2mm ' +
+      'zapustitelný typ s komplementárním NO+NC výstupem) má NBB4-12GM30-E2-V3 vyšší spínací ' +
+      'vzdálenost 4 mm, běžnou zápustnou ("flush") montáž a jednoduchý NO výstup. Korekční ' +
+      'faktory dle materiálu cíle: rAl=0,45, rCu=0,35, r304/nerez=0,7. Zajištěná spínací ' +
+      'vzdálenost 0–3,24 mm. Spínací kmitočet 0–500 Hz. Hystereze typ. 5 %. Ochrana proti ' +
+      'přepólování a pulzní zkratová ochrana. Úbytek napětí max 3 V. Provozní proud 0–150 mA, ' +
+      'klidový proud max 15 mA, zbytkový proud typ. 0,5 mA (0,1 µA @25°C). Zpoždění dostupnosti ' +
+      'po zapnutí max 20 ms. Funkční bezpečnostní parametry: MTTFd 1770 let, doba mise 20 let, ' +
+      'diagnostické pokrytí 0 %. Krytí IP67. Provozní teplota -25 až +70 °C. Shoda EN/IEC ' +
+      '60947-5-2, EAC (TR CU 020/2011), UL/CSA certifikace. Dostupné příslušenství: montážní ' +
+      'příruba BF 12, rychloupínací konzole EXG-12, konektorové kabely V3-GM/V3-WM/V3-WM-2M-PUR.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb4,pnp,m12,m8,konektor,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
