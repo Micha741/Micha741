@@ -184,6 +184,23 @@ i návrh schémat obvodů a plošných spojů.
   - **0 / 000** — rozpozná se jako 0 Ω (propojka)
   - rozpoznaná hodnota jde tlačítkem „Použít” rovnou do formuláře nové součástky
 
+- **Optický (OCR) sken SMD kódu** — automatické čtení kódu vytištěného na pouzdře SMD
+  rezistoru z fotky (tlačítko 🔎 na seznamu součástek):
+  - `expo-image-manipulator` ořízne a zvětší oblast s kódem podle vodicího rámečku
+  - text čte `@react-native-ml-kit/text-recognition` (Google ML Kit **on-device** OCR,
+    běží přímo na zařízení, offline, nic se nikam neodesílá)
+  - z rozpoznaného textu se filtrují kandidáti odpovídající platnému formátu SMD kódu
+    (3místný, 4místný, R-zápis, EIA-96); pokud je kandidátů víc, nabídnou se jako
+    přepínatelné štítky, výchozí je automaticky vybraný nejlepší nález
+  - rozpoznaný/kandidátní kód jde do editovatelného pole (ruční oprava, pokud OCR
+    něco přečte špatně) a odtud tlačítkem „Použít” rovnou do formuláře nové součástky
+  - ⚠️ **vyžaduje custom dev client** — na rozdíl od ostatních funkcí tahle používá
+    nativní modul ML Kit, takže **od této chvíle appka neběží v čistém Expo Go**; je
+    potřeba si sestavit vlastní dev client (`expo-dev-client`), viz sekce Spuštění
+  - ⚠️ přesnost OCR na malém tištěném textu SMD součástek (typicky pod 1 mm výšku
+    znaků) nebyla ověřena na fyzickém zařízení — může být potřeba lepší osvětlení,
+    makro ostření nebo úprava vodicího rámečku
+
 ## Plánováno dál
 
 - Návrh schémat obvodů (schematic capture)
@@ -191,11 +208,26 @@ i návrh schémat obvodů a plošných spojů.
 
 ## Spuštění
 
+⚠️ Appka od zavedení OCR skenu SMD kódu obsahuje nativní modul
+(`@react-native-ml-kit/text-recognition`), takže **už neběží v obyčejném Expo Go** —
+je potřeba vlastní dev client (obsahuje `expo-dev-client`).
+
 ```bash
 npm install
-npm run start      # spustí Expo dev server, naskenuj QR kód v Expo Go
-npm run android     # nebo spusť přímo v Android emulátoru/zařízení
+
+# první sestavení dev clientu (jen jednou / po přidání nativního modulu):
+npx expo prebuild
+npx expo run:android    # sestaví a nainstaluje dev client do emulátoru/zařízení
+# (na iOS: npx expo run:ios, případně `eas build --profile development`)
+
+# běžný vývoj poté:
+npx expo start --dev-client   # naskenuj QR kód v už nainstalovaném dev clientu
 ```
+
+Bez OCR skenu SMD kódu (jen barevný skener + ostatní funkce) by appka v Expo Go
+fungovala i bez dev clientu — nativní modul se ale linkuje automaticky přes
+autolinking, takže současný `npm run android`/`npm run start` (bez `--dev-client`)
+už není spolehlivý postup.
 
 ## Struktura projektu
 
@@ -209,7 +241,8 @@ src/utils/resistorColorCode.ts — tabulka barevného kódu rezistorů, dekódov
 src/utils/imageColorScan.ts — zpracování ořezané fotky (JPEG dekódování, segmentace pásků)
 src/utils/smdResistorCode.ts — dekódování SMD kódů (3místný, 4místný, EIA-96)
 src/navigation/             — React Navigation stack
-src/screens/                — obrazovky (seznam, detail, formulář, sken rezistoru, SMD kalkulačka)
+src/screens/                — obrazovky (seznam, detail, formulář, sken rezistoru,
+                               SMD kalkulačka, OCR sken SMD kódu)
 ```
 
 <!---

@@ -4,6 +4,7 @@ import ComponentDetailScreen from '../screens/ComponentDetailScreen';
 import ComponentFormScreen from '../screens/ComponentFormScreen';
 import ResistorScannerScreen from '../screens/ResistorScannerScreen';
 import SmdCodeCalculatorScreen from '../screens/SmdCodeCalculatorScreen';
+import SmdCodeScannerScreen from '../screens/SmdCodeScannerScreen';
 
 export interface ComponentFormPrefill {
   name?: string;
@@ -21,6 +22,7 @@ export type RootStackParamList = {
   ComponentForm: { id?: number; prefill?: ComponentFormPrefill };
   ResistorScanner: undefined;
   SmdCodeCalculator: undefined;
+  SmdCodeScanner: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -54,6 +56,11 @@ export default function RootNavigator() {
         name="SmdCodeCalculator"
         component={SmdCodeCalculatorScreen}
         options={{ title: 'SMD kód rezistoru' }}
+      />
+      <Stack.Screen
+        name="SmdCodeScanner"
+        component={SmdCodeScannerScreen}
+        options={{ title: 'Sken SMD kódu' }}
       />
     </Stack.Navigator>
   );
