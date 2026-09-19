@@ -1470,6 +1470,42 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,zesilovač,nábojový-zesilovač,rázový-senzor,shock-sensor,notch-filtr,rohm,bd3852muz,vqfn',
   },
   {
+    name: 'LSM330DL',
+    packageType:
+      'LGA-28 (LLGA28), 7,5 × 4,4 × 1,1 mm, 28 vývodů (samostatné napájení a I2C/SPI rozhraní ' +
+      'pro akcelerometr i gyroskop: SDA/SDI_A, SDO_A, SCL_A, CS_A, INT1_A, INT2_A, Vdd_IO_A pro ' +
+      'akcelerometr; SDA/SDI_G, SDO_G, SCL_G, CS_G, INT1_G, DRDY_G/INT2_G, Vdd_IO_G pro gyroskop; ' +
+      'společné Vdd, GND, VCONT)',
+    value:
+      '6osý MEMS inerciální modul — 3D akcelerometr + 3D gyroskop v jednom pouzdře, I2C/SPI, ' +
+      'rozsah zrychlení ±2/±4/±8/±16 g, rozsah úhlové rychlosti ±250/±500/±2000 dps, Vdd 2,4–3,6 V',
+    notes:
+      'STMicroelectronics "LSM330DL — Linear sensor module, 3D accelerometer sensor and 3D ' +
+      'gyroscope sensor" (Doc ID 022018 Rev 1, "Preliminary data", červenec 2011) — kombinovaný ' +
+      '6osý inerciální modul (IMU) obsahující ve společném LGA pouzdře DVA nezávislé MEMS ' +
+      'senzorové čipy s vlastními napájecími a komunikačními rozhraními (samostatné piny/adresy ' +
+      'pro akcelerometr "_A" a gyroskop "_G", lze číst nezávisle přes I2C nebo SPI 16bitový ' +
+      'výstup). Akcelerometr: dynamický uživatelsky volitelný rozsah ±2/±4/±8/±16 g, citlivost ' +
+      '1/2/4/12 mg/digit dle rozsahu, proudový odběr typ. 11 µA @ODR=50Hz (normal mode) až 0,5 µA ' +
+      '(power-down). Gyroskop: dynamický volitelný rozsah ±250/±500/±2000 dps, citlivost ' +
+      '8,75/17,5/70 mdps/digit dle rozsahu, proudový odběr typ. 6,1 mA (normal mode), 1,5 mA ' +
+      '(sleep), 5 µA (power-down). Šumová hustota zrychlení typ. 220 µg/√Hz (normal mode, ' +
+      'ODR=100Hz), šumová hustota úhlové rychlosti typ. 0,03 dps/√Hz (BW=50Hz). Integrovaný ' +
+      'teplotní senzor (výstup jen relativní změna, -1 °C/digit typ., obnovovací kmitočet 1 Hz). ' +
+      'Programovatelný generátor přerušení pro detekci volného pádu (free-fall) a pohybu ' +
+      '(motion detection), FIFO buffer pro oba senzory, integrovaný vysokopásmový filtr ' +
+      '(high-pass) s volitelným cutoff kmitočtem, funkce detekce poklepání (click/double-click) u ' +
+      'akcelerometru. Napájení Vdd 2,4–3,6 V (analogová část), Vdd_IO 1,71 V až Vdd+0,1 V ' +
+      '(digitální I/O, nezávislé pro akcelerometr a gyroskop). I2C až 400 kHz (fast mode), SPI ' +
+      'až 10 MHz (4-vodičový i 3-vodičový režim). Provozní teplota -40 až +85 °C. Absolutní ' +
+      'maximum: Vdd/Vdd_IO -0,3 až 4,8 V, zrychlení (nárazová odolnost) 3000 g/0,5 ms nebo ' +
+      '10000 g/0,1 ms (napájený i nenapájený), ESD 2 kV (HBM). Mechanicky citlivá součástka ' +
+      '(MEMS) — nutná opatrná manipulace. Typické aplikace: GPS navigace, rozpoznávání a ' +
+      'logování nárazů, herní/VR ovladače, detekce pohybu, úsporné řízení spotřeby přenosných ' +
+      'zařízení, monitorování/kompenzace vibrací, detekce volného pádu, 6D orientace.',
+    tags: 'io,senzor,akcelerometr,gyroskop,imu,mems,6osý,i2c,spi,st,lsm330dl',
+  },
+  {
     name: 'SCD40',
     packageType:
       'LGA 10,1×10,1×6,5 mm, 21 vývodů (VDD, VDDH, GND, SDA, SCL, zbytek DNC — nutno pájet i ' +
