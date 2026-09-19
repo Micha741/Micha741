@@ -847,6 +847,39 @@ const MODULE_SPECS: ModuleSpec[] = [
       'schématu značení.',
     tags: 'modul,senzor,tlak,mems,piezorezistivní,frekvenční,eeprom,hokuriku,hdk,hpm-100gd',
   },
+  {
+    name: 'BI1.5U-EG08-RP6X-H1341',
+    packageType:
+      'Válcové závitové pouzdro M8×1 (threaded barrel), nerezová ocel 1.4427, aktivní čelní ' +
+      'plocha z plastu PA12-GF30, délka 57 mm, indikační žlutá LED, konektor M12×1 (samčí, ' +
+      '3pinový: 1=BN/+, 3=BU/-, 2=WH/výstup Q), max. utahovací moment matice pouzdra 5 Nm',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, spínací vzdálenost 1,5 mm, PNP výstup ' +
+      'rozpínací (NC) kontakt, 3vodičové zapojení, 10–30 V DC, "Factor 1" — stejný dosah pro ' +
+      'všechny kovy, odolný vůči magnetickým polím',
+    notes:
+      'TURCK "uprox® — Inductive Sensor BI1.5U-EG08-RP6X-H1341" (Ident-No. 4600541, Rev. B, ' +
+      '2019-02-08) — kompletní průmyslový indukční snímač s vlastní elektronikou/výstupním ' +
+      'obvodem v uzavřeném závitovém pouzdře, proto zařazen do kategorie "Modul", ne "IO" — ' +
+      'obdobně jako fotoelektrické snímače SICK WTB250-2N1131/WTB250-2N1151 v této knihovně. ' +
+      'Princip "uprox Factor 1": patentovaný bezferitový vícecívkový systém (ferrite-coreless ' +
+      'multicoil), na rozdíl od klasických indukčních senzorů s feritovým jádrem detekuje ' +
+      'VŠECHNY kovy (ocel, hliník, mosaz, měď...) se STEJNOU spínací vzdáleností (tzv. "Factor 1" ' +
+      '— korekční faktor 1,0 nezávisle na materiálu) a je navíc odolný vůči rušení vnějšími ' +
+      'magnetickými poli — u klasických feritových indukčních senzorů se spínací vzdálenost u ' +
+      'neželezných kovů výrazně zkracuje (korekční faktor <1). Jmenovitá spínací vzdálenost Sn ' +
+      '1,5 mm (montáž zápustná/flush), zajištěná spínací vzdálenost max 0,81×Sn, opakovatelnost ' +
+      'max 2 %FS, teplotní drift max ±10 % (±15 % v rozšířeném rozsahu -25 až +70°C), hystereze ' +
+      '3–15 %. Výstup: 3vodičové PNP zapojení, rozpínací (NC) kontakt, max. proud 150 mA, klidový ' +
+      'proud max 15 mA, zbytkový proud max 0,1 mA, úbytek napětí max 1,8 V, spínací kmitočet ' +
+      '2 kHz, ochrana proti zkratu (cyklická), přepólování a přerušení vodiče (kompletní). ' +
+      'Napájení 10–30 V DC, zvlnění max 10 %. Izolační zkušební napětí 0,5 kV. Odolnost proti ' +
+      'vibracím 55 Hz (1 mm), proti rázům 30 g (11 ms). Krytí IP67 (dle štítku), IP68 (dle popisu ' +
+      'funkcí). Provozní teplota -30 až +85 °C. MTTF 874 let dle SN 29500 @40°C. Průměr aktivní ' +
+      'plochy Ø8 mm. Dodává se řada montážních příslušenství (konzole QM-08/BST-08B/MW-08/BSS-08/ ' +
+      'MBS80).',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,uprox,factor1,turck,pnp,m8,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
