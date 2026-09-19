@@ -2920,6 +2920,38 @@ const MODULE_SPECS: ModuleSpec[] = [
       'EXG-30.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb15,npn,3vodičový,m30,mosaz,e1,automotive,ip68,ip69k',
   },
+  {
+    name: 'NBN8-12GM50-E2-V1-Y323749',
+    packageType:
+      'Válcové závitové pouzdro M12×1 (threaded barrel), mosaz s niklovým povlakem, délka 50 mm, ' +
+      'aktivní čelo PBT, integrální zásuvný konektor M12×1 (4piny, dodáváno se 2 maticemi bez ' +
+      'ozubeného pojištění), víceotvorová (Multihole) žlutá LED indikace',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, NEZÁPUSTNÝ ("non-flush") typ montáže, ' +
+      'spínací vzdálenost 8 mm, 3vodičové DC zapojení, PNP výstup, spínací (NO) kontakt, ' +
+      '10–30 V DC, rozšířený teplotní rozsah -40 až +70 °C',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBN8-12GM50-E2-V1-Y323749" (323749_eng.xml, vydáno ' +
+      '28.8.2018) — ⚠️ POZOR: "NBN" produktová řada zde znamená NEZÁPUSTNÝ ("non-flush") typ ' +
+      'montáže standardního válcového senzoru (na rozdíl od NBN3-F31K-E8-K v této knihovně, kde ' +
+      '"NBN" označuje zcela odlišnou konstrukci — kompaktní jednotku se dvěma snímacími kanály ' +
+      'a integrovaným ventilovým budičem pro montáž na pneumatický pohon; NBN8-12GM50-E2-V1 je ' +
+      'naproti tomu BĚŽNÝ VÁLCOVÝ senzor identické stavby jako řada NBB v této knihovně, jen s ' +
+      'nezápustnou montáží místo zápustné). Stejný princip nezápustné montáže jako NEN6-8GM40-E2- ' +
+      'PUR v této knihovně (vyžaduje volný prostor kolem senzoru bez okolního kovu), ale menší ' +
+      'závit M12 s délkou 50 mm a INTEGRÁLNÍM ZÁSUVNÝM KONEKTOREM M12×1 (odnímatelný, s ' +
+      'volitelným příslušenstvím V1-W/V1-G-2M-PUR/V1-W-2M-PUR pro kabeláž) místo pevně ' +
+      'integrovaného kabelu u NEN6/NBB senzorů v této knihovně. Vysoký spínací kmitočet 0–1500 Hz ' +
+      '(nejvyšší mezi NBB/NBN/NEN senzory v této knihovně). Korekční faktory dle materiálu cíle: ' +
+      'rAl=0,39, rCu=0,3, r304/nerez=0,7, rMosaz=0,45. Zajištěná spínací vzdálenost 0–6,48 mm ' +
+      '(-25 až +70°C) / 0–6,08 mm (-40 až -25°C) — teplotně závislá specifikace v krajním rozsahu. ' +
+      'Hystereze typ. 5 %. Ochrana proti přepólování a pulzní zkratová ochrana. Úbytek napětí ' +
+      'max 3 V. Provozní proud 0–200 mA, klidový proud max 16 mA. Funkční bezpečnostní parametry: ' +
+      'MTTFd 1560 let, doba mise 20 let, diagnostické pokrytí 0 %. Krytí IP67. Dodáváno se 2 ' +
+      'maticemi (bez ozubeného pojištění). Shoda EN/IEC 60947-5-2 (vč. dodatku A1:2012), UL ' +
+      'certifikace. Dostupné příslušenství: montážní příruba BF 12.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbn8,pnp,3vodičový,m12,mosaz,nezápustný,konektor,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
