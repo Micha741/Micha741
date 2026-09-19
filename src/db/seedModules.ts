@@ -1011,6 +1011,40 @@ const MODULE_SPECS: ModuleSpec[] = [
       'SN 29500 @40°C.',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,turck,dc,npn,komplementární,q14,ip67,průmyslový',
   },
+  {
+    name: 'BC10-QF5.5-RN6X2',
+    packageType:
+      'Tenké ploché pravoúhlé pouzdro "QF5,5" (aktivní plocha nahoře), rozměry 54×20,3×5,5 mm ' +
+      '(výrazně tenčí než Q14), plast PP, montážní otvory Ø3,2 mm (M3×20 DIN 963), potenciometr ' +
+      'pro jemné doladění citlivosti, zelená LED (napájení) + žlutá LED (spínací stav), kabelový ' +
+      'výstup (Ø3 mm, LifYY-11Y, PUR, 2 m, 3×0,14 mm²) — dle ilustrace v datasheetu určeno mj. k ' +
+      'upevnění na zakřivený povrch (např. trubku/válec) pomocí stahovacích pásků',
+    value:
+      'Kapacitní (bezkontaktní) přibližovací spínač, plochý tvar, spínací vzdálenost 10 mm ' +
+      '(zápustná i nezápustná montáž), 3vodičové DC zapojení, rozpínací (NC) NPN výstup, ' +
+      '10–30 V DC',
+    notes:
+      'TURCK "Capacitive Sensor BC10-QF5.5-RN6X2" (Ident-No. 2620128, Rev. B, 2019-02-08) — ⚠️ ' +
+      'třetí varianta v rámci kapacitní řady TURCK BC10 v této knihovně (spolu s BC10-PT30-AZ3X a ' +
+      'BC10-Q14-VN4X2, samostatné záznamy), tentokrát v extrémně tenkém plochém pouzdru "QF5,5" ' +
+      '(pouhých 5,5 mm tloušťky, plast PP) — vhodné pro montáž do stísněných prostor nebo obtočení ' +
+      'kolem zakřivených povrchů (trubky/válce) pomocí stahovacích pásků, na rozdíl od objemnějšího ' +
+      'bloku Q14 nebo válcového závitového M30 u ostatních dvou sourozenců. Elektricky nejbližší ' +
+      'BC10-Q14-VN4X2 (oba DC, 10–30 V u tohoto dílu vs. 10–65 V u Q14), ale liší se počtem vodičů ' +
+      'a typem výstupu: BC10-QF5.5-RN6X2 má 3vodičové zapojení s jediným rozpínacím (NC) NPN ' +
+      'výstupem, zatímco BC10-Q14-VN4X2 má 4vodičové zapojení s komplementárním (současně NO+NC) ' +
+      'výstupem — a oproti BC10-PT30-AZ3X (AC, 2vodičový, jen NO) jde o zcela odlišnou elektrickou ' +
+      'koncepci. Citlivost jemně nastavitelná potenciometrem. Jmenovitá spínací vzdálenost Sn ' +
+      '10 mm (shodná pro zápustnou i nezápustnou montáž), zajištěná spínací vzdálenost max ' +
+      '0,72×Sn, hystereze 2–20 %, teplotní drift typ. 20 %, opakovatelnost max 2 %FS. Výstup: ' +
+      '3vodičové DC zapojení, rozpínací (NC) kontakt, NPN, max. proud 200 mA, klidový proud max ' +
+      '15 mA, zbytkový proud max 0,1 mA, úbytek napětí max 1,8 V, spínací kmitočet 0,1 kHz, ' +
+      'ochrana proti zkratu (cyklická), přepólování a přerušení vodiče (kompletní). Napájení ' +
+      '10–30 V DC, zvlnění max 10 %. Izolační zkušební napětí 0,5 kV. UL certifikace. Odolnost ' +
+      'proti vibracím 55 Hz (1 mm), proti rázům 30 g (11 ms). Krytí IP67. Provozní teplota -25 ' +
+      'až +70 °C. MTTF 1080 let dle SN 29500 @40°C. Průměr aktivní plochy Ø20 mm.',
+    tags: 'modul,senzor,kapacitní,přibližovací,proximity,turck,dc,npn,plochý,qf5,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
