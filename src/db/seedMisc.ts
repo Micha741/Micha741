@@ -222,6 +222,34 @@ const MISC_SPECS: MiscSpec[] = [
       'rezonanční špičkou okolo 37 kHz, mimo tuto oblast plochý výstup v pásmu cca 1 Hz–10 kHz.',
     tags: 'senzor,piezoelektrický,rázový,vibrační,napěťový,murata,pkgs,shock-sensor,automotive,tpms,aec-q200',
   },
+  {
+    name: 'PKGS-25WXP1-R',
+    packageType:
+      'SMD pouzdro 2,8×2,0×1,05 mm, 2 elektrody (Electrode A, Electrode B) na spodní straně, ' +
+      'značka polarity (Polarity Marking) na horní straně, páskování 180 mm embossed tape ' +
+      '(min. objednací množství 3000 ks)',
+    value:
+      'Piezoelektrický rázový/vibrační senzorový element (shock sensor), elektrický náboj ' +
+      '(charge output) typu, citlivost 0,168 pC/G typ., kapacita 550 pF typ., rezonanční ' +
+      'kmitočet 42 kHz, sklon primární osy citlivosti 25°',
+    notes:
+      'Murata "PKGS-25WXP1-R" (dok. Product Search Data Sheet, staženo z murata.com, aktualizováno ' +
+      '27. 10. 2017 — pozn. výrobce: může být neaktuální, doporučeno stáhnout nejnovější verzi) — ' +
+      '⚠️ další sourozenecký typ ze stejné produktové řady "PKGS" piezoelektrických rázových senzorů ' +
+      'Murata jako PKGS-00LDP1-R a PKGS-45TAV-R v této knihovně (samostatné záznamy): shodně s ' +
+      'PKGS-00LDP1-R jde o typ "electric charge sensitivity" (výstup elektrický náboj v pC/G, pro ' +
+      'spotřební elektroniku, bez AEC-Q200 automotive kvalifikace), ale s odlišnou geometrií ' +
+      'snímací osy (sklon primární osy 25°, oproti 0° u PKGS-00LDP1-R a 45° u PKGS-45TAV-R) a ' +
+      'odlišnými elektrickými parametry (citlivost 0,168 pC/G typ. — výrazně nižší než 0,84 pC/G u ' +
+      'PKGS-00LDP1-R; kapacita 550 pF typ.; rezonanční kmitočet 42 kHz — vyšší než 20 kHz u ' +
+      'PKGS-00LDP1-R). Provozní/skladovací teplota -40 až +85 °C (shodná s PKGS-00LDP1-R). ' +
+      'Izolační odpor min. 100 MΩ (nižší než 500 MΩ u PKGS-00LDP1-R). Nelinearita typ. 1 %. Rázová ' +
+      'odolnost 3000 G (doba trvání 0,3 ms — shodná s automotive PKGS-45TAV-R, vyšší než 1500 G u ' +
+      'PKGS-00LDP1-R). Výstupem je elektrický náboj úměrný zrychlení/rázu, pro použitelný napěťový ' +
+      'signál vyžaduje externí nábojový zesilovač (charge amplifier) — viz záznam PKGS-00LDP1-R pro ' +
+      'obecné vysvětlení principu. Určeno pro spotřební elektroniku.',
+    tags: 'senzor,piezoelektrický,rázový,vibrační,náboj,murata,pkgs,shock-sensor,pasivní',
+  },
 ];
 
 export function buildMiscSeed(): ComponentInput[] {
