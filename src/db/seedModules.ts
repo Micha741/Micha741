@@ -1073,6 +1073,38 @@ const MODULE_SPECS: ModuleSpec[] = [
       '(11 ms). Krytí IP67. Provozní teplota -25 až +70 °C. MTTF 1080 let dle SN 29500 @40°C.',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,turck,ac,nc,q20,ip67,průmyslový',
   },
+  {
+    name: 'NBB3-V3-Z4',
+    packageType:
+      'Malé ploché kvádrové pouzdro 27,8×16×10,3 mm, plast PBT (pouzdro i aktivní čelní plocha), ' +
+      '2 montážní otvory, indikační žlutá LED, integrovaný kabel PVC 130 mm (Ø3 mm, 2 žíly ' +
+      '0,14 mm², BN=L+, BU=L-), hmotnost 7,5 g',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, klasický feritový typ, spínací vzdálenost ' +
+      '3 mm (zápustná montáž), 2vodičové DC zapojení, spínací (NO) kontakt, 5–60 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBB3-V3-Z4" (301158_eng.xml, vydáno 5. 8. 2019) — ⚠️ jiný ' +
+      'výrobce než indukční senzory TURCK v této knihovně (BI1.5U-EG08-RP6X-H1341, ' +
+      'BI1-EG05K-AN6X-V1331) — Pepperl+Fuchs je samostatná firma, ne TURCK, přestože oba nabízejí ' +
+      'obdobné produktové řady indukčních senzorů. Elektricky/konstrukčně nejbližší TURCK ' +
+      'BI1-EG05K-AN6X-V1331 (oba klasické feritové senzory s různými korekčními faktory dle ' +
+      'materiálu cíle — zde rAl=0,45, rCu=0,35, r304/nerez=0,8, rBrass/mosaz=0,5 — místo ' +
+      'jednotného "Factor 1" jako u TURCK uprox BI1.5U-EG08-RP6X-H1341), ale v miniaturním plochém ' +
+      'kvádrovém pouzdru s integrovaným kabelem místo válcového závitového pouzdra s konektorem. ' +
+      '2vodičové zapojení (na rozdíl od 3vodičových TURCK senzorů v této knihovně) — zátěž je ' +
+      'zapojena v sérii se senzorem, napájecí a signálový obvod sdílejí stejné dva vodiče. ' +
+      'Jmenovitá spínací vzdálenost sn 3 mm (zápustná montáž), zajištěná spínací vzdálenost 0–2,4 ' +
+      'mm, skutečná spínací vzdálenost typ. 2,7–3,3 mm, hystereze typ. 0,2 mm. Napájecí napětí ' +
+      '5–60 V DC (širší rozsah než TURCK senzory), spínací kmitočet 0–2000 Hz, provozní proud ' +
+      '4–100 mA, min. provozní proud 4 mA, zbytkový proud typ. 0,46 mA (0,4–0,55 mA), úbytek ' +
+      'napětí max 4 V (typ. 3,6 V @IL=10mA), zpoždění dostupnosti po zapnutí max 1 ms. Ochrana ' +
+      'proti přepólování a indukčnímu přepětí, BEZ zkratové ochrany (⚠️ na rozdíl od TURCK ' +
+      'senzorů, které mají cyklickou zkratovou ochranu — nutno zajistit externí ochranu). ' +
+      'Funkční bezpečnostní parametry: MTTFd 1552 let, doba mise 20 let, diagnostické pokrytí 0 %. ' +
+      'Krytí IP67. Provozní teplota -25 až +85 °C (širší než TURCK varianty). Shoda EN/IEC ' +
+      '60947-5-2, UL/CSA/CCC certifikace.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb3,2vodičový,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
