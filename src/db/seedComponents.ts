@@ -120,6 +120,107 @@ const DIODE_SPECS: PartSpec[] = [
   { name: '1N5399', packageType: 'DO-15', value: '1,5 A / 1000 V', notes: 'Usměrňovací dioda', tags: 'dioda,usměrňovací' },
   { name: '1N5408', packageType: 'DO-27', value: '3 A / 1000 V', notes: 'Usměrňovací dioda', tags: 'dioda,usměrňovací' },
 
+  {
+    name: 'GP1120',
+    packageType: 'DO-41, plastové pouzdro (UL 94V-0), barevný pruh = katoda',
+    value: '⚠️ 1 A / 1200 V (odvozeno, viz poznámka) — vysokonapěťová usměrňovací dioda',
+    notes:
+      'Diotec Electronics Corp. "High Voltage Diode Rectifiers" (dok. HVGP-1000-1C/2B) — mechanická ' +
+      'sekce datasheetu popisuje "SERIES GP1120 - GP1500", ale ⚠️ tabulka elektrických parametrů v ' +
+      'této revizi datasheetu explicitně uvádí jen GP1150 až GP1600 (GP1120 v tabulce chybí — ' +
+      'nekonzistence v samotném zdrojovém dokumentu, patrně z předchozí revize řady). VRM=1200 V ' +
+      'odvozeno z jednoznačného vzorce platného pro všech 8 tabulkových dílů (VRM = číslo za "GP1" ' +
+      '× 10 V: GP1150→1500V, GP1180→1800V, GP1200→2000V, ... GP1600→6000V), elektrické parametry ' +
+      '(Io, IFSM, VFM) převzaty ze skupiny GP1150-1200 (nejnižší napěťové pásmo), do které by ' +
+      'GP1120 podle napětí spadal. Pro jistotu doporučeno ověřit u výrobce/na jiném revize ' +
+      'datasheetu před nákupem/návrhem. Sourozenecké záznamy GP1150–GP1600 mají hodnoty přímo z ' +
+      'tabulky (bez ⚠️). Společné pro celou řadu: proprietární "Soft Glass" pasivace přechodu, ' +
+      'vakuové pájení čipu bez dutin (void-free), IRM max 1,0 µA @25°C při jmenovitém VDC, CJ typ ' +
+      '12 pF @1MHz/4V, TJ/Tstg -65 až +150°C. Io=1000 mA (@TA=50°C, délka vývodu 9,5mm), IFSM=35 A ' +
+      '(8,3ms půlvlna), VFM max 1,5 V (při jmenovitém proudu).',
+    tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1120,do-41',
+  },
+  {
+    name: 'GP1150',
+    packageType: 'DO-41, plastové pouzdro (UL 94V-0), barevný pruh = katoda',
+    value: '1 A / 1500 V — vysokonapěťová usměrňovací dioda',
+    notes:
+      'Diotec Electronics Corp. "High Voltage Diode Rectifiers" (dok. HVGP-1000-1C/2B) — součást ' +
+      'řady GP1120–GP1600, viz poznámka u GP1120 pro společné specifikace. VRM=1500 V, VRRM=1500 V, ' +
+      'VRMS=1050 V. Io=1000 mA (@TA=50°C), IFSM=35 A, VFM max 1,5 V.',
+    tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1150,do-41',
+  },
+  {
+    name: 'GP1180',
+    packageType: 'DO-41, plastové pouzdro (UL 94V-0), barevný pruh = katoda',
+    value: '1 A / 1800 V — vysokonapěťová usměrňovací dioda',
+    notes:
+      'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
+      'poznámka u GP1120 pro společné specifikace. VRM=1800 V, VRRM=1800 V, VRMS=1260 V. Io=1000 mA ' +
+      '(@TA=50°C), IFSM=35 A, VFM max 1,5 V.',
+    tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1180,do-41',
+  },
+  {
+    name: 'GP1200',
+    packageType: 'DO-41, plastové pouzdro (UL 94V-0), barevný pruh = katoda',
+    value: '1 A / 2000 V — vysokonapěťová usměrňovací dioda',
+    notes:
+      'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
+      'poznámka u GP1120 pro společné specifikace. VRM=2000 V, VRRM=2000 V, VRMS=1400 V. Io=1000 mA ' +
+      '(@TA=50°C), IFSM=35 A, VFM max 1,5 V.',
+    tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1200,do-41',
+  },
+  {
+    name: 'GP1250',
+    packageType: 'DO-41, plastové pouzdro (UL 94V-0), barevný pruh = katoda',
+    value: '0,5 A / 2500 V — vysokonapěťová usměrňovací dioda',
+    notes:
+      'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
+      'poznámka u GP1120 pro společné specifikace. VRM=2500 V, VRRM=2500 V, VRMS=1750 V. Io=500 mA ' +
+      '(@TA=50°C), IFSM=25 A, VFM max 3,0 V.',
+    tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1250,do-41',
+  },
+  {
+    name: 'GP1300',
+    packageType: 'DO-41, plastové pouzdro (UL 94V-0), barevný pruh = katoda',
+    value: '0,5 A / 3000 V — vysokonapěťová usměrňovací dioda',
+    notes:
+      'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
+      'poznámka u GP1120 pro společné specifikace. VRM=3000 V, VRRM=3000 V, VRMS=2100 V. Io=500 mA ' +
+      '(@TA=50°C), IFSM=25 A, VFM max 3,0 V.',
+    tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1300,do-41',
+  },
+  {
+    name: 'GP1400',
+    packageType: 'DO-41, plastové pouzdro (UL 94V-0), barevný pruh = katoda',
+    value: '0,5 A / 4000 V — vysokonapěťová usměrňovací dioda',
+    notes:
+      'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
+      'poznámka u GP1120 pro společné specifikace. VRM=4000 V, VRRM=4000 V, VRMS=2800 V. Io=500 mA ' +
+      '(@TA=50°C), IFSM=25 A, VFM max 3,0 V.',
+    tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1400,do-41',
+  },
+  {
+    name: 'GP1500',
+    packageType: 'DO-41, plastové pouzdro (UL 94V-0), barevný pruh = katoda',
+    value: '0,2 A / 5000 V — vysokonapěťová usměrňovací dioda',
+    notes:
+      'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
+      'poznámka u GP1120 pro společné specifikace. VRM=5000 V, VRRM=5000 V, VRMS=3500 V. Io=200 mA ' +
+      '(@TA=50°C), IFSM=15 A, VFM max 4,5 V.',
+    tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1500,do-41',
+  },
+  {
+    name: 'GP1600',
+    packageType: 'DO-41, plastové pouzdro (UL 94V-0), barevný pruh = katoda',
+    value: '0,2 A / 6000 V — vysokonapěťová usměrňovací dioda',
+    notes:
+      'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
+      'poznámka u GP1120 pro společné specifikace. VRM=6000 V, VRRM=6000 V, VRMS=4200 V. Io=200 mA ' +
+      '(@TA=50°C), IFSM=15 A, VFM max 6,0 V.',
+    tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1600,do-41',
+  },
+
   { name: '1N4148', packageType: 'DO-35', value: '150 mA / 100 V', notes: 'Spínací (signálová) dioda', tags: 'dioda,spínací,signálová' },
   { name: '1N914', packageType: 'DO-35', value: '100 mA / 100 V', notes: 'Spínací (signálová) dioda', tags: 'dioda,spínací,signálová' },
 
@@ -238,6 +339,25 @@ const DIODE_SPECS: PartSpec[] = [
     tags: 'dioda,schottky,smd,sma,s100',
   },
   { name: 'SS34', packageType: 'SMB (SMD)', value: '3 A / 40 V', notes: 'Schottky dioda, SMD', tags: 'dioda,schottky,smd' },
+  {
+    name: 'NSR01L30MXT5G',
+    packageType:
+      'X3DFN2 (SMD), rozměry 0,62×0,32×0,24 mm, rozteč 0,35 mm, 2 vývody: 1=katoda, 2=anoda',
+    value: 'Schottky dioda, VR 30 V, IF 100 mA (DC), VF max 350 mV @IF=1 mA',
+    notes:
+      'onsemi "NSR01L30MX — Schottky Barrier Diode" (dok. NSR01L30MX/D, rev. 5, 2026) — extrémně ' +
+      'malé pouzdro (velikost srovnatelná s 0201 pasivní SMD součástkou), optimalizováno na nízký ' +
+      'úbytek napětí v propustném směru a nízký únikový proud. Halide-free i Pb-free provedení. ' +
+      'Mezní hodnoty: VR=30 V, IF(DC)=100 mA, IFSM=2,0 A (60 Hz/1 cyklus), TJ max +150 °C, Tstg -55 ' +
+      'až +150 °C. ESD: HBM Class 1B (500≤porucha<1000), CDM Class C3 JEDEC (porucha≥1000). ' +
+      'RθJA=695 °C/W (na 4" čtverci FR-4, 100mm², 2oz Cu, jednostranná), PD=180 mW @TA=25°C. ' +
+      'VF max 350 mV @IF=1 mA (460 mV @IF=10 mA). IR max 0,2 µA @VR=10 V (0,5 µA @VR=30 V). ' +
+      'Celková kapacita CT typ 0,8 pF @VR=5V/1MHz. Reverse recovery time trr typ 1,66 ns ' +
+      '(IF=IR=10mA). Aplikace: podsvícení LCD/klávesnice, foto blesk fotoaparátu, buck/boost ' +
+      'DC-DC měniče, ochrana proti zpětnému napětí/proudu, clamping. Značení na pouzdře: kód L ' +
+      '(otočeno 180°) + datový kód M.',
+    tags: 'dioda,schottky,smd,onsemi,nsr01l30mx,x3dfn2,0201,30v',
+  },
 
   { name: 'BZX55C3V3', packageType: 'DO-35', value: '3,3 V / 0,5 W', notes: 'Zenerova dioda', tags: 'dioda,zener' },
   { name: 'BZX55C3V9', packageType: 'DO-35', value: '3,9 V / 0,5 W', notes: 'Zenerova dioda', tags: 'dioda,zener' },
@@ -3084,6 +3204,23 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   },
 
   {
+    name: 'H5N6001P',
+    packageType:
+      'TO-3P — vývody: 1=gate, 2=drain, 3=source (chladicí ploška je spojena s drainem)',
+    value: 'N-MOSFET, VDSS 600 V, ID 20 A (@TC=25 °C), RDS(on) max 0,38 Ω (@VGS=10 V)',
+    notes:
+      'ISC (Inchange Semiconductor) "H5N6001P — N-Channel MOSFET Transistor" datasheet. Výkonový ' +
+      'vysokonapěťový spínací N-MOSFET pro DC/DC měniče, obecné průmyslové aplikace a řízení ' +
+      'výkonových motorů. Mezní hodnoty: VDSS=600 V, VGS=±30 V (trvale), ID=20 A (trvalý proud, ' +
+      '@TC=25°C), IDM=80 A (jednorázový pulz), Ptot=150 W (@TC=25°C), TJ max 150 °C, Tstg -55 až ' +
+      '+150 °C. RθJC max 0,83 °C/W. ' +
+      'BVDSS min 600 V @VGS=0/ID=10 mA. IDSS max 1 µA @VDS=600 V/VGS=0. IGSS max ±100 nA ' +
+      '@VGS=±20V/VDS=0. VGS(th) 3,0–4,0 V @VDS=VGS/ID=1 mA. RDS(on) max 0,38 Ω @VGS=10 V/ID=10 A. ' +
+      'VSD (dioda těla) max 1,4 V @IS=20 A/VGS=0.',
+    tags: 'tranzistor,mosfet,n-kanál,výkonový,to-3p,isc,inchange,h5n6001p,600v',
+  },
+
+  {
     name: 'IRF540N',
     packageType:
       'TO-220AB — vývody: 1=gate, 2=drain, 3=source (chladicí ploška je spojena s drainem)',
@@ -3264,6 +3401,44 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'RDS(on) max 0,117 Ω @VGS=-10 V/ID=-11 A, VGS(th) -2 až -4 V atd.) jsou shodné s „IRF9540N" — ' +
       'viz tam pro plný výčet.',
     tags: 'tranzistor,mosfet,p-kanál,smd,d2pak,to-262,irf9540ns,irf9540nl,spínací',
+  },
+  {
+    name: 'AFGB40T65SPD-BW',
+    packageType:
+      'D²PAK (TO-263AB, case 221BQ), 3 vývody: 1=gate, 2=kolektor (i chladicí TAB), 3=emitor',
+    value:
+      '⚠️ NOVÝ TYP součástky v této knihovně (IGBT) — Field Stop Trench IGBT, BVCES 650 V, ' +
+      'VCE(sat) typ. 2,0 V @IC=40 A, IC max 120 A (pulzní), integrovaná antiparalelní rychlá dioda',
+    notes:
+      'onsemi "AFGB40T65SPD-BW — Field Stop Trench IGBT, 650 V, 40 A" (dok. ' +
+      'AFGB40T65SPD-BW/D, rev. 1, 2026) — na rozdíl od ostatních spínacích tranzistorů v této ' +
+      'knihovně (bipolární BJT, MOSFET) jde o IGBT (Insulated Gate Bipolar Transistor): hradlo ' +
+      'řízené jako u MOSFETu (vysoká vstupní impedance), ale výstupní charakteristika bipolární ' +
+      '(nižší úbytek napětí při vysokém proudu než srovnatelný MOSFET, na úkor pomalejšího ' +
+      'vypínání) — vhodné pro vyšší napětí/proudy než běžné výkonové MOSFETy v této knihovně. ' +
+      'AEC-Q101 kvalifikováno, 100 % dílů dynamicky testováno, zkratová odolnost >5 µs @25 °C, ' +
+      'kladný teplotní koeficient VCE(sat) usnadňuje paralelní řazení více kusů. Copackováno s ' +
+      'měkkou rychlou (soft, fast recovery) antiparalelní diodou (freewheeling). ' +
+      'Mezní hodnoty: VCES=650 V, VGES=±20 V (přechodně ±30 V), IC=80 A @TC=25°C (40 A @TC=100°C), ' +
+      'ICM=120 A (pulzní), IF diody=40 A @TC=25°C (20 A @TC=100°C), IFM=120 A (pulzní), ' +
+      'PD=267 W @TC=25°C (134 W @TC=100°C), SCWT (short circuit withstand time)=5 µs @TC=25°C, ' +
+      'TJ/Tstg=-55 až +175°C, pájecí teplota max 300°C/5s (1/8" od pouzdra). RθJC (IGBT)=0,56°C/W, ' +
+      'RθJC (dioda)=1,71°C/W, RθJA=40°C/W. ' +
+      'BVCES min 650 V @VGE=0/IC=1mA (teplotní koeficient +0,6 V/°C typ). ICES max 250 µA ' +
+      '@VCE=VCES/VGE=0. IGES max ±400 nA. VGE(th) 4,0–7,5 V typ 5,8 V @IC=40mA. VCE(sat) typ 2,0 V ' +
+      '(max 2,4 V) @IC=40A/VGE=15V/TC=25°C, typ 2,9 V @TC=125°C. ' +
+      'Ciss typ 1520 pF, Coss typ 92 pF, Crss typ 15 pF @VCE=30V/VGE=0/f=1MHz. ' +
+      'Spínání @TC=25°C (VCC=400V/IC=40A/RG=6Ω/VGE=15V, indukční zátěž): td(on) typ 18ns, tr typ ' +
+      '26ns, td(off) typ 35ns, tf typ 10ns, Eon typ 0,97mJ, Eoff typ 0,28mJ, Ets typ 1,25mJ. ' +
+      '@TC=175°C: td(on) typ 14ns, tr typ 35ns, td(off) typ 38ns, tf typ 13ns, Eon typ 1,61mJ, ' +
+      'Eoff typ 0,47mJ, Ets typ 2,08mJ. Náboj hradla (VCE=400V/IC=40A/VGE=15V): Qg typ 36nC, Qge ' +
+      'typ 12nC, Qgc typ 11nC. ' +
+      'Integrovaná dioda: VFM typ 2,0V (max 2,7V) @IF=20A/TC=25°C, typ 1,8V @TC=175°C. Reverse ' +
+      'recovery @IF=20A/diF/dt=200A/µs: trr typ 34ns/Qrr typ 56nC @TC=25°C, trr typ 206ns/Qrr typ ' +
+      '731nC @TC=175°C (výrazně horší zotavení za horka). Erec typ 51µJ @TC=175°C. ' +
+      'Aplikace: palubní nabíječky (OBC), kompresory klimatizace, PTC topení, pohony motorů a ' +
+      'další automotive napájecí/pomocné aplikace. Pb-free, RoHS.',
+    tags: 'tranzistor,igbt,field-stop-trench,onsemi,afgb40t65spd,d2pak,to-263,650v,automotive,aec-q101',
   },
   {
     name: 'IRF4905',
@@ -3695,6 +3870,52 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'duální varianta se dvěma nezávislými tranzistory v jednom SMD pouzdře, jiný počet pinů ' +
       'a jiný footprint.',
     tags: 'tranzistor,pnp,bipolární,duální,sot-363,sc-70-6,bc807,bc807u,smd,af',
+  },
+  {
+    name: 'BC817-16LT1G',
+    packageType: 'SOT-23 (SMD), 3 vývody: 1=báze, 2=emitor, 3=kolektor; značení na pouzdře "6A"',
+    value: 'NPN tranzistor, VCEO 45 V, IC 500 mA, hFE 100–250 @IC=100 mA',
+    notes:
+      'onsemi "BC817-16L, SBC817-16L, BC817-25L, SBC817-25L, BC817-40L, SBC817-40L — General ' +
+      'Purpose Transistors NPN Silicon" (dok. BC817-16LT1/D, rev. 19, 2026). Nejnižší proudová ' +
+      '(hFE) varianta z trojice BC817-16L/25L/40L (společný datasheet, liší se jen třídou hFE) — ' +
+      'viz sourozenecké záznamy BC817-25LT1G a BC817-40LT1G. ⚠️ Existuje i automotive-kvalifikovaná ' +
+      'varianta SBC817-16L (AEC-Q101, PPAP capable, S/NSV prefix pro řízení výroby) se stejnými ' +
+      'elektrickými parametry a stejným pouzdrem/značením — nepřidána jako samostatný záznam, jde ' +
+      'jen o odlišnou kvalifikaci stejného čipu. ' +
+      'Mezní hodnoty: VCEO=45 V, VCBO=50 V, VEBO=5,0 V, IC=500 mA (trvalý). PD=225 mW @TA=25°C ' +
+      '(FR-5 deska, derating 1,8 mW/°C, RθJA=556°C/W) nebo 300 mW (Al2O3 substrát, derating ' +
+      '2,4 mW/°C, RθJA=417°C/W). TJ/Tstg=-65 až +150°C. ' +
+      'V(BR)CEO min 45 V @IC=10mA. V(BR)CES min 50 V @VEB=0/IC=10µA. V(BR)EBO min 5,0 V @IE=1µA. ' +
+      'ICBO max 100 nA @VCB=20V (max 5,0 µA @VCB=20V/TA=150°C). hFE 100–250 @IC=100mA/VCE=1,0V ' +
+      '(min 40, bez udaného max, @IC=500mA/VCE=1,0V — pokles zisku při vyšším proudu). VCE(sat) ' +
+      'max 0,7 V @IC=500mA/IB=50mA. VBE(on) max 1,2 V @IC=500mA/VCE=1,0V. fT min 100 MHz ' +
+      '@IC=10mA/VCE=5,0V/f=100MHz. Cobo typ 10 pF @VCB=10V/f=1MHz. Spínací časy (VCC=3,0V/ ' +
+      'VBE=0,5V/IC=10mA): td typ 85ns, tr typ 30ns, ts typ 1000ns, tf typ 300ns. Pb-free, ' +
+      'halogen/BFR free, RoHS.',
+    tags: 'tranzistor,npn,bipolární,sot-23,onsemi,bc817,bc817-16l,smd',
+  },
+  {
+    name: 'BC817-25LT1G',
+    packageType: 'SOT-23 (SMD), 3 vývody: 1=báze, 2=emitor, 3=kolektor; značení na pouzdře "6B"',
+    value: 'NPN tranzistor, VCEO 45 V, IC 500 mA, hFE 160–400 @IC=100 mA',
+    notes:
+      'Součást trojice BC817-16L/25L/40L (onsemi, společný datasheet) — viz poznámka u ' +
+      'BC817-16LT1G pro plné společné specifikace (mezní hodnoty, pouzdro, spínací časy). Střední ' +
+      'proudová (hFE) varianta. ⚠️ Automotive ekvivalent SBC817-25L (AEC-Q101) má shodné elektrické ' +
+      'parametry.',
+    tags: 'tranzistor,npn,bipolární,sot-23,onsemi,bc817,bc817-25l,smd',
+  },
+  {
+    name: 'BC817-40LT1G',
+    packageType: 'SOT-23 (SMD), 3 vývody: 1=báze, 2=emitor, 3=kolektor; značení na pouzdře "6C"',
+    value: 'NPN tranzistor, VCEO 45 V, IC 500 mA, hFE 250–600 @IC=100 mA',
+    notes:
+      'Součást trojice BC817-16L/25L/40L (onsemi, společný datasheet) — viz poznámka u ' +
+      'BC817-16LT1G pro plné společné specifikace (mezní hodnoty, pouzdro, spínací časy). Nejvyšší ' +
+      'proudová (hFE) varianta. ⚠️ Automotive ekvivalent SBC817-40L (AEC-Q101) má shodné elektrické ' +
+      'parametry.',
+    tags: 'tranzistor,npn,bipolární,sot-23,onsemi,bc817,bc817-40l,smd',
   },
   {
     name: 'BC856S',
@@ -4530,6 +4751,69 @@ const RESISTOR_SPECS: PartSpec[] = [
       'TRA06E v této knihovně. RoHS kompatibilní verze "W" (bezolovnaté zakončení) odolná pájení ' +
       'do 260°C.',
     tags: 'rezistor,kondenzátor,rezistorová-síť,rc-network,sip,rcd-components,rc-series,kombinovaná-síť',
+  },
+  {
+    name: 'Otočný potenciometr 1 kΩ (lineární)',
+    packageType: 'THT, panelový, hřídel Ø6 mm, 3 piny',
+    value: '1 kΩ, lineární průběh (B)',
+    notes: 'Obecný jednootáčkový otočný potenciometr pro panelovou montáž.',
+    tags: 'rezistor,potenciometr,lineární,otočný',
+  },
+  {
+    name: 'Otočný potenciometr 10 kΩ (lineární)',
+    packageType: 'THT, panelový, hřídel Ø6 mm, 3 piny',
+    value: '10 kΩ, lineární průběh (B)',
+    notes: 'Obecný jednootáčkový otočný potenciometr pro panelovou montáž.',
+    tags: 'rezistor,potenciometr,lineární,otočný',
+  },
+  {
+    name: 'Otočný potenciometr 100 kΩ (lineární)',
+    packageType: 'THT, panelový, hřídel Ø6 mm, 3 piny',
+    value: '100 kΩ, lineární průběh (B)',
+    notes: 'Obecný jednootáčkový otočný potenciometr pro panelovou montáž.',
+    tags: 'rezistor,potenciometr,lineární,otočný',
+  },
+  {
+    name: 'Otočný potenciometr 10 kΩ (logaritmický, audio)',
+    packageType: 'THT, panelový, hřídel Ø6 mm, 3 piny',
+    value: '10 kΩ, logaritmický průběh (A) — audio taper',
+    notes: 'Logaritmický potenciometr pro regulaci hlasitosti/audio aplikace.',
+    tags: 'rezistor,potenciometr,logaritmický,audio,otočný',
+  },
+  {
+    name: 'Otočný potenciometr 100 kΩ (logaritmický, audio)',
+    packageType: 'THT, panelový, hřídel Ø6 mm, 3 piny',
+    value: '100 kΩ, logaritmický průběh (A) — audio taper',
+    notes: 'Logaritmický potenciometr pro regulaci hlasitosti/audio aplikace.',
+    tags: 'rezistor,potenciometr,logaritmický,audio,otočný',
+  },
+  {
+    name: 'Trimr 1 kΩ',
+    packageType: 'THT, ležatý nebo stojatý, rozteč 5 mm (typ 3296 nebo obdobný)',
+    value: '1 kΩ',
+    notes: 'Podstavný trimovací potenciometr pro nastavení na DPS.',
+    tags: 'rezistor,trimr,trimovací',
+  },
+  {
+    name: 'Trimr 10 kΩ',
+    packageType: 'THT, ležatý nebo stojatý, rozteč 5 mm (typ 3296 nebo obdobný)',
+    value: '10 kΩ',
+    notes: 'Podstavný trimovací potenciometr pro nastavení na DPS.',
+    tags: 'rezistor,trimr,trimovací',
+  },
+  {
+    name: 'Trimr 100 kΩ',
+    packageType: 'THT, ležatý nebo stojatý, rozteč 5 mm (typ 3296 nebo obdobný)',
+    value: '100 kΩ',
+    notes: 'Podstavný trimovací potenciometr pro nastavení na DPS.',
+    tags: 'rezistor,trimr,trimovací',
+  },
+  {
+    name: 'Trimr SMD 10 kΩ',
+    packageType: 'SMD, 3 piny, cca 4×4 mm (typ 3314/TC33X)',
+    value: '10 kΩ',
+    notes: 'SMD podstavný trimovací potenciometr.',
+    tags: 'rezistor,trimr,trimovací,smd',
   },
 ];
 

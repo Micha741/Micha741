@@ -13,20 +13,22 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    688 běžných součástek: 108 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    795 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220; tenkovrstvá
-    izolovaná rezistorová síť Vishay Dale TRA06E; a kombinovaná rezistorová/kapacitní síť RCD
-    Components RC0801-100J100J),
+    izolovaná rezistorová síť Vishay Dale TRA06E; kombinovaná rezistorová/kapacitní síť RCD
+    Components RC0801-100J100J; a otočné potenciometry a trimry (lineární/logaritmické, THT/SMD)),
     51 kondenzátorů (keramické,
     elektrolytické, tantalové, fóliové; vysokonapěťová 1000V keramická disková řada NTE 90000;
     přesná keramická disková řada Multicomp MCBU/MCFU; nízko/vysokonapěťová keramická
     disková řada Illinois Capacitor GMR/GQR; NP0 disk Meritek CCNPO101J50V5B1; fóliová IGBT
     snubber řada Cornell Dubilier SCD; radiální tantalový kondenzátor RCD Components
     TRA10-103; vysokonapěťová 1250V fóliová řada Okaya HCPB; a širší vysokonapěťová fóliová řada
-    Okaya HCP-S (450-1250V)), 197 diod
-    (usměrňovací, spínací, Schottky, Zenerovy (včetně SMD řady EIC SMZ25, SOD-123FL,
+    Okaya HCP-S (450-1250V)), 207 diod
+    (usměrňovací (včetně vysokonapěťové řady Diotec GP1120–GP1600, DO-41, 1200–6000V), spínací,
+    Schottky (včetně extrémně malé 30V onsemi NSR01L30MX, pouzdro X3DFN2 0,62×0,32mm),
+    Zenerovy (včetně SMD řady EIC SMZ25, SOD-123FL,
     3,0–200 V, 1,3 W, 46 hodnot),
     LED včetně výkonových SMD LED LUXEON Rebel, OSLON SSL 80, OSRAM TOPLED Black LO T64F/LR
     T66F (černé pouzdro pro VMS displeje) a OSRAM Mini TOPLED LY M67K, ploché LED displeje
@@ -41,10 +43,12 @@ i návrh schémat obvodů a plošných spojů.
     SMTPA62-320/SMP-0SCMC/SMP100MC/SMP100LC/SMP75, tripolární TLP140/200/270 a aktivní
     přepěťová/nadproudová ochrana CLP200M, tyristor SemiWell SCD4C60S, laserové diody Roithner
     LaserTechnik QL85H6S-A/B/C, QL78I6S-A/B/C, QL78F6S-A/B/C, QL78J6S-A/B/C a QL85J6S-A/B/C-L),
-    80 tranzistorů (bipolární NPN/PNP, Darlington, duální, komplementární páry, výkonové, VF,
-    MOSFET, JFET (včetně RF JFET rodiny Fairchild 2N5484/5485/5486 a SMD MMBF5484/5485/5486,
-    SOT-23), IR fototranzistory Lite-On LTR-306 a LTR-1650D, fototranzistor pro viditelné
-    světlo (náhrada CdS) Kodenshi PT23GP11), 114 integrovaných obvodů
+    85 tranzistorů (bipolární NPN/PNP (včetně onsemi rodiny BC817-16L/25L/40L, SOT-23), Darlington, duální, komplementární páry, výkonové, VF,
+    MOSFET (včetně vysokonapěťového 600V/20A ISC H5N6001P, TO-3P), IGBT (onsemi AFGB40T65SPD-BW,
+    650V/40A Field Stop Trench, D²PAK, copackovaná rychlá dioda), JFET (včetně RF JFET rodiny
+    Fairchild 2N5484/5485/5486 a SMD MMBF5484/5485/5486, SOT-23), IR fototranzistory Lite-On
+    LTR-306 a LTR-1650D, fototranzistor pro viditelné
+    světlo (náhrada CdS) Kodenshi PT23GP11), 140 integrovaných obvodů
     (časovače, komparátory, op-zesilovače, regulátory, logická hradla, čítače,
     Wi-Fi mikrokontroléry ESP32, ESP32-C3, ESP8285, ESP8684, Wi-Fi adaptér ESP8089, 8bit AVR
     mikrokontroléry ATmega640/1280/1281/2560/2561, rodina CAN mikrokontrolérů AT90CAN32/64/128
@@ -70,10 +74,18 @@ i návrh schémat obvodů a plošných spojů.
     senzory CUI CSXX05B series aj.; izolovaný DC/DC měnič TRACO POWER TRA 1 Series; a plně
     digitální Class-D zesilovače reproduktoru s DSP ROHM BM28720MUV (20W+20W) a BM28723MUV
     (17W+17W, output feedback, bez snubberu); a digitální barometrický tlakový senzor Bosch
-    BMP280 (I2C/SPI); a kombinovaný digitální senzor vlhkosti/tlaku/teploty Bosch BME280
-    (I2C/SPI, registrově kompatibilní s BMP280); a neregulovaný izolovaný DC/DC měnič RECOM
-    ECONOLINE REZ Series),
-    122 modulů
+    BMP280 (I2C/SPI); kombinovaný digitální senzor vlhkosti/tlaku/teploty Bosch BME280
+    (I2C/SPI, registrově kompatibilní s BMP280); neregulovaný izolovaný DC/DC měnič RECOM
+    ECONOLINE REZ Series; trojitý single-supply video buffer s nábojovou pumpou Renesas/Intersil
+    ISL59837 (16 Ld QSOP); 12dílná rodina LDO regulátorů NIKO-SEM L1117 (SOT-223/TO-220/TO-252/
+    TO-263, pevné 2,5-5V i nastavitelné); 9dílná rodina nízkoproudých LDO regulátorů Fairchild
+    KA78LXXA (TO-92, 5-24V); kompletní napájecí řadič pro DDR2/DDR3/DDR3L/LPDDR3 paměti Texas
+    Instruments TPS51716 (buck + VTT LDO + VTTREF, 20-pin QFN); 1/4" SOC VGA NTSC/PAL CMOS
+    obrazový senzor Micron MT9V135C12STC (48-pin CLCC, kompozitní video/LVDS/CCIR656); a
+    kombinovaný PFC + half-bridge řadič předřadníku zářivek International Rectifier IRS2580DSPbF
+    ("COMBO8", 8pin SOIC); a napájecí spínač (load switch) se soft-startem onsemi NCP330MUTBG
+    (RDS(on) 26mΩ, 3A, UDFN4)),
+    148 modulů
     (Wi-Fi/BLE: ESP32-C3-MINI-1, ESP32-C3-WROOM-02, Adafruit Feather
     HUZZAH ESP8266, ESP8684-MINI-1, ESP-12S; nízkonapěťové odpojovače baterie Alfatronix
     PowerTector PT10/PT20/PT40/PT60/PT100/PT200; LoRaWAN senzor LEO-S55 a brány USM-S67;
@@ -144,20 +156,27 @@ i návrh schémat obvodů a plošných spojů.
     prachu/PM2.5 Winsen ZPH02 a ATEX senzorová skříň polohy ventilu Festo
     SRBE-CA3-YR90-MW-22A-1W-C2M20-EX (mechanický přepínací spínač), RGB segment signálního
     majáku Banner SG-TL70-RGB14, programovatelný zvukový segment Banner SG-TL70-AP (MP3/WAV) a
-    zvukový segment Moflash LED-TLM-AUD-02 (bzučák, pulzní tón) a fiber optic zesilovač Banner
-    D10 Series), 5 konektorů/přepěťových
+    zvukový segment Moflash LED-TLM-AUD-02 (bzučák, pulzní tón), fiber optic zesilovač Banner
+    D10 Series, a 26dílná řada AC-DC napájecích zdrojových modulů Integrated Power Designs
+    REL-110 (110W, 1-4 výstupy, open-frame/chassis, univerzální vstup 85-264VAC, medicínská
+    certifikace IEC 60601-1)), 5 konektorů/přepěťových
     ochran (Ethernet/PoE
     bleskojistka ESP-100-POE; kolíková lišta Foxconn HB12201; pouzdra průmyslového konektoru
     HARTING Han-Modular ECO 09 14 001 0722 (kabel-kabel, bez PE, IP20) a 09 14 001 0321
     (panelové, s PE, IP65); a miniaturní board-to-board/board-to-FPC konektorová řada Hirose
-    BM28 Series (0,35mm rozteč, do 5A)) a 9 ostatních součástek (RF
+    BM28 Series (0,35mm rozteč, do 5A)) a 15 ostatních součástek (RF
     koaxiální směrový odbočovač SAGE
     Millimeter/Eravant SCD-0134032010-KF-SA; pasivní segmentové LCD panely AZ Displays
     GD-342AP, GD-458P a AND/Purdy FE0202W-EU; Fresnelovy čočky Murata IML-0637, IML-0638 a
-    SMD IML-0662N000-T1 a IML-0660; a dílenský rework modul pájecí stanice Weller WXair MODUL
-    100-230V US/MX/J B) a 1 cívku (proudový snímací transformátor MPS Industries
-    P4100E5 series) a 1 spínač/relé (výkonové elektromagnetické relé Tianbo TRA1). Tlačítkem
-    „Knihovna”
+    SMD IML-0662N000-T1 a IML-0660; dílenský rework modul pájecí stanice Weller WXair MODUL
+    100-230V US/MX/J B; a křemenné krystaly (16/8/12 MHz HC-49/S, 32,768 kHz hodinkový) a
+    keramické rezonátory (16/8 MHz))
+    a 11 cívek (proudový snímací transformátor MPS Industries
+    P4100E5 series, radiální a SMD výkonové tlumivky, a THT/SMD ferritové korálky) a 16
+    spínačů/relé (tlačítkové mikrospínače, páčkové a posuvné přepínače, mikrospínač, DIP
+    spínače, rotační enkodér EC11, otočný přepínač, výkonové elektromagnetické relé Tianbo
+    TRA1, a 4dílná rodina PCB výkonových relé Omron G5LE — SPDT/SPST-NO, flux/fully sealed,
+    10A/250VAC). Tlačítkem „Knihovna”
     v horní liště lze kdykoli doplnit chybějící položky (např. po smazání), aniž
     by se duplikovaly už existující.
 
@@ -216,6 +235,11 @@ i návrh schémat obvodů a plošných spojů.
   - **Kód napětí** (2 znaky, EIA) — např. 1C=16V, 1E=25V, 2A=100V
   - rozpoznaná hodnota jde tlačítkem „Použít” rovnou do formuláře nové součástky
 
+- **Přehled pouzder IC** — rychlá vizuální reference běžných THT/SMD pouzder podle tvaru
+  a typu vývodů (odkaz „Přehled pouzder IC” u pole „Pouzdro” ve formuláři součástky):
+  DIP, SIP, SOIC, SOT-23, SOT-89, TO-92, TO-220, QFN, TSSOP, PLCC, LCCC, QFP, BQFP, BGA —
+  pro každé typický počet vývodů, rozteč a popis tvaru/montáže.
+
 ## Plánováno dál
 
 - Návrh schémat obvodů (schematic capture)
@@ -256,9 +280,11 @@ src/utils/resistorColorCode.ts — tabulka barevného kódu rezistorů, dekódov
 src/utils/imageColorScan.ts — zpracování ořezané fotky (JPEG dekódování, segmentace pásků)
 src/utils/smdResistorCode.ts — dekódování SMD kódů rezistorů (3místný, 4místný, EIA-96)
 src/utils/capacitorCode.ts  — dekódování kódů kondenzátorů (3místný pF kód, tolerance, napětí)
+src/utils/packageReference.ts — statická data přehledu pouzder IC (TSSOP, PLCC, LCCC, QFP, BQFP, BGA)
 src/navigation/             — React Navigation stack
 src/screens/                — obrazovky (seznam, detail, formulář, sken rezistoru,
-                               SMD kalkulačka, OCR sken SMD kódu, kalkulačka kondenzátoru)
+                               SMD kalkulačka, OCR sken SMD kódu, kalkulačka kondenzátoru,
+                               přehled pouzder IC)
 ```
 
 <!---

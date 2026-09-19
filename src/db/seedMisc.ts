@@ -246,6 +246,54 @@ const MISC_SPECS: MiscSpec[] = [
       'Celý modul i připojené nástroje jsou plně ESD bezpečné (ESD Safe).',
     tags: 'ostatní,dílenské-vybavení,pájecí-stanice,rework,weller,wxair,vzduchová-pumpa,vakuum,tool',
   },
+  {
+    name: 'Krystal 16 MHz HC-49/S',
+    packageType: 'THT, HC-49/S, 2 vývody',
+    value: '16,000 MHz, zátěžová kapacita obvykle 20 pF',
+    notes:
+      'Nejběžnější krystal pro AVR/Arduino oscilátory. Nutné doplnit 2× zátěžový kondenzátor ' +
+      '(typicky 18–22 pF) dle konkrétní aplikace.',
+    tags: 'krystal,oscilátor,16mhz,hc-49',
+  },
+  {
+    name: 'Krystal 8 MHz HC-49/S',
+    packageType: 'THT, HC-49/S, 2 vývody',
+    value: '8,000 MHz, zátěžová kapacita obvykle 20 pF',
+    notes: 'Nutné doplnit 2× zátěžový kondenzátor (typicky 18–22 pF) dle konkrétní aplikace.',
+    tags: 'krystal,oscilátor,8mhz,hc-49',
+  },
+  {
+    name: 'Krystal 12 MHz HC-49/S',
+    packageType: 'THT, HC-49/S, 2 vývody',
+    value: '12,000 MHz, zátěžová kapacita obvykle 20 pF',
+    notes: 'Nutné doplnit 2× zátěžový kondenzátor (typicky 18–22 pF) dle konkrétní aplikace.',
+    tags: 'krystal,oscilátor,12mhz,hc-49',
+  },
+  {
+    name: 'Krystal 32,768 kHz (hodinkový)',
+    packageType: 'THT, cylindrický (typ DS-26 / DT-38), 2 vývody',
+    value: '32,768 kHz',
+    notes: 'Hodinkový krystal pro RTC obvody (např. DS1307, DS3231) a hodiny mikrokontrolérů.',
+    tags: 'krystal,oscilátor,32768hz,rtc,hodinkový',
+  },
+  {
+    name: 'Keramický rezonátor 16 MHz (3pin)',
+    packageType: 'THT, 3 vývody (rozteč 5 mm), s vestavěnými kondenzátory',
+    value: '16,000 MHz ±0,5 %',
+    notes:
+      'Keramický rezonátor s integrovanými zátěžovými kondenzátory — nižší přesnost než krystal, ' +
+      'ale bez nutnosti externích C.',
+    tags: 'rezonátor,keramický,oscilátor,16mhz',
+  },
+  {
+    name: 'Keramický rezonátor 8 MHz (3pin)',
+    packageType: 'THT, 3 vývody (rozteč 5 mm), s vestavěnými kondenzátory',
+    value: '8,000 MHz ±0,5 %',
+    notes:
+      'Keramický rezonátor s integrovanými zátěžovými kondenzátory — nižší přesnost než krystal, ' +
+      'ale bez nutnosti externích C.',
+    tags: 'rezonátor,keramický,oscilátor,8mhz',
+  },
 ];
 
 export function buildMiscSeed(): ComponentInput[] {

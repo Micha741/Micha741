@@ -108,7 +108,12 @@ export default function ComponentFormScreen({ route, navigation }: Props) {
       <Text style={styles.label}>Výrobce</Text>
       <TextInput style={styles.input} value={manufacturer} onChangeText={setManufacturer} />
 
-      <Text style={styles.label}>Pouzdro</Text>
+      <View style={styles.labelRow}>
+        <Text style={[styles.label, styles.labelInRow]}>Pouzdro</Text>
+        <Pressable onPress={() => navigation.navigate('PackageReference')} hitSlop={8}>
+          <Text style={styles.helpLink}>Přehled pouzder IC</Text>
+        </Pressable>
+      </View>
       <TextInput
         style={styles.input}
         value={packageType}
@@ -166,6 +171,14 @@ export default function ComponentFormScreen({ route, navigation }: Props) {
 const styles = StyleSheet.create({
   container: { padding: 16, paddingBottom: 48 },
   label: { fontSize: 13, color: '#666', marginTop: 14, marginBottom: 6 },
+  labelRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    marginTop: 14,
+  },
+  labelInRow: { marginTop: 0 },
+  helpLink: { fontSize: 13, color: '#2f6fed', fontWeight: '600' },
   input: {
     borderWidth: 1,
     borderColor: '#ddd',

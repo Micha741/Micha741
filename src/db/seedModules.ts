@@ -3842,6 +3842,279 @@ const MODULE_SPECS: ModuleSpec[] = [
       'senzory v této knihovně. Certifikace CE, cULus.',
     tags: 'modul,senzor,fotoelektrický,optický,optické-vlákno,fiber-optic,zesilovač,banner,d10,teach,din-lišta',
   },
+  {
+    name: 'REL-110-1001',
+    packageType:
+      'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm), montáž 4× 4-40 ' +
+      'šroub; konektory: P1 AC vstup (Tyco/AMP 0,156" friction-lock header), P2 DC výstup ' +
+      '(Tyco/AMP 0,156" friction-lock header), G zemnící 0,187" faston, P3 P.F./Sense (Molex ' +
+      '0,100" breakaway header)',
+    value: '1 výstup: 2,5 V / 22 A (16 A max. s konvekčním chlazením)',
+    notes:
+      'Integrated Power Designs "REL-110 — 110 Watts Single/Multi Output AC-DC" (rev. W, ' +
+      '6.10.2022) — ⚠️ POZOR: navzdory prefixu "REL" v označení NEJDE o relé (na rozdíl od ' +
+      'Tianbo TRA1 v kategorii Spínač/Relé) ani o malý DC/DC měnič (na rozdíl od TRACO POWER ' +
+      'TRA 1 Series / RECOM REZ Series v kategorii IO) — jde o kompletní AC-DC napájecí ' +
+      'zdrojový modul (open-frame/chassis), zařazený do kategorie "Modul" jako hotový osazený ' +
+      'produkt. Tento model je základní jednovýstupová varianta z celé 26dílné modelové řady ' +
+      'REL-110-1001 až -4009 (1 až 4 výstupy), lišící se jen výstupní konfigurací — viz ' +
+      'sourozenecké záznamy REL-110-1002 až -4009 pro kompletní seznam. ' +
+      'Univerzální vstup 85–264 V AC, 47–63 Hz, peak inrush 40 A, účinnost typ. 82 % (plný ' +
+      'výkon, 230 V, liší se dle modelu), účiník 0,95 (plný výkon, 230 V). Celkový výkon max. ' +
+      '80 W (konvekční chlazení, open frame) / 110 W (300 LFM nucené chlazení, nebo s ' +
+      'Chassis/Cover při 300 LFM) — u jednovýstupových modelů (1001–1003) je výstupní proud ' +
+      'omezen na 16 A i když by 22 A odpovídalo jmenovitému výkonu, kvůli chlazení. Ochrany: ' +
+      'OVP výstup 1 (110–150 %), OPP (110–160 % jmenovitého výkonu, cyklické zapnutí/vypnutí, ' +
+      'auto-recovery). Hold-up time min. 16 ms (plný výkon, 85 V vstup), start-up 4 s (120 V ' +
+      'vstup). Power-Fail signál (open kolektor, 5 V/10 mA) 10 ms před poklesem výstupu 1 o ' +
+      '1 %. Provozní teplota 0 až +70 °C (dle derating křivky), skladovací -40 až +85 °C. ' +
+      'Bezpečnostní certifikace: UL/cUL dle UL 62368-1 a zdravotnická AAMI/ANSI ES60601-1 ' +
+      '(2 MOPP primár-sekundár, 1 MOPP primár-zem), CB/TÜV, CE (LVD, RoHS), UKCA. EMC dle IEC ' +
+      '60601-1-2 4th ed. (ESD 8 kV kontakt/15 kV vzduch, emise třída B dle EN 55011/32). ' +
+      'Hmotnost 0,80 lb (open frame) / 1,28 lb (chassis+cover). MTBF 100 000 h (MIL-HDBK-217F, ' +
+      '25 °C). 2 roky záruka.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
+  },
+  {
+    name: 'REL-110-1002',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '1 výstup: 3,3 V / 22 A (16 A max. s konvekčním chlazením)',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace (univerzální vstup 85–264 V AC, ' +
+      'ochrany, certifikace, mechanické provedení, EMC). Liší se jen výstupním napětím.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
+  },
+  {
+    name: 'REL-110-1003',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '1 výstup: 5 V / 22 A (16 A max. s konvekčním chlazením)',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace. Liší se jen výstupním napětím.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
+  },
+  {
+    name: 'REL-110-1004',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '1 výstup: 12 V / 9,2 A',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace. Liší se jen výstupním napětím.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
+  },
+  {
+    name: 'REL-110-1005',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '1 výstup: 15 V / 7,3 A',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace. Liší se jen výstupním napětím.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
+  },
+  {
+    name: 'REL-110-1006',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '1 výstup: 24 V / 4,6 A',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace. Liší se jen výstupním napětím.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
+  },
+  {
+    name: 'REL-110-1007',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '1 výstup: 28 V / 3,9 A',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace. Liší se jen výstupním napětím.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
+  },
+  {
+    name: 'REL-110-1008',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '1 výstup: 48 V / 2,3 A',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace. Liší se jen výstupním napětím.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
+  },
+  {
+    name: 'REL-110-2001',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '2 výstupy: +3,3 V/10 A (8 A max. konvekčně) + +5 V/6 A',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
+      'překročit 12 A s konvekčním chlazením.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,dvouvýstupový',
+  },
+  {
+    name: 'REL-110-2002',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '2 výstupy: +5 V/10 A (8 A max. konvekčně) + +12 V/5 A',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
+      'překročit 12 A s konvekčním chlazením.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,dvouvýstupový',
+  },
+  {
+    name: 'REL-110-2003',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '2 výstupy: +5 V/10 A (8 A max. konvekčně) + +24 V/3 A',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
+      'překročit 12 A s konvekčním chlazením.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,dvouvýstupový',
+  },
+  {
+    name: 'REL-110-2004',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '2 výstupy: +12 V/5 A + -12 V/4 A',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
+      'překročit 12 A s konvekčním chlazením.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,dvouvýstupový',
+  },
+  {
+    name: 'REL-110-2005',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '2 výstupy: +15 V/4 A + -15 V/3 A',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
+      'překročit 12 A s konvekčním chlazením.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,dvouvýstupový',
+  },
+  {
+    name: 'REL-110-2006',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '2 výstupy: +18 V/4 A + -18 V/3 A',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
+      'překročit 12 A s konvekčním chlazením.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,dvouvýstupový',
+  },
+  {
+    name: 'REL-110-3001',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '3 výstupy: +5 V/10 A (8 A max. konvekčně) + +12 V/3 A + -12 V/3 A',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,trojvýstupový',
+  },
+  {
+    name: 'REL-110-3002',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '3 výstupy: +5 V/10 A (8 A max. konvekčně) + +15 V/2 A + -15 V/2 A',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,trojvýstupový',
+  },
+  {
+    name: 'REL-110-3003',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '3 výstupy: +8 V/6 A + -8 V/1 A + +30 V/1 A',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,trojvýstupový',
+  },
+  {
+    name: 'REL-110-3004',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '3 výstupy: +9 V/3 A + -24 V/3 A + +13 V/2 A',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,trojvýstupový',
+  },
+  {
+    name: 'REL-110-4001',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '4 výstupy: +3,3 V/10 A (8 A max. konvekčně) + +5 V/6 A + +12 V/2 A + -12 V/2 A',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
+      'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
+  },
+  {
+    name: 'REL-110-4002',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '4 výstupy: +5 V/10 A (8 A max. konvekčně) + +3,3 V/6 A + +12 V/2 A + -12 V/2 A',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
+      'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
+  },
+  {
+    name: 'REL-110-4003',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '4 výstupy: +5 V/10 A (8 A max. konvekčně) + +3,3 V/6 A + +15 V/2 A + -15 V/2 A',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
+      'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
+  },
+  {
+    name: 'REL-110-4004',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '4 výstupy: +5 V/10 A (8 A max. konvekčně) + -5 V/6 A + +12 V/2 A + -12 V/2 A',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
+      'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
+  },
+  {
+    name: 'REL-110-4005',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '4 výstupy: +5 V/10 A (8 A max. konvekčně) + -5 V/6 A + +15 V/2 A + -15 V/2 A',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
+      'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
+  },
+  {
+    name: 'REL-110-4006',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '4 výstupy: +5 V/10 A (8 A max. konvekčně) + +24 V/2 A + +12 V/2 A + -12 V/2 A',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
+      'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
+  },
+  {
+    name: 'REL-110-4007',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '4 výstupy: +5 V/10 A (8 A max. konvekčně) + +24 V/2 A + +15 V/2 A + -15 V/2 A',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
+      'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
+  },
+  {
+    name: 'REL-110-4009',
+    packageType: 'Open frame nebo Chassis/Cover (volitelně), 3×5×1,3" (76×127×33 mm) — shodné s REL-110-1001',
+    value: '4 výstupy: +5 V/10 A (8 A max. konvekčně) + +24 V/2 A + +7 V/2,5 A + -7 V/2,5 A',
+    notes:
+      'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
+      'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
+      'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
