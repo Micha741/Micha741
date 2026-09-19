@@ -2140,6 +2140,34 @@ const MODULE_SPECS: ModuleSpec[] = [
       'IP65/IP67. Certifikace: CE (EU EMC), RCM.',
     tags: 'modul,senzor,proximity,poloha-pístu,reed,jazýčkový-kontakt,magnetický,festo,sme-8-k5,pneumatika',
   },
+  {
+    name: 'SME-8-S-LED-24',
+    packageType:
+      'Tyčinkové pouzdro pro upnutí do T-drážky podélně (bez šroubování), pouzdro epoxidová ' +
+      'pryskyřice + PC + PET + vysoce legovaná nerezová ocel, konektor M8×1 (pozlacené/niklované ' +
+      'mosazné kontakty, 3piny) na konci 0,3m kabelu (plášť TPE-U/PUR), hmotnost 8 g',
+    value:
+      'Polohový snímač pístu pneumatického válce (proximity sensor), princip magnetický jazýčkový ' +
+      'kontakt (reed), spínací funkce N/O (spínací), bipolární, 12–30 V AC/DC',
+    notes:
+      'Festo AG & Co. KG "Proximity sensor SME-8-S-LED-24" (obj. č. 150857, datový list ' +
+      '5.3.2021) — elektricky TOTOŽNÝ magnetický jazýčkový (reed) snímač polohy pístu jako ' +
+      'SME-8-K5-LED-24 (obj. č. 175404) v této knihovně — shodná mechanika upnutí (podélné ' +
+      'zasunutí do T-drážky, utahovací moment 0,2 Nm), shodné elektrické parametry (reed N/O ' +
+      'bipolární, 12–30 V AC/DC, 500 mA, zapínací 0,5 ms/vypínací 0,03 ms, opakovatelnost ' +
+      '±0,1 mm, izolační napětí 50 V, rázové přepětí 0,8 kV, stupeň znečištění 3) — ⚠️ liší se ' +
+      'POUZE typem kabelového zakončení: zatímco SME-8-K5-LED-24 má DLOUHÝ 5m kabel s volným ' +
+      'koncem (open end, pro přímé zapojení do svorkovnice), tato varianta SME-8-S-LED-24 má ' +
+      'KRÁTKÝ 0,3m kabel zakončený zásuvným konektorem M8×1 (pro připojení prodlužovacího ' +
+      'kabelu) — proto i výrazně nižší hmotnost (8 g vs 60 g). Krytí u konektorové varianty ' +
+      'pouze IP67 (bez IP65, na rozdíl od K5-LED-24 varianty s otevřeným kabelem, která má ' +
+      'IP65/IP67). Zařazeno do kategorie "Modul" jako kompletní osazený produkt s vlastním ' +
+      'kabelem/konektorem, stejně jako ostatní Festo SME-8M/SMT-8M/SDBT-BSW/SME-8 snímače polohy ' +
+      'pístu v této knihovně. Žlutá LED indikace sepnutí. Materiál bez mědi a PTFE. Provozní ' +
+      'teplota -40 až +70 °C (pevná instalace), -5 až +70 °C (pohyblivá instalace kabelu). ' +
+      'Certifikace: CE (EU EMC), RCM.',
+    tags: 'modul,senzor,proximity,poloha-pístu,reed,jazýčkový-kontakt,magnetický,festo,sme-8-s,pneumatika,m8',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
