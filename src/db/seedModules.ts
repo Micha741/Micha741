@@ -1201,6 +1201,40 @@ const MODULE_SPECS: ModuleSpec[] = [
       'příruba BF 18, rychloupínací konzole EXG-18 (shodné s NBB5-18GM40-Z0-V1).',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb8,pnp,3vodičový,m18,mosaz,ip67,průmyslový',
   },
+  {
+    name: 'NBB1-4GM22-E0',
+    packageType:
+      'Miniaturní válcové závitové pouzdro M4×0,5 (nejmenší v řadě NBB v této knihovně), ' +
+      'nerezová ocel 1.4305/AISI 303 (na rozdíl od poniklované mosazi u ostatních sourozenců), ' +
+      'délka 22 mm (16,5 mm závitové části), aktivní čelo polykarbonát (PC), indikační žlutá ' +
+      'LED, integrální tenký kabel PUR 2 m (0,055 mm² — výrazně tenčí žíly než ostatní NBB v ' +
+      'této knihovně kvůli miniaturnímu průměru)',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, miniaturní provedení, zapustitelný ' +
+      '("embeddable") — celá aktivní plocha může být zapuštěna do kovu bez ovlivnění parametrů, ' +
+      'spínací vzdálenost 1 mm, 3vodičové DC zapojení, NPN výstup, spínací (NO) kontakt, ' +
+      '10–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBB1-4GM22-E0" (206384_eng.xml, vydáno 9.–10. 2. 2012) — ' +
+      '⚠️ nejmenší sourozenecký díl v rámci řady Pepperl+Fuchs NBB v této knihovně (spolu s ' +
+      'NBB3-V3-Z4, NBB4-12GM75-US, NBB5-18GM40-Z0-V1, NBB8-18GM50-E2, samostatné záznamy) — ' +
+      'miniaturní závit M4×0,5 (vs M12/M18 u ostatních), pouzdro z NEREZOVÉ OCELI (vs poniklovaná ' +
+      'mosaz u NBB4/NBB5/NBB8), a instalace typu "embeddable" (zapustitelný — na rozdíl od ' +
+      '"flush" u ostatních; u skutečně zapustitelného senzoru zůstává spínací vzdálenost ' +
+      'nezměněna i při zapuštění celé aktivní plochy do okolního kovu, což je přísnější ' +
+      'konstrukční požadavek než běžná zápustná montáž). Elektricky nejbližší NBB8-18GM50-E2 ' +
+      '(oba 3vodičové DC s klasickým výstupním tranzistorem), ale s NPN výstupem (na rozdíl od ' +
+      'PNP u NBB8-18GM50-E2) — ⚠️ nutno rozlišovat polaritu výstupu při návrhu vstupního obvodu ' +
+      'PLC/řídicí elektroniky. Korekční faktory dle materiálu cíle: rAl=0,4, rCu=0,29, r304/ ' +
+      'nerez=0,76, rBrass/mosaz=0,46. Jmenovitá spínací vzdálenost sn 1 mm, zajištěná spínací ' +
+      'vzdálenost 0–0,81 mm. Spínací kmitočet 0–700 Hz (nejvyšší v rodině díky miniaturním ' +
+      'rozměrům). Hystereze typ. 5 %. Ochrana proti přepólování a pulzní zkratová ochrana. ' +
+      'Úbytek napětí max 3 V. Provozní proud 0–100 mA, klidový proud max 10 mA, zbytkový proud ' +
+      'typ. 0,1 mA @25°C. Krytí IP67. Provozní teplota -25 až +70 °C. Shoda EN/IEC 60947-5-2, ' +
+      'UL/CSA certifikace (CCC nevyžadováno pro produkty ≤36V). Dostupné příslušenství: montážní ' +
+      'příruba BF 4.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb1,npn,miniaturní,m4,nerez,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
