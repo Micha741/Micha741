@@ -1436,6 +1436,40 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,senzor,piezoelektrický,rázový,vibrační,náboj,murata,pkgs,shock-sensor',
   },
   {
+    name: 'BD3852MUZ-Z',
+    packageType:
+      'VQFN16Z3030A, 3,0×3,0×0,4 mm (max výška), 16 vývodů: 1=EN, 2=NC, 3=REF2, 4=A2IP, 5=A2O, ' +
+      '6=A2IM, 7=FO, 8=NC, 9=A1O, 10=NC, 11=NC, 12=VCC, 13=A1IP, 14=A1IM, 15=REF1, 16=GND, ' +
+      'exponovaná plocha (EXP-PAD) připojena na GND',
+    value:
+      'Zesilovací/kondicionovací IC pro rázový (nárazový) senzor (Shock Sensor IC) — nábojový ' +
+      'předzesilovač + notch filtr + druhý stupeň OZ zesilovače, napájení 1,6–2,3 V, notch ' +
+      'kmitočet typ. 31 kHz, odběr typ. 3,9 mA',
+    notes:
+      'ROHM "BD3852MUZ-Z — Shock Sensor (Impact Sensor) IC" (TSZ02201-0E3E0FZ00890-1-2, Rev.001, ' +
+      '11. 3. 2020) — ⚠️ jde o zesilovací/kondicionovací IC, KTERÁ SE PŘIPOJUJE K EXTERNÍMU ' +
+      'rázovému senzoru (piezoelektrický element), sama senzor neobsahuje — koncepčně přímo ' +
+      'navazuje na piezoelektrické rázové senzorové elementy Murata PKGS-00LDP1-R/PKGS-45TAV-R/ ' +
+      'PKGS-25WXP1-R v této knihovně (ty jsou pasivní nábojové/napěťové snímací elementy bez ' +
+      'vlastní elektroniky, BD3852MUZ-Z je typický příklad externího zesilovacího obvodu, který ' +
+      'takový element potřebuje pro použitelný výstupní signál). Architektura: OP-AMP1 pracuje ' +
+      'jako nábojový zesilovač (charge amplifier) detekující náboj generovaný rázovým senzorem ' +
+      '(piny A1IP/A1IM/A1O), následovaný filtrem s předzesilovačem (zesílení 13,9 dB) a vestavěným ' +
+      'notch filtrem (útlum max -23 dB) laděným na typický rezonanční kmitočet rázových senzorů ' +
+      '(fo typ. 31 kHz — pro potlačení nežádoucí rezonanční špičky senzoru, viz frekvenční ' +
+      'charakteristiky senzorů PKGS v této knihovně), výstup na pinu FO. OP-AMP2 (piny A2IP/A2IM/ ' +
+      'A2O) slouží jako druhý zesilovací stupeň s uživatelsky nastavitelným ziskem/filtrací pomocí ' +
+      'externích R/C prvků. VREF generuje referenční napětí REF1 (0,40 V typ.) a REF2 (0,80 V ' +
+      'typ.). EN pin (H=zapnuto, L=úsporný režim se spotřebou <10 µA, interní pull-down 50 kΩ) ' +
+      'umožňuje řízené uspávání. Napájecí napětí 1,6–2,3 V (typ. 1,8 V), odběr typ. 3,9 mA ' +
+      '(max 4,5 mA) v aktivním režimu. Šířka pásma zesilovačů (GBW) typ. 1,5 MHz u obou stupňů. ' +
+      'Absolutní maximum: VCC 4,5 V, TJmax 150 °C, Tstg -55 až +150 °C. Doporučená provozní ' +
+      'teplota -40 až +85 °C. Určeno primárně pro detekci nárazu/rázu a ochranu proti zápisu u ' +
+      'HDD nebo optických pickup mechanismů, případně pro feedforward kompenzaci setrvačných sil ' +
+      'u téhož typu mechanismů.',
+    tags: 'io,zesilovač,nábojový-zesilovač,rázový-senzor,shock-sensor,notch-filtr,rohm,bd3852muz,vqfn',
+  },
+  {
     name: 'SCD40',
     packageType:
       'LGA 10,1×10,1×6,5 mm, 21 vývodů (VDD, VDDH, GND, SDA, SCL, zbytek DNC — nutno pájet i ' +
