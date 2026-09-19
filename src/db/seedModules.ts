@@ -3100,6 +3100,38 @@ const MODULE_SPECS: ModuleSpec[] = [
       'kabely V1-G/V1-W/V1-G-2M-PUR/V1-W-2M-PUR.',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,pepperl-fuchs,cbb4,pnp,nerez,potravinářský,m12,konektor,ip65',
   },
+  {
+    name: 'CBB8-18GS75-E2',
+    packageType:
+      'Válcové závitové pouzdro M18×1 (threaded barrel), nerezová ocel 1.4305/AISI 303, délka ' +
+      '75,5 mm, aktivní čelo PBT, integrální kabel PUR 2 m (3 žíly 0,34 mm²: BN=L+, BK=výstup, ' +
+      'BU=L-), potenciometr pro nastavení citlivosti, zelená LED (napájení) + žlutá LED (spínací ' +
+      'stav)',
+    value:
+      'Kapacitní (bezkontaktní) přibližovací spínač, zapustitelný ("flush"), spínací vzdálenost ' +
+      'nastavitelná v širokém rozsahu 1–8 mm potenciometrem, 3vodičové DC zapojení, PNP výstup, ' +
+      'spínací (NO) kontakt, 10–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Capacitive sensor CBB8-18GS75-E2" (237036_eng.xml, vydáno 22.3.2013) — ' +
+      'VĚTŠÍ velikostní varianta ze stejné CBB kapacitní rodiny jako CBB4-12GH60-E0-V1/E2-V1 v ' +
+      'této knihovně — ⚠️ liší se ve více ohledech: (1) větší závit M18×1 (oproti M12 u CBB4-...) ' +
+      'a délka 75,5 mm; (2) NASTAVITELNÝ jmenovitý rozsah 1–8 mm potenciometrem přímo na těle ' +
+      '("switching distance can be set over a wide range" — u CBB4-... je jmenovitá vzdálenost ' +
+      'pevná 4 mm, potenciometr jen jemně doladí citlivost kolem tohoto bodu, zde lze naopak ' +
+      'zvolit ZÁKLADNÍ pracovní vzdálenost v celém rozsahu 1–8 mm); (3) INTEGROVANÝ 2m kabel místo ' +
+      'M12 zásuvného konektoru u CBB4-...; (4) pouzdro z BĚŽNÉ nerezi 1.4305/AISI 303 a aktivní ' +
+      'čelo PBT — NENÍ výslovně určeno pro potravinářské aplikace jako CBB4-12GH60-E0-V1/E2-V1 s ' +
+      'jakostí 1.4404/316L a čelem PEEK; (5) širší provozní teplotní rozsah -25 až +85 °C (oproti ' +
+      '-25 až +70°C u CBB4-...). Vyšší spínací kmitočet 0–100 Hz (oproti 0–50 Hz u CBB4-...). ' +
+      'Teplotní drift max 20 % v rozsahu -5 až +55°C. Zpoždění dostupnosti po zapnutí max 300 ms. ' +
+      'Ochrana proti přepólování a pulzní zkratová ochrana. Úbytek napětí max 1,5 V. Provozní ' +
+      'proud 0–100 mA, klidový proud max 18 mA. Zařazeno do kategorie "Modul" jako kompletní ' +
+      'osazený produkt s vlastním kabelem, stejně jako ostatní přibližovací spínače v této ' +
+      'knihovně. Krytí IP67 (vyšší než IP65 u CBB4-...). Shoda EN/IEC 60947-5-2, UL/CCC ' +
+      'certifikace (CCC nevyžadováno pro produkty ≤36V). Dostupné příslušenství: montážní ' +
+      'příruba BF 18, rychloupínací konzole EXG-18.',
+    tags: 'modul,senzor,kapacitní,přibližovací,proximity,pepperl-fuchs,cbb8,pnp,nerez,nastavitelný,m18,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
