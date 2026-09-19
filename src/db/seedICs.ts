@@ -1597,6 +1597,44 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,senzor,proud,hallův-jev,proudový-senzor,galvanické-oddělení,allegro,acs752,izolovaný',
   },
   {
+    name: 'ACS754xCB-050',
+    packageType:
+      'Pouzdro "CB" ve 3 variantách tvaru vývodů: CB-PFF (formované signálové piny i silové ' +
+      'terminály), CB-PSF (formované piny, rovné terminály), CB-PSS (rovné piny i terminály) — ' +
+      'kompaktní SIP-podobné pouzdro s 3 signálovými piny (1=VCC, 2=GND, 3=VOUT) + 2 silovými ' +
+      'terminály primárního vodiče (4=IP+, 5=IP-)',
+    value:
+      'Hallův lineární izolovaný senzor proudu (chopper-stabilizovaný BiCMOS Hall IC), obousměrný ' +
+      '±50 A, citlivost 40 mV/A typ., napájení 5,0 V, izolační napětí 3 kVRMS, dostupný v ' +
+      'průmyslové (S, -20 až +85 °C) i automotive (L, -40 až +150 °C) teplotní verzi',
+    notes:
+      'Allegro MicroSystems "ACS754xCB-050" katalogový datasheet (ACS754050-DS, Rev. 3) — sourozenec ' +
+      'ACS752SCA-050 v této knihovně v rámci téže výrobcem deklarované rodiny "ACS75x" (shodná ' +
+      'základní technologie: chopper-stabilizovaný BiCMOS Hall IC s integrovaným měděným ' +
+      'vodivým můstkem primárního proudu v blízkosti čipu), ale s odlišným pouzdrem (kompaktnější ' +
+      '"CB" místo "CA"/TO-220-like u ACS752) a nižším odporem primárního vodiče (typ. 100 µΩ vs. ' +
+      '130 µΩ u ACS752). Datasheet pokrývá celou modelovou řadu lišící se tvarem vývodů (PFF/PSF/ ' +
+      'PSS) a teplotním rozsahem — dle katalogové tabulky: ACS754LCB-050-PFF/PSF/PSS (automotive, ' +
+      '-40 až +150 °C, TA "L" řada) a ACS754SCB-050-PFF/PSF/PSS (standardní, -20 až +85 °C, TA "S" ' +
+      'řada) — do knihovny přidán jako jeden souhrnný záznam pro celou "xCB" řadu, konkrétní ' +
+      'kombinace teplotního rozsahu a tvaru vývodů se volí dle aplikace. Princip funkce shodný s ' +
+      'ACS752SCA-050 (viz tam pro obecný popis Hallova senzoru s integrovaným výstupním zesilovačem/ ' +
+      'filtrem) — navíc obsahuje interní stabilizovaný napěťový regulátor a trimovací obvody ' +
+      '(Gain/Temperature Coefficient/Offset trim control) přímo na čipu, viditelné v blokovém ' +
+      'schématu. Rozsah měřeného proudu ±50 A. Citlivost 40 mV/A typ. (S řada: 37,8–42,0 mV/A ' +
+      '@-20~85°C; L řada: 36,0–42,8 mV/A @-40~150°C). Klidové výstupní napětí (0 A) VCC/2 (typ. ' +
+      '2,5 V). Nelinearita max ±1,5 % (S) / ±1,8 % (L). Symetrie 98–102 %. Celková chyba výstupu ' +
+      'max ±1,0 % @25°C / ±5,0 % (S) resp. ±9,9 % (L) v celém teplotním rozsahu. Magnetický offset ' +
+      '(po přebuzení 100 A) max ±0,30 A (S) / ±0,40 A (L). Šířka pásma (-3dB) 35 kHz (nižší než ' +
+      '50 kHz u ACS752SCA-050), doba náběhu typ. 11 µs, doba odezvy typ. 12 µs, doba zpoždění typ. ' +
+      '4 µs. Napájení VCC 4,5–5,5 V (typ. 5,0 V), odběr typ. 8 mA (max 10 mA). Izolační napětí ' +
+      '3 kVRMS mezi piny 1-3 a terminály 4-5 (60 Hz, 1 minuta), TÜV certifikace (America, ' +
+      'certifikát U8V 04 11 54214 001). Max. teplota přechodu 165 °C, max. skladovací teplota ' +
+      '170 °C. Určeno pro řízení motorů, servo systémy, průmyslové a automotive aplikace, ' +
+      'konverzi výkonu, monitorování baterií.',
+    tags: 'io,senzor,proud,hallův-jev,proudový-senzor,galvanické-oddělení,allegro,acs754,izolovaný,chopper,automotive',
+  },
+  {
     name: 'SCD40',
     packageType:
       'LGA 10,1×10,1×6,5 mm, 21 vývodů (VDD, VDDH, GND, SDA, SCL, zbytek DNC — nutno pájet i ' +
