@@ -1353,6 +1353,33 @@ const MODULE_SPECS: ModuleSpec[] = [
       'NBB2-8GM variantami).',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,npn,kabel,m8,ip67,průmyslový',
   },
+  {
+    name: 'NBB2-8GM50-E2-5M',
+    packageType:
+      'Válcové závitové pouzdro M8×1 (threaded barrel), mosaz s niklovým povlakem, délka 50 mm, ' +
+      'aktivní čelo LCP, indikační žlutá LED, integrální kabel PVC 5 m (Ø3,5 mm, 3 žíly ' +
+      '0,14 mm²: BN=L+, BK=výstup, BU=L-), v balení 2 šestihranné matice',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, spínací vzdálenost 2 mm (zápustná montáž), ' +
+      'rozšířený teplotní rozsah -40 až +85 °C, 3vodičové DC zapojení, PNP výstup, spínací (NO) ' +
+      'kontakt, 5–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBB2-8GM50-E2-5M" (304615-0070_eng.xml, vydáno 3. 7. ' +
+      '2019) — ⚠️ dvojí sourozenecký vztah v rámci skupiny "NBB2-8GM" v této knihovně: (1) ' +
+      'elektrický komplement NBB2-8GM50-E0 (samostatný záznam) — mechanicky IDENTICKÝ díl (50 mm ' +
+      'tělo, integrální kabel, stejné korekční faktory rAl=0,4/rCu=0,3/r304=0,75/rBrass=0,5), ' +
+      'liší se pouze výstupní polaritou (zde PNP vs NPN u NBB2-8GM50-E0); (2) kabelová obdoba ' +
+      'NBB2-8GM25-E2-V3/NBB2-8GM40-E2-V1 (stejné PNP, jinak konektorové provedení) — přípona ' +
+      '"-5M" v označení dílu značí délku integrálního kabelu 5 metrů (namísto standardních 2 m u ' +
+      'NBB2-8GM50-E0), pro aplikace vyžadující delší kabelové vedení bez nutnosti prodlužovacího ' +
+      'konektorového kabelu. Zajištěná spínací vzdálenost 0–1,62 mm. Spínací kmitočet až 6000 Hz. ' +
+      'Hystereze typ. 5 %. Úbytek napětí max 1,5 V. Provozní proud 0–100 mA, klidový proud max ' +
+      '10 mA, zbytkový proud max 0,2 mA. Zpoždění dostupnosti po zapnutí max 100 ms. Funkční ' +
+      'bezpečnostní parametry: MTTFd 960 let, doba mise 20 let, diagnostické pokrytí 0 %. Krytí ' +
+      'IP67. UL certifikace (Class 2 Power Source). Dostupné příslušenství: montážní příruba ' +
+      'BF 8, rychloupínací konzole EXG-08.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,pnp,kabel,5m,m8,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
