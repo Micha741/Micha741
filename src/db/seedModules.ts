@@ -2231,6 +2231,41 @@ const MODULE_SPECS: ModuleSpec[] = [
       'CE (EU EMC), RCM.',
     tags: 'modul,senzor,proximity,poloha-pístu,reed,jazýčkový-kontakt,magnetický,festo,smeo-8e,pneumatika,m12,konektor',
   },
+  {
+    name: 'SMEO-8E-M12-LED-230',
+    packageType:
+      'Kompaktní kvádrové pouzdro s integrovaným zásuvným konektorem M12×1 A-kódovaným ' +
+      '(EN 61076-2-101, 3piny) přímo na těle senzoru, BEZ vlastního kabelu, pouzdro tvářená ' +
+      'hliníková slitina + TPE-U(PU) + vysoce legovaná nerezová ocel, montáž příslušenstvím, ' +
+      'podélný výstup konektoru, hmotnost 9 g',
+    value:
+      'Univerzální (síťové) polohový snímač pístu pneumatického válce (proximity sensor), princip ' +
+      'magnetický jazýčkový kontakt (reed), bipolární N/O kontakt, široký rozsah 3–230 V AC / ' +
+      '3–250 V DC',
+    notes:
+      'Festo AG & Co. KG "Proximity sensor SMEO-8E-M12-LED-230" (obj. č. 171160, datový list ' +
+      '5.3.2021) — magnetický jazýčkový (reed) snímač polohy pístu ze stejné produktové řady a ' +
+      'stejného konstrukčního provedení (hliníkové pouzdro s integrovaným M12 konektorem, montáž ' +
+      'příslušenstvím) jako SMEO-8E-M12-LED-24 (obj. č. 171164) v této knihovně — ⚠️ zásadní ' +
+      'rozdíl je v napájecím rozsahu: zatímco "-24" varianta pracuje jen v úzkém pásmu 12–30 V ' +
+      '(nízké napětí, DC/průmyslová automatizace), tato "-230" varianta pokrývá ŠIROKÝ UNIVERZÁLNÍ ' +
+      'rozsah 3–230 V AC / 3–250 V DC — umožňuje přímé spínání síťového napětí 230 V AC bez ' +
+      'meziobvodu, CE certifikace navíc dle směrnice o nízkém napětí (Low Voltage Directive), ' +
+      'vyšší odolnost proti rázovému přepětí (4 kV oproti 0,8 kV u "-24" varianty). Za cenu tohoto ' +
+      'širšího rozsahu má nižší max. výstupní proud (120 mA oproti 500 mA), pomalejší zapínací ' +
+      'čas (≤2 ms oproti ≤0,5 ms) a nižší max. spínací kmitočet (500 Hz oproti 800 Hz), vyšší ' +
+      'úbytek napětí (3,9 V oproti nespecifikovanému nízkému úbytku u "-24"), užší teplotní rozsah ' +
+      '(-20 až +60 °C oproti -40 až +60 °C) a orientaci konektoru PODÉLNOU místo příčné. Datasheet ' +
+      'uvádí u tohoto typu poznámku "Without LED function" u řádku spínacího výstupu, přesto je ' +
+      'níže samostatně uvedena žlutá LED indikace sepnutí — pravděpodobně jde o poznámku k ' +
+      'variantám bez LED dostupným v rámci stejné produktové skupiny, tento konkrétní kus (LED-230) ' +
+      'LED indikaci dle tabulky parametrů má. Zařazeno do kategorie "Modul" jako kompletní osazený ' +
+      'produkt s integrovaným konektorem, stejně jako ostatní Festo SME/SMT/SDBT-BSW/SMEO snímače ' +
+      'polohy pístu v této knihovně. Krytí IP65/IP67, stupeň znečištění 3, max. utahovací moment ' +
+      'upevňovacího příslušenství 0,5 Nm. Bez mědi a PTFE. Certifikace: CE (EU EMC + Low Voltage), ' +
+      'RCM.',
+    tags: 'modul,senzor,proximity,poloha-pístu,reed,jazýčkový-kontakt,magnetický,festo,smeo-8e,pneumatika,m12,síťové-napětí',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
