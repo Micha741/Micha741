@@ -2391,6 +2391,41 @@ const IC_SPECS: IcSpec[] = [
       'monitorování kvality vzduchu v budovách/kancelářích (detekce ozónu).',
     tags: 'io,senzor,plyn,ozón,o3,sno2,polovodičový,hanwei,mq-131,gas-sensor',
   },
+  {
+    name: 'TRA 1 Series',
+    packageType:
+      'Zalévaný (potted) SIP modul, nevodivý plast UL94V-0, 4 THT vývody (jednovýstupová verze) ' +
+      'nebo 6 vývodů (dvouvýstupová verze) v roztečích 2,54 mm, rozměry 19,5×10,2×7,1 mm (24V ' +
+      'vstupní varianty) nebo 6,1 mm výška (5V/12V varianty), hmotnost 2,2–2,6 g, průmyslový SIP ' +
+      'pinout',
+    value:
+      'Izolovaný DC/DC měnič, 1 W, vstup 5/12/24 V DC ±10 %, jednovýstupové (5/9/12/15 V) nebo ' +
+      'dvouvýstupové (±5/±12/±15 V) provedení, izolace 1000 VDC, účinnost až 88,5 %',
+    notes:
+      'TRACO POWER "TRA 1 Series, 1 Watt DC/DC Converters" (katalogový list, rev. 29.7.2022) — ' +
+      '⚠️ POZOR NA ZÁMĚNU NÁZVU: naprosto stejné označení "TRA1"/"TRA 1" nese i elektromagnetické ' +
+      'výkonové relé Tianbo Electronics TRA1 v kategorii "Spínač/Relé" v této knihovně — jde o ' +
+      'DVA ÚPLNĚ ODLIŠNÉ PRODUKTY DVOU RŮZNÝCH VÝROBCŮ (Tianbo relé vs. TracoPower DC/DC měnič) ' +
+      'sdílející pouze shodný alfanumerický kód, nijak spolu nesouvisející — nutno pečlivě ' +
+      'rozlišovat při vyhledávání/objednávání. TRA 1 Series (tento záznam) je malý IZOLOVANÝ ' +
+      'DC/DC MĚNIČ s polořízenou (semi-regulated) výstupní regulací, průmyslovým standardním ' +
+      'SIP pinoutem, určený k napájení řídicích obvodů/budičů tam, kde neregulované DC/DC měniče ' +
+      'nevyhovují vstupnímu napěťovému rozsahu při změně zátěže. ⚠️ Datasheet dokumentuje celou ' +
+      'parametrickou řadu 21 kombinací vstup/výstup (objednací kód TRA1-<vstup><výstup>, např. ' +
+      'TRA1-1212 = 12V vstup, 12V jednoduchý výstup 84mA, TRA1-2423 = 24V vstup, ±15V duální ' +
+      'výstup ±34mA) — do knihovny přidána jako jeden souhrnný záznam pro celou řadu, ne každá ' +
+      'kombinace zvlášť. Vstupní napětí 5/12/24 V DC ±10 %, odběr naprázdno/plné zátěži 30/240 mA ' +
+      '(5V modely) až 11/50 mA (24V modely). Izolační napětí vstup/výstup 1000 VDC (60s), izolační ' +
+      'odpor >1000 MΩ, izolační kapacita 60 pF typ. Spínací kmitočet 50–120 kHz (frekvenční ' +
+      'modulace). Regulace při změně vstupu ±1,05 % typ./±1,2 % max., zvlnění a šum (20 MHz ' +
+      'pásmo) max. 60 mVp-p. Teplotní koeficient ±0,01 %/K typ. Zkratová ochrana (omezená, max ' +
+      '0,5 s). Kapacitní zátěž max 220 µF (jednoduchý výstup) / 100 µF na výstup (duální). ' +
+      'Provozní teplota -40 až +95 °C (derating 5 %/K nad +85°C), skladovací -50 až +125 °C, ' +
+      'vlhkost max 95 % nekondenzující. Provoz do nadmořské výšky 5000 m. MTBF >2 000 000 h (dle ' +
+      'MIL-HDBK-217F @25°C). Pájecí teplota max 260°C/10s. Certifikace: CB scheme (IEC 60950-1), ' +
+      'UL 60950-1, CSA 60950-1-07. RoHS 2011/65/EU, REACH.',
+    tags: 'io,dc-dc,měnič,izolovaný,napájecí-obvod,tracopower,tra1,sip,1w',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
