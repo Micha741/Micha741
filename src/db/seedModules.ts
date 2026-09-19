@@ -2883,6 +2883,43 @@ const MODULE_SPECS: ModuleSpec[] = [
       'přístroje, HVAC, klimatizace, systémy požárního/kouřového alarmu.',
     tags: 'modul,senzor,prach,pm2.5,optický,ir,winsen,zph02,pwm,uart,kvalita-vzduchu',
   },
+  {
+    name: 'NBB15-30GM50-E0-M-Y242746',
+    packageType:
+      'Válcové závitové pouzdro M30×1,5, mosaz s niklovým povlakem, délka 47 mm (36 mm ' +
+      'závitové části), aktivní čelo PBT, indikační žlutá LED (všesměrová), integrální kabel ' +
+      'PUR 2 m (žíly 0,75 mm²: BN=L+, BK=výstup, BU=L-)',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, klasický feritový typ ("Basic series"), ' +
+      'spínací vzdálenost 15 mm (zápustná montáž, "increased operating distance"), 3vodičové ' +
+      'DC zapojení, NPN výstup, spínací (NO) kontakt, 5–30 V DC, rozšířený teplotní rozsah ' +
+      '-40 až +85 °C',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBB15-30GM50-E0-M-Y242746" (242746_eng.xml, vydáno ' +
+      '30.10.2014) — pátý sourozenecký díl v rámci "Basic series" řady Pepperl+Fuchs NBB v této ' +
+      'knihovně (spolu s NBB3-V3-Z4, NBB4-12GM75-US, NBB5-18GM40-Z0-V1, NBB8-18GM50-E2, ' +
+      'samostatné záznamy) — ⚠️ VÝRAZNĚ VĚTŠÍ mechanický formát než ostatní: závit M30×1,5 ' +
+      '(oproti max M18 u NBB8-18GM50-E2 v této knihovně) a jmenovitá spínací vzdálenost 15 mm ' +
+      '(téměř dvojnásobek 8mm varianty NBB8). Elektricky nejbližší NBB8-18GM50-E2 (3vodičové DC ' +
+      'zapojení, samostatný napájecí pár + spínaný výstupní pin), ale s OPAČNOU polaritou ' +
+      'výstupu (NPN u NBB15-30GM50-E0-M oproti PNP u NBB8-18GM50-E2) — nutno rozlišovat polaritu ' +
+      'výstupu při návrhu vstupního obvodu PLC. Rozšířený provozní teplotní rozsah -40 až +85 °C ' +
+      '(oproti standardnímu -25 až +70°C u "Basic series" bez "-M" přípony jako NBB8-18GM50-E2) ' +
+      'a certifikace E1 (typové schválení pro automobilový průmysl dle směrnice 2006/28/EG, ' +
+      'odolnost proti rušení 100 V/m v pásmu 20 MHz–2 GHz, ISO 7637-2 impulsní rušení, EN ' +
+      '61000-4-2/3/4/6) — určeno pro náročné mobilní/automotive aplikace, podobně jako ' +
+      'NBB4-12GM50-E2-3G-3D (ATEX certifikace) nebo NBB4-12GM35-A2-V1-M1 (automotive) v této ' +
+      'knihovně, zde ale s E1 homologací místo ATEX. Vyšší krytí IP68/IP69K (oproti IP67 u ' +
+      'NBB8-18GM50-E2) — voděodolné i proti vysokotlakému mytí. Korekční faktory dle materiálu ' +
+      'cíle: rAl=0,45, rCu=0,4, r304/nerez=0,7 (shodné s NBB8-18GM50-E2). Zajištěná spínací ' +
+      'vzdálenost 0–12,15 mm. Spínací kmitočet 0–200 Hz. Hystereze typ. 5 %. Ochrana proti ' +
+      'přepólování a pulzní zkratová ochrana. Úbytek napětí max 2,5 V. Provozní proud 0–200 mA, ' +
+      'klidový proud max 10 mA. Funkční bezpečnostní parametry: MTTFd 1260 let, doba mise 20 ' +
+      'let, diagnostické pokrytí 0 %. Shoda EN/IEC 60947-5-2, UL/CSA certifikace, E1 typové ' +
+      'schválení 10R-04. Dostupné příslušenství: montážní příruba BF 30, rychloupínací konzole ' +
+      'EXG-30.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb15,npn,3vodičový,m30,mosaz,e1,automotive,ip68,ip69k',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
