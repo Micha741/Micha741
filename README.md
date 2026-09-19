@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    609 běžných součástek: 106 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    610 běžných součástek: 106 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; a laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220),
@@ -61,7 +61,7 @@ i návrh schémat obvodů a plošných spojů.
     ACS754xCB-150/ACS755xCB-050 (Hallův jev), reflexní optický senzor Honeywell
     HOA0709-011, optické PPG senzory OSRAM SFH 7051 (tepová frekvence), SFH7050
     (tepová frekvence + SpO2) a SFH7060 (5 emitorů, tepová frekvence + SpO2), a proudové
-    senzory CUI CSXX05B series aj.), 111 modulů
+    senzory CUI CSXX05B series aj.), 112 modulů
     (Wi-Fi/BLE: ESP32-C3-MINI-1, ESP32-C3-WROOM-02, Adafruit Feather
     HUZZAH ESP8266, ESP8684-MINI-1, ESP-12S; nízkonapěťové odpojovače baterie Alfatronix
     PowerTector PT10/PT20/PT40/PT60/PT100/PT200; LoRaWAN senzor LEO-S55 a brány USM-S67;
@@ -74,8 +74,8 @@ i návrh schémat obvodů a plošných spojů.
     s optickým PPG biosenzorem; MEMS tlakový senzorový modul Hokuriku HPM-100GD-A01; a
     indukční přibližovací spínače TURCK BI1.5U-EG08-RP6X-H1341 (uprox Factor 1) a
     BI1-EG05K-AN6X-V1331 (klasický feritový); radarové senzory pohybu Banner R-GAGE
-    Q130RA (FMCW) a Pepperl+Fuchs RaDec-M a RAVE-D-NA (Dopplerovy, relé výstup(y),
-    rozlišení osob/vozidel u RAVE-D-NA); a kapacitní přibližovací
+    Q130RA (FMCW) a Pepperl+Fuchs RaDec-M, RAVE-D-NA a RMS-G-RC (Dopplerovy, relé výstup(y),
+    rozlišení osob/vozidel u RAVE-D-NA/RMS-G-RC); a kapacitní přibližovací
     spínače TURCK BC10-PT30-AZ3X, BC10-Q14-VN4X2,
     BC10-QF5.5-RN6X2, BC20-Q20-RZ3X2, BC20-Q20-AN4X2/S400 (DC verze, kabel) a
     BC20-Q20-AN4X2-H1141 (DC verze, M12 konektor); a indukční přibližovací spínač Pepperl+Fuchs

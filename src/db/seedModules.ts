@@ -3449,6 +3449,42 @@ const MODULE_SPECS: ModuleSpec[] = [
       'této knihovně.',
     tags: 'modul,senzor,radar,doppler,pohybový,relé,pepperl-fuchs,rave-d,24ghz,dveře,fcc,usa',
   },
+  {
+    name: 'RMS-G-RC',
+    packageType:
+      'Kompaktní polokulovité pouzdro s otvorem pro LED displej, ABS antracitové barvy, rozměry ' +
+      '123×65×57 mm, hmotnost 120 g, dvojice ovládacích tlačítek ("Menu"/"Value"), LED indikace ' +
+      '(červená/zelená), integrovaný IR přijímač/vysílač pro dálkové ovládání, zásuvné šroubové ' +
+      'svorky (4pin hlavní relé + 2pin relé vozidla), přiložený připojovací kabel 8 m',
+    value:
+      'Radarový (Dopplerův) pohybový senzor pro průmyslová vrata s rozlišením osob/vozidel, dva ' +
+      'nezávislé relé výstupy (hlavní relé + relé vozidla), kmitočet 24,15–24,25 GHz (pásmo K), ' +
+      '12–36 V DC / 12–28 V AC, CE i FCC (použitelný v EU i USA/Kanadě)',
+    notes:
+      'Pepperl+Fuchs "Radar sensor RMS-G-RC" (dok. 184852_eng.pdf, vydáno 20.7.2021) — TŘETÍ ' +
+      'radarová produktová řada Pepperl+Fuchs v této knihovně (vedle RaDec-M a RAVE-D-NA/NA1) — ' +
+      '⚠️ na rozdíl od RAVE-D-NA/NA1 (verze pouze pro Severní Ameriku, FCC bez CE) je RMS-G-RC ' +
+      'DUÁLNĚ CERTIFIKOVÁN (CE 2014/53/EU I FCC Part 15/RSS-310) — použitelný jak v EU, tak v ' +
+      'USA/Kanadě. Odlišná koncepce relé oproti RAVE-D-NA/NA1: RMS-G-RC má HLAVNÍ relé (spíná ' +
+      'vždy při detekci osoby NEBO vozidla) + RELÉ VOZIDLA (spíná JEN při detekci vozidla bez ' +
+      'současné přítomnosti chodců) — logika "AND vozidlo-bez-chodce" pro relé vozidla, zatímco ' +
+      'RAVE-D-NA/NA1 má symetричtější dvojici "vehicle-presence" + "human-presence" relé, každé ' +
+      'nezávisle pro svůj typ cíle. Mechanicky ODLIŠNÉ pouzdro — nízkoprofilová polokoule z ABS ' +
+      '(ne kvádr z PC jako RAVE), výrazně nižší hmotnost 120 g (oproti 650 g RAVE-D), nižší krytí ' +
+      'IP54 (oproti IP67 RAVE-D — určeno pro kryté/vnitřní instalace, ne pro přímé venkovní ' +
+      'vystavení). Užší nastavitelný úhel naklopení 0–40° v krocích 5° (oproti -90 až +90° v ' +
+      'krocích 15° u RAVE-D). Explicitně udávaná max. detekční rychlost 5 m/s (18 km/h) — ' +
+      'varianta "RMS-G-RC-HS" (v této knihovně nekatalogizována samostatně, jen zmíněna v ' +
+      'aplikačním textu) rozšiřuje detekci až na 60 km/h pro rychlejší vozidla. Stejné ' +
+      'elektrické specifikace relé jako RAVE-D (max 48V/0,5A AC nebo 48V/1A DC, 24W/60VA), ale ' +
+      'kratší nastavitelné zpoždění odpadu 0,2–5 s (oproti 0,5–300 s RAVE-D). Programování ' +
+      'stejnými dvěma tlačítky NEBO stejným IR dálkovým ovladačem RMS Remote Control (sdílené ' +
+      'příslušenství s RAVE sérií, dosah 10 m). Provozní/skladovací teplota -30 až +60 °C. ' +
+      'Zařazeno do kategorie "Modul" jako kompletní osazený produkt s vlastním kabelem/svorkami, ' +
+      'stejně jako RaDec-M/RAVE-D v této knihovně. Dostupné příslušenství: povětrnostní kryt RMS ' +
+      'Weather Cap, stropní montážní sada RMS/RaDec Ceiling Kit.',
+    tags: 'modul,senzor,radar,doppler,pohybový,relé,pepperl-fuchs,rms-g,24ghz,dveře,ce,fcc',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
