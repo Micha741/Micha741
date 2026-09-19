@@ -118,6 +118,45 @@ const CONNECTOR_SPECS: ConnectorSpec[] = [
       'IEC 61984, CE. RoHS/ELV compliant, bez REACH SVHC látek.',
     tags: 'konektor,průmyslový,han-modular,eco,pouzdro,hood,harting,ip65,panelové,pe',
   },
+  {
+    name: 'BM28B0.6-*DS/2-0.35V(**) / BM28B0.6-*DP/2-0.35V(**)',
+    packageType:
+      'SMD board-to-board / board-to-FPC konektorový pár (receptacle DS + header DP), rozteč ' +
+      'kontaktů 0,35 mm, výška po spojení 0,6 mm, izolátor LCP (černý, UL94V-0), kontakty ' +
+      'měděná slitina se zlacením, počet signálních kontaktů 6/10/16/20/24/30/34/40/44/50/60 + ' +
+      '2 vyhrazené výkonové kontakty (odlišné, větší rozměry kontaktu), bez polarizace',
+    value:
+      'Miniaturní konektorový pár pro tenká/malá zařízení (mobilní telefony, wearables, tablety), ' +
+      '2 výkonové kontakty do 5 A + signální kontakty 0,2–0,3 A (dle počtu), 30 V AC/DC, podpora ' +
+      'USB3.1 Gen.2 (10 Gbps)',
+    notes:
+      'Hirose Electric "BM28 Series — 0.35mm pitch, 0.6mm height, Board to Board or Board to FPC ' +
+      'Connectors with Rated Current Up to 5A" (katalogový list, 1.5.2018) — ⚠️ POZOR NA ZÁMĚNU ' +
+      'NÁZVU: prefix "BM28" zde NENÍ nijak spojen s IC zesilovači ROHM BM28720MUV/BM28723MUV ' +
+      '(kategorie IO) v této knihovně — jde o zcela odlišný produkt (konektor) jiného výrobce ' +
+      '(Hirose), shoda číselného kódu je čistě náhodná. Klíčová vlastnost řady: koncentrace ' +
+      'NAPÁJECÍCH linek do POUZE 2 VÝHRAZENÝCH VÝKONOVÝCH KONTAKTŮ (s vlastním 2bodovým ' +
+      'kontaktním designem pro vysokou spolehlivost) místo rozprostření napájení přes více ' +
+      'běžných signálních kontaktů jako u konvenčních konektorů stejné rozteče — umožňuje ' +
+      'zmenšit celkový počet pozic konektoru při zachování napájecí kapacity (např. BM28 10pos. ' +
+      '+2pos. pro napájení nahrazuje konvenční 20pos. konektor). Vodicí žebra (guide ribs) ' +
+      'zajišťují samovystředění ±0,3 mm a hmatatelné cvaknutí při správném spojení, zabraňující ' +
+      'částečnému zapojení. ⚠️ Datasheet dokumentuje CELOU MODULÁRNÍ ŘADU (11 variant počtu ' +
+      'signálních kontaktů × receptacle/header pár, plus 2 varianty balení zlacení 51/53) — do ' +
+      'knihovny přidána jako jeden souhrnný záznam pro celou řadu (kompletní tabulka rozměrů/ ' +
+      'objednacích kódů HRS No. v datasheetu), ne každá kombinace zvlášť. Jmenovitý proud: ' +
+      'výkonový kontakt 5 A, signální kontakt max. 40 kontaktů 0,3 A / min. 44 kontaktů 0,2 A ' +
+      '(u konektorů s ≥50 signálními kontakty platí souhrnná kapacita 10 A pro všechny signální ' +
+      'kontakty dohromady). Jmenovité napětí 30 V AC/DC. Odpor kontaktu: signální max 100 mΩ, ' +
+      'výkonový max 30 mΩ. Izolační odpor min 1000 MΩ, elektrická pevnost 150 V AC/1min bez ' +
+      'průrazu. Odolnost: 10 spojovacích cyklů, vibrace 10–55 Hz (0,75mm), rázy 450 m/s²/11ms, ' +
+      'vlhkost 96h @40°C/90-95%RH, teplotní cyklování -55 až +85°C (5 cyklů), pájecí teplo (reflow ' +
+      'max 250°C nebo ruční pájení 350°C/3s). Provozní teplota -40 až +85 °C, skladovací -10 až ' +
+      '+60 °C. Halogen-free (dle IEC 61249-2-21). Aplikace: propojení baterie/NFC/USB/LCD/kamery/ ' +
+      'sluchátkového konektoru k hlavní desce v tenkých/kompaktních zařízeních. Zařazeno do ' +
+      'kategorie "Konektor".',
+    tags: 'konektor,board-to-board,board-to-fpc,smd,hirose,bm28,0,35mm,výkonový-kontakt,usb3-1',
+  },
 ];
 
 export function buildConnectorSeed(): ComponentInput[] {

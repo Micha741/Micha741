@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    628 běžných součástek: 107 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    629 běžných součástek: 107 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220; a tenkovrstvá
@@ -136,11 +136,12 @@ i návrh schémat obvodů a plošných spojů.
     prachu/PM2.5 Winsen ZPH02 a ATEX senzorová skříň polohy ventilu Festo
     SRBE-CA3-YR90-MW-22A-1W-C2M20-EX (mechanický přepínací spínač), RGB segment signálního
     majáku Banner SG-TL70-RGB14, programovatelný zvukový segment Banner SG-TL70-AP (MP3/WAV) a
-    zvukový segment Moflash LED-TLM-AUD-02 (bzučák, pulzní tón)), 4 konektory/přepěťové
-    ochrany (Ethernet/PoE
-    bleskojistka ESP-100-POE; kolíková lišta Foxconn HB12201; a pouzdra průmyslového konektoru
+    zvukový segment Moflash LED-TLM-AUD-02 (bzučák, pulzní tón)), 5 konektorů/přepěťových
+    ochran (Ethernet/PoE
+    bleskojistka ESP-100-POE; kolíková lišta Foxconn HB12201; pouzdra průmyslového konektoru
     HARTING Han-Modular ECO 09 14 001 0722 (kabel-kabel, bez PE, IP20) a 09 14 001 0321
-    (panelové, s PE, IP65)) a 9 ostatních součástek (RF
+    (panelové, s PE, IP65); a miniaturní board-to-board/board-to-FPC konektorová řada Hirose
+    BM28 Series (0,35mm rozteč, do 5A)) a 9 ostatních součástek (RF
     koaxiální směrový odbočovač SAGE
     Millimeter/Eravant SCD-0134032010-KF-SA; pasivní segmentové LCD panely AZ Displays
     GD-342AP, GD-458P a AND/Purdy FE0202W-EU; Fresnelovy čočky Murata IML-0637, IML-0638 a
