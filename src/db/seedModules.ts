@@ -2423,6 +2423,42 @@ const MODULE_SPECS: ModuleSpec[] = [
       'instalace kabelu). Certifikace: c UL us (Listed), CE (EU EMC), RCM. Bez mědi a PTFE.',
     tags: 'modul,senzor,proximity,indukční,pnp,festo,sieh-3b,miniaturní,m8,průmyslový',
   },
+  {
+    name: 'SPAN-B11R-M5F-PNLK-PNVBA-L1',
+    packageType:
+      'Kompaktní panelová/nástěnná jednotka s podsvíceným LCD displejem a tlačítky, pouzdro PA ' +
+      'výztuž, díly ve styku s médiem FPM/niklovaná mosaz/NBR/PA, pneumatická přípojka vnitřní ' +
+      'závit M5, konektor (4piny, zapojení L1J), montáž na panel/závitem/nástěnnou konzolí, ' +
+      'hmotnost 34 g',
+    value:
+      'Tlakový senzor/spínač s displejem (piezorezistivní princip), měřicí rozsah -1 až 10 bar ' +
+      '(max. přetížení 15 bar), 2× PNP/NPN přepínatelný spínací výstup + analogový výstup ' +
+      '(0-10V/4-20mA/1-5V), IO-Link, 15–30 V DC',
+    notes:
+      'Festo AG & Co. KG "Pressure sensor SPAN-B11R-M5F-PNLK-PNVBA-L1" (obj. č. 610282, datový ' +
+      'list 14.5.2021) — ⚠️ zcela jiná kategorie senzoru než ostatní Festo produkty v této ' +
+      'knihovně (SME/SMT/SDBT-BSW/SMEO/SMPO/SMTSO — snímače polohy pístu; SIEH-3B — obecný ' +
+      'indukční spínač): SPAN-B11R je TLAKOVÝ senzor/spínač s VLASTNÍM DISPLEJEM a ovládacími ' +
+      'tlačítky pro nastavení přímo na jednotce — kompletní přístroj, ne holý prvek. Piezorezistivní ' +
+      'měřicí princip (relativní tlak), rozsah -1 až 10 bar, přesnost ±1,5 %FS, opakovatelnost ' +
+      '±0,3 %FS, teplotní koeficient ±0,05 %FS/K. Duální spínací výstup (2× PNP nebo 2× NPN, ' +
+      'přepínatelný, N/O nebo N/C, přepínatelný) s volitelnou spínací funkcí (okenní komparátor, ' +
+      'prahový komparátor, automatické sledování diference) PLUS nezávislý analogový výstup ' +
+      '(napěťový 0-10V/1-5V nebo proudový 4-20mA). Podporuje IO-Link (verze protokolu V1.1, profil ' +
+      '"Smart sensor", komunikace COM2 38,4 kBd, port třídy A, 14bit process data variable pro tlak ' +
+      '+ 2bit binary data channel pro monitorování) — umožňuje digitální parametrizaci a čtení ' +
+      'naměřených hodnot nadřazeným PLC bez nutnosti analogového/spínacího zapojení. Podsvícený LCD ' +
+      'displej zobrazuje tlak v 9 volitelných jednotkách (MPa, bar, inchH2O, inchHg, kPa, kgf/cm², ' +
+      'mbar, mmHg, psi). Nastavení prahů přes IO-Link, teach-in tlačítko nebo displej, ochrana proti ' +
+      'neoprávněné manipulaci přes IO-Link nebo PIN kód. Médium: stlačený vzduch (ISO 8573-1:2010 ' +
+      '[7:4:4]) nebo inertní plyn, provoz s olejovým mazáním možný. Zařazeno do kategorie "Modul" ' +
+      'jako kompletní přístroj s vlastním displejem/ovládáním/konektorem. Krytí jen IP40 (určeno ' +
+      'pro montáž uvnitř rozvaděče/panelu, ne pro přímé venkovní vystavení jako IP65+ snímače polohy ' +
+      'pístu v této knihovně). Korozní odolnost CRC třída 2 (střední korozní namáhání). Provozní ' +
+      'teplota média i okolí 0 až +50 °C. Certifikace: c UL us (Listed, UL E322346), CE (EU EMC + ' +
+      'RoHS), RCM.',
+    tags: 'modul,senzor,tlak,tlakový-spínač,piezorezistivní,io-link,pnp,npn,analogový,festo,span-b11r,displej',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
