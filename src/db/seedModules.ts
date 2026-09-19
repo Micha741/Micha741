@@ -2332,6 +2332,35 @@ const MODULE_SPECS: ModuleSpec[] = [
       '+70 °C. Bez mědi a PTFE. Certifikace: CE (EU EMC), RCM.',
     tags: 'modul,senzor,proximity,poloha-pístu,magnetoindukční,svařování,weld-resistant,npn,festo,smtso-8e,pneumatika,m12',
   },
+  {
+    name: 'SMT-10G-PS-24V-E-2,5Q-OE',
+    packageType:
+      'Tyčinkové pouzdro pro upnutí do KRUHOVÉ drážky (round slot) podélným zasunutím, pouzdro ' +
+      'PA výztuž, integrovaný kabel s volným koncem, délka 2,5 m (plášť TPE-U/PU), 3 vodiče, ' +
+      'příčný výstup kabelu',
+    value:
+      'Polohový snímač pístu KULATÉHO pneumatického válce (proximity sensor), princip ' +
+      'magnetorezistivní (bezkontaktní, polovodičový), PNP spínací výstup (N/O), 10–30 V DC',
+    notes:
+      'Festo AG & Co. KG "Proximity sensor SMT-10G-PS-24V-E-2,5Q-OE" (obj. č. 547862, datový ' +
+      'list 5.4.2021) — magnetorezistivní snímač polohy pístu ze stejné "SMT" produktové řady ' +
+      'jako SMT-8M-A-PS-24V-E-0,3-M8D/2,5-OE/0,3-M12 v této knihovně (typový kód "SMT", princip ' +
+      'magnetorezistivní, PNP N/O výstup, zkratová i přepěťová ochrana, ochrana proti ' +
+      'přepólování), ale s označením "10G" místo "8M" — ⚠️ určeno pro JINÝ TYP VÁLCE: SMT-8M je ' +
+      'konstruován pro upnutí do PROFILOVÉ T-drážky (typické pro kompaktní/profilové pneumatické ' +
+      'válce), zatímco SMT-10G se upíná do KRUHOVÉ drážky ("Clamped in round slot" — typické pro ' +
+      'kulaté/kruhové pneumatické válce dle ISO 6432 s obvodovou drážkou v plášti válce) — jiný ' +
+      'mechanický upínací systém, senzory nejsou vzájemně zaměnitelné. Elektricky má SMT-10G ' +
+      'zjednodušené pouzdro (pouze PA výztuž, bez mosazi/nerezi jako SMT-8M varianty) a užší ' +
+      'provozní teplotní rozsah (-20 až +70 °C oproti -40 až +85 °C u SMT-8M). Kabel vyveden ' +
+      'PŘÍČNĚ (transverse), na rozdíl od podélné orientace u SMT-8M rodiny. Kabel testován na ' +
+      'cyklickou ohybovou (5 milionů cyklů, poloměr 28 mm) i torzní odolnost (>300000 cyklů, ' +
+      '±270°/0,1 m) pro energetické řetězy/robotické aplikace. Zařazeno do kategorie "Modul" ' +
+      'jako kompletní osazený produkt s vlastním kabelem, stejně jako ostatní Festo snímače ' +
+      'polohy pístu v této knihovně. Krytí IP65/IP68. Certifikace: c UL us (Listed), CE (EU EMC), ' +
+      'KC EMC, RCM. RoHS.',
+    tags: 'modul,senzor,proximity,poloha-pístu,magnetorezistivní,pnp,festo,smt-10g,pneumatika,kruhová-drážka',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
