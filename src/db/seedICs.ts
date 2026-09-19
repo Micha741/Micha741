@@ -1295,6 +1295,34 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,senzor,pir,pyroelektrický,pohybový,murata,ira-s410st03,jfet',
   },
   {
+    name: 'IRA-S230ST01',
+    packageType:
+      'TO-5 kovové pouzdro (metal-can), 3 vývody (drátové, "lead type"), Ø8,2 mm, s optickým ' +
+      'filtrem a výstupkem (tab) pro orientaci vůči Fresnelově čočce; piny d (drain — napájení), ' +
+      's (source — výstup), g (ground — zem); niklované vývody',
+    value:
+      'Duální pyroelektrický (PIR) pohybový senzor s integrovaným JFET zesilovačem, zorné pole ' +
+      '45°/45°, citlivost typ. 4,6 mV, napájení 2–15 V',
+    notes:
+      'Murata "IRA-S230ST01" (dok. Product Search Data Sheet, staženo z murata.com, aktualizováno ' +
+      '27. 10. 2017 — pozn. výrobce: může být neaktuální, doporučeno stáhnout nejnovější verzi) — ' +
+      '⚠️ sourozenecký model k IRA-S410ST03 v této knihovně (samostatný záznam): stejné mechanické ' +
+      'provedení (TO-5, lead type, piny d/s/g, integrovaný JFET, optický filtr 5µm long pass), ' +
+      'stejný napájecí rozsah (2–15 V) i teplotní rozsahy (provozní -40 až +70 °C, skladovací -40 ' +
+      'až +85 °C), stejně NENÍ určen pro automobilové aplikace — ale liší se v optickém/citlivostním ' +
+      'kompromisu: IRA-S230ST01 má ŠIRŠÍ zorné pole theta1=theta2=45°/45° (oproti 38°/45° u ' +
+      'IRA-S410ST03) za cenu NIŽŠÍ citlivosti typ. 4,6 mV (oproti 7,0 mV u IRA-S410ST03) — širší ' +
+      'pokrytí prostoru na úkor dosahu/citlivosti detekce. Elektrody pyroelektrického elementu ' +
+      'udány přímo v datasheetu jako (2,0×1,0 mm)×2 — ⚠️ přesný vzájemný rozestup elektrod v tomto ' +
+      'stručném "Product Search" datasheetu specifikován není (na rozdíl od odhadu u IRA-S410ST03 ' +
+      'z mechanického výkresu), nejistota uvedena explicitně. Princip funkce (diferenční zapojení ' +
+      'dvou pyroelektrických elementů potlačující souhlasné rušení, JFET source-follower pro ' +
+      'impedanční přizpůsobení) shodný s IRA-S410ST03 — viz tam pro obecný popis. Pro rozšíření/ ' +
+      'tvarování zorného pole se typicky kombinuje s externí Fresnelovou čočkou — viz související ' +
+      'záznamy Murata IML-0637 a IML-0638 v kategorii Ostatní.',
+    tags: 'io,senzor,pir,pyroelektrický,pohybový,murata,ira-s230st01,jfet',
+  },
+  {
     name: 'SCD40',
     packageType:
       'LGA 10,1×10,1×6,5 mm, 21 vývodů (VDD, VDDH, GND, SDA, SCL, zbytek DNC — nutno pájet i ' +
