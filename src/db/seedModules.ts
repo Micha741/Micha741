@@ -2361,6 +2361,37 @@ const MODULE_SPECS: ModuleSpec[] = [
       'KC EMC, RCM. RoHS.',
     tags: 'modul,senzor,proximity,poloha-pístu,magnetorezistivní,pnp,festo,smt-10g,pneumatika,kruhová-drážka',
   },
+  {
+    name: 'SME-10M-ZS-24V-E-2,5-Q-OE',
+    packageType:
+      'Tyčinkové pouzdro pro šroubování shora do KRUHOVÉ drážky (round slot), pouzdro PA výztuž ' +
+      '+ vysoce legovaná nerezová ocel, integrovaný kabel s volným koncem, délka 2,5 m (plášť ' +
+      'TPE-U/PUR), 2 vodiče, příčný výstup kabelu, hmotnost 14,6 g',
+    value:
+      'Polohový snímač pístu KULATÉHO pneumatického válce (proximity sensor), princip magnetický ' +
+      'jazýčkový kontakt (reed), 2vodičové bipolární zapojení, N/O kontakt, 5–30 V AC/DC',
+    notes:
+      'Festo AG & Co. KG "Proximity sensor SME-10M-ZS-24V-E-2,5-Q-OE" (obj. č. 551370, datový ' +
+      'list 5.4.2021) — magnetický jazýčkový (reed) snímač polohy pístu ze stejné "SME" ' +
+      'produktové řady jako SME-8M-DS-24V-K-5,0-OE/SME-8-K5-LED-24/SME-8-S-LED-24 v této ' +
+      'knihovně, ale s označením "10M" a "for round slot" — ⚠️ podobně jako u páru SMT-8M/' +
+      'SMT-10G (rovněž v této knihovně) jde o variantu KONSTRUOVANOU PRO KRUHOVOU DRÁŽKU válce ' +
+      '(ISO 6432 typu) místo profilové T-drážky — mechanicky nezaměnitelná se svými "8M/8/8-K5/ ' +
+      '8-S" T-drážkovými sourozenci. Typový kód "ZS" (stejně jako u SMT-8M-A-ZS-24V-E-5,0-OE-EX2 ' +
+      'v této knihovně) značí BEZKONTAKTNÍ 2VODIČOVÉ zapojení (jen BN/BU, zátěž RL v sérii se ' +
+      'smyčkou napájení) — i když jde stále o mechanický reed kontakt (Switching output ' +
+      '"Contact-based, bipolar"), elektrické zapojení je 2vodičové jako u polovodičových "ZS" ' +
+      'variant, ne 3vodičové jako u "DS/K5/S" reed variant SME-8 řady. Pomalejší spínací ' +
+      'kmitočet (max. 50 Hz) než SME-8 T-drážkové varianty (500–800 Hz) — typické pro menší/ ' +
+      'kompaktnější kulaté válce s nižšími rychlostmi pohybu. Ochrana proti přepólování ' +
+      'bipolární. Kabel testován na cyklickou ohybovou (5 milionů cyklů, poloměr 28 mm) i torzní ' +
+      'odolnost (>300000 cyklů, ±270°/0,1 m). Zařazeno do kategorie "Modul" jako kompletní ' +
+      'osazený produkt s vlastním kabelem, stejně jako ostatní Festo snímače polohy pístu v této ' +
+      'knihovně. Žlutá LED indikace sepnutí. Krytí IP65/IP68. Provozní teplota -40 až +70 °C ' +
+      '(pevná instalace), -20 až +70 °C (pohyblivá instalace kabelu). Certifikace: CE (EU EMC), ' +
+      'RCM. Odolný proti oleji, bez mědi/PTFE, bez halogenu, RoHS.',
+    tags: 'modul,senzor,proximity,poloha-pístu,reed,jazýčkový-kontakt,magnetický,festo,sme-10m,pneumatika,kruhová-drážka',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
