@@ -1670,6 +1670,42 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,senzor,proud,hallův-jev,proudový-senzor,galvanické-oddělení,allegro,acs754,izolovaný,chopper,automotive',
   },
   {
+    name: 'ACS755xCB-050',
+    packageType:
+      'Pouzdro "CB" ve 3 variantách tvaru vývodů: CB-PFF (formované signálové piny i silové ' +
+      'terminály, celková délka 17,7 mm), CB-PSF (formované piny, rovné terminály, 24,0 mm), ' +
+      'CB-PSS (rovné piny i terminály, 24,0 mm) — mechanicky příbuzné, ale rozměrově odlišné od ' +
+      'ACS752/ACS754 v této knihovně (šířka těla 14,2 mm, hmotnost typ. 4,63 g), 3 signálové ' +
+      'piny (1=VCC, 2=GND, 3=VOUT) + 2 silové terminály primárního vodiče (4=IP+, 5=IP-)',
+    value:
+      'Hallův lineární izolovaný senzor proudu (chopper-stabilizovaný BiCMOS Hall IC), ' +
+      'JEDNOSMĚRNÝ (unipolární) 0–50 A, citlivost 60 mV/A typ., klidové výstupní napětí 0,6 V, ' +
+      'napájení 5,0 V, izolační napětí 3 kVRMS',
+    notes:
+      'Allegro MicroSystems "ACS755xCB-050" katalogový datasheet (ACS755050-DS, Rev. 2, 2005) — ' +
+      'další sourozenec ACS752SCA-050/ACS754xCB-050/ACS754xCB-150 v této knihovně v rámci téže ' +
+      'výrobcem deklarované rodiny "ACS75x" (shodná technologie: chopper-stabilizovaný BiCMOS ' +
+      'Hall IC s integrovaným měděným vodivým můstkem primárního proudu, typ. odpor 100 µΩ, 3kV ' +
+      'izolace), ale ⚠️ ZÁSADNÍ ROZDÍL oproti nim: ACS755xCB-050 měří proud POUZE JEDNOSMĚRNĚ ' +
+      '(0–50 A, unipolární), NIKOLI obousměrně (±50 A jako ACS752/ACS754) — tomu odpovídá i jiné ' +
+      'klidové výstupní napětí VOUT(Q) = 0,6 V (pevná hodnota blízko GND, ne VCC/2=2,5V jako u ' +
+      'obousměrných variant), takže při záporném/opačném směru proudu by výstup byl mimo platný ' +
+      'rozsah — nelze zaměňovat za obousměrné senzory stejné rodiny. Datasheet pokrývá modely ' +
+      'ACS755LCB-050-PFF/PSF/PSS (automotive, teplotní kód "L", -40 až +150 °C) a ACS755SCB-050- ' +
+      'PFF/PSF/PSS (standardní, kód "S", -20 až +85 °C) — do knihovny přidán jako jeden souhrnný ' +
+      'záznam pro celou "755xCB-050" řadu. Citlivost 60 mV/A typ. (53–65 mV/A přes plný rozsah a ' +
+      'teplotu). Nelinearita max ±2,8 %. Celková chyba výstupu max ±1,0 % @25°C / ±10,0 % (S, ' +
+      '-20~85°C) resp. ±11,0 % (L, -40~150°C) v celém rozsahu. Magnetický offset (po přebuzení ' +
+      '100 A) max ±0,15 A. Šířka pásma (-3dB) 18 kHz (nižší než u ACS752/ACS754), doba náběhu ' +
+      'typ. 20 µs, doba odezvy typ. 20 µs, doba zpoždění typ. 4 µs. Napájení VCC 4,5–5,5 V (typ. ' +
+      '5,0 V), odběr typ. 8 mA (max 10 mA). Izolační napětí 3 kVRMS (60 Hz, 1 minuta), stejná TÜV ' +
+      'certifikace jako ACS752/ACS754 v této knihovně (certifikát U8V 04 11 54214 001). Shoda ' +
+      'UL60950-1, EN60950-1, CAN/CSA C22.2 No. 60950-1. Max. teplota přechodu 165 °C, max. ' +
+      'skladovací teplota 170 °C. Určeno pro automotive, průmyslové systémy, konverzi výkonu, ' +
+      'monitorování baterií.',
+    tags: 'io,senzor,proud,hallův-jev,proudový-senzor,galvanické-oddělení,allegro,acs755,izolovaný,chopper,jednosměrný,automotive',
+  },
+  {
     name: 'SCD40',
     packageType:
       'LGA 10,1×10,1×6,5 mm, 21 vývodů (VDD, VDDH, GND, SDA, SCL, zbytek DNC — nutno pájet i ' +
