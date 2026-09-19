@@ -2168,6 +2168,37 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Certifikace: CE (EU EMC), RCM.',
     tags: 'modul,senzor,proximity,poloha-pístu,reed,jazýčkový-kontakt,magnetický,festo,sme-8-s,pneumatika,m8',
   },
+  {
+    name: 'SMEO-8E-K-24-S6',
+    packageType:
+      'Kompaktní kvádrové pouzdro s příčným výstupem kabelu (pro upevnění pomocí příslušenství/ ' +
+      'svorky, ne přímým zasunutím do T-drážky), pouzdro TPE-U(PU), integrovaný kabel s volným ' +
+      'koncem, délka 2,5 m (plášť TPE-S), 2 vodiče, hmotnost 40 g',
+    value:
+      'Vysokoteplotní polohový snímač pístu pneumatického válce (proximity sensor), princip ' +
+      'magnetický jazýčkový kontakt (reed), 2vodičové zapojení, N/O kontakt, 0–30 V AC/DC, ' +
+      'provozní teplota -40 až +120 °C',
+    notes:
+      'Festo AG & Co. KG "Proximity sensor SMEO-8E-K-24-S6" (obj. č. 171158, datový list ' +
+      '5.3.2021) — magnetický jazýčkový (reed) snímač polohy pístu, stejný snímací princip jako ' +
+      'SME-8-K5-LED-24/SME-8-S-LED-24/SME-8M-DS-24V-K-5,0-OE v této knihovně, ale JINÁ produktová ' +
+      'řada (typový kód "SMEO" místo "SME") — ⚠️ dvě zásadní odlišnosti: (1) VÝRAZNĚ ŠIRŠÍ ' +
+      'provozní teplotní rozsah -40 až +120 °C (oproti max. +70/+85 °C u SME/SMT řad — vhodné ' +
+      'pro válce v horkých provozech, např. v blízkosti pecí/lisů), umožněný pouzdrem z odolného ' +
+      'TPE-U místo epoxidové pryskyřice+PC+PET; (2) JINÝ ZPŮSOB MONTÁŽE — "With accessories" ' +
+      '(upevnění pomocí přídavného příslušenství/svorky), NE přímým zasunutím/šroubováním do ' +
+      'T-drážky jako u SME/SMT/SDBT-BSW řad, a kabel vyveden PŘÍČNĚ (transverse) místo podélně/ ' +
+      'longitudinálně. Elektricky jde stále o mechanický reed kontakt (Switching output ' +
+      '"Contact-based"), ale se zapojením jen 2 vodiče (BN, BU — bez odděleného 3. signálového ' +
+      'vodiče jako u SME-8/SME-8M řad), širší napěťový rozsah 0–30 V AC/DC ' +
+      '(oproti 12–30 V u SME-8-K5/S), ochrana proti přepólování na všech vývodech (na rozdíl od ' +
+      'SME-8 řady, která ji nemá). Zapínací čas ≤0,5 ms/vypínací 0,03 ms, max. spínací kmitočet ' +
+      '500 Hz, opakovatelnost ±0,1 mm, izolační napětí 50 V, stupeň znečištění 3. Zařazeno do ' +
+      'kategorie "Modul" jako kompletní osazený produkt s vlastním kabelem, stejně jako ostatní ' +
+      'Festo SME/SMT/SDBT-BSW snímače polohy pístu v této knihovně. Krytí IP65/IP67, max. ' +
+      'utahovací moment upevňovacího příslušenství 0,5 Nm. Bez mědi a PTFE.',
+    tags: 'modul,senzor,proximity,poloha-pístu,reed,jazýčkový-kontakt,magnetický,festo,smeo-8e,pneumatika,vysokoteplotní',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
