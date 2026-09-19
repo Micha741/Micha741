@@ -2426,6 +2426,36 @@ const IC_SPECS: IcSpec[] = [
       'UL 60950-1, CSA 60950-1-07. RoHS 2011/65/EU, REACH.',
     tags: 'io,dc-dc,měnič,izolovaný,napájecí-obvod,tracopower,tra1,sip,1w',
   },
+  {
+    name: 'BM28720MUV',
+    packageType: 'VQFN032V5050 (32pin, 5,00×5,00×1,00 mm, reverzní chlazení/heat-radiation typ)',
+    value:
+      'Plně digitální (full digital) Class-D zesilovač reproduktoru s vestavěným DSP, 20 W+20 W ' +
+      '(VCC=18,5V, RL=8Ω), I²S/LJ/RJ digitální vstup, I²S digitální výstup, 10–24 V DC (VCC)',
+    notes:
+      'ROHM Semiconductor "Middle Power Class-D Speaker Amplifier series — 20W+20W Full Digital ' +
+      'Speaker Amplifier with built-in DSP" (dok. TSZ02201-0C1C0E900060-1-2, rev. 003, ' +
+      '10.6.2016) — IC pro ploché TV a podobné prostorově/výkonově omezené aplikace, kombinuje ' +
+      'vestavěný DSP (Digital Sound Processor: 12pásmový EQ na kanál, 3pásmový DRC, pre-scaler, ' +
+      'channel mixer, fine master volume, hard clipper, level meter) s Class-D výkonovým stupněm ' +
+      'BCD procesem (bipolární+CMOS+DMOS), eliminujícím ztráty vedení odporu sepnutí (turn-on ' +
+      'resistance) a interní ztráty vedením — dosahuje vysoké účinnosti (~85-90 % dle grafů) bez ' +
+      'nutnosti externího chladiče i při výkonu 40 W celkem. Digitální audio vstup I²S/LJ (left- ' +
+      'justified)/RJ (right-justified) formát BEZ nutnosti master clocku, LRCLK 32k/44,1k/48 kHz, ' +
+      'BCLK 32fs/48fs/64fs, SDATA 16/20/24 bitů; digitální I²S výstup (SDATAO) rovněž 16/20/24 ' +
+      'bitů — umožňuje kaskádové zapojení/daisy-chain. Monaurální výstupní konfigurace (redukuje ' +
+      'počet externích součástek). Ochranné funkce: přehřátí, podpětí, zkrat výstupu, přepětí DC, ' +
+      'zastavení hodinového signálu. Soft-muting technologie eliminuje pop-noise při zapnutí/ ' +
+      'vypnutí napájení (viz waveform grafy soft start/soft mute). Absolutní max.: VCC -0,3 až ' +
+      '34 V (piny 17, 24), DVDD -0,3 až 4,5 V (pin 10), Tjmax +150 °C, provozní teplota -25 až ' +
+      '+85 °C. Doporučený provozní rozsah: VCC 10–24 V, DVDD 3–3,6 V, min. zátěžová impedance ' +
+      '5,4 Ω (VCC 18–24V) nebo 3,6 Ω (VCC<18V). Elektrické parametry @VCC=18V/DVDD=3,3V/f=1kHz/ ' +
+      'RL=8Ω: klidový proud ICC1 typ 45 mA, THD+N typ 0,07 % @1W AES17, přeslechy (crosstalk) typ ' +
+      '80 dB, výstupní šum typ 80 µVrms (A-vážený). PWM vzorkovací kmitočet 256/352,8/384 kHz dle ' +
+      'fs=32/44,1/48 kHz. Aplikace: ploché TV (LCD/OLED), domácí audio, desktop PC, zábavní ' +
+      'zařízení, elektronické hudební nástroje.',
+    tags: 'io,zesilovač,audio,class-d,dsp,digitální,rohm,bm28720muv,reproduktor,i2s,vqfn',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
