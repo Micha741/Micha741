@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    790 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    791 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220; tenkovrstvá
@@ -25,9 +25,10 @@ i návrh schémat obvodů a plošných spojů.
     disková řada Illinois Capacitor GMR/GQR; NP0 disk Meritek CCNPO101J50V5B1; fóliová IGBT
     snubber řada Cornell Dubilier SCD; radiální tantalový kondenzátor RCD Components
     TRA10-103; vysokonapěťová 1250V fóliová řada Okaya HCPB; a širší vysokonapěťová fóliová řada
-    Okaya HCP-S (450-1250V)), 206 diod
+    Okaya HCP-S (450-1250V)), 207 diod
     (usměrňovací (včetně vysokonapěťové řady Diotec GP1120–GP1600, DO-41, 1200–6000V), spínací,
-    Schottky, Zenerovy (včetně SMD řady EIC SMZ25, SOD-123FL,
+    Schottky (včetně extrémně malé 30V onsemi NSR01L30MX, pouzdro X3DFN2 0,62×0,32mm),
+    Zenerovy (včetně SMD řady EIC SMZ25, SOD-123FL,
     3,0–200 V, 1,3 W, 46 hodnot),
     LED včetně výkonových SMD LED LUXEON Rebel, OSLON SSL 80, OSRAM TOPLED Black LO T64F/LR
     T66F (černé pouzdro pro VMS displeje) a OSRAM Mini TOPLED LY M67K, ploché LED displeje

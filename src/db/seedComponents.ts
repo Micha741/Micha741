@@ -339,6 +339,25 @@ const DIODE_SPECS: PartSpec[] = [
     tags: 'dioda,schottky,smd,sma,s100',
   },
   { name: 'SS34', packageType: 'SMB (SMD)', value: '3 A / 40 V', notes: 'Schottky dioda, SMD', tags: 'dioda,schottky,smd' },
+  {
+    name: 'NSR01L30MXT5G',
+    packageType:
+      'X3DFN2 (SMD), rozměry 0,62×0,32×0,24 mm, rozteč 0,35 mm, 2 vývody: 1=katoda, 2=anoda',
+    value: 'Schottky dioda, VR 30 V, IF 100 mA (DC), VF max 350 mV @IF=1 mA',
+    notes:
+      'onsemi "NSR01L30MX — Schottky Barrier Diode" (dok. NSR01L30MX/D, rev. 5, 2026) — extrémně ' +
+      'malé pouzdro (velikost srovnatelná s 0201 pasivní SMD součástkou), optimalizováno na nízký ' +
+      'úbytek napětí v propustném směru a nízký únikový proud. Halide-free i Pb-free provedení. ' +
+      'Mezní hodnoty: VR=30 V, IF(DC)=100 mA, IFSM=2,0 A (60 Hz/1 cyklus), TJ max +150 °C, Tstg -55 ' +
+      'až +150 °C. ESD: HBM Class 1B (500≤porucha<1000), CDM Class C3 JEDEC (porucha≥1000). ' +
+      'RθJA=695 °C/W (na 4" čtverci FR-4, 100mm², 2oz Cu, jednostranná), PD=180 mW @TA=25°C. ' +
+      'VF max 350 mV @IF=1 mA (460 mV @IF=10 mA). IR max 0,2 µA @VR=10 V (0,5 µA @VR=30 V). ' +
+      'Celková kapacita CT typ 0,8 pF @VR=5V/1MHz. Reverse recovery time trr typ 1,66 ns ' +
+      '(IF=IR=10mA). Aplikace: podsvícení LCD/klávesnice, foto blesk fotoaparátu, buck/boost ' +
+      'DC-DC měniče, ochrana proti zpětnému napětí/proudu, clamping. Značení na pouzdře: kód L ' +
+      '(otočeno 180°) + datový kód M.',
+    tags: 'dioda,schottky,smd,onsemi,nsr01l30mx,x3dfn2,0201,30v',
+  },
 
   { name: 'BZX55C3V3', packageType: 'DO-35', value: '3,3 V / 0,5 W', notes: 'Zenerova dioda', tags: 'dioda,zener' },
   { name: 'BZX55C3V9', packageType: 'DO-35', value: '3,9 V / 0,5 W', notes: 'Zenerova dioda', tags: 'dioda,zener' },
