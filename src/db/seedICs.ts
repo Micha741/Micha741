@@ -2456,6 +2456,38 @@ const IC_SPECS: IcSpec[] = [
       'zařízení, elektronické hudební nástroje.',
     tags: 'io,zesilovač,audio,class-d,dsp,digitální,rohm,bm28720muv,reproduktor,i2s,vqfn',
   },
+  {
+    name: 'BM28723MUV',
+    packageType: 'VQFN032V5050 (32pin, 5,00×5,00×1,00 mm, reverzní chlazení/heat-radiation typ)',
+    value:
+      'Plně digitální (full digital) Class-D zesilovač reproduktoru s vestavěným DSP, 17 W+17 W ' +
+      '(VCCP1/2=18V, RL=8Ω), I²S/LJ/RJ digitální vstup, I²S digitální výstup, 10–24 V DC',
+    notes:
+      'ROHM Semiconductor "Middle Power Class-D Speaker Amplifier series — 17W+17W Full Digital ' +
+      'Speaker Amplifier with built-in DSP" (dok. TSZ02201-0C1C0E900290-1-2, rev. 002, ' +
+      '11.5.2018) — nižší výkonová varianta ze stejné produktové řady jako BM28720MUV v této ' +
+      'knihovně (shodné pouzdro VQFN032V5050, shodný pinout, shodný princip s vestavěným DSP a ' +
+      'BCD procesem) — ⚠️ rozdíly oproti BM28720MUV: (1) nižší výkon 17W+17W @VCCP=18V (oproti ' +
+      '20W+20W u BM28720MUV) — dle popisu shodné pouzdro s menším chladicím reverzním ' +
+      'plochým typem umožňuje jen tento nižší výkon bez externího chladiče; (2) NEVYŽADUJE ' +
+      'EXTERNÍ SNUBBER OBVOD (No Snubber Circuit Required) díky řízení Slew Rate na výstupu — ' +
+      'BM28720MUV naproti tomu ve svých měřicích podmínkách explicitně uvádí snubber obvod ' +
+      '(Rsnb=5,6Ω, Csnb=680pF) na výstupním terminálu; (3) NOVÝ "Output Feedback Circuit" — ' +
+      'zpětnovazební obvod z výstupu potlačující degradaci kvality zvuku při kolísání napájecího ' +
+      'napětí, eliminuje nutnost velkých elektrolytických blokovacích kondenzátorů na Vcc (funkce ' +
+      'u BM28720MUV neuvedena); (4) NOVÁ ochranná funkce "DC Voltage Protection for speaker" ' +
+      '(ochrana reproduktoru proti stejnosměrné složce na výstupu) a přidaný pin ERRORX (13) — ' +
+      'chybový příznak (High=normální provoz, Low=chyba), aktivovaný při zkratové/DC/tepelné ' +
+      'ochraně — BM28720MUV tento diagnostický pin nemá (odpovídající pin 13 u BM28720MUV je ' +
+      'ERROR bez explicitního "X" značení a bez podrobného popisu). Piny shodné číslování jako ' +
+      'BM28720MUV (ADDR, BCLK, LRCLK, SDATA, PLL, REG15, DGND, SDATAO, RSTX, MUTEX, SCL, SDA, ' +
+      'VCCP1/2, GNDP1/2, BSP/OUT 1P/1N/2P/2N). Absolutní max.: VCC(max) 30 V (piny 17, 24, nižší ' +
+      'než 34V u BM28720MUV), DVDD(max) 4,5 V, Tjmax +150 °C, provozní teplota -25 až +85 °C. ' +
+      'Doporučený napájecí rozsah 10–24 V. Zařazeno do kategorie "IO", stejně jako BM28720MUV v ' +
+      'této knihovně. Aplikace: TV (LCD/OLED), domácí audio, desktop PC, zábavní zařízení, ' +
+      'elektronické hudební nástroje.',
+    tags: 'io,zesilovač,audio,class-d,dsp,digitální,rohm,bm28723muv,reproduktor,i2s,vqfn',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
