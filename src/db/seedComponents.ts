@@ -4615,6 +4615,36 @@ const CAPACITOR_PART_SPECS: PartSpec[] = [
       'datasheetu indikuje UL/CSA schválení pro daný typ.',
     tags: 'kondenzátor,fóliový,vysokonapěťový,okaya,hcpb-series,spínaný-zdroj,radiální',
   },
+  {
+    name: 'HCP-S Series',
+    packageType:
+      'Radiální vývody, kompaktní pryskyřicové (resin case) pouzdro, rozměry dle kapacity/napětí ' +
+      'zhruba 5,0×12,0×15,0 mm (nejmenší, 0,01µF/450V) až 41,0×32,5×37,5 mm (největší, 2,2µF/ ' +
+      '630V), rozteč vývodů F 15,0–37,5 mm dle velikosti',
+    value:
+      'Vysokonapěťový fóliový kondenzátor, standardní typ (suffix "S"), 4 napěťové třídy 450/630/ ' +
+      '1000/1250 V DC, rozsah kapacity 0,01–2,2 µF (dle napěťové třídy), tolerance ±10 % (K)',
+    notes:
+      'Okaya Electric Industries "HCP-S Series" (katalogový list, str. 10) — ⚠️ POZOR na záměnu s ' +
+      'HCPB Series v této knihovně (shodný výrobce Okaya, podobná konstrukce — kompaktní ' +
+      'pryskyřicové pouzdro, radiální vývody — ale JINÁ produktová řada s jiným rozsahem): HCP-S ' +
+      'pokrývá VÝRAZNĚ ŠIRŠÍ rozsah — 4 napěťové třídy (450/630/1000/1250 V, oproti jediné třídě ' +
+      '1250V u HCPB) a širší kapacitní rozsah (0,01–2,2 µF, oproti úzkému rozsahu 0,0047–0,013 µF ' +
+      'u HCPB) — HCP-S je tedy obecnější/univerzálnější řada, HCPB spíše úzce specializovaná ' +
+      'varianta na 1250V. Aplikace HCP-S šířeji uvedeny: vysokofrekvenční obvody, vysokonapěťové ' +
+      'rezonanční obvody, snubber obvody a ochrana polovodičů (IGBT, IPM, MOSFET) — oproti užšímu ' +
+      'zaměření HCPB na spínané zdroje/měniče/servo napájení. ⚠️ Datasheet dokumentuje CELOU ' +
+      'PARAMETRICKOU ŘADU (desítky kombinací kapacita×napětí napříč 4 napěťovými třídami) — do ' +
+      'knihovny přidána jako jeden souhrnný záznam pro celou řadu, ne každá kombinace zvlášť. Z ' +
+      'názvu souboru identifikován konkrétní díl HCP450V104KS = 450V, kapacitní kód 104 = 0,1 µF, ' +
+      'tolerance K = ±10 %, "S" = standardní typ (rozměry dle tabulky: W17,0×T6,5×H13,5×F15,0mm). ' +
+      'Objednací kód: HCP<napěťová třída>-<kapacitní kód pF, 2 platné číslice + počet nul>-' +
+      '<tolerance: K=±10%>-<typ: S=standardní>. Ztrátový činitel (dissipation factor) max 0,001 ' +
+      '@1000±100Hz. Zkušební napětí 1,75× jmenovité napětí (2-5s). Izolační odpor min 50 kΩ ' +
+      '@20°C/100VDC (pro menší kapacity/napětí) nebo 20 kΩ min (pro vyšší třídy, dle tabulky). ' +
+      'Provozní teplota -40 až +85 °C.',
+    tags: 'kondenzátor,fóliový,vysokonapěťový,okaya,hcp-s-series,snubber,rezonanční-obvod,radiální',
+  },
 ];
 
 function buildFromSpecs(
