@@ -2574,6 +2574,32 @@ const MODULE_SPECS: ModuleSpec[] = [
       '0 až +50 °C. Certifikace: c UL us (Recognized), CE (EU EMC + RoHS), RCM.',
     tags: 'modul,senzor,tlak,analogový,piezorezistivní,festo,sde5,qs-konektor,transmitter',
   },
+  {
+    name: 'SDE5-D10-NF-Q6E-V-M8',
+    packageType:
+      'Kompaktní kvádrové pouzdro, materiál PA + POM, pneumatická přípojka zásuvná QS-6 (rychlo' +
+      'spojka pro hadičku Ø6 mm), elektrický konektor M8×1 (3piny, kruhové provedení), montáž ' +
+      'příslušenstvím, hmotnost 19 g',
+    value:
+      'Analogový tlakový snímač bez displeje (piezorezistivní princip), měřicí rozsah 0–10 bar, ' +
+      'lineární napěťový výstup 0–10 V, 15–30 V DC',
+    notes:
+      'Festo AG & Co. KG "Pressure sensor SDE5-D10-NF-Q6E-V-M8" (obj. č. 567465, datový list ' +
+      '14.5.2021) — elektricky/funkčně TOTOŽNÝ analogový tlakový snímač jako SDE5-D10-NF-Q6E-V-K ' +
+      '(obj. č. 567471) v této knihovně (stejný piezorezistivní princip, rozsah 0–10 bar, lineární ' +
+      'analogový výstup 0–10 V, přesnost ±3 %FS, linearita ±0,3 %FS, zelená LED "ready") — ⚠️ liší ' +
+      'se POUZE typem elektrického připojení: zatímco "-...-V-K" varianta má INTEGROVANÝ 2,5m ' +
+      'kabel, tato varianta "-...-V-M8" má ODNÍMATELNÝ zásuvný konektor M8×1 (kruhové provedení) ' +
+      '— stejný vztah jako mezi dvojicí SDE5-D10-C3-Q6E-P-K/SDE5-D10-C-Q4E-P-M8 (spínací varianty) ' +
+      'v této knihovně, zde ale u ANALOGOVÉHO výstupu a se shodnou QS-6 pneumatickou přípojkou ' +
+      '(ne zmenšenou na QS-4 jako u spínacích M8 variant). Nižší hmotnost díky absenci kabelu ' +
+      '(19 g vs 47 g). Zkratová ochrana, ochrana proti přepólování na všech vývodech. Zařazeno do ' +
+      'kategorie "Modul" jako kompletní osazený produkt s vlastním konektorem, stejně jako ostatní ' +
+      'Festo SDE5/SPAN tlakové senzory v této knihovně. Krytí IP40, korozní odolnost CRC třída 2. ' +
+      'Provozní teplota média i okolí 0 až +50 °C. Certifikace: c UL us (Recognized), CE (EU EMC ' +
+      '+ RoHS), RCM.',
+    tags: 'modul,senzor,tlak,analogový,piezorezistivní,festo,sde5,qs-konektor,m8,transmitter',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
