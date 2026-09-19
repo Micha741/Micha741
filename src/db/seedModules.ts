@@ -1105,6 +1105,37 @@ const MODULE_SPECS: ModuleSpec[] = [
       '60947-5-2, UL/CSA/CCC certifikace.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb3,2vodičový,ip67,průmyslový',
   },
+  {
+    name: 'NBB4-12GM75-US',
+    packageType:
+      'Válcové závitové pouzdro M12×1 (threaded barrel), mosaz s niklovým povlakem, délka 58,5 ' +
+      'mm (53,5 mm závitové části), aktivní čelo PBT, indikační LED (zelená=napájení, žlutá= ' +
+      'spínací stav), kabelový výstup (PUR, 2 m, 0,34 mm², 3 žíly: BN=AC/DC, BU=AC/DC, GN/YE= ' +
+      'zemnicí/ochranný vodič), v balení 2 pojistné matice',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, klasický feritový typ, spínací vzdálenost ' +
+      '4 mm (zápustná montáž), UNIVERZÁLNÍ 2vodičové AC/DC zapojení, spínací (NO) kontakt, ' +
+      '20–250 V AC / 20–300 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBB4-12GM75-US" (197866_eng.xml, vydáno 5. 8. 2019) — ⚠️ ' +
+      'sourozenecký díl NBB3-V3-Z4 v této knihovně (samostatný záznam), stejný výrobce a princip ' +
+      '(klasický feritový senzor s korekčními faktory dle materiálu cíle — zde rAl=0,5, rCu=0,45, ' +
+      'r304/nerez=0,75), ale zásadně odlišné provedení: NBB4-12GM75-US má UNIVERZÁLNÍ napájení ' +
+      '20–250 V AC NEBO 20–300 V DC (funguje na obojí bez rozlišení polarity/typu proudu), ' +
+      'zatímco NBB3-V3-Z4 je čistě DC (5–60 V) — navíc mechanicky odlišné: válcové závitové ' +
+      'pouzdro M12×1 z poniklované mosazi s kabelovým výstupem (na rozdíl od malého plochého ' +
+      'kvádrového pouzdra s integrovaným kabelem u NBB3-V3-Z4), vyšší jmenovitá spínací ' +
+      'vzdálenost 4 mm (vs 3 mm). Kabel má navíc třetí (zemnicí/ochranný, GN/YE) vodič nutný pro ' +
+      'AC provoz, funkčně jde ale stále o "2-wire" (signálové) zapojení zátěže v sérii se ' +
+      'senzorem. Spínací kmitočet 30 Hz (výrazně nižší než 2000 Hz u NBB3-V3-Z4 — typické pro AC/ ' +
+      'DC univerzální senzory kvůli nutnosti detekce síťové frekvence). Hystereze 3–15 % (typ. ' +
+      '5 %). Ochrana: tolerantní vůči přepólování, SE zkratovou ochranou (⚠️ na rozdíl od ' +
+      'NBB3-V3-Z4, který zkratovou ochranu nemá). Úbytek napětí max 8 V. Provozní proud 8–200 mA ' +
+      'AC/DC, zbytkový proud max 0,8 mA. Krytí IP67. Provozní teplota -25 až +70 °C. Shoda EN/IEC ' +
+      '60947-5-2, UL/CSA/CCC certifikace. Dostupné příslušenství: rychloupínací montážní konzole ' +
+      'EXG-12 s pevným dorazem.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb4,ac-dc,m12,mosaz,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
