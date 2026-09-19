@@ -3132,6 +3132,45 @@ const MODULE_SPECS: ModuleSpec[] = [
       'příruba BF 18, rychloupínací konzole EXG-18.',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,pepperl-fuchs,cbb8,pnp,nerez,nastavitelný,m18,ip67,průmyslový',
   },
+  {
+    name: 'SBSC-U-AF-R2B',
+    packageType:
+      'Kompaktní kvádrové pouzdro s chladicími žebry, tvářená hliníková slitina (eloxovaná) + ' +
+      'kryt ABS s výztuží, rozměry 45×45×76,7 mm, hmotnost 160 g, objímka objektivu CS mount, ' +
+      'konektory M12 (Ethernet 4pin, sériové rozhraní 5pin, napájení/IO 12pin), lze doplnit ' +
+      'ochrannou trubicí objektivu pro dosažení IP65',
+    value:
+      'Průmyslový vizuální senzor (smart kamera) s vlastním obrazovým procesorem, monochromní ' +
+      'CMOS snímač 1280×1024 px (SXGA), 50 fps, čtení čárových/2D kódů a OCR, kontrola tvaru/ ' +
+      'kontrastu/polohy, Ethernet (100 Mbit/s, EtherNet/IP, PROFINET, FTP, TCP/IP), 24 V DC',
+    notes:
+      'Festo AG & Co. KG "Universal sensor SBSC-U-AF-R2B" (obj. č. 8058736, datový list ' +
+      '1.6.2021, interní typový kód "SBSI") — ⚠️ zcela odlišná kategorie kamerového zařízení než ' +
+      'Leopard Imaging LI-OS05A20-MIPI-110H v této knihovně: zatímco LI-OS05A20 je HOLÝ kamerový ' +
+      'MODUL (snímač + objektiv + MIPI CSI-2 sériový výstup surových obrazových dat, určený k ' +
+      'zabudování do jiného zařízení s vlastním zpracováním obrazu na hostitelské desce), ' +
+      'SBSC-U-AF-R2B je KOMPLETNÍ SAMOSTATNÝ PRŮMYSLOVÝ VIZUÁLNÍ SENZOR ("vision sensor") s ' +
+      'VLASTNÍM VÝKONNÝM OBRAZOVÝM PROCESOREM přímo v pouzdře — provádí veškeré vyhodnocení ' +
+      'obrazu interně (čtení kódů, rozpoznávání vzorů, měření) a na výstupu poskytuje HOTOVÝ ' +
+      'VÝSLEDEK inspekce (OK/NOK signál, přečtený kód, naměřená hodnota) přes digitální I/O, ' +
+      'sériové rozhraní nebo Ethernet — nevyžaduje žádný externí počítač/PLC pro zpracování ' +
+      'obrazu. Podporuje až 255 inspekčních programů/úloh a až 255 testovacích kritérií/ ' +
+      'detektorů. Detektory: čtení čárových kódů (EAN, UPC, RSS, 2/5 Interleaved/Industrial, ' +
+      'Code 32/39/93/128, GS1, Pharma code, Codabar), 2D kódů (ECC200/DataMatrix, QR, PDF417), ' +
+      'OCR (15 ms/znak), sledování polohy přes kontur, porovnávání vzorů/kontur, detekce hran, ' +
+      'kontrast, jas, prahování šedé úrovně, posuvné měřítko (Vernier caliper), BLOB analýza. ' +
+      'Typické doby cyklu: 1D kód 30 ms, 2D kód 40 ms, sledování polohy 30 ms, porovnávání vzorů ' +
+      '20 ms. Objektiv vyměnitelný (CS mount, zorné pole závisí na zvoleném objektivu). ' +
+      'Digitální I/O: 2 vstupy + 2 výstupy (+ 4 dodatečně volitelné), PNP/NPN přepínatelné, max. ' +
+      'výstupní proud 50 mA. Napájení 24 V DC (-25 %/+10 %), max. spotřeba 550 mA. Provozní ' +
+      'teplota 0 až +50 °C, skladovací -20 až +60 °C. Krytí IP65 (s ochrannou trubicí objektivu). ' +
+      'Zařazeno do kategorie "Modul" jako kompletní osazený přístroj s vlastním procesorem/ ' +
+      'konektory, na rozdíl od holého kamerového modulu LI-OS05A20-MIPI-110H v kategorii Modul ' +
+      '(oba spadají do Modul, ale reprezentují opačné konce spektra integrace). Odolnost proti ' +
+      'vibracím dle EN 60068-2-6, proti rázům dle EN 60068-2-27. Certifikace: c UL us (Listed), ' +
+      'CE (EU EMC), RCM, KC EMC. RoHS.',
+    tags: 'modul,kamera,vizuální-senzor,vision-sensor,čtečka-kódů,barcode,ocr,ethernet,festo,sbsc,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
