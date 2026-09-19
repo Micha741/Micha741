@@ -138,6 +138,36 @@ const MISC_SPECS: MiscSpec[] = [
     tags: 'optika,fresnelova-čočka,hdpe,pir,murata,ira-e,pohybový-senzor,pasivní',
   },
   {
+    name: 'IML-0637',
+    packageType:
+      'Kupolovitá (dome) Fresnelova čočka, Ø10,4 mm (spodní), Ø9,0 mm (vnitřní dutina), výška ' +
+      '8,65 mm, materiál HDPE (polyetylen s vysokou hustotou), barva přírodní/bílá, s ' +
+      'orientačním výstupkem (tab) pro správné natočení vůči senzoru a vnitřní dutinou/stupněm ' +
+      '(step) pro usazení pyroelektrického elementu (Pyro-Element) senzoru, určeno k montáži ' +
+      'před optické okénko lead-type senzorů řady "IRA-E", balení volné (bulk/bag) po 100 ks',
+    value:
+      'Fresnelova čočka pro PIR (pyroelektrické) pohybové senzory, formuje/segmentuje zorné pole ' +
+      'senzoru do detekčních zón',
+    notes:
+      'Murata "IML-0637" (dok. Product Search Data Sheet, staženo z murata.com, aktualizováno ' +
+      '27. 10. 2017) — ⚠️ velmi příbuzný díl k IML-0638 v této knihovně (samostatný záznam): ' +
+      'stejný materiál (HDPE, přírodní bílá), stejný provozní/skladovací teplotní rozsah a stejné ' +
+      'určení "For LEAD TYPE (IRA-E Series)" — pravděpodobně se jedná o odlišný optický vzor/ ' +
+      'segmentaci Fresnelovy čočky (jiný počet/uspořádání detekčních zón) v rámci téže produktové ' +
+      'řady čoček pro senzory IRA-E, přesná optická odlišnost od IML-0638 ale není v tomto stručném ' +
+      '"Product Search" datasheetu specifikována — nejistota uvedena explicitně. Na rozdíl od ' +
+      'záznamu IML-0638 (kde nebyl mechanický výkres k dispozici) tento datasheet obsahuje detail ' +
+      'mechanické konstrukce: kupolovitý tvar s orientačním výstupkem (tab, natočen dle značky na ' +
+      'senzoru), vnitřní dutina se stupněm (step) pro přesné usazení pyroelektrického elementu ' +
+      '(Pyro-Element) senzoru uvnitř čočky, a doporučení výrobce pro návrh krytu/pouzdra (housing) ' +
+      'kolem čočky — šrafovaná oblast dle obrázku v datasheetu musí být zakrytá neprůhledným ' +
+      'materiálem krytu, jinak hrozí falešná detekce průnikem nežádoucího IR záření mimo optickou ' +
+      'dráhu čočky. Materiál HDPE (vysokohustotní polyetylen), barva přírodní/bílá. Provozní ' +
+      'teplota -25 až +60 °C, skladovací teplota -30 až +80 °C. Zařazeno do kategorie "Ostatní" ' +
+      'jako čistě pasivní optická/mechanická součástka bez vlastní elektroniky.',
+    tags: 'optika,fresnelova-čočka,hdpe,pir,murata,ira-e,pohybový-senzor,pasivní',
+  },
+  {
     name: 'PKGS-00LDP1-R',
     packageType:
       'SMD pouzdro 6,4×2,8×1,2 mm, 2 elektrody (Electrode A, Electrode B) na spodní straně, ' +
