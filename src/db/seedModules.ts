@@ -1620,6 +1620,42 @@ const MODULE_SPECS: ModuleSpec[] = [
       'příslušenství: montážní příruba BF 12, rychloupínací konzole EXG-12.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb4,pnp,nc,m12,kabel,ip67,průmyslový',
   },
+  {
+    name: 'NBB10-30GM50-E2-C3-V1',
+    packageType:
+      'Válcové závitové pouzdro M30×1,5 (threaded barrel), mosaz s POVLAKEM PTFE (teflon — ' +
+      'odolnost proti přilnutí svařovacích rozstřiků), délka 65 mm, aktivní čelo s KERAMICKÝM ' +
+      'POVLAKEM (odolné proti oděru/rozstřiku při svařování), indikační LED (zelená=napájení, ' +
+      'žlutá=spínací stav), zásuvný konektor M12×1, 4pinový, piny 1=BN(hnědý)/L+, 4=BK(černý)/ ' +
+      'výstup, 3=BU(modrý)/L-, 2=WH(bílý) nezapojen',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, SPECIÁLNÍ PROVEDENÍ PRO SVAŘOVACÍ ROBOTY ' +
+      '("Weld Immune") s vysokou odolností proti magnetickým polím (150 mT), spínací vzdálenost ' +
+      '10 mm, 3vodičové DC zapojení, PNP výstup, spínací (NO) kontakt, 10–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBB10-30GM50-E2-C3-V1" (910208_eng.xml, vydáno 5. 2. 2019) ' +
+      '— ⚠️ specializovaná svařovací ("Weld Immune") varianta téhož M30 pouzdra jako ' +
+      'NBB10-30GM50-E0 v této knihovně (samostatný záznam, standardní "Basic series") — určeno ' +
+      'pro montáž přímo na ramena svařovacích robotů v blízkosti bodového/obloukového svařování, ' +
+      'kde běžné indukční senzory selhávají kvůli silným magnetickým polím a přilnutí kovových ' +
+      'rozstřiků. Klíčové rozdíly oproti NBB10-30GM50-E0: (1) pouzdro s POVLAKEM PTFE (teflon) ' +
+      'zabraňujícím přilnutí svařovacích rozstřiků k tělu senzoru, (2) aktivní čelo s KERAMICKÝM ' +
+      'POVLAKEM místo PBT plastu (odolnější proti tepelnému/mechanickému poškození), (3) ' +
+      'specifikovaná odolnost vůči konstantnímu i střídavému magnetickému poli 150 mT (typické ' +
+      'pro elektromagnetické rušení svařovacích proudů), (4) výrazně NIŽŠÍ spínací kmitočet jen ' +
+      '0–10 Hz (vs 0–200 Hz u NBB10-30GM50-E0 — záměrně pomalejší/stabilnější odezva pro ' +
+      'potlačení falešného spínání vlivem rušení), (5) PNP výstup (vs NPN u NBB10-30GM50-E0), ' +
+      '(6) zásuvný M12 konektor místo integrálního kabelu. Dostupné i speciální TPE konektorové ' +
+      'kabely odolné proti přilnutí svařovacích kapek (příslušenství V1-G-OR2M-POC/ ' +
+      'V1-W-OR2M-POC), vedle standardních PUR kabelů (V1-G-2M-PUR/V1-W-2M-PUR). Korekční ' +
+      'faktory dle materiálu cíle: rAl=0,3, rCu=0,2, r304/nerez=0,6. Zajištěná spínací vzdálenost ' +
+      '0–8,1 mm. Hystereze typ. 5 %. Úbytek napětí max 3 V. Provozní proud 0–200 mA, klidový ' +
+      'proud max 15 mA, zbytkový proud typ. 0,5 mA (0,1 µA @25°C). Funkční bezpečnostní ' +
+      'parametry: MTTFd 1835 let, doba mise 20 let, diagnostické pokrytí 0 %. Krytí IP67. ' +
+      'Provozní teplota -25 až +70 °C. UL/CSA certifikace. Dostupné příslušenství: montážní ' +
+      'příruba BF 30, rychloupínací konzole EXG-30.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb10,pnp,svařovací,weld-immune,keramika,ptfe,m30,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
