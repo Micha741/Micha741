@@ -2109,6 +2109,37 @@ const MODULE_SPECS: ModuleSpec[] = [
       'KC EMC, RCM. Bez mědi/PTFE, RoHS.',
     tags: 'modul,senzor,proximity,poloha-pístu,magnetorezistivní,svařování,weld-resistant,festo,sdbt-bsw,pneumatika,m12',
   },
+  {
+    name: 'SME-8-K5-LED-24',
+    packageType:
+      'Tyčinkové pouzdro pro upnutí do T-drážky podélně (bez šroubování), pouzdro epoxidová ' +
+      'pryskyřice + PC + PET + vysoce legovaná nerezová ocel, integrovaný kabel s volným koncem, ' +
+      'délka 5 m (plášť TPE-U/PUR), 3 vodiče, hmotnost 60 g',
+    value:
+      'Polohový snímač pístu pneumatického válce (proximity sensor), princip magnetický jazýčkový ' +
+      'kontakt (reed), spínací funkce N/O (spínací), bipolární, 12–30 V AC/DC, max. spínací ' +
+      'kmitočet 800 Hz',
+    notes:
+      'Festo AG & Co. KG "Proximity sensor SME-8-K5-LED-24" (obj. č. 175404, datový list ' +
+      '5.3.2021) — magnetický jazýčkový (reed) snímač polohy pístu, stejná snímací technologie ' +
+      'jako SME-8M-DS-24V-K-5,0-OE (obj. č. 543863) v této knihovně, ale jiná subvarianta ' +
+      'označení typu ("K5" místo "DS", vyšší max. napětí 30V shodné, ale spodní hranice napájení ' +
+      '12V místo 5V) a zejména jiný ZPŮSOB UCHYCENÍ do T-drážky — ⚠️ SME-8-K5 se do drážky ' +
+      'UPÍNÁ PODÉLNĚ ("clamped in T slot, can be inserted in slot lengthwise", utahovací moment ' +
+      'jen 0,2 Nm), zatímco SME-8M-DS se do drážky ŠROUBUJE SHORA ("screwed tightly, can be ' +
+      'inserted in slot from above") — odlišný montážní systém, nejsou vzájemně zaměnitelné. ' +
+      'Elektricky je SME-8-K5 VÝRAZNĚ RYCHLEJŠÍ než SME-8M-DS (zapínací ≤0,5 ms/vypínací jen ' +
+      '0,03 ms, max. 800 Hz oproti nespecifikovaným — ale principiálně pomalejším — hodnotám ' +
+      'DS varianty) a má lepší opakovatelnost polohy (±0,1 mm uvedeno explicitně). Shodně s ' +
+      'DS variantou: bez zkratové a přepěťové ochrany, bez ochrany proti přepólování, žlutá LED ' +
+      'indikace sepnutí, materiál bez mědi a PTFE, RoHS. Doplňkové parametry uvedené jen u této ' +
+      'varianty: izolační napětí 50 V, odolnost proti rázovému přepětí 0,8 kV, stupeň znečištění ' +
+      '3. Zařazeno do kategorie "Modul" jako kompletní osazený produkt s vlastním kabelem, stejně ' +
+      'jako ostatní Festo SME-8M/SMT-8M/SDBT-BSW snímače polohy pístu v této knihovně. Provozní ' +
+      'teplota -40 až +70 °C (pevná instalace), -5 až +70 °C (pohyblivá instalace kabelu). Krytí ' +
+      'IP65/IP67. Certifikace: CE (EU EMC), RCM.',
+    tags: 'modul,senzor,proximity,poloha-pístu,reed,jazýčkový-kontakt,magnetický,festo,sme-8-k5,pneumatika',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
