@@ -2682,6 +2682,95 @@ const MODULE_SPECS: ModuleSpec[] = [
       'E322346), CE (EU EMC + RoHS), RCM.',
     tags: 'modul,senzor,tlak,tlakový-spínač,piezorezistivní,pnp,npn,festo,span-b11r,displej,bez-io-link',
   },
+  {
+    name: 'SPAW-P100R-G12M-2N-M12',
+    packageType:
+      'Válcové pouzdro s LED displejem, materiál ABS + vysoce legovaná nerezová ocel (smáčené ' +
+      'díly celokovové z nerezi), těsnicí kroužek NBR, pneumatická přípojka vnější závit G1/2, ' +
+      'konektor M12×1 (4piny, kruhové provedení), montáž vnějším závitem, hmotnost 230 g',
+    value:
+      'Vysokotlaký průmyslový tlakový senzor/spínač s displejem (kovový tenkovrstvý princip), ' +
+      'měřicí rozsah 0–100 bar (max. přetížení 200 bar), 2× NPN volně programovatelný spínací ' +
+      'výstup, 15–35 V DC',
+    notes:
+      'Festo AG & Co. KG "Pressure sensor SPAW-P100R-G12M-2N-M12" (obj. č. 8022775, datový list ' +
+      '25.5.2021) — ⚠️ zcela JINÁ produktová řada tlakových senzorů než SPAN/SDE5 v této knihovně ' +
+      '(typový kód "SPAW") — určena pro VYSOKOTLAKÉ PRŮMYSLOVÉ aplikace: měřicí rozsah 0–100 bar ' +
+      '(desetinásobně vyšší než SPAN 10 bar, stonásobně vyšší než SDE5), max. přetížení 200 bar. ' +
+      'Měřicí princip KOVOVÝ TENKOVRSTVÝ SNÍMAČ (metal thin-film), ne piezorezistivní křemíkový ' +
+      'čip jako SPAN/SDE5 — celokovová konstrukce smáčených dílů z vysoce legované nerezi ' +
+      '(žádné plastové/pryžové díly ve styku s médiem kromě NBR těsnění) umožňuje měřit i ' +
+      'AGRESIVNÍ/VISKÓZNÍ KAPALNÁ a plynná média (ne jen čistý stlačený vzduch jako SPAN/SDE5) — ' +
+      'korozní odolnost CRC třída 4 "Particularly high corrosion stress" (nejvyšší třída v této ' +
+      'knihovně, oproti třídě 2 u SPAN/SDE5). Širší teplotní rozsah média -20 až +85 °C, okolí ' +
+      '0 až +80 °C. Duální VOLNĚ PROGRAMOVATELNÝ NPN spínací výstup (2×NPN, max. proud 250 mA, ' +
+      'doba náběhu 3 ms). LED displej (4místný alfanumerický, ne LCD jako SPAN), červená LED ' +
+      'indikace sepnutí. Nastavení pouze přes displej a tlačítka (bez teach-in, bez IO-Link), ' +
+      'ochrana PIN kódem. Krytí IP65/IP67 (vyšší než IP40 u SPAN/SDE5, vhodné pro přímé venkovní/ ' +
+      'průmyslové vystavení). Zařazeno do kategorie "Modul" jako kompletní přístroj s vlastním ' +
+      'displejem/ovládáním/konektorem, stejně jako SPAN/SDE5 tlakové senzory v této knihovně. ' +
+      'Zkratová ochrana, ochrana proti přepólování napájení. Obsahuje látky ovlivňující smáčivost ' +
+      'nátěru (paint-wetting impairment substances). Certifikace: c UL us (Listed), CE (EU EMC), ' +
+      'RCM. RoHS.',
+    tags: 'modul,senzor,tlak,vysokotlaký,tenkovrstvý,npn,festo,spaw-p100r,displej,g12,nerez',
+  },
+  {
+    name: 'SPAW-B11R-G14F-2P-M12',
+    packageType:
+      'Válcové pouzdro s LED displejem, materiál ABS + vysoce legovaná nerezová ocel (smáčené ' +
+      'díly celokovové z nerezi), pneumatická přípojka vnitřní závit G1/4, konektor M12×1 ' +
+      '(4piny, kruhové provedení), montáž vnitřním závitem/příslušenstvím, hmotnost 230 g',
+    value:
+      'Průmyslový tlakový senzor/spínač s displejem (kovový tenkovrstvý princip), měřicí rozsah ' +
+      '-1 až 10 bar (max. přetížení 20 bar), 2× PNP volně programovatelný spínací výstup, ' +
+      '15–35 V DC',
+    notes:
+      'Festo AG & Co. KG "Pressure sensor SPAW-B11R-G14F-2P-M12" (obj. č. 8022741, datový list ' +
+      '25.5.2021) — nižší-tlaká varianta ze stejné SPAW rodiny (kovový tenkovrstvý senzor, ' +
+      'celokovové smáčené díly z nerezi, LED displej, IP65/67, CRC třída 4) jako ' +
+      'SPAW-P100R-G12M-2N-M12 (obj. č. 8022775) v této knihovně — typový kód "B11R" (stejné ' +
+      'základní označení jako u SPAN-B11R senzorů) signalizuje měřicí rozsah -1 až 10 bar/20 bar ' +
+      'přetížení (na rozdíl od "P100R" varianty s rozsahem 0–100 bar/200 bar) — pokrývá tedy ' +
+      'stejný tlakový rozsah jako SPAN-B11R-M5F-PNLK-PNVBA-L1/SPAN-B11R-M5F-PN-PN-L1 v této ' +
+      'knihovně, ale v ROBUSTNĚJŠÍM celokovovém provedení pro agresivní/kapalná média a vyšší ' +
+      'korozní zátěž (CRC třída 4 oproti třídě 2 u plastových SPAN). Další rozdíly oproti ' +
+      'SPAW-P100R-G12M-2N-M12: menší pneumatická přípojka vnitřní závit G1/4 (místo vnějšího ' +
+      'G1/2), 2× PNP výstup (místo 2× NPN), montáž i příslušenstvím (ne jen vnějším závitem). ' +
+      'Volně programovatelná spínací funkce, max. proud 250 mA, doba náběhu 3 ms. Zařazeno do ' +
+      'kategorie "Modul" jako kompletní přístroj s vlastním displejem/ovládáním/konektorem, ' +
+      'stejně jako ostatní Festo SPAW/SPAN/SDE5 tlakové senzory v této knihovně. Teplota média ' +
+      '-20 až +85 °C, okolí 0 až +80 °C. Zkratová ochrana, ochrana proti přepólování napájení. ' +
+      'Obsahuje látky ovlivňující smáčivost nátěru. Certifikace: c UL us (Listed), CE (EU EMC), ' +
+      'RCM. RoHS.',
+    tags: 'modul,senzor,tlak,tenkovrstvý,pnp,festo,spaw-b11r,displej,g14,nerez',
+  },
+  {
+    name: 'SPAW-B2R-G12M-2P-M12',
+    packageType:
+      'Válcové pouzdro s LED displejem, materiál ABS + vysoce legovaná nerezová ocel (smáčené ' +
+      'díly celokovové z nerezi), těsnicí kroužek NBR, pneumatická přípojka vnější závit G1/2, ' +
+      'konektor M12×1 (4piny, kruhové provedení), montáž vnějším závitem, hmotnost 230 g',
+    value:
+      'Nízkotlaký průmyslový tlakový senzor/spínač s displejem, měřicí rozsah -1 až 1 bar (max. ' +
+      'přetížení 2 bar), 2× PNP volně programovatelný spínací výstup, 15–35 V DC',
+    notes:
+      'Festo AG & Co. KG "Pressure sensor SPAW-B2R-G12M-2P-M12" (obj. č. 8022749, datový list ' +
+      '25.5.2021) — nejnižší tlakový rozsah ze SPAW rodiny v této knihovně (vedle ' +
+      'SPAW-P100R-G12M-2N-M12 s rozsahem 0–100 bar a SPAW-B11R-G14F-2P-M12 s rozsahem -1 až ' +
+      '10 bar) — typový kód "B2R" značí úzký rozsah -1 až +1 bar/2 bar přetížení, vhodný pro ' +
+      'přesné měření nízkých tlaků/mírného podtlaku. ⚠️ NA ROZDÍL od obou ostatních SPAW variant ' +
+      '(metal thin-film princip) používá tato nejnižší-rozsahová varianta PIEZOREZISTIVNÍ princip ' +
+      '(stejný jako SPAN/SDE5 v této knihovně) — u tak úzkého rozsahu (±1 bar) je piezorezistivní ' +
+      'křemíkový snímač citlivější než kovový tenkovrstvý senzor optimalizovaný pro vyšší tlaky. ' +
+      'Mechanicky a funkčně jinak shodná se SPAW-P100R-G12M-2N-M12 (stejné celokovové pouzdro ' +
+      'ABS+nerez, LED displej, G1/2 vnější závit, M12 konektor, IP65/67, CRC třída 4, 2× PNP ' +
+      'volně programovatelný výstup, max. proud 250 mA, doba náběhu 3 ms, teplota média -20 až ' +
+      '+85 °C). Zařazeno do kategorie "Modul" jako kompletní přístroj s vlastním displejem/ ' +
+      'ovládáním/konektorem, stejně jako ostatní Festo SPAW/SPAN/SDE5 tlakové senzory v této ' +
+      'knihovně. Zkratová ochrana, ochrana proti přepólování napájení. Obsahuje látky ' +
+      'ovlivňující smáčivost nátěru. Certifikace: c UL us (Listed), CE (EU EMC), RCM. RoHS.',
+    tags: 'modul,senzor,tlak,piezorezistivní,pnp,festo,spaw-b2r,displej,g12,nerez,nízkotlaký',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
