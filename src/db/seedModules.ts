@@ -1656,6 +1656,43 @@ const MODULE_SPECS: ModuleSpec[] = [
       'příruba BF 30, rychloupínací konzole EXG-30.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb10,pnp,svařovací,weld-immune,keramika,ptfe,m30,ip67,průmyslový',
   },
+  {
+    name: 'NBB20-L3M-A2-C3-V1',
+    packageType:
+      'Pravoúhlé kvádrové ("L3M" styl) pouzdro ze slitiny zinku GD-ZnAl4Cu1 s povrchovou úpravou ' +
+      '(coated), rozměry 67×40×40 mm, pozinkovaná/potažená kovová montážní příruba se 4 otvory ' +
+      'Ø5,5 mm, aktivní čelo z tvrzeného plastu (Duroplast/thermoset — vysoce odolné proti ' +
+      'mechanickému a tepelnému poškození), "2-way" LED indikace (žlutá-zelená-žlutá, viditelná ' +
+      'ze dvou stran pouzdra), zásuvný konektor M12×1, 4pinový, piny 1=BN(hnědý)/L+, 4=BK(černý)/ ' +
+      'NO výstup, 3=BU(modrý)/L-, 2=WH(bílý)/NC výstup',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, SPECIÁLNÍ PROVEDENÍ PRO SVAŘOVACÍ ROBOTY ' +
+      '("Weld Immune") s velmi vysokou odolností proti magnetickým polím (200 mT), spínací ' +
+      'vzdálenost 20 mm (největší v této knihovně), 4vodičové DC zapojení, KOMPLEMENTÁRNÍ PNP ' +
+      'výstup (současně NO i NC), 10–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBB20-L3M-A2-C3-V1" (187558_eng.xml, vydáno 13. 11. 2018) ' +
+      '— ⚠️ další svařovací ("Weld Immune") varianta v této knihovně vedle NBB10-30GM50-E2-C3-V1 ' +
+      '(samostatný záznam), ale MECHANICKY ZCELA ODLIŠNÁ: namísto válcového závitového pouzdra ' +
+      'jde o pravoúhlé kvádrové pouzdro ("L3M" styl) z lité zinkové slitiny (GD-ZnAl4Cu1) s ' +
+      'montážní přírubou (4 otvory), typické pro montáž na svařovací kleště/přípravky, kde je ' +
+      'potřeba pevná mechanická fixace. Nejvyšší jmenovitá spínací vzdálenost v celé rodině NBB ' +
+      'v této knihovně (20 mm, dvojnásobek NBB10-30GM50 dvojice) a nejvyšší odolnost proti ' +
+      'magnetickému poli (200 mT vs 150 mT u NBB10-30GM50-E2-C3-V1). Aktivní čelo z tvrzeného ' +
+      'plastu Duroplast (reaktoplast/thermoset) místo keramiky — jiný přístup k odolnosti proti ' +
+      'svařovacím rozstřikům, ale stejný účel. KOMPLEMENTÁRNÍ výstup (současně NO+NC na ' +
+      'oddělených vodičích) — na rozdíl od NBB10-30GM50-E2-C3-V1 (jen NO). Extrémně nízký ' +
+      'spínací kmitočet 0–5 Hz (ještě pomalejší než 10 Hz u NBB10-30GM50-E2-C3-V1 — maximální ' +
+      'potlačení rušení pro nejnáročnější svařovací aplikace). Korekční faktory dle materiálu ' +
+      'cíle: rAl=0,42, rCu=0,38, r304/nerez=0,75, rBrass/mosaz=0,49. Zajištěná spínací vzdálenost ' +
+      '0–16,2 mm, skutečná spínací vzdálenost 18–22 mm. Hystereze typ. 5 %. Ochrana proti ' +
+      'přepólování a pulzní zkratová ochrana. Úbytek napětí max 3 V. Provozní proud 0–200 mA, ' +
+      'klidový proud max 20 mA, zbytkový proud max 0,5 mA. Zpoždění dostupnosti po zapnutí 80 ms. ' +
+      'Funkční bezpečnostní parametry: MTTFd 1420 let, doba mise 20 let, diagnostické pokrytí ' +
+      '0 %. Krytí IP67. Rozšířený provozní rozsah -25 až +85 °C (skladovací -40 až +85 °C — ' +
+      'nejširší v rodině NBB v této knihovně vedle NBB4-12GM35-A2-V1-M1). UL certifikace.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb20,pnp,komplementární,svařovací,weld-immune,duroplast,m12,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
