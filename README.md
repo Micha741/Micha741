@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    687 běžných součástek: 108 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    688 běžných součástek: 108 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220; tenkovrstvá
@@ -44,7 +44,7 @@ i návrh schémat obvodů a plošných spojů.
     80 tranzistorů (bipolární NPN/PNP, Darlington, duální, komplementární páry, výkonové, VF,
     MOSFET, JFET (včetně RF JFET rodiny Fairchild 2N5484/5485/5486 a SMD MMBF5484/5485/5486,
     SOT-23), IR fototranzistory Lite-On LTR-306 a LTR-1650D, fototranzistor pro viditelné
-    světlo (náhrada CdS) Kodenshi PT23GP11), 113 integrovaných obvodů
+    světlo (náhrada CdS) Kodenshi PT23GP11), 114 integrovaných obvodů
     (časovače, komparátory, op-zesilovače, regulátory, logická hradla, čítače,
     Wi-Fi mikrokontroléry ESP32, ESP32-C3, ESP8285, ESP8684, Wi-Fi adaptér ESP8089, 8bit AVR
     mikrokontroléry ATmega640/1280/1281/2560/2561, rodina CAN mikrokontrolérů AT90CAN32/64/128
@@ -70,7 +70,9 @@ i návrh schémat obvodů a plošných spojů.
     senzory CUI CSXX05B series aj.; izolovaný DC/DC měnič TRACO POWER TRA 1 Series; a plně
     digitální Class-D zesilovače reproduktoru s DSP ROHM BM28720MUV (20W+20W) a BM28723MUV
     (17W+17W, output feedback, bez snubberu); a digitální barometrický tlakový senzor Bosch
-    BMP280 (I2C/SPI); a neregulovaný izolovaný DC/DC měnič RECOM ECONOLINE REZ Series),
+    BMP280 (I2C/SPI); a kombinovaný digitální senzor vlhkosti/tlaku/teploty Bosch BME280
+    (I2C/SPI, registrově kompatibilní s BMP280); a neregulovaný izolovaný DC/DC měnič RECOM
+    ECONOLINE REZ Series),
     122 modulů
     (Wi-Fi/BLE: ESP32-C3-MINI-1, ESP32-C3-WROOM-02, Adafruit Feather
     HUZZAH ESP8266, ESP8684-MINI-1, ESP-12S; nízkonapěťové odpojovače baterie Alfatronix

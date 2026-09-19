@@ -2522,6 +2522,45 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,senzor,tlak,barometrický,i2c,spi,mems,piezorezistivní,bosch,bmp280,lga',
   },
   {
+    name: 'BME280',
+    packageType:
+      '8pin LGA kovové víko (metal-lid) s ventilačním otvorem, rozměry pouzdra 2,5×2,5×0,93 mm, ' +
+      'rozteč pinů 0,65 mm, pad 0,35×0,35 mm',
+    value:
+      'Kombinovaný digitální senzor vlhkosti, tlaku a teploty, rozsah 0–100 % RH / 300–1100 hPa / ' +
+      '-40 až +85 °C, I²C (do 3,4 MHz) nebo SPI (3/4-vodičové, do 10 MHz), VDD 1,71–3,6 V, ' +
+      'VDDIO 1,2–3,6 V',
+    notes:
+      'Bosch Sensortec "BME280 — Combined humidity and pressure sensor" (dok. BST-BME280-DS002-15, ' +
+      'rev. 1.6, září 2018) — registrově a výkonově kompatibilní s BMP280 v této knihovně (viz ' +
+      'kap. 5.2 datasheetu), rozšířený o kapacitní senzor relativní vlhkosti s velmi rychlou ' +
+      'odezvou. I²C adresa 0x76 (SDO=GND) nebo 0x77 (SDO=VDDIO), 7bitová, 6 MSB fixních (111011x). ' +
+      'SPI mód 00 nebo 11 (auto-detekce dle SCK po sestupné hraně CSB), CSB musí být připojen na ' +
+      'VDDIO pro aktivaci I²C. ' +
+      'Spotřeba: 1,8 µA @1 Hz (vlhkost+teplota), 2,8 µA @1 Hz (tlak+teplota), 3,6 µA @1 Hz ' +
+      '(vlhkost+tlak+teplota), 0,1 µA v sleep módu. Tři výkonové režimy: sleep/forced/normal ' +
+      '(stejné jako BMP280), volitelný oversampling 0–16× nezávisle pro každou veličinu, ' +
+      'IIR filtr (koeficient 0/2/4/8/16) pro tlak a teplotu (u vlhkosti nepoužit, není potřeba). ' +
+      'Vlhkost: response time (τ63%) 1 s, absolutní přesnost ±3 %RH (20–80 %RH/25°C, včetně ' +
+      'hystereze), hystereze ±1 %RH, nelinearita 1 %RH, rozlišení 0,008 %RH, šum (RMS) 0,02 %RH ' +
+      'při nejvyšším oversamplingu, dlouhodobá stabilita 0,5 %RH/rok. ' +
+      'Tlak: RMS šum 0,2 Pa (ekv. 1,7 cm) při nejvyšším oversamplingu a redukované šířce pásma, ' +
+      'teplotní koeficient offsetu ±1,5 Pa/K (ekv. ±12,6 cm/K), absolutní přesnost ±1,0 hPa ' +
+      '(300–1100 hPa/0–65°C plná přesnost), ±1,7 hPa mimo tento rozsah (-20 až 0°C), relativní ' +
+      'přesnost ±0,12 hPa (700–900 hPa/25–40°C @VDD=3,3V), rozlišení 0,18 Pa při nejvyšším ' +
+      'oversamplingu, dlouhodobá stabilita ±1,0 hPa/rok, max. vzorkovací kmitočet 157–182 Hz. ' +
+      'Teplota: přesnost ±0,5°C @25°C (0–65°C plný rozsah ±1,0°C), rozlišení 0,01°C, šum (RMS) ' +
+      '0,005°C při nejnižším oversamplingu. ' +
+      'Absolutní max.: napájení (VDD/VDDIO) -0,3 až 4,25 V, tlak 0–20000 hPa, skladovací teplota ' +
+      '-45 až +85°C (≤65 %RH), ESD HBM ±2kV/CDM ±500V/MM ±200V. RoHS, bez halogenů, MSL 1. ' +
+      'Doba náběhu (start-up) 2 ms max. Aplikace: kontextové uvědomění (detekce změny místnosti), ' +
+      'fitness/wellbeing, domácí automatizace (HVAC), IoT, GPS enhancement, indoor navigace ' +
+      '(detekce patra), předpověď počasí, indikace vertikální rychlosti. Cílová zařízení: mobilní ' +
+      'telefony, tablety, GPS zařízení, navigační systémy, herní ovladače, kamery, domácí ' +
+      'meteostanice, letecké hračky, hodinky.',
+    tags: 'io,senzor,vlhkost,tlak,teplota,barometrický,i2c,spi,mems,bosch,bme280,lga',
+  },
+  {
     name: 'REZ Series',
     packageType:
       '7pin SIP THT pouzdro, plast UL94V-0, rozměry 19,65×10,2×7,05 mm, hmotnost 2,7 g, piny ' +
