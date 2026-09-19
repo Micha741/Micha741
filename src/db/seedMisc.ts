@@ -167,6 +167,34 @@ const MISC_SPECS: MiscSpec[] = [
       'jako čistě pasivní optická/mechanická součástka bez vlastní elektroniky.',
     tags: 'optika,fresnelova-čočka,hdpe,pir,murata,ira-e,pohybový-senzor,pasivní',
   },
+  {
+    name: 'IML-0662N000-T1',
+    packageType:
+      'Hranatá (obdélníková) SMD Fresnelova čočka s klenutým vrškem, půdorys 8,0×9,0 mm ' +
+      '(zaoblené rohy R1,8), výška cca 6,7 mm nad DPS + patky, materiál HDPE (polyetylen s ' +
+      'vysokou hustotou), barva přírodní/bílá, patky pro povrchovou montáž (SMD) na DPS, ' +
+      'balení na podnosu (tray) po 1000 ks',
+    value:
+      'Fresnelova čočka pro PIR (pyroelektrické) pohybové senzory, formuje/segmentuje zorné pole ' +
+      'senzoru do detekčních zón',
+    notes:
+      'Murata "IML-0662N000-T1" (dok. Product Search Data Sheet, staženo z murata.com, ' +
+      'aktualizováno 27. 10. 2017 — pozn. výrobce: může být neaktuální, doporučeno stáhnout ' +
+      'nejnovější verzi) — ⚠️ POZOR na záměnu s IML-0637/IML-0638 v této knihovně (samostatné ' +
+      'záznamy): jde o stejný typ součástky (Fresnelova čočka pro PIR pohybové senzory, shodný ' +
+      'materiál HDPE, přírodní bílá barva, shodný teplotní rozsah -25 až +60 °C provozní / -30 ' +
+      'až +80 °C skladovací) ze STEJNÉ produktové rodiny "IML", ale s ODLIŠNÝM způsobem montáže: ' +
+      'IML-0637/IML-0638 jsou určeny "For LEAD TYPE (IRA-E Series)" (kulaté kupolovité čočky pro ' +
+      'drátové PIR senzory typu IRA-S4xx/IRA-S2xx/IRA-S5xx v této knihovně), zatímco IML-0662N000-T1 ' +
+      'je výslovně "For SMD TYPE" — hranatá čočka s SMD patkami pro přímou povrchovou montáž na ' +
+      'DPS, určená pro miniaturní SMD provedení PIR senzorů (na rozdíl od TO-5 kovového pouzdra u ' +
+      'lead-type řady). Nejde tedy o záměnnou náhradu ani variantu optického vzoru v rámci stejné ' +
+      'mechanické řady, ale o zcela odlišný mechanický formát pro jiný typ senzorového pouzdra. ' +
+      'Materiál HDPE (vysokohustotní polyetylen), barva přírodní/bílá. Provozní teplota -25 až ' +
+      '+60 °C, skladovací teplota -30 až +80 °C. Zařazeno do kategorie "Ostatní" jako čistě ' +
+      'pasivní optická/mechanická součástka bez vlastní elektroniky.',
+    tags: 'optika,fresnelova-čočka,hdpe,pir,murata,smd,pohybový-senzor,pasivní',
+  },
 ];
 
 export function buildMiscSeed(): ComponentInput[] {
