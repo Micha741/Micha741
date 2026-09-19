@@ -3519,6 +3519,48 @@ const MODULE_SPECS: ModuleSpec[] = [
       'ovladač RMS Remote Control, stropní montážní sada RMS/RaDec Ceiling Kit.',
     tags: 'modul,senzor,radar,doppler,pohybový,relé,pepperl-fuchs,rms-m,24ghz,dveře,ce,dálkové-ovládání',
   },
+  {
+    name: 'OBG4000-R103-2EP-IO',
+    packageType:
+      'Miniaturní pouzdro řady R103, polykarbonát (PC), optické čelo PMMA, rozměry 15×36,5×26,7 ' +
+      'mm, hmotnost ~38 g, integrální kabel 2 m, otočný 5polohový volič režimu, teach-in ' +
+      'tlačítko, žlutá (funkce) + zelená (provoz) LED indikace, krytí IP67/IP69/IP69K',
+    value:
+      'Reflexní (retroreflective) optoelektronický senzor s IO-Link rozhraním, modulované ' +
+      'viditelné červené LED světlo, dosah 0–3,5 m (režim TEACH) / 0–4 m (režim "N"), ' +
+      'nastavitelná úroveň kontrastu pro detekci průhledných objektů (sklo, PET), 10–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Retroreflective sensor OBG4000-R103-2EP-IO" (267075-100309_eng.xml, ' +
+      'vydáno 26.3.2019) — ⚠️ NOVÁ TŘÍDA optoelektronického senzoru v této knihovně: první ' +
+      'REFLEXNÍ (retroreflective, s odrazkou/reflektorem) fotoelektrický senzor s IO-LINK ' +
+      'rozhraním — odlišný princip od SICK GRSE18S-N2421V (through-beam, samostatný ' +
+      'vysílač+přijímač bez reflektoru) i od Honeywell HOA0709-011 (reflexní ale bez odrazky, ' +
+      'jen odraz od samotného objektu) v této knihovně — zde světlo putuje OD senzoru K REFLEKTORU ' +
+      'a ZPĚT, objekt je detekován PŘERUŠENÍM nebo ZTLUMENÍM tohoto odraženého paprsku (u ' +
+      'průhledných objektů — sklo/PET/fólie — dochází jen k částečnému zeslabení, proto tři ' +
+      'volitelné úrovně kontrastní citlivosti: 10 % čisté PET lahve s vodou, 18 % čiré skleněné ' +
+      'lahve, 40 % barevné sklo/neprůhledné materiály). "Dva stroje v jednom": režim "Normal" ' +
+      '(běžná reflexní detekce, dosah 4 m) nebo kontrastní režim I–III (detekce transparentních ' +
+      'objektů, dosah 3,5 m) volitelný otočným voličem. Využívá Multi Pixel Technology (více ' +
+      'světlocitlivých pixelů pro adaptivní vyhodnocení prostředí). IO-Link rozhraní (verze 1.1, ' +
+      'COM2 38,4 kBd, min. cyklus 2,3 ms, 2bit vstupní/výstupní procesní data, podpora SIO módu, ' +
+      'ID zařízení 0x110A03) umožňuje digitální parametrizaci a diagnostiku přes IO-Link master ' +
+      '(např. příslušenství IO-Link-Master02-USB) — signál C/Q na pinu BK slouží současně jako ' +
+      'standardní spínací výstup NEBO jako IO-Link komunikační linka. Duální push-pull výstup (4 ' +
+      'v 1 — NPN/PNP, light-on/dark-on, IO-Link, vše softwarově konfigurovatelné/přepínatelné), ' +
+      'max. proud 100 mA, spínací kmitočet 500 Hz, doba odezvy 1 ms. Zajišťovací funkce: teach-in ' +
+      'tlačítko pro nastavení prahu/režimu, reset na maximální citlivost, přepnutí light-on/ ' +
+      'dark-on, reset na tovární nastavení, keylock (uzamčení nastavení proti neúmyslné změně). ' +
+      'Zajištěná spínací vzdálenost (threshold detection range) 5 m s referenčním reflektorem ' +
+      'H85-2. Zdroj světla: modulované viditelné červené LED, průměr světelné stopy ~170 mm při ' +
+      '3,5 m, úhel divergence ~5°. Provozní teplota -20 až +60 °C (pohyblivý kabel nevhodný pro ' +
+      'dopravníkové řetězy), skladovací -40 až +70 °C. Zařazeno do kategorie "Modul" jako ' +
+      'kompletní osazený produkt s vlastním kabelem a procesorem. MTTFd 600 let. UL certifikace ' +
+      '(E87056, cULus Listed, class 2 power supply). Dostupné příslušenství: konektorové kabely ' +
+      'V31-WM/GM-2M-PUR, IO-Link master, montážní úchyty/konzole, celá řada reflektorů (H33, H50, ' +
+      'H85-2, H32G-2, ORR50G-2) a reflexní páska OFR-100/100.',
+    tags: 'modul,senzor,fotoelektrický,optický,reflexní,retroreflexní,io-link,pepperl-fuchs,obg4000,r103,transparentní-objekty,ip69k',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
