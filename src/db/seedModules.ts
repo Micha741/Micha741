@@ -3799,6 +3799,49 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Materiál: černý ABS plast. Certifikace: UKCA, RoHS, CE.',
     tags: 'modul,signalizace,zvukový,houkačka,tower-light,bzučák,moflash,led-tlm,eco,ip65',
   },
+  {
+    name: 'D10 Series',
+    packageType:
+      'Kompaktní DIN lištový (35 mm) zesilovač s odnímatelnou optikou vlákna, pouzdro černý ABS/ ' +
+      'polykarbonátová slitina (UL94 V-0), čirý polykarbonátový kryt, rozměry 68,1×39,5×10,0 mm, ' +
+      'integrální kabel PVC 2 m nebo 9 m nebo zásuvný 4/6pinový "Pico-style" konektor, konektor ' +
+      'pro připojení Banner P-Series plastových (příp. skleněných) optických vláken',
+    value:
+      'Fiber optic zesilovač (amplifier) pro plastová/skleněná optická vlákna, viditelný červený ' +
+      'nebo zelený paprsek, diskrétní (bipolární NPN/PNP), duální diskrétní, nebo analogový ' +
+      '(4-20mA/0-10V) + diskrétní výstup dle modelu, 10–30 V DC',
+    notes:
+      'Banner Engineering "D10 Series — Fiber Optic Systems" (katalogový list, Photoelectrics ' +
+      'katalog, str. 163-170) — ⚠️ fiber optic SYSTÉM je dvoudílný: senzor (tento záznam, obsahuje ' +
+      'veškerou elektroniku/zesilovač/mechanické rozhraní pro vlákno) + samostatně prodávané ' +
+      'APLIKAČNĚ SPECIFICKÉ OPTICKÉ VLÁKNO (plastové nebo skleněné, katalogizováno zvlášť, ' +
+      'NENÍ součástí tohoto záznamu) — samotné vlákno je pasivní světlovodný prvek (jádro+plášť+ ' +
+      'jacket) bez vlastní elektroniky, senzor D10 poskytuje zdroj světla (LED) i detektor a celé ' +
+      'vyhodnocení signálu. Na rozdíl od průmyslových přibližovacích senzorů (TURCK/Pepperl+Fuchs) ' +
+      'v této knihovně umožňuje fiber optic řešení díky flexibilitě a malým rozměrům špičky ' +
+      'vlákna snímání ve stísněných prostorech, při vysokých teplotách (až 480°C u speciálních ' +
+      'skleněných vláken), silných vibracích/rázech, v korozivním/vlhkém prostředí nebo ve ' +
+      'výbušných/elektricky rušených prostředích (vlákno samo je elektricky nevodivé a imunní ' +
+      'vůči EMI). ⚠️ Datasheet dokumentuje CELOU MODELOVOU ŘADU D10 — desítky variant: "D10 ' +
+      'Expert" s numerickým LED displejem (duální diskrétní NPN/PNP výstup 12-24V, nebo analogový ' +
+      '4-20mA/0-10V + diskrétní výstup 12-24V/15-24V), "D10 Expert" s bargraf displejem ' +
+      '(bipolární NPN/PNP, 10-30V), a základní "D10 Discrete" bez displeje (bipolární NPN/PNP, ' +
+      '10-30V, 15otáčkové potenciometrové doladění citlivosti) — do knihovny přidána jako jeden ' +
+      'souhrnný záznam pro celou řadu, ne každá kombinace zvlášť. TEACH programování (statické, ' +
+      'dynamické, jednobodové) dvěma tlačítky nebo dálkově přes TEACH vodič, ruční doladění ' +
+      'citlivosti. Doba odezvy výstupu programovatelná 50 µs až 2,5 ms (Expert modely) nebo ' +
+      '200/500 µs (Discrete/bargraf modely dle rychlostního režimu). Ochrana proti přepólování, ' +
+      'přechodovým napětím, falešnému pulzu při zapnutí, trvalému zkratu/přetížení výstupu. Krytí ' +
+      'NEMA 1/IEC IP50 (nižší než IP65/67/68/69K u průmyslových senzorů TURCK/Pepperl+Fuchs/ ' +
+      'Festo v této knihovně — určeno pro montáž do rozvaděče/krytého panelu, ne přímé venkovní ' +
+      'vystavení). Montáž na 35mm DIN lištu nebo přiloženou konzoli, možnost stohování více ' +
+      'jednotek vedle sebe s odstupňovaným snížením max. proudové zátěže/okolní teploty dle počtu ' +
+      'stohovaných kusů (3/7/10 ks). Provozní teplota -20 až +55°C (Expert modely) nebo -10 až ' +
+      '+55°C (bargraf), skladovací -20 až +80/+85°C. Zařazeno do kategorie "Modul" jako kompletní ' +
+      'osazený produkt s vlastním konektorem/displejem, stejně jako ostatní fotoelektrické ' +
+      'senzory v této knihovně. Certifikace CE, cULus.',
+    tags: 'modul,senzor,fotoelektrický,optický,optické-vlákno,fiber-optic,zesilovač,banner,d10,teach,din-lišta',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
