@@ -1268,6 +1268,31 @@ const MODULE_SPECS: ModuleSpec[] = [
       'rychloupínací konzole EXG-08.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,npn,3vodičový,m8,konektor,ip67,průmyslový',
   },
+  {
+    name: 'NBB2-8GM25-E2-V3',
+    packageType:
+      'Válcové závitové pouzdro M8×1 (threaded barrel), mosaz s niklovým povlakem, délka 40 mm ' +
+      '(25 mm závitové části), aktivní čelo LCP, indikační vícedírková žlutá LED, zásuvný ' +
+      'konektor M8×1, 3pinový, piny 1=BN(hnědý)/L+, 4=BK(černý)/výstup, 3=BU(modrý)/L-, v balení ' +
+      '2 šestihranné matice',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, spínací vzdálenost 2 mm (zápustná montáž), ' +
+      'rozšířený teplotní rozsah -40 až +85 °C, 3vodičové DC zapojení, PNP výstup, spínací (NO) ' +
+      'kontakt, 5–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBB2-8GM25-E2-V3" (304615-0031_eng.xml, vydáno 8.–9. 1. ' +
+      '2018) — ⚠️ elektrický komplement NBB2-8GM25-E0-V3 v této knihovně (samostatný záznam): ' +
+      'zcela identické mechanické provedení, rozměry, konektor a všechny parametry (přesnost, ' +
+      'teplotní rozsah, korekční faktory rAl=0,4/rCu=0,3/r304=0,75/rBrass=0,45, spínací kmitočet ' +
+      'až 6000 Hz atd.), LIŠÍ SE POUZE v polaritě výstupního tranzistoru — zde PNP (výstupní pin ' +
+      'spíná kladné napětí na zátěž), zatímco NBB2-8GM25-E0-V3 má NPN (výstupní pin spíná zátěž ' +
+      'k zápornému pólu) — typický "sourozenecký pár" v katalozích indukčních senzorů, kde ' +
+      'výrobce nabízí stejný fyzický senzor v obou výstupních polaritách pro kompatibilitu s ' +
+      'různými vstupními obvody PLC. Viz záznam NBB2-8GM25-E0-V3 pro plný popis společných ' +
+      'parametrů. Dostupné příslušenství: montážní příruba BF 8, konektorové kabely V3-GM/V3-WM/ ' +
+      'V3-WM-2M-PUR, rychloupínací konzole EXG-08 (shodné s NBB2-8GM25-E0-V3).',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,pnp,3vodičový,m8,konektor,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
