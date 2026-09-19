@@ -686,6 +686,34 @@ const MODULE_SPECS: ModuleSpec[] = [
       'řadě), max. změna kmitočtu typ. 7 kHz (shodná s TSU-70G).',
     tags: 'modul,senzor,tlak,křemenný,frekvenční,seiko-epson,tsu-100g,průmyslový',
   },
+  {
+    name: 'RPR-0521RS-EVK-001',
+    packageType:
+      'Malá evaluační/breakout deska (PCB0064 Rev.C), konektor CN1 (pinová lišta) pro připojení ' +
+      'k "SensorShield" (ROHM Shield-EVK-001, Arduino shield), na desce osazen čip RPR-0521RS ' +
+      'plus podpůrné pasivní součástky: C1 blokovací kondenzátor VDD 10 µF, C2 blokovací ' +
+      'kondenzátor VDD 0,1 µF, C3 blokovací kondenzátor LEDA 0,1 µF, R1/R2/R3 pull-up rezistory ' +
+      'pro SDA/SCL/INT (na desce standardně NEOSAZENY — "N.M." = No Mount)',
+    value:
+      'Evaluační deska pro ROHM RPR-0521RS — kombinovaný senzor přiblížení (PS) a okolního ' +
+      'osvětlení (ALS), I2C rozhraní, piny VDD/GND/SDA/SCL/INT',
+    notes:
+      'ROHM "RPR-0521RS-EVK-001 Manual" (User\'s Guide, dok. č. 60UG059E Rev.001, leden 2018) — ' +
+      '⚠️ jde o User\'s Guide k evaluační desce, NIKOLI o plný datasheet čipu RPR-0521RS — obsahuje ' +
+      'jen postup zapojení s Arduino Uno přes "SensorShield" (ROHM Shield-EVK-001), instalaci ' +
+      'knihovny/příkladu v Arduino IDE a přehled osazení desky, BEZ podrobných elektrických ' +
+      'parametrů samotného senzoru (rozsah/rozlišení přiblížení, citlivost ALS v lx, I2C adresa, ' +
+      'napájecí rozsah, proudová spotřeba apod.) — tyto parametry v tomto dokumentu chybí, ' +
+      'nejistota uvedena explicitně, pro plné specifikace čipu by byl potřeba samostatný datasheet ' +
+      'RPR-0521RS. Deska se připojuje do I2C slotu na SensorShieldu, napájecí napětí SensorShieldu ' +
+      'nutno nastavit na 3,0 V. Příkladový výstup ze sériové konzole (dle datasheetu, ilustrativní): ' +
+      '"RPR0521RS Part ID Register Value = 0xA", "RPR0521RS MANUFACT_ID Register Value = 0xE0", ' +
+      'proximity v jednotkách [count], ambient light v [lx]. Deska obsahuje jen minimální podpůrné ' +
+      'obvody (blokovací kondenzátory, nepovinné pull-up rezistory) — o funkčnosti se stará ' +
+      'integrovaný čip RPR-0521RS, proto zařazeno do kategorie "Modul" jako kompletní osazená ' +
+      'deska s vlastním řídicím čipem, ne jako holý senzorový element.',
+    tags: 'modul,senzor,přiblížení,proximity,okolní-osvětlení,als,rohm,rpr-0521rs,i2c,eval-board,arduino',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {

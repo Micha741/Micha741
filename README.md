@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    504 běžné součástky: 106 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    505 běžných součástek: 106 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; a laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220),
@@ -57,8 +57,9 @@ i návrh schémat obvodů a plošných spojů.
     PowerTector PT10/PT20/PT40/PT60/PT100/PT200; LoRaWAN senzor LEO-S55 a brány USM-S67;
     solární bezdrátové senzory EnOcean ETHSA/ETHSU; 6,86" IPS TFT LCD moduly AZ Displays
     ATM0680L2A-CT s kapacitním dotykem a ATM0680L2A bez dotyku; a polohové displeje vřetene
-    Baumer IVO N 142/N 152; znakový LCD modul PICVUE PVC200403; a křemenné tlakové senzory
-    Seiko Epson TSU-20G/TSU-70G/TSU-100G), 2 konektory/přepěťové
+    Baumer IVO N 142/N 152; znakový LCD modul PICVUE PVC200403; křemenné tlakové senzory
+    Seiko Epson TSU-20G/TSU-70G/TSU-100G; a evaluační deska ROHM RPR-0521RS-EVK-001 pro
+    kombinovaný senzor přiblížení/okolního osvětlení), 2 konektory/přepěťové
     ochrany (Ethernet/PoE
     bleskojistka ESP-100-POE; kolíková lišta Foxconn HB12201) a 7 ostatních součástek (RF
     koaxiální směrový odbočovač SAGE
