@@ -2650,6 +2650,38 @@ const MODULE_SPECS: ModuleSpec[] = [
       '+50 °C. Certifikace: c UL us (Recognized), CE (EU EMC + RoHS), RCM.',
     tags: 'modul,senzor,tlak,vakuum,podtlak,analogový,piezorezistivní,festo,sde5,qs-konektor,m8,transmitter',
   },
+  {
+    name: 'SPAN-B11R-M5F-PN-PN-L1',
+    packageType:
+      'Kompaktní panelová/nástěnná jednotka s podsvíceným LCD displejem a tlačítky, pouzdro PA ' +
+      'výztuž, díly ve styku s médiem FPM/niklovaná mosaz/NBR/PA, pneumatická přípojka vnitřní ' +
+      'závit M5, konektor (4piny, zapojení L1J), montáž na panel/závitem/nástěnnou konzolí, ' +
+      'hmotnost 34 g',
+    value:
+      'Tlakový senzor/spínač s displejem (piezorezistivní princip), measuring rozsah -1 až 10 ' +
+      'bar (max. přetížení 15 bar), 2× PNP/NPN přepínatelný spínací výstup, BEZ analogového ' +
+      'výstupu a BEZ IO-Link, 15–30 V DC',
+    notes:
+      'Festo AG & Co. KG "Pressure sensor SPAN-B11R-M5F-PN-PN-L1" (obj. č. 8134893, datový list ' +
+      '14.5.2021) — mechanicky i measurementově TOTOŽNÝ s plnou verzí SPAN-B11R-M5F-PNLK-PNVBA-L1 ' +
+      '(obj. č. 610282) v této knihovně (stejné pouzdro s displejem, stejný piezorezistivní ' +
+      'princip, stejný rozsah -1 až 10 bar/15 bar přetížení, stejná přesnost ±1,5 %FS, stejná M5 ' +
+      'pneumatická přípojka) — ⚠️ typový kód "-PN-PN-" (místo "-PNLK-PNVBA-") signalizuje ' +
+      'OSEKANOU funkční výbavu: má POUZE duální přepínatelný spínací výstup (2× PNP nebo 2× NPN, ' +
+      'okenní komparátor/prahový komparátor/auto difference monitoring — stejné spínací funkce ' +
+      'jako plná verze), ale zcela CHYBÍ ANALOGOVÝ VÝSTUP (0-10V/4-20mA/1-5V) i PODPORA IO-LINK ' +
+      '(nastavení pouze přes teach-in tlačítko nebo displej, ochrana proti manipulaci pouze PIN ' +
+      'kódem, ne přes IO-Link) — jde tedy o čistě SPÍNACÍ variantu bez digitální komunikace a bez ' +
+      'analogového měřicího výstupu, cenově/funkčně mezi plnou "PNLK-PNVBA" verzí (2 výstupy + ' +
+      'analog + IO-Link) a zjednodušenou "Basic" verzí SPAN-B-B11R-R18M-PN-L1+2.5S (1 výstup, ' +
+      'jiná pneumatická přípojka R1/8) v této knihovně. Zařazeno do kategorie "Modul" jako ' +
+      'kompletní přístroj s vlastním displejem/ovládáním/konektorem, stejně jako ostatní Festo ' +
+      'SPAN/SDE5 tlakové senzory v této knihovně. Médium: stlačený vzduch (ISO 8573-1:2010 ' +
+      '[7:4:4]) nebo inertní plyn, provoz s olejovým mazáním možný. Krytí IP40, korozní odolnost ' +
+      'CRC třída 2. Provozní teplota média i okolí 0 až +50 °C. Certifikace: c UL us (Listed, UL ' +
+      'E322346), CE (EU EMC + RoHS), RCM.',
+    tags: 'modul,senzor,tlak,tlakový-spínač,piezorezistivní,pnp,npn,festo,span-b11r,displej,bez-io-link',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
