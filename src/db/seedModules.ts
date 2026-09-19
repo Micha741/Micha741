@@ -2771,6 +2771,31 @@ const MODULE_SPECS: ModuleSpec[] = [
       'ovlivňující smáčivost nátěru. Certifikace: c UL us (Listed), CE (EU EMC), RCM. RoHS.',
     tags: 'modul,senzor,tlak,piezorezistivní,pnp,festo,spaw-b2r,displej,g12,nerez,nízkotlaký',
   },
+  {
+    name: 'SPAW-B11R-G14F-2N-M12',
+    packageType:
+      'Válcové pouzdro s LED displejem, materiál ABS + vysoce legovaná nerezová ocel (smáčené ' +
+      'díly celokovové z nerezi), pneumatická přípojka vnitřní závit G1/4, konektor M12×1 ' +
+      '(4piny, kruhové provedení), montáž vnitřním závitem/příslušenstvím, hmotnost 230 g',
+    value:
+      'Průmyslový tlakový senzor/spínač s displejem (kovový tenkovrstvý princip), měřicí rozsah ' +
+      '-1 až 10 bar (max. přetížení 20 bar), 2× NPN volně programovatelný spínací výstup, ' +
+      '15–35 V DC',
+    notes:
+      'Festo AG & Co. KG "Pressure sensor SPAW-B11R-G14F-2N-M12" (obj. č. 8022759, datový list ' +
+      '25.5.2021) — elektricky/mechanicky TOTOŽNÝ se SPAW-B11R-G14F-2P-M12 (obj. č. 8022741) v ' +
+      'této knihovně (stejný kovový tenkovrstvý princip, stejný rozsah -1 až 10 bar/20 bar ' +
+      'přetížení, stejné celokovové pouzdro ABS+nerez, stejný G1/4 vnitřní závit, LED displej, ' +
+      'IP65/67, CRC třída 4) — ⚠️ liší se POUZE polaritou spínacího výstupu: 2× NPN místo 2× PNP ' +
+      '— standardní výrobní pár variant pro odlišné vstupní obvody PLC (sinking vs sourcing ' +
+      'logika). Volně programovatelná spínací funkce, max. proud 250 mA, doba náběhu 3 ms. ' +
+      'Zařazeno do kategorie "Modul" jako kompletní přístroj s vlastním displejem/ovládáním/ ' +
+      'konektorem, stejně jako ostatní Festo SPAW/SPAN/SDE5 tlakové senzory v této knihovně. ' +
+      'Teplota média -20 až +85 °C, okolí 0 až +80 °C. Zkratová ochrana, ochrana proti ' +
+      'přepólování napájení. Obsahuje látky ovlivňující smáčivost nátěru. Certifikace: c UL us ' +
+      '(Listed), CE (EU EMC), RCM. RoHS.',
+    tags: 'modul,senzor,tlak,tenkovrstvý,npn,festo,spaw-b11r,displej,g14,nerez',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
