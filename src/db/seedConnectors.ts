@@ -61,6 +61,35 @@ const CONNECTOR_SPECS: ConnectorSpec[] = [
       'konkrétní pojmenovaný díl HB12201 z názvu souboru.',
     tags: 'konektor,pin-header,kolíková-lišta,break-away,foxconn,hb-series,tht,2,54mm',
   },
+  {
+    name: '09 14 001 0722',
+    packageType:
+      'Modulární pouzdro (hood/housing) pro průmyslové konektory Han-Modular ECO, kabel-kabel ' +
+      'provedení, horní vstup kabelu (top entry), zaklapávací (snap-in) zámky, materiál ' +
+      'polykarbonát (PC), barva RAL 7032 (kamenná šedá), průměr kabelu 3–14,5 mm, hmotnost 33,44 g',
+    value:
+      'Prázdné pouzdro/hood pro modulární průmyslový konektor Han-Modular ECO, krytí IP20, BEZ ' +
+      'PE (ochranného zemnicího) kontaktu, ≥500 spojovacích cyklů, -40 až +85 °C',
+    notes:
+      'HARTING Electric GmbH & Co. KG "Han-Modular ECO coupler IP20, without PE" (obj. č. ' +
+      '09 14 001 0722, katalogový list, 26.3.2020) — ⚠️ POZOR: jde o SAMOTNÉ PRÁZDNÉ POUZDRO ' +
+      '(hood/housing) modulárního průmyslového konektorového systému Han-Modular ECO, NE o ' +
+      'kompletní osazený konektor s kontakty/moduly — pouzdro se teprve osazuje jednotlivými ' +
+      'modulárními vložkami (signálové/napájecí/datové moduly dle potřeby aplikace, prodávané ' +
+      'samostatně) podle modulárního konceptu Han-Modular. Verze "coupler" = kabel-kabel spojka ' +
+      '(cable to cable housing, spojuje dva kabely přes konektor, ne kabel-panel). "Bez PE" ' +
+      'znamená, že toto konkrétní provedení NEMÁ vyhrazenou pozici pro ochranný zemnicí kontakt ' +
+      '(na rozdíl od PE variant stejné řady, zde nekatalogizovaných) — vhodné jen pro aplikace ' +
+      'nevyžadující funkční zemnění přes konektor. Zaklapávací (snap-in) zámky pro rychlé ' +
+      'spojení/rozpojení bez nářadí. Horní vstup kabelu (top entry) s průchodkou pro kabel ' +
+      'průměru 3–14,5 mm. Nižší krytí IP20 (jen ochrana proti prstům/malým předmětům, nevhodné ' +
+      'pro venkovní/prašné/vlhké prostředí) — odlišuje se od plně krytých IP65/IP67+ variant ' +
+      'Han-Modular určených pro průmyslové venkovní použití. Materiál polykarbonát (samozhášivý, ' +
+      'UL94 V-0), barva RAL 7032 kamenná šedá. Provozní teplota -40 až +85 °C, min. 500 spojovacích ' +
+      'cyklů. Zařazeno do kategorie "Konektor". Shoda EN 60664-1, IEC 61984, CE. RoHS/ELV ' +
+      'compliant, bez REACH SVHC látek.',
+    tags: 'konektor,průmyslový,han-modular,eco,pouzdro,hood,harting,ip20,kabel-kabel',
+  },
 ];
 
 export function buildConnectorSeed(): ComponentInput[] {
