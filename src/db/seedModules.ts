@@ -1380,6 +1380,36 @@ const MODULE_SPECS: ModuleSpec[] = [
       'BF 8, rychloupínací konzole EXG-08.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,pnp,kabel,5m,m8,ip67,průmyslový',
   },
+  {
+    name: 'NBB2-8GS35-E2-V1',
+    packageType:
+      'Válcové závitové pouzdro M8×1 (snímací závitová část), stupňovité tělo prodloužené na ' +
+      'zadní straně na M12×1 konektorovou objímku, NEREZOVÁ OCEL 1.4305/AISI 303 (na rozdíl od ' +
+      'poniklované mosazi u "GM" variant v této knihovně), celková délka 60 mm, hmotnost 19 g, ' +
+      'aktivní čelo LCP, indikační vícedírková žlutá LED, zásuvný konektor M12×1, 4pinový, piny ' +
+      '1=BN(hnědý)/L+, 4=BK(černý)/výstup, 3=BU(modrý)/L-, 2=WH(bílý) nezapojen',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, NEREZOVÁ provedení, spínací vzdálenost 2 mm ' +
+      '(zápustná montáž), rozšířený teplotní rozsah -40 až +85 °C, 3vodičové DC zapojení, PNP ' +
+      'výstup, spínací (NO) kontakt, 5–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBB2-8GS35-E2-V1" (304615-0083_eng.xml, vydáno 8.–9. 1. ' +
+      '2018) — ⚠️ nerezová ("GS" = stainless steel) obdoba mosazné ("GM") skupiny NBB2-8GM v této ' +
+      'knihovně (NBB2-8GM25-E0-V3/E2-V3, NBB2-8GM40-E2-V1, NBB2-8GM50-E0/E2-5M, samostatné ' +
+      'záznamy) — mechanicky velmi podobná NBB2-8GM40-E2-V1 (stejný stupňovitý tvar s M8 ' +
+      'snímacím závitem a M12 konektorem, podobná délka 60mm vs 65mm), ale s pouzdrem z ' +
+      'NEREZOVÉ OCELI místo poniklované mosazi — nerez je odolnější vůči korozi a chemikáliím ' +
+      '(vhodné pro potravinářský, farmaceutický nebo chemický průmysl), ale MÁ VÝRAZNĚ NIŽŠÍ ' +
+      'korekční faktory (rAl=0,2, rCu=0,1, r304/nerez=0,55, rBrass=0,25 — všechny cca poloviční ' +
+      'oproti "GM" mosazným variantám s rAl=0,4/rCu=0,3/r304=0,75/rBrass=0,45) — nerezové pouzdro ' +
+      'samo o sobě částečně tlumí magnetické pole senzoru, což snižuje efektivní dosah pro ' +
+      'neželezné kovy citelněji než u mosazného pouzdra. Jmenovitá spínací vzdálenost, zajištěná ' +
+      'spínací vzdálenost (0–1,62 mm), spínací kmitočet (6000 Hz), hystereze (typ. 5 %) a ' +
+      'ostatní elektrické parametry shodné s NBB2-8GM40-E2-V1 — viz tam pro plný popis. UL ' +
+      'certifikace (Class 2 Power Source). Dostupné příslušenství: montážní příruba BF 8, ' +
+      'konektorové kabely V1-G/V1-W/V1-G-2M-PUR/V1-W-2M-PUR, rychloupínací konzole EXG-08.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,pnp,nerez,m8,m12,konektor,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
