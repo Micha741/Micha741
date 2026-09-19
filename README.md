@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    681 běžných součástek: 108 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    687 běžných součástek: 108 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220; tenkovrstvá
@@ -41,8 +41,9 @@ i návrh schémat obvodů a plošných spojů.
     SMTPA62-320/SMP-0SCMC/SMP100MC/SMP100LC/SMP75, tripolární TLP140/200/270 a aktivní
     přepěťová/nadproudová ochrana CLP200M, tyristor SemiWell SCD4C60S, laserové diody Roithner
     LaserTechnik QL85H6S-A/B/C, QL78I6S-A/B/C, QL78F6S-A/B/C, QL78J6S-A/B/C a QL85J6S-A/B/C-L),
-    74 tranzistorů (bipolární NPN/PNP, Darlington, duální, komplementární páry, výkonové, VF,
-    MOSFET, JFET, IR fototranzistory Lite-On LTR-306 a LTR-1650D, fototranzistor pro viditelné
+    80 tranzistorů (bipolární NPN/PNP, Darlington, duální, komplementární páry, výkonové, VF,
+    MOSFET, JFET (včetně RF JFET rodiny Fairchild 2N5484/5485/5486 a SMD MMBF5484/5485/5486,
+    SOT-23), IR fototranzistory Lite-On LTR-306 a LTR-1650D, fototranzistor pro viditelné
     světlo (náhrada CdS) Kodenshi PT23GP11), 113 integrovaných obvodů
     (časovače, komparátory, op-zesilovače, regulátory, logická hradla, čítače,
     Wi-Fi mikrokontroléry ESP32, ESP32-C3, ESP8285, ESP8684, Wi-Fi adaptér ESP8089, 8bit AVR

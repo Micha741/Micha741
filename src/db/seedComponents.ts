@@ -3416,6 +3416,102 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'gfs 2,0–6,0 mS (2,0K–6,0K µS) @VDS=15 V/VGS=0/f=1,0 kHz. gos max 50 µS @stejných podmínkách.',
     tags: 'tranzistor,jfet,n-kanál,to-92,2n5459,zesilovací,spínací',
   },
+  {
+    name: '2N5484',
+    packageType: 'TO-92, 3 vývody (pohled zepředu): 1=gate, 2=source, 3=drain (S/D vzájemně zaměnitelné)',
+    value: 'N-JFET (RF), VGS(off) -0,3 až -3,0 V, IDSS 1,0-5,0 mA (@ VDS=15 V)',
+    notes:
+      'Silikonový N-kanálový JFET pro RF zesilovače, určený primárně pro elektronické spínání ' +
+      '(nízký odpor v sepnutém stavu, analog switching), Sourced from Process 50. Součást rodiny ' +
+      '2N5484/5485/5486 (TO-92) a MMBF5484/5485/5486 (SOT-23) — společný datasheet, liší se jen ' +
+      'VGS(off)/IDSS/gfs/NF — nejnižší proudová varianta. Fairchild Semiconductor, 1997. ' +
+      'Mezní hodnoty: VDG=25 V, VGS=-25 V, IGF=10 mA, TJ/Tstg=-55 až +150 °C. ' +
+      'PD=350 mW @TA=25 °C (derating 2,8 mW/°C nad 25 °C), RθJC=125 °C/W, RθJA=357 °C/W. ' +
+      'V(BR)GSS min -25 V @IG=-1,0 µA/VDS=0. IGSS max -1,0 nA @VGS=-20 V/VDS=0 (max -0,2 µA @TA=100 °C). ' +
+      'VGS(off) -0,3 až -3,0 V @VDS=15 V/ID=10 nA. IDSS 1,0-5,0 mA @VDS=15 V/VGS=0. ' +
+      'gfs 3000-6000 µmhos @VDS=15 V/VGS=0/f=1,0 kHz. ' +
+      'Ciss max 5,0 pF, Crss max 1,0 pF, Coss max 2,0 pF (@VDS=15 V/VGS=0/f=1,0 MHz). ' +
+      'NF max 3,0 dB @100 MHz, typ. 4,0 dB @400 MHz (max neuveden), VDS=15 V, RG=1,0 kΩ.',
+    tags: 'tranzistor,jfet,n-kanál,to-92,2n5484,rf,zesilovací,spínací',
+  },
+  {
+    name: '2N5485',
+    packageType: 'TO-92, 3 vývody (pohled zepředu): 1=gate, 2=source, 3=drain (S/D vzájemně zaměnitelné)',
+    value: 'N-JFET (RF), VGS(off) -0,5 až -4,0 V, IDSS 4,0-10 mA (@ VDS=15 V)',
+    notes:
+      'Silikonový N-kanálový JFET pro RF zesilovače, určený primárně pro elektronické spínání ' +
+      '(nízký odpor v sepnutém stavu, analog switching), Sourced from Process 50. Součást rodiny ' +
+      '2N5484/5485/5486 (TO-92) a MMBF5484/5485/5486 (SOT-23) — společný datasheet jako 2N5484, ' +
+      'liší se jen VGS(off)/IDSS/gfs/NF — střední proudová varianta. Fairchild Semiconductor, 1997. ' +
+      'Mezní hodnoty: VDG=25 V, VGS=-25 V, IGF=10 mA, TJ/Tstg=-55 až +150 °C. ' +
+      'PD=350 mW @TA=25 °C (derating 2,8 mW/°C nad 25 °C), RθJC=125 °C/W, RθJA=357 °C/W. ' +
+      'V(BR)GSS min -25 V @IG=-1,0 µA/VDS=0. IGSS max -1,0 nA @VGS=-20 V/VDS=0 (max -0,2 µA @TA=100 °C). ' +
+      'VGS(off) -0,5 až -4,0 V @VDS=15 V/ID=10 nA. IDSS 4,0-10 mA @VDS=15 V/VGS=0. ' +
+      'gfs 3500-7000 µmhos @VDS=15 V/VGS=0/f=1,0 kHz. ' +
+      'Ciss max 5,0 pF, Crss max 1,0 pF, Coss max 2,0 pF (@VDS=15 V/VGS=0/f=1,0 MHz). ' +
+      'NF max 2,0 dB @100 MHz, max 4,0 dB @400 MHz, VDS=15 V, RG=1,0 kΩ.',
+    tags: 'tranzistor,jfet,n-kanál,to-92,2n5485,rf,zesilovací,spínací',
+  },
+  {
+    name: '2N5486',
+    packageType: 'TO-92, 3 vývody (pohled zepředu): 1=gate, 2=source, 3=drain (S/D vzájemně zaměnitelné)',
+    value: 'N-JFET (RF), VGS(off) -2,0 až -6,0 V, IDSS 8,0-20 mA (@ VDS=15 V)',
+    notes:
+      'Silikonový N-kanálový JFET pro RF zesilovače, určený primárně pro elektronické spínání ' +
+      '(nízký odpor v sepnutém stavu, analog switching), Sourced from Process 50. Součást rodiny ' +
+      '2N5484/5485/5486 (TO-92) a MMBF5484/5485/5486 (SOT-23) — společný datasheet jako 2N5484, ' +
+      'liší se jen VGS(off)/IDSS/gfs/NF — nejvyšší proudová varianta. Fairchild Semiconductor, 1997. ' +
+      'Mezní hodnoty: VDG=25 V, VGS=-25 V, IGF=10 mA, TJ/Tstg=-55 až +150 °C. ' +
+      'PD=350 mW @TA=25 °C (derating 2,8 mW/°C nad 25 °C), RθJC=125 °C/W, RθJA=357 °C/W. ' +
+      'V(BR)GSS min -25 V @IG=-1,0 µA/VDS=0. IGSS max -1,0 nA @VGS=-20 V/VDS=0 (max -0,2 µA @TA=100 °C). ' +
+      'VGS(off) -2,0 až -6,0 V @VDS=15 V/ID=10 nA. IDSS 8,0-20 mA @VDS=15 V/VGS=0. ' +
+      'gfs 4000-8000 µmhos @VDS=15 V/VGS=0/f=1,0 kHz. ' +
+      'Ciss max 5,0 pF, Crss max 1,0 pF, Coss max 2,0 pF (@VDS=15 V/VGS=0/f=1,0 MHz). ' +
+      'NF max 2,0 dB @100 MHz, max 4,0 dB @400 MHz, VDS=15 V, RG=1,0 kΩ.',
+    tags: 'tranzistor,jfet,n-kanál,to-92,2n5486,rf,zesilovací,spínací',
+  },
+  {
+    name: 'MMBF5484',
+    packageType: 'SOT-23 (SMD), G/S/D (S/D vzájemně zaměnitelné), značení na pouzdře: 6B',
+    value: 'N-JFET (RF), VGS(off) -0,3 až -3,0 V, IDSS 1,0-5,0 mA (@ VDS=15 V)',
+    notes:
+      'SMD verze 2N5484 (stejný křemíkový čip, stejný datasheet, jen SOT-23 pouzdro a nižší PD) — ' +
+      'viz poznámka u 2N5484 pro elektrické parametry. Součást rodiny 2N5484/5485/5486 (TO-92) a ' +
+      'MMBF5484/5485/5486 (SOT-23), Fairchild Semiconductor, 1997. ' +
+      'Mezní hodnoty: VDG=25 V, VGS=-25 V, IGF=10 mA, TJ/Tstg=-55 až +150 °C. ' +
+      'PD=225 mW @TA=25 °C (derating 1,8 mW/°C nad 25 °C), RθJA=556 °C/W. ' +
+      'VGS(off) -0,3 až -3,0 V, IDSS 1,0-5,0 mA, gfs 3000-6000 µmhos, NF max 3,0 dB @100 MHz — ' +
+      'shodné s 2N5484.',
+    tags: 'tranzistor,jfet,n-kanál,sot-23,smd,mmbf5484,rf,zesilovací,spínací',
+  },
+  {
+    name: 'MMBF5485',
+    packageType: 'SOT-23 (SMD), G/S/D (S/D vzájemně zaměnitelné), značení na pouzdře: 6M',
+    value: 'N-JFET (RF), VGS(off) -0,5 až -4,0 V, IDSS 4,0-10 mA (@ VDS=15 V)',
+    notes:
+      'SMD verze 2N5485 (stejný křemíkový čip, stejný datasheet, jen SOT-23 pouzdro a nižší PD) — ' +
+      'viz poznámka u 2N5484 pro plný popis rodiny. Součást rodiny 2N5484/5485/5486 (TO-92) a ' +
+      'MMBF5484/5485/5486 (SOT-23), Fairchild Semiconductor, 1997. ' +
+      'Mezní hodnoty: VDG=25 V, VGS=-25 V, IGF=10 mA, TJ/Tstg=-55 až +150 °C. ' +
+      'PD=225 mW @TA=25 °C (derating 1,8 mW/°C nad 25 °C), RθJA=556 °C/W. ' +
+      'VGS(off) -0,5 až -4,0 V, IDSS 4,0-10 mA, gfs 3500-7000 µmhos, NF max 2,0 dB @100 MHz — ' +
+      'shodné s 2N5485.',
+    tags: 'tranzistor,jfet,n-kanál,sot-23,smd,mmbf5485,rf,zesilovací,spínací',
+  },
+  {
+    name: 'MMBF5486',
+    packageType: 'SOT-23 (SMD), G/S/D (S/D vzájemně zaměnitelné), značení na pouzdře: 6H',
+    value: 'N-JFET (RF), VGS(off) -2,0 až -6,0 V, IDSS 8,0-20 mA (@ VDS=15 V)',
+    notes:
+      'SMD verze 2N5486 (stejný křemíkový čip, stejný datasheet, jen SOT-23 pouzdro a nižší PD) — ' +
+      'viz poznámka u 2N5484 pro plný popis rodiny. Součást rodiny 2N5484/5485/5486 (TO-92) a ' +
+      'MMBF5484/5485/5486 (SOT-23), Fairchild Semiconductor, 1997. ' +
+      'Mezní hodnoty: VDG=25 V, VGS=-25 V, IGF=10 mA, TJ/Tstg=-55 až +150 °C. ' +
+      'PD=225 mW @TA=25 °C (derating 1,8 mW/°C nad 25 °C), RθJA=556 °C/W. ' +
+      'VGS(off) -2,0 až -6,0 V, IDSS 8,0-20 mA, gfs 4000-8000 µmhos, NF max 2,0 dB @100 MHz — ' +
+      'shodné s 2N5486.',
+    tags: 'tranzistor,jfet,n-kanál,sot-23,smd,mmbf5486,rf,zesilovací,spínací',
+  },
   { name: 'BF245', packageType: 'TO-92', value: 'N-JFET', notes: 'Unipolární (JFET) tranzistor', tags: 'tranzistor,jfet,n-kanál' },
   {
     name: 'BSR58LT1',
