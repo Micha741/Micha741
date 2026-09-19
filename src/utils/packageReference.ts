@@ -12,6 +12,90 @@ export interface PackageReferenceEntry {
 // nezávislé na konkrétním výrobci.
 export const PACKAGE_REFERENCE: PackageReferenceEntry[] = [
   {
+    id: 'dip',
+    name: 'DIP',
+    fullName: 'Dual In-line Package',
+    pinCount: '4–64 vývodů',
+    pitch: '2,54 mm',
+    description:
+      'Klasické THT pouzdro se dvěma řadami vývodů po stranách, montuje se do otvorů v DPS ' +
+      'nebo do patice. Nejběžnější u starších/výukových IO (např. 555, 74xx, operační ' +
+      'zesilovače). Snadno vyměnitelné díky velké rozteči a možnosti použít paticovou objímku.',
+  },
+  {
+    id: 'sip',
+    name: 'SIP',
+    fullName: 'Single In-line Package',
+    pinCount: '3–12 vývodů',
+    pitch: '2,54 mm',
+    description:
+      'THT pouzdro s jedinou řadou vývodů. Časté u rezistorových/odporových sítí, malých ' +
+      'modulů a některých regulátorů. Montuje se kolmo k DPS.',
+  },
+  {
+    id: 'soic',
+    name: 'SOIC',
+    fullName: 'Small Outline Integrated Circuit',
+    pinCount: '8–28 vývodů',
+    pitch: '1,27 mm',
+    description:
+      'SMD obdoba DIP pouzdra — dvě řady vývodů typu gull-wing po delších stranách, ale menší ' +
+      'a s jemnější roztečí. Jedno z nejběžnějších SMD pouzder pro IO střední velikosti.',
+  },
+  {
+    id: 'sot23',
+    name: 'SOT-23',
+    fullName: 'Small Outline Transistor',
+    pinCount: '3–6 vývodů',
+    pitch: '0,95 mm',
+    description:
+      'Velmi malé SMD pouzdro s vývody po dvou stranách (2+1 u 3pinové verze). Typické pro ' +
+      'tranzistory, diody a jednoduché IO (např. malé regulátory, logická hradla s málo piny).',
+  },
+  {
+    id: 'sot89',
+    name: 'SOT-89',
+    fullName: 'Small Outline Transistor (výkonová varianta)',
+    pinCount: '3–4 vývody',
+    pitch: '1,5 mm',
+    description:
+      'Větší a plošší SMD tranzistorové pouzdro s velkou kovovou chladicí ploškou na spodní ' +
+      'straně (přiléhá k mědi DPS), pro vyšší ztrátový výkon než SOT-23. Časté u SMD regulátorů ' +
+      'a výkonnějších tranzistorů.',
+  },
+  {
+    id: 'to92',
+    name: 'TO-92',
+    fullName: 'Transistor Outline 92',
+    pinCount: '3 vývody',
+    pitch: '1,27–2,54 mm',
+    description:
+      'Klasické THT plastové pouzdro s půlkruhovým tvarem a třemi vývody v řadě — nejběžnější ' +
+      'pouzdro malých signálových tranzistorů, JFETů a nízkoproudých regulátorů.',
+  },
+  {
+    id: 'to220',
+    name: 'TO-220',
+    fullName: 'Transistor Outline 220',
+    pinCount: '3–7 vývodů',
+    pitch: '2,54 mm',
+    description:
+      'Výkonové THT pouzdro s kovovou chladicí ploškou (často s montážním otvorem pro šroub ' +
+      'na chladič). Typické pro výkonové tranzistory, MOSFETy a lineární regulátory (7805, ' +
+      'LM317 apod.).',
+  },
+  {
+    id: 'qfn',
+    name: 'QFN',
+    fullName: 'Quad Flat No-leads',
+    pinCount: '8–68 vývodů',
+    pitch: '0,4–0,65 mm',
+    description:
+      'SMD bezvývodové čtvercové pouzdro — kontaktní plošky jsou jen po obvodu spodní strany, ' +
+      'často s velkou termální/zemnící ploškou uprostřed. Malé rozměry, dobré tepelné a ' +
+      'vysokofrekvenční vlastnosti, ale obtížnější vizuální kontrola pájených spojů.',
+  },
+  {
     id: 'tssop',
     name: 'TSSOP',
     fullName: 'Thin Shrink Small Outline Package',

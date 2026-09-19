@@ -232,10 +232,10 @@ i návrh schémat obvodů a plošných spojů.
   - **Kód napětí** (2 znaky, EIA) — např. 1C=16V, 1E=25V, 2A=100V
   - rozpoznaná hodnota jde tlačítkem „Použít” rovnou do formuláře nové součástky
 
-- **Přehled pouzder IC** — rychlá vizuální reference běžných SMD/IC pouzder podle tvaru
+- **Přehled pouzder IC** — rychlá vizuální reference běžných THT/SMD pouzder podle tvaru
   a typu vývodů (odkaz „Přehled pouzder IC” u pole „Pouzdro” ve formuláři součástky):
-  TSSOP, PLCC, LCCC, QFP, BQFP, BGA — pro každé typický počet vývodů, rozteč a popis
-  tvaru/montáže.
+  DIP, SIP, SOIC, SOT-23, SOT-89, TO-92, TO-220, QFN, TSSOP, PLCC, LCCC, QFP, BQFP, BGA —
+  pro každé typický počet vývodů, rozteč a popis tvaru/montáže.
 
 ## Plánováno dál
 
