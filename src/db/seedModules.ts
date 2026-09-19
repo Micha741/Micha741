@@ -2796,6 +2796,33 @@ const MODULE_SPECS: ModuleSpec[] = [
       '(Listed), CE (EU EMC), RCM. RoHS.',
     tags: 'modul,senzor,tlak,tenkovrstvý,npn,festo,spaw-b11r,displej,g14,nerez',
   },
+  {
+    name: 'SPAW-P100R-G14F-2N-M12',
+    packageType:
+      'Válcové pouzdro s LED displejem, materiál ABS + vysoce legovaná nerezová ocel (smáčené ' +
+      'díly celokovové z nerezi), pneumatická přípojka vnitřní závit G1/4, konektor M12×1 ' +
+      '(4piny, kruhové provedení), montáž vnitřním závitem/příslušenstvím, hmotnost 230 g',
+    value:
+      'Vysokotlaký průmyslový tlakový senzor/spínač s displejem (kovový tenkovrstvý princip), ' +
+      'měřicí rozsah 0–100 bar (max. přetížení 200 bar), 2× NPN volně programovatelný spínací ' +
+      'výstup, 15–35 V DC',
+    notes:
+      'Festo AG & Co. KG "Pressure sensor SPAW-P100R-G14F-2N-M12" (obj. č. 8022766, datový list ' +
+      '25.5.2021) — elektricky TOTOŽNÝ vysokotlaký senzor jako SPAW-P100R-G12M-2N-M12 (obj. č. ' +
+      '8022775) v této knihovně (stejný kovový tenkovrstvý princip, stejný rozsah 0–100 bar/ ' +
+      '200 bar přetížení, stejný 2× NPN volně programovatelný výstup, stejné celokovové pouzdro, ' +
+      'LED displej, IP65/67, CRC třída 4) — ⚠️ liší se POUZE typem pneumatické přípojky: zatímco ' +
+      '"-G12M-" varianta má VNĚJŠÍ závit G1/2 (montáž vnějším závitem přímo do potrubí/nádoby), ' +
+      'tato varianta "-G14F-" má VNITŘNÍ závit G1/4 (menší, montáž i s příslušenstvím) — stejný ' +
+      'vztah mezi typy přípojek jako u dvojice SPAW-B11R-G12M.../SPAW-B11R-G14F... v této ' +
+      'knihovně, zde ale u vysokotlaké "P100R" varianty. Max. proud 250 mA, doba náběhu 3 ms. ' +
+      'Zařazeno do kategorie "Modul" jako kompletní přístroj s vlastním displejem/ovládáním/ ' +
+      'konektorem, stejně jako ostatní Festo SPAW/SPAN/SDE5 tlakové senzory v této knihovně. ' +
+      'Teplota média -20 až +85 °C, okolí 0 až +80 °C. Zkratová ochrana, ochrana proti ' +
+      'přepólování napájení. Obsahuje látky ovlivňující smáčivost nátěru. Certifikace: c UL us ' +
+      '(Listed), CE (EU EMC), RCM. RoHS.',
+    tags: 'modul,senzor,tlak,vysokotlaký,tenkovrstvý,npn,festo,spaw-p100r,displej,g14,nerez',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
