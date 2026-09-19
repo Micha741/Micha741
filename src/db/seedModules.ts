@@ -1169,6 +1169,38 @@ const MODULE_SPECS: ModuleSpec[] = [
       'rychloupínací konzole EXG-18.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb5,m18,mosaz,konektor,ip67,průmyslový',
   },
+  {
+    name: 'NBB8-18GM50-E2',
+    packageType:
+      'Válcové závitové pouzdro M18×1 (threaded barrel), mosaz s niklovým povlakem, délka 47 mm ' +
+      '(24 mm závitové části), aktivní čelo PBT, indikační žlutá LED, integrální kabel PVC 2 m ' +
+      '(Ø4,8 mm, 3 žíly 0,34 mm²: BN=L+, BK=výstup, BU=L-)',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, klasický feritový typ ("Basic series"), ' +
+      'spínací vzdálenost 8 mm (zápustná montáž, "increased operating distance"), 3vodičové DC ' +
+      'zapojení, PNP výstup, spínací (NO) kontakt, 10–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBB8-18GM50-E2" (085499_eng.xml, vydáno 5. 8. 2019) — ⚠️ ' +
+      'čtvrtý sourozenecký díl v rámci řady Pepperl+Fuchs NBB v této knihovně (spolu s ' +
+      'NBB3-V3-Z4, NBB4-12GM75-US, NBB5-18GM40-Z0-V1, samostatné záznamy) a PRVNÍ s klasickým ' +
+      '3vodičovým PNP výstupem (samostatný napájecí pár + spínaný výstupní pin), zatímco ' +
+      'předchozí tři jsou 2vodičové (zátěž v sérii se senzorem, sdílené napájecí/signálové ' +
+      'vodiče) — NBB8-18GM50-E2 tedy vyžaduje standardní PLC vstupní zapojení (jako indukční ' +
+      'senzory TURCK v této knihovně), ne sériové zapojení zátěže. Stejné M18×1 pouzdro jako ' +
+      'NBB5-18GM40-Z0-V1 (samostatný záznam), ale s VYŠŠÍ jmenovitou spínací vzdáleností 8 mm ' +
+      '(vs 5 mm) — dle výrobce označeno jako "increased operating distance" varianta téhož ' +
+      'mechanického formátu ("Basic series" — bez rozšířeného teplotního rozsahu na rozdíl od ' +
+      'NBB5-18GM40-Z0-V1, zde standardní -25 až +70°C). Korekční faktory dle materiálu cíle: ' +
+      'rAl=0,45, rCu=0,4, r304/nerez=0,7. Zajištěná spínací vzdálenost 0–6,48 mm. Spínací ' +
+      'kmitočet 0–500 Hz. Hystereze typ. 5 %. Ochrana proti přepólování a pulzní zkratová ' +
+      'ochrana. Úbytek napětí max 3 V. Provozní proud 0–200 mA, klidový proud max 15 mA, ' +
+      'zbytkový proud typ. 0,5 mA (0,1 µA @25°C — velmi nízký v ustáleném stavu). Zpoždění ' +
+      'dostupnosti po zapnutí max 20 ms. Funkční bezpečnostní parametry: MTTFd 1190 let, doba ' +
+      'mise 20 let, diagnostické pokrytí 0 %. Krytí IP67. Shoda EN/IEC 60947-5-2, UL/CSA ' +
+      'certifikace (CCC nevyžadováno pro produkty ≤36V). Dostupné příslušenství: montážní ' +
+      'příruba BF 18, rychloupínací konzole EXG-18 (shodné s NBB5-18GM40-Z0-V1).',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb8,pnp,3vodičový,m18,mosaz,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
