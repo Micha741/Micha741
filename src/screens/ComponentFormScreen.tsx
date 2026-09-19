@@ -25,17 +25,20 @@ function nullableText(value: string): string | null {
 export default function ComponentFormScreen({ route, navigation }: Props) {
   const db = useSQLiteContext();
   const editingId = route.params?.id;
+  const prefill = route.params?.prefill;
 
-  const [name, setName] = useState('');
-  const [category, setCategory] = useState<ComponentCategory>('Ostatní');
-  const [manufacturer, setManufacturer] = useState('');
-  const [packageType, setPackageType] = useState('');
-  const [value, setValue] = useState('');
+  const [name, setName] = useState(prefill?.name ?? '');
+  const [category, setCategory] = useState<ComponentCategory>(
+    (prefill?.category as ComponentCategory) ?? 'Ostatní'
+  );
+  const [manufacturer, setManufacturer] = useState(prefill?.manufacturer ?? '');
+  const [packageType, setPackageType] = useState(prefill?.packageType ?? '');
+  const [value, setValue] = useState(prefill?.value ?? '');
   const [quantity, setQuantity] = useState('0');
   const [location, setLocation] = useState('');
   const [datasheetUrl, setDatasheetUrl] = useState('');
-  const [tags, setTags] = useState('');
-  const [notes, setNotes] = useState('');
+  const [tags, setTags] = useState(prefill?.tags ?? '');
+  const [notes, setNotes] = useState(prefill?.notes ?? '');
 
   useFocusEffect(
     useCallback(() => {

@@ -157,6 +157,24 @@ i návrh schémat obvodů a plošných spojů.
     v horní liště lze kdykoli doplnit chybějící položky (např. po smazání), aniž
     by se duplikovaly už existující.
 
+- **Optický sken barevného kódu rezistoru** — plně automatická detekce barevných pásků
+  z fotky pořízené kamerou telefonu (tlačítko 📷 na seznamu součástek), bez nutnosti ručně
+  označovat polohu pásků:
+  - `expo-camera` pořídí fotku, `expo-image-manipulator` ořízne a zmenší vodorovný pruh
+    tělesa rezistoru podle vodicího rámečku na obrazovce
+  - `jpeg-js` (čistě JS dekodér) načte pixelová data ořezaného pruhu bez nutnosti custom
+    native modulu (funguje i v Expo Go)
+  - sloupcové průměrování barev → vyhlazení → detekce hran v prostoru CIE Lab (percepční
+    vzdálenost barev) → rozdělení na segmenty → tělo rezistoru (nejširší segment) se odfiltruje
+    a zbylé segmenty se spárují s nejbližší barvou z EIA/IEC 60062 tabulky (12 barev pásků)
+  - automatická korekce orientace (kovový pásek tolerance se očekává vpravo)
+  - podpora 3 až 6 pásků včetně teplotního koeficientu (6. pásek)
+  - rozpoznaná hodnota jde tlačítkem „Použít” rovnou do formuláře nové součástky
+    (kategorie, hodnota, tolerance) s možností dodatečné ruční opravy jednotlivých pásků
+  - ⚠️ přesnost detekce v reálných světelných podmínkách nebyla ověřena na fyzickém
+    zařízení — mapování vodicího rámečku na ořez fotky a prahové hodnoty pro detekci hran
+    mohou vyžadovat doladění
+
 ## Plánováno dál
 
 - Návrh schémat obvodů (schematic capture)
@@ -178,8 +196,10 @@ src/db/schema.ts            — inicializace a migrace SQLite databáze
 src/db/componentRepository.ts — CRUD operace nad tabulkou součástek
 src/db/seedComponents.ts    — výchozí knihovna běžných součástek
 src/types/component.ts      — typy a seznam kategorií součástek
+src/utils/resistorColorCode.ts — tabulka barevného kódu rezistorů, dekódování pásků
+src/utils/imageColorScan.ts — zpracování ořezané fotky (JPEG dekódování, segmentace pásků)
 src/navigation/             — React Navigation stack
-src/screens/                — obrazovky (seznam, detail, formulář)
+src/screens/                — obrazovky (seznam, detail, formulář, sken rezistoru)
 ```
 
 <!---

@@ -2,11 +2,23 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ComponentListScreen from '../screens/ComponentListScreen';
 import ComponentDetailScreen from '../screens/ComponentDetailScreen';
 import ComponentFormScreen from '../screens/ComponentFormScreen';
+import ResistorScannerScreen from '../screens/ResistorScannerScreen';
+
+export interface ComponentFormPrefill {
+  name?: string;
+  category?: string;
+  manufacturer?: string;
+  packageType?: string;
+  value?: string;
+  tags?: string;
+  notes?: string;
+}
 
 export type RootStackParamList = {
   ComponentList: undefined;
   ComponentDetail: { id: number };
-  ComponentForm: { id?: number };
+  ComponentForm: { id?: number; prefill?: ComponentFormPrefill };
+  ResistorScanner: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -30,6 +42,11 @@ export default function RootNavigator() {
         options={({ route }) => ({
           title: route.params?.id ? 'Upravit součástku' : 'Nová součástka',
         })}
+      />
+      <Stack.Screen
+        name="ResistorScanner"
+        component={ResistorScannerScreen}
+        options={{ title: 'Sken rezistoru' }}
       />
     </Stack.Navigator>
   );
