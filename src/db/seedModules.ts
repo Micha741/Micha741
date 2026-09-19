@@ -2004,6 +2004,39 @@ const MODULE_SPECS: ModuleSpec[] = [
       'RoHS), KC EMC, RCM. Odolný proti oleji, bez mědi/PTFE, bez halogenu, RoHS.',
     tags: 'modul,senzor,proximity,poloha-pístu,magnetorezistivní,pnp,festo,smt-8m,pneumatika,open-end',
   },
+  {
+    name: 'SMT-8M-A-PS-24V-E-0,3-M12',
+    packageType:
+      'Tyčinkové pouzdro pro vsazení do T-drážky pneumatického válce shora, pouzdro niklovaná ' +
+      'mosaz + PA výztuž + vysoce legovaná nerezová ocel, černá barva, konektor M12×1 A-kódovaný ' +
+      '(EN 61076-2-101) na konci 0,3m kabelu (šedý plášť TPE-U/PUR), 3 vodiče, hmotnost 15,9 g',
+    value:
+      'Polohový snímač pístu pneumatického válce (proximity sensor), princip magnetorezistivní ' +
+      '(bezkontaktní, polovodičový), PNP spínací výstup (N/O), 5–30 V DC, max. spínací kmitočet ' +
+      '180 Hz, opakovatelnost 0,2 mm',
+    notes:
+      'Festo AG & Co. KG "Proximity sensor SMT-8M-A-PS-24V-E-0,3-M12" (obj. č. 574337, datový ' +
+      'list 5.3.2021) — elektricky/funkčně TOTOŽNÝ magnetorezistivní snímač polohy pístu jako ' +
+      'SMT-8M-A-PS-24V-E-0,3-M8D (obj. č. 574334) a SMT-8M-A-PS-24V-E-2,5-OE (obj. č. 574335) v ' +
+      'této knihovně — stejné elektrické parametry: PNP N/O výstup, zapínací ≤1,3 ms/vypínací ' +
+      '≤1,4 ms, max. 180 Hz, 5–30 V DC, IP65/68/69K, zkratová i přepěťová ochrana — ⚠️ liší se ' +
+      'POUZE typem konektoru na konci krátkého 0,3m kabelu: zatímco 574334 má konektor M8×1 ' +
+      'A-kódovaný (EN 61076-2-101), TATO varianta 574337 má o řád VĚTŠÍ konektor M12×1 ' +
+      'A-kódovaný (EN 61076-2-101) — jiný objednací kód konektorového vzoru (00995573 vs 00991155 ' +
+      'u M8D varianty) i mírně odlišná hmotnost (15,9 g vs 8,9 g, větší konektor). Narozdíl od ' +
+      '574335 (dlouhý 2,5m kabel s volným koncem, pouzdro BEZ mosazi) má 574337 stejně jako ' +
+      '574334 pouzdro Z NIKLOVANÉ MOSAZI + PA výztuž (mosazná část typická pro konektorové ' +
+      'varianty s krátkým kabelem/plug). Zařazeno do kategorie "Modul" jako kompletní osazený ' +
+      'produkt s vlastním kabelem/konektorem, stejně jako ostatní Festo SME-8M/SMT-8M snímače v ' +
+      'této knihovně. Konstrukce pro zasunutí do T-drážky válce shora, max. utahovací moment ' +
+      '0,6 Nm, libovolná montážní poloha. Kabel testován na cyklickou ohybovou (5 milionů cyklů, ' +
+      'poloměr 28 mm) i torzní odolnost (>300000 cyklů, ±270°/0,1 m) pro energetické řetězy/' +
+      'robotické aplikace. Dvojí LED indikace — žlutá (sepnutí) a oranžová (funkční rezerva). ' +
+      'Provozní teplota -40 až +85 °C (pevná instalace), -20 až +85 °C (pohyblivá instalace ' +
+      'kabelu). Certifikace: c UL us (Listed), CE (EU EMC + RoHS), KC EMC, RCM. Odolný proti ' +
+      'oleji, bez mědi/PTFE, bez halogenu, RoHS.',
+    tags: 'modul,senzor,proximity,poloha-pístu,magnetorezistivní,pnp,festo,smt-8m,pneumatika,m12',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
