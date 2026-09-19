@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    524 běžné součástky: 106 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    525 běžných součástek: 106 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; a laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220),
@@ -70,7 +70,8 @@ i návrh schémat obvodů a plošných spojů.
     kombinovaný senzor přiblížení/okolního osvětlení; optoelektronické snímače přiblížení SICK
     WTB250-2N1131/WTB250-2N1151; wearable zdravotní senzorový náramek Maxim MAXREFDES103#
     s optickým PPG biosenzorem; MEMS tlakový senzorový modul Hokuriku HPM-100GD-A01; a
-    indukční přibližovací spínač TURCK uprox BI1.5U-EG08-RP6X-H1341), 2 konektory/přepěťové
+    indukční přibližovací spínače TURCK BI1.5U-EG08-RP6X-H1341 (uprox Factor 1) a
+    BI1-EG05K-AN6X-V1331 (klasický feritový)), 2 konektory/přepěťové
     ochrany (Ethernet/PoE
     bleskojistka ESP-100-POE; kolíková lišta Foxconn HB12201) a 8 ostatních součástek (RF
     koaxiální směrový odbočovač SAGE

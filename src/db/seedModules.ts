@@ -880,6 +880,36 @@ const MODULE_SPECS: ModuleSpec[] = [
       'MBS80).',
     tags: 'modul,senzor,indukční,přibližovací,proximity,uprox,factor1,turck,pnp,m8,ip67,průmyslový',
   },
+  {
+    name: 'BI1-EG05K-AN6X-V1331',
+    packageType:
+      'Válcové závitové pouzdro M5×0,5 (threaded barrel), nerezová ocel 1.4427, délka 27,7 mm, ' +
+      'indikační žlutá LED, konektor M8×1 (samčí, 4pinový: 1=BN/+, 3=BU/-, 4=BK/výstup Q), max. ' +
+      'utahovací moment matice pouzdra 5 Nm',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, klasický feritový typ, spínací vzdálenost ' +
+      '1 mm, NPN výstup spínací (NO) kontakt, 3vodičové zapojení, 10–30 V DC',
+    notes:
+      'TURCK "Inductive Sensor BI1-EG05K-AN6X-V1331" (Ident-No. 4609769, 2019-02-08) — ⚠️ POZOR ' +
+      'na záměnu s BI1.5U-EG08-RP6X-H1341 v této knihovně (samostatný záznam): oba jsou indukční ' +
+      'přibližovací spínače od stejného výrobce (TURCK) ve stejném typu pouzdra (nerezový závitový ' +
+      'válec), ale BI1-EG05K-AN6X-V1331 je KLASICKÝ feritový typ (RLC obvod s feritovou cívkou), ' +
+      'NIKOLI "uprox Factor 1" bezferitový typ jako BI1.5U-EG08-RP6X-H1341 — proto má pro různé ' +
+      'kovy RŮZNÉ korekční faktory spínací vzdálenosti (St37/ocel=1,0; Al/hliník=0,3; nerez=0,7; ' +
+      'Ms/mosaz=0,4), na rozdíl od "Factor 1" senzoru se stejným dosahem pro všechny kovy. Další ' +
+      'rozdíly: menší závit M5×0,5 (vs M8×1), kratší tělo 27,7 mm (vs 57 mm), menší konektor M8×1 ' +
+      '(vs M12×1), nižší spínací vzdálenost Sn 1 mm (vs 1,5 mm), NPN výstup se SPÍNACÍM (NO) ' +
+      'kontaktem (vs PNP s ROZPÍNACÍM/NC kontaktem u BI1.5U-EG08-RP6X-H1341) — elektricky ani ' +
+      'mechanicky nejde o zaměnitelné náhrady. Zajištěná spínací vzdálenost max 0,81×Sn, ' +
+      'opakovatelnost max 2 %FS, teplotní drift max ±10 %, hystereze 3–15 %. Výstup: 3vodičové ' +
+      'NPN zapojení, spínací (NO) kontakt, max. proud 100 mA, klidový proud max 15 mA, zbytkový ' +
+      'proud max 0,1 mA, úbytek napětí max 1,8 V, spínací kmitočet 2 kHz, ochrana proti zkratu ' +
+      '(cyklická), přepólování a přerušení vodiče (kompletní). Napájení 10–30 V DC, zvlnění max ' +
+      '10 %. Izolační zkušební napětí 0,5 kV. Odolnost proti vibracím 55 Hz (1 mm), proti rázům ' +
+      '30 g (11 ms). Krytí IP67. Provozní teplota -25 až +70 °C (užší rozsah než "uprox" varianta). ' +
+      'MTTF 2283 let dle SN 29500 @40°C. Průměr aktivní plochy Ø5 mm.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,turck,npn,m5,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
