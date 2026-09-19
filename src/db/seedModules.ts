@@ -1497,6 +1497,40 @@ const MODULE_SPECS: ModuleSpec[] = [
       'příruba BF 12, rychloupínací konzole EXG-12, konektorové kabely V3-GM/V3-WM/V3-WM-2M-PUR.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb4,pnp,m12,m8,konektor,ip67,průmyslový',
   },
+  {
+    name: 'NBB4-12GM35-A2-V1-M1',
+    packageType:
+      'Válcové závitové pouzdro M12×1 (threaded barrel), mosaz s niklovým povlakem, délka 51 mm ' +
+      '(35 mm závitové části), hmotnost 15 g, aktivní čelo PBT, indikační žlutá LED, zásuvný ' +
+      'konektor M12×1, 4pinový, piny 1=BN(hnědý)/L+, 4=BK(černý)/NO výstup, 3=BU(modrý)/L-, ' +
+      '2=WH(bílý)/NC výstup, v balení 2 pojistné matice',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, AUTOMOTIVE provedení (E1-Type approval), ' +
+      'spínací vzdálenost 4 mm (zápustná montáž), krytí IP68/IP69K (vyšší než běžné IP67), ' +
+      '4vodičové DC zapojení, KOMPLEMENTÁRNÍ PNP výstup (současně NO i NC), 7–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBB4-12GM35-A2-V1-M1" (293454-0077_eng.xml, vydáno 7. 3. ' +
+      '2017) — ⚠️ AUTOMOTIVE varianta v rámci M12 skupiny NBB4/NBB2 v této knihovně ' +
+      '(NBB4-12GM30-E2-V3, NBB4-12GM75-US, NBB2-12GM60-A2, samostatné záznamy) — jediná se ' +
+      'schválením "E1-Type approval" (10R-04, homologace pro automobilový průmysl dle předpisu ' +
+      'EHK OSN č. 10) a rozšířenou EMC odolností testovanou dle automotive standardů (ISO 7637-2 ' +
+      '— rušení vedením v palubní síti, EN 61000-4-2 ESD 8/15kV, EN 61000-4-3 vyzařované pole ' +
+      '36V/m, EN 61000-4-4 rychlé přechodové jevy 2kV, EN 61000-4-6 vysokofrekvenční rušení, EN ' +
+      '55011 třída A). Zvýšené těsnění IP68/IP69K (odolnost vůči ponoření i vysokotlakému/ ' +
+      'horkému mytí — typické pro automotive/venkovní aplikace), oproti běžnému IP67 u ostatních ' +
+      'senzorů NBB v této knihovně. Elektricky nejbližší NBB2-12GM60-A2 (oba KOMPLEMENTÁRNÍ PNP ' +
+      'výstup, 4vodičové), ale s vyšší spínací vzdáleností 4 mm (vs 2 mm) a rozšířeným teplotním ' +
+      'rozsahem -40 až +85°C (vs -25 až +70°C). Korekční faktory dle materiálu cíle: rAl=0,4, ' +
+      'rCu=0,3, r304/nerez=0,75, rBrass/mosaz=0,45. Referenční akční prvek: měkká ocel, 12×12×1 ' +
+      'mm (větší než 8×8×1mm u "NBB2-8"/"NBB4-12GM30" skupiny, odpovídá větší spínací ' +
+      'vzdálenosti). Zajištěná spínací vzdálenost 0–3,24 mm. Spínací kmitočet až 2200 Hz. ' +
+      'Hystereze typ. 5 %. Úbytek napětí max 2 V. Provozní proud 0–200 mA, klidový proud max ' +
+      '10 mA, zbytkový proud typ. 0,5 mA (4 µA @25°C). Zpoždění dostupnosti po zapnutí max 100 ' +
+      'ms. Funkční bezpečnostní parametry: MTTFd 1723 let, doba mise 20 let, diagnostické ' +
+      'pokrytí 0 %. UL certifikace (Class 2 Power Source). Dostupné příslušenství: montážní ' +
+      'příruba BF 12, konektorové kabely V1-G/V1-W/V1-G-2M-PUR/V1-W-2M-PUR.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb4,pnp,komplementární,automotive,e1,ip68,ip69k,m12,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
