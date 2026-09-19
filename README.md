@@ -37,7 +37,7 @@ i návrh schémat obvodů a plošných spojů.
     přepěťová/nadproudová ochrana CLP200M, tyristor SemiWell SCD4C60S, laserové diody Roithner
     LaserTechnik QL85H6S-A/B/C, QL78I6S-A/B/C, QL78F6S-A/B/C a QL85J6S-A/B/C-L),
     73 tranzistorů (bipolární NPN/PNP, Darlington, duální, komplementární páry, výkonové, VF,
-    MOSFET, JFET, IR fototranzistory Lite-On LTR-306 a LTR-1650D), 87 integrovaných obvodů
+    MOSFET, JFET, IR fototranzistory Lite-On LTR-306 a LTR-1650D), 92 integrovaných obvodů
     (časovače, komparátory, op-zesilovače, regulátory, logická hradla, čítače,
     Wi-Fi mikrokontroléry ESP32, ESP32-C3, ESP8285, ESP8684, Wi-Fi adaptér ESP8089, 8bit AVR
     mikrokontroléry ATmega640/1280/1281/2560/2561, rodina CAN mikrokontrolérů AT90CAN32/64/128
@@ -49,8 +49,9 @@ i návrh schémat obvodů a plošných spojů.
     a příbuzné (ISL32175E/32177E/32273E/32275E/32277E), automotive TFT-LCD napájecí obvody
     Maxim MAX25220/MAX25221/MAX25221B/MAX25520, LCD-TV napájecí obvody Intersil/Renesas
     ISL97652 a ISL78010, TFT-LCD napájecí obvody E-CMOS EC9223 a Torex XC9516, senzory
-    vlhkosti/teploty HOPERF TH10 a PIR pohybové senzory Murata IRA-S410ST03, IRA-S230ST01 a
-    kvadrátní IRA-S510ST01 aj.), 24 modulů
+    vlhkosti/teploty HOPERF TH10, PIR pohybové senzory Murata IRA-S410ST03, IRA-S230ST01 a
+    kvadrátní IRA-S510ST01, a piezoelektrické rázové/vibrační senzory Murata PKGS-00LDP1-R,
+    PKGS-25WXP1-R a automotive TPMS PKGS-45TAV-R aj.), 24 modulů
     (Wi-Fi/BLE: ESP32-C3-MINI-1, ESP32-C3-WROOM-02, Adafruit Feather
     HUZZAH ESP8266, ESP8684-MINI-1, ESP-12S; nízkonapěťové odpojovače baterie Alfatronix
     PowerTector PT10/PT20/PT40/PT60/PT100/PT200; LoRaWAN senzor LEO-S55 a brány USM-S67;
@@ -59,12 +60,11 @@ i návrh schémat obvodů a plošných spojů.
     Baumer IVO N 142/N 152; znakový LCD modul PICVUE PVC200403; a křemenné tlakové senzory
     Seiko Epson TSU-20G/TSU-70G/TSU-100G), 2 konektory/přepěťové
     ochrany (Ethernet/PoE
-    bleskojistka ESP-100-POE; kolíková lišta Foxconn HB12201) a 8 ostatních součástek (RF
+    bleskojistka ESP-100-POE; kolíková lišta Foxconn HB12201) a 6 ostatních součástek (RF
     koaxiální směrový odbočovač SAGE
     Millimeter/Eravant SCD-0134032010-KF-SA; pasivní segmentové LCD panely AZ Displays
-    GD-342AP, GD-458P a AND/Purdy FE0202W-EU; Fresnelovy čočky Murata IML-0637 a IML-0638;
-    piezoelektrické rázové/vibrační senzory Murata PKGS-00LDP1-R, PKGS-25WXP1-R a automotive
-    TPMS PKGS-45TAV-R). Tlačítkem „Knihovna”
+    GD-342AP, GD-458P a AND/Purdy FE0202W-EU; Fresnelovy čočky Murata IML-0637 a IML-0638).
+    Tlačítkem „Knihovna”
     v horní liště lze kdykoli doplnit chybějící položky (např. po smazání), aniž
     by se duplikovaly už existující.
 
