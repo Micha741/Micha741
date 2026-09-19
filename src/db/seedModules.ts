@@ -1321,6 +1321,38 @@ const MODULE_SPECS: ModuleSpec[] = [
       'příslušenství: montážní příruba BF 8, rychloupínací konzole EXG-08.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,pnp,m8,m12,konektor,ip67,průmyslový',
   },
+  {
+    name: 'NBB2-8GM50-E0',
+    packageType:
+      'Válcové závitové pouzdro M8×1 (threaded barrel), mosaz s niklovým povlakem, délka 50 mm, ' +
+      'aktivní čelo LCP, indikační žlutá LED, integrální kabel PVC 2 m (Ø3,5 mm, 3 žíly 0,14 mm²: ' +
+      'BN=L+, BK=výstup, BU=L-) — na rozdíl od konektorových variant NBB2-8GM25/40 v této ' +
+      'knihovně, v balení 2 šestihranné matice',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač, spínací vzdálenost 2 mm (zápustná montáž), ' +
+      'rozšířený teplotní rozsah -40 až +85 °C, 3vodičové DC zapojení, NPN výstup, spínací (NO) ' +
+      'kontakt, 5–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBB2-8GM50-E0" (304615-0066_eng.xml, vydáno 3. 7. 2019) — ' +
+      '⚠️ další varianta v rámci skupiny "NBB2-8GM" v této knihovně (spolu s NBB2-8GM25-E0-V3, ' +
+      'NBB2-8GM25-E2-V3, NBB2-8GM40-E2-V1, samostatné záznamy) — elektricky nejbližší ' +
+      'NBB2-8GM25-E0-V3 (oba NPN, shodné parametry), ale s INTEGRÁLNÍM KABELEM (bez "V" kódu v ' +
+      'označení = bez konektoru) namísto zásuvného M8 konektoru, což vysvětluje i delší tělo ' +
+      '(50 mm vs 40 mm — o délku navíc potřebnou pro vývod kabelu místo konektorové objímky). ' +
+      '⚠️ Drobný datový rozdíl oproti NBB2-8GM25-E0-V3/E2-V3/NBB2-8GM40-E2-V1: korekční faktor ' +
+      'rBrass (mosaz) je zde 0,5, zatímco u ostatních tří sourozenců v této knihovně je uveden ' +
+      'jako 0,45 — může jít o revizní zpřesnění datasheetu (tento dokument vydán 2019-07-03, ' +
+      'ostatní tři 2018-01-09) nebo o skutečně odlišnou charakteristiku dané konstrukční varianty, ' +
+      'nelze bez dalšího zdroje rozhodnout — nejistota uvedena explicitně. Ostatní korekční ' +
+      'faktory shodné (rAl=0,4, rCu=0,3, r304/nerez=0,75). Zajištěná spínací vzdálenost 0–1,62 ' +
+      'mm. Spínací kmitočet až 6000 Hz. Hystereze typ. 5 %. Úbytek napětí max 1,5 V. Provozní ' +
+      'proud 0–100 mA, klidový proud max 10 mA, zbytkový proud max 0,2 mA. Zpoždění dostupnosti ' +
+      'po zapnutí max 100 ms. Funkční bezpečnostní parametry: MTTFd 960 let, doba mise 20 let, ' +
+      'diagnostické pokrytí 0 %. Krytí IP67. UL certifikace (Class 2 Power Source). Dostupné ' +
+      'příslušenství: montážní příruba BF 8, rychloupínací konzole EXG-08 (shodné s ostatními ' +
+      'NBB2-8GM variantami).',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,npn,kabel,m8,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
