@@ -2521,6 +2521,37 @@ const IC_SPECS: IcSpec[] = [
       'zařízení, domácí meteostanice, letecké hračky, hodinky.',
     tags: 'io,senzor,tlak,barometrický,i2c,spi,mems,piezorezistivní,bosch,bmp280,lga',
   },
+  {
+    name: 'REZ Series',
+    packageType:
+      '7pin SIP THT pouzdro, plast UL94V-0, rozměry 19,65×10,2×7,05 mm, hmotnost 2,7 g, piny ' +
+      'v rozteči 2,54 mm (4 aktivní piny 1/2/4/6, zbylé pouze mechanické/neosazené pozice)',
+    value:
+      'Neregulovaný (unregulated) izolovaný DC/DC měnič, 2 W, vstup 5/9/12/15/24 V DC ±10 %, ' +
+      'jednoduchý výstup 3,3/5/9/12/15/24 V DC, izolace 1000 VDC (nebo 2000 VDC u "H" varianty)',
+    notes:
+      'RECOM "ECONOLINE DC/DC-Converter REZ Series" (katalogový list, červenec 2006) — ⚠️ jiný ' +
+      'výrobce a jiná řada než TRACO POWER TRA 1 Series v této knihovně (obě jsou izolované DC/DC ' +
+      'měniče podobného výkonového rozsahu, ale nesouvisí) — na rozdíl od TRA 1 Series (semi- ' +
+      'regulated výstup, aktivní regulace zátěže) je REZ Series čistě NEREGULOVANÝ měnič (výstupní ' +
+      'napětí kolísá přímo úměrně vstupnímu napětí a zátěži, bez zpětnovazební regulace) — nižší ' +
+      'cena, ale horší regulace zátěže (10-20 % dle výstupního napětí, oproti ±1,2 %/1 % typ. u ' +
+      'TRA 1 Series). Vyšší výkon 2 W (oproti 1 W u TRA 1 Series), větší SIP7 pouzdro (oproti SIP4/ ' +
+      '6 u TRA 1 Series), ale méně využitých pinů (jen 4 aktivní: 1=+Vin, 2=-Vin, 4=-Vout, 6=+Vout ' +
+      '— piny 3, 5, 7 jsou jen mechanické). ⚠️ Datasheet dokumentuje CELOU PARAMETRICKOU ŘADU — 6 ' +
+      'výstupních napětí (3,3/5/9/12/15/24 V) × 5 vstupních napětí (5/9/12/15/24 V) = 30 ' +
+      'kombinací (objednací kód REZ-<vstup><výstup>S, např. REZ-0505S = 5V vstup, 5V výstup; ' +
+      'přípona "H" pro 2000VDC izolaci; přípona "P" pro trvalou zkratovou ochranu místo ' +
+      'jednosekundové) — do knihovny přidána jako jeden souhrnný záznam pro celou řadu, ne každá ' +
+      'kombinace zvlášť. Provozní kmitočet 35 kHz min./50 kHz typ./85 kHz max. Účinnost při plné ' +
+      'zátěži 70 % min./80 % typ. (nejvyšší 85 % u výstupů 12/15/24V). Zvlnění a šum (20MHz limit) ' +
+      'max 150 mVp-p. Izolační kapacita 40-115 pF, izolační odpor min 10 GΩ. Zkratová ochrana 1s ' +
+      '(standard) nebo trvalá ("P" varianta). Provozní teplota -40 až +85 °C (s deratingem dle ' +
+      'grafu nad určitou teplotou), skladovací -55 až +125 °C, vlhkost 95 % RH. MTBF @25°C ' +
+      '915×10³ hodin, @85°C 170×10³ hodin (dle MIL-HDBK 217F). Zařazeno do kategorie "IO", stejně ' +
+      'jako TRA 1 Series v této knihovně. Pouzdro UL94V-0.',
+    tags: 'io,dc-dc,měnič,izolovaný,neregulovaný,napájecí-obvod,recom,econoline,rez-series,sip7,2w',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
