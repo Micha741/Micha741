@@ -1813,6 +1813,40 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,senzor,ppg,spo2,pulzní-oxymetrie,biomon,tepová-frekvence,fotodioda,osram,sfh7050,wearable,optický',
   },
   {
+    name: 'SFH7060',
+    packageType:
+      'COB ("chip on board") vícečipové SMD pouzdro 7,2×2,5×0,9 mm (delší než SFH7050/SFH 7051 ' +
+      'kvůli 5 emitorům), 12 vývodů (piny 1,2=červená LED anoda/katoda, 3,4=zelená LED1 katoda/ ' +
+      'anoda, 5=zelená LED2 anoda, 6,7=fotodioda anoda/katoda, 8=zelená LED2 katoda, 9,10=zelená ' +
+      'LED3 anoda/katoda, 11,12=IR LED katoda/anoda), vestavěná optická přepážka mezi emitory a ' +
+      'detektorem, "vylepšená geometrie pro optimalizovanou kvalitu signálu" dle výrobce',
+    value:
+      '"BioMon" multispektrální optický senzor pro tepovou frekvenci a pulzní oxymetrii (PPG + ' +
+      'SpO2) — TŘI zelené LED (530 nm) + 1× červená LED (660 nm) + 1× IR LED (950 nm) + 1 PIN ' +
+      'fotodioda v jednom pouzdře',
+    notes:
+      'OSRAM Opto Semiconductors "SFH7060 — BioMon Sensor" (Datasheet v1.1, 20. 4. 2016) — ⚠️ ' +
+      'nejúplnější/"vlajkový" díl rodiny BioMon v této knihovně, kombinující vlastnosti obou ' +
+      'předchozích sourozenců SFH 7051 a SFH7050 (samostatné záznamy): má TŘI zelené emitory jako ' +
+      'SFH 7051 (pro robustní detekci tepové frekvence s potlačením pohybových artefaktů) A ' +
+      'ZÁROVEŇ červený + IR emitor jako SFH7050 (pro pulzní oxymetrii/SpO2) — dohromady 5 emitorů ' +
+      '+ 1 detektor v jednom pouzdře, což vyžaduje delší/větší pouzdro (7,2×2,5×0,9 mm oproti ' +
+      '4,7×2,5×0,9 mm u obou předchozích) a 12 vývodů místo 8. Detektorový čip je shodný s ' +
+      'SFH7050 (stejné spektrální charakteristiky/citlivost @535/655/940nm, stejná plocha ' +
+      '1,7 mm², temný proud typ. 1 nA, kapacita typ. 5 pF). Bez vlastní zesilovací elektroniky ' +
+      '(diskrétní optický front-end, vyžaduje externí analogový front-end/zesilovač — viz ' +
+      'koncepčně příbuzný MAX86141 uvnitř Maxim MAXREFDES103# v této knihovně). Emitory ' +
+      '(jednotlivě, IF=20mA) — parametry shodné s odpovídajícími emitory SFH7050/SFH 7051: ' +
+      'zelená λpeak 530 nm/VF typ. 3,2V(max 3,70V)/Ie typ. 1,4mW/sr/Φe typ. 3,4mW/IF max 25mA ' +
+      '(jeden)/15mA (všechny 3 zelené současně); červená λpeak 660nm/VF typ. 2,1V(max 2,8V)/Ie ' +
+      'typ. 2,6mW/sr/Φe typ. 6,4mW/IF max 40mA; infračervená λpeak 950nm/VF typ. 1,3V(max 1,8V)/ ' +
+      'Ie typ. 2mW/sr/Φe typ. 5,3mW/IF max 60mA (surge 1A, nejvyšší z pětice). Provozní/ ' +
+      'skladovací teplota -40 až +85 °C. ESD odolnost 2 kV (HBM). Určeno pro nositelnou ' +
+      'elektroniku (chytré hodinky, fitness náramky) a mobilní zařízení s nejvyššími nároky na ' +
+      'přesnost měření tepové frekvence a SpO2.',
+    tags: 'io,senzor,ppg,spo2,pulzní-oxymetrie,biomon,tepová-frekvence,fotodioda,osram,sfh7060,wearable,optický',
+  },
+  {
     name: 'SCD40',
     packageType:
       'LGA 10,1×10,1×6,5 mm, 21 vývodů (VDD, VDDH, GND, SDA, SCL, zbytek DNC — nutno pájet i ' +
