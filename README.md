@@ -205,6 +205,17 @@ i návrh schémat obvodů a plošných spojů.
     znaků) nebyla ověřena na fyzickém zařízení — může být potřeba lepší osvětlení,
     makro ostření nebo úprava vodicího rámečku
 
+- **Kalkulačka kódu kondenzátoru** — ruční zadání kódu vytištěného na kondenzátoru
+  (tlačítko „µF” na seznamu součástek), okamžitý přepočet na kapacitu:
+  - **3místný kód** (v pF) — první dvě číslice platné, třetí počet nul; násobitel
+    9 = ×0,1, násobitel 8 = ×0,01 (pro hodnoty pod 10 pF)
+  - **R-zápis** — písmeno R nahrazuje desetinnou čárku u hodnot pod 10 pF (např.
+    „4R7” = 4,7 pF)
+  - **Písmeno tolerance** (EIA, jiná tabulka než u rezistorů) — B/C/D pro pF hodnoty,
+    F/G/J/K/M/Z/P pro procentuální tolerance
+  - **Kód napětí** (2 znaky, EIA) — např. 1C=16V, 1E=25V, 2A=100V
+  - rozpoznaná hodnota jde tlačítkem „Použít” rovnou do formuláře nové součástky
+
 ## Plánováno dál
 
 - Návrh schémat obvodů (schematic capture)
@@ -243,10 +254,11 @@ src/db/seedComponents.ts    — výchozí knihovna běžných součástek
 src/types/component.ts      — typy a seznam kategorií součástek
 src/utils/resistorColorCode.ts — tabulka barevného kódu rezistorů, dekódování pásků
 src/utils/imageColorScan.ts — zpracování ořezané fotky (JPEG dekódování, segmentace pásků)
-src/utils/smdResistorCode.ts — dekódování SMD kódů (3místný, 4místný, EIA-96)
+src/utils/smdResistorCode.ts — dekódování SMD kódů rezistorů (3místný, 4místný, EIA-96)
+src/utils/capacitorCode.ts  — dekódování kódů kondenzátorů (3místný pF kód, tolerance, napětí)
 src/navigation/             — React Navigation stack
 src/screens/                — obrazovky (seznam, detail, formulář, sken rezistoru,
-                               SMD kalkulačka, OCR sken SMD kódu)
+                               SMD kalkulačka, OCR sken SMD kódu, kalkulačka kondenzátoru)
 ```
 
 <!---
