@@ -813,6 +813,40 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Napájeno interní baterií, nabíjení přes USB Type-C.',
     tags: 'modul,senzor,ppg,biosenzor,tepová-frekvence,spo2,wearable,náramek,maxim,maxrefdes103,bluetooth,ble,imu',
   },
+  {
+    name: 'HPM-100GD-A01',
+    packageType:
+      'Přírubová (flange-mount) konektorová verze, tělo cca 50×22,6×20,5 mm, kruhová příruba ' +
+      'Ø8,8 mm s tlakovým otvorem (Ø6 mm) a 2× montážní otvor Ø4,5 mm, 3pinový konektor (VOUT, ' +
+      'GND, VCC), kompatibilní s pouzdrem J.S.T. XMP-03V',
+    value:
+      'MEMS piezoresistivní tlakový senzorový modul s vestavěnou EEPROM digitální kompenzací, ' +
+      'kmitočtový (frekvenční) výstup, měřitelný tlak -90 až 980 kPa (dle rodiny), napájení 5 V ' +
+      '(přírubová verze i 12 V), odběr typ. 0,7 mA',
+    notes:
+      'HOKURIKU Electric Industry (HDK) "Pressure Sensor HPM Series", model HPM-100GD-A01 (dok. ' +
+      '2012.7.10) — tlakový senzorový modul vyrobený polovodičovou mikroobráběcí (MEMS) ' +
+      'technologií, s vestavěnou EEPROM pro digitální kompenzaci (teplotní/linearizační), vysoká ' +
+      'přesnost a stabilita. ⚠️ Koncepčně příbuzný křemenným (quartz) tlakovým senzorům Seiko ' +
+      'Epson TSU-20G/TSU-70G/TSU-100G v této knihovně (oba typy mají frekvenční výstup a podobné ' +
+      'kovové/plastové pouzdro s konektorovým výstupem), ale založený na ODLIŠNÉ technologii — ' +
+      'HPM-100GD-A01 využívá MEMS piezorezistivní snímací element s digitální EEPROM kompenzací, ' +
+      'zatímco TSU řada využívá křemenný rezonátor s tlakově závislým kmitočtem — nejde o ' +
+      'zaměnitelné náhrady. Kód dílu dle výrobcova schématu značení: HPM-①-②③-④ = HPM (model) + ' +
+      '"100G" (② celkový rozsah tlaku, přesná hodnota v kPa není v tomto stručném datasheetu ' +
+      'explicitně uvedena — nejistota vyznačena) + "D" (③ typ výstupu: D=digitální/frekvenční, ' +
+      'A=analogový/napěťový) + "A01" (④ tvar/vlastní specifikace: A=přírubová konektorová verze, ' +
+      'B=diskrétní verze bez konektoru). Výstupní funkce (frekvenční): f = 26−[a×(P[kPa]+29,4)], ' +
+      'a=20/98 kHz/kPa — příklad: výstup 26 kHz @P=29,4kPa, výstup 6 kHz @P=68,6kPa (kmitočet ' +
+      'KLESÁ s rostoucím tlakem, opačně než u TSU řady). Přesnost výstupu ±2 %FS. Odběr typ. ' +
+      '0,7 mA (max 1,0 mA). Napájecí napětí základní 5 V (rozsah -0,3 až 6,5 V), přírubová verze ' +
+      'může pracovat i při 12 V. Celkový měřitelný rozsah tlaku v rámci produktové řady -90 až ' +
+      '980 kPa (absolutní i přetlak dle konkrétního modelu). Provozní teplota -10 až +60 °C, ' +
+      'skladovací -40 až +85 °C, provozní vlhkost 0–95 %RH (nekondenzující). Dostupná i diskrétní ' +
+      '(bezkonektorová) a analogová (napěťový výstup) varianta v rámci téže produktové řady dle ' +
+      'schématu značení.',
+    tags: 'modul,senzor,tlak,mems,piezorezistivní,frekvenční,eeprom,hokuriku,hdk,hpm-100gd',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
