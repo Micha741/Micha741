@@ -2849,6 +2849,40 @@ const MODULE_SPECS: ModuleSpec[] = [
       'c UL us (Listed), CE (EU EMC), RCM. RoHS.',
     tags: 'modul,senzor,tlak,vysokotlaký,tenkovrstvý,npn,festo,spaw-p50r,displej,g12,nerez',
   },
+  {
+    name: 'ZPH02',
+    packageType:
+      'Kompaktní plastové pouzdro s optickou komorou, integrovaný LED emitor + optický přijímač ' +
+      '+ topný výkonový rezistor + zpracovávací elektronika na vlastní DPS, rozměry ' +
+      '59,5×44,5×20 mm, konektor JST HER-5 (5pin, EH2.54 rozteč)',
+    value:
+      'Optický senzor prachu/částic (PM2.5), princip rozptylu infračerveného světla s aktivním ' +
+      'ohřevem vzduchu, detekce částic ≥1 µm, výstup PWM (poměr nízké úrovně) nebo UART (9600 ' +
+      'Bd), napájení 5 V DC',
+    notes:
+      'Zhengzhou Winsen Electronics Technology "ZPH02 Particles Sensor — Manual" (verze 1.2, ' +
+      'platnost od 16.5.2018) — kompletní optoelektronický modul pro detekci prachových částic ' +
+      '(PM2.5) v ovzduší, princip: výkonový rezistor ohřívá vzduch, teplý vzduch nasává okolní ' +
+      'plyn (a částice v něm) do optické dráhy mezi IR LED emitorem a optickým přijímačem — ' +
+      'rozptýlené světlo od částic je detekováno a vyhodnoceno interní elektronikou na duální ' +
+      'nezávislý výstupní obvod (Output circuit 1/2). Zařazeno do kategorie "Modul" jako ' +
+      'kompletní osazená sestava s vlastní DPS, optickou komorou, LED/přijímačem a konektorem — ' +
+      'na rozdíl od bare senzorových elementů v kategorii IO (např. plynový senzor Hanwei MQ-131, ' +
+      'CO2 senzory Sensirion SCD40/41) má ZPH02 vlastní integrovaný signálový procesor a hotový ' +
+      'digitální/PWM výstup, obdobně jako MEMS tlakový senzorový modul Hokuriku HPM-100GD-A01 v ' +
+      'této knihovně. Dva režimy výstupu volitelné propojením pinů PŘED prvním zapnutím napájení ' +
+      '(nelze měnit za chodu): PWM režim (nízká úroveň = koncentrace, poměr nízké úrovně 0,5–50 %, ' +
+      'perioda 1 s, PM2.5 = K×poměr%, K≈1000 µg/m³) nebo UART režim (9600 Bd, TTL 5V, rámec 8 ' +
+      'bajtů posílaný jednosměrně každou sekundu, kontrolní součet). Piny (dle režimu): 1-GND, ' +
+      '2-NC(PWM)/TXD(UART), 3-VCC, 4-PWM(PWM)/NC(UART), 5-NC(PWM)/GND(UART) — ⚠️ pin 5 v UART ' +
+      'režimu NENÍ napájecí GND, záměna může nevratně poškodit modul. Doporučená orientace montáže ' +
+      'vertikální (komínový efekt ohřátého vzduchu), citlivý na vnější osvětlení (doporučeno krytí ' +
+      'houbičkou trojúhelníkového otvoru), citlivý na vodní páru/postřik. Doba zahřátí ≤1 min, ' +
+      'pracovní proud ≤90 mA. Provozní teplota 0 až +50 °C, skladovací -30 až +50 °C, vlhkost ' +
+      '≤95 %RH (provoz i skladování). Aplikace: čističky vzduchu, osvěžovače vzduchu, přenosné ' +
+      'přístroje, HVAC, klimatizace, systémy požárního/kouřového alarmu.',
+    tags: 'modul,senzor,prach,pm2.5,optický,ir,winsen,zph02,pwm,uart,kvalita-vzduchu',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
