@@ -3695,6 +3695,43 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Certifikace shodné: CE, UL (cULus Listed, Class 2 Power Source), CCC.',
     tags: 'modul,kamera,vizuální-senzor,vision-sensor,polohování,regálový-zakladač,profinet,pepperl-fuchs,pha400,ir-osvětlení,skladová-automatizace',
   },
+  {
+    name: 'SG-TL70-RGB14',
+    packageType:
+      'Modulární segment signálního majáku (tower light), pouzdro/kryt polykarbonát, barva ' +
+      'černá nebo šedá (volitelně), 2 sady DIP přepínačů (černé — výběr barvy/vzoru blikání/ ' +
+      'intenzity, bílé — výběr pořadí modulu 1–6 ve věži), krytí IP65',
+    value:
+      'Vícebarevný (RGB) segment signálního majáku, 14 volitelných barev + demo režimy, ' +
+      'volitelný způsob svícení (trvale/blikání 0,5–3,0 Hz/stroboskop 0,5–3,0 Hz/plynulý přechod ' +
+      'jasu), 12–30 V DC',
+    notes:
+      'Banner Engineering Corp. "TL70 Multicolor RGB Tower Light Module" (dok. 202345 Rev. A, ' +
+      '2.1.2018) — ⚠️ NOVÁ TŘÍDA produktu v této knihovně: dosud žádný signální/indikační maják ' +
+      '(tower light) nebyl katalogizován — jde o zcela jinou funkci než dosavadní snímací senzory ' +
+      'v knihovně (TL70 NEDETEKUJE nic, pouze VIZUÁLNĚ SIGNALIZUJE stav stroje/procesu barevným ' +
+      'světlem). Jeden segment/modul modulární věžové signalizační sestavy TL70 — kombinuje ' +
+      'funkci RGB LED s volbou 14 barev (červená/zelená/žlutá/modrá/purpurová/azurová/bílá/ ' +
+      'jantarová/růžová/limetková/oranžová/blankytná/fialová/jarní zelená) přes černé DIP ' +
+      'přepínače (binární kódování barvy + vzoru blikání), a bílé DIP přepínače určují POŘADÍ ' +
+      'daného modulu v celé věži (pozice 1–6, počítáno od základny) — umožňuje sestavit vícepatrovou ' +
+      'signální věž z více segmentů, každý nezávisle barevně/vzorově konfigurovatelný. Volitelné ' +
+      'vzory: trvalé svícení, blikání 0,5/1,5/3,0 Hz, stroboskop 0,5/1,5/3,0 Hz, plynulý přechod ' +
+      'intenzity ("Intensity Sweep"), demo režim (postupné procházení barev/blikacích vzorů). ' +
+      'Volitelná intenzita (vysoká/nízká). Napájení 12–30 V DC, odběr max 350 mA @12V (vysoká ' +
+      'intenzita) / 140 mA @12V (nízká intenzita), typicky 170/70 mA @24V. Doba odezvy: vypnutí ' +
+      'max 150 µs, zapnutí max 40 ms @12V / 50 ms @30V. Ochrana proti přechodovým napěťovým ' +
+      'špičkám. Vyžaduje externí nadproudovou ochranu dle průřezu napájecího vodiče (tabulka ' +
+      '20–30 AWG → 5,0–0,5 A pojistka nebo Class 2 napájecí zdroj s proudovým omezením). Únikový ' +
+      'proud (leakage current immunity) 550 µA. Konstrukce: základny/segmenty/kryty z ' +
+      'polykarbonátu. Provozní teplota -40 až +50 °C, vlhkost max 95 % @50°C nekondenzující. ' +
+      'Krytí IEC IP65. Odolnost proti vibracím (10-55 Hz, 0,5mm p-p) a rázům (15G, 11ms) dle IEC ' +
+      '60068-2-6/2-27. Zařazeno do kategorie "Modul" jako kompletní osazený produkt s vlastní ' +
+      'elektronikou/konektorem. Certifikace: CE, cULus Listed. Součást modulárního systému — pro ' +
+      'kompletní sestavu s napájecí základnou/konektorem viz samostatné datasheety TL70 Modular ' +
+      'Tower Light (182214), TL70 Wireless (185469), TL70 AC voltage (191349).',
+    tags: 'modul,signalizace,majáček,tower-light,rgb,led,banner,tl70,vícebarevný,ip65',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
