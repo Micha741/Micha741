@@ -232,6 +232,11 @@ i návrh schémat obvodů a plošných spojů.
   - **Kód napětí** (2 znaky, EIA) — např. 1C=16V, 1E=25V, 2A=100V
   - rozpoznaná hodnota jde tlačítkem „Použít” rovnou do formuláře nové součástky
 
+- **Přehled pouzder IC** — rychlá vizuální reference běžných SMD/IC pouzder podle tvaru
+  a typu vývodů (odkaz „Přehled pouzder IC” u pole „Pouzdro” ve formuláři součástky):
+  TSSOP, PLCC, LCCC, QFP, BQFP, BGA — pro každé typický počet vývodů, rozteč a popis
+  tvaru/montáže.
+
 ## Plánováno dál
 
 - Návrh schémat obvodů (schematic capture)
@@ -272,9 +277,11 @@ src/utils/resistorColorCode.ts — tabulka barevného kódu rezistorů, dekódov
 src/utils/imageColorScan.ts — zpracování ořezané fotky (JPEG dekódování, segmentace pásků)
 src/utils/smdResistorCode.ts — dekódování SMD kódů rezistorů (3místný, 4místný, EIA-96)
 src/utils/capacitorCode.ts  — dekódování kódů kondenzátorů (3místný pF kód, tolerance, napětí)
+src/utils/packageReference.ts — statická data přehledu pouzder IC (TSSOP, PLCC, LCCC, QFP, BQFP, BGA)
 src/navigation/             — React Navigation stack
 src/screens/                — obrazovky (seznam, detail, formulář, sken rezistoru,
-                               SMD kalkulačka, OCR sken SMD kódu, kalkulačka kondenzátoru)
+                               SMD kalkulačka, OCR sken SMD kódu, kalkulačka kondenzátoru,
+                               přehled pouzder IC)
 ```
 
 <!---
