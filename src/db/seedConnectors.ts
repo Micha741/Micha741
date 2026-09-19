@@ -90,6 +90,34 @@ const CONNECTOR_SPECS: ConnectorSpec[] = [
       'compliant, bez REACH SVHC látek.',
     tags: 'konektor,průmyslový,han-modular,eco,pouzdro,hood,harting,ip20,kabel-kabel',
   },
+  {
+    name: '09 14 001 0321',
+    packageType:
+      'Modulární pouzdro (hood/housing) pro průmyslové konektory Han-Modular ECO, provedení pro ' +
+      'montáž na panel/přepážku (bulkhead mounted housing), zaklapávací (snap-in) zámky, ' +
+      'materiál polykarbonát (PC), barva RAL 7032 (kamenná šedá), těsnění NBR, hmotnost 14,26 g',
+    value:
+      'Panelové (přepážkové) pouzdro/hood pro modulární průmyslový konektor Han-Modular ECO, ' +
+      'krytí IP65, S PE (ochranným zemnicím) označením — pin 1 = PE, ≥500 spojovacích cyklů, ' +
+      '-40 až +85 °C',
+    notes:
+      'HARTING Electric GmbH & Co. KG "Han-Modular ECO base panel (with PE mark)" (obj. č. ' +
+      '09 14 001 0321, katalogový list, 26.3.2020) — ⚠️ jiné provedení pouzdra ze stejné ' +
+      'modulární řady Han-Modular ECO jako 09 14 001 0722 v této knihovně, se dvěma zásadními ' +
+      'rozdíly: (1) typ montáže "bulkhead mounted housing" (PANELOVÉ/PŘEPÁŽKOVÉ provedení pro ' +
+      'pevnou montáž do stěny rozvaděče/stroje), na rozdíl od "coupler" (kabel-kabel spojka) u ' +
+      '09 14 001 0722; (2) toto provedení MÁ vyhrazenou a označenou pozici pro PE (ochranný ' +
+      'zemnicí) kontakt (pin 1 = PE, viditelně značeno na pouzdru), zatímco 09 14 001 0722 je ' +
+      'výslovně "without PE" — nutno vybrat správnou variantu dle požadavku na funkční zemnění v ' +
+      'dané aplikaci. Rovněž VYŠŠÍ krytí IP65 (oproti IP20 u kabelové spojky) díky těsnění NBR — ' +
+      'vhodné pro průmyslové prostředí s vlhkostí/prachem. Stejně jako u 09 14 001 0722 jde o ' +
+      'PRÁZDNÉ POUZDRO čekající na osazení modulárními vložkami dle konkrétní aplikace (signálové/ ' +
+      'napájecí/datové moduly, prodávané samostatně). Zaklapávací (snap-in) zámky. Materiál ' +
+      'polykarbonát (samozhášivý, UL94 V-0), barva RAL 7032 kamenná šedá. Provozní teplota -40 až ' +
+      '+85 °C, min. 500 spojovacích cyklů. Zařazeno do kategorie "Konektor". Shoda EN 60664-1, ' +
+      'IEC 61984, CE. RoHS/ELV compliant, bez REACH SVHC látek.',
+    tags: 'konektor,průmyslový,han-modular,eco,pouzdro,hood,harting,ip65,panelové,pe',
+  },
 ];
 
 export function buildConnectorSeed(): ComponentInput[] {
