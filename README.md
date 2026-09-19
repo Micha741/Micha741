@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    789 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    790 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220; tenkovrstvá
@@ -46,7 +46,7 @@ i návrh schémat obvodů a plošných spojů.
     MOSFET (včetně vysokonapěťového 600V/20A ISC H5N6001P, TO-3P), JFET (včetně RF JFET rodiny
     Fairchild 2N5484/5485/5486 a SMD MMBF5484/5485/5486, SOT-23), IR fototranzistory Lite-On
     LTR-306 a LTR-1650D, fototranzistor pro viditelné
-    světlo (náhrada CdS) Kodenshi PT23GP11), 139 integrovaných obvodů
+    světlo (náhrada CdS) Kodenshi PT23GP11), 140 integrovaných obvodů
     (časovače, komparátory, op-zesilovače, regulátory, logická hradla, čítače,
     Wi-Fi mikrokontroléry ESP32, ESP32-C3, ESP8285, ESP8684, Wi-Fi adaptér ESP8089, 8bit AVR
     mikrokontroléry ATmega640/1280/1281/2560/2561, rodina CAN mikrokontrolérů AT90CAN32/64/128
@@ -81,7 +81,8 @@ i návrh schémat obvodů a plošných spojů.
     Instruments TPS51716 (buck + VTT LDO + VTTREF, 20-pin QFN); 1/4" SOC VGA NTSC/PAL CMOS
     obrazový senzor Micron MT9V135C12STC (48-pin CLCC, kompozitní video/LVDS/CCIR656); a
     kombinovaný PFC + half-bridge řadič předřadníku zářivek International Rectifier IRS2580DSPbF
-    ("COMBO8", 8pin SOIC)),
+    ("COMBO8", 8pin SOIC); a napájecí spínač (load switch) se soft-startem onsemi NCP330MUTBG
+    (RDS(on) 26mΩ, 3A, UDFN4)),
     148 modulů
     (Wi-Fi/BLE: ESP32-C3-MINI-1, ESP32-C3-WROOM-02, Adafruit Feather
     HUZZAH ESP8266, ESP8684-MINI-1, ESP-12S; nízkonapěťové odpojovače baterie Alfatronix

@@ -517,6 +517,42 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,řadič,spínaný-zdroj,buck,ldo,ddr,vtt,vddq,pamětový-zdroj,texas-instruments,ti,tps51716,qfn,d-cap2',
   },
 
+  // Napájecí spínače (load switch)
+  {
+    name: 'NCP330MUTBG',
+    packageType: 'UDFN4 (1,2×1,6 mm, rozteč 0,5 mm), exponovaná ploška PAD1',
+    value:
+      'Napájecí spínač (load switch) s pozvolným náběhem (soft-start), N-MOSFET RDS(on) 26 mΩ ' +
+      'typ., DC proud až 3 A, VIN 1,8–5,5 V',
+    notes:
+      'onsemi (ON Semiconductor) "NCP330/NCV330 — Soft-Start Controlled Load Switch" (dok. ' +
+      'NCP330/D, rev. 4, 2026). Vysoký-side N-kanálový MOSFET spínač pro připojení/odpojení ' +
+      'napájecí větve (např. baterie k systému, USB port) s řízeným náběhem 2 ms, aby se omezily ' +
+      'proudové/napěťové špičky. Automaticky se zapne přivedením napětí na pin IN (aktivní High ' +
+      'na EN, interní pull-down drží vypnuto bez napájení). Nízký RDS(on) 26 mΩ typ. (max 50 mΩ ' +
+      'v celém teplotním rozsahu) umožňuje trvalý proud až 3 A, špičkový až 5 A (1 ms @217 Hz, ' +
+      'GSM kalibrace). Ochrana proti zpětnému napětí (reverse voltage protection) — tělová dioda ' +
+      'MOSFETu brání vybíjení výstupu zpět do vstupu při vypnutém stavu. Nízký klidový odběr ' +
+      '(100 µA typ., 200 µA max, no load) pro dlouhou výdrž baterie. Aktivní High se integrovaným ' +
+      'můstkem (active High with integrated bridge). ' +
+      'Elektrické parametry: VIN 1,8–5,5 V, RDS(on) 26 mΩ typ. @VIN=3V nebo 5V/TJ=25°C (max 50 mΩ ' +
+      'v celém rozsahu -40 až 125°C), Ton (zapnutí) 2 ms typ. (0,5-4 ms dle podmínek), Tr/Tf ' +
+      '(nástupná/sestupná hrana výstupu) 2 ms typ., VIH (log. 1 na EN) min 1,15 V, VIL (log. 0) ' +
+      'max 0,85 V, IREV (zpětný proud při VIN=0V/Vout=4,2V) 0,15 µA typ. (max 1 µA), Iq (klidový ' +
+      'odběr, no load) 100 µA typ. (max 200 µA). Doporučené blokovací kondenzátory: min 1 µF na ' +
+      'IN i OUT (co nejblíže pouzdru), pro shodu s IEC61000-4-2 úroveň 4. ' +
+      'Absolutní max.: VIN/VOUT/VEN -0,3 až +7,0 V, VIN-VOUT (mezi piny) -7,0 až +7,0 V, ESD IEC ' +
+      '61000-4-2 15 kV (vzduchový výboj)/8 kV (kontaktní, s 1µF blokováním), ESD HBM 4000V, ESD MM ' +
+      '200V, latch-up ±100 mA, TJ -40 až +125°C, Tstg -40 až +150°C, MSL 1. Compliance IEC61000-4-2 ' +
+      'úroveň 4 (8kV kontakt/15kV vzduch). ' +
+      'Zapojení pinů (UDFN4): 1=IN (vstupní napětí spínače, přes 1µF blokovací C ke GND), 2=GND, ' +
+      '3=EN (enable vstup, log. H zapíná), 4=OUT (výstup spínače, přes 1µF blokovací C ke GND), ' +
+      'PAD1=exponovaná ploška (propojit na GND rovinu kvůli chlazení). Značení na pouzdře: "3A M" ' +
+      '(NCP330) nebo "3V M" (NCV330 — automotive verze, AEC-Q100). Aplikace: mobilní telefony, ' +
+      'tablety, digitální fotoaparáty, GPS, počítače — spínání napájení z baterie/USB do systému.',
+    tags: 'io,spínač,load-switch,napájecí-spínač,soft-start,mosfet,onsemi,ncp330,ncv330,udfn4',
+  },
+
   // Napájecí/osvětlovací řadiče
   {
     name: 'IRS2580DSPbF',
