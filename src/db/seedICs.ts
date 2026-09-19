@@ -1563,6 +1563,40 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,senzor,proud,magnetorezistivní,proudový-senzor,galvanické-oddělení,zmc10,dil-14',
   },
   {
+    name: 'ACS752SCA-050',
+    packageType:
+      'Pouzdro "CA" (TO-220-podobné, modifikované), 14,0×17,5 mm tělo, 5 vývodů celkem: 3 ' +
+      'signálové piny (1=Vcc, 2=Gnd, 3=Output, rozteč 1,9 mm) + 2 silové terminály primárního ' +
+      'vodiče (4=Ip+, 5=Ip-, rozteč 10 mm), creepage/clearance mezi silovými terminály a ' +
+      'signálovými piny 7,25 mm, hmotnost typ. 4,18 g, bezolovnaté (matné cínové) vývody, UL94V-0',
+    value:
+      'Hallův lineární izolovaný senzor proudu, obousměrný ±50 A, citlivost 40 mV/A typ., ' +
+      'napájení 5,0 V, izolační napětí 3 kV',
+    notes:
+      'Allegro MicroSystems "ACS752SCA-050" (ACS75250-DS Rev. 3, 2003) — ⚠️ POZOR na záměnu s ' +
+      'jinak koncipovaným proudovým senzorem ZMC10 v této knihovně (samostatný záznam): oba jsou ' +
+      'galvanicky oddělené senzory proudu s integrovaným primárním vodičem v pouzdře, ale ' +
+      'založené na ODLIŠNÉM fyzikálním principu — ZMC10 využívá magnetorezistivní (permalloy) ' +
+      'Wheatstoneův můstek, zatímco ACS752SCA-050 využívá lineární Hallův článek (monolitický ' +
+      'Hall IC optimalizovaný interním magnetickým obvodem) — ACS752 má navíc oproti ZMC10 ' +
+      'integrovaný analogový výstupní zesilovač/filtr přímo na čipu (viz blokové schéma: Hall ' +
+      'článek → dynamické potlačení offsetu → zesilovač → filtr → výstupní stupeň), takže ' +
+      'poskytuje přímo použitelný napěťový výstup bez nutnosti externího zesilovače. Primární ' +
+      'vodič (terminály 4=Ip+, 5=Ip-) má nízký odpor (typ. 130 µΩ) pro minimální výkonové ztráty ' +
+      'a je galvanicky oddělen od signálních pinů (izolační napětí 3 kV mezi piny 1-3 a 4-5, ' +
+      '60 Hz/1 min). Výstup má kladnou strmost (>Vcc/2 při rostoucím proudu ve směru terminál ' +
+      '4→5). Rozsah měřeného proudu ±50 A. Citlivost 40,0 mV/A typ. (38,0–42,0 mV/A). Klidové ' +
+      'výstupní napětí (0 A) typ. 2,5 V (=Vcc/2). Nelinearita max ±4 %. Symetrie 97,5–102,5 %. ' +
+      'Celková chyba výstupu (včetně všech offsetů) max ±1 % @25°C / ±7,5 % v celém teplotním ' +
+      'rozsahu. Magnetický offset (po přebuzení 100 A) max ±0,65 A. Šířka pásma (-3dB) 50 kHz, ' +
+      'doba náběhu typ. 7 µs, doba odezvy typ. 8 µs, doba zpoždění (propagation) typ. 4 µs. ' +
+      'Napájení Vcc 4,5–5,5 V (typ. 5,0 V), odběr typ. 7 mA (max 10 mA). Provozní teplota -20 až ' +
+      '+85 °C, max. teplota přechodu 165 °C, max. skladovací teplota 170 °C. UL rozpoznáno. ' +
+      'Doporučen externí blokovací kondenzátor 0,1 µF na Vcc. Určeno pro řízení motorů, detekci/ ' +
+      'management zátěže, spínané zdroje, nadproudovou ochranu, elektrická vozidla.',
+    tags: 'io,senzor,proud,hallův-jev,proudový-senzor,galvanické-oddělení,allegro,acs752,izolovaný',
+  },
+  {
     name: 'SCD40',
     packageType:
       'LGA 10,1×10,1×6,5 mm, 21 vývodů (VDD, VDDH, GND, SDA, SCL, zbytek DNC — nutno pájet i ' +
