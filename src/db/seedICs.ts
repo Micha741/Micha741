@@ -1533,6 +1533,36 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,senzor,gyroskop,úhlová-rychlost,křemenný,qmems,epson-toyocom,xv-8000cb,analogový,automotive',
   },
   {
+    name: 'ZMC10',
+    packageType:
+      'Modifikované pouzdro DIL-14 (THT), 13 vývodů (pozice 1–13, rozteč 2,54 mm, pin 7 chybí/ ' +
+      'není vyveden do řady s piny 8–13 — samostatná skupina 1–7 a 8–13), izolační napětí 2 kV; ' +
+      'piny 1,2,7 nezapojeny, 3=+VO, 4=-VB, 5=-VO, 6=+VB, 8/9/10=výstup proudové dráhy (current ' +
+      'output), 11/12/13=vstup proudové dráhy (current input) — vnitřní vodič vedoucí měřený ' +
+      'proud je integrální součástí pouzdra mezi piny 11-13 a 8-10',
+    value:
+      'Galvanicky oddělený magnetorezistivní senzor proudu (Wheatstoneův můstek z tenkovrstvého ' +
+      'permalloy), měřitelný stejnosměrný/střídavý proud do 10 A, napájení 12 V, citlivost ' +
+      'nakrátko 0,5 (mV/V)/A typ.',
+    notes:
+      'Katalogový list "Current Sensor ZMC10" (výřez z většího katalogu, str. 16–17, výrobce v ' +
+      'tomto dokumentu explicitně neuveden — dle typového značení a technologie pravděpodobně ' +
+      'Siemens/Sensitec magnetorezistivní senzorová řada, nejistota uvedena explicitně, nelze ' +
+      'potvrdit bez dalšího zdroje). Princip funkce: magnetický senzorový čip využívající ' +
+      'magnetorezistivní jev tenké vrstvy permalloy měří magnetické pole generované vnitřním ' +
+      'vodičem vedoucím měřený proud (piny 11,12,13 → 8,9,10) — bezkontaktní, galvanicky ' +
+      'oddělené měření proudu (izolační napětí 2 kV) BEZ nutnosti přídavného budicího pole HX ' +
+      '(na rozdíl od některých jiných magnetorezistivních senzorů vyžadujících kompenzační ' +
+      'budicí cívku). Vnitřní vodič snese přetížení 300 A po dobu 10 ms @Tamb=25°C. Elektrické ' +
+      'parametry: odpor můstku Rbr 1,2–2,2 kΩ (typ. 1,7 kΩ), offset napětí max ±2 mV/V, citlivost ' +
+      'nakrátko (open circuit sensitivity) typ. 0,5 (mV/V)/A, odpor vnitřního vodiče typ. 0,7 mΩ, ' +
+      'max. pracovní kmitočet 100 kHz, teplotní koeficient citlivosti max -0,3 %/K. Napájecí ' +
+      'napětí VB 12 V. Provozní teplota -40 až +120 °C, skladovací -65 až +120 °C. Určeno pro ' +
+      'bezkontaktní měření stejnosměrného i střídavého proudu v průmyslových a energetických ' +
+      'aplikacích (proudové senzory, ochrany, měřicí přístroje).',
+    tags: 'io,senzor,proud,magnetorezistivní,proudový-senzor,galvanické-oddělení,zmc10,dil-14',
+  },
+  {
     name: 'SCD40',
     packageType:
       'LGA 10,1×10,1×6,5 mm, 21 vývodů (VDD, VDDH, GND, SDA, SCL, zbytek DNC — nutno pájet i ' +
