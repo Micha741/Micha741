@@ -2952,6 +2952,41 @@ const MODULE_SPECS: ModuleSpec[] = [
       'certifikace. Dostupné příslušenství: montážní příruba BF 12.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbn8,pnp,3vodičový,m12,mosaz,nezápustný,konektor,ip67,průmyslový',
   },
+  {
+    name: 'NBN40-U1-E0-M',
+    packageType:
+      'Pravoúhlé pouzdro "U1" (VariKont styl) s OTOČNOU OBOUSMĚRNOU snímací hlavou, materiál PA/ ' +
+      'kov s epoxidovým práškovým nátěrem, plastová základna, aktivní čelo PA-GF35, rozměry ' +
+      '118×46×40 mm, hmotnost 225 g, 4 LED indikátory (2× žlutá, 2× zelená) pro viditelnost z ' +
+      'libovolného úhlu (360°), připojení šroubovými svorkami (≤2,5 mm², utahovací moment ' +
+      'pouzdra 1,8 Nm, svorek 1,2 Nm ±10 %), montážní otvor pro M20×1,5 objímku',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač s otočnou hlavou, NEZÁPUSTNÝ ("non-flush") ' +
+      'typ, spínací vzdálenost 40 mm, 3vodičové DC zapojení, NPN výstup, spínací (NO) kontakt, ' +
+      '10–60 V DC, rozšířený teplotní rozsah -40 až +85 °C',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBN40-U1-E0-M" (217919_eng.xml, vydáno 10.10.2016) — ' +
+      'stejná otočná "U1" (VariKont) konstrukce pouzdra jako NBB20-U1-A2-T v této knihovně ' +
+      '(shodná koncepce s otočnou obousměrnou hlavou, šroubovými svorkami místo kabelu/ ' +
+      'konektoru, 4 LED pro 360° viditelnost), ale výrazně odlišné parametry: ⚠️ (1) "NBN" místo ' +
+      '"NBB" — NEZÁPUSTNÁ montáž (vyžaduje volný prostor bez okolního kovu) místo zápustné u ' +
+      'NBB20-U1-A2-T; (2) DVOJNÁSOBNÁ spínací vzdálenost 40 mm (oproti 20 mm); (3) 3VODIČOVÉ NPN ' +
+      'zapojení (jednoduchý spínací výstup) místo 4vodičového komplementárního zapojení u ' +
+      'NBB20-U1-A2-T; (4) ŠIRŠÍ napájecí rozsah 10–60 V DC (oproti 10–30 V DC) — umožňuje ' +
+      'provoz i v sítích s vyšším stejnosměrným napětím (např. 48V průmyslové systémy). Shodné: ' +
+      'krytí IP68/IP69K, rozšířený teplotní rozsah do -40°C. Navíc certifikace E1 (typové ' +
+      'schválení pro automobilový průmysl dle směrnice 2006/28/EG, odolnost proti rušení ' +
+      '100 V/m v pásmu 20 MHz–2 GHz, ISO 7637-2, EN 61000-4-2/3/4/6) — stejná E1 homologace jako ' +
+      'NBB15-30GM50-E0-M-Y242746 v této knihovně. Korekční faktory dle materiálu cíle: rAl=0,34, ' +
+      'rCu=0,3, r304/nerez=0,81, rSt37/měkká ocel=1,0, rBrass/mosaz=0,4. Zajištěná spínací ' +
+      'vzdálenost 0–32,4 mm, skutečná 36–44 mm. Spínací kmitočet 0–150 Hz. Hystereze typ. 5 %. ' +
+      'Ochrana proti přepólování a pulzní zkratová ochrana. Úbytek napětí max 2 V. Provozní ' +
+      'proud 0–200 mA, klidový proud max 20 mA. Samostatné LED indikátory pro napájení (zelená) ' +
+      'a stav sepnutí (žlutá). Funkční bezpečnostní parametry: MTTFd 870 let, doba mise 20 let, ' +
+      'diagnostické pokrytí 0 %. Shoda EN/IEC 60947-5-2, UL/CSA/CCC certifikace, E1 typové ' +
+      'schválení 10R-04. Dostupné příslušenství: modulární montážní konzole MHW 01.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbn40,npn,3vodičový,otočná-hlava,varikont,e1,automotive,ip68,ip69k',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
