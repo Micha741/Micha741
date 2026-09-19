@@ -3412,6 +3412,43 @@ const MODULE_SPECS: ModuleSpec[] = [
       'schválení NENÍ uděleno — použití v Severní Americe zakázáno.',
     tags: 'modul,senzor,radar,doppler,pohybový,relé,pepperl-fuchs,radec-m,24ghz,dveře',
   },
+  {
+    name: 'RAVE-D-NA',
+    packageType:
+      'Kompaktní kvádrové pouzdro na nástěnné konzoli s aretačními polohami po 15° pro naklápění, ' +
+      'antracitový polykarbonát (PC), rozměry s konzolí 131×73×136 mm, hmotnost 650 g, dvojice ' +
+      'ovládacích tlačítek ("MENU"/"VALUE"), LED indikace (červená/zelená), zásuvné šroubové ' +
+      'svorky (4pin + 2pin), přiložený připojovací kabel 8 m',
+    value:
+      '"Prémiová" verze radarového (Dopplerova) pohybového senzoru se dvěma nezávislými relé ' +
+      'výstupy pro rozlišení osob a vozidel, kmitočet 24,15–24,25 GHz (pásmo K), 12–36 V DC / ' +
+      '12–28 V AC, POUZE verze pro trh USA/Kanada (FCC)',
+    notes:
+      'Pepperl+Fuchs "Radar sensor RAVE-D-NA" (dok. 285648_eng.pdf, vydáno 20.7.2021) — vyšší ' +
+      '(RAVE) produktová řada oproti základní RaDec-M v této knihovně (stejný Dopplerův princip, ' +
+      'stejné pásmo 24 GHz, ale výrazně rozšířené funkce) — ⚠️ "-NA" v označení znamená verzi ' +
+      'POUZE PRO SEVERNÍ AMERIKU (FCC Part 15 + Industry Canada RSS-310), NENÍ CE certifikována ' +
+      'a její použití v zemích EU NENÍ POVOLENO (opačná situace než RaDec-M, který naopak nemá ' +
+      'FCC schválení a smí se používat jen mimo Severní Ameriku) — POZOR při objednávání na ' +
+      'záměnu regionálních variant. Klíčová nová funkce oproti RaDec-M: DVA NEZÁVISLÉ RELÉOVÉ ' +
+      'VÝSTUPY (vehicle-presence relé + human-presence relé), senzor s integrovaným ' +
+      'mikroprocesorem rozlišuje mezi POHYBEM OSOB a VOZIDEL a spíná odpovídající relé — umožňuje ' +
+      'např. otevřít průmyslová vrata v plné šíři jen pro vozidlo, zatímco chodci použijí boční ' +
+      'vchod (RaDec-M má jen JEDNO relé bez rozlišení typu cíle). Další funkce: potlačení příčného ' +
+      'provozu (cross-traffic suppression — dveře zůstanou zavřené při průjezdu mimo osu), ' +
+      'sledování směru pohybu (rotation direction monitoring — detekce jen směrem k/od senzoru), ' +
+      'nastavitelné zpoždění odpadu relé 0,5–300 s (oproti pevným 0,5 s u RaDec-M). Programování ' +
+      'dvěma tlačítky na těle NEBO dálkovým IR ovladačem RMS Remote Control/RADAR RC (příslušenství, ' +
+      'dosah 10 m, obousměrná komunikace s LCD displejem) — usnadňuje nastavení senzorů ve velké ' +
+      'výšce bez nutnosti žebříku. Větší detekční rozsah 9×6,5 m (výška montáže 5 m) až 10×5,5 m ' +
+      '(výška 7 m) — výrazně více než RaDec-M (max 4,5×2 m, výška 4 m). Naklápění -90 až +90° v ' +
+      'krocích 15° (jemnější než RaDec-M s kroky 5° jen 0–90°). Nižší vysílací výkon EIRP <13 dBm ' +
+      '(oproti <20 dBm RaDec-M). Krytí IP67 (vyšší než IP54 RaDec-M — vhodné pro venkovní/ ' +
+      'průmyslové prostředí). Provozní/skladovací teplota -30 až +60 °C. Zařazeno do kategorie ' +
+      '"Modul" jako kompletní osazený produkt s vlastním kabelem/svorkami, stejně jako RaDec-M v ' +
+      'této knihovně.',
+    tags: 'modul,senzor,radar,doppler,pohybový,relé,pepperl-fuchs,rave-d,24ghz,dveře,fcc,usa',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
