@@ -1693,6 +1693,45 @@ const MODULE_SPECS: ModuleSpec[] = [
       'nejširší v rodině NBB v této knihovně vedle NBB4-12GM35-A2-V1-M1). UL certifikace.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb20,pnp,komplementární,svařovací,weld-immune,duroplast,m12,ip67,průmyslový',
   },
+  {
+    name: 'NBB20-U1-A2-T',
+    packageType:
+      'Pravoúhlé pouzdro "U1" (VariKont styl) s OTOČNOU OBOUSMĚRNOU snímací hlavou (lze natočit ' +
+      'dle potřeby montáže), materiál PA/kov s epoxidovým práškovým nátěrem, plastová základna, ' +
+      'rozměry 118×40×40 mm, hmotnost 225 g (nejtěžší v rodině NBB v této knihovně), 4 LED ' +
+      'indikátory (2× žlutá, 2× zelená) pro viditelnost z libovolného úhlu (360°), připojení ' +
+      'šroubovými svorkami (≤2,5 mm², utahovací moment pouzdra 1,8 Nm, svorek 1,0 Nm) — na ' +
+      'rozdíl od kabelu/konektoru u ostatních senzorů NBB v této knihovně, montážní otvory pro ' +
+      'M20×1,5 objímku',
+    value:
+      'Indukční (bezkontaktní) přibližovací spínač s otočnou hlavou, spínací vzdálenost 20 mm, ' +
+      '4vodičové DC zapojení, krytí IP68/IP69K, rozšířený teplotní rozsah -25 až +100 °C ' +
+      '(nejširší v rodině NBB v této knihovně), 10–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBB20-U1-A2-T" (296370_eng.xml, vydáno 22. 3. 2017) — ⚠️ ' +
+      'mechanicky zcela odlišné provedení oproti NBB20-L3M-A2-C3-V1 v této knihovně (obě mají ' +
+      'shodnou spínací vzdálenost 20 mm, ale odlišný účel a konstrukci): NBB20-U1-A2-T má ' +
+      'charakteristickou OTOČNOU ("bidirectional and rotatable") snímací hlavu VariKont řady ' +
+      '"U1" umožňující dodatečné doladění orientace senzoru po montáži, PŘIPOJENÍ ŠROUBOVÝMI ' +
+      'SVORKAMI (jediný senzor v rodině NBB v této knihovně bez kabelu/konektoru) a nejširší ' +
+      'teplotní rozsah -25 až +100 °C (oproti max +85°C u ostatních senzorů NBB v této knihovně) ' +
+      '— vhodné pro trvalou montáž v teplotně náročném prostředí (sušičky, pece, horké provozy), ' +
+      'na rozdíl od NBB20-L3M-A2-C3-V1 určeného specificky pro odolnost proti magnetickým polím ' +
+      'svařování. ⚠️ Datasheet v tomto stručném výřezu neuvádí explicitně spínací funkci ' +
+      '(NO/NC/komplementární) — vzhledem k 4vodičovému zapojení shodnému s komplementárními ' +
+      'senzory NBB2-12GM60-A2/NBB4-12GM35-A2-V1-M1/NBB20-L3M-A2-C3-V1 v této knihovně je ' +
+      'pravděpodobné komplementární zapojení, ale nejistota uvedena explicitně, nepotvrzeno. ' +
+      'Korekční faktory dle materiálu cíle: rAl=0,33, rCu=0,31, r304/nerez=0,74, rBrass/ ' +
+      'mosaz=0,41. Zajištěná spínací vzdálenost 0–16,2 mm. Spínací kmitočet 0–440 Hz. Hystereze ' +
+      'typ. 5 %. Ochrana proti přepólování a pulzní zkratová ochrana. Úbytek napětí max 2 V. ' +
+      'Provozní proud 0–200 mA, klidový proud max 20 mA, zbytkový proud max 0,5 mA. Zpoždění ' +
+      'dostupnosti po zapnutí 80 ms. Funkční bezpečnostní parametry: MTTFd 1230 let, doba mise ' +
+      '20 let, diagnostické pokrytí 0 %. Krytí IP68/IP69K (shodné s NBB4-12GM35-A2-V1-M1 ' +
+      'automotive variantou). Shoda EN/IEC 60947-5-2, EAC (TR CU 020/2011), UL certifikace. ' +
+      'Dostupné příslušenství: zásuvky V1-M20-80 (M12/M20 plastová verze), modulární montážní ' +
+      'konzole MHW 01, montážní pomůcka MH 04-2681F pro VariKont/+U1+/+U9* řady.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb20,otočná-hlava,varikont,šroubové-svorky,ip68,ip69k,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
