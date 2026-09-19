@@ -1732,6 +1732,44 @@ const MODULE_SPECS: ModuleSpec[] = [
       'konzole MHW 01, montážní pomůcka MH 04-2681F pro VariKont/+U1+/+U9* řady.',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb20,otočná-hlava,varikont,šroubové-svorky,ip68,ip69k,průmyslový',
   },
+  {
+    name: 'NBN3-F31K-E8-K',
+    packageType:
+      'Kompaktní krabicové pouzdro pro přímou montáž na standardní pneumatické pohony ' +
+      '("aktuátory", řada F31), rozměry cca 65×40×77,5 mm, plast PBT, DVA nezávislé indukční ' +
+      'snímací kanály (I, II) uvnitř jednoho pouzdra, připojení systémové (senzory) i ventilové ' +
+      '(elektromagnetický ventil) přes pružinové svorky ("cage tension spring terminals", ' +
+      '1,5/2,5 mm² ohebný/pevný vodič), kabelové průchodky M20×1,5 (systémová strana) a M12×1,5 ' +
+      '(ventilová strana), zaslepovací zátky proti vlhkosti/nečistotám na nepoužitých vstupech, ' +
+      'LED indikace napájení + 2× spínacího stavu senzorů + stavu ventilu',
+    value:
+      'Kompaktní senzorová jednotka pro pneumatické pohony s integrovaným výstupem pro ovládání ' +
+      'elektromagnetického ventilu — 2× indukční spínač (NO, PNP, fixní nastavení, sn=3mm) + ' +
+      'ventilový budicí okruh (max 32V DC/240mA), 4vodičové DC zapojení, 10–30 V DC',
+    notes:
+      'Pepperl+Fuchs "Inductive sensor NBN3-F31K-E8-K" (097638_eng.xml, vydáno 17. 7. 2019) — ⚠️ ' +
+      'POZOR: jiná produktová řada než "NBB" senzory v této knihovně — "NBN" (ne "NBB") značí ' +
+      'jinou konstrukční koncepci: NBN3-F31K-E8-K NENÍ samostatný válcový/kvádrový přibližovací ' +
+      'senzor, ale KOMPLETNÍ KOMPAKTNÍ SENZOROVÁ JEDNOTKA pro přímou montáž na standardní ' +
+      'pneumatické pohony (ventilové aktuátory) řady "F31", obsahující DVA nezávislé indukční ' +
+      'snímací kanály (I, II — typicky pro koncové polohy otevřeno/zavřeno u kulových/klapkových ' +
+      'ventilů) SOUČASNĚ S integrovaným výstupním okruhem pro přímé ovládání elektromagnetického ' +
+      'ventilu (solenoid valve) — funguje tedy jako kombinovaná polohová zpětná vazba + ovládání ' +
+      'pohonu v jednom pouzdře. "Fixed setting" — pevně nastavená spínací vzdálenost (bez ' +
+      'možnosti doladění, na rozdíl od potenciometrem laditelných kapacitních senzorů TURCK BC10 ' +
+      'v této knihovně), aktivována specializovanými "activator" cvočky/vačkami montovanými na ' +
+      'hřídel pohonu (příslušenství BT65A/BT65X/BT65B/BT115A/BT115X/BT115B pro řadu F31). ' +
+      'Senzorové kanály: 2× spínací (NO), PNP, sn 3 mm, korekční faktory rAl=0,5, rCu=0,4, ' +
+      'r304/nerez=1,0, rSt37/měkká ocel=1,2 (⚠️ faktor >1 — u tohoto konkrétního aktivátorového ' +
+      'uspořádání je efektivní dosah pro ocelový aktivátor VĚTŠÍ než jmenovitá hodnota, neobvyklé ' +
+      'oproti běžným senzorům NBB v této knihovně, kde jsou všechny faktory ≤1). Zajištěná ' +
+      'spínací vzdálenost 0–2,43 mm, skutečná 2,7–3,3 mm typ. Spínací kmitočet 0–500 Hz. ' +
+      'Ventilový okruh: max. napětí 32 V DC, max. proud 240 mA, BEZ zkratové ochrany (⚠️ na ' +
+      'rozdíl od senzorové části), s ochranou proti přepólování (při obráceném zapojení výstupu ' +
+      'přestane fungovat indikační LED, ale ventil dostává více výkonu — zvláštní chování ' +
+      'uvedené přímo výrobcem). Provozní teplota -25 až +70 °C. Krytí IP67. UL/CSA certifikace.',
+    tags: 'modul,senzor,indukční,přibližovací,proximity,ventilová-jednotka,pneumatický-pohon,solenoid,pepperl-fuchs,nbn3,f31,dvoukanálový,ip67,průmyslový',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
