@@ -3627,6 +3627,44 @@ const MODULE_SPECS: ModuleSpec[] = [
       'OMH-4.1/OMH-ML6, reflektory H33/H50/H85-2, reflexní páska OFR-100/100).',
     tags: 'modul,senzor,fotoelektrický,optický,reflexní,retroreflexní,io-link,pepperl-fuchs,obg5000,r101,transparentní-objekty,ip69k',
   },
+  {
+    name: 'PHA400-F200A-B17-V1D',
+    packageType:
+      'Kompaktní kvádrové pouzdro, materiál PC/ABS, optické čelo plastová destička, rozměry ' +
+      '70×70×50 mm, hmotnost ~200 g, integrovaný IR LED prstenec kolem objektivu, 7 stavových ' +
+      'LED, 2 tlačítka pro parametrizaci, konektory M12 (napájecí 8pin + 2× PROFINET 4pin), ' +
+      'montáž 4× M6 závit',
+    value:
+      'Specializovaný vizuální senzor ("Vision Sensor") pro přesné polohování regálových ' +
+      'zakladačů — detekce kruhových indexovacích otvorů (Ø 13 mm) a jejich odchylky od nominální ' +
+      'polohy ve 2D, CMOS kamera 752×480 px, čtecí vzdálenost 400 mm, PROFINET, 24 V DC',
+    notes:
+      'Pepperl+Fuchs "Vision Sensor PHA400-F200A-B17-V1D" (dok. 270875_eng.pdf, vydáno 11.6.2021) ' +
+      '— ⚠️ ZCELA JINÁ APLIKACE než univerzální/barevné/objektové vizuální senzory Festo SBSC-U-AF- ' +
+      'R2B/SBSI-F.../SBSI-Q-AF-R2B-F12-W v této knihovně (obecné strojové vidění — čtení kódů, ' +
+      'kontrola tvaru/barvy pro libovolné inspekční úlohy): PHA400 je VYSOCE SPECIALIZOVANÝ senzor ' +
+      'určený VÝHRADNĚ pro PŘESNÉ POLOHOVÁNÍ REGÁLOVÝCH ZAKLADAČŮ (stacker crane, high-bay racking ' +
+      'equipment) ve skladové automatizaci — detekuje KRUHOVÉ INDEXOVACÍ OTVORY v regálové ' +
+      'konstrukci (typicky kalibrační otvory na regálových sloupcích) a vyhodnocuje JEJICH ' +
+      'POLOHOVOU ODCHYLKU od nominální polohy ve 2 osách (X/Y), s velkým záběrovým rozsahem max. ' +
+      '120×100 mm a hloubkou ostrosti ±50 mm — poskytuje přesnou zpětnou vazbu pro najetí ' +
+      'zakladače na přesnou pozici v regálu. Integrované IR LED osvětlení (kruh kolem objektivu, ' +
+      'viditelné jako červené LED na fotografii), CMOS kamera s globální závěrkou (global shutter, ' +
+      'nezkreslené snímky i při pohybu zakladače) 752×480 px, 256 stupňů šedi, odezva 100 ms. ' +
+      'PRŮMYSLOVÉ SÍŤOVÉ ROZHRANÍ PROFINET IO Real-Time (RT) tř. shody A, 100 MBit/s, se dvěma ' +
+      'PROFINET M12 porty pro kaskádovité zapojení do sběrnice (na rozdíl od Festo SBSC/SBSI ' +
+      'senzorů s Ethernet TCP/IP/EtherNet-IP protokoly) — integrace přímo do PLC řídicího systému ' +
+      'zakladače. Parametrizace buď tlačítky na zadní straně, nebo EXTERNĚ pomocí datamatrix ' +
+      'kódové karty předložené před kameru (bezdotykové nastavení parametrů z tištěné příručky). ' +
+      '7 diagnostických LED (BUS LINK, BUS TX/RX, BUS ERR, PWR/ERR, ZERO POS — nulová poloha ' +
+      'dosažena, RANGE — v záběrovém rozsahu, INTERNAL DIAGNOSTIC). Napájení 24 V DC ±15 % (PELV), ' +
+      'spotřeba 6 W. Provozní teplota 0 až +60 °C (rozšířeně -20 až +60 °C, nekondenzující, ' +
+      'nutno zabránit namrzání čočky). Krytí IP67. Zařazeno do kategorie "Modul" jako kompletní ' +
+      'osazený přístroj s vlastním procesorem/optikou/osvětlením/konektory, stejně jako ostatní ' +
+      'vizuální senzory v této knihovně. MTTFd 95 let. Certifikace: CE, UL (cULus Listed, Class 2 ' +
+      'Power Source), CCC.',
+    tags: 'modul,kamera,vizuální-senzor,vision-sensor,polohování,regálový-zakladač,profinet,pepperl-fuchs,pha400,ir-osvětlení,skladová-automatizace',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
