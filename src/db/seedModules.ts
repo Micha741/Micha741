@@ -2199,6 +2199,38 @@ const MODULE_SPECS: ModuleSpec[] = [
       'utahovací moment upevňovacího příslušenství 0,5 Nm. Bez mědi a PTFE.',
     tags: 'modul,senzor,proximity,poloha-pístu,reed,jazýčkový-kontakt,magnetický,festo,smeo-8e,pneumatika,vysokoteplotní',
   },
+  {
+    name: 'SMEO-8E-M12-LED-24',
+    packageType:
+      'Kompaktní kvádrové pouzdro s integrovaným zásuvným konektorem M12×1 A-kódovaným ' +
+      '(EN 61076-2-101, mosazné kontakty, 3piny) přímo na těle senzoru, BEZ vlastního kabelu, ' +
+      'pouzdro tvářená hliníková slitina + TPE-U(PU) + vysoce legovaná nerezová ocel, montáž ' +
+      'příslušenstvím, příčný výstup konektoru, hmotnost 9 g',
+    value:
+      'Polohový snímač pístu pneumatického válce (proximity sensor), princip magnetický ' +
+      'jazýčkový kontakt (reed), bipolární N/O kontakt, 12–30 V AC/DC, max. spínací kmitočet ' +
+      '800 Hz',
+    notes:
+      'Festo AG & Co. KG "Proximity sensor SMEO-8E-M12-LED-24" (obj. č. 171164, datový list ' +
+      '5.3.2021) — magnetický jazýčkový (reed) snímač polohy pístu ze stejné produktové řady ' +
+      'SMEO jako SMEO-8E-K-24-S6 (obj. č. 171158) v této knihovně (stejný způsob montáže ' +
+      '"With accessories" — příslušenstvím, ne přímo do T-drážky, a stejná orientace výstupu ' +
+      '"Transverse" — příčná) — ⚠️ zásadní rozdíl: SMEO-8E-M12-LED-24 NEMÁ integrovaný kabel, má ' +
+      'místo něj PŘÍMO NA TĚLE senzoru našroubovaný zásuvný konektor M12×1 (typ "Plug", ' +
+      'připojovací kabel se dokupuje samostatně) — zatímco SMEO-8E-K-24-S6 má napevno ' +
+      'integrovaný 2,5m kabel s volným koncem. Další odlišnosti: M12-LED-24 má užší provozní ' +
+      'teplotní rozsah (-40 až +60 °C oproti -40 až +120 °C u K-24-S6 — kovové hliníkové pouzdro ' +
+      'zde neposkytuje takovou teplotní odolnost jako čistě TPE-U pouzdro K-24-S6 varianty), ' +
+      '3vodičové zapojení s odděleným signálovým vodičem BK (oproti 2vodičovému u K-24-S6), užší ' +
+      'napájecí rozsah 12–30 V (oproti 0–30 V), ale VYŠŠÍ max. spínací kmitočet (800 Hz oproti ' +
+      '500 Hz) a BEZ ochrany proti přepólování (na rozdíl od K-24-S6, která ji má). Žlutá LED ' +
+      'indikace sepnutí. Zařazeno do kategorie "Modul" jako kompletní osazený produkt s ' +
+      'integrovaným konektorem, stejně jako ostatní Festo SME/SMT/SDBT-BSW/SMEO snímače polohy ' +
+      'pístu v této knihovně. Krytí IP65/IP67, rázové přepětí 0,8 kV, stupeň znečištění 3, max. ' +
+      'utahovací moment upevňovacího příslušenství 0,5 Nm. Bez mědi a PTFE, RoHS. Certifikace: ' +
+      'CE (EU EMC), RCM.',
+    tags: 'modul,senzor,proximity,poloha-pístu,reed,jazýčkový-kontakt,magnetický,festo,smeo-8e,pneumatika,m12,konektor',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
