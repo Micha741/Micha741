@@ -1906,6 +1906,104 @@ const MODULE_SPECS: ModuleSpec[] = [
       '17-SID, 18-DVDD1.2V, 19-XCLK, 20-STROBE, 21-XSHUTDOWN, 22-AVDD2.8).',
     tags: 'modul,kamera,kamerový-modul,mipi,csi-2,os05a20,leopard-imaging,snímač-obrazu,sccb,objektiv',
   },
+  {
+    name: 'SME-8M-DS-24V-K-5,0-OE',
+    packageType:
+      'Tyčinkové pouzdro pro vsazení do drážky pneumatického válce shora ("insertable from ' +
+      'above"), pouzdro PA + vysoce legovaná nerezová ocel, integrovaný kabel s volným koncem ' +
+      '(open end), 3 vodiče, délka kabelu 5 m, plášť kabelu TPE-U(PUR), hmotnost 58,3 g',
+    value:
+      'Polohový snímač pístu pneumatického válce (proximity sensor), princip magnetický jazýčkový ' +
+      'kontakt (reed), spínací funkce N/O (spínací), bipolární, 5–30 V AC/DC, max. spínací proud ' +
+      '500 mA',
+    notes:
+      'Festo AG & Co. KG "Proximity sensor SME-8M-DS-24V-K-5,0-OE" (obj. č. 543863, datový list ' +
+      '5.3.2021) — magnetický jazýčkový (reed) snímač polohy pístu pro pneumatické válce ' +
+      '(snímání polohy skrz nemagnetickou stěnu válce pomocí magnetu na pístu) — zařazeno do ' +
+      'kategorie "Modul" jako kompletní osazený produkt s vlastním kabelem/konektorem, obdobně ' +
+      'jako indukční/kapacitní přibližovací spínače TURCK BI1/BC10/BC20 a Pepperl+Fuchs NBB/NBN/' +
+      'NEN v této knihovně — ⚠️ POZOR: na rozdíl od těch (bezkontaktní, elektronické — indukční ' +
+      'vířivé proudy nebo kapacitní pole) používá Festo SME-8M čistě MECHANICKÝ princip — ' +
+      'magnetický JAZÝČKOVÝ KONTAKT (reed switch), tedy dva feromagnetické kontaktní jazýčky ' +
+      'uzavřené ve skleněné trubičce, které se sepnou/rozepnou fyzickým přitažením vlivem ' +
+      'vnějšího magnetického pole (od magnetu v pístu válce) — jde tedy o spínací kontakt ' +
+      '(mechanický, bipolární, N/O), NE o polovodičový/elektronický spínací výstup. Zapojení: 3 ' +
+      'vodiče (BN = +/~, BK = výstup přes zátěž RL, BU = -/~), bez ochrany proti zkratu a ' +
+      'přepólování. Napájení AC/DC 5–30 V, min. spínací výkon AC 10 VA, max. spínací výkon DC ' +
+      '10 W (2,4 W/2,4 VA při použití v montážních sadách s omezeným proudem 80 mA), úbytek ' +
+      'napětí 1,875 V. Optická indikace sepnutí žlutou LED. Materiál bez mědi a PTFE, odolný ' +
+      'proti oleji, RoHS. Kabel testován na ohybovou pevnost (5 milionů cyklů v kabelovém řetězu, ' +
+      'poloměr ohybu 75 mm). Provozní teplota -40 až +70 °C (s pevnou instalací kabelu), -5 až ' +
+      '+70 °C (s pohyblivou instalací kabelu). Krytí IP65/IP68. Certifikace: c UL us (Listed), CE ' +
+      '(EU EMC), RCM.',
+    tags: 'modul,senzor,proximity,poloha-pístu,reed,jazýčkový-kontakt,magnetický,festo,sme-8m,pneumatika',
+  },
+  {
+    name: 'SMT-8M-A-PS-24V-E-0,3-M8D',
+    packageType:
+      'Tyčinkové pouzdro pro vsazení do T-drážky pneumatického válce shora, mosazné pouzdro ' +
+      '(niklované) + PA výztuž + vysoce legovaná nerezová ocel, černá barva, konektor M8×1 ' +
+      'A-kódovaný (EN 61076-2-104) na konci 0,3m kabelu (šedý plášť TPE-U/PUR), 3 vodiče, ' +
+      'hmotnost 8,9 g',
+    value:
+      'Polohový snímač pístu pneumatického válce (proximity sensor), princip magnetorezistivní ' +
+      '(bezkontaktní, polovodičový), PNP spínací výstup (N/O), 5–30 V DC, max. spínací kmitočet ' +
+      '180 Hz, opakovatelnost 0,2 mm',
+    notes:
+      'Festo AG & Co. KG "Proximity sensor SMT-8M-A-PS-24V-E-0,3-M8D" (obj. č. 574334, datový ' +
+      'list 5.3.2021) — polohový snímač pístu pneumatického válce, přímý sourozenec Festo ' +
+      'SME-8M-DS-24V-K-5,0-OE v této knihovně (stejná aplikace — snímání polohy pístu skrz stěnu ' +
+      'válce), ale zásadně odlišný snímací princip — ⚠️ SMT-8M je MAGNETOREZISTIVNÍ ' +
+      '(bezkontaktní, polovodičový prvek měnící odpor v magnetickém poli, elektronicky ' +
+      'zpracovaný na PNP spínací výstup), zatímco SME-8M je čistě MECHANICKÝ magnetický ' +
+      'jazýčkový kontakt (reed switch) — SMT-8M má proto výrazně rychlejší a přesnější ' +
+      'charakteristiky: zapínací doba ≤1,3 ms / vypínací ≤1,4 ms, max. spínací kmitočet 180 Hz ' +
+      '(oproti mechanickému kontaktu SME-8M, který takové parametry v datasheetu vůbec neuvádí ' +
+      'a je principiálně pomalejší/opotřebovatelnější), navíc má SMT-8M zkratovou i přepěťovou ' +
+      'ochranu a ochranu proti přepólování na všech vývodech (SME-8M nemá žádnou z těchto ' +
+      'ochran). Zařazeno do kategorie "Modul" jako kompletní osazený produkt s vlastním kabelem/ ' +
+      'konektorem, stejně jako SME-8M a indukční/kapacitní přibližovací spínače TURCK/Pepperl+' +
+      'Fuchs v této knihovně. Konstrukce pro zasunutí do T-drážky válce shora, max. utahovací ' +
+      'moment 0,6 Nm, libovolná montážní poloha. Konektorový kabel testován na cyklickou ' +
+      'ohybovou (5 milionů cyklů, poloměr 28 mm) i torzní odolnost (>300000 cyklů, ±270°/0,1 m) ' +
+      'pro použití v energetických řetězech a robotických aplikacích. Dvojí LED indikace — žlutá ' +
+      '(sepnutí) a oranžová (funkční rezerva). Provozní teplota -40 až +85 °C (pevná instalace), ' +
+      '-20 až +85 °C (pohyblivá instalace kabelu). Krytí IP65/IP68/IP69K. Certifikace: c UL us ' +
+      '(Listed), CE (EU EMC + RoHS), KC EMC, RCM. Odolný proti oleji, bez mědi/PTFE, bez ' +
+      'halogenu, RoHS.',
+    tags: 'modul,senzor,proximity,poloha-pístu,magnetorezistivní,pnp,festo,smt-8m,pneumatika,m8',
+  },
+  {
+    name: 'SMT-8M-A-PS-24V-E-2,5-OE',
+    packageType:
+      'Tyčinkové pouzdro pro vsazení do T-drážky pneumatického válce shora, pouzdro PA výztuž + ' +
+      'vysoce legovaná nerezová ocel (bez mosazi), černá barva, integrovaný kabel s volným ' +
+      'koncem (open end), délka 2,5 m (šedý plášť TPE-U/PUR), 3 vodiče, hmotnost 29,1 g',
+    value:
+      'Polohový snímač pístu pneumatického válce (proximity sensor), princip magnetorezistivní ' +
+      '(bezkontaktní, polovodičový), PNP spínací výstup (N/O), 5–30 V DC, max. spínací kmitočet ' +
+      '180 Hz, opakovatelnost 0,2 mm',
+    notes:
+      'Festo AG & Co. KG "Proximity sensor SMT-8M-A-PS-24V-E-2,5-OE" (obj. č. 574335, datový ' +
+      'list 5.3.2021) — elektricky/funkčně TOTOŽNÝ magnetorezistivní snímač polohy pístu jako ' +
+      'SMT-8M-A-PS-24V-E-0,3-M8D (obj. č. 574334) v této knihovně — stejné parametry: PNP N/O ' +
+      'výstup, zapínací ≤1,3 ms/vypínací ≤1,4 ms, max. 180 Hz, 5–30 V DC, IP65/68/69K, zkratová i ' +
+      'přepěťová ochrana — ⚠️ liší se POUZE konstrukcí kabelového zakončení a materiálem pouzdra: ' +
+      'zatímco 574334 má KRÁTKÝ kabel (0,3 m) zakončený zásuvným konektorem M8×1 A-kódovaným ' +
+      '(pro připojení prodlužovacího kabelu) a pouzdro z NIKLOVANÉ MOSAZI + PA výztuž, tato ' +
+      'varianta 574335 má DLOUHÝ kabel (2,5 m) s VOLNÝM KONCEM (open end, přímo pro připojení do ' +
+      'svorkovnice/PLC) a pouzdro POUZE z PA výztuže + nerezové oceli (bez mosazné části) — proto ' +
+      'i vyšší hmotnost (29,1 g vs 8,9 g, way delší kabel). Zařazeno do kategorie "Modul" jako ' +
+      'kompletní osazený produkt s vlastním kabelem, stejně jako SME-8M-DS-24V-K-5,0-OE a ' +
+      'SMT-8M-A-PS-24V-E-0,3-M8D v této knihovně. Konstrukce pro zasunutí do T-drážky válce ' +
+      'shora, max. utahovací moment 0,6 Nm, libovolná montážní poloha. Kabel testován na ' +
+      'cyklickou ohybovou (5 milionů cyklů, poloměr 28 mm) i torzní odolnost (>300000 cyklů, ' +
+      '±270°/0,1 m) pro energetické řetězy/robotické aplikace. Dvojí LED indikace — žlutá ' +
+      '(sepnutí) a oranžová (funkční rezerva). Provozní teplota -40 až +85 °C (pevná instalace), ' +
+      '-20 až +85 °C (pohyblivá instalace kabelu). Certifikace: c UL us (Listed), CE (EU EMC + ' +
+      'RoHS), KC EMC, RCM. Odolný proti oleji, bez mědi/PTFE, bez halogenu, RoHS.',
+    tags: 'modul,senzor,proximity,poloha-pístu,magnetorezistivní,pnp,festo,smt-8m,pneumatika,open-end',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
