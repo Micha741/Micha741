@@ -240,8 +240,90 @@ const SCHAEFFLER_SPECS: CoilSpec[] = [
   },
 ];
 
+const SCHNEIDER_SPECS: CoilSpec[] = [
+  {
+    name: 'METSECTR30500U',
+    packageType:
+      'Flexibilní Rogowského cívka (rozevírací, průvlečný primár), vnitřní průměr smyčky ' +
+      '95,5 mm, přívodní kabel k cívce 2400 mm + výstupní vodiče (AWM STYLE 20167, 1000 V, ' +
+      '24 AWG); bílý vodič = X1, šipka na těle ukazuje směr k zátěži',
+    value:
+      'Rogowského proudový transducer, Ip 2000 A, výstup 58,3 mV/kA @50Hz (70 mV/kA @60Hz), ' +
+      'třída přesnosti 1-A1',
+    notes:
+      'Schneider Electric "CTRx Series — Rogowski Current Transducers" (instalační manuál ' +
+      'S2003/Z207424-0C, rev. 07-2025) — flexibilní rozevírací (split-core, "let-through ' +
+      'primary") proudová cívka generující na výstupu střídavé napětí úměrné primárnímu ' +
+      '(měřenému) proudu; navržena pro použití s měřicími přístroji Schneider EM35xxA, iEM35x5 ' +
+      'a EM42xx. Zesílená izolace mezi měřeným vodičem a výstupními vodiči. Nejmenší (95,5 mm) ' +
+      'model řady, jediný s nižším Ip=2000A — ostatní 3 modely řady (METSECTR46500U/60500U/ ' +
+      '90500U, viz sourozenecké záznamy) mají Ip=5000A a liší se jen vnitřním průměrem smyčky ' +
+      '(větší smyčka = větší měřený vodič/svazek). ' +
+      'Max. měřený proud 2 kA. Měřicí rozsah cívky 50–2000 A. Jmenovitý výstup 58,3 mV/kA @50Hz, ' +
+      '70 mV/kA @60Hz. Přesnost třída 1-A1 dle IEC 61869-10. Frekvence 50/60 Hz. Max. primární ' +
+      'napětí 600 V CAT IV (vstup do objektu). Provozní teplota -35 až +75°C (do 2 kA). ' +
+      'Skladovací teplota -40 až +90°C. Vlhkost 0–95 % bez kondenzace. Nadmořská výška do 2000 m. ' +
+      'Jen pro vnitřní použití, nevhodné pro vlhké prostředí. Stupeň znečištění 2. Schválení UL/ ' +
+      'CSA 61010-1, IEC/EN 61010-1, UL/CSA 2808, EN IEC 63000:2018. CE (RoHS). ' +
+      'Instalace: vypnout napájení → ověřit beznapěťový stav vhodným detektorem → připojit ' +
+      'výstupní vodiče do měřicího přístroje (bílý=X1) → uvolnit západku a otevřít cívku na ' +
+      'kloubu → obepnout měřený vodič (doporučeno umístit doprostřed smyčky) → uzamknout ' +
+      'otočením zajišťovacího kroužku ve směru hodinových ručiček → obnovit napájení. ⚠️ ' +
+      'Sekundární obvod (výstup) musí být vždy zkratován nebo připojen k zátěži — nikdy nesmí ' +
+      'zůstat naprázdno pod proudem v primáru. Nevhodné pro aplikace ochrany života/bezpečnosti ' +
+      'osob. Nesmí zabírat víc než 75 % průřezu vedení v zařízení, nesmí blokovat ventilaci ani ' +
+      'být v oblasti odvádění oblouku jističe. "Not suitable for Class 2 wiring methods".',
+    tags: 'cívka,rogowski,proudový-transformátor,proudový-senzor,schneider-electric,ctrx,metsectr30500u',
+  },
+  {
+    name: 'METSECTR46500U',
+    packageType:
+      'Flexibilní Rogowského cívka (rozevírací, průvlečný primár), vnitřní průměr smyčky ' +
+      '146,4 mm, přívodní kabel k cívce 2400 mm + výstupní vodiče (AWM STYLE 20167, 1000 V, ' +
+      '24 AWG)',
+    value:
+      'Rogowského proudový transducer, Ip 5000 A, výstup 58,3 mV/kA @50Hz (70 mV/kA @60Hz), ' +
+      'třída přesnosti 1-A1',
+    notes:
+      'Součást řady Schneider Electric CTRx (viz poznámka u METSECTR30500U pro plné společné ' +
+      'specifikace). Vnitřní průměr smyčky 146,4 mm, Ip=5000A, měřicí rozsah 50–5000 A. ' +
+      'Provozní teplota -35 až +60°C (v rozsahu 2–5 kA, jinak jako u ostatních modelů).',
+    tags: 'cívka,rogowski,proudový-transformátor,proudový-senzor,schneider-electric,ctrx,metsectr46500u',
+  },
+  {
+    name: 'METSECTR60500U',
+    packageType:
+      'Flexibilní Rogowského cívka (rozevírací, průvlečný primár), vnitřní průměr smyčky ' +
+      '191,0 mm, přívodní kabel k cívce 2400 mm + výstupní vodiče (AWM STYLE 20167, 1000 V, ' +
+      '24 AWG)',
+    value:
+      'Rogowského proudový transducer, Ip 5000 A, výstup 58,3 mV/kA @50Hz (70 mV/kA @60Hz), ' +
+      'třída přesnosti 1-A1',
+    notes:
+      'Součást řady Schneider Electric CTRx (viz poznámka u METSECTR30500U pro plné společné ' +
+      'specifikace). Vnitřní průměr smyčky 191,0 mm, Ip=5000A, měřicí rozsah 50–5000 A. ' +
+      'Provozní teplota -35 až +60°C (v rozsahu 2–5 kA, jinak jako u ostatních modelů).',
+    tags: 'cívka,rogowski,proudový-transformátor,proudový-senzor,schneider-electric,ctrx,metsectr60500u',
+  },
+  {
+    name: 'METSECTR90500U',
+    packageType:
+      'Flexibilní Rogowského cívka (rozevírací, průvlečný primár), vnitřní průměr smyčky ' +
+      '286,5 mm, přívodní kabel k cívce 2400 mm + výstupní vodiče (AWM STYLE 20167, 1000 V, ' +
+      '24 AWG)',
+    value:
+      'Rogowského proudový transducer, Ip 5000 A, výstup 58,3 mV/kA @50Hz (70 mV/kA @60Hz), ' +
+      'třída přesnosti 1-A1',
+    notes:
+      'Součást řady Schneider Electric CTRx (viz poznámka u METSECTR30500U pro plné společné ' +
+      'specifikace). Největší (286,5 mm) model řady, pro svazky vodičů většího průřezu. ' +
+      'Ip=5000A, měřicí rozsah 50–5000 A. Provozní teplota -35 až +60°C (v rozsahu 2–5 kA).',
+    tags: 'cívka,rogowski,proudový-transformátor,proudový-senzor,schneider-electric,ctrx,metsectr90500u',
+  },
+];
+
 export function buildCoilSeed(): ComponentInput[] {
-  return [...COIL_SPECS, ...TORK_SPECS, ...SCHAEFFLER_SPECS].map((spec) => ({
+  return [...COIL_SPECS, ...TORK_SPECS, ...SCHAEFFLER_SPECS, ...SCHNEIDER_SPECS].map((spec) => ({
     name: spec.name,
     category: 'Cívka',
     manufacturer: null,
