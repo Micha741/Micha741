@@ -4488,6 +4488,45 @@ const MODULE_SPECS: ModuleSpec[] = [
       'senzory, environmentální senzory, smart grid.',
     tags: 'modul,mcu,rf,lora,lpwan,stm32wle5,arm,cortex-m4,radiocontrolli,rc-wle5-868,868mhz,sx126x',
   },
+  {
+    name: 'RFM22B / RFM23B',
+    packageType:
+      'SMD (S1/S2, 16×16mm) nebo THT DIP (D, 17×14mm), postaveno na 20pin QFN IC (D2=2,6mm, ' +
+      'JEDEC MO-220 VGGD-8), rozteč vývodů 0,5mm (QFN)/2mm (DIP), piny VCC/GND/GPIO_0-2/SDO/ ' +
+      'SDI/SCLK/nSEL/nIRQ/SDN/TX_ANT/RX_ANT/ANT (dle varianty pouzdra)',
+    value:
+      'ISM pásmový transceiver modul, 433/868/915MHz, FSK/GFSK/OOK modulace, citlivost ' +
+      '-121dBm, výstupní výkon RFM22B do +20dBm / RFM23B do +13dBm, datová rychlost ' +
+      '0,123-256kbps, VDD 1,8-3,6V',
+    notes:
+      'HOPERF (Hope Microelectronics) "RFM22B/23B — ISM Transceiver Module" (dok. V1.0, 73 ' +
+      'stran, postaveno na čipu příbuzném Silicon Labs Si4432). ⚠️ Odlišný přístup od ' +
+      'transparentních modulů HM-TRP/HM-TRP-RS485 v této knihovně (viz jejich záznamy) — ' +
+      'RFM22B/23B je čistě REGISTROVĚ ŘÍZENÝ transceiver bez interního mikrokontroléru/UART ' +
+      'mostu, komunikuje s hostitelem výhradně přes SPI (4-vodičová sériová sběrnice SDI/SDO/ ' +
+      'SCLK/nSEL) a vyžaduje vlastní firmware pro konfiguraci a řízení paketů — podobná třída ' +
+      'jako RFM01/RFM75 v této knihovně, ale s bohatší sadou vestavěných funkcí. RFM22B a ' +
+      'RFM23B jsou identické kromě max. výstupního výkonu (RFM22B +20dBm/RFM23B +13dBm, oba ' +
+      'volitelné 0dBm-max v krocích 3dB). Vestavěné funkce: automatický budík (wake-up timer), ' +
+      'automatická korekce kmitočtu (AFC), power-on-reset (POR), anténní diverzita s řízením ' +
+      'TX/RX přepínače (TX_ANT/RX_ANT piny), konfigurovatelný paketový handler (preambule, ' +
+      'synchronizační slovo, CRC, data whitening/Manchester kódování), 64bajtové TX i RX FIFO, ' +
+      'detektor slabé baterie, teplotní senzor + 8bitový obecný ADC, integrované napěťové ' +
+      'regulátory, možnost frekvenčního hoppingu, on-chip kalibrace krystalu, ultra ' +
+      'nízkopříkonový shutdown mód (typ. 15nA). Elektrické parametry: proudové režimy ' +
+      'shutdown 15nA/standby 450nA/sleep 1µA/ready 800µA/tune 8,5mA, RX 18,5mA, TX 22mA@+1dBm ' +
+      'až 85mA@+20dBm (RFM22B) nebo 38mA@+13dBm (RFM23B). Frekvenční rozsah syntezátoru: ' +
+      '413-453MHz/848-888MHz/901-929MHz. Citlivost přijímače -121dBm (2kbps GFSK) až ' +
+      '-101dBm (125kbps GFSK), citlivost OOK -110 až -102dBm. Šířka přijímacího kanálu ' +
+      '2,6-620kHz. Modulační deviace ±0,625 až ±320kHz. Spurious emise max -54dBm. Provozní ' +
+      'teplota -40 až +85°C. GPIO výstupní proud do 5,4mA (dle konfigurace budiče DRV). ' +
+      'Objednací kód: <RFM22B/RFM23B>-<pásmo>-<pouzdro>, např. RFM22B-433-D (433MHz, DIP), ' +
+      'RFM22B-868-S1 (868MHz, SMD tloušťka 4,9mm). Aplikace: dálkové ovládání, domácí ' +
+      'zabezpečení/alarm, telemetrie, osobní datalogery, hračky, TPMS, bezdrátové periferie ' +
+      'PC, dálkový odečet měřidel, bezklíčový vstup, domácí automatizace, průmyslové řízení, ' +
+      'senzorové sítě, zdravotní monitory, RFID čtečky.',
+    tags: 'modul,rf,transceiver,ism,fsk,gfsk,ook,spi,hoperf,rfm22b,rfm23b,433mhz,868mhz,915mhz,qfn',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
