@@ -232,6 +232,38 @@ const COIL_SPECS: CoilSpec[] = [
       '14001:2016, OHSAS 18001:2008. Shoda s RoHS a REACH.',
     tags: 'cívka,transformátor,síťový-transformátor,toroidní,toroid,talema,55xxx,dvojitý-sekundár,dual-secondary,en61558',
   },
+  {
+    name: 'H1102NL',
+    packageType:
+      'SMD modul (LAN magnetics), 16 vývodů (gull-wing, 0,89mm), pouzdro termosetový plast ' +
+      'UL94V-0, rozměry cca 12,7×9,4×5,97mm, rozteč vývodů 1,27mm, skladovací teplota -20 až ' +
+      '+125°C',
+    value:
+      'Ethernetový izolační modul (LAN magnetics) pro 10/100Base-T (single-port), 2× pulzní ' +
+      'transformátor 1:1 (TX + RX) v jednom pouzdře, izolační napětí 1500 VRMS, indukčnost ' +
+      '(OCL) min 350 µH',
+    notes:
+      'Pulse Electronics "H1102NL" (výkresová dokumentace PS-2005.001-F, TLA H1102NL-24, rev. ' +
+      'A, 31.7.2015). ⚠️ NOVÝ TYP součástky v této knihovně: první ethernetový izolační ' +
+      '(LAN magnetics) modul — samostatná dvojice vysokofrekvenčních pulzních transformátorů ' +
+      '(TX a RX kanál) navržená speciálně pro galvanické oddělení Ethernetového PHY od RJ45 ' +
+      'konektoru dle IEEE 802.3 — typický "chybějící díl" mezi Ethernet PHY čipem (např. WIZnet ' +
+      'W5500 v této knihovně, který vyžaduje externí 1:1/350µH transformátor dle svého ' +
+      'datasheetu) a RJ45 konektorem. Zapojení TX (piny 1/2/3=TD+/CT/TD-, výstup 14/15/16=TX-/ ' +
+      'CT/TX+) a RX (piny 6/7/8=RD+/CT/RD-, výstup 9/10/11=RX-/CT/RX+), obě strany 1:1. Meets ' +
+      'IEEE 802.3. Provozní teplota 0-70°C. Poměr závitů 1:1 ±2%. Vložný útlum (insertion loss) ' +
+      'max -1,1dB @100kHz-100MHz. Zpětný útlum (return loss, Zout=100Ω±15%): min -16dB @0,1-30 ' +
+      'MHz, min -10+20·log10(f/60MHz)dB @30-60MHz, min -10dB @60-80MHz. Indukčnost (OCL, ' +
+      'strana média, 0-70°C) min 350µH @100kHz/100mVRMS/8mA DC bias. Přeslech mezi sousedními ' +
+      'kanály min -35dB @1-30MHz, min -30dB @60-100MHz. Potlačení diferenciálního na ' +
+      'souhlasný mód min -42dB @30MHz, -37dB @60MHz, -30dB @100MHz. Stejnosměrný odpor (na ' +
+      'polovinu vinutí) max 0,65Ω, nesymetrie DC odporu (symetrie středního odbočení) max ' +
+      '±0,065Ω. Izolační napětí vstup-výstup min 1500 VRMS @60s. Pájecí podmínky: J-STD-002 ' +
+      '(pájitelnost @245°C reflow), J-STD-020 úroveň 1 (bez citlivosti na vlhkost), J-STD-075 ' +
+      'R7 (max 245°C přes reflow pájku). RoHS. Páskové balení na objednávku (přípona "T", ' +
+      'H1102NL → H1102NLT).',
+    tags: 'cívka,transformátor,pulzní-transformátor,lan-magnetics,ethernet,izolační,pulse-electronics,h1102nl,smd,ieee-802.3',
+  },
 ];
 
 const TORK_SPECS: CoilSpec[] = [
