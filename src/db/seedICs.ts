@@ -3688,6 +3688,40 @@ const IC_SPECS: IcSpec[] = [
       'průmyslové řízení, ruční měřicí přístroje.',
     tags: 'io,mikrokontrolér,mcu,msp430,msp430f149,ti,risc,16bit,nízkopříkonový,adc12,usart,hardwarová-násobička',
   },
+  {
+    name: 'MSP430F1121A',
+    packageType:
+      '20-pin SOWB (DW), 20-pin TSSOP (PW), 20-pin TVSOP (DGV) nebo 24-pin QFN (RGE), napájení ' +
+      'VCC 1,8-3,6V, JTAG (test/emulace) přes piny TDO-TDI/TDI-TCLK/TMS/TCK sdílené s Port 1',
+    value:
+      '16bitový RISC mikrokontrolér (MSP430F11x1A rodina), 4KB Flash / 256B RAM, 14 I/O, ' +
+      'Timer_A3, on-chip komparátor (bez vestavěného ADC), aktivní odběr typ. 160µA @1MHz/2,2V',
+    notes:
+      'Texas Instruments "MSP430C11x1, MSP430F11x1A — Mixed Signal Microcontroller" (dok. ' +
+      'SLAS241I, září 1999, revidováno prosinec 2008) — MSP430F1121A je nejvýbavenější Flash ' +
+      'člen rodiny MSP430F11x1A. Nejmenší/nejjednodušší MSP430 v této knihovně vedle G2553/ ' +
+      'F149/MSPM0L1306 (viz jejich záznamy) — na rozdíl od nich NEMÁ vestavěný analogově- ' +
+      'digitální převodník (ADC10/ADC12) — obsahuje pouze analogový komparátor (Comparator_A) ' +
+      'umožňující tzv. "slope A/D" konverzi (jednosměrný/sklonový převod) přes externí RC ' +
+      'obvod a rezistivní senzor přímo na I/O pinu, vhodné pro jednoduché RF senzorové ' +
+      'front-endy a nízkonákladové aplikace, kde plnohodnotný ADC není potřeba. Výrazně méně ' +
+      'I/O (14, oproti 24 u G2553 nebo 48 u F149) a menší pouzdro (20/24 pinů). Rodina zahrnuje ' +
+      'i variantu s maskovanou ROM pamětí místo Flash (MSP430C1101/C1111/C1121 — levnější pro ' +
+      'velkosériovou výrobu bez potřeby přeprogramování) a dvě menší Flash varianty F1101A ' +
+      '(1KB Flash/128B RAM) a F1111A (2KB Flash/128B RAM), F1121A (4KB Flash/256B RAM) je ' +
+      'největší. Periferie: jediný Timer_A3 (3 capture/compare registry), Comparator_A, ' +
+      'watchdog timer (15/16bit). Hodinový systém: interní DCO (různé interní rezistory nebo ' +
+      'jeden externí rezistor pro nastavení kmitočtu), 32kHz krystal, vysokofrekvenční ' +
+      'krystal, rezonátor, nebo externí hodinový zdroj — probuzení ze standby do aktivního ' +
+      'režimu za <6µs. Nízkopříkonové režimy: aktivní 160µA @1MHz/2,2V, standby 0,7µA, off ' +
+      '(RAM retence) 0,1µA — pět softwarově volitelných úsporných režimů LPM0-LPM4 (shodná ' +
+      'koncepce jako u ostatních MSP430 v této knihovně). 16bitová RISC architektura, 125ns ' +
+      'instrukční cyklus, 16 registrů, 51 instrukcí, 7 adresovacích módů (shodné jako u ' +
+      'MSP430G2553/F149). Palubní sériové programování bez externího programovacího napětí, ' +
+      'programovatelná ochrana kódu (security fuse). Aplikace: jednoduché senzorové systémy, ' +
+      'samostatné RF senzorové front-endy.',
+    tags: 'io,mikrokontrolér,mcu,msp430,msp430f1121a,ti,risc,16bit,nízkopříkonový,komparátor,malé-pouzdro',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
