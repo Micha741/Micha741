@@ -683,12 +683,38 @@ const IC_SPECS: IcSpec[] = [
   // Posuvné registry
   {
     name: '74HC595',
-    packageType: 'DIP-16',
-    value: '8bitový sériově vstupní/paralelně výstupní posuvný registr, 2–6 V',
+    packageType:
+      'DIP-16/SOIC-16/SSOP-16/TSSOP-16 (SN74HC595, komerční teplotní rozsah -40 až +85°C) nebo ' +
+      'CDIP-16/LCCC-20 (SN54HC595, vojenský rozsah -55 až +125°C), piny: 1-7=QB-QH, 8=GND, ' +
+      '9=QH\' (sériový výstup pro kaskádování), 10=SRCLR (aktivní v L, přímý reset posuvného ' +
+      'registru), 11=SRCLK (hodiny posuvného registru), 12=RCLK (hodiny paměťového registru/ ' +
+      'latch), 13=OE (aktivní v L, povolení výstupů), 14=SER (sériový vstup), 15=QA, 16=VCC',
+    value:
+      '8bitový sériově vstupní/paralelně výstupní posuvný registr s výstupním registrem se ' +
+      '3-stavovými výstupy, napájení 2–6 V, IOH/IOL do ±6mA @5V (do 15 LSTTL zátěží)',
     notes:
-      'Velmi časté řešení pro rozšíření počtu výstupů mikrokontroléru přes 3 piny (data, clock, latch) ' +
-      '— lze řetězit více kusů za sebou. Typicky se používá k ovládání LED, displejů apod.',
-    tags: 'io,logika,74hc595,posuvný-registr,led',
+      'Texas Instruments "SN54HC595, SN74HC595 — SNx4HC595 8-Bit Shift Registers With 3-State ' +
+      'Output Registers" (dok. SCLS041J, prosinec 1982, revidováno říjen 2021) — enriched z ' +
+      'obecného placeholderu na plné datasheetové specifikace. Velmi časté řešení pro rozšíření ' +
+      'počtu výstupů mikrokontroléru přes 3 piny (SER/data, SRCLK/clock, RCLK/latch) — obsahuje ' +
+      'DVA nezávislé registry: 8bitový posuvný registr (plněný na SRCLK, s přímým vstupem SRCLR ' +
+      'pro reset) a 8bitový D-typ paměťový (storage/latch) registr s odděleným hodinovým ' +
+      'vstupem RCLK, jehož 3-stavové výstupy se ovládají signálem OE — díky oddělení posuvu od ' +
+      'zápisu na výstup lze plnit registr, aniž by se měnil aktuální stav výstupů, a teprve ' +
+      'jedním impulzem RCLK "překlopit" nový obsah na výstupy najednou. Sériový výstup QH\' ' +
+      '(pin 9) umožňuje řetězení (kaskádování) libovolného počtu kusů za sebou — typicky pro ' +
+      'ovládání LED, displejů, relé apod. Absolutní maximum: VCC -0,5 až 7V, vstupní/výstupní ' +
+      'svorkovací proud ±20mA, trvalý výstupní proud ±35mA/pin (±70mA přes VCC/GND celkem), TJ ' +
+      'max 150°C. ESD odolnost HBM 2000V/CDM 1000V. Doporučené provozní podmínky: VCC 2-6V, ' +
+      'VIH min 1,5V@2V/3,15V@4,5V/4,2V@6V, VIL max 0,5V@2V/1,35V@4,5V/1,8V@6V. Výstupní napětí ' +
+      '(SN74HC595, TA=25°C): VOH min 4,4V@4,5V/IOH=-4mA nebo 5,8V@6V/IOH=-5,2mA (na výstupu QA ' +
+      'proti ostatním o 2mA nižší zátěž kvůli sdílenému výstupnímu tranzistoru); VOL max ' +
+      '0,4V@4,5V/IOL=4mA nebo 0,33V@6V/IOL=5,2mA. Vstupní proud II max ±1000nA @VCC=6V ' +
+      '(SN74HC595, TA=25°C). Proudový odběr ICC max 80µA @VCC=6V/VI=VCC nebo 0/IO=0. Vstupní ' +
+      'kapacita CI max 10pF. Kmitočet hodin fclock: SN74HC595 min 25MHz @4,5V / 29MHz @6V / ' +
+      '5MHz @2V. Tepelný odpor přechod-okolí RθJA: 73°C/W (SOIC-16) / 108°C/W (TSSOP-16) / ' +
+      '67°C/W (PDIP-16) dle konkrétního pouzdra. Provozní teplota SN74HC595: -40 až +85°C.',
+    tags: 'io,logika,74hc595,posuvný-registr,shift-register,3-state,latch,led,ti',
   },
   {
     name: '74HC165',
