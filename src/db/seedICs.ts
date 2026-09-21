@@ -12,13 +12,38 @@ const IC_SPECS: IcSpec[] = [
   // Časovače
   {
     name: 'NE555',
-    packageType: 'DIP-8 / SO-8',
-    value: 'Časovač (monostabilní/astabilní), 4,5–16 V, výstup až 200 mA',
+    packageType:
+      'DIP-8/SOIC-8/SO-8/TSSOP-8 (NE555, komerční teplotní rozsah 0 až 70°C), piny: 1=GND, ' +
+      '2=TRIG, 3=OUT, 4=RESET, 5=CONT, 6=THRES, 7=DISCH, 8=VCC (standardní pinout, shodný ' +
+      'napříč výrobci)',
+    value:
+      'Přesný časovač (monostabilní/astabilní), napájení 4,5–16 V, výstup (sink/source) do ' +
+      '±200 mA, teplotní koeficient časového intervalu 50 ppm/°C (monostabilní)/150 ppm/°C ' +
+      '(astabilní)',
     notes:
-      'Univerzální časovací obvod — generátor obdélníkových pulzů, PWM, zpoždění. ' +
-      'Zapojení DIP-8: 1=GND, 2=TRIG, 3=OUT, 4=RESET, 5=CTRL, 6=THR, 7=DISCH, 8=VCC ' +
-      '(standardní pinout, shodný napříč výrobci).',
-    tags: 'io,časovač,555,oscilátor,pwm',
+      'Texas Instruments "NA555, NE555, SA555, SE555 — xx555 Precision Timers" (dok. SLFS022K, ' +
+      'září 1973, revidováno březen 2026) — enriched z obecného placeholderu na plné ' +
+      'datasheetové specifikace. Univerzální přesný časovací obvod — v monostabilním režimu ' +
+      'generuje přesné zpoždění řízené jedním externím RC článkem, v astabilním režimu ' +
+      'oscilátor s kmitočtem a střídou nastavitelnými nezávisle dvěma rezistory a ' +
+      'kondenzátorem. Vnitřní komparátory: spouštěcí (trigger) úroveň ~1/3 VCC, prahová ' +
+      '(threshold) úroveň ~2/3 VCC (obě lze změnit přes pin CONT). RESET má přednost před ' +
+      'ostatními vstupy. Když je výstup nízký, DISCH poskytuje nízkoimpedanční cestu k GND pro ' +
+      'vybití časovacího kondenzátoru. Absolutní maximum: VCC max 18V, VI (CONT/RESET/THRES/ ' +
+      'TRIG) max VCC, IO max ±225mA, TJ max 150°C, Tstg -65 až +150°C. ESD odolnost HBM ±500V, ' +
+      'CDM ±1500V. Doporučené provozní podmínky: VCC 4,5-16V (NE555), IO max ±200mA, TA 0-70°C ' +
+      '(NE555, komerční verze — sourozenecké verze NA555: -40 až +105°C, SA555: -40 až +85°C, ' +
+      'SE555: -55 až +125°C, shodné elektricky, jen jiný teplotní rozsah a VCC max 18V u ' +
+      'SE555). THRES napěťová úroveň typ. 3,3V @VCC=5V / 10V @VCC=15V (~2/3 VCC). TRIG napěťová ' +
+      'úroveň typ. 1,67V @VCC=5V / 5V @VCC=15V (~1/3 VCC), TRIG proud typ. 0,5µA. RESET ' +
+      'napěťová úroveň typ. 0,7V. Výstup nízké úrovně (VOL) typ. 0,1V @IOL=10mA až 2V @IOL=100mA ' +
+      '(VCC=15V). Výstup vysoké úrovně (VOH) typ. 13,3V @IOH=-100mA/VCC=15V. Proudový odběr ICC ' +
+      'typ. 10mA (výstup nízko, bez zátěže, VCC=15V) / 3mA (VCC=5V). Doba náběhu/doběhu výstupu ' +
+      'tr/tf typ. 100ns/max 300ns @CL=15pF. Tepelný odpor přechod-okolí RθJA 125,4°C/W (SOIC-8) ' +
+      '/ 98,5°C/W (PDIP-8) / 124,5°C/W (SO-8) / 164,2°C/W (TSSOP-8). Typické zapojení: pulzní ' +
+      'tvarovací obvody, detektory chybějícího pulzu, PWM/PPM modulátory, sekvenční časovače, ' +
+      'generátory pulzů, kmitočtové děličky, průmyslové řízení.',
+    tags: 'io,časovač,555,ne555,oscilátor,pwm,monostabilní,astabilní,ti',
   },
   {
     name: 'NE556',
