@@ -3653,6 +3653,41 @@ const IC_SPECS: IcSpec[] = [
       'LaunchPad kit, MSP Software Development Kit (SDK), Code Composer Studio IDE.',
     tags: 'io,mikrokontrolér,mcu,mspm0,mspm0l1306,ti,arm,cortex-m0+,32bit,nízkopříkonový,launchpad,adc,opa',
   },
+  {
+    name: 'MSP430F149',
+    packageType:
+      '64-pin LQFP (PM), TQFP (PAG) nebo VQFN (RTD), rozměry cca 10×10mm (LQFP/TQFP), napájení ' +
+      'DVCC/AVCC 1,8-3,6V, 4vodičové JTAG (TMS/TCK/TDI-TCLK/TDO-TDI) pro programování/ladění, ' +
+      'bez externího programovacího napětí, programovatelná ochrana kódu (security fuse)',
+    value:
+      '16bitový RISC mikrokontrolér (MSP430F14x rodina), 60KB+256B Flash / 2KB RAM, 16bit ADC12 ' +
+      '(8 kanálů, interní reference, autoscan), 2× USART, hardwarová násobička, 48 I/O',
+    notes:
+      'Texas Instruments "MSP430F14x, MSP430F14x1, MSP430F13x Mixed-Signal Microcontrollers" ' +
+      '(dok. SLAS272H, červenec 2000, revidováno květen 2018) — MSP430F149 je nejvýbavenější ' +
+      'člen rodiny MSP430F14x. Starší/klasická generace MSP430 (rok 2000) vedle MSP430G2553 a ' +
+      'MSPM0L1306 v této knihovně (viz jejich záznamy) — na rozdíl od G2553 (USCI, ADC10, bez ' +
+      'hardwarové násobičky) nabízí F149 přesnější 12bitový ADC12 (namísto 10bitového ADC10), ' +
+      'DVĚ nezávislé USART jednotky (namísto jedné USCI), integrovanou hardwarovou násobičku ' +
+      '(MPY/MPYS/MAC/MACS registry pro rychlé násobení/MAC operace bez zatížení CPU) a dvakrát ' +
+      'více paměti (60KB Flash/2KB RAM vs. 16KB/512B) — typický "vyšší" MSP430 pro náročnější ' +
+      'aplikace metrologie/monitoringu, zatímco G2553/MSPM0L1306 cílí na levné/kompaktní ' +
+      'aplikace. Periferie: Timer_A3 (3 capture/compare registry), Timer_B7 (7 capture/compare/ ' +
+      'shadow registrů — bohatší než Timer_A), on-chip komparátor (Comparator_A), watchdog ' +
+      'timer (15/16bit). 12bitový ADC12: 8 kanálů, vzorkovač/hold, autoscan funkce, vestavěná ' +
+      'reference, konverze <10µs. USART0/USART1: funkce jako asynchronní UART nebo synchronní ' +
+      'SPI rozhraní. Hodinový systém: interní DCO s probuzením z low-power módu do aktivního ' +
+      'režimu za <6µs, externí XT2 krystalový oscilátor (navíc k standardnímu LFXT1/32kHz), ' +
+      'ACLK/SMCLK/MCLK odvozené hodiny. Nízkopříkonové režimy: aktivní 280µA @1MHz/2,2V, ' +
+      'standby 1,6µA, off (RAM retence) 0,1µA — pět softwarově volitelných úsporných režimů ' +
+      '(LPM0-LPM4, shodná koncepce jako u MSP430G2553). 16bitová RISC architektura, 125ns ' +
+      'instrukční cyklus, 16 registrů (4 vyhrazené + 12 obecných), stejná instrukční sada/ ' +
+      'adresovací módy jako MSP430G2553. Rodina zahrnuje MSP430F149/F1491 (60KB/2KB), F148/ ' +
+      'F1481 (48KB/2KB), F147/F1471 (32KB/1KB), F135 (16KB/512B), F133 (8KB/256B) — všechny se ' +
+      '48 I/O, 8kanálovým ADC12 a shodným 64pinovým pouzdrem. Aplikace: senzorové systémy, ' +
+      'průmyslové řízení, ruční měřicí přístroje.',
+    tags: 'io,mikrokontrolér,mcu,msp430,msp430f149,ti,risc,16bit,nízkopříkonový,adc12,usart,hardwarová-násobička',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
