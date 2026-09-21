@@ -495,6 +495,74 @@ const RELAY_SPECS: RelaySpec[] = [
       '10×10⁶ cyklů. Okolní teplota -25 až +70°C.',
     tags: 'relé,bezpečnostní,nuceně-vedené-kontakty,force-guided,schrack,sr,sr2,sr4,sr6,en-50205',
   },
+  {
+    name: 'QLT Power SSR 10-40A (jednofázové polovodičové relé)',
+    packageType:
+      'panelové polovodičové relé (SSR), hliníková nebo měděná (Cu) základová deska (poniklovaná), ' +
+      'černé pouzdro, šroubové svorky, dvě velikosti pouzdra (Case A/Case B), volitelná LED ' +
+      'indikace vstupu',
+    value:
+      'Jednofázové AC polovodičové relé (SSR), triakový výstup, zatížitelnost 10/15/25/40 A, ' +
+      'spínané napětí 280 V nebo 480 V AC, řídicí vstup DC 4-16V / DC 3-32V / AC 90-250V',
+    notes:
+      'QLT Power "Semiconductor Device — Solid State Relays, SSR 10 to 40 Amps AC SSR" ' +
+      '(SSR120A.pdf, str. 1–2). ⚠️ NOVÁ SUB-KATEGORIE v "Spínač/Relé": první POLOVODIČOVÉ ' +
+      '(solid-state) relé v knihovně — na rozdíl od elektromagnetických relé (Tianbo TRA1, ' +
+      'Omron G5LE, celá řada Schrack v této knihovně) nemá žádné pohyblivé kontakty ani cívku — ' +
+      'spínání zajišťuje výkonový triak ovládaný přes optickou izolaci (4000 Vrms), řídicí ' +
+      'obvod a zátěž jsou galvanicky odděleny. K dispozici ve verzi "Zero Voltage" (spíná při ' +
+      'průchodu síťového napětí nulou — vhodné pro odporové zátěže, nízké EMI) nebo "Random ' +
+      'Switching" (fázově řízené spínání kdykoli v průběhu periody). Objednací kód např. ' +
+      'SSR-4028ZD1 = 40A/280VAC/Zero Voltage/DC 4-16V vstup. Vstupní parametry (D1/D3/A2): ' +
+      'řídicí napětí 4-16VDC / 3-32VDC / 90-250VAC, vstupní proud max 7-20mA (D1) / 13-16mA ' +
+      '(D3) / 30mA (A2), napětí jistého sepnutí 4VDC/3VDC/90VAC, napětí jistého rozepnutí ' +
+      '1VDC/1VDC/10VAC. Výstupní parametry dle proudové třídy (10/15/25/40A): nárazový proud ' +
+      '(20ms) 85/115/230/400 A, rozsah spínaného napětí 24-280V (280V provedení) nebo 44-440V ' +
+      '(480V provedení), blokovací napětí triaku ≥600V (240V provedení) nebo ≥800V (440V ' +
+      'provedení), tepelný odpor pouzdro-přechod 2,5°C/W (10/15A) / 1,3°C/W (25A) / 1,1°C/W ' +
+      '(40A). Společné parametry: kmitočtový rozsah 47-63Hz, min. strmost nárůstu blokovacího ' +
+      'napětí dv/dt 200V/µs, max. závěrný proud 8mA, max. úbytek napětí v sepnutém stavu 1,6V, ' +
+      'doba zapnutí max 1/2 periody (Zero) nebo 1ms (Random), doba vypnutí max 1/2 periody. ' +
+      'Dielektrická pevnost vstup/výstup i vstup-výstup/základna 2500Vrms, kapacita vazby 10pF. ' +
+      'Okolní teplota (provoz i skladování) -30 až +80°C. Max. zpětné napětí vstupu 32VDC. ' +
+      'Hmotnost dle pouzdra a materiálu základové desky: Case A 99g (Al) / 145g (Cu), Case B ' +
+      '81g (Al) / 120g (Cu).',
+    tags: 'relé,ssr,solid-state-relay,polovodičové,triak,qlt-power,zero-voltage,random-switching',
+  },
+  {
+    name: 'QLT Power SSR 40-120A (jednofázové polovodičové relé)',
+    packageType:
+      'panelové polovodičové relé (SSR), hliníková nebo měděná (Cu) základová deska (poniklovaná), ' +
+      'černé pouzdro, šroubové svorky, dvě velikosti pouzdra (Case A/Case B), volitelná LED ' +
+      'indikace vstupu',
+    value:
+      'Jednofázové AC polovodičové relé (SSR), duální SCR (hybridní tyristorový) výstup, ' +
+      'zatížitelnost 40/60/80/100/120 A, spínané napětí 280 V nebo 480 V AC, řídicí vstup ' +
+      'DC 4-16V / DC 3-32V / AC 90-250V',
+    notes:
+      'QLT Power "Semiconductor Device — Solid State Relays, SSR 40 to 120 Amps AC SSR" ' +
+      '(SSR120A.pdf, str. 3–4) — ⚠️ SOUHRNNÝ ZÁZNAM, viz poznámka u "QLT Power SSR 10-40A" pro ' +
+      'obecný kontext polovodičových relé v této knihovně. Výkonnější řada stejné produktové ' +
+      'linie — místo jednoho triaku (řada 10-40A) používá dvojici výkonových tyristorů (SCR) v ' +
+      'hybridní konfiguraci ("Dual SCR Power Hybrid") pro lepší tepelné řízení a delší cyklickou ' +
+      'životnost při vysokém proudovém zatížení; k dispozici i vysokonapěťová verze s blokovacím ' +
+      'napětím SCR 1200 Vpk pro 480 Vrms provoz. Objednací kód např. SSR-8028ZD1 = 80A/280VAC/' +
+      'Zero Voltage/DC 4-16V vstup. Vstupní parametry (D1/D3/A2): řídicí napětí 4-16VDC / ' +
+      '3-32VDC / 90-250VAC, vstupní proud max 7-20mA (D1) / 13-16mA (D3) / 29mA (A2), napětí ' +
+      'jistého sepnutí 4VDC/3VDC/90VAC, napětí jistého rozepnutí 1VDC/1VDC/10VAC, max. zpětné ' +
+      'napětí vstupu 32VDC. Výstupní parametry dle proudové třídy: nárazový proud (20ms) ' +
+      '400A@40A / 600A@60A / 1000A@80A / 1200A@100A / 1500A@120A, rozsah spínaného napětí ' +
+      '24-280V (280V provedení) nebo 44-440V (480V provedení), blokovací napětí SCR ≥800V (240V ' +
+      'provedení) nebo ≥1200V (440V provedení), tepelný odpor pouzdro-přechod 1,3°C/W (40A) / ' +
+      '0,65°C/W (60A) / 0,5°C/W (80A) / 0,3°C/W (100/120A). Kmitočtový rozsah 47-63Hz, min. ' +
+      'strmost nárůstu blokovacího napětí dv/dt 200V/µs, max. závěrný proud 8mA, max. úbytek ' +
+      'napětí v sepnutém stavu 1,6V, doba zapnutí max 1/2 periody (Zero) nebo 1ms (Random), doba ' +
+      'vypnutí max 1/2 periody. Dielektrická pevnost vstup/výstup i vstup-výstup/základna ' +
+      '2500Vrms, kapacita vazby max 10pF. Okolní teplota (provoz i skladování) -30 až +80°C. ' +
+      'Hmotnost dle pouzdra a materiálu základové desky: Case A 99g (Al) / 145g (Cu), Case B ' +
+      '81g (Al) / 120g (Cu).',
+    tags: 'relé,ssr,solid-state-relay,polovodičové,dual-scr,qlt-power,zero-voltage,random-switching,vysokoproudé',
+  },
 ];
 
 export function buildRelaySeed(): ComponentInput[] {
