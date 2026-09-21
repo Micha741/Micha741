@@ -2684,6 +2684,53 @@ const DIODE_SPECS: PartSpec[] = [
       'podmínky 260°C/10s, MSL=1, hmotnost ~0,01 g. Shoda s RoHS, REACH, Conflict Minerals.',
     tags: 'dioda,proudově-omezující,current-limiting-diode,constant-current,diotec,cl05m6f,sod-123fl,led-driver',
   },
+  {
+    name: 'DSEI 2x 61-04C',
+    packageType:
+      'výkonový modul miniBLOC (ISOTOP kompatibilní, SOT-227B), 2 nezávislé diody se společnou ' +
+      'katodou (dvojice pinů + šroubové M4 terminály), izolační napětí pouzdra 2500 V~, hmotnost ' +
+      '30 g, šroubovací montáž (moment 1,5 Nm)',
+    value:
+      'Rychlá epitaxní dioda (FRED — Fast Recovery Epitaxial Diode), 2× v jednom pouzdře, VRRM ' +
+      '400 V, IFAVM 2×60 A, doba zotavení trr typ. 35 ns (velmi rychlá/měkká charakteristika)',
+    notes:
+      'IXYS "DSEI 2x 61 — Fast Recovery Epitaxial Diode (FRED)" (katalogový list, © 2000 IXYS). ' +
+      '⚠️ NOVÝ TYP součástky v této knihovně: první výkonový diodový MODUL (dvojice diod v ' +
+      'šroubovacím kovovém pouzdře pro montáž na chladič) — na rozdíl od THT/SMD diskrétních ' +
+      'diod v této knihovně jde o vysokoproudou/vysokorychlostní součástku pro výkonovou ' +
+      'elektroniku. Planárně pasivované čipy, velmi krátká doba zotavení a měkký (soft) ' +
+      'zotavovací charakter pro nízké napěťové špičky a nízký rušivý hluk při spínání. Použití: ' +
+      'antiparalelní dioda pro vysokofrekvenční spínací prvky (IGBT/MOSFET), anti-saturační ' +
+      'dioda, snubber dioda, zpětná (freewheeling) dioda v měničích a řízení motorů, ' +
+      'usměrňovače ve spínaných zdrojích (SMPS), indukční ohřev a tavení, UPS, ultrazvukové ' +
+      'čističky a svářečky. Nejnižší napěťová varianta dvojice DSEI 2x 61-04C/-06C (VRRM 400 V, ' +
+      'VRSM 440 V; viz sourozenecký záznam "DSEI 2x 61-06C" pro 600V variantu). IFRMS 100 A ' +
+      '(TVJ=TVJM). IFAVM 60 A/diodu (TC=70°C, obdélníkový průběh, d=0,5, zahrnuje ztráty ' +
+      'zpětného blokování při TVJM/VR=0,8·VRRM). IFRM 800 A (impulzně, tp<10µs). IFSM (rázový ' +
+      'proud, sinusová půlvlna): 550 A (10ms/50Hz) / 600 A (8,3ms/60Hz) @TVJ=45°C, nebo 480 A / ' +
+      '520 A @TVJ=150°C. I²t: 1510 A²s (10ms/50Hz) až 1120 A²s (8,3ms/60Hz, TVJ=150°C). VF ' +
+      '(@IF=60A) max 1,5V @TVJ=150°C / max 1,8V @TVJ=25°C. VT0 (pro výpočet ztrát) 1,13V, ' +
+      'dynamický odpor rT 4,7mΩ @TVJ=TVJM. Závěrný proud IR: typ 200µA @VR=VRRM/25°C, max 14mA ' +
+      '@VR=0,8·VRRM/125°C. Doba zotavení trr typ. 35ns/max 50ns @IF=1A/-di/dt=200A/µs/VR=30V/ ' +
+      '25°C. Špičkový zpětný proud IRM typ. 19A/max 21A @VR=350V/IF=60A/-diF/dt=480A/µs. Tepelný ' +
+      'odpor přechod-pouzdro RthJC 0,7 K/W, pouzdro-chladič RthCK 0,05 K/W. Ptot 180W @TC=25°C. ' +
+      'TVJ -40 až +150°C (TVJM 150°C), Tstg -40 až +150°C. Certifikace UL (E72873). Data dle ' +
+      'IEC 60747.',
+    tags: 'dioda,fred,fast-recovery,epitaxní,výkonový-modul,ixys,dsei-2x61,minibloc,sot-227,400v,duální',
+  },
+  {
+    name: 'DSEI 2x 61-06C',
+    packageType: 'shodné s DSEI 2x 61-04C — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      'Rychlá epitaxní dioda (FRED), 2× v jednom pouzdře, VRRM 600 V, IFAVM 2×60 A, doba ' +
+      'zotavení trr typ. 35 ns',
+    notes:
+      'IXYS "DSEI 2x 61" — součást dvojice DSEI 2x 61-04C/-06C, viz záznam "DSEI 2x 61-04C" v ' +
+      'této knihovně pro plné společné elektrické/mechanické specifikace. Vyšší napěťová ' +
+      'varianta: VRRM 600 V, VRSM 640 V (ostatní parametry — proudové zatížitelnosti, doba ' +
+      'zotavení, tepelné odpory — shodné s -04C variantou dle katalogového listu).',
+    tags: 'dioda,fred,fast-recovery,epitaxní,výkonový-modul,ixys,dsei-2x61,minibloc,sot-227,600v,duální',
+  },
 ];
 
 const BRIDGE_SPECS: PartSpec[] = [
