@@ -4303,6 +4303,37 @@ const MODULE_SPECS: ModuleSpec[] = [
       'dálkové ovládání, domácí automatizace, hračky.',
     tags: 'modul,rf,transceiver,gfsk,2.4ghz,hoperf,beken,rfm75,rfm75c,spi,nrf24l01-kompatibilní',
   },
+  {
+    name: 'RX-4MHCS',
+    packageType: 'THT modul, drátové vývody (rozteč 2,54mm), 15 pinů (piny 1/4/5/6 nevyužity)',
+    value:
+      '433,92 MHz OOK (AM) přijímač s dekodérem rolling code (HCS) a 4 výstupními kanály, ' +
+      'napájení 5V DC, výstupy s otevřeným kolektorem do 100 mA/kanál',
+    notes:
+      'AUREL S.p.A. "RX-4MHCS — 433.92 MHz OOK (AM) Receiver, 4 output channels" (User Manual, ' +
+      '16.1.2007). ⚠️ ODLIŠNÁ TŘÍDA součástky od ostatních RF modulů AUREL/HOPERF v této ' +
+      'knihovně (TX-SAW 434 L, RFM01, RFM210LCF-S1, RFM75) — nejde o holý RF přijímač/ ' +
+      'vysílač, ale o KOMPLETNÍ HOTOVÝ SYSTÉM s vestavěným dekodérem rolling code (HCS — ' +
+      'Hopping/Keeloq-like Code, ochrana proti replay útoku záznamem a přehráním signálu) a 4 ' +
+      'uživatelsky programovatelnými výstupy s tranzistory v zapojení otevřeného kolektoru — ' +
+      'určeno přímo pro ovládání relé/spotřebičů bez nutnosti vlastního mikrokontroléru/ ' +
+      'dekódovací logiky. Kompatibilní s dálkovými ovladači (keyfoby) AUREL: HCS-TX-1/2/3 ' +
+      '(OVO), TX1/2/3-HCS-433 (HCS), TX-2/4/6 M-HCS, TX-12 CH — přijímač rozpozná pouze ' +
+      'ovladače s HCS enkodérem naprogramovaným stejným výrobním kódem jako AUREL (na ' +
+      'požádání lze naprogramovat zákaznický kód). Piny: 2/7=GND, 3=Anténa, 8=Test Point ' +
+      '(analogový RX výstup), 9=programovací tlačítko, 10-13=Ch1-4 výstup (otevřený kolektor, ' +
+      'spouští se stiskem odpovídajícího tlačítka na ovladači), 14=LED výstup (anoda, ' +
+      'proud interně omezen na ~20mA rezistorem 180Ω), 15=Vcc (+5V). Každý výstup nezávisle ' +
+      'programovatelný na monostabilní režim (aktivní jen po dobu držení tlačítka na ovladači) ' +
+      'nebo bistabilní režim (přepíná stav při každém stisku — vhodné pro ovládání osvětlení/ ' +
+      'zámků). Paměť pro až 10 naučených ovladačů (auto-learning: přiblížení ovladače a stisk ' +
+      'libovolného tlačítka naučí všechny kanály najednou), možnost úplného smazání paměti ' +
+      'přes programovací tlačítko. Doporučená externí anténa: drát 17cm + zemní plocha. Max. ' +
+      'proud výstupního tranzistoru 100mA — při induktivní zátěži (relé) nutná ochranná dioda ' +
+      'paralelně k zátěži. Vhodné pro DPS s oboustrannou zemní plochou kolem přijímací sekce. ' +
+      'Aplikace: ovládání vrat/bran, poplašné/zabezpečovací systémy, kódovaný radiový spoj.',
+    tags: 'modul,rf,přijímač,ask,ook,rolling-code,hcs,dekodér,aurel,rx-4mhcs,tht,433mhz,relé',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
