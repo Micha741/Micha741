@@ -4420,6 +4420,45 @@ const MODULE_SPECS: ModuleSpec[] = [
       'lokalizačně uvědomělé bezdrátové senzorové sítě.',
     tags: 'modul,rf,transceiver,uwb,ultra-wideband,lokalizace,rtls,ranging,decawave,dwm1000,ieee-802.15.4,spi',
   },
+  {
+    name: 'RC-WLE5-868',
+    packageType:
+      'SMD modul s kovovým stínicím krytem, 14,5×13×2,8mm, 29 vývodů (rozteč 1,27mm), dvě ' +
+      'varianty: standardní s U.FL konektorem pro externí anténu (i vyvedený RF signál na ' +
+      'pinu 16 pro vlastní anténní návrh na DPS) nebo s integrovanou 868MHz šroubovicovou ' +
+      '(helical) anténou (RC-WLE5-868-HA)',
+    value:
+      'LoRa/multiprotokolový LPWAN modul s integrovaným 32bit Arm Cortex-M4 MCU (STM32WLE5JC), ' +
+      'pásmo 868MHz, VDD 2,5–3,7V, RF výstupní výkon do 18,5dBm, citlivost -140dBm',
+    notes:
+      'Radiocontrolli s.r.l. "RC-WLE5-868 / RC-WLE5-868-HA — Lora Wireless Module STM32WLE5 ' +
+      'based" (rev. 1.2). ⚠️ ARCHITEKTONICKY ODLIŠNÝ MODUL v této knihovně — na rozdíl od ' +
+      'ostatních RF modulů (HOPERF RFM01/RFM75/HM-TRP, Decawave DWM1000, viz jejich záznamy), ' +
+      'které jsou buď holé RF transceivery bez vlastního zpracování protokolu, nebo ' +
+      'transparentní UART mosty, obsahuje RC-WLE5-868 PLNOHODNOTNÝ MIKROKONTROLÉR (STM32WLE5JC ' +
+      '— Arm Cortex-M4 + integrovaný SX126x LoRa transceiver na jednom čipu) — modul lze přímo ' +
+      'naprogramovat vlastním firmwarem (přes SWD/ST-LINK nebo USART bootloader) a provozovat ' +
+      'samostatně bez externího hostitelského MCU, podobně jako ESP32-C3-MINI-1/WROOM-02 v ' +
+      'této knihovně (Wi-Fi/BLE varianta), jen s LoRa/(G)FSK/(G)MSK/BPSK LPWAN rádiem místo ' +
+      'Wi-Fi/BLE. STM32WLE5JC: Flash do 256KB, SRAM do 64KB, 12bit ADC, 12bit DAC se ' +
+      'sample-and-hold, dva ultra-nízkopříkonové komparátory s přesnou referencí, RTC s ' +
+      '32bit sub-sekundovým wakeup čítačem, 1× 16bit časovač, 2× 16bit 4kanálový časovač ' +
+      '(podpora řízení motorů), 1× 32bit 4kanálový časovač, 3× 16bit ultra-nízkopříkonový ' +
+      'časovač. Ochrana Flash/SRAM: readout protection, write protection, proprietární ' +
+      'ochrana čtení kódu. RF přepínač TX/RX řízen firmwarem přes piny PC3/PC4 (nejsou ' +
+      'vyvedeny na patici modulu, musí být ovládány interně). BOOT0 (pin PH3): nízko = ' +
+      'normální běh, vysoko = USART firmware upgrade režim; programování přes SWD nevyžaduje ' +
+      'BOOT0. Elektrické parametry: VCC 2,5-3,7V (typ. 3,3V), proud spánku typ. 2,0µA, proud ' +
+      'příjmu typ. 5,0mA, proud vysílání typ. 120mA, frekvence 868MHz, max. RF výkon 18,5dBm, ' +
+      'citlivost přijímače 140dBm (patrně -140dBm, model-specifický LoRa dosah), provozní ' +
+      'teplota -20 až +70°C. Doporučené zapojení: decoupling kondenzátory 4,7µF+0,1µF a ' +
+      'feritová korálka 600Ω/100MHz na VCC, měděná zemní plocha pod stíněnou zónou modulu s ' +
+      'vyříznutou (bez mědi) oblastí pod anténou. Aplikace: chytré měřiče, bezdrátové ' +
+      'zabezpečovací systémy, domácí/budovní automatizace, 6LoWPAN sítě, automatický odečet ' +
+      'měřidel, bezdrátové senzorové sítě, dálkové ovládání, veřejné osvětlení, parkovací ' +
+      'senzory, environmentální senzory, smart grid.',
+    tags: 'modul,mcu,rf,lora,lpwan,stm32wle5,arm,cortex-m4,radiocontrolli,rc-wle5-868,868mhz,sx126x',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
