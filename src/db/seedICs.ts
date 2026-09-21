@@ -3617,6 +3617,42 @@ const IC_SPECS: IcSpec[] = [
       'LaunchPad vývojového kitu MSP-EXP430G2).',
     tags: 'io,mikrokontrolér,mcu,msp430,msp430g2553,ti,risc,16bit,nízkopříkonový,launchpad,adc,usci',
   },
+  {
+    name: 'MSPM0L1306',
+    packageType:
+      '32-VQFN (RHB, 5×5mm), napájení VDD 1,62-3,6V, rozšířený teplotní rozsah -40 až +125°C, ' +
+      '2vodičové SWD (Serial Wire Debug) rozhraní',
+    value:
+      '32bitový mikrokontrolér Arm Cortex-M0+ (MSPM0 rodina), 64KB Flash / 4KB SRAM, do 32MHz, ' +
+      '12bitový 1,68Msps ADC (až 10 kanálů), režim RUN 71µA/MHz, STANDBY 1,0µA, SHUTDOWN 61nA',
+    notes:
+      'Texas Instruments "MSPM0L1346, MSPM0L1345, MSPM0L1344, MSPM0L1343, MSPM0L1306, ' +
+      'MSPM0L1305, MSPM0L1304, MSPM0L1303 — MSPM0L130x Mixed-Signal Microcontrollers" (dok. ' +
+      'SLASEX0D, říjen 2022, revidováno leden 2024) — nejvýbavenější člen podskupiny MSPM0L130x ' +
+      '(64KB Flash/4KB SRAM, 10 ADC kanálů, 28 GPIO). ⚠️ NOVÁ MCU ARCHITEKTURA v této knihovně ' +
+      'vedle MSP430G2553 (viz jeho záznam) — na rozdíl od proprietární 16bitové RISC ' +
+      'architektury MSP430 jde o standardní 32bitové jádro Arm Cortex-M0+ s NVIC, novější a ' +
+      'výkonnější řada MCU od TI. Analogové periferie: 12bitový 1,68Msps ADC (konfigurovatelná ' +
+      'interní reference 1,4V/2,5V), dva zero-drift zero-crossover chopper operační zesilovače ' +
+      '(OPA, drift 0,5µV/°C, vstupní klidový proud 6pA, programovatelné zesílení 1-32×), jeden ' +
+      'obecný zesilovač (GPAMP), jeden vysokorychlostní komparátor (COMP, 32ns zpoždění, 8bitový ' +
+      'referenční DAC, nízkopříkonový mód <1µA), integrovaný teplotní senzor. Digitální ' +
+      'periferie: 3kanálový DMA řadič, 3kanálový systém událostí (event fabric) pro ' +
+      'propojení periferií bez zásahu CPU, čtyři 16bitové obecné časovače (každý 2 capture/ ' +
+      'compare registry, celkem 8 PWM kanálů, podpora nízkopříkonového provozu ve STANDBY), ' +
+      'okénkový watchdog (WWDT), CRC-16/32 akcelerátor. Komunikace: 2× UART (podpora LIN, IrDA, ' +
+      'DALI, Smart Card, Manchester, nízkopříkonový provoz ve STANDBY), 2× I2C (jeden FM+ do ' +
+      '1Mbit/s, oba SMBus/PMBus, probuzení ze STOP), 1× SPI do 16Mbit/s. Hodinový systém: ' +
+      'interní 4-32MHz oscilátor (SYSOSC, přesnost ±1,2%), interní 32kHz nízkopříkonový ' +
+      'oscilátor (LFOSC, ±3%) — bez nutnosti externího krystalu. Nízkopříkonové režimy: RUN ' +
+      '71µA/MHz (CoreMark), STOP 151µA @4MHz / 44µA @32kHz, STANDBY 1,0µA (16bitový časovač na ' +
+      '32kHz běží, SRAM/registry zachovány, probuzení za 3,2µs), SHUTDOWN 61nA (s možností ' +
+      'probuzení přes I/O). Až 28 GPIO, 2 piny s 5V tolerancí a open-drain výstupem s fail-safe ' +
+      'ochranou. Součást širší rodiny MSPM0L13x3-x6 lišící se pamětí (8-64KB Flash, 2-4KB RAM) ' +
+      'a počtem GPIO/ADC kanálů dle pouzdra (16-32 pinů). Vývojová podpora: LP-MSPM0L1306 ' +
+      'LaunchPad kit, MSP Software Development Kit (SDK), Code Composer Studio IDE.',
+    tags: 'io,mikrokontrolér,mcu,mspm0,mspm0l1306,ti,arm,cortex-m0+,32bit,nízkopříkonový,launchpad,adc,opa',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {

@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    879 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    880 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220; tenkovrstvá
@@ -56,7 +56,7 @@ i návrh schémat obvodů a plošných spojů.
     650V/40A Field Stop Trench, D²PAK, copackovaná rychlá dioda), JFET (včetně RF JFET rodiny
     Fairchild 2N5484/5485/5486 a SMD MMBF5484/5485/5486, SOT-23), IR fototranzistory Lite-On
     LTR-306 a LTR-1650D, fototranzistor pro viditelné
-    světlo (náhrada CdS) Kodenshi PT23GP11), 162 integrovaných obvodů
+    světlo (náhrada CdS) Kodenshi PT23GP11), 163 integrovaných obvodů
     (časovače, komparátory, op-zesilovače, regulátory, logická hradla, čítače,
     Wi-Fi mikrokontroléry ESP32, ESP32-C3, ESP8285, ESP8684, Wi-Fi adaptér ESP8089, 8bit AVR
     mikrokontroléry ATmega640/1280/1281/2560/2561, rodina CAN mikrokontrolérů AT90CAN32/64/128
@@ -91,7 +91,9 @@ i návrh schémat obvodů a plošných spojů.
     supervizory (reset obvody) TI TPS3809J25/L30/K33/I50 (prahy 2,25/2,64/2,93/4,55V, SOT-23-3,
     pin-kompatibilní s MAX809); nízkopříkonový CMOS časovač ST TS555 (pinově kompatibilní s
     NE555, 110µA typ., max. 2,7MHz); 16bitový nízkopříkonový MCU TI MSP430G2553 (16KB Flash,
-    512B RAM, ADC10, USCI UART/SPI/I2C, základ LaunchPad kitu); a plně
+    512B RAM, ADC10, USCI UART/SPI/I2C, základ LaunchPad kitu); 32bitový Arm Cortex-M0+ MCU
+    TI MSPM0L1306 (64KB Flash, 4KB RAM, 12bit 1,68Msps ADC, 2x OPA, GPAMP, COMP, UART/I2C/SPI);
+    a plně
     digitální Class-D zesilovače reproduktoru s DSP ROHM BM28720MUV (20W+20W) a BM28723MUV
     (17W+17W, output feedback, bez snubberu); a digitální barometrický tlakový senzor Bosch
     BMP280 (I2C/SPI); kombinovaný digitální senzor vlhkosti/tlaku/teploty Bosch BME280
