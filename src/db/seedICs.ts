@@ -3583,6 +3583,40 @@ const IC_SPECS: IcSpec[] = [
       'Vhys 60mV (typ.). Objednací kód TPS3809I50DBVR (funkce 9, práh I=4,55V).',
     tags: 'io,supervizor,reset,napěťový-supervizor,voltage-supervisor,ti,tps3809,tps3809i50,sot-23,4.55v',
   },
+  {
+    name: 'MSP430G2553',
+    packageType:
+      '20-PDIP/20-TSSOP (16 I/O), 28-TSSOP (24 I/O) nebo 32-QFN (24 I/O), napájení DVCC 1,8-3,6V, ' +
+      'Spy-Bi-Wire (2vodičové JTAG) rozhraní pro programování/ladění',
+    value:
+      '16bitový RISC mikrokontrolér (MSP430 rodina), 16KB Flash / 512B RAM, 16MHz CPU (62,5ns ' +
+      'instrukční cyklus), aktivní odběr typ. 230µA @1MHz/2,2V, standby 0,5µA, off (RAM ' +
+      'retence) 0,1µA',
+    notes:
+      'Texas Instruments "MSP430G2x53, MSP430G2x13 — Mixed Signal Microcontroller" (dok. ' +
+      'SLAS735J, duben 2011, revidováno květen 2013) — nejvýbavenější člen rodiny MSP430G2x53 ' +
+      '(16KB Flash/512B RAM, součást širší tabulky "Available Options" zahrnující G2553/2453/ ' +
+      '2353/2253/2153 s klesající pamětí 16-1KB a sesterskou rodinu G2x13 bez ADC10). 16bitová ' +
+      'RISC architektura s 16 registry (4 vyhrazené: PC/SP/SR/CG, 12 obecných), 51 instrukcí, ' +
+      '7 adresovacích módů, výkon 1 instrukce/cyklus u registr-registr operací. Periferie: ' +
+      '2× Timer_A3 (3 capture/compare registry), 8kanálový 10bitový 200ksps ADC (interní ' +
+      'reference, sample&hold, autoscan), 8kanálový analogový komparátor (Comp_A+, i pro ' +
+      'kapacitní dotykové senzory — až 24 kapacitních I/O pinů), USCI (Universal Serial ' +
+      'Communication Interface) s UART (auto baudrate/LIN), IrDA kodér/dekodér, synchronní SPI ' +
+      'a I2C, watchdog timer/interval timer, brownout detektor. Hodinový systém: interní ' +
+      'kalibrovaný DCO (digitally controlled oscillator) do 16MHz ve 4 kalibrovaných ' +
+      'frekvencích, interní nízkopříkonový LF oscilátor, externí 32kHz krystal nebo externí ' +
+      'digitální hodinový zdroj — probuzení z low-power módu do aktivního režimu za <1µs. ' +
+      'Šest operačních režimů: aktivní (AM, všechny hodiny běží) a pět úsporných LPM0-LPM4 ' +
+      '(postupně vypínají CPU, MCLK/SMCLK, DCO, ACLK a krystalový oscilátor). Palubní sériové ' +
+      'programování bez nutnosti externího programovacího napětí, programovatelná ochrana kódu ' +
+      '(security fuse), on-chip emulační logika (2 breakpointy) přes Spy-Bi-Wire. Vektor ' +
+      'přerušení 0FFC0h-0FFFFh, 16bitová adresa handleru, priorita 0(nejnižší)-31(reset, ' +
+      'nejvyšší). ADC10 dostupný pouze na G2x53 devices (chybí na sesterské G2x13 řadě). ' +
+      'Typické aplikace: nízkonákladové senzorové systémy (např. základ populárního TI ' +
+      'LaunchPad vývojového kitu MSP-EXP430G2).',
+    tags: 'io,mikrokontrolér,mcu,msp430,msp430g2553,ti,risc,16bit,nízkopříkonový,launchpad,adc,usci',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
