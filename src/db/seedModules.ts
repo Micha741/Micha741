@@ -4115,6 +4115,70 @@ const MODULE_SPECS: ModuleSpec[] = [
       'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
   },
+  {
+    name: 'HOPERF RFM/HM-TR Series (Sub-GHz RF modul)',
+    packageType:
+      'SMD PCB modul s integrovanou nebo externí anténou, rozměry cca 16×16 až 47×26mm, ' +
+      'rozhraní TWI/SPI/TTL/RS485/RS232 dle typu',
+    value:
+      'Sub-GHz RF vysílač/přijímač/transceiver modul (COB nebo DATA modul), frekvence ' +
+      '315/433/868/915 MHz dle typu, modulace (G)FSK/OOK, VDD 1,8–5,5 V, výstupní výkon do ' +
+      '20 dBm, citlivost do -139 dBm',
+    notes:
+      'HOPERF "RF Module" produktová řada — dle katalogu "HOPERF Catalog 2020" ' +
+      '(HOPERFCatalog2020.pdf, str. 3). ⚠️ SOUHRNNÝ KATALOGOVÝ ZÁZNAM (jen výběrová tabulka, ' +
+      'bez podrobných elektrických parametrů jako u plného datasheetu) — hotové osazené PCB ' +
+      'moduly (na rozdíl od holých RF IC čipů CMOSTEK CMT2xxx v této knihovně, kategorie IO), ' +
+      'typicky obsahují RF IC + krystal + přizpůsobovací obvod + volitelně anténu. RF COB ' +
+      'moduly (chip-on-board, bez pouzdra IC): RFM110W (TX), RFM217LBW/210LBW/217BW/210LCFW ' +
+      '(RX). RF DATA moduly (s digitálním sériovým rozhraním): HM-TRL-SW/HM-TRLR-D/HM-TRPW ' +
+      '(TRX, TTL/RS485/RS232, do 434/868/915MHz), RFM50W (TRX, 256kbps), RFM380F32W (TRX+SoC). ' +
+      'Menší transceiver moduly RFM119W/119SW/119BW/218BW/219BW/219SW, RFM300W/300HW/63W/64W/ ' +
+      '69CW/69HCW/23BPW (315-915MHz, do 550kbps, SPI/TWI rozhraní). Aplikace dle katalogu: ' +
+      'chytrá domácnost (dálkové spínače, dveřní zvonky, termostaty), automobilové ' +
+      'zabezpečení (anti-theft, TPMS), osvětlení, zabezpečovací systémy, aktivní RFID.',
+    tags: 'modul,rf,sub-ghz,vysílač,přijímač,transceiver,hoperf,rfm,hm-tr,315mhz,433mhz,868mhz,915mhz',
+  },
+  {
+    name: 'HOPERF RFM9xW/RFM75W Series (LoRa/2,4GHz modul)',
+    packageType: 'SMD PCB modul, rozměry 16×16 až 33×18mm, rozhraní SPI (4vodičové)',
+    value:
+      'LoRa nebo 2,4GHz FSK RF modul (TRX), frekvence 137–1020 MHz (LoRa) nebo 2400–2483 MHz ' +
+      '(2,4GHz), VDD 1,8–6,4 V, výstupní výkon do 27/30 dBm, citlivost do -139 dBm',
+    notes:
+      'HOPERF "LoRa Module" / "2.4GHz Module" produktové řady — dle katalogu "HOPERF Catalog ' +
+      '2020" (HOPERFCatalog2020.pdf, str. 3), viz poznámka u "HOPERF RFM/HM-TR Series" pro ' +
+      'kontext katalogu. LoRa moduly s SX127x/podobným LoRa čipem: RFM90W/90CW/95W/95PW/96W ' +
+      '(433-1020MHz, do 300kbps LoRa/62,5kbps GFSK), RFM98W/98PW/99W (169-483MHz nebo ' +
+      '2400-2483MHz, LoRa/FLRC/FSK). 2,4GHz úzkopásmové moduly RFM75W/75PW (GFSK, 250K/1M/2M, ' +
+      'nízký proud 16-33mA Tx, kompatibilní s nRF24L01+ protokolem). Nejvyšší dosažená ' +
+      'citlivost -139dBm (RFM95W/98W @LoRa). Vhodné pro dálkové bezdrátové senzorové sítě ' +
+      '(LPWAN), IoT uzly s bateriovým napájením.',
+    tags: 'modul,rf,lora,2.4ghz,transceiver,hoperf,rfm9x,rfm75,lpwan,iot,spi',
+  },
+  {
+    name: 'HOPERF HM-WF/HM-BT/HM-LWNH Series (WiFi/BLE/LoRaWan modul)',
+    packageType:
+      'SMD PCB modul s integrovanou nebo externí anténou, rozměry 12×20 až 32×21,5mm, UART ' +
+      'rozhraní',
+    value:
+      'WiFi (2,4GHz b/g/n), BLE (Bluetooth Low Energy) nebo LoRaWan modul s integrovaným ' +
+      'protokolovým stackem, VDD 1,7–3,6 V, UART do 1152 kbps',
+    notes:
+      'HOPERF "Wireless Module" produktová řada (WiFi, BLE, LoRaWan) — dle katalogu "HOPERF ' +
+      'Catalog 2020" (HOPERFCatalog2020.pdf, str. 4), viz poznámka u "HOPERF RFM/HM-TR Series" ' +
+      'pro kontext katalogu. WiFi moduly HM-WF8266 (ESP8266-based, 170mA TX), HM-WF8710/8720 ' +
+      '(vyšší datový tok 218Mbps @1T MCS7/BW20M). BLE moduly HM-BT2201/BT4502/BT4502B (BLE, ' +
+      '2402-2483,5MHz, do 2Mbps, proud <8mA), HM-BT800B (BLE, TX proud jen 8,3mA @-2dBm — ' +
+      'nejúspornější v řadě). LoRaWan modul HM-LWNH (868/915MHz, plný LoRaWan protokolový ' +
+      'stack, TX proud 138mA typ.) — na rozdíl od holých LoRa transceiver modulů RFM90W/95W/ ' +
+      'apod. (viz "HOPERF RFM9xW/RFM75W Series" v této knihovně) má vestavěnou celou LoRaWan ' +
+      'síťovou vrstvu, ne jen fyzickou vrstvu rádia. Aplikace dle katalogu: chytrá domácnost ' +
+      '(dálkové ovládání, termostaty), bezpečnostní kontrola (bezdrátový magnetometr, tísňové ' +
+      'volání), automobilová anti-theft ochrana/TPMS, osvětlení, aktivní RFID, datová ' +
+      'transparentní přenosová zařízení.',
+    tags: 'modul,rf,wifi,ble,bluetooth,lorawan,hoperf,hm-wf,hm-bt,hm-lwnh,uart',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {

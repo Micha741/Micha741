@@ -1856,8 +1856,52 @@ const IC_SPECS: IcSpec[] = [
       'postupně vrátí do kalibrovaného stavu. Mezní hodnoty: VDD -0,3 až 6 V, napětí na pinech ' +
       '-0,3 až VDD+0,3 V, vstupní proud ±100 mA, provozní teplota -40 až +125 °C, skladovací -40 ' +
       'až +150 °C, ESD HBM 4 kV/CDM 750 V. Max. rychlost změny napájecího napětí 20 V/ms (rychlejší ' +
-      'změny mohou vést k nechtěnému resetu).',
+      'změny mohou vést k nechtěnému resetu). Součást produktové řady HOPERF "Humiture Sensor" ' +
+      '(dle katalogu HOPERFCatalog2020.pdf) — levnější sesterské typy se stejným DFN6 pouzdrem: ' +
+      'TH08 (přesnost ±0,3°C/±2%RH) a TH06 (±0,5°C/±5%RH), a teplotní (bez vlhkosti) varianta ' +
+      'T06 v pouzdře SOT23-5 (viz jejich samostatné záznamy v této knihovně pro katalogové ' +
+      'souhrnné parametry).',
     tags: 'io,senzor,vlhkoměr,teploměr,th10,hoperf,i2c',
+  },
+  {
+    name: 'TH08',
+    packageType: 'SMD DFN6 (shodné pouzdro jako TH10)',
+    value:
+      'Digitální I2C senzor vlhkosti a teploty, přesnost ±0,3 °C / ±2 %RH, VDD 1,9–3,6 V',
+    notes:
+      'HOPERF "TH08" — dle katalogu "HOPERF Catalog 2020" (HOPERFCatalog2020.pdf, str. 5, ' +
+      'tabulka "Humiture Sensor") — ⚠️ SOUHRNNÝ KATALOGOVÝ ZÁZNAM (jen tabulková data ze ' +
+      'selection guide, ne plný datasheet — na rozdíl od TH10, který má vlastní kompletní ' +
+      'datasheet, viz jeho záznam v této knihovně). Levnější/méně přesná sesterská varianta ' +
+      'TH10 se stejným pouzdrem DFN6 a I2C rozhraním. Teplotní rozsah -40 až +125°C, vlhkostní ' +
+      'rozsah 0-100%RH, klidový (sleep) proud typ. 0,06µA, rozměry 10,8×9,1×1,8mm.',
+    tags: 'io,senzor,vlhkoměr,teploměr,th08,hoperf,i2c',
+  },
+  {
+    name: 'TH06',
+    packageType: 'SMD DFN6 (shodné pouzdro jako TH10)',
+    value:
+      'Digitální I2C senzor vlhkosti a teploty, přesnost ±0,5 °C / ±5 %RH, VDD 1,9–3,6 V',
+    notes:
+      'HOPERF "TH06" — dle katalogu "HOPERF Catalog 2020" (HOPERFCatalog2020.pdf, str. 5) — ⚠️ ' +
+      'SOUHRNNÝ KATALOGOVÝ ZÁZNAM (viz poznámka u "TH08"). Nejlevnější/nejméně přesná varianta ' +
+      'řady TH10/TH08/TH06, jinak mechanicky a rozhraním shodná (DFN6, I2C). Teplotní rozsah ' +
+      '-40 až +125°C, vlhkostní rozsah 0-100%RH, klidový proud typ. 0,05µA, rozměry ' +
+      '10,8×9,1×1,8mm.',
+    tags: 'io,senzor,vlhkoměr,teploměr,th06,hoperf,i2c',
+  },
+  {
+    name: 'T06',
+    packageType: 'SMD SOT23-5',
+    value: 'Digitální I2C senzor teploty (BEZ vlhkosti), přesnost ±0,3 °C, VDD 1,7–5,5 V',
+    notes:
+      'HOPERF "T06" — dle katalogu "HOPERF Catalog 2020" (HOPERFCatalog2020.pdf, str. 5) — ⚠️ ' +
+      'SOUHRNNÝ KATALOGOVÝ ZÁZNAM (viz poznámka u "TH08"). Na rozdíl od TH10/TH08/TH06 (senzory ' +
+      'vlhkosti I teploty) měří T06 POUZE teplotu — v katalogu uveden jako "Humiture Sensor" ' +
+      'skupina, ale bez humidity range/resolution (tabulka N/A), v menším a levnějším pouzdře ' +
+      'SOT23-5 (namísto DFN6). Teplotní rozsah -40 až +125°C, klidový proud typ. 0,05µA, I2C ' +
+      'rozhraní.',
+    tags: 'io,senzor,teploměr,t06,hoperf,i2c,sot23-5',
   },
   {
     name: 'IRA-S410ST03',
@@ -3721,6 +3765,58 @@ const IC_SPECS: IcSpec[] = [
       'programovatelná ochrana kódu (security fuse). Aplikace: jednoduché senzorové systémy, ' +
       'samostatné RF senzorové front-endy.',
     tags: 'io,mikrokontrolér,mcu,msp430,msp430f1121a,ti,risc,16bit,nízkopříkonový,komparátor,malé-pouzdro',
+  },
+
+  // RF vysílače/přijímače
+  {
+    name: 'CMOSTEK CMT2xxx Series (RF IC)',
+    packageType:
+      'SMD, dle konkrétního typu SOT23-6/QFN16/QFN40/QFN48/TSSOP28/SOP8/SOP14, rozměry ' +
+      '3×3mm až 9,7×6,4mm',
+    value:
+      'RF vysílač/přijímač/transceiver IC (OOK/(G)FSK/MSK modulace), frekvenční rozsah ' +
+      '27–1020 MHz dle typu, výstupní výkon do 20 dBm, citlivost do -126 dBm',
+    notes:
+      'CMOSTEK (distribuováno přes HOPERF) "Selection Guide of CMT Series — NextGenRF™" (dle ' +
+      'katalogu HOPERF Catalog 2020, HOPERFCatalog2020.pdf, str. 2). ⚠️ SOUHRNNÝ KATALOGOVÝ ' +
+      'ZÁZNAM — 70stránkový katalog obsahuje jen výběrovou tabulku (frekvence/modulace/ ' +
+      'citlivost/výkon/pouzdro) bez podrobných elektrických parametrů, zde evidováno jako ' +
+      'reprezentativní shrnutí celé řady holých RF IC čipů (bez PCB antény/štítu, na rozdíl od ' +
+      'RF/LoRa modulů HOPERF v této knihovně — viz kategorie Modul). Zahrnuje TX (vysílač), RX ' +
+      '(přijímač) a TRX/SoC (transceiver s integrovaným 8051 nebo Cortex-M0+ jádrem) varianty: ' +
+      'např. CMT2300A (TRX, QFN16, 3×1 wire SPI), CMT2380F16/F32 (TRX+SoC s 8051/Cortex-M0+), ' +
+      'CMT2119A/B (TX, SOT23-6/QFN16), CMT2110A (TX, 1-wire), CMT2189C (TX+SoC, PIC-like MCU), ' +
+      'CMT2150L/2157B/2156A/2159A (TX s enkodérem a klávesnicí/energy harvesting), CMT2219A/B ' +
+      '(RX, QFN16), CMT2218B (RX, direct mode), CMT2210LB/LH/217LB/217B (standalone RX s Dout ' +
+      'výstupem), CMT2280F2/2281F2 (RX+SoC s PIC-like MCU), CMT2163A/2168A (TX+SoC s 8051, LF ' +
+      'wakeup). Deklarované výhody výrobce: plně softwarově konfigurovatelné parametry (bez ' +
+      'nutnosti přeprogramování), 100% shoda s CE/FCC, pin-kompatibilní náhrady napříč řadou, ' +
+      'vestavěné EEPROM (volitelně).',
+    tags: 'io,rf,vysílač,přijímač,transceiver,cmostek,cmt,hoperf,sub-ghz,ook,fsk',
+  },
+  {
+    name: 'HOPERF HPxxx / HP5xxx Series (tlakový senzor)',
+    packageType:
+      'SMD DFN6/DFN8/LGA8/SOP6-DIP6 dle typu, u vodotěsné varianty WP10 kovové pouzdro se ' +
+      'závitem G1/4"',
+    value:
+      'Kapacitní/piezorezistivní senzor tlaku, rozsah 300 Pa až 2000 kPa dle typu, digitální ' +
+      'I2C (nebo I2C/SPI) rozhraní, VDD 1,7–5,5 V',
+    notes:
+      'HOPERF "Pressure Sensor" produktová řada — dle katalogu "HOPERF Catalog 2020" ' +
+      '(HOPERFCatalog2020.pdf, str. 5). ⚠️ SOUHRNNÝ KATALOGOVÝ ZÁZNAM (viz poznámka u "CMOSTEK ' +
+      'CMT2xxx Series" pro kontext katalogu) — série pokrývá desítky tlakových senzorů pro ' +
+      'různé aplikace: barometrické/výškoměrné senzory nízkého rozsahu HP100 (150/700/2000kPa, ' +
+      'analogový MV výstup, SOP6/DIP6), přesné diferenciální senzory HP303S/F/B (300-1200hPa, ' +
+      'přesnost 0,2-0,5hPa, LGA8, I2C/SPI, vhodné pro výškoměry/dronové autopiloty), voděodolné ' +
+      'typy HP206C/F/203B/N/W (s membránou pro přímý kontakt s kapalinou, DFN6/8), vysoký ' +
+      'rozsah HP209-002G (2000-200000kPa/1%FSO), a nová generace HP5804/5834/5806 (30kPa- ' +
+      '2000kPa, přesnost až 0,01kPa, DFN6, nižší spotřeba: sleep proud <0,1-0,5µA). ' +
+      'Průmyslová vodotěsná verze WP10 (0-2000kPa) v kovovém pouzdře se závitem G1/4" pro ' +
+      'přímou instalaci do potrubí/nádrže. Typické aplikace: měření nadmořské výšky/relativní ' +
+      'výšky, předpověď počasí, detekce pádu/potápění, lokalizace GPS+tlak, měření tlaku ' +
+      'uhelného/výfukového plynu.',
+    tags: 'io,senzor,tlakový,tlakoměr,barometr,hoperf,i2c,spi,vodotěsný',
   },
 ];
 
