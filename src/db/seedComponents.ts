@@ -2986,6 +2986,71 @@ const DIODE_SPECS: PartSpec[] = [
       '@50mA/<1,25V @150mA. Kapacita přechodu Cj typ. 2pF. Pouze ve variantách -Q/-AQ.',
     tags: 'dioda,spínací,signálová,duální,smd,sot-23,diotec,bav199,společná-katoda,nízký-svodový-proud',
   },
+  {
+    name: 'SKKT 92 (SEMIPACK 1)',
+    packageType:
+      'šroubovací výkonový modul SEMIPACK 1, keramická izolační destička (přenos tepla přes ' +
+      'destičku z oxidu hlinitého), tvrdé pájené spoje, rozměry 93×30×9mm (case A46), 3 ' +
+      'výkonové vývody se závitem M5 (piny 1/2/3), 4 gate/katoda signální vývody (piny 4-7), ' +
+      'UL recognized (file E63532)',
+    value:
+      'Duální tyristorový modul (2× SCR se společnou katodou), ITAV 95 A/tyristor, ITRMS 150 A ' +
+      '(max. trvalý), VRRM/VDRM 800–1800 V dle objednacího kódu, ITSM 2000 A (10ms/25°C)',
+    notes:
+      'SEMIKRON "SKKT 92, SKKT 92B, SKKH 92 — SEMIPACK 1 Thyristor/Diode Modules" (dok. verze ' +
+      '09-03-2004). ⚠️ NOVÝ TYP součástky v této knihovně: první VÝKONOVÝ TYRISTOROVÝ MODUL ' +
+      '(na rozdíl od diskrétních tyristorů SemiWell SCD4C60S a WeEn TYN50W/TYN80W-1600T v této ' +
+      'knihovně) — dvojice tyristorů (SCR) v jednom šroubovacím pouzdře pro montáž na chladič, ' +
+      'určeno pro průmyslové výkonové řízení (DC pohony obráběcích strojů, AC měkké rozběhy ' +
+      'motorů, teplotní regulace pecí/chemických procesů, profesionální stmívání osvětlení ve ' +
+      'studiích/divadlech). SKKT 92 má oba tyristory zapojené se SPOLEČNOU KATODOU (viz ' +
+      'sourozenecké záznamy "SKKT 92B" pro variantu se společnou anodou a "SKKH 92" pro ' +
+      'poloviční/smíšenou konfiguraci tyristor+dioda). Objednací kódy dle napěťové třídy: ' +
+      'SKKT92/08E (VRRM 800V/VRSM 900V), /12E (1200V/1300V), /14E (1400V/1500V), /16E (1600V/ ' +
+      '1700V), /18E (1800V/1900V). VT (propustné napětí) max 1,65V @IT=300A/25°C, VT(TO) max ' +
+      '0,9V @125°C, dynamický odpor rT max 2mΩ @125°C. Blokovací proud IDD/IRD max 20mA @125°C. ' +
+      'Doba zapnutí tgd 1µs, tgr 2µs. Kritická strmost (di/dt)cr max 150A/µs, (dv/dt)cr max ' +
+      '1000V/µs (obojí @125°C). Vypínací doba tq typ. 100µs @125°C. Přídržný proud IH typ. ' +
+      '150mA/max 250mA, rozběhový proud IL typ. 300mA/max 600mA (RG=33Ω, @25°C). Řídicí ' +
+      'elektroda: VGT min 3V, IGT min 150mA (DC, 25°C); VGD max 0,25V, IGD max 6mA (DC, 125°C). ' +
+      'Tepelný odpor přechod-pouzdro na tyristor: 0,28K/W (nepřetržitý provoz) / 0,3K/W ' +
+      '(sinusový 180°) / 0,32K/W (usměrněný 120°) — na modul poloviční hodnoty. Tepelný odpor ' +
+      'pouzdro-chladič 0,2K/W (na tyristor) / 0,1K/W (na modul). TVJ a TSTG -40 až +125°C. ' +
+      'Izolační napětí (50Hz, 1s/1min) 3600/3000V~. Utahovací moment na chladič 5Nm (±15%), na ' +
+      'terminály 3Nm (±15%). Hmotnost ~95g.',
+    tags: 'tyristor,scr,výkonový-modul,duální,semikron,semipack,skkt92,800v,1800v,šroubovací',
+  },
+  {
+    name: 'SKKT 92B (SEMIPACK 1)',
+    packageType: 'shodné s SKKT 92 (case A48) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      'Duální tyristorový modul (2× SCR se společnou anodou), ITAV 95 A/tyristor, ITRMS 150 A, ' +
+      'VRRM/VDRM 800–1800 V dle objednacího kódu',
+    notes:
+      'SEMIKRON "SKKT 92, SKKT 92B, SKKH 92" — součást rodiny, viz záznam "SKKT 92" v této ' +
+      'knihovně pro plné společné elektrické specifikace a kontext. Na rozdíl od SKKT 92 mají ' +
+      'oba tyristory SPOLEČNOU ANODU místo společné katody — vhodné pro jiná zapojení řízených ' +
+      'usměrňovačů/měničů (např. dvojice modulů SKKT92+SKKT92B pro plně řízený třífázový ' +
+      'můstek). Objednací kódy: SKKT92B08E až SKKT92B18E (stejná napěťová řada jako SKKT 92). ' +
+      'Case A48 (mírně odlišné mechanické provedení od A46 u SKKT 92).',
+    tags: 'tyristor,scr,výkonový-modul,duální,semikron,semipack,skkt92b,společná-anoda,800v,1800v,šroubovací',
+  },
+  {
+    name: 'SKKH 92 (SEMIPACK 1)',
+    packageType: 'shodné s SKKT 92 (case A47) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      'Poloviční řízený modul (1× tyristor SCR + 1× dioda), ITAV 95 A, ITRMS 150 A, VRRM/VDRM ' +
+      '800–1800 V dle objednacího kódu',
+    notes:
+      'SEMIKRON "SKKT 92, SKKT 92B, SKKH 92" — součást rodiny, viz záznam "SKKT 92" v této ' +
+      'knihovně pro plné společné elektrické specifikace a kontext (tyristorová část ' +
+      'elektricky shodná). Na rozdíl od SKKT 92/92B (2× tyristor) obsahuje SKKH 92 SMÍŠENOU ' +
+      'KONFIGURACI — jeden tyristor a jednu výkonovou diodu v jednom pouzdře, typické pro ' +
+      'poloviditelně řízené (half-controlled) usměrňovací můstky s nižšími náklady na řízení ' +
+      'než plně tyristorové zapojení. Objednací kódy: SKKH92/08E až SKKH92/18E (stejná napěťová ' +
+      'řada). Case A47.',
+    tags: 'tyristor,scr,dioda,výkonový-modul,smíšený,semikron,semipack,skkh92,800v,1800v,šroubovací',
+  },
 ];
 
 const BRIDGE_SPECS: PartSpec[] = [
