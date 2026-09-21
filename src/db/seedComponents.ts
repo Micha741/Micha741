@@ -2857,6 +2857,94 @@ const BRIDGE_SPECS: PartSpec[] = [
       'ochranný odpor Rt=25,0Ω, přípustný nabíjecí kondenzátor CL=200µF.',
     tags: 'můstek,usměrňovací,bridge-rectifier,smd,diotec,s500,to-269aa,minidil,1000v,síťové-usměrnění',
   },
+  {
+    name: 'DF005S',
+    packageType:
+      'SMD pouzdro SDIP 4L (4-Lead, 6,5mm šířka), rozměry cca 8,5×6,5×2,6 mm, pásková balení, ' +
+      'top mark shodný s názvem dílu',
+    value:
+      'Jednofázový můstkový usměrňovač (SMD), VRRM 50 V, IFAV 1,5 A, VF max 1,1V @1,5A, IFSM ' +
+      '50 A (8,3ms půlvlna)',
+    notes:
+      'Fairchild (ON Semiconductor) "DF005S - DF10S — Bridge Rectifiers" (dok. Rev. 1.5, květen ' +
+      '2015, © 1998 Fairchild Semiconductor). Třetí rodina usměrňovacích můstků v této ' +
+      'kategorii, odlišná od obou Diotec řad (ABS a S40-S500, viz záznamy "ABS2" a "S40" v této ' +
+      'knihovně) jiným SMD pouzdrem (SDIP 4L, nekonformní s žádným referenčním standardem dle ' +
+      'datasheetu) a vyšším trvalým proudem IFAV=1,5A. UL certifikováno (UL #E258596), pájení ' +
+      'kompatibilní s IR reflow i vlnovou pájkou, bezolovnaté (RoHS 2002/95/EU), "Green Molding ' +
+      'Compound" dle IEC61249. Nejnižší napěťová varianta řady DF005S–DF10S (VRRM 50–1000V, ' +
+      'viz sourozenecké záznamy DF01S/DF02S/DF04S/DF06S/DF08S/DF10S pro plné specifikace VRRM). ' +
+      'Max. RMS vstupní napětí VRMS 35V, DC závěrné napětí při jmenovitém IR VDC 50V. Max. ' +
+      'trvalý usměrněný proud IFAV 1,5A @TA=40°C (shodný pro celou řadu). Nadproudový ráz IFSM ' +
+      '50A (jednorázová půlvlna 8,3ms, shodné pro celou řadu). Grenzlastintegral i²t (t<8,35ms) ' +
+      '10 A²s. VF (na prvek) max 1,1V @IF=1,5A/25°C (typ. 0,94V dle "Features"). Závěrný proud ' +
+      'IR (na prvek, @VR jmenovité) max 5,0µA @TA=25°C / max 500µA @TA=125°C. Kapacita přechodu ' +
+      'CJ typ. 25pF @VR=4V/f=1MHz. Ztrátový výkon PD 3,1W. Tepelný odpor přechod-okolí RθJA: ' +
+      '62°C/W (jeden čip, max. land pattern 13×13mm) / 50°C/W (multi-die, max. pattern) / ' +
+      '105°C/W (multi-die, min. pattern 1,3×1,5mm). Tepelná charakteristika přechod-vývod ψJL ' +
+      '27°C/W. TJ a Tstg -55 až +150°C.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,fairchild,onsemi,df005s,sdip,50v,síťové-usměrnění',
+  },
+  {
+    name: 'DF01S',
+    packageType: 'shodné s DF005S — viz poznámka u DF005S pro plné mechanické specifikace',
+    value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 100 V, IFAV 1,5 A',
+    notes:
+      'Fairchild "DF005S - DF10S" — součást řady DF005S–DF10S, viz záznam "DF005S" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Max. RMS vstupní napětí ' +
+      'VRMS 70V, DC závěrné napětí VDC 100V.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,fairchild,onsemi,df01s,sdip,100v,síťové-usměrnění',
+  },
+  {
+    name: 'DF02S',
+    packageType: 'shodné s DF005S — viz poznámka u DF005S pro plné mechanické specifikace',
+    value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 200 V, IFAV 1,5 A',
+    notes:
+      'Fairchild "DF005S - DF10S" — součást řady DF005S–DF10S, viz záznam "DF005S" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Max. RMS vstupní napětí ' +
+      'VRMS 140V, DC závěrné napětí VDC 200V.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,fairchild,onsemi,df02s,sdip,200v,síťové-usměrnění',
+  },
+  {
+    name: 'DF04S',
+    packageType: 'shodné s DF005S — viz poznámka u DF005S pro plné mechanické specifikace',
+    value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 400 V, IFAV 1,5 A',
+    notes:
+      'Fairchild "DF005S - DF10S" — součást řady DF005S–DF10S, viz záznam "DF005S" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Max. RMS vstupní napětí ' +
+      'VRMS 280V, DC závěrné napětí VDC 400V.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,fairchild,onsemi,df04s,sdip,400v,síťové-usměrnění',
+  },
+  {
+    name: 'DF06S',
+    packageType: 'shodné s DF005S — viz poznámka u DF005S pro plné mechanické specifikace',
+    value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 600 V, IFAV 1,5 A',
+    notes:
+      'Fairchild "DF005S - DF10S" — součást řady DF005S–DF10S, viz záznam "DF005S" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Max. RMS vstupní napětí ' +
+      'VRMS 420V, DC závěrné napětí VDC 600V.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,fairchild,onsemi,df06s,sdip,600v,síťové-usměrnění',
+  },
+  {
+    name: 'DF08S',
+    packageType: 'shodné s DF005S — viz poznámka u DF005S pro plné mechanické specifikace',
+    value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 800 V, IFAV 1,5 A',
+    notes:
+      'Fairchild "DF005S - DF10S" — součást řady DF005S–DF10S, viz záznam "DF005S" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Max. RMS vstupní napětí ' +
+      'VRMS 560V, DC závěrné napětí VDC 800V.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,fairchild,onsemi,df08s,sdip,800v,síťové-usměrnění',
+  },
+  {
+    name: 'DF10S',
+    packageType: 'shodné s DF005S — viz poznámka u DF005S pro plné mechanické specifikace',
+    value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 1000 V, IFAV 1,5 A',
+    notes:
+      'Fairchild "DF005S - DF10S" — součást řady DF005S–DF10S, viz záznam "DF005S" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Nejvyšší napěťová varianta ' +
+      'celé řady. Max. RMS vstupní napětí VRMS 700V, DC závěrné napětí VDC 1000V.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,fairchild,onsemi,df10s,sdip,1000v,síťové-usměrnění',
+  },
 ];
 
 const TRANSISTOR_SPECS: PartSpec[] = [
