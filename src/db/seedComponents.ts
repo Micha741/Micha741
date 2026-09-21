@@ -2657,6 +2657,33 @@ const DIODE_SPECS: PartSpec[] = [
       'RoHS.',
     tags: 'triak,triac,hi-com,ween,bta330,30a,800v,to220,d2pak,iito220',
   },
+  {
+    name: 'CL05M6F',
+    packageType: 'SOD-123FL (SMD), 2 vývody (anoda/katoda), pásková balení 3000ks/7"',
+    value:
+      'Proudově omezující dioda (Current Limiting Diode / CLD, konstantní proudový zdroj), ' +
+      'IP(nom) 5,6 mA, VAK max 190 V, Ptot 0,7 W (1,2 W při větší chladicí plošce)',
+    notes:
+      'Diotec Semiconductor "CL05M6F — SMD Current Limiting Diodes" (dok. verze 2019-10-18, ' +
+      '"Preliminary/Vorläufig") — ⚠️ NOVÝ TYP součástky v této knihovně: proudově omezující ' +
+      'dioda (též "constant current diode/regulator diode") — dvouvývodová polovodičová ' +
+      'součástka, která (na rozdíl od klasické usměrňovací/Zenerovy/Schottky diody v této ' +
+      'knihovně) v propustném směru po dosažení prahového napětí VT udržuje téměř konstantní ' +
+      'proud IP nezávisle na přiloženém napětí (až do VAK) — funguje jako jednoduchý ' +
+      'dvouvývodový zdroj konstantního proudu bez potřeby aktivního obvodu. Typické použití: ' +
+      'konstantní proudové zdroje pro jednoduché senzorové obvody, malovýkonové LED driverpy a ' +
+      'nabíječky akumulátorů (viz aplikační schéma v datasheetu — můstkový usměrňovač + CLD jako ' +
+      'proudový zdroj pro sériové LED). Lze zapojit paralelně pro vyšší celkový proud, nebo ' +
+      'kompenzovat teplotní drift paralelním rezistorem (dle aplikačních poznámek datasheetu). ' +
+      'IPmin 4,5 mA / IPnom 5,6 mA / IPmax 6,7 mA @VT=20V (impulzně, 20ms). IP(DC) (typický ' +
+      'ustálený proud) 5,4 mA @VT=10V / 4,8 mA @VT=50V. Teplotní koeficient IP αIP=-15×10⁻⁴/°C ' +
+      '@VT=10V. Mezní hodnoty: Ptot 0,7 W (25mm² Cu plošky) / 1,2 W (50×50mm² Cu plošky), VAK ' +
+      '(max. pracovní napětí, impulzně 20ms) 190 V, TJ a Tstg -50 až +150 °C. Limitní napětí VL ' +
+      '(@IL=80%·IPmin) 2 V. Závěrné napětí VR (@IR=1mA) 0,5 V. Kapacita přechodu CT 5 pF @VR=0V. ' +
+      'Tepelný odpor přechod-okolí RthA 180 K/W (25mm² Cu plošky). Pouzdro UL94V-0, pájecí ' +
+      'podmínky 260°C/10s, MSL=1, hmotnost ~0,01 g. Shoda s RoHS, REACH, Conflict Minerals.',
+    tags: 'dioda,proudově-omezující,current-limiting-diode,constant-current,diotec,cl05m6f,sod-123fl,led-driver',
+  },
 ];
 
 const TRANSISTOR_SPECS: PartSpec[] = [
