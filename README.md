@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    853 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    854 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220; tenkovrstvá
@@ -177,11 +177,12 @@ i návrh schémat obvodů a plošných spojů.
     SMD IML-0662N000-T1 a IML-0660; dílenský rework modul pájecí stanice Weller WXair MODUL
     100-230V US/MX/J B; a křemenné krystaly (16/8/12 MHz HC-49/S, 32,768 kHz hodinkový) a
     keramické rezonátory (16/8 MHz))
-    a 24 cívek (proudový snímací transformátor MPS Industries
+    a 25 cívek (proudový snímací transformátor MPS Industries
     P4100E5 series, toroidní síťový (50/60Hz) proudový transformátor Talema AC1020 (20A, poměr
     1000:1), síťové (izolační) transformátory INDEL KK 60/EI 22-2/4 / 23-2/4 / 24-2/4 (jádro EI60,
     25-45 VA, epoxidová zalévačka) a INDEL KK ..../TOR 01-1 (toroidní jádro, 10-3000 VA, 24
-    velikostí), radiální a SMD výkonové tlumivky, THT/SMD ferritové korálky,
+    velikostí), toroidní síťový transformátor s dvojitým sekundárem Talema 55xxx Series
+    (15-1000VA, 2x12-2x55V, EN61558), radiální a SMD výkonové tlumivky, THT/SMD ferritové korálky,
     náhradní cívky
     elektromagnetických ventilů TORK T-SB1/T-SB2 (230/24/12 V AC/DC, IP65), profesionální
     flexibilní indukční ohřevová cívka Schaeffler MF-INDUCTOR (3,5-44 kW, 28 rozměrových

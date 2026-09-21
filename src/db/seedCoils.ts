@@ -198,6 +198,40 @@ const COIL_SPECS: CoilSpec[] = [
       'individuálním odsouhlasení.',
     tags: 'cívka,transformátor,síťový-transformátor,toroidní,toroid,indel,tor01,mechanická-platforma',
   },
+  {
+    name: 'Talema 55xxx Series (toroidní transformátor s dvojitým sekundárem)',
+    packageType:
+      'toroidní transformátor, dvě montážní provedení "S" (standardní) nebo "H" (zalitý střed s ' +
+      'průchozím otvorem pro centrální upevňovací šroub), vývody vodičové, rozměry (OD×HT) rostou ' +
+      's výkonem od 62×32mm (15VA) do 165×75mm (1000VA)',
+    value:
+      'Síťový toroidní transformátor s DVOJITÝM (symetrickým) sekundárním vinutím, primár ' +
+      '230V/50-60Hz, výkonová řada 15–1000VA, sekundární napětí 2×12 až 2×55V dle konkrétního ' +
+      'kódu, s tepelnou pojistkou ve vinutí',
+    notes:
+      'Talema Group "Toroidal Transformers with Dual Secondary Winding — 55xxx Series" ' +
+      '(datasheet, soubor 55000-Series.pdf). ⚠️ PARAMETRICKÁ ŘADA (desítky kombinací výkon× ' +
+      'sekundární napětí×mounting) — do knihovny přidána jako jeden souhrnný záznam pro celou ' +
+      'řadu "55xxx-P1S2", ne každá kombinace zvlášť (obdobně jako u Okaya HCP-S/Cornell ' +
+      'Dubilier SCD v této knihovně). Na rozdíl od INDEL KK.../TOR 01-1 (mechanická platforma ' +
+      'bez elektrických parametrů, viz jeho záznam) jde o PLNĚ SPECIFIKOVANOU elektrickou ' +
+      'součástku s uvedeným sekundárním napětím/proudem pro každý objednací kód. Objednací kód ' +
+      '"55 <kód výkonu/napětí> - P1S2" (P1S2 = 1 primární + 2 sekundární vinutí/symetrický ' +
+      'sekundár) — číslo v rozsahu 1xx = mounting "S", 3xx = stejná elektrická specifikace v ' +
+      'mountingu "H" (zalitý střed, průchozí otvor pro šroub). Výkonové třídy a typické rozměry/ ' +
+      'hmotnost: 15VA (62×32mm/0,31kg, 2×12–25V), 30VA (74×34mm/0,44kg, 2×12–25V), 50VA ' +
+      '(84×34mm/0,63kg, 2×12–25V a 2×55V), 80VA (95×36mm/0,87kg), 120VA (96×47mm/1,20kg), ' +
+      '160VA (110×46mm/1,50kg, přibývá 2×30V), 225VA (118×50mm/1,90kg), 300VA (118×60mm/ ' +
+      '2,40kg, jen vyšší napětí 2×25–55V), 500VA (140×62mm/3,50kg, 2×25–55V), 625VA (140×75mm/ ' +
+      '4,40kg, jen 2×40–55V), 800VA (165×65mm/5,30kg), 1000VA (165×75mm/6,40kg). Sekundární ' +
+      'proud a napětí naprázdno (Uo) uvedeny pro každou konkrétní kombinaci v datasheetu (např. ' +
+      '55 100-P1S2: 15VA, 2×12V, 0,625A, Uo 2×13,89V; 55 219-P1S2: 1000VA, 2×55V, 9,091A, Uo ' +
+      '2×57,65V). Každý díl má vestavěnou tepelnou pojistku ve vinutí (Fuse column, hodnota v A ' +
+      'dle výkonové třídy). Shoda s EN61558, EN60065, směrnicí 2014/35/EU (LVD), zkoušeno a ' +
+      'schváleno KEMA dle EN61558. Vyrobeno v provozu certifikovaném ISO 9001:2016, ISO ' +
+      '14001:2016, OHSAS 18001:2008. Shoda s RoHS a REACH.',
+    tags: 'cívka,transformátor,síťový-transformátor,toroidní,toroid,talema,55xxx,dvojitý-sekundár,dual-secondary,en61558',
+  },
 ];
 
 const TORK_SPECS: CoilSpec[] = [
