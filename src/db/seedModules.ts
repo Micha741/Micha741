@@ -4334,6 +4334,48 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Aplikace: ovládání vrat/bran, poplašné/zabezpečovací systémy, kódovaný radiový spoj.',
     tags: 'modul,rf,přijímač,ask,ook,rolling-code,hcs,dekodér,aurel,rx-4mhcs,tht,433mhz,relé',
   },
+  {
+    name: 'HM-TRP Series',
+    packageType:
+      '9pin DIP nebo 9pin SMD modul, rozměry 16×20×2mm, piny: VCC, DTX, GND, DRX, CONFIG, ' +
+      'ENABLE, TEST (nezapojen), ANT (50Ω anténní vstup/výstup), GND',
+    value:
+      'Transparentní (transparent) FSK transceiver s UART rozhraním, 433/470/868/915 MHz ' +
+      '(dle objednacího kódu), VDD 2,4–3,6V, výstupní výkon 1–20 dBm (max. 100mW), citlivost ' +
+      '-117 dBm, přenosová rychlost 1,2–115,2 kbps',
+    notes:
+      'HOPERF (Hope Microelectronics) "HM-TRP Series — 100mW Transceiver Modules" (dok. V1.0). ' +
+      'Zmíněn v katalogu "HOPERF Catalog 2020" jako "HM-TRPW" v tabulce RF DATA modulů (viz ' +
+      'souhrnný záznam "HOPERF RFM/HM-TR Series" v této knihovně) — zde evidován s plnými ' +
+      'parametry z vlastního samostatného datasheetu; přesný vztah HM-TRP vs. HM-TRPW ' +
+      '(pravděpodobně jen jiná verze antény/balení) není v datasheetu specifikován. Na rozdíl ' +
+      'od jednoduchých modulů RFM01/RFM210LCF-S1/RFM75 v této knihovně (přímé řízení přes SPI ' +
+      'registry) je "transparentní" — data se posílají/přijímají přes standardní UART (TTL, ' +
+      'rozšiřitelné na RS232 přes externí MAX3232, schéma v datasheetu), modul sám řeší celé ' +
+      'RF přenosové pásmo, automaticky přepíná mezi vysíláním/příjmem. Piny CONFIG (nízko pro ' +
+      'konfigurační režim) a ENABLE (nízko pro normální provoz, vysoko = sleep mód) ovládají ' +
+      'stav modulu. Softwarová konfigurace přes jednoduché binární příkazy (formát "AA FA + ' +
+      'instrukce + parametr" stejnou rychlostí jako UART): pracovní kmitočet, vysílací výkon ' +
+      '(8 úrovní: 0=+1dBm až 7=+20dBm), přenosová rychlost, přijímací šířka pásma (30-620kHz), ' +
+      'kmitočtová odchylka/deviace (10-160kHz), rychlost UART, čtení RSSI (8bit, 0-255) a ' +
+      'rušivého RSSI. Reset na tovární nastavení a čtení aktuální konfigurace přes vyhrazené ' +
+      'příkazy. LED indikace (červená=TX aktivní, zelená bliká při příjmu dat, obě svítí v ' +
+      'konfiguračním režimu). Absolutní maximum: VCC -0,3 až +3,6V, Tstg -40 až +150°C, Top -40 ' +
+      'až +85°C, pájecí (reflow) teplota +260°C. Elektrické parametry: VCC 2,4-3,6V (typ. ' +
+      '3,3V), pracovní kmitočet dle objednacího kódu HM-TRP-433 (414-454MHz)/-470 (450-490MHz)/ ' +
+      '-868 (849-889MHz)/-915 (895-935MHz), max. výstupní výkon 18-20dBm. Citlivost dle ' +
+      'přenosové rychlosti (FSK, Fdev=35kHz): -117/-115dBm @1,2kbps, -114/-112dBm @9,6kbps, ' +
+      '-111/-109dBm @40kbps, -104/-102dBm @100kbps. TX proud 100-120mA @20dBm výkonu / ' +
+      '40-50mA @14dBm. RX proud 25-30mA. Sleep proud 1-2µA. Modulační rychlost 1,2-115,2kbps, ' +
+      'modulační deviace 10-160kHz, přijímací šířka pásma 30-620kHz. UART: 8 datových bitů, ' +
+      '1 stop bit, rychlost 1,2-115,2kbps. Tovární výchozí nastavení (všechny frekvenční ' +
+      'varianty): 9,6kbps datová/UART rychlost, 105kHz šířka pásma, 35kHz deviace, +20dBm ' +
+      'výkon. Vzdálenost přenosu >1km na otevřeném prostranství. Objednací kódy: HM-TRP-433D/S, ' +
+      '470D/S, 868D/S, 915D/S (D=DIP, S=SMD). Shoda s FCC, ETSI. Aplikace: dálkové ovládání/ ' +
+      'měření, přístupové systémy, bezdrátové měřiče, identifikační systémy, sběr dat, chytré/ ' +
+      'inteligentní domácí spotřebiče, monitorování kojenců.',
+    tags: 'modul,rf,transceiver,fsk,transparentní,uart,hoperf,hm-trp,dip,smd,433mhz,470mhz,868mhz,915mhz,100mw',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
