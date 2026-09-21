@@ -113,6 +113,34 @@ const COIL_SPECS: CoilSpec[] = [
     notes: 'SMD ferritová korálka pro potlačení VF rušení na napájecí/signálové lince.',
     tags: 'cívka,ferrit,emi,tlumivka,smd',
   },
+  {
+    name: 'AC1020',
+    packageType:
+      'THT toroidní proudový transformátor v plastovém pouzdru, 3 vývody (piny 1/2/3, pin 3 ' +
+      'jen mechanická podpora nebo pro provedení se středním odbočením), vnější Ø23,8×23,8 mm, ' +
+      'výška 11,12 mm, otvor pro primární vodič Ø9,5 mm, rozteč vývodů 15,24×7,62 mm',
+    value:
+      'Proudový transformátor (current transformer, CT) pro měření/snímání proudu 50/60 Hz, ' +
+      'jmenovitý primární proud 20 A (max. 60 A), převodní poměr 1000:1',
+    notes:
+      'Talema Group "AC1020 — 20 Amp Current Transformer" (datasheet, rev. 07/18). Druhý typ ' +
+      'proudového transformátoru v této knihovně vedle MPS Industries P4100E5 (viz jeho záznam) ' +
+      '— na rozdíl od P4100E5 (miniaturní SMD transformátor pro proudové snímání uvnitř SMPS, ' +
+      'jednozávitové primární vinutí v pouzdře) jde o větší toroidní THT konstrukci pro montáž ' +
+      'na vlastní jeden závit vodiče/přípojnice (průchozí otvor Ø9,5mm, primární vinutí NENÍ ' +
+      'součástí dílu — protahuje se jím měřený vodič, případně 1 závit izolovaného vodiče pro ' +
+      'nižší proudy) určenou pro síťové kmitočty 50/60Hz. Použití: snímání přetížení, detekce ' +
+      'zemního/reziduálního proudu, měření (metering), převod na analogový signál pro A/D ' +
+      'obvody. Primární proud 20A jmenovitě, max. 60A. Poměr napětí na 1 ampér při zátěži 100 Ω: ' +
+      '0,100 V/A @20A / 0,097 V/A @2A (mírná nelinearita při nízkém proudu). Odpor sekundárního ' +
+      'vinutí (DCR) 41,8 Ω @20°C. Dielektrická pevnost (hi-pot) 4 kVrms. Izolační odpor min ' +
+      '100 MΩ. Skladovací teplota -55 až +130°C. Pouzdro UL94V-0, shoda s RoHS a REACH. ' +
+      'Poznámka výrobce: zátěžový (burden) rezistor ani jednozávitové primární vinutí nejsou ' +
+      'součástí dodávky, pokud nejsou výslovně objednány — burden rezistor 100Ω/1/8W je uveden ' +
+      'jako referenční příklad (dává 2,0V výstup @20A). Pin 3 slouží pouze jako mechanická ' +
+      'podpora, případně pro provedení se středním odbočením vinutí.',
+    tags: 'cívka,transformátor,proudový-transformátor,current-transformer,talema,ac1020,toroid,thd,metering',
+  },
 ];
 
 const TORK_SPECS: CoilSpec[] = [
