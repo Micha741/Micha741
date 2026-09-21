@@ -2845,6 +2845,88 @@ const DIODE_SPECS: PartSpec[] = [
       'CD4148WS).',
     tags: 'dioda,spínací,signálová,smd,chip,0603,dc-components,cd4148wt,1n4148-ekvivalent',
   },
+  {
+    name: 'M1',
+    packageType:
+      'SMD ~SMA / ~DO-214AC, rozměry cca 5,3×2,7×2,2mm, pásková balení 7500ks/13", hmotnost ' +
+      '~0,07g',
+    value:
+      'Usměrňovací dioda se standardní dobou zotavení, VRRM 50 V, IFAV 1 A, VF<1,1V @IF=1A, ' +
+      'IFSM 27/30 A',
+    notes:
+      'Diotec Semiconductor "M1...M7 — Standard Recovery SMD Rectifier Diodes" (verze ' +
+      '2016-12-19). ⚠️ NOVÁ ŘADA v této knihovně: budget (levnější) verze řady S1A...S1M ' +
+      '(sama S1A-S1M v knihovně dosud neevidována) — stejné pouzdro SMA/DO-214AC jako běžné ' +
+      'SMD usměrňovací diody, ale se standardní (pomalejší, trr~1500ns) dobou zotavení místo ' +
+      'rychlé/ultra rychlé. Určeno pro síťové usměrnění 50/60Hz, napájecí zdroje, ochranu proti ' +
+      'přepólování. Nejnižší napěťová varianta řady M1-M7 (VRRM 50-1000V, viz sourozenecké ' +
+      'záznamy M2-M7 pro plné specifikace VRRM). VRSM (nárazové špičkové závěrné napětí) shodné ' +
+      's VRRM. Max. trvalý usměrněný proud IFAV 1A @TT=75°C (odporová zátěž, jednocestné ' +
+      'zapojení). Periodický špičkový propustný proud IFRM 5A @f>15Hz. Rázový proud IFSM 27A ' +
+      '(půlvlna 50Hz/10ms) / 30A (60Hz/8,3ms). Grenzlastintegral i²t (t<10ms) 3,6 A²s. VF<1,1V ' +
+      '@IF=1A/TJ=25°C. Závěrný proud IR<5µA @VR=VRRM/25°C (<50µA @100°C). Kapacita přechodu Cj ' +
+      'typ. 12pF @VR=4V. Doba zotavení trr typ. 1500ns (IF=0,5A→IR=1A→IR=0,25A) — výrazně delší ' +
+      'než u rychlých/ultra rychlých usměrňovacích diod v této knihovně. Tepelný odpor ' +
+      'přechod-okolí RthA<75K/W (25mm² Cu plošky), přechod-vývod RthT<40K/W. TJ a Tstg -50 až ' +
+      '+150°C. Pouzdro UL94V-0, pájecí podmínky 260°C/10s, MSL=1. Shoda s RoHS, REACH, ' +
+      'Conflict Minerals.',
+    tags: 'dioda,usměrňovací,standardní-zotavení,smd,sma,do-214ac,diotec,m1,50v,síťové-usměrnění',
+  },
+  {
+    name: 'M2',
+    packageType: 'shodné s M1 (SMA/DO-214AC) — viz jeho záznam pro plné mechanické specifikace',
+    value: 'Usměrňovací dioda se standardní dobou zotavení, VRRM 100 V, IFAV 1 A',
+    notes:
+      'Diotec "M1...M7" — součást řady M1-M7, viz záznam "M1" v této knihovně pro plné ' +
+      'společné elektrické/mechanické specifikace. VRSM 100V.',
+    tags: 'dioda,usměrňovací,standardní-zotavení,smd,sma,do-214ac,diotec,m2,100v,síťové-usměrnění',
+  },
+  {
+    name: 'M3',
+    packageType: 'shodné s M1 (SMA/DO-214AC) — viz jeho záznam pro plné mechanické specifikace',
+    value: 'Usměrňovací dioda se standardní dobou zotavení, VRRM 200 V, IFAV 1 A',
+    notes:
+      'Diotec "M1...M7" — součást řady M1-M7, viz záznam "M1" v této knihovně pro plné ' +
+      'společné elektrické/mechanické specifikace. VRSM 200V.',
+    tags: 'dioda,usměrňovací,standardní-zotavení,smd,sma,do-214ac,diotec,m3,200v,síťové-usměrnění',
+  },
+  {
+    name: 'M4',
+    packageType: 'shodné s M1 (SMA/DO-214AC) — viz jeho záznam pro plné mechanické specifikace',
+    value: 'Usměrňovací dioda se standardní dobou zotavení, VRRM 400 V, IFAV 1 A',
+    notes:
+      'Diotec "M1...M7" — součást řady M1-M7, viz záznam "M1" v této knihovně pro plné ' +
+      'společné elektrické/mechanické specifikace. VRSM 400V.',
+    tags: 'dioda,usměrňovací,standardní-zotavení,smd,sma,do-214ac,diotec,m4,400v,síťové-usměrnění',
+  },
+  {
+    name: 'M5',
+    packageType: 'shodné s M1 (SMA/DO-214AC) — viz jeho záznam pro plné mechanické specifikace',
+    value: 'Usměrňovací dioda se standardní dobou zotavení, VRRM 600 V, IFAV 1 A',
+    notes:
+      'Diotec "M1...M7" — součást řady M1-M7, viz záznam "M1" v této knihovně pro plné ' +
+      'společné elektrické/mechanické specifikace. VRSM 600V.',
+    tags: 'dioda,usměrňovací,standardní-zotavení,smd,sma,do-214ac,diotec,m5,600v,síťové-usměrnění',
+  },
+  {
+    name: 'M6',
+    packageType: 'shodné s M1 (SMA/DO-214AC) — viz jeho záznam pro plné mechanické specifikace',
+    value: 'Usměrňovací dioda se standardní dobou zotavení, VRRM 800 V, IFAV 1 A',
+    notes:
+      'Diotec "M1...M7" — součást řady M1-M7, viz záznam "M1" v této knihovně pro plné ' +
+      'společné elektrické/mechanické specifikace. VRSM 800V.',
+    tags: 'dioda,usměrňovací,standardní-zotavení,smd,sma,do-214ac,diotec,m6,800v,síťové-usměrnění',
+  },
+  {
+    name: 'M7',
+    packageType: 'shodné s M1 (SMA/DO-214AC) — viz jeho záznam pro plné mechanické specifikace',
+    value: 'Usměrňovací dioda se standardní dobou zotavení, VRRM 1000 V, IFAV 1 A',
+    notes:
+      'Diotec "M1...M7" — součást řady M1-M7, viz záznam "M1" v této knihovně pro plné ' +
+      'společné elektrické/mechanické specifikace. Nejvyšší napěťová varianta celé řady. ' +
+      'VRSM 1000V.',
+    tags: 'dioda,usměrňovací,standardní-zotavení,smd,sma,do-214ac,diotec,m7,1000v,síťové-usměrnění',
+  },
 ];
 
 const BRIDGE_SPECS: PartSpec[] = [
