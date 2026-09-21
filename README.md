@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    795 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    801 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220; tenkovrstvá
@@ -171,8 +171,11 @@ i návrh schémat obvodů a plošných spojů.
     SMD IML-0662N000-T1 a IML-0660; dílenský rework modul pájecí stanice Weller WXair MODUL
     100-230V US/MX/J B; a křemenné krystaly (16/8/12 MHz HC-49/S, 32,768 kHz hodinkový) a
     keramické rezonátory (16/8 MHz))
-    a 11 cívek (proudový snímací transformátor MPS Industries
-    P4100E5 series, radiální a SMD výkonové tlumivky, a THT/SMD ferritové korálky) a 16
+    a 17 cívek (proudový snímací transformátor MPS Industries
+    P4100E5 series, radiální a SMD výkonové tlumivky, THT/SMD ferritové korálky, náhradní cívky
+    elektromagnetických ventilů TORK T-SB1/T-SB2 (230/24/12 V AC/DC, IP65) a profesionální
+    flexibilní indukční ohřevová cívka Schaeffler MF-INDUCTOR (3,5-44 kW, 28 rozměrových
+    variant)) a 16
     spínačů/relé (tlačítkové mikrospínače, páčkové a posuvné přepínače, mikrospínač, DIP
     spínače, rotační enkodér EC11, otočný přepínač, výkonové elektromagnetické relé Tianbo
     TRA1, a 4dílná rodina PCB výkonových relé Omron G5LE — SPDT/SPST-NO, flux/fully sealed,

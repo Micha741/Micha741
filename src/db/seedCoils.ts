@@ -115,8 +115,133 @@ const COIL_SPECS: CoilSpec[] = [
   },
 ];
 
+const TORK_SPECS: CoilSpec[] = [
+  {
+    name: 'T-SB1.230A',
+    packageType:
+      'Cívka elektromagnetického ventilu s konektorem DIN 43650 typ A (PG9/PG11), krytí ' +
+      'IP65 (DIN 40050), hmotnost 0,15 kg; svorky konektoru: PE (zem), N, L',
+    value: '230 V AC, 15 VA, 50/60 Hz',
+    notes:
+      'TORK "Technická data cívky" (návod pro mechanickou a elektrickou instalaci) — náhradní ' +
+      'cívka (s konektorem) pro elektromagnetické (solenoidové) ventily řady TORK T-SB, ' +
+      '⚠️ NOVÝ TYP součástky v této knihovně: elektromagnetická cívka ventilu (fluidní/ ' +
+      'vodovodní/plynová armatura), ne cívka pro elektronický obvod jako ostatní záznamy v ' +
+      'kategorii "Cívka" — přidáno sem jako nejbližší odpovídající kategorie (elektromagnetický ' +
+      'aktuátor). Ventil samotný se standardně dodává i s cívkou a konektorem; cívka+konektor se ' +
+      'samostatně dodává jen jako náhradní díl. Součást dvojice sérií T-SB1 (jediné napětí 230 ' +
+      'VAC, tento záznam) a T-SB2 (24/12 VAC nebo VDC, viz sourozenecké záznamy T-SB2.24A/D a ' +
+      'T-SB2.12A/D) — datasheet společný. ' +
+      'Tolerance napětí ±10 %. Trvalé zatížení 100 %. Max. teplota okolí 50 °C. Tepelná třída ' +
+      'izolace cívky H (180 °C). Magnetická jednotka: měděné vinutí tvarované v termoplastu ' +
+      '(polyester s 30% laminátu), izolace cívky 30% vlákno Nylon 66. Konektor DIN 43650 (v ' +
+      'originále uvedeno jako "DIN 4365") typ A, závit PG9/PG11. ' +
+      'Instalace: cívka se nesmí připojit k napětí, dokud není osazena na ventil a přichycena ' +
+      'jistící maticí; nelze ji sejmout z ventilu před odpojením napětí (hrozí poškození); ' +
+      'konektor se k cívce připevňuje jen jediným možným způsobem a zajišťuje upevňovacím ' +
+      'šroubem; cívkou lze otáčet i po zapojení. ⚠️ Za provozu se cívka může zahřát na horký ' +
+      'povrch (vlivem teploty média nebo dlouhodobého připojení pod napětím).',
+    tags: 'cívka,solenoidový-ventil,elektromagnetický-ventil,tork,t-sb,t-sb1,230vac,ip65',
+  },
+  {
+    name: 'T-SB2.24A',
+    packageType:
+      'Cívka elektromagnetického ventilu s konektorem DIN 43650 typ A (PG9/PG11), krytí ' +
+      'IP65 (DIN 40050), hmotnost 0,15 kg; svorky konektoru: PE (zem), 1, 2',
+    value: '24 V AC, 15 VA, 50/60 Hz',
+    notes:
+      'Součást řady TORK T-SB (viz poznámka u T-SB1.230A pro plné společné specifikace). ' +
+      'Série T-SB2, varianta 24 V AC.',
+    tags: 'cívka,solenoidový-ventil,elektromagnetický-ventil,tork,t-sb,t-sb2,24vac,ip65',
+  },
+  {
+    name: 'T-SB2.24D',
+    packageType:
+      'Cívka elektromagnetického ventilu s konektorem DIN 43650 typ A (PG9/PG11), krytí ' +
+      'IP65 (DIN 40050), hmotnost 0,15 kg; svorky konektoru: PE (zem), 1, 2',
+    value: '24 V DC, 18 W',
+    notes:
+      'Součást řady TORK T-SB (viz poznámka u T-SB1.230A pro plné společné specifikace). ' +
+      'Série T-SB2, varianta 24 V DC.',
+    tags: 'cívka,solenoidový-ventil,elektromagnetický-ventil,tork,t-sb,t-sb2,24vdc,ip65',
+  },
+  {
+    name: 'T-SB2.12A',
+    packageType:
+      'Cívka elektromagnetického ventilu s konektorem DIN 43650 typ A (PG9/PG11), krytí ' +
+      'IP65 (DIN 40050), hmotnost 0,15 kg; svorky konektoru: PE (zem), 1, 2',
+    value: '12 V AC, 15 VA, 50/60 Hz',
+    notes:
+      'Součást řady TORK T-SB (viz poznámka u T-SB1.230A pro plné společné specifikace). ' +
+      'Série T-SB2, varianta 12 V AC.',
+    tags: 'cívka,solenoidový-ventil,elektromagnetický-ventil,tork,t-sb,t-sb2,12vac,ip65',
+  },
+  {
+    name: 'T-SB2.12D',
+    packageType:
+      'Cívka elektromagnetického ventilu s konektorem DIN 43650 typ A (PG9/PG11), krytí ' +
+      'IP65 (DIN 40050), hmotnost 0,15 kg; svorky konektoru: PE (zem), 1, 2',
+    value: '12 V DC, 18 W',
+    notes:
+      'Součást řady TORK T-SB (viz poznámka u T-SB1.230A pro plné společné specifikace). ' +
+      'Série T-SB2, varianta 12 V DC.',
+    tags: 'cívka,solenoidový-ventil,elektromagnetický-ventil,tork,t-sb,t-sb2,12vdc,ip65',
+  },
+];
+
+const SCHAEFFLER_SPECS: CoilSpec[] = [
+  {
+    name: 'MF-INDUCTOR',
+    packageType:
+      'Flexibilní kabelová indukční cívka (ovíjí se kolem/do obrobku), kruhové bajonetové ' +
+      'konektory pro připojení ke generátoru; 3 výkonové třídy generátoru a víc rozměrových ' +
+      'variant v každé — viz tabulka v poznámce',
+    value:
+      '⚠️ NOVÝ TYP součástky v této knihovně — indukční ohřevová cívka pro průmyslové indukční ' +
+      'ohřívání feromagnetických obrobků (např. ohřev ložisek před montáží), 3,5/10-22/44 kW, ' +
+      'délky 5–40 m, max. teplota 180 °C nebo 300 °C dle provedení',
+    notes:
+      'Schaeffler "BA 86 — Flexibilní indukční cívky MF-INDUCTOR" (uživatelská příručka, rev. ' +
+      '09/2024) — ⚠️ jde o kabelovou indukční cívku pro profesionální indukční ohřívací zařízení ' +
+      '(generátor + cívka), ne o cívku pro elektronický obvod jako ostatní záznamy v kategorii ' +
+      '"Cívka" — přidáno sem jako nejbližší odpovídající kategorie (induktor). Generátor dodává ' +
+      'střídavé napětí do cívky, kolem/v obrobku vzniká střídavé elektromagnetické pole, ve ' +
+      'feromagnetickém obrobku indukuje vířivé proudy → obrobek se ohřívá (bez přímého kontaktu ' +
+      's topným tělesem). Cívka se buď ovíjí kolem obrobku, vkládá do otvoru obrobku, nebo se ' +
+      'používá jako plochá cívka na povrchu. Smí se provozovat jen se Schaeffler generátory ' +
+      'odpovídajícího výkonu, max. 2 přívodní kabely v řadě (celkem max 6 m). ' +
+      '⚠️ NEBEZPEČÍ: silné elektromagnetické pole — ohrožení života osob s kardiostimulátorem ' +
+      'nebo kovovým implantátem v blízkosti; riziko srdeční arytmie při dlouhodobém působení i ' +
+      'bez implantátu; horký povrch cívky i ohřívaného obrobku. ' +
+      'Objednací kód: MF-INDUCTOR-<výkon>-<délka>M-D<průměr kabelu>-<teplotní třída>C[-SLIM]. ' +
+      'Výkonové/rozměrové třídy (P=jmenovitý výkon generátoru, D=vnější průměr kabelu cívky, ' +
+      'dmin=min. průměr obrobku, Tmax=max. teplota obrobku, hmotnost dle délky): ' +
+      '3,5 kW/D12mm/dmin90mm/180°C (délky 5–10 m, 1,35–2,6 kg); ' +
+      '10–22 kW/D12mm/dmin75mm/180°C "SLIM" provedení, tmax provozu 10 min (délky 10–30 m, ' +
+      '3–11 kg); 10–22 kW/D15mm/dmin100mm/180°C, bez časového omezení provozu (délky 15–40 m, ' +
+      '7–20 kg); 10–22 kW/D20mm/dmin120mm/300°C, provedení odolávající vysokým teplotám (délky ' +
+      '10–30 m, 6–18 kg); 44 kW/D19mm/dmin140mm/180°C (délky 15–40 m, 16–36 kg); 44 kW/D28mm/ ' +
+      'dmin220mm/300°C (délky 15–30 m, 17–34 kg). Každá kombinace délka/průměr/teplota má vlastní ' +
+      'objednací číslo (např. MF-INDUCTOR-3.5KW-5M-D12-180C = obj. č. 300217072-0000-10) — celkem ' +
+      '28 kombinací v aktuální nabídce, konkrétní kus rozliš podle typového štítku na cívce. ' +
+      'Provozní podmínky: okolní teplota 0 až +40 °C, vlhkost 5–80 % (bez kondenzace), obrobek ' +
+      'musí stát na nehořlavém/žáruvzdorném a neferomagnetickém podkladu a mít pevné uzemnění. ' +
+      'Skladovací podmínky: -5 až +55 °C, 5–80 % vlhkosti (bez kondenzace), cívka musí být ' +
+      'vychladlá na pokojovou teplotu. Příslušenství: přívodní kabel MF-GENERATOR.CONNECT-22KW-3M ' +
+      '(pro 10-22kW generátory) nebo MF-GENERATOR.CONNECT-44KW-3M (pro 44kW), oba 3 m, s ' +
+      'jednopólovými bajonetovými konektory (pro generátor 3,5kW není přívodní kabel dostupný — ' +
+      'cívka se připojuje přímo); snímač teploty MF-GENERATOR.MPROBE-GREEN/RED (umísťuje se do ' +
+      'bezprostřední blízkosti závitů cívky, kde teplo vzniká nejdřív, protože cívka sama nemá ' +
+      'žádné vlastní monitorování teploty). Oprava: konektory lze vyměnit jen u modelů 22kW a ' +
+      '44kW; poškozenou vrchní silikonovou vrstvu u 180°C variant lze opravit samovulkanizační ' +
+      'silikonovou páskou; 300°C varianty se musí při poškození vyměnit celé (nebo zkrátit, je-li ' +
+      'poškození u jednoho z konců). CE (LVD 2014/35/EU, RoHS 2011/65/EU), EN 60204-1:2018.',
+    tags: 'cívka,induktor,indukční-ohřev,schaeffler,mf-inductor,ba86,generátor,ohřev-ložisek',
+  },
+];
+
 export function buildCoilSeed(): ComponentInput[] {
-  return COIL_SPECS.map((spec) => ({
+  return [...COIL_SPECS, ...TORK_SPECS, ...SCHAEFFLER_SPECS].map((spec) => ({
     name: spec.name,
     category: 'Cívka',
     manufacturer: null,
