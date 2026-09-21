@@ -4219,6 +4219,33 @@ const MODULE_SPECS: ModuleSpec[] = [
       '(AMR).',
     tags: 'modul,rf,přijímač,fsk,ism,hoperf,rfm01,spi,315mhz,433mhz,868mhz,915mhz,standalone',
   },
+  {
+    name: 'RFM210LCF-S1',
+    packageType:
+      'COB (chip-on-board) SMD modul bez pouzdra IC, rozměry 32×11×6mm, 6 vývodů (rozteč ' +
+      '2,54mm): 1=ANT, 2=GND, 3=SDN, 4=VCC, 5=DATA, 6=GND',
+    value:
+      'ASK/OOK bezdrátový přijímací modul, pracovní kmitočet 315MHz nebo 433,92MHz (dle ' +
+      'objednacího kódu), citlivost -114dBm, VDD 1,8–3,6V, pracovní proud 3,9mA typ., ' +
+      'přenosová rychlost 1–5kbps',
+    notes:
+      'HOPE Microelectronics "RFM210LCF-S1 — ASK/OOK Wireless Receiver Module" (Rev 1.0, © ' +
+      '2006). Zmíněn i v katalogu "HOPERF Catalog 2020" jako "RFM210LCFW" v tabulce RF COB ' +
+      'modulů (viz souhrnný záznam "HOPERF RFM/HM-TR Series" v této knihovně) — zde evidován ' +
+      's plnými parametry z vlastního samostatného datasheetu. Na rozdíl od RFM01 (viz jeho ' +
+      'záznam v této knihovně) používá jednodušší ASK/OOK modulaci místo FSK — nižší citlivost ' +
+      'stavu vypnuto/zapnuto, ale jednodušší/levnější implementace, bez SPI konfiguračního ' +
+      'rozhraní (pouze přímý logický DATA výstup a SDN pin pro uspání). Dva objednací kódy dle ' +
+      'kmitočtu: RFM210LCF-315S1 (315MHz) a RFM210LCF-433S1 (433,92MHz), oba se sleep funkcí ' +
+      '(pin SDN). Elektrické parametry (@DC3,3V/25°C): citlivost -114dBm @1kbps, datová ' +
+      'rychlost 1-5kbps (typ. 3,3kbps), šířka přijímacího pásma 330kHz, napájení 1,8-3,6V ' +
+      '(typ. 3,3V), pracovní proud 3,8-4,2mA @433,92MHz, klidový (sleep) proud max 1µA, ' +
+      'potlačení zrcadlového kmitočtu (image rejection) 30dB, provozní teplota -40 až +85°C. ' +
+      'Shoda s FCC a ETSI. Typické aplikace: dálkové vstupní systémy, zabezpečení elektrických ' +
+      'vozítek, dálkově ovládané zásuvky/zvonky, bezdrátový přenos dat, osvětlení, hračky, ' +
+      'domácí spotřebiče, zabezpečovací/poplašné systémy.',
+    tags: 'modul,rf,přijímač,ask,ook,ism,hoperf,rfm210lcf,cob,315mhz,433mhz',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
