@@ -4,6 +4,7 @@ export type ComponentCategory =
   | 'Kondenzátor'
   | 'Cívka'
   | 'Dioda'
+  | 'Můstek'
   | 'Tranzistor'
   | 'Konektor'
   | 'Spínač/Relé'
@@ -16,6 +17,7 @@ export const COMPONENT_CATEGORIES: ComponentCategory[] = [
   'Kondenzátor',
   'Cívka',
   'Dioda',
+  'Můstek',
   'Tranzistor',
   'Konektor',
   'Spínač/Relé',
