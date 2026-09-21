@@ -2787,6 +2787,56 @@ const DIODE_SPECS: PartSpec[] = [
       '(<50µA @150°C), <5µA @75V/25°C.',
     tags: 'dioda,spínací,signálová,smd,minimelf,sod-80c,diotec,ll4448,1n4448-ekvivalent',
   },
+  {
+    name: 'CD4148W',
+    packageType:
+      'SMD čipové pouzdro 1206 (3,40×1,70mm), epoxidová pryskyřice UL94V-0, pájecí terminály ' +
+      'dle MIL-STD-202E metoda 208, hmotnost ~10mg, montáž v libovolné poloze',
+    value:
+      'Spínací (switching) dioda, VRRM 100 V, IF 150 mA, IFSM 500 mA, VF max 1,0V, trr max 4ns',
+    notes:
+      'DC Components Co., Ltd. "CD4148W, CD4148WS, CD4148WT — Technical Specifications of ' +
+      'Surface Mount Switching Diode, 100V/0,3A". Třetí rodina SMD ekvivalentů 1N4148 v této ' +
+      'knihovně vedle Diotec LL4148 (viz jeho záznam) — na rozdíl od cylindrického MiniMELF ' +
+      'pouzdra LL4148 jde o PLOCHÉ OBDÉLNÍKOVÉ SMD ČIPOVÉ pouzdro (podobné SMD ' +
+      'rezistoru/kondenzátoru) ve třech standardních velikostech 1206/0805/0603 (viz ' +
+      'sourozenecké záznamy "CD4148WS"/"CD4148WT" pro menší velikosti). Tento záznam (CD4148W, ' +
+      'pouzdro 1206C) je nejvyšší proudová/tepelná třída rodiny. VR (max. trvalé závěrné ' +
+      'napětí) 75V, VRM (max. nepovtorné špičkové závěrné napětí) 100V. IF max 150mA @25°C ' +
+      '(single phase, half-wave, 60Hz, odporová/indukční zátěž — pro kapacitní zátěž derating ' +
+      '20%). IFSM (rázový proud, tp=1µs) 500mA. Ptot max 500mW @25°C. VF max 1,0V. IR max 25nA ' +
+      '@VR=20V / max 5,0µA @VR=75V. trr max 4,0ns (IF=IR=10mA, RL=100Ω, měřeno při IR=1mA). CJ ' +
+      'typ. 4,0pF @1MHz/VR=0. Tepelný odpor přechod-okolí RθJA 450K/W (pro pouzdro 1206C — ' +
+      'menší pouzdra mají vyšší RθJA 650K/W, viz sourozenecké záznamy). TJ a Tstg -65 až ' +
+      '+175°C.',
+    tags: 'dioda,spínací,signálová,smd,chip,1206,dc-components,cd4148w,1n4148-ekvivalent',
+  },
+  {
+    name: 'CD4148WS',
+    packageType:
+      'SMD čipové pouzdro 0805 (2,20×1,45mm), epoxidová pryskyřice UL94V-0, hmotnost ~6mg',
+    value:
+      'Spínací dioda, VRRM 100 V, IF 150 mA, IFSM 500 mA, VF max 1,0V, trr max 4ns',
+    notes:
+      'DC Components "CD4148W, CD4148WS, CD4148WT" — součást rodiny, viz záznam "CD4148W" v ' +
+      'této knihovně pro plné společné elektrické specifikace a kontext. Menší pouzdro 0805C, ' +
+      'jinak elektricky shodné parametry jako CD4148W kromě tepelného odporu: RθJA 650K/W ' +
+      '(vyšší než u CD4148W kvůli menší ploše pouzdra).',
+    tags: 'dioda,spínací,signálová,smd,chip,0805,dc-components,cd4148ws,1n4148-ekvivalent',
+  },
+  {
+    name: 'CD4148WT',
+    packageType:
+      'SMD čipové pouzdro 0603 (1,65×0,90mm), epoxidová pryskyřice UL94V-0, hmotnost ~4mg',
+    value:
+      'Spínací dioda, VRRM 100 V, IF 150 mA, IFSM 500 mA, VF max 1,0V, trr max 4ns',
+    notes:
+      'DC Components "CD4148W, CD4148WS, CD4148WT" — součást rodiny, viz záznam "CD4148W" v ' +
+      'této knihovně pro plné společné elektrické specifikace a kontext. Nejmenší pouzdro ' +
+      'rodiny 0603C, jinak elektricky shodné parametry jako CD4148W, RθJA 650K/W (shodné s ' +
+      'CD4148WS).',
+    tags: 'dioda,spínací,signálová,smd,chip,0603,dc-components,cd4148wt,1n4148-ekvivalent',
+  },
 ];
 
 const BRIDGE_SPECS: PartSpec[] = [
