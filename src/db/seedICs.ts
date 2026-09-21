@@ -3155,6 +3155,101 @@ const IC_SPECS: IcSpec[] = [
       'hoření (PBB/PBDE). Datum kódu na pouzdru: 3místný kód (rok+týden výroby).',
     tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,sharp,pc817,dip-4,tht',
   },
+  {
+    name: 'ILD205T',
+    packageType:
+      'SMD SOIC-8A, rozteč vývodů 1,27mm (0,05"), páskové balení (jediná dostupná varianta ' +
+      'balení), Pb-free (e3)',
+    value:
+      'DVOUKANÁLOVÝ optočlen (2× fototranzistorový optočlen v jednom pouzdře) s galvanickým ' +
+      'oddělením, CTR 40–80 % @IF=10mA/VCE=5V, izolační napětí Viso 3000 Vrms, BVCEO 70 V',
+    notes:
+      'Vishay Semiconductors "ILD205T/206T/207T/211T/213T/217T — Optocoupler, Phototransistor ' +
+      'Output, Dual Channel, SOIC-8 package" (dok. č. 83647, rev. 1.4, 26.10.2004). ⚠️ NOVÁ ' +
+      'SUB-KATEGORIE mezi optočleny v této knihovně: první DVOUKANÁLOVÝ optočlen (2 nezávislé ' +
+      'LED+fototranzistor páry v jediném SOIC-8 pouzdře) — na rozdíl od jednokanálových LTV-356T/ ' +
+      'EL817/PC817 (viz jejich záznamy) umožňuje galvanicky oddělit dva signály najednou v ' +
+      'kompaktním SMD pouzdře bez průchozích otvorů, vhodné pro aplikace s vysokou hustotou ' +
+      'osazení. Vyšší BVCEO (70V) oproti běžnému průmyslovému standardu 30V dává vyšší ' +
+      'bezpečnostní rezervu. Zapojení pinů: 1=Anoda(ch1), 2=Katoda(ch1), 3=Anoda(ch2), ' +
+      '4=Katoda(ch2), 5=Emitor(ch2), 6=Kolektor(ch2), 7=Emitor(ch1), 8=Kolektor(ch1). Nejnižší ' +
+      'CTR varianta řady (viz sourozenecké záznamy ILD206T/207T/211T/213T/217T pro plné ' +
+      'specifikace CTR). Vstup (na kanál): VR max 6,0V, špičkový impulzní proud 1,0A ' +
+      '(1,0µs/300pps), trvalý propustný proud 30mA, Pdiss 50mW (derating 0,66mW/°C nad 25°C), ' +
+      'VF typ. 1,2V/max 1,55V @IF=10mA, IR max 100µA @VR=6V, CO typ. 25pF @VR=0. Výstup (na ' +
+      'kanál): BVCEO 70V, BVECO 7,0V, Pdiss 125mW (derating 1,67mW/°C nad 25°C), ICEO typ. ' +
+      '5,0nA/max 50nA @VCE=10V/IF=0, CCE typ. 10pF @VCE=0. Coupler: celkový výkon pouzdra Ptot ' +
+      '300mW (2 LED + 2 detektory, derating 4,0mW/°C nad 25°C), VCE(sat) max 0,4V @IF=10mA/ ' +
+      'IC=2,5mA, CIO typ. 0,5pF, izolační odpor RIO typ. 100 GΩ, izolační zkušební napětí VISO ' +
+      '3000Vrms (t=1s). CTRDC @VCE=5V/IF=10mA: min 40/max 80%; @VCE=5V/IF=1mA: min 13/typ. ' +
+      '30%. Doba zapnutí ton typ. 5,0µs, doba vypnutí toff typ. 4,0µs (@IC=2mA/RL=100Ω/VCC=5V). ' +
+      'Provozní teplota -55 až +100°C, skladovací -55 až +150°C, pájecí teplota 260°C/10s. ' +
+      'Certifikace UL1577 (File E52744, System Code Y). RoHS 2002/95/EC, WEEE 2002/96/EC, bez ' +
+      'ODS látek (potvrzeno prohlášením výrobce).',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,dvoukanálový,vishay,ild205t,soic-8,smd',
+  },
+  {
+    name: 'ILD206T',
+    packageType: 'shodné s ILD205T — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      'DVOUKANÁLOVÝ optočlen, CTR 63–125 % @IF=10mA/VCE=5V, izolační napětí Viso 3000 Vrms, ' +
+      'BVCEO 70 V',
+    notes:
+      'Vishay "ILD205T/206T/207T/211T/213T/217T" — součást řady, viz záznam "ILD205T" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. CTRDC @VCE=5V/IF=10mA: ' +
+      'min 63/max 125%; @VCE=5V/IF=1mA: min 22/typ. 45%.',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,dvoukanálový,vishay,ild206t,soic-8,smd',
+  },
+  {
+    name: 'ILD207T',
+    packageType: 'shodné s ILD205T — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      'DVOUKANÁLOVÝ optočlen, CTR 100–200 % @IF=10mA/VCE=5V, izolační napětí Viso 3000 Vrms, ' +
+      'BVCEO 70 V',
+    notes:
+      'Vishay "ILD205T/206T/207T/211T/213T/217T" — součást řady, viz záznam "ILD205T" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Nejvyšší CTR varianta s ' +
+      'definovaným rozsahem (X-, XXX- a Y- varianty mají jen jednostranně ohraničené minimum). ' +
+      'CTRDC @VCE=5V/IF=10mA: min 100/max 200%; @VCE=5V/IF=1mA: min 34/typ. 70%.',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,dvoukanálový,vishay,ild207t,soic-8,smd',
+  },
+  {
+    name: 'ILD211T',
+    packageType: 'shodné s ILD205T — viz jeho záznam pro plné mechanické specifikace',
+    value: 'DVOUKANÁLOVÝ optočlen, CTR > 20 % @IF=10mA/VCE=5V, izolační napětí Viso 3000 Vrms, ' +
+      'BVCEO 70 V',
+    notes:
+      'Vishay "ILD205T/206T/207T/211T/213T/217T" — součást řady, viz záznam "ILD205T" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. ⚠️ Datasheet uvádí pro ' +
+      'tento typ pouze jednostranně ohraničené minimum CTR (bez max. hodnoty) — CTRDC ' +
+      '@VCE=5V/IF=10mA: min 20% (max. neudáno).',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,dvoukanálový,vishay,ild211t,soic-8,smd',
+  },
+  {
+    name: 'ILD213T',
+    packageType: 'shodné s ILD205T — viz jeho záznam pro plné mechanické specifikace',
+    value: 'DVOUKANÁLOVÝ optočlen, CTR > 100 % @IF=10mA/VCE=5V, izolační napětí Viso 3000 Vrms, ' +
+      'BVCEO 70 V',
+    notes:
+      'Vishay "ILD205T/206T/207T/211T/213T/217T" — součást řady, viz záznam "ILD205T" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. ⚠️ Datasheet uvádí pro ' +
+      'tento typ pouze jednostranně ohraničené minimum CTR (bez max. hodnoty) — CTRDC ' +
+      '@VCE=5V/IF=10mA: min 100% (max. neudáno).',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,dvoukanálový,vishay,ild213t,soic-8,smd',
+  },
+  {
+    name: 'ILD217T',
+    packageType: 'shodné s ILD205T — viz jeho záznam pro plné mechanické specifikace',
+    value: 'DVOUKANÁLOVÝ optočlen, CTR > 100 % @IF=1mA/VCE=5V, izolační napětí Viso 3000 Vrms, ' +
+      'BVCEO 70 V',
+    notes:
+      'Vishay "ILD205T/206T/207T/211T/213T/217T" — součást řady, viz záznam "ILD205T" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. ⚠️ POZOR: na rozdíl od ' +
+      'ostatních členů řady je CTR pro ILD217T testován a specifikován při NIŽŠÍM budicím ' +
+      'proudu IF=1mA (ne 10mA) — CTRDC @VCE=5V/IF=1mA: min 100/typ. 120% (hodnota @IF=10mA v ' +
+      'datasheetu neuvedena).',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,dvoukanálový,vishay,ild217t,soic-8,smd',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {

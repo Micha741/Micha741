@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    857 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    863 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220; tenkovrstvá
@@ -54,7 +54,7 @@ i návrh schémat obvodů a plošných spojů.
     650V/40A Field Stop Trench, D²PAK, copackovaná rychlá dioda), JFET (včetně RF JFET rodiny
     Fairchild 2N5484/5485/5486 a SMD MMBF5484/5485/5486, SOT-23), IR fototranzistory Lite-On
     LTR-306 a LTR-1650D, fototranzistor pro viditelné
-    světlo (náhrada CdS) Kodenshi PT23GP11), 143 integrovaných obvodů
+    světlo (náhrada CdS) Kodenshi PT23GP11), 149 integrovaných obvodů
     (časovače, komparátory, op-zesilovače, regulátory, logická hradla, čítače,
     Wi-Fi mikrokontroléry ESP32, ESP32-C3, ESP8285, ESP8684, Wi-Fi adaptér ESP8089, 8bit AVR
     mikrokontroléry ATmega640/1280/1281/2560/2561, rodina CAN mikrokontrolérů AT90CAN32/64/128
@@ -79,8 +79,9 @@ i návrh schémat obvodů a plošných spojů.
     (tepová frekvence + SpO2) a SFH7060 (5 emitorů, tepová frekvence + SpO2), a proudové
     senzory CUI CSXX05B series aj.; izolovaný DC/DC měnič TRACO POWER TRA 1 Series; fototranzistorové
     optočleny LITE-ON LTV-356T (CTR 50-600%, Viso 3750Vrms, mini-flat SMD), Everlight EL817
-    Series (CTR 50-600%, Viso 5000Vrms, DIP-4/SMD) a Sharp PC817 Series (rank A-D, CTR 50-600%,
-    Viso 5000Vrms, DIP-4); a plně
+    Series (CTR 50-600%, Viso 5000Vrms, DIP-4/SMD), Sharp PC817 Series (rank A-D, CTR 50-600%,
+    Viso 5000Vrms, DIP-4) a dvoukanálová řada Vishay ILD205T/206T/207T/211T/213T/217T (2 optočleny
+    v pouzdře SOIC-8, BVCEO 70V, Viso 3000Vrms); a plně
     digitální Class-D zesilovače reproduktoru s DSP ROHM BM28720MUV (20W+20W) a BM28723MUV
     (17W+17W, output feedback, bez snubberu); a digitální barometrický tlakový senzor Bosch
     BMP280 (I2C/SPI); kombinovaný digitální senzor vlhkosti/tlaku/teploty Bosch BME280
