@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    837 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    843 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220; tenkovrstvá
@@ -44,9 +44,10 @@ i návrh schémat obvodů a plošných spojů.
     přepěťová/nadproudová ochrana CLP200M, tyristory SemiWell SCD4C60S a WeEn TYN50W/TYN80W-1600T
     (1600V vysokonapěťové SCR), triak WeEn BTA330 (30A Hi-Com, TO220/D²PAK), laserové diody
     Roithner LaserTechnik QL85H6S-A/B/C, QL78I6S-A/B/C, QL78F6S-A/B/C, QL78J6S-A/B/C a
-    QL85J6S-A/B/C-L, a proudově omezující dioda Diotec CL05M6F (5,6mA, SOD-123FL)), 6 můstků
+    QL85J6S-A/B/C-L, a proudově omezující dioda Diotec CL05M6F (5,6mA, SOD-123FL)), 12 můstků
     (SMD jednofázové usměrňovací můstky Diotec ABS2/ABS4/ABS6/ABS8/ABS10/ABS10-16, 200-1600V,
-    1A),
+    pouzdro ABS, a Diotec S40/S80/S125/S250/S380/S500, 80-1000V, pouzdro TO-269AA MiniDIL
+    SLIM),
     85 tranzistorů (bipolární NPN/PNP (včetně onsemi rodiny BC817-16L/25L/40L, SOT-23), Darlington, duální, komplementární páry, výkonové, VF,
     MOSFET (včetně vysokonapěťového 600V/20A ISC H5N6001P, TO-3P), IGBT (onsemi AFGB40T65SPD-BW,
     650V/40A Field Stop Trench, D²PAK, copackovaná rychlá dioda), JFET (včetně RF JFET rodiny

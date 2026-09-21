@@ -2775,6 +2775,88 @@ const BRIDGE_SPECS: PartSpec[] = [
       '8× vyšší — dáno vztahem Rt=VRRM/IFSM při stejném IFSM).',
     tags: 'můstek,usměrňovací,bridge-rectifier,smd,diotec,abs10-16,1600v,síťové-usměrnění',
   },
+  {
+    name: 'S40',
+    packageType:
+      'SMD pouzdro TO-269AA "MiniDIL SLIM", 4 vývody (~ / ~ / + / -), nízký profil, rozměry cca ' +
+      '6,5×5,1×1,65 mm, pásková balení 5000ks/13"',
+    value:
+      'Jednofázový diodový můstkový usměrňovač (SMD), VRRM 80 V, IFAV 0,8 A, VF<0,95V @0,4A, ' +
+      'IFSM 40 A (50Hz)/44 A (60Hz)',
+    notes:
+      'Diotec Semiconductor "S40...S500 — SMD Single Phase Diode Bridge Rectifier" (dok. verze ' +
+      '2020-12-14) — druhá rodina usměrňovacích můstků v této kategorii, odlišná od ABS-série ' +
+      '(viz záznam "ABS2" v této knihovně) jiným SMD pouzdrem (TO-269AA MiniDIL SLIM vs. ABS) a ' +
+      'nižším napěťovým rozsahem (80-1000V vs. 200-1600V) při vyšším IFSM (40/44A vs. 25/27A). ' +
+      'UL rozpoznáno (UL Recognized, File E175067). Nejnižší napěťová varianta řady S40–S500 ' +
+      '(VRRM 80–1000V, viz sourozenecké záznamy S80/S125/S250/S380/S500 pro plné specifikace ' +
+      'VRRM). Značení na pouzdru: pruh (bar) označuje DC stranu (+/-), kód "B" + 2-3místný ' +
+      'výrobní kód. Max. vstupní střídavé napětí VVRMS 40V. Max. trvalý výstupní proud IFAV ' +
+      '0,8A @TA=50°C (25mm² Cu plošky). Periodický špičkový propustný proud IFRM 10A @f>15Hz/ ' +
+      'TA=50°C. Rázový proud IFSM 40A (půlvlna 50Hz/10ms) / 44A (60Hz/8,3ms). Grenzlastintegral ' +
+      'i²t (t<10ms) 8 A²s. VF<0,95V @IF=0,4A / <1,1V @IF=0,8A (Tj=25°C, platí na diodu). Závěrný ' +
+      'proud IR<5µA @VR=VRRM. Doba zotavení trr typ. 1500ns. Kapacita přechodu Cj 10pF @VR=4V. ' +
+      'Tepelný odpor přechod-okolí RthA 60K/W (typ., 25mm² plošky), přechod-vývod RthT 20K/W ' +
+      '(typ.). TJ a Tstg -50 až +150°C. Doporučený ochranný odpor Rt=2,0Ω, přípustný nabíjecí ' +
+      'kondenzátor CL=2500µF. Pouzdro UL94V-0, pájecí podmínky 260°C/10s, MSL=1, hmotnost ' +
+      '~0,1g. Shoda s RoHS (výjimka 7a), REACH, Conflict Minerals, bez halogenu.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,diotec,s40,to-269aa,minidil,80v,síťové-usměrnění',
+  },
+  {
+    name: 'S80',
+    packageType: 'shodné s S40 — viz poznámka u S40 pro plné mechanické specifikace',
+    value: 'Jednofázový diodový můstkový usměrňovač (SMD), VRRM 160 V, IFAV 0,8 A',
+    notes:
+      'Diotec Semiconductor "S40...S500" — součást řady S40–S500, viz záznam "S40" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Značení "C" + výrobní kód. ' +
+      'Max. vstupní střídavé napětí VVRMS 80V. Doporučený ochranný odpor Rt=4,0Ω, přípustný ' +
+      'nabíjecí kondenzátor CL=1250µF.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,diotec,s80,to-269aa,minidil,160v,síťové-usměrnění',
+  },
+  {
+    name: 'S125',
+    packageType: 'shodné s S40 — viz poznámka u S40 pro plné mechanické specifikace',
+    value: 'Jednofázový diodový můstkový usměrňovač (SMD), VRRM 250 V, IFAV 0,8 A',
+    notes:
+      'Diotec Semiconductor "S40...S500" — součást řady S40–S500, viz záznam "S40" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Značení "E" + výrobní kód. ' +
+      'Max. vstupní střídavé napětí VVRMS 125V. Doporučený ochranný odpor Rt=6,25Ω, přípustný ' +
+      'nabíjecí kondenzátor CL=800µF.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,diotec,s125,to-269aa,minidil,250v,síťové-usměrnění',
+  },
+  {
+    name: 'S250',
+    packageType: 'shodné s S40 — viz poznámka u S40 pro plné mechanické specifikace',
+    value: 'Jednofázový diodový můstkový usměrňovač (SMD), VRRM 600 V, IFAV 0,8 A',
+    notes:
+      'Diotec Semiconductor "S40...S500" — součást řady S40–S500, viz záznam "S40" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Značení "J" + výrobní kód. ' +
+      'Max. vstupní střídavé napětí VVRMS 250V. Doporučený ochranný odpor Rt=15,0Ω, přípustný ' +
+      'nabíjecí kondenzátor CL=333µF.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,diotec,s250,to-269aa,minidil,600v,síťové-usměrnění',
+  },
+  {
+    name: 'S380',
+    packageType: 'shodné s S40 — viz poznámka u S40 pro plné mechanické specifikace',
+    value: 'Jednofázový diodový můstkový usměrňovač (SMD), VRRM 800 V, IFAV 0,8 A',
+    notes:
+      'Diotec Semiconductor "S40...S500" — součást řady S40–S500, viz záznam "S40" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Značení "K" + výrobní kód. ' +
+      'Max. vstupní střídavé napětí VVRMS 380V. Doporučený ochranný odpor Rt=20,0Ω, přípustný ' +
+      'nabíjecí kondenzátor CL=250µF.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,diotec,s380,to-269aa,minidil,800v,síťové-usměrnění',
+  },
+  {
+    name: 'S500',
+    packageType: 'shodné s S40 — viz poznámka u S40 pro plné mechanické specifikace',
+    value: 'Jednofázový diodový můstkový usměrňovač (SMD), VRRM 1000 V, IFAV 0,8 A',
+    notes:
+      'Diotec Semiconductor "S40...S500" — součást řady S40–S500, viz záznam "S40" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Nejvyšší napěťová varianta ' +
+      'celé řady. Značení "M" + výrobní kód. Max. vstupní střídavé napětí VVRMS 500V. Doporučený ' +
+      'ochranný odpor Rt=25,0Ω, přípustný nabíjecí kondenzátor CL=200µF.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,diotec,s500,to-269aa,minidil,1000v,síťové-usměrnění',
+  },
 ];
 
 const TRANSISTOR_SPECS: PartSpec[] = [
