@@ -4376,6 +4376,50 @@ const MODULE_SPECS: ModuleSpec[] = [
       'inteligentní domácí spotřebiče, monitorování kojenců.',
     tags: 'modul,rf,transceiver,fsk,transparentní,uart,hoperf,hm-trp,dip,smd,433mhz,470mhz,868mhz,915mhz,100mw',
   },
+  {
+    name: 'DWM1000',
+    packageType:
+      'SMD modul s integrovanou anténou (Partron dielektrická čipová anténa ACS5200HFAUWB), ' +
+      '23×13×2,9mm, 24 vývodů typu "side castellation" (poloviční otvory na okraji desky), ' +
+      'SPI rozhraní (slave-only, do 20MHz při zamčeném PLL / 3MHz jinak)',
+    value:
+      'UWB (Ultra-Wideband) transceiver modul dle IEEE 802.15.4-2011, 4 RF pásma 3,5–6,5GHz, ' +
+      'přenosová rychlost 110kbps/850kbps/6,8Mbps, přesnost lokalizace do 10cm (TDOA nebo ' +
+      '2-way ranging), VDD 2,8–3,6V',
+    notes:
+      'Decawave "DWM1000 — IEEE802.15.4-2011 UWB Transceiver Module" (datasheet v1.6, © 2016). ' +
+      '⚠️ ZCELA NOVÁ RF TECHNOLOGIE v této knihovně — na rozdíl od všech ostatních RF modulů ' +
+      '(HOPERF RFM01/RFM75/RFM210LCF-S1/HM-TRP, Aurel TX-SAW/RX-4MHCS, viz jejich záznamy), ' +
+      'které používají úzkopásmovou FSK/GFSK/ASK/OOK modulaci v ISM pásmech pod 1GHz nebo ' +
+      '2,4GHz, DWM1000 vysílá extrémně krátké pulzy přes velmi široké spektrum (UWB — Ultra ' +
+      'Wideband), což umožňuje PŘESNÉ MĚŘENÍ VZDÁLENOSTI/POLOHY na základě doby letu signálu ' +
+      '(ToF) s přesností v řádu centimetrů — ne pouhý přenos dat. Postaveno na čipu Decawave ' +
+      'DW1000, integruje anténu, veškeré RF obvody, správu napájení a hodinové obvody v ' +
+      'jediném modulu (bez nutnosti vlastního RF návrhu). Určeno pro systémy reálného ' +
+      'lokalizování (RTLS) metodou obousměrného měření (two-way ranging) nebo TDOA (Time ' +
+      'Difference of Arrival), a pro lokalizačně uvědomělé bezdrátové senzorové sítě (WSN). ' +
+      'Piny: SPICLK/SPIMISO/SPIMOSI/SPICSn (SPI), WAKEUP (probuzení ze SLEEP/DEEPSLEEP), ' +
+      'EXTON (výstup pro řízení externích obvodů během buzení), RSTn (reset, aktivní nízko), ' +
+      'IRQ/GPIO8, GPIO0-7 (konfigurovatelné, volitelně LED indikace TX/RX/SFD/dobrý rámec), ' +
+      'VDDAON (napájení Always-On paměti), VDD3V3 (hlavní napájení, dočasně 3,8V pro ' +
+      'programování OTP). Vestavěné funkce: Always-On (AON) paměť pro zachování konfigurace v ' +
+      'nízkopříkonových stavech, 56×32bit OTP paměť pro kalibrační data, monitor napětí a ' +
+      'teploty čipu, generování/kontrola CRC a filtrování přijímaných rámců (MAC). Max. délka ' +
+      'paketu 1023 bajtů. Palubní krystal 38,4MHz, tovární kalibrace na ±2ppm (dále ' +
+      'kompenzovatelné softwarově dle teplotního monitoru přes plný rozsah). Programovatelný ' +
+      'výstupní výkon (hrubé kroky 3dB, jemné 0,5dB, celkový rozsah 37dB), navrženo pro shodu s ' +
+      'FCC a ETSI UWB spektrálními maskami (výkonová spektrální hustota -41,3dBm/MHz typicky ' +
+      'pro většinu regionů) — ⚠️ modul samotný NENÍ certifikován pro žádný konkrétní region, ' +
+      'certifikaci hotového výrobku musí zajistit uživatel. Elektrické parametry: proudový ' +
+      'odběr DEEP SLEEP typ. 200nA, SLEEP typ. 550nA, IDLE typ. 13,4mA, INIT typ. 3,5mA, TX ' +
+      'typ. 140mA (kanál 5, výkon 9,3dBm/500MHz), RX typ. 160mA (kanál 5). Citlivost přijímače ' +
+      '(20B payload, PER 10%): -106dBm@110kbps, -102dBm@850kbps, -94dBm@6,8Mbps; (PER 1%): ' +
+      '-102/-101/-93dBm. Frekvenční rozsah 3244-6999MHz, šířka kanálu 500MHz (kanály 1/2/3/5). ' +
+      'Absolutní maximum: napájení -0,3 až 4,0V, max. výkon na vstupu přijímače 0dBm, TJ -40 až ' +
+      '+85°C, ESD (HBM) 2000V. Aplikace: přesné lokalizační systémy v reálném čase (RTLS), ' +
+      'lokalizačně uvědomělé bezdrátové senzorové sítě.',
+    tags: 'modul,rf,transceiver,uwb,ultra-wideband,lokalizace,rtls,ranging,decawave,dwm1000,ieee-802.15.4,spi',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {

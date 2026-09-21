@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    896 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    897 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220; tenkovrstvá
@@ -112,7 +112,7 @@ i návrh schémat obvodů a plošných spojů.
     kombinovaný PFC + half-bridge řadič předřadníku zářivek International Rectifier IRS2580DSPbF
     ("COMBO8", 8pin SOIC); a napájecí spínač (load switch) se soft-startem onsemi NCP330MUTBG
     (RDS(on) 26mΩ, 3A, UDFN4)),
-    157 modulů
+    158 modulů
     (Wi-Fi/BLE: ESP32-C3-MINI-1, ESP32-C3-WROOM-02, Adafruit Feather
     HUZZAH ESP8266, ESP8684-MINI-1, ESP-12S; nízkonapěťové odpojovače baterie Alfatronix
     PowerTector PT10/PT20/PT40/PT60/PT100/PT200; LoRaWAN senzor LEO-S55 a brány USM-S67;
@@ -197,7 +197,8 @@ i návrh schémat obvodů a plošných spojů.
     SPI); a kompletní 4kanálový přijímač s rolling code dekodérem Aurel RX-4MHCS (433,92MHz
     OOK, výstupy s otevřeným kolektorem do 100mA, paměť 10 ovladačů); a transparentní FSK
     transceiver s UART rozhraním HOPERF HM-TRP Series (100mW, -117dBm, softwarová konfigurace
-    přes UART, 433/470/868/915MHz)), 5 konektorů/přepěťových
+    přes UART, 433/470/868/915MHz); a UWB lokalizační modul Decawave DWM1000 (IEEE 802.15.4-2011,
+    přesnost do 10cm, TDOA/two-way ranging, 3,5-6,5GHz)), 5 konektorů/přepěťových
     ochran (Ethernet/PoE
     bleskojistka ESP-100-POE; kolíková lišta Foxconn HB12201; pouzdra průmyslového konektoru
     HARTING Han-Modular ECO 09 14 001 0722 (kabel-kabel, bez PE, IP20) a 09 14 001 0321
