@@ -4270,6 +4270,39 @@ const MODULE_SPECS: ModuleSpec[] = [
       '+70°C.',
     tags: 'modul,rf,vysílač,saw,ask,aurel,tx-saw-434-l,tht,433mhz,regulovaný',
   },
+  {
+    name: 'RFM75 / RFM75C',
+    packageType:
+      'SMD modul s tištěnou (meandr) anténou, rozměry 12,8×16,8×1,5mm (RFM75C, holá QFN20 ' +
+      '4×4mm čipová verze na malé destičce), 8 vývodů (rozteč 1,27mm): GND, VDD, CE, CSN, SCK, ' +
+      'MOSI, MISO, IRQ',
+    value:
+      '2,4GHz GFSK transceiver, 2400–2483,5MHz ISM pásmo, přenosová rychlost 250kbps/1Mbps/ ' +
+      '2Mbps, VDD 1,9–3,6V, SPI rozhraní do 8MHz, RF výstupní výkon do 4dBm, citlivost ' +
+      '-96dBm (250kbps)',
+    notes:
+      'HOPERF "RFM75 — Low Power High Performance 2.4 GHz GFSK Transceiver" (dok. V1.0, © 2013 ' +
+      'Beken Corporation — čip vyrábí Beken, modul distribuuje HOPERF). ⚠️ POZOR na možnou ' +
+      'záměnu s "RFM75W/RFM75PW" zmíněnými jako součást souhrnného katalogového záznamu ' +
+      '"HOPERF RFM9xW/RFM75W Series" v této knihovně — nejasný přesný vztah (možná starší/ ' +
+      'základní verze stejné produktové linie), zde evidováno zvlášť na základě vlastního ' +
+      'samostatného datasheetu s kompletními elektrickými parametry a registrovou mapou ' +
+      '(chybí v katalogovém souhrnu). Protokolově kompatibilní s populárním Nordic ' +
+      'nRF24L01+ (Enhanced ShockBurst — automatické potvrzování paketů/ACK, automatický ' +
+      'opakovaný přenos, 6 datových kanálů/"pipes" pro hvězdicové sítě 1:6, CRC). Burst mode ' +
+      'přenos s velmi nízkou spotřebou v klidu. Proměnná délka payloadu 1-32 bajtů. Formát ' +
+      'paketu: Preamble 1B, Adresa 3-5B, Packet Control 9/10bit (Payload Length 6bit + PID ' +
+      '2bit + NO_ACK 1bit), Payload 0-32B, CRC 2/1B. Stavový automat: Power Down → Standby-I ' +
+      '→ (Standby-II) → TX/RX, řízeno piny CE/VDD a SPI registry PWR_UP/PRIM_RX. RF kanál ' +
+      'F0=2400+RF_CH(MHz), rozlišení 1MHz. Tolerance krystalu ±60ppm @16MHz. Elektrické ' +
+      'parametry: VDD 1,9-3,6V (typ. 3,0V), Top -40 až +85°C. Klidové proudy: power-down typ. ' +
+      '3µA, standby-I typ. 50µA, standby-II typ. 300µA. TX proud dle výstupního výkonu: ' +
+      '9,8mA@-25dBm až 18mA@4dBm (max. výkon). RX proud: 16mA (250kbps/1Mbps) / 16,5mA ' +
+      '(2Mbps). Citlivost (BER 10⁻³): -96dBm@250kbps, -91dBm@1Mbps, -88dBm@2Mbps. Max. vstupní ' +
+      'výkon 10dBm. Typické aplikace: bezdrátové PC periferie, gamepady, bezdrátové audio, ' +
+      'dálkové ovládání, domácí automatizace, hračky.',
+    tags: 'modul,rf,transceiver,gfsk,2.4ghz,hoperf,beken,rfm75,rfm75c,spi,nrf24l01-kompatibilní',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
