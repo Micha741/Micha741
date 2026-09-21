@@ -3079,6 +3079,40 @@ const IC_SPECS: IcSpec[] = [
       'MSL1, k dispozici i bezhalogenová varianta.',
     tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,liteon,ltv-356t,mini-flat,smd',
   },
+  {
+    name: 'EL817 Series',
+    packageType:
+      'standardní THT DIP-4 (6,5×4,58mm, rozteč 2,54mm), volitelně varianta "M" (širší rozteč ' +
+      'vývodů 0,4"/10,16mm) nebo SMD lead-formy S/S1 (povrchová montáž, standardní/nízkoprofilová) ' +
+      '/S2 (gull-wing), páskování TA/TB/TU/TD, volitelný železný nebo měděný rámeček vývodů',
+    value:
+      'Optočlen (fototranzistorový optočlen) s galvanickým oddělením, proudový přenosový poměr ' +
+      'CTR 50–600 % @IF=5mA/VCE=5V dle rankové třídy, izolační napětí Viso 5000 Vrms, VCEO 35 V',
+    notes:
+      'Everlight Electronics "EL817 Series — 4 Pin DIP Phototransistor Photocoupler" (dok. ' +
+      'DPC-0000046, rev. 10, vydáno 21.4.2010/aktualizováno 2010-05-29). Druhý optočlen v této ' +
+      'knihovně vedle LITE-ON LTV-356T (viz jeho záznam pro obecný kontext optočlenů) — na ' +
+      'rozdíl od LTV-356T (výhradně SMD mini-flat pouzdro, Viso 3750Vrms, VCEO 80V) jde o klasický ' +
+      'THT DIP-4 optočlen (s volitelnými SMD variantami leadformu) s vyšší izolační pevností ' +
+      '(5000Vrms) a vyšší kreepage/clearance vzdáleností (>7,62mm), ale nižším VCEO (35V). ' +
+      'Zapojení pinů shodné s LTV-356T: 1=Anoda, 2=Katoda, 3=Emitor, 4=Kolektor. Objednací kód ' +
+      'EL817(X)(Y)(Z)-FV: X=leadform (S/S1/S2/M/prázdné), Y=CTR ranková třída (A/B/C/D/X/Y/ ' +
+      'prázdné), Z=páskování (TA/TB/TU/TD/prázdné), F=materiál rámečku vývodů (F=železo, ' +
+      'prázdné=měď), V=volitelná VDE certifikace. Rankové třídy CTR (@IF=5mA/VCE=5V): základní ' +
+      'EL817 (50–600%), A (80–160%), B (130–260%), C (200–400%), D (300–600%), X (100–200%), Y ' +
+      '(150–300%). Vstup (LED): VF typ. 1,2V/max 1,4V @IF=20mA, IF max 60mA (trvale), IFP max 1A ' +
+      '(impulzně 1µs), VR max 6V, IR max 10µA @VR=4V, Cin max 250pF @1kHz, PD max 100mW ' +
+      '(derating 2,9mW/°C nad 100°C). Výstup (fototranzistor): VCEO 35V, VECO 6V, IC max 50mA, ' +
+      'PC max 150mW (derating 5,8mW/°C nad 100°C), ICEO max 100nA @VCE=20V/IF=0. VCE(sat) typ. ' +
+      '0,1V/max 0,2V @IF=20mA/IC=1mA. Izolační odpor RIO min 5×10¹⁰Ω @VIO=500VDC/40-60%RH. ' +
+      'Plovoucí kapacita CIO typ. 0,6pF/max 1,0pF @VIO=0/f=1MHz. Mezní kmitočet fc typ. 80kHz ' +
+      '(-3dB) @VCE=5V/IC=2mA/RL=100Ω. Doba náběhu tr typ. 4µs/max 18µs, doba doběhu tf typ. ' +
+      '3µs/max 18µs (shodné podmínky jako LTV-356T). Celkový ztrátový výkon PTOT max 200mW. ' +
+      'Provozní teplota -55 až +110°C, skladovací -55 až +125°C, pájecí teplota 260°C/10s. ' +
+      'Certifikace: UL (E214129), VDE (132249), SEMKO (716108), NEMKO (P08209467), DEMKO ' +
+      '(314683), FIMKO (FI 224433), CSA (1143601). Pb-free, RoHS.',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,everlight,el817,dip-4,tht',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
