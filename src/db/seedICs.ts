@@ -3476,6 +3476,83 @@ const IC_SPECS: IcSpec[] = [
       'servery.',
     tags: 'io,ethernet,tcp-ip,síťový-kontrolér,wiznet,w5500,spi,lqfp-48,hardwired',
   },
+
+  // Napěťové supervizory (reset obvody)
+  {
+    name: 'TPS3809J25',
+    packageType: '3-pinové SOT-23 (DBV), rozměry 2,90×1,60mm, piny: 1=GND, 2=RESET, 3=VDD',
+    value:
+      'Napěťový supervizor (reset obvod), fixní záporně čítaný práh VIT- = 2,25 V (typ.), ' +
+      'push-pull výstup RESET (aktivní v L), klidový proud typ. 9µA',
+    notes:
+      'Texas Instruments "TPS3809J25, TPS3809L30, TPS3809K33, TPS3809I50 — TPS3809x 3-Pin ' +
+      'Supply Voltage Supervisors" (dok. SLVS228D, srpen 1999, revidováno prosinec 2020). ⚠️ ' +
+      'NOVÝ TYP součástky v této knihovně: první napěťový supervizor/obvod pro sledování ' +
+      'napájení a generování resetu — jednoduchý 3pinový obvod (bez externích součástek) pro ' +
+      'inicializaci a časovou supervizi systému, typicky u DSP/procesorových systémů — hlídá ' +
+      'napájecí napětí VDD a drží výstup RESET aktivní (nízko), dokud VDD nepřekročí prahové ' +
+      'napětí VIT, poté ještě po interním zpožďovacím časovači (typ. 200ms) teprve uvolní ' +
+      'RESET do neaktivního stavu (vysoko) — zajišťuje spolehlivý reset systému po zapnutí i ' +
+      'při krátkých poklesech napájení (brownout). Pin-kompatibilní s MAX809. Novější ' +
+      'alternativa se stejnými piny/funkcemi/elektrickými parametry: TLV809E. Součást rodiny ' +
+      'TPS3809 lišící se jen prahovým napětím VIT (viz sourozenecké záznamy "TPS3809L30"/ ' +
+      '"TPS3809K33"/"TPS3809I50" pro ostatní prahy) — objednací kód TPS380<funkce><práh><pouzdro>' +
+      '<balení>, např. TPS3809J25DBVR = funkce 9 (tento typ), práh J (2,25V), pouzdro DBV ' +
+      '(SOT-23), balení R (cívka). Během power-on je RESET aktivní, dokud VDD nepřekročí 1,1V, ' +
+      'pak obvod sleduje práh VIT. Absolutní maximum: VDD max 6,5V (ne déle než 1000h ' +
+      'nepřetržitě), ostatní piny -0,3 až 6,5V, IOL max 5mA, IOH max -5mA, vstupní/výstupní ' +
+      'svorkovací proud ±20mA, Top -40 až +85°C, Tstg -65 až +150°C. Doporučené provozní ' +
+      'podmínky: VDD 2-6V, proud RESET sink při startu max 50µA. Ztrátový výkon (DBV pouzdro) ' +
+      '437mW @TA<25°C, derating 3,5mW/°C, 280mW @70°C, 227mW @85°C. VOH min VDD-0,2V @IOH=-500µA/ ' +
+      'VDD=2,5-6V (nebo VDD-0,4V @IOH=-2 až -4mA). VOL max 0,3V @IOL=500µA (nebo max 0,4V ' +
+      '@IOL=2-4mA). Napětí "power-up reset" (nejnižší napájecí napětí, při kterém je RESET ' +
+      'ještě aktivní) max 0,2V @VDD≥1,1V/IOL=50µA. Prahová hystereze Vhys 30mV (typ., pro tento ' +
+      'typ J25). Klidový proud IDD typ. 9µA @VDD=2V / typ. 20µA @VDD=6V. Vstupní kapacita CI ' +
+      'typ. 5pF. Šířka pulzu tw min 10µs. Doba zpoždění td (od VDD≥VIT+0,2V do uvolnění RESET) ' +
+      'min 120ms/typ. 200ms/max 280ms. Doba šíření tPHL (VDD do RESET, sestupná hrana) typ. ' +
+      '10µs. Doporučen bypass keramický kondenzátor 0,1µF na VDD pro stabilitu prahového ' +
+      'napětí.',
+    tags: 'io,supervizor,reset,napěťový-supervizor,voltage-supervisor,ti,tps3809,tps3809j25,sot-23,2.25v',
+  },
+  {
+    name: 'TPS3809L30',
+    packageType: 'shodné s TPS3809J25 (SOT-23-3) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      'Napěťový supervizor (reset obvod), fixní záporně čítaný práh VIT- = 2,64 V (typ.), ' +
+      'push-pull výstup RESET (aktivní v L)',
+    notes:
+      'TI "TPS3809x" — součást rodiny TPS3809, viz záznam "TPS3809J25" v této knihovně pro ' +
+      'plné společné elektrické/mechanické specifikace. Prahové napětí VIT- 2,58-2,7V (min-max), ' +
+      'hystereze Vhys 35mV (typ.). Objednací kód TPS3809L30DBVR (funkce 9, práh L=2,64V).',
+    tags: 'io,supervizor,reset,napěťový-supervizor,voltage-supervisor,ti,tps3809,tps3809l30,sot-23,2.64v',
+  },
+  {
+    name: 'TPS3809K33',
+    packageType: 'shodné s TPS3809J25 (SOT-23-3) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      'Napěťový supervizor (reset obvod), fixní záporně čítaný práh VIT- = 2,93 V (typ.), ' +
+      'push-pull výstup RESET (aktivní v L)',
+    notes:
+      'TI "TPS3809x" — součást rodiny TPS3809, viz záznam "TPS3809J25" v této knihovně pro ' +
+      'plné společné elektrické/mechanické specifikace. Prahové napětí VIT- 2,87-2,99V (min-max), ' +
+      'hystereze Vhys 40mV (typ.). Objednací kód TPS3809K33DBVR (funkce 9, práh K=2,93V). Podle ' +
+      'aplikačního schématu v datasheetu typicky použit se supervizí 3,3V sběrnice (např. TI ' +
+      'TMS320LC54x DSP).',
+    tags: 'io,supervizor,reset,napěťový-supervizor,voltage-supervisor,ti,tps3809,tps3809k33,sot-23,2.93v',
+  },
+  {
+    name: 'TPS3809I50',
+    packageType: 'shodné s TPS3809J25 (SOT-23-3) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      'Napěťový supervizor (reset obvod), fixní záporně čítaný práh VIT- = 4,55 V (typ.), ' +
+      'push-pull výstup RESET (aktivní v L)',
+    notes:
+      'TI "TPS3809x" — součást rodiny TPS3809, viz záznam "TPS3809J25" v této knihovně pro ' +
+      'plné společné elektrické/mechanické specifikace. Nejvyšší prahová varianta celé řady ' +
+      '(určeno pro supervizi 5V sběrnice). Prahové napětí VIT- 4,45-4,65V (min-max), hystereze ' +
+      'Vhys 60mV (typ.). Objednací kód TPS3809I50DBVR (funkce 9, práh I=4,55V).',
+    tags: 'io,supervizor,reset,napěťový-supervizor,voltage-supervisor,ti,tps3809,tps3809i50,sot-23,4.55v',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
