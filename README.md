@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    823 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    830 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220; tenkovrstvá
@@ -178,7 +178,7 @@ i návrh schémat obvodů a plošných spojů.
     elektromagnetických ventilů TORK T-SB1/T-SB2 (230/24/12 V AC/DC, IP65), profesionální
     flexibilní indukční ohřevová cívka Schaeffler MF-INDUCTOR (3,5-44 kW, 28 rozměrových
     variant) a flexibilní Rogowského proudové cívky Schneider Electric CTRx (METSECTR30500U až
-    90500U, 2-5 kA, třída přesnosti 1-A1)) a 32
+    90500U, 2-5 kA, třída přesnosti 1-A1)) a 39
     spínačů/relé (tlačítkové mikrospínače, páčkové a posuvné přepínače, mikrospínač, DIP
     spínače, rotační enkodér EC11, otočný přepínač, výkonové elektromagnetické relé Tianbo
     TRA1, 4dílná rodina PCB výkonových relé Omron G5LE — SPDT/SPST-NO, flux/fully sealed,
@@ -187,9 +187,12 @@ i návrh schémat obvodů a plošných spojů.
     jazýčkový (reed) spínač Erich Jäger 031828 dle ISO 11446; panelový klíčový přepínač
     Schrack/Eaton M22-WS; 9dílný souhrn katalogové řady relé Schrack Technik — paticová PT/
     RS5/MU/RMX, interfaceová RXT, výkonová PCB RT/RPS, set SNR a bezpečnostní relé s nuceně
-    vedenými kontakty SR2/SR4/SR6 dle EN 50205; a polovodičová (solid-state) relé QLT Power SSR
-    10-40A (triakový výstup) a SSR 40-120A (duální SCR výstup), zero-voltage/random switching).
-    Tlačítkem „Knihovna”
+    vedenými kontakty SR2/SR4/SR6 dle EN 50205; polovodičová (solid-state) relé QLT Power SSR
+    10-40A (triakový výstup) a SSR 40-120A (duální SCR výstup), zero-voltage/random switching;
+    a 7dílný souhrn katalogové řady stykačů a motorových startérů Schneider Electric TeSys —
+    mini-stykače K, střední D (i kondenzátorové), výkonové F (do 800A), integrovaný elektronický
+    startér U, ultrakompaktní bezpečnostní startér H (SIL3/PLe), ruční startéry GV2/GV3/GV7 a
+    softstartér Altistart ATSU01). Tlačítkem „Knihovna”
     v horní liště lze kdykoli doplnit chybějící položky (např. po smazání), aniž
     by se duplikovaly už existující.
 

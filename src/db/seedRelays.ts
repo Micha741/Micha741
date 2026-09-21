@@ -563,6 +563,149 @@ const RELAY_SPECS: RelaySpec[] = [
       '81g (Al) / 120g (Cu).',
     tags: 'relé,ssr,solid-state-relay,polovodičové,dual-scr,qlt-power,zero-voltage,random-switching,vysokoproudé',
   },
+  {
+    name: 'Schneider TeSys K (mini-stykač)',
+    packageType:
+      'kompaktní paticový/panelový elektromagnetický stykač, šroubové svorky (varianty i pro ' +
+      'pružinové svorky, pájecí/cínové nebo faston vývody), 3 nebo 4-pólové provedení',
+    value:
+      'Elektromagnetický stykač (kontaktor), 0,5–2 HP (jednofázově) / 1–3 HP (třífázově), max. ' +
+      '20 A trvalý proud, cívka AC 12–600 V nebo DC 12–250 V; nadproudová relé LR2K/LR3K ' +
+      '0,1–14 A',
+    notes:
+      'Schneider Electric katalog "Contactors and Starters — IEC" (SCHNEIDER-TESYS2018-EN.pdf, ' +
+      'sekce 18, str. 18-2 až 18-6). ⚠️ SOUHRNNÝ KATALOGOVÝ ZÁZNAM — 70stránkový výběrový ' +
+      'katalog obsahuje desítky kombinací proudu/napětí/pólů/svorek pro každou rodinu stykačů, ' +
+      'zde evidována jen jako reprezentativní shrnutí rodiny (viz i navazující TeSys D/F/U/H/GV ' +
+      'záznamy v této knihovně pro širší produktovou řadu). TeSys K je nejmenší/nejlevnější ' +
+      'stykačová rodina v sortimentu — nereverzní (LC1K), reverzní (LC2K, mechanicky ' +
+      'blokované), nízkopříkonové cívky (LP1K/LP2K/LP4K/LP5K, vestavěná ochrana proti napěťovým ' +
+      'špičkám) a 4-pólové mini-stykače/mechanicky blokované páry (LC1K09004 aj.). Tepelné ' +
+      '(bimetalové) nadproudové relé LR2K (třída 10, jmenovité rozsahy 0,11–14 A) s ' +
+      'kompenzací okolní teploty, ruční nebo automatický reset. Certifikace UL (E164862), CSA ' +
+      '(LR43364).',
+    tags: 'stykač,kontaktor,relé,elektromagnetické,schneider,tesys,tesys-k,motor,nadproudové-relé',
+  },
+  {
+    name: 'Schneider TeSys D (stykač)',
+    packageType:
+      'panelový elektromagnetický stykač, šroubové/pružinové/kroužkové svorky, 3nebo 4-pólové, ' +
+      'DIN lišta nebo přišroubování',
+    value:
+      'Elektromagnetický stykač (kontaktor), 9–150 A AC-3 (FLA), jmenovitý proud AC-1 do 200 A, ' +
+      'cívka AC 12–660 V nebo DC 12–250 V (i nízkopříkonová verze); nadproudová relé LRD/LR2D/ ' +
+      'LR3D 0,1–140 A, elektronická LR9D',
+    notes:
+      'Schneider Electric katalog "Contactors and Starters — IEC" (SCHNEIDER-TESYS2018-EN.pdf), ' +
+      'str. 18-7 až 18-10 a 18-38 až 18-40 — ⚠️ SOUHRNNÝ KATALOGOVÝ ZÁZNAM (viz poznámka u ' +
+      '"Schneider TeSys K"). Nejrozšířenější středně výkonová stykačová rodina TeSys — nereverzní ' +
+      '(LC1D), mechanicky blokované reverzní páry (LC2D) a kondenzátorové stykače pro kompenzaci ' +
+      'účiníku (LC1DFK/DGK/DLK/DMK/DPK/DTK/DWK, 6–30 kVAr). Objednací kód interpretován tabulkou ' +
+      'katalogu (např. LC1D09B7 = nereverzní 3pól 9A/24VAC cívka). Tepelná nadproudová relé LRD/ ' +
+      'LR2D/LR3D (třída 10/20, rozsahy 0,1–140 A dle velikosti stykače D09–D150), elektronické ' +
+      'LR9D (0,1–150 A, i selektovatelná třída 10/20/30). K dispozici i kompletní zapouzdřené ' +
+      'startéry (enclosed starters, Type 1 / Type 12/3R kryt) a fúzní/jisticí kombinované startéry ' +
+      '(fuse/circuit-breaker combination). Certifikace UL (E164862), CSA (LR43364).',
+    tags: 'stykač,kontaktor,relé,elektromagnetické,schneider,tesys,tesys-d,motor,nadproudové-relé,kondenzátorový',
+  },
+  {
+    name: 'Schneider TeSys F (výkonový stykač)',
+    packageType:
+      'panelový elektromagnetický stykač, šroubové svorky, 2/3/4-pólové provedení, pro montáž ' +
+      'na desku nebo vertikálně (reverzní sestavy)',
+    value:
+      'Elektromagnetický stykač (kontaktor), 115–800 A AC-3 (FLA), cívka AC 24–660 V nebo DC ' +
+      '24–440 V (i s vestavěnou přepěťovou ochranou u F800); nadproudová relé LR9F 30–630 A',
+    notes:
+      'Schneider Electric katalog "Contactors and Starters — IEC" (SCHNEIDER-TESYS2018-EN.pdf), ' +
+      'str. 18-11 až 18-13 — ⚠️ SOUHRNNÝ KATALOGOVÝ ZÁZNAM (viz poznámka u "Schneider TeSys K"). ' +
+      'Nejvýkonnější stykačová rodina TeSys v tomto katalogu — nereverzní (LC1F) a reverzní ' +
+      '(sestavené ze dvou LC1F s mechanickým blokováním a sadou napájecích propojek, ne jako ' +
+      'jeden díl LC2F). Elektronická nadproudová relé LR9F (samostatné provedení, třída 10/20/30 ' +
+      'volitelná, rozsahy 30–630 A). Definiční (motor-protection) tabulka pro hermetické ' +
+      'chladicí kompresory do 100 000 cyklů. Certifikace UL (E164862), CSA (LR43364).',
+    tags: 'stykač,kontaktor,relé,elektromagnetické,schneider,tesys,tesys-f,motor,nadproudové-relé,výkonový',
+  },
+  {
+    name: 'Schneider TeSys U (integrovaný motorový startér)',
+    packageType:
+      'modulární sestava — výkonová základna (power base) + zásuvná řídicí jednotka (control ' +
+      'unit), volitelné funkční moduly a komunikační moduly (Modbus/CANopen/Profibus/DeviceNet/ ' +
+      'AS-Interface aj.)',
+    value:
+      'Integrovaný elektronický motorový startér/jistič, nastavitelný proudový rozsah 0,15–32 A, ' +
+      'vestavěná polovodičová nadproudová ochrana a řídicí napájení, řídicí jednotky tříd ' +
+      '"Standard/Advanced/Multifunkce"',
+    notes:
+      'Schneider Electric katalog "Contactors and Starters — IEC" (SCHNEIDER-TESYS2018-EN.pdf), ' +
+      'str. 18-23 až 18-31 — ⚠️ SOUHRNNÝ KATALOGOVÝ ZÁZNAM (viz poznámka u "Schneider TeSys K"). ' +
+      'Architektonicky odlišný přístup od klasických stykačů (TeSys K/D/F) — jde o jeden ' +
+      'integrovaný startér kombinující stykač i elektronickou nadproudovou ochranu v modulární ' +
+      'sestavě (výkonová základna LUB12/LUB32 + řídicí jednotka LUCA/LUCB/LUCC/LUCD/LUCM). ' +
+      'Ochranné funkce dle třídy jednotky: zkrat, nadproud, tepelné přetížení, výpadek/nesymetrie ' +
+      'fází, zemní zkrat, podproud/dlouhý rozběh/zablokování (Multifunkce LUCM navíc: diagnostika ' +
+      'poruch, historie poruch, zobrazení zatížení motoru). Volitelné funkční moduly (reverzní ' +
+      'jednotka, proudový omezovač do 130 kA, fázová bariéra pro samostatně jištěný kombinovaný ' +
+      'startér dle UL 508 Type E) a komunikační moduly pro připojení do průmyslové sběrnice. ' +
+      'Lze kombinovat se softstartérem Altistart ATSU01 (viz samostatný záznam "Schneider ' +
+      'Altistart ATSU01" v této knihovně).',
+    tags: 'startér,motorový-startér,elektronické,schneider,tesys,tesys-u,modulární,komunikace',
+  },
+  {
+    name: 'Schneider TeSys H (ultrakompaktní startér)',
+    packageType:
+      'ultrakompaktní panelový modul, šířka pouzdra jen 22,5 mm, DIN lišta',
+    value:
+      'Elektronický motorový startér, nereverzní nebo reverzní, nastavitelný proudový rozsah ' +
+      '0,18–9,0 A, volitelná bezpečnostní verze SIL3/PLe',
+    notes:
+      'Schneider Electric katalog "Contactors and Starters — IEC" (SCHNEIDER-TESYS2018-EN.pdf), ' +
+      'str. 18-32 — ⚠️ SOUHRNNÝ KATALOGOVÝ ZÁZNAM (viz poznámka u "Schneider TeSys K"). Nejmenší ' +
+      '(nejužší) a nejmodernější startérová rodina v katalogu, určená pro asynchronní motory ' +
+      '(AC53a) a odporové zátěže (AC51) — úspora až 75 % místa v rozvaděči oproti klasické ' +
+      'stykač+relé sestavě, přitom stejná šířka i pro reverzní verzi. Bezpečnostní varianta ' +
+      '(LZ7H.../LZ8H...) certifikována SIL3 dle IEC 61508 a PLe dle ISO 13849-1 s funkcí Safe ' +
+      'Torque Off (STO) — vhodná pro potravinářský/nápojový, logistický a jinak bezpečnostně ' +
+      'náročný průmysl. Cívka 24VDC nebo 110-230VAC (50/60Hz).',
+    tags: 'startér,motorový-startér,elektronické,schneider,tesys,tesys-h,sil3,ple,safe-torque-off,ultrakompaktní',
+  },
+  {
+    name: 'Schneider TeSys GV2/GV3/GV7 (ruční motorový startér)',
+    packageType:
+      'panelový/DIN modul s otočným ovladačem, 3-pólové, šroubové svorky, volitelné ' +
+      'pouzdro/enclosure IP41/IP55 (NEMA 1/12/3R/4/4X)',
+    value:
+      'Ruční motorový startér (motor circuit breaker) s tepelnou (bimetalovou, teplotně ' +
+      'kompenzovanou) nadproudovou ochranou třídy 10 a magnetickou zkratovou spouští, ' +
+      'nastavitelný proudový rozsah GV2 0,1–25A / GV3 1,6–65A / GV7 12–220A',
+    notes:
+      'Schneider Electric katalog "Contactors and Starters — IEC" (SCHNEIDER-TESYS2018-EN.pdf), ' +
+      'str. 18-33 až 18-37 — ⚠️ SOUHRNNÝ KATALOGOVÝ ZÁZNAM (viz poznámka u "Schneider TeSys K"). ' +
+      'Samostatný (obsluze přístupný) ruční jistič motoru dle UL 508, lze použít samostatně pro ' +
+      'lokální ovládání/ochranu motoru, nebo v kombinaci se stykačem TeSys D/F jako plnohodnotný ' +
+      'startér — GV2P a GV3P v sebejistící (self-protected) konfiguraci dle UL 508 Type E ' +
+      '(vyžaduje boční izolační bariéru GV2GH7/GV3G66 a signalizační kontakt zkratu GVAM11). ' +
+      'GV7 (12–220A) má navíc volitelný páčkový ovladač s vysokým vypínacím výkonem (GV7RSxx). ' +
+      'Doplňkově zmíněny i skříňové (PowerPact) elektronické motorové ochranné jističe H/J/L-Frame ' +
+      '(30–600A FLA, katalog str. 18-34) jako alternativa pro vyšší proudové rozsahy — nejsou ' +
+      'zde evidovány samostatně.',
+    tags: 'startér,ruční-startér,motor-circuit-breaker,schneider,tesys,gv2,gv3,gv7,ul508,self-protected',
+  },
+  {
+    name: 'Schneider Altistart ATSU01 (softstartér)',
+    packageType: 'panelový modul pro kombinaci s výkonovou základnou TeSys U (LUB12/LUB32)',
+    value:
+      'Softstartér/softstop modul pro třífázové asynchronní motory, 0,75–15 kW (200–460 V), ' +
+      'jmenovitý proud 6–32 A',
+    notes:
+      'Schneider Electric katalog "Contactors and Starters — IEC" (SCHNEIDER-TESYS2018-EN.pdf), ' +
+      'str. 18-42 — ⚠️ SOUHRNNÝ KATALOGOVÝ ZÁZNAM (viz poznámka u "Schneider TeSys K"). Modul ' +
+      'pro plynulý rozběh/doběh motoru (omezení rázového proudu a mechanického namáhání) — lze ' +
+      'kombinovat s TeSys U startérem (viz "Schneider TeSys U" v této knihovně) sdílejícím ' +
+      'stejnou výkonovou základnu, nebo použít samostatně. Objednací kód dle výkonu motoru, např. ' +
+      'ATSU01N206LT = 1-2HP/6A. Certifikace UL (E164862), CSA (LR43364).',
+    tags: 'softstartér,soft-start,motor,schneider,altistart,atsu01,tesys-u',
+  },
 ];
 
 export function buildRelaySeed(): ComponentInput[] {
