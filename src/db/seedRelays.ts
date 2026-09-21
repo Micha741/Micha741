@@ -191,6 +191,117 @@ const RELAY_SPECS: RelaySpec[] = [
       'utěsněná (fully sealed) varianta SPST-NO, jinak elektricky shodná s G5LE-1A.',
     tags: 'relé,elektromagnetické,výkonové,omron,g5le,g5le-1a4,spst-no,10a,pcb,sealed',
   },
+  {
+    name: 'SI-LS100F',
+    packageType:
+      'kvádrové plastové pouzdro (termoplast), rozměry cca 99,9×41,3×30 mm, závit SI-QS-M20 ' +
+      'pro kabelovou průchodku, 6 žil na svorkovnici, stupeň krytí IP65',
+    value:
+      'Mechanický bezpečnostní koncový spínač, 2× rozpínací (NC) bezpotenciálový kontakt, ' +
+      'zatížitelnost kontaktu 3 A/240 V AC-15 nebo 0,27 A/250 V DC-13',
+    notes:
+      'Turck "SI-LS100F" — bezpečnostní systémy, mechanický bezpečnostní spínač (ID č. 3049480), ' +
+      'datasheet 20-01-2022 01-02. ⚠️ NOVÁ SUB-KATEGORIE v "Spínač/Relé": první bezpečnostní ' +
+      '(safety) koncový spínač v knihovně — na rozdíl od běžných mikrospínačů/koncových spínačů ' +
+      'jde o certifikovaný prvek pro bezpečnostní obvody strojů (nouzové zastavení, dveřní ' +
+      'blokování apod.), bez blokovacího/zamykacího mechanismu (na rozdíl od sesterského ' +
+      'SI-LS42DSH, viz jeho poznámka). Provedení dle IEC 60947-5-1, bez pojistky, 1× pomocný ' +
+      'spínací kontakt navíc k hlavním bezpečnostním výstupům. Jmenovité izolační napětí 250 V, ' +
+      'konvenční tepelný proud 10 A, impulsní výdržné napětí 2,5 kV, třída ochrany II. Četnost ' +
+      'spínání 30/min, mechanická životnost 1×10⁶ spínacích cyklů, B10d hodnota 2×10⁶ spínacích ' +
+      'cyklů, nelze kaskádovat. Elektrické připojení svorkovnice (svorkovnice s kabelovou ' +
+      'průchodkou). Okolní teplota -30 až +80 °C. Bezpečnostní klasifikace: PL e dle ' +
+      'ISO 13849-1:2008, kategorie 4, SIL 3 dle IEC 61508, úroveň kódování/ochrana proti ' +
+      'neoprávněné manipulaci nízká.',
+    tags: 'spínač,bezpečnostní,koncový,limit-switch,turck,si-ls100f,safety,pl-e,sil-3',
+  },
+  {
+    name: 'SI-LS42DSH',
+    packageType:
+      'kvádrové plastové pouzdro (termoplast), rozměry cca 170×88,8×42,5 mm, závit SI-QS-M20 ' +
+      'pro kabelovou průchodku, svorkovnice, stupeň krytí IP65',
+    value:
+      'Bezpečnostní koncový spínač se zámkem (solenoidové odjištění), 2× rozpínací (NC) ' +
+      'bezpotenciálový kontakt, zatížitelnost kontaktu 2,5 A/230 V AC-15',
+    notes:
+      'Turck "SI-LS42DSH" — bezpečnostní systémy, bezpečnostní spínač se zámkem (ID č. 3047875), ' +
+      'datasheet 20-01-2022 01-02. Sesterský typ k SI-LS100F v této knihovně (viz jeho poznámka ' +
+      'pro obecný kontext bezpečnostních koncových spínačů), ale navíc s pružinovým mechanickým ' +
+      'zámkem otevíraným magnetem (solenoidem) — brání otevření krytu/dveří dokud není napájena ' +
+      'odjišťovací cívka (2× magnetická cívka, rozpínací a spínací funkce), typicky pro blokování ' +
+      'ochranných krytů na strojích s doběhem. Provedení dle IEC 60947-5-1, s pojistkou. ' +
+      'Jmenovité izolační napětí 250 V, konvenční tepelný proud 5 A, impulsní výdržné napětí ' +
+      '2,5 kV, třída ochrany II. Četnost spínání 10/min (nižší než SI-LS100F kvůli mechanismu ' +
+      'zámku), mechanická životnost 2×10⁶ spínacích cyklů, B10d hodnota 2×10⁶ spínacích cyklů, ' +
+      'nelze kaskádovat. Okolní teplota -25 až +70 °C. Bezpečnostní klasifikace: PL e dle ' +
+      'ISO 13849-1:2008, kategorie 4, SIL 3 dle IEC 61508, úroveň kódování/ochrana proti ' +
+      'neoprávněné manipulaci nízká.',
+    tags: 'spínač,bezpečnostní,koncový,limit-switch,zámek,solenoid,turck,si-ls42dsh,safety,pl-e,sil-3',
+  },
+  {
+    name: 'VPEV-1/8-M12',
+    packageType:
+      'kovové (hliníková slitina) tělo, pneumatické připojení G1/8, elektrický konektor M12×1 ' +
+      '(4 piny, kruhový, dle EN 60947-5-2), montáž s průchozí dírou, hmotnost 220 g, stupeň ' +
+      'krytí IP65',
+    value:
+      'Vakuový/tlakový spínač (pneumaticko-elektrický převodník tlaku), přepínací funkce, ' +
+      'rozsah měření -0,1 až 0,16 MPa (-1 až 1,6 bar), max. spínací napětí 48 V AC/DC, max. ' +
+      'výstupní proud 4000 mA',
+    notes:
+      'Festo "VPEV-1/8-M12" — vakuový spínač (číslo dílu 192489), datasheet 11.08.26. Elektro' +
+      'mechanický tlakový spínač s nastavitelnými prahovými hodnotami (-0,95 až -0,2 bar) a ' +
+      'mezními hodnotami po přestavbě (0,16 až 1,6 bar), určený pro monitorování podtlaku/vakua ' +
+      'v pneumatických systémech (např. vakuové úchopné hlavice). Shoda s EN 60947-5-1, ' +
+      'certifikace CCC, UL Recognized (OL), CE, UKCA. ⚠️ Dostupný také v provedení pro výbušné ' +
+      'prostředí (zóny 1/2/21/22 dle ATEX) — dbát upozornění v příslušném osvědčení, tento záznam ' +
+      'pokrývá standardní provedení. Provozní médium stlačený vzduch dle ISO 8573-1:2010 [7:4:4] ' +
+      '(mazaný provoz možný, ale pak nutno zachovat). Teplota média i okolní teplota -20 až ' +
+      '+80 °C. Max. frekvence spínání 3 Hz. Minimální proud zátěže 1 mA@24V / 10 mA@10V / ' +
+      '100 mA@5V. Kategorie spotřebiče: indukční zátěž AC-14/DC-13, ohmická zátěž AC-12/DC-12. ' +
+      'Materiál tělesa tvárná slitina hliníku, materiál spínacího kontaktu postříbřený. Třída ' +
+      'odolnosti korozi KBK 2 (mírné nároky), shoda s LABS VDMA24364-B1/B2-L.',
+    tags: 'spínač,tlakový,vakuový,pneumatický,festo,vpev,192489,m12,ip65',
+  },
+  {
+    name: 'Jazýčkový spínač 031828 (ISO 11446)',
+    packageType:
+      'válcové plastové pouzdro Ø5,7 mm, délka 22,2 mm, s vývodovými dráty, bez konektoru ' +
+      '(vhodné pro pouzdro zásuvky obj. č. 382595/382597), stupeň krytí IP67',
+    value:
+      'Bezkontaktní jazýčkový (reed) spínač, spínací (NO), pro signální proudy do 0,5 A',
+    notes:
+      'Erich Jäger "031828" — automobilové příslušenství, jazýčkový spínač dle ISO 11446, ' +
+      'datasheet 09/2026 (https://www.erich-jaeger.cs). ⚠️ NOVÁ SUB-KATEGORIE v "Spínač/Relé": ' +
+      'první bezkontaktní (reed/jazýčkový) magnetický spínač v knihovně — spíná bezdotykově ' +
+      'přiblížením magnetu, typicky pro snímání polohy/koncových poloh v automobilové technice ' +
+      '(např. detekce otevření dveří/kapoty). Kategorie výrobce "Příslušenství", odvětví Auta. ' +
+      'Datasheet neuvádí elektrické parametry nad rámec max. spínacího proudu (0,5 A) a stupně ' +
+      'krytí IP67 — bez údajů o spínacím napětí, odporu v sepnutém stavu nebo mechanické ' +
+      'životnosti.',
+    tags: 'spínač,jazýčkový,reed,bezkontaktní,magnetický,erich-jaeger,031828,iso-11446,automotive',
+  },
+  {
+    name: 'M22-WS (MM216881)',
+    packageType:
+      'panelová montáž do otvoru M22×1,5, průměr čela 29,7 mm, hloubka za panelem 47,75 mm, ' +
+      'dotahovací moment 0,50 Nm, barva černá/světle šedá, stupeň krytí IP66',
+    value:
+      'Klíčový přepínač, 2-pólový, poloha 0-I (40° rozsah), bez aretace, bez osvětlení',
+    notes:
+      'Schrack Technik / Eaton "M22-WS" (technický list MM216881--), staženo 2026-09-08 z ' +
+      'www.schrack.cz. Klíčový ovládací prvek řady M22 (kompatibilní s běžnými ovladači/kontakty ' +
+      'této řady, montážní otvor Ø22 mm) — klíč lze odejmout ve spínací poloze 0. Nezbytné ' +
+      'příslušenství (nutno dokoupit zvlášť, nejsou součástí tohoto dílu): kódovací adaptéry pro ' +
+      'vyjmutí klíče MM216406 (sada 2 ks červený+zelený), kódovací adaptéry pro změnu aretace ' +
+      'MM216407, propojovací díl MM216374, kontaktní blok 1× rozpínací (1R) MM216378 nebo ' +
+      '1× spínací (1Z) MM216376 (šroubové svorky, čelní montáž, IP20) — samotný ovladač bez ' +
+      'kontaktního bloku nespíná žádný obvod. Normy IEC EN 60947, VDE 0660. Odolnost rázům 30G. ' +
+      'Provozní teplota -25 až +70 °C, klimatická odolnost dle IEC 60068-2-78 (vlhké teplo ' +
+      'cyklické i konstantní). Mechanická životnost 100 000 spínacích cyklů, doporučená frekvence ' +
+      'používání < 100 cyklů. Montážní poloha libovolná.',
+    tags: 'spínač,klíčový,panelový,m22,m22-ws,schrack,eaton,mm216881,ip66',
+  },
 ];
 
 export function buildRelaySeed(): ComponentInput[] {
