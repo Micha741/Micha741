@@ -2751,8 +2751,14 @@ const DIODE_SPECS: PartSpec[] = [
       '500mW. Závěrný proud IR<25nA @VR=20V/25°C (<50µA @150°C), <5µA @VR=75V/25°C. Kapacita ' +
       'přechodu CT typ. 4pF @VR=0V/1MHz. Tepelný odpor přechod-okolí RthA typ. 300K/W. TJ a ' +
       'Tstg -50 až +175°C. Pájecí podmínky 260°C/10s, MSL=1. Shoda s RoHS (výjimka 7c), REACH, ' +
-      'Conflict Minerals.',
-    tags: 'dioda,spínací,signálová,smd,minimelf,sod-80c,diotec,ll4148,1n4148-ekvivalent',
+      'Conflict Minerals. ⚠️ Druhý zdroj (second source): Vishay Semiconductors nabízí ' +
+      'elektricky/mechanicky shodný díl pod stejným označením "LL4148" (dok. 85557, rev. 2.1, ' +
+      '2020) — shodné pouzdro MiniMELF/SOD-80, VRRM 100V, IFSM 2A, IFRM 500mA, IF(AV) 150mA, ' +
+      'Ptot 500mW, RthJA 300K/W, Tstg -65 až +175°C; VF max 1,0V @IF=50mA (u Diotec verze ' +
+      'testováno @10mA); trr max 8ns @IR=1mA nebo max 4ns @iR=0,1×IR/VR=6V/RL=100Ω (podrobnější ' +
+      'dvě testovací podmínky než u Diotec). Objednací kódy Vishay: LL4148-GS08 (7", 2,5K), ' +
+      'LL4148-GS18 (13", 10K).',
+    tags: 'dioda,spínací,signálová,smd,minimelf,sod-80c,diotec,vishay,ll4148,1n4148-ekvivalent',
   },
   {
     name: 'LL4150',
@@ -2784,8 +2790,10 @@ const DIODE_SPECS: PartSpec[] = [
       'knihovně pro plné společné mechanické specifikace a kontext. SMD ekvivalent 1N4448 ' +
       '(DO-35) — přesnější (těsnější) definice propustného napětí VF (0,62-0,72V @5mA) než ' +
       'LL4148, jinak shodné mezní hodnoty (IFRM 500mA, IFSM 2000mA), IR<25nA @20V/25°C ' +
-      '(<50µA @150°C), <5µA @75V/25°C.',
-    tags: 'dioda,spínací,signálová,smd,minimelf,sod-80c,diotec,ll4448,1n4448-ekvivalent',
+      '(<50µA @150°C), <5µA @75V/25°C. ⚠️ Druhý zdroj: Vishay Semiconductors "LL4148, LL4448" ' +
+      '(dok. 85557, rev. 2.1, 2020) — shodné pouzdro/mezní hodnoty jako Diotec verze, VF ' +
+      'testováno navíc @100mA (max 1,0V, přesněji 0,93-1,0V), objednací kódy LL4448-GS08/-GS18.',
+    tags: 'dioda,spínací,signálová,smd,minimelf,sod-80c,diotec,vishay,ll4448,1n4448-ekvivalent',
   },
   {
     name: 'CD4148W',
