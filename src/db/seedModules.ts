@@ -4377,6 +4377,35 @@ const MODULE_SPECS: ModuleSpec[] = [
     tags: 'modul,rf,transceiver,fsk,transparentní,uart,hoperf,hm-trp,dip,smd,433mhz,470mhz,868mhz,915mhz,100mw',
   },
   {
+    name: 'HM-TRP-RS485 Series',
+    packageType:
+      'THT/panelová PCB s páskovým konektorem (šroubové svorky) a whip anténou přes SMA-like ' +
+      'konektor, rozměry desky 44,1×30×1,2mm, celková délka s anténou ~105,3mm',
+    value:
+      'Transparentní FSK transceiver s RS-485 rozhraním, 433/470/868/915 MHz (dle objednacího ' +
+      'kódu), VDD 2,4–3,6V, výstupní výkon 1–20 dBm (max. 100mW), citlivost -117 dBm, ' +
+      'přenosová rychlost 1,2–115,2 kbps',
+    notes:
+      'HOPERF (Hope Microelectronics) "HM-TRP-RS485 Series — 100mW Transceiver modules" (dok. ' +
+      'V1.0). Sesterský produkt k "HM-TRP Series" v této knihovně (viz jeho záznam pro plný ' +
+      'kontext transparentního FSK přenosu a konfiguračního protokolu) — VÝHRADNĚ jiné ' +
+      'rozhraní/formfaktor, jinak IDENTICKÝ RF/elektrický základ (shodné frekvence, výkony, ' +
+      'proudy, citlivost, konfigurace přes příkazy "AA FA+instrukce+parametr"). Namísto ' +
+      'jednoduchého TTL UART (piny DTX/DRX u HM-TRP) nabízí integrovaný RS-485 budič ' +
+      '(diferenciální, half-duplex, odolnější proti rušení na delší kabelové trasy typické pro ' +
+      'průmyslové sběrnice), a namísto malého 9pin DIP/SMD modulu jde o samostatnou PCB s ' +
+      'šroubovými svorkami a připojenou whip anténou — určeno pro přímé zapojení do RS-485 ' +
+      'sběrnicové instalace (např. jako bezdrátový most/repeater segmentu RS-485 sítě). ' +
+      'Vlastní RS-485 transceiver čip a jeho ochranné obvody nejsou v tomto dokumentu blíže ' +
+      'specifikovány (schéma zapojení v datasheetu ukazuje obecný diferenciální budič s ' +
+      'ochrannými rezistory na sběrnici). Absolutní maximum a elektrické parametry shodné s ' +
+      'HM-TRP: VCC -0,3 až +3,6V, Tstg -40 až +150°C, Top -40 až +85°C, reflow +260°C. RS-485 ' +
+      'datová rychlost 1,2-115,2kbps, 8 datových bitů, 1 stop bit. Tovární výchozí nastavení ' +
+      'shodné s HM-TRP: 9,6kbps, 105kHz šířka pásma, 35kHz deviace, +20dBm výkon. Objednací ' +
+      'kódy: HM-TRP-RS485-433/470/868/915. Shoda s FCC, ETSI.',
+    tags: 'modul,rf,transceiver,fsk,rs485,hoperf,hm-trp-rs485,433mhz,470mhz,868mhz,915mhz,100mw,průmyslová-sběrnice',
+  },
+  {
     name: 'DWM1000',
     packageType:
       'SMD modul s integrovanou anténou (Partron dielektrická čipová anténa ACS5200HFAUWB), ' +
