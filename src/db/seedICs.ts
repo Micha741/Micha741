@@ -727,10 +727,70 @@ const IC_SPECS: IcSpec[] = [
   },
   {
     name: 'ULN2803',
-    packageType: 'DIP-18',
-    value: '8× Darlingtonův budič, 500 mA/kanál, do 50 V',
-    notes: 'Osmikanálová verze ULN2003, jinak stejné vlastnosti a použití.',
-    tags: 'io,budič,uln2803,relé,motor',
+    packageType:
+      'DIP-18, 18 vývodů: 1-8=IN1-8, 9=GND, 10=společné zpětné (flyback) diody, 11-18=OUT8-1 ' +
+      '(pořadí výstupů zrcadlově obráceno vůči vstupům pro snadnější návrh DPS)',
+    value:
+      '8× Darlingtonův budič se společnými emitory, kolektorový proud 500 mA trvale/600 mA ' +
+      'špičkově na kanál, výstupní napětí do 50 V, vstupní odpor 2,7 kΩ (verze pro 5V TTL/CMOS)',
+    notes:
+      'STMicroelectronics "ULN2801A, ULN2802A, ULN2803A, ULN2804A — Eight Darlington array" ' +
+      '(dok. DocID1536 Rev. 3, listopad 2012) — konkrétně varianta ULN2803A (vstupní odpor ' +
+      '2,7kΩ, optimalizováno pro 5V TTL/CMOS logiku). Osm Darlingtonových tranzistorů se ' +
+      'společnými emitory a vestavěnými zpětnými (flyback/suppression) diodami se společnou ' +
+      'katodou (pin 10) — pro spínání induktivních zátěží (relé, solenoidy) přímo z logického ' +
+      'výstupu bez nutnosti vnější ochranné diody. Výstupy lze paralelizovat pro vyšší proudovou ' +
+      'kapacitu. Součást rodiny ULN2801A/2802A/2803A/2804A lišící se jen vstupním odporovým ' +
+      'děličem pro různé logické rodiny (viz sourozenecké záznamy "ULN2801A"/"ULN2802A"/ ' +
+      '"ULN2804A" v této knihovně) — jinak elektricky i mechanicky shodné. IC(max) 500mA (trvale) ' +
+      '/600mA (špičkově), IB(max) 25mA, VO(max) 50V, Ptot 1W/pár (2,25W celé pouzdro), hFE min ' +
+      '1000 @VCE=2V/IC=350mA. VCE(sat): 0,9-1,1V @IC=100mA, 1,1-1,3V @IC=200mA, 1,3-1,6V ' +
+      '@IC=350mA. Vstupní proud II(ON) 0,93-1,35mA @VI=3,85V. Vstupní kapacita CI 15-25pF. Doba ' +
+      'zapnutí/vypnutí tPLH/tPHL 0,25-1µs. Výstupní svodový proud ICEX max 50µA @VCE=50V/70°C. ' +
+      'Napětí flyback diody VF typ. 1,7V/max 2V @IF=350mA. Tepelný odpor přechod-okolí RthJA ' +
+      '55°C/W. Provozní teplota -20 až +85°C, skladovací -55 až +150°C.',
+    tags: 'io,budič,uln2803,uln2803a,darlington-array,st,relé,motor,dip-18',
+  },
+  {
+    name: 'ULN2801A',
+    packageType: 'shodné s ULN2803 (DIP-18) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      '8× Darlingtonův budič se společnými emitory, kolektorový proud 500 mA trvale na kanál, ' +
+      'výstupní napětí do 50 V, obecná verze pro PMOS/CMOS s vestavěným omezovacím rezistorem',
+    notes:
+      'STMicroelectronics "ULN2801A/2802A/2803A/2804A" — součást rodiny, viz záznam "ULN2803" ' +
+      'v této knihovně pro plné společné elektrické/mechanické specifikace. Obecná (general ' +
+      'purpose) varianta s odporovým vstupním děličem 7,2kΩ/3kΩ bez sériového omezovacího ' +
+      'rezistoru navíc (na rozdíl od ostatních variant řady) — vhodná pro PMOS-CMOS logiku s ' +
+      'vlastním omezením proudu na vstupu.',
+    tags: 'io,budič,uln2801,uln2801a,darlington-array,st,relé,motor,dip-18',
+  },
+  {
+    name: 'ULN2802A',
+    packageType: 'shodné s ULN2803 (DIP-18) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      '8× Darlingtonův budič se společnými emitory, kolektorový proud 500 mA trvale na kanál, ' +
+      'výstupní napětí do 50 V, vstupní odpor 10,5 kΩ se Zenerovou diodou pro 14-25V PMOS',
+    notes:
+      'STMicroelectronics "ULN2801A/2802A/2803A/2804A" — součást rodiny, viz záznam "ULN2803" ' +
+      'v této knihovně pro plné společné elektrické/mechanické specifikace. Varianta s ' +
+      'omezovacím rezistorem 10,5kΩ a Zenerovou diodou na vstupu, určená pro vyšší logická ' +
+      'napětí 14-25V PMOS. Max. vstupní napětí VI 30V (na rozdíl od ULN2801A). Doc. tento ' +
+      'konkrétní soubor (ULN2802A.pdf) je datasheet pro celou rodinu ULN2801A-2804A.',
+    tags: 'io,budič,uln2802,uln2802a,darlington-array,st,relé,motor,dip-18,pmos',
+  },
+  {
+    name: 'ULN2804A',
+    packageType: 'shodné s ULN2803 (DIP-18) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      '8× Darlingtonův budič se společnými emitory, kolektorový proud 500 mA trvale na kanál, ' +
+      'výstupní napětí do 50 V, vstupní odpor 10,5 kΩ pro 6-15V CMOS/PMOS',
+    notes:
+      'STMicroelectronics "ULN2801A/2802A/2803A/2804A" — součást rodiny, viz záznam "ULN2803" ' +
+      'v této knihovně pro plné společné elektrické/mechanické specifikace. Varianta s ' +
+      'omezovacím rezistorem 10,5kΩ (bez Zenerovy diody, na rozdíl od ULN2802A), určená pro ' +
+      'nižší logická napětí 6-15V CMOS/PMOS. Max. vstupní napětí VI 30V.',
+    tags: 'io,budič,uln2804,uln2804a,darlington-array,st,relé,motor,dip-18,cmos',
   },
   {
     name: 'L293D',
