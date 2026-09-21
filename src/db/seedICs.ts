@@ -3413,6 +3413,44 @@ const IC_SPECS: IcSpec[] = [
       'LTV-827: -40 až +105°C (užší než LTV-817).',
     tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,čtyřkanálový,liteon,ltv-847,dip-16,tht',
   },
+
+  // Ethernet kontroléry
+  {
+    name: 'W5500',
+    packageType:
+      'SMD LQFP-48 (7×7mm, rozteč 0,5mm), vyžaduje externí 25MHz krystal (piny XI/CLKIN, XO), ' +
+      'externí referenční rezistor 12,4kΩ/1% (pin EXRES1), externí referenční kondenzátor ' +
+      '4,7µF (pin TOCAP), síťový (LAN) transformátor 1:1/350µH mezi PHY a RJ45 konektorem',
+    value:
+      'Plně hardwarový (hardwired) TCP/IP embedded Ethernet kontrolér s integrovaným 10/100 ' +
+      'Ethernet MAC+PHY, SPI rozhraní (SPI mód 0/3), 32KB interní TX/RX paměť, 8 nezávislých ' +
+      'hardwarových socketů',
+    notes:
+      'WIZnet "W5500 Datasheet Version 1.0" (srpen 2013). ⚠️ NOVÝ TYP součástky v této ' +
+      'knihovně: první hardwarový TCP/IP síťový kontrolér — na rozdíl od Wi-Fi ' +
+      'mikrokontrolérů ESP32/ESP8285/ESP8684 v této knihovně (které běží vlastní firmware/ ' +
+      'RTOS a implementují síťový zásobník softwarově) jde o čistě HARDWAROVOU implementaci ' +
+      'celého TCP/IP zásobníku (TCP, UDP, ICMP, IPv4, ARP, IGMP v1/v2, PPPoE) v křemíku — ' +
+      'hostitelský mikrokontrolér komunikuje jen přes jednoduché SPI registrové rozhraní a ' +
+      'socket API, bez nutnosti vlastní implementace síťového zásobníku. Nepodporuje IP ' +
+      'fragmentaci. Podporuje Wake-on-LAN přes UDP a power-down mód pro úsporu energie. LED ' +
+      'výstupy: Full/Half duplex, Link, Speed, Active. SPI podporuje teoretickou rychlost až ' +
+      '80MHz, garantovaná (testovaná/změřená) rychlost 33,3MHz. Napájení 3,3V (VDD/AVDD, ' +
+      '2,97-3,63V) s 5V tolerantními I/O vstupy. Interní 1,2V regulátor (pin 1V2O). Absolutní ' +
+      'maximum: VDD -0,5 až 4,6V, VIN -0,5 až 6V, VOUT -0,5 až 4,6V, IIN ±5mA, Top -40 až ' +
+      '+85°C, Tstg -65 až +150°C. ESD: HBM 2000V (třída 2), MM 200V (třída B), CDM 500V ' +
+      '(třída III). Odběr proudu: normální provoz typ. 132mA, power-down mód typ. 13mA, ' +
+      '100M link typ. 128mA, 10M link typ. 75mA, un-link (auto-negotiation) typ. 65mA. Reset ' +
+      'cyklus TRC min 500µs, doba do PLL lock TPL max 1ms. Doba probuzení napěťového ' +
+      'regulátoru 10µs. Krystal: 25MHz, tolerance ±30ppm, stínová kapacita max 7pF, zátěžová ' +
+      'kapacita 18pF, stárnutí max ±3ppm/rok. SPI časování: SCK vysoký/nízký čas min 6ns, SCSn ' +
+      'vysoký čas min 30ns, setup/hold časy 3-5ns. Nepodporuje auto-MDIX — nutné rozlišovat ' +
+      'přímý/křížený kabel dle připojeného zařízení. Cílové aplikace: síťové zásuvné moduly, ' +
+      'sériové/paralelní/USB-na-Ethernet převodníky, bezpečnostní systémy (DVR, IP kamery), ' +
+      'průmyslová a budovní automatizace, zdravotnická monitorovací zařízení, vestavěné ' +
+      'servery.',
+    tags: 'io,ethernet,tcp-ip,síťový-kontrolér,wiznet,w5500,spi,lqfp-48,hardwired',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
