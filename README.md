@@ -79,8 +79,8 @@ i návrh schémat obvodů a plošných spojů.
     (tepová frekvence + SpO2) a SFH7060 (5 emitorů, tepová frekvence + SpO2), a proudové
     senzory CUI CSXX05B series aj.; izolovaný DC/DC měnič TRACO POWER TRA 1 Series; fototranzistorové
     optočleny LITE-ON LTV-356T (CTR 50-600%, Viso 3750Vrms, mini-flat SMD), Everlight EL817
-    Series (CTR 50-600%, Viso 5000Vrms, DIP-4/SMD) a Sharp PC817 rank A (CTR 80-160%, Viso
-    5000Vrms, DIP-4); a plně
+    Series (CTR 50-600%, Viso 5000Vrms, DIP-4/SMD) a Sharp PC817 Series (rank A-D, CTR 50-600%,
+    Viso 5000Vrms, DIP-4); a plně
     digitální Class-D zesilovače reproduktoru s DSP ROHM BM28720MUV (20W+20W) a BM28723MUV
     (17W+17W, output feedback, bez snubberu); a digitální barometrický tlakový senzor Bosch
     BMP280 (I2C/SPI); kombinovaný digitální senzor vlhkosti/tlaku/teploty Bosch BME280

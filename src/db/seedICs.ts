@@ -3114,27 +3114,33 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,everlight,el817,dip-4,tht',
   },
   {
-    name: 'PC817 Series (rank A: PC817X1NSZ1B)',
+    name: 'PC817 Series',
     packageType:
       'THT DIP-4, epoxidová pryskyřice, rozměry 6,5×4,60mm, rozteč vývodů 2,54mm, vývody z ' +
-      'měděné slitiny s SnBi povlakem (1-4% Bi), hmotnost ~0,23g',
+      'měděné slitiny, povrchová úprava dle obchodního označení — SnBi povlak (1-4% Bi, ' +
+      'business dealing name "...NSZ1B") nebo čistý cín (business dealing name "...CSZ9F"), ' +
+      'hmotnost ~0,23g',
     value:
       'Optočlen (fototranzistorový optočlen) s galvanickým oddělením, kolektorový proud IC ' +
-      '4,0–8,0 mA @IF=5mA/VCE=5V (Rank A), izolační napětí Viso 5000 Vrms, VCEO 80 V',
+      '2,5–30 mA @IF=5mA/VCE=5V dle rankové třídy (rank A 4,0–8,0 mA, rank B 6,5–13 mA aj. — ' +
+      'viz poznámka), izolační napětí Viso 5000 Vrms, VCEO 80 V',
     notes:
-      'Sharp Corporation "Specifications — Photocoupler, Model No. PC817" (business dealing ' +
-      'name PC817X1NSZ1B, spec. ED-16P010, vydáno 7.10.2016, "Reference" — pravděpodobně ' +
-      'referenční/nepodepsaná verze specifikace). Třetí optočlen v této knihovně vedle LITE-ON ' +
-      'LTV-356T a Everlight EL817 (viz jejich záznamy) — patrně nejrozšířenější a nejčastěji ' +
-      'citovaný obecný optočlen na trhu (mnoho jiných výrobců nabízí přímé "PC817" ekvivalenty/ ' +
-      'klony). Zapojení pinů shodné s ostatními optočleny v knihovně: 1=Anoda, 2=Katoda, ' +
-      '3=Emitor, 4=Kolektor. ⚠️ Tento konkrétní záznam (business dealing name "PC817X1NSZ1B") ' +
-      'odpovídá rankové třídě A (Ic 4,0-8,0mA) — základní řada "PC817" zahrnuje širokou škálu ' +
-      'rankových tříd dle tabulky obchodních označení: PC817XNNSZ1B (bez/s libovolným rankem, ' +
-      'Ic 2,5-30mA), PC817X1NSZ1B=A (4,0-8,0mA), X2=B (6,5-13mA), X3=C (10-20mA), X4=D ' +
-      '(15-30mA), X5=A nebo B (4,0-13mA), X6=B nebo C (6,5-20mA), X7=C nebo D (10-30mA), X8=A, ' +
-      'B nebo C (4,0-20mA), X9=B, C nebo D (6,5-30mA), X0=A, B, C nebo D (4,0-30mA) — testováno ' +
-      '@IF=5mA/VCE=5V/Ta=25°C. Vstup (LED): VF typ. 1,2V/max 1,4V @IF=20mA, VFM (impulzní) max ' +
+      'Sharp Corporation "Specifications — Photocoupler, Model No. PC817" — dvě verze téhož ' +
+      'datasheetu evidované v této knihovně: business dealing name "PC817X1NSZ1B" (rank A, ' +
+      'spec. ED-16P010, vydáno 7.10.2016, tovární označení "K" = Kyushu Denshi Japonsko, SnBi ' +
+      'povlak vývodů) a "PC817X2CSZ9F" (rank B, spec. ED-14P010, vydáno 24.9.2014, tovární ' +
+      'označení "W" = Lite-ON OPTO Technology Changzhou Čína, čistý cín na vývodech) — obě mají ' +
+      'shodnou elektro-optickou charakteristiku, liší se jen konkrétním rankem/suffixem, ' +
+      'výrobním závodem a povrchovou úpravou vývodů. Třetí optočlen v této knihovně vedle ' +
+      'LITE-ON LTV-356T a Everlight EL817 (viz jejich záznamy) — patrně nejrozšířenější a ' +
+      'nejčastěji citovaný obecný optočlen na trhu (mnoho jiných výrobců nabízí přímé "PC817" ' +
+      'ekvivalenty/klony). Zapojení pinů shodné s ostatními optočleny v knihovně: 1=Anoda, ' +
+      '2=Katoda, 3=Emitor, 4=Kolektor. Základní řada "PC817" zahrnuje širokou škálu rankových ' +
+      'tříd dle tabulky obchodních označení (přípona "NSZ1B" nebo "CSZ9F" dle výše): PC817XN.. ' +
+      '(bez/s libovolným rankem, Ic 2,5-30mA), PC817X1..=A (4,0-8,0mA), X2=B (6,5-13mA), X3=C ' +
+      '(10-20mA), X4=D (15-30mA), X5=A nebo B (4,0-13mA), X6=B nebo C (6,5-20mA), X7=C nebo D ' +
+      '(10-30mA), X8=A, B nebo C (4,0-20mA), X9=B, C nebo D (6,5-30mA), X0=A, B, C nebo D ' +
+      '(4,0-30mA) — testováno @IF=5mA/VCE=5V/Ta=25°C. Vstup (LED): VF typ. 1,2V/max 1,4V @IF=20mA, VFM (impulzní) max ' +
       '3,0V @IFM=0,5A, IF max 50mA (trvale), IFM max 1A (impulzně, šířka ≤100µs, duty ≤0,001), ' +
       'VR max 6V, IR max 10µA @VR=4V, Ct max 250pF @V=0/f=1kHz, P max 70mW. Výstup ' +
       '(fototranzistor): VCEO 80V, VECO 6V, IC max 50mA, PC max 150mW, ICEO (dark current) max ' +
@@ -3147,7 +3153,7 @@ const IC_SPECS: IcSpec[] = [
       'pájecí teplota 270°C/10s. Schváleno UL (E64380, "under preparation" v tomto dok.), CSA ' +
       '("under preparation"). Shoda s RoHS (2011/65/EU), bez ODS látek a bromovaných retardérů ' +
       'hoření (PBB/PBDE). Datum kódu na pouzdru: 3místný kód (rok+týden výroby).',
-    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,sharp,pc817,dip-4,tht,rank-a',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,sharp,pc817,dip-4,tht',
   },
 ];
 
