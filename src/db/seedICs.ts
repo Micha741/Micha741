@@ -52,6 +52,36 @@ const IC_SPECS: IcSpec[] = [
     notes: 'Dvě nezávislé jednotky NE555 v jednom pouzdře — dva časovače/oscilátory na čipu.',
     tags: 'io,časovač,555,oscilátor',
   },
+  {
+    name: 'TS555',
+    packageType: 'SO-8 (SO8 plastové mikropouzdro), piny shodné s NE555: 1=GND, 2=Trigger, ' +
+      '3=Output, 4=Reset, 5=Control Voltage, 6=Threshold, 7=Discharge, 8=VCC',
+    value:
+      'Nízkopříkonový CMOS přesný časovač (monostabilní/astabilní), napájení 2–16 V, klidový ' +
+      'proud typ. 110 µA @VCC=5V, max. astabilní kmitočet 2,7 MHz',
+    notes:
+      'STMicroelectronics "TS555 — Low-power single CMOS timer" (dok. DocID4077 Rev. 4, ' +
+      'červen 2015). Pinově a funkčně kompatibilní s bipolárním NE555 (viz jeho záznam v této ' +
+      'knihovně pro obecný kontext architektury 555 — trigger/threshold komparátory, RS ' +
+      'klopný obvod, výstupní budič, vybíjecí tranzistor DISCH), ale postavený v CMOS ' +
+      'technologii namísto bipolární — ⚠️ VÝRAZNĚ NIŽŠÍ SPOTŘEBA (ICC typ. 110µA @5V / 90µA ' +
+      '@3V, oproti ~3mA u bipolárního NE555) a VYŠŠÍ MAX. KMITOČET (2,7MHz astabilně, oproti ' +
+      '0,1MHz u NE555) — vhodné pro bateriové/nízkopříkonové aplikace a vysokorychlostní ' +
+      'časování/generování pulzů, kde by bipolární NE555 byl příliš proudově náročný nebo ' +
+      'pomalý. Redukované proudové špičky při přechodech výstupu umožňují menší dekapl ' +
+      'kondenzátory než u NE555. Vysoká vstupní impedance (10¹²Ω na Threshold/Trigger) ' +
+      'umožňuje použít menší časovací kondenzátory. Výstup kompatibilní s TTL, CMOS a logic ' +
+      'MOS. Absolutní maximum: VCC max 18V, IOUT max ±100mA, TJ max 150°C, Tstg -65 až +150°C, ' +
+      'RθJA 125°C/W, RθJC 40°C/W. ESD odolnost HBM 1500V, MM 200V, CDM 1000V. Doporučené ' +
+      'provozní podmínky: VCC 2-16V, IOUT sink 10mA/source 50mA, Toper -40 až +125°C (širší ' +
+      'rozsah než NE555). Elektrické char. @VCC=2V/25°C: ICC typ. 65µA/max 200µA, VCL (control ' +
+      'voltage) typ. 1,3V, VDIS (saturační napětí Discharge) typ. 0,05V/max 0,2V @Idis=1mA, ' +
+      'VOL typ. 0,1V/max 0,3V @Isink=1mA, VOH typ. 1,9V/min 1,5V @Isource=-0,3mA, VTRIG typ. ' +
+      '0,67V, ITRIG/ITH/IRESET typ. 10pA (extrémně nízké díky CMOS vstupům), VRESET typ. 1,1V. ' +
+      '@VCC=3V/25°C: ICC typ. 90µA/max 230µA, VCL typ. 2V, VOH typ. 2,9V/min 2,5V. Funkční ' +
+      'tabulka RS-FF shodná s klasickým 555 (Reset má přednost před Trigger/Threshold).',
+    tags: 'io,časovač,555,ts555,cmos,st,nízkopříkonový,oscilátor,pwm,monostabilní,astabilní',
+  },
 
   // Operační zesilovače
   {
