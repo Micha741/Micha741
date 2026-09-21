@@ -169,6 +169,35 @@ const COIL_SPECS: CoilSpec[] = [
       '(EI22) / 0,7 kg (EI23) / 0,8 kg (EI24).',
     tags: 'cívka,transformátor,síťový-transformátor,ei60,indel,kk60,epoxidová-zalévačka,mechanická-platforma',
   },
+  {
+    name: 'INDEL KK ..../TOR 01-1 (toroidní transformátor)',
+    packageType:
+      'toroidní transformátor pro montáž na desku/šasi centrálním šroubem (Elementy mocujące), ' +
+      'dvojice vývodů (piny) pro primární a sekundární vinutí, délka vývodů L=150mm (jednotná ' +
+      'pro celou řadu)',
+    value:
+      'Síťový (izolační/napájecí) toroidní transformátor — mechanická/výkonová platforma, ' +
+      'jmenovitý výkon 10–3000 VA dle konkrétního typu (24 standardních velikostí), na zvláštní ' +
+      'objednávku až 150 VA/H80×D350mm',
+    notes:
+      'INDEL "Karta katalogowa KK ..../TOR .... - 1 — Rozwiązanie mechaniczne transformatora na ' +
+      'rdzeniu toroidalnym" (polský/vícejazyčný katalogový list, soubor TST20-600.PDF). ⚠️ ' +
+      'STEJNÝ TYP LISTU jako "INDEL KK 60/EI ..." v této knihovně (viz jeho poznámka) — pouze ' +
+      'MECHANICKÉ ŘEŠENÍ (rozměry, hmotnost, průměr upevňovacího šroubu) a jmenovitý výkon v VA, ' +
+      'BEZ elektrických parametrů vinutí (počet závitů, napětí, proud) — ty na samostatném ' +
+      'elektrickém listu ke konkrétnímu objednacímu kódu. Na rozdíl od "KK 60/EI" (jádro EI60, ' +
+      'jen 3 výkonové varianty 25–45VA) jde o toroidní (prstencové) konstrukční řešení s ' +
+      'MNOHEM ŠIRŠÍM výkonovým rozsahem — 24 standardních velikostí od 10VA do 3000VA (typové ' +
+      'označení "<VA>/TOR 01-1", např. "100/TOR 01-1" = 100VA), rozměry rostou s výkonem: výška ' +
+      'H 28–105mm, průměr D 57–350mm, průměr upevňovacího otvoru d 4,2–8,5mm, hmotnost ' +
+      '0,3–30,0kg. Zvláštní varianta "450/TOR 05-1" (450VA) má odlišný poměr výšky/průměru ' +
+      '(H=58/D=152mm) než standardní "450/TOR 01-1" (H=65/D=137mm) při stejném výkonu — jiná ' +
+      'konstrukční řada jádra. Toroidní transformátory obecně nabízí nižší rozptylový tok a ' +
+      'menší hmotnost/objem při daném výkonu než EI-jádrové provedení, typicky s vyšší cenou. ' +
+      'Modely 1500VA a výše ("na specjalne zamówienie") dostupné jen na objednávku po ' +
+      'individuálním odsouhlasení.',
+    tags: 'cívka,transformátor,síťový-transformátor,toroidní,toroid,indel,tor01,mechanická-platforma',
+  },
 ];
 
 const TORK_SPECS: CoilSpec[] = [
