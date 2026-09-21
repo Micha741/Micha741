@@ -2609,6 +2609,54 @@ const DIODE_SPECS: PartSpec[] = [
       '10=B, 11=A, 14=A+B+DP.',
     tags: 'dioda,led,displej,znaménkový,přetokový,texas-instruments,til304,červená,vintage',
   },
+  {
+    name: 'TYN50W-1600T / TYN80W-1600T',
+    packageType: 'TO-247, 3 vývody (anoda/katoda/gate), planárně pasivované',
+    value:
+      'Tyristor (SCR), vysokonapěťový 1600 V — TYN50W: IT(AV) 50 A, IT(RMS) 79 A; TYN80W: ' +
+      'IT(AV) 80 A, IT(RMS) 126 A; VDRM 1600 V, IGT max 80 mA, TJ(max) 150 °C',
+    notes:
+      'WeEn Semiconductors "Product Selection Guide" (PSG2020, vydáno červenec 2020, dok. č. ' +
+      '20200701), str. 12, "WeEn High Voltage 1600V SCRs — Planar Passivated" — ⚠️ SOUHRNNÝ ' +
+      'ZÁZNAM ZE VÝBĚROVÉHO KATALOGU (product selection guide), ne z plného datasheetu — ' +
+      'katalogový list uvádí jen klíčové parametry, nikoli kompletní elektrické křivky. Dvojice ' +
+      'nejvýkonnějších tyristorů z celé WeEn nabídky SCR (katalog dále uvádí desítky menších ' +
+      'typů 0,8–126 A/200–1600 V, zde neevidovány jednotlivě). Určeno pro UPS (uninterruptible ' +
+      'power supply), solid-state relé (SSR), nabíječky baterií, řízení AC/DC motorů, řízení ' +
+      'osvětlení a teploty — typicky pro omezení špičkového proudu při zapnutí napájení (inrush ' +
+      'current limiting), což umožňuje nahradit mechanické relé. ITSM (max. nárazový proud, ' +
+      '10ms): TYN50W 650 A, TYN80W 850 A. dIT/dt (kritická strmost nárůstu proudu) 150 A/µs ' +
+      '(oba typy). dVD/dt (kritická strmost nárůstu blokovacího napětí, @150°C): TYN50W ' +
+      '1500 V/µs, TYN80W 1000 V/µs. Vlastnosti: velmi vysoká blokovací schopnost napětí (do ' +
+      '1600 V), vysoká pracovní teplota přechodu (TJmax=150°C), vysoká odolnost proti proudovým ' +
+      'rázům, planárně pasivováno pro napěťovou odolnost a spolehlivost, vysoká odolnost vůči ' +
+      'teplotnímu cyklování, nízký úbytek napětí v propustném směru.',
+    tags: 'tyristor,scr,silicon-controlled-rectifier,ween,tyn50w,tyn80w,1600v,to-247,ups,ssr',
+  },
+  {
+    name: 'BTA330 (30A Hi-Com triak)',
+    packageType:
+      'TO220 (BTA330-800BT), TO220FP izolované (BTA330X-800BT), IITO220 vnitřně izolované ' +
+      '(BTA330Y-800BT/CT), D²PAK SMD (BTA330B-800BT/CT)',
+    value:
+      'Triak (TRIAC), 3Q Hi-Com technologie, 30 A, VDRM 800 V — BT (přepínací/standardní gate) ' +
+      'řada: IGT max 50 mA; CT řada: IGT max 35 mA; oba ITSM 270 A@20ms, TJ(max) 150 °C',
+    notes:
+      'WeEn Semiconductors "Product Selection Guide" (PSG2020, červenec 2020, dok. 20200701), ' +
+      'str. 13, "WeEn 30A Hi-Com™ Triacs" — ⚠️ SOUHRNNÝ ZÁZNAM ZE VÝBĚROVÉHO KATALOGU (viz ' +
+      'poznámka u "TYN50W-1600T / TYN80W-1600T" pro kontext) — vlajkový (nejvyšší proudový) ' +
+      'model z širší řady 3Q Hi-Com triaků BTAxxx v katalogu (0,8–45 A, zde neevidovány ' +
+      'jednotlivě, viz i BTA425/BTA440/BTA445 zmíněné jako příbuzné vysokoproudé typy). Určeno ' +
+      'pro topné regulace, výkonové řízení motorů, výkonové řízení AC (např. stmívače, ohřevné ' +
+      'prvky kávovarů — BTA316Y-800CT — a praček — BTA416Y-800C — dle aplikační části katalogu), ' +
+      'aplikace vystavené vysoké teplotě (TJmax=150°C). dIT/dt 100 A/µs (oba typy). Vnitřně ' +
+      'izolované pouzdro IITO220 poskytuje vysokou napěťovou izolaci (2500 V) a vyrovnání ' +
+      'tepelné disipace; D²PAK (SMD) umožňuje snadnou automatizovanou montáž. Vysoká komutační ' +
+      'schopnost s maximální odolností proti falešnému sepnutí, vysoký surge proud při nízkém ' +
+      'úbytku napětí v sepnutém stavu (VT), vysoká odolnost vůči teplotnímu cyklování, pouzdro ' +
+      'RoHS.',
+    tags: 'triak,triac,hi-com,ween,bta330,30a,800v,to220,d2pak,iito220',
+  },
 ];
 
 const TRANSISTOR_SPECS: PartSpec[] = [
