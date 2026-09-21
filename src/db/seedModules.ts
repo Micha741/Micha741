@@ -4179,6 +4179,46 @@ const MODULE_SPECS: ModuleSpec[] = [
       'transparentní přenosová zařízení.',
     tags: 'modul,rf,wifi,ble,bluetooth,lorawan,hoperf,hm-wf,hm-bt,hm-lwnh,uart',
   },
+  {
+    name: 'RFM01',
+    packageType:
+      '16pin SMD (RFM01S) nebo DIP modul, rozteč vývodů 2,54 mm (DIP)/2,0 mm (SMD), přímý ' +
+      'diferenciální anténní vstup (250 Ω), doporučené 0603 SMD blokovací kondenzátory ' +
+      '(C1=2,2µF, C2=10nF, C3 dle pásma: 390pF@315MHz/220pF@433MHz/47pF@868MHz/33pF@915MHz)',
+    value:
+      'Univerzální ISM pásmový FSK přijímač (315/433/868/915 MHz), SPI kompatibilní sériové ' +
+      'rozhraní, citlivost -109 až -100 dBm, přenosová rychlost do 115,2 kbps (digitální ' +
+      'režim) / 256 kbps (analogový režim), VDD 2,2–5,4 V',
+    notes:
+      'Hoperf Electronic "RFM01 Universal ISM Band FSK Receiver" datasheet. ⚠️ Na rozdíl od ' +
+      'souhrnných katalogových záznamů "HOPERF RFM/HM-TR Series" a "HOPERF RFM9xW/RFM75W ' +
+      'Series" v této knihovně (jen tabulková data ze selection guide) jde o PLNÝ DATASHEET ' +
+      'jednoho konkrétního modulu s kompletními elektrickými parametry. Plně integrovaný ' +
+      'jednočipový FSK přijímač (Zero-IF architektura s I/Q demodulací) — nevyžaduje ' +
+      'produkční ladění/kalibraci, jen externí krystal 10MHz a blokovací kondenzátory. ' +
+      'Protějšek (pár) k vysílači RFM02 (zmíněn v datasheetu, není v této knihovně evidován ' +
+      'samostatně). Vestavěný plně integrovaný PLL syntezátor s rychlým usazením (podpora ' +
+      'frequency hopping), programovatelná šířka pásma základního pásma (BW, 6 režimů 67-400 ' +
+      'kHz), automatická korekce kmitočtu (AFC, umožňuje použít levnější/méně přesný krystal), ' +
+      'detektor kvality dat (DQD), 16bitové RX FIFO, standalone provozní režim (bez ' +
+      'mikrokontroléru, řízeno napevno naprogramovanými piny), nízkopříkonový duty-cycle ' +
+      'režim (LPDM, <0,5mA průměrný odběr), budík (wake-up timer, 1,5µA typ., programovatelný ' +
+      '1ms až několik dní ±10%), detektor vybité baterie (programovatelný práh 2,25-5,35V). ' +
+      'LNA vstupní impedance 250Ω, volitelný zisk (0/-6/-14/-20dB) pro odolnost vůči silným ' +
+      'rušičům. Absolutní maximum: VDD -0,5 až 6,0V, napětí na pinu VDD+0,5V, vstupní proud ' +
+      '±25mA, ESD (HBM) 1000V, Tstg -55 až +125°C, pájecí teplota 260°C/10s. Doporučený ' +
+      'provozní rozsah: VDD 2,2-5,4V, Top -40 až +85°C. Proudový odběr (VDD=3,3V/27°C): Idd ' +
+      '9-11mA (315/433MHz) / 10,5-12,5mA (868MHz) / 12-14mA (915MHz), standby Ipd typ. 0,3µA, ' +
+      'idle Ix 3,0-3,5mA (jen krystalový oscilátor a základní pásmo aktivní). Přijímací ' +
+      'kmitočet fLO: 310,24-319,75MHz (315), 430,24-439,75MHz (433), 860,48-879,51MHz (868), ' +
+      '900,72-929,27MHz (915), rozlišení 2,5-7,5kHz dle pásma. Citlivost Pmin -109 až -100dBm ' +
+      '(BER 10⁻³, BW=67kHz, BR=1,2kbps). Vstupní IP3 -21 až -12dBm dle podmínek, max. vstupní ' +
+      'výkon 0dBm (vysoký zisk LNA), vstupní kapacita 1pF, RSSI rozsah 46dB, přesnost ±5dB. ' +
+      'Typické aplikace: dálkové ovládání, domácí zabezpečení/alarm, bezdrátová klávesnice/ ' +
+      'myš, dálkové bezklíčové ovládání vozidel, TPMS, telemetrie, dálkový odečet měřidel ' +
+      '(AMR).',
+    tags: 'modul,rf,přijímač,fsk,ism,hoperf,rfm01,spi,315mhz,433mhz,868mhz,915mhz,standalone',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
