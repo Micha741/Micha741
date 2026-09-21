@@ -3250,6 +3250,83 @@ const IC_SPECS: IcSpec[] = [
       'datasheetu neuvedena).',
     tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,dvoukanálový,vishay,ild217t,soic-8,smd',
   },
+  {
+    name: 'LTV-817 (LTV-8X7 Series, 1-kanálový)',
+    packageType:
+      'THT DIP-4 (standardní rozteč 2,54mm), varianta "M" (širší rozteč vývodů 0,4"/10,16mm) ' +
+      'nebo SMD "S" (povrchová montáž), tape&reel varianty -TA/-TA1/-TP u "S" provedení',
+    value:
+      'Optočlen (fototranzistorový optočlen) s galvanickým oddělením, CTR 50–600 % @IF=5mA/ ' +
+      'VCE=5V dle rankové třídy, izolační napětí Viso 5000 Vrms, VCEO 35 V',
+    notes:
+      'LITE-ON Optoelectronics "LTV-8X7 Series — Photocoupler" (dok. DS-70-96-0016, rev. U, ' +
+      'účinnost 3.12.2024). Čtvrtý optočlen v této knihovně vedle LTV-356T, EL817, PC817 a ' +
+      'dvoukanálové řady Vishay ILD205T (viz jejich záznamy) — 1-kanálová (jediný LED+ ' +
+      'fototranzistor pár) základní varianta řady "8X7", elektricky téměř totožná s Everlight ' +
+      'EL817 (stejné VCEO=35V, Viso=5000Vrms) — pravděpodobně přímý konkurenční ekvivalent. Na ' +
+      'rozdíl od EL817/PC817 nabízí LTV-8X7 řada navíc VÍCEKANÁLOVÉ varianty ve stejné rodině ' +
+      '(LTV-827 = 2-kanálový DIP-8, LTV-847 = 4-kanálový DIP-16, viz jejich záznamy), sdílející ' +
+      'shodné elektrické parametry jednoho kanálu. Zapojení pinů shodné s ostatními jedno' +
+      'kanálovými optočleny v knihovně: 1=Anoda, 2=Katoda, 3=Emitor, 4=Kolektor. Rankové třídy ' +
+      'CTR (@IF=5mA/VCE=5V/Ta=25°C): L (50-100%), A (80-160%), B (130-260%), C (200-400%), D ' +
+      '(300-600%), bez binu (50-600%). Vstup (LED): VF typ. 1,2V/max 1,4V @IF=20mA, IF max ' +
+      '50mA, IFP max 1A (impulzně 100µs/100Hz), VR max 6V, IR max 10µA @VR=4V, Ct max 250pF ' +
+      '@1kHz, P max 70mW. Výstup (fototranzistor): VCEO 35V, VECO 6V, IC max 50mA, PC max ' +
+      '150mW, ICEO max 100nA @VCE=20V/IF=0. VCE(sat) typ. 0,1V/max 0,2V @IF=20mA/IC=1mA. ' +
+      'Izolační odpor RISO 5×10¹⁰–10¹¹ Ω @DC500V/40-60%RH. Plovoucí kapacita Cf typ. 0,6pF/max ' +
+      '1,0pF @V=0/f=1MHz. Mezní kmitočet fc typ. 80kHz (-3dB) @VCE=5V/IC=2mA/RL=100Ω. Doba ' +
+      'náběhu tr typ. 4µs/max 18µs, doba doběhu tf typ. 3µs/max 18µs. Celkový ztrátový výkon ' +
+      'Ptot max 200mW. Provozní teplota LTV-817 -55 až +110°C (širší než LTV-827/847, které ' +
+      'mají -40 až +105°C), skladovací -55 až +125°C, pájecí teplota 260°C/10s. Certifikace ' +
+      'UL1577, VDE DIN EN60747-5-5 (VDE 0884-5), CSA CA5A, CQC GB4943.1-2022, Nordic Safety ' +
+      '(FIMKO/NEMKO/SEMKO/DEMKO), BSI. RoHS, MSL1, halogenová volná varianta k dispozici.',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,liteon,ltv-817,dip-4,tht,1-kanálový',
+  },
+  {
+    name: 'LTV-827 (LTV-8X7 Series, 2-kanálový)',
+    packageType:
+      'THT DIP-8 (standardní rozteč 2,54mm), varianta "M" (širší rozteč vývodů) nebo SMD "S" ' +
+      '(povrchová montáž), tape&reel varianty -TA/-TA1 u "S" provedení',
+    value:
+      'DVOUKANÁLOVÝ optočlen (2× fototranzistorový optočlen v jednom pouzdře) s galvanickým ' +
+      'oddělením, CTR 50–600 % @IF=5mA/VCE=5V dle rankové třídy (na kanál), izolační napětí ' +
+      'Viso 5000 Vrms, VCEO 35 V',
+    notes:
+      'LITE-ON "LTV-8X7 Series" — součást řady, viz záznam "LTV-817" v této knihovně pro plné ' +
+      'společné elektrické parametry jednoho kanálu. Druhý dvoukanálový optočlen v této ' +
+      'knihovně vedle Vishay ILD205T (viz jeho záznam) — na rozdíl od ILD205T (SOIC-8 SMD, ' +
+      'VCEO=70V, Viso=3000Vrms) jde o klasické THT DIP-8 pouzdro (i SMD "S" varianta) s nižším ' +
+      'VCEO (35V) a vyšší izolací (5000Vrms). Zapojení pinů: 1=Anoda(ch1), 2=Katoda(ch1), ' +
+      '3=Anoda(ch2), 4=Katoda(ch2), 5=Emitor(ch2), 6=Kolektor(ch2), 7=Emitor(ch1), ' +
+      '8=Kolektor(ch1) — shodné s Vishay ILD205T. Rankové třídy CTR (na kanál, @IF=5mA/VCE=5V): ' +
+      'bez binu (50-600%), A (80-160%), B (130-260%), C (200-400%), D (300-600%), BC ' +
+      '(130-400%), CD (200-600%). ⚠️ Provozní teplota LTV-827 užší než LTV-817: -40 až +105°C.',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,dvoukanálový,liteon,ltv-827,dip-8,tht',
+  },
+  {
+    name: 'LTV-847 (LTV-8X7 Series, 4-kanálový)',
+    packageType:
+      'THT DIP-16 (standardní rozteč 2,54mm), varianta "M" (širší rozteč vývodů) nebo SMD "S" ' +
+      '(povrchová montáž)',
+    value:
+      'ČTYŘKANÁLOVÝ optočlen (4× fototranzistorový optočlen v jednom pouzdře) s galvanickým ' +
+      'oddělením, CTR 50–600 % @IF=5mA/VCE=5V dle rankové třídy (na kanál), izolační napětí ' +
+      'Viso 5000 Vrms, VCEO 35 V',
+    notes:
+      'LITE-ON "LTV-8X7 Series" — součást řady, viz záznam "LTV-817" v této knihovně pro plné ' +
+      'společné elektrické parametry jednoho kanálu. ⚠️ NOVÁ SUB-KATEGORIE mezi optočleny v ' +
+      'této knihovně: první ČTYŘKANÁLOVÝ optočlen (4 nezávislé LED+fototranzistor páry v ' +
+      'jediném DIP-16 pouzdře) — nejvyšší hustota integrace optočlenů v této knihovně, vhodné ' +
+      'pro paralelní galvanické oddělení sběrnice/více signálů (např. datová sběrnice, více ' +
+      'diskrétních signálů). Zapojení pinů: 1,2=Anoda/Katoda(ch1), 3,4=Anoda/Katoda(ch2), ' +
+      '5,6=Anoda/Katoda(ch3), 7,8=Anoda/Katoda(ch4), 9,10=Emitor/Kolektor(ch4), 11,12=Emitor/ ' +
+      'Kolektor(ch3), 13,14=Emitor/Kolektor(ch2), 15,16=Emitor/Kolektor(ch1) (přesné pořadí ' +
+      'anoda/katoda a emitor/kolektor viz vnitřní schéma v datasheetu). Rankové třídy CTR (na ' +
+      'kanál, @IF=5mA/VCE=5V): bez binu (50-600%), BC (130-400%), CD (200-600%) — užší nabídka ' +
+      'ranků než LTV-817/827 (bez samostatných A/B/C/D tříd). ⚠️ Provozní teplota shodná s ' +
+      'LTV-827: -40 až +105°C (užší než LTV-817).',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,čtyřkanálový,liteon,ltv-847,dip-16,tht',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
