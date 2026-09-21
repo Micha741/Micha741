@@ -141,6 +141,34 @@ const COIL_SPECS: CoilSpec[] = [
       'podpora, případně pro provedení se středním odbočením vinutí.',
     tags: 'cívka,transformátor,proudový-transformátor,current-transformer,talema,ac1020,toroid,thd,metering',
   },
+  {
+    name: 'INDEL KK 60/EI 22-2/4 / 23-2/4 / 24-2/4',
+    packageType:
+      'THT síťový transformátor na jádru EI 60, zalitý epoxidovou pryskyřicí, 14 pinů (7+7, ' +
+      'rozteč vývodů p=5mm), 4 montážní otvory pro šroub Ø4,4mm, rozměry (a×b×c dle varianty) ' +
+      'cca 63,6×53,6×47,2–56,5 mm',
+    value:
+      'Síťový (izolační/napájecí) transformátor — mechanická/výkonová platforma na jádru EI60, ' +
+      'jmenovitý výkon 25 VA (jádro EI60/21) / 30 VA (EI60/25) / 35 VA (EI60/31), na zvláštní ' +
+      'objednávku až 30/35/45 VA',
+    notes:
+      'INDEL "Karta katalogowa KK 60/EI .... - 2/4 — Rozwiązanie mechaniczne transformatora na ' +
+      'kształtce EI 60 w obudowie zalanego żywicą" (polský/vícejazyčný katalogový list). ⚠️ TENTO ' +
+      'KONKRÉTNÍ LIST POPISUJE POUZE MECHANICKÉ ŘEŠENÍ (rozměry pouzdra, rozteč a typ vývodů, ' +
+      'hmotnost) a jmenovitý výkon v VA — NEOBSAHUJE elektrické parametry vinutí (počet závitů, ' +
+      'primární/sekundární napětí, proud) — ty by byly na samostatném elektrickém katalogovém ' +
+      'listu ke konkrétnímu objednacímu kódu (typické u výrobců transformátorů, kde se ' +
+      'mechanická "platforma" jádra/kostřičky a elektrické provedení vinutí uvádí odděleně). ' +
+      'Tři varianty lišící se pouze typem jádra EI60 a tím i výškou pouzdra a výkonem: KK 60/ ' +
+      'EI 22-2/4 (jádro EI60/21, 25VA, resp. 30VA na objednávku, výška c=47,2mm), KK 60/EI 23-2/4 ' +
+      '(jádro EI60/25, 30VA/35VA, c=51,5mm), KK 60/EI 24-2/4 (jádro EI60/31, 35VA/45VA, ' +
+      'c=56,5mm) — mechanicky a rozměrově jinak shodné (a=63,6mm, a1=41,8mm, b=53,6mm, ' +
+      'b1=35,8mm, d=72,5mm, d1=43,5mm, e=81,8mm, montážní otvor Ø4,4mm, rozteč vývodů p=5mm, ' +
+      'osová vzdálenost vývodů m=32,5mm). Typ vývodů (koncovky): LZ, G1, P, X (varianty ' +
+      'provedení pinů/pájecích ploch, blíže nespecifikováno v tomto listu). Hmotnost 0,6 kg ' +
+      '(EI22) / 0,7 kg (EI23) / 0,8 kg (EI24).',
+    tags: 'cívka,transformátor,síťový-transformátor,ei60,indel,kk60,epoxidová-zalévačka,mechanická-platforma',
+  },
 ];
 
 const TORK_SPECS: CoilSpec[] = [
