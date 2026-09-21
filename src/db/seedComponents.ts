@@ -2684,6 +2684,95 @@ const DIODE_SPECS: PartSpec[] = [
       'podmínky 260°C/10s, MSL=1, hmotnost ~0,01 g. Shoda s RoHS, REACH, Conflict Minerals.',
     tags: 'dioda,proudově-omezující,current-limiting-diode,constant-current,diotec,cl05m6f,sod-123fl,led-driver',
   },
+  {
+    name: 'ABS2',
+    packageType:
+      'SMD můstkové pouzdro "ABS", 4 vývody (~ / ~ / + / -), rozteč vývodů 4 mm (kvůli vyšším ' +
+      'vzdušným/povrchovým vzdálenostem), rozměry cca 6,2×5,0×1,4 mm, pásková balení ' +
+      '5000ks/13"',
+    value:
+      'Jednofázový můstkový usměrňovač (SMD), VRRM 200 V, IFAV 0,8/1 A, VF<0,95V @0,4A, IFSM ' +
+      '25 A (50Hz)/27 A (60Hz)',
+    notes:
+      'Diotec Semiconductor "ABS2...ABS10-16 — SMD Single Phase Bridge Rectifier" (dok. verze ' +
+      '2024-06-19). ⚠️ NOVÝ TYP součástky v této knihovně: první SMD můstkový usměrňovač ' +
+      '(4 diody v jednom pouzdru, celý jednofázový usměrňovací můstek) — na rozdíl od ' +
+      'jednotlivých usměrňovacích diod (GP-série aj.) integruje celý usměrňovací můstek do ' +
+      'jednoho SMD pouzdra se 4mm roztečí vývodů (vysoká vzdušná/povrchová vzdálenost pro ' +
+      'bezpečnostní odstup). Použití: síťové usměrnění 50/60Hz, napájecí zdroje. Nejnižší ' +
+      'napěťová varianta řady ABS2–ABS10-16 (VRRM 200–1600V, viz sourozenecké záznamy ABS4/6/8/ ' +
+      '10/10-16 pro plné specifikace VRRM). Max. vstupní střídavé napětí VVRMS 140V. Max. ' +
+      'trvalý výstupní proud IFAV 0,8A (25mm² Cu plošky) / 1A (2500mm² Cu plošky) @TA=40°C. ' +
+      'Periodický špičkový propustný proud IFRM 5,4A @f>15Hz/TA=40°C. Rázový proud IFSM 25A ' +
+      '(půlvlna 50Hz/10ms) / 27A (60Hz/8,3ms) — ⚠️ datasheet v záhlaví uvádí souhrnně ' +
+      '"IFSM=27/30A" pro celou řadu, zatímco podrobná tabulka pro tento konkrétní typ udává ' +
+      '25A/27A; použita přesnější hodnota z tabulky. Grenzlastintegral i²t (t<10ms) 3,6 A²s. ' +
+      'VF<0,95V @IF=0,4A / <1,1V @IF=0,8A (Tj=25°C, platí na diodu). Závěrný proud IR<5µA ' +
+      '@VR=VRRM. Doba zotavení trr typ. 1500ns. Kapacita přechodu Cj 10pF @VR=4V. Tepelný odpor ' +
+      'přechod-okolí RthA<80K/W (25mm² plošky) / <62K/W (2500mm² Al substrát), přechod-pouzdro ' +
+      'RthT<25K/W. TJ a Tstg -50 až +150°C. Doporučený ochranný odpor Rt=14,8Ω, přípustný ' +
+      'nabíjecí kondenzátor CL=338µF. Pouzdro UL94V-0, pájecí podmínky 260°C/10s, MSL=1, ' +
+      'hmotnost ~0,1g. Shoda s RoHS (výjimka 7a), REACH, Conflict Minerals, bez halogenu. ' +
+      'K dispozici i varianty -Q (AEC-Q101 compliant) / -AQ (AEC-Q101 qualified) pro automotive.',
+    tags: 'dioda,usměrňovací,můstek,bridge-rectifier,smd,diotec,abs2,200v,síťové-usměrnění',
+  },
+  {
+    name: 'ABS4',
+    packageType: 'shodné s ABS2 — viz poznámka u ABS2 pro plné mechanické specifikace',
+    value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 400 V, IFAV 0,8/1 A',
+    notes:
+      'Diotec Semiconductor "ABS2...ABS10-16" — součást řady ABS2–ABS10-16, viz záznam "ABS2" ' +
+      'v této knihovně pro plné společné elektrické/mechanické specifikace. Max. vstupní ' +
+      'střídavé napětí VVRMS 280V. Doporučený ochranný odpor Rt=22,2Ω, přípustný nabíjecí ' +
+      'kondenzátor CL=225µF.',
+    tags: 'dioda,usměrňovací,můstek,bridge-rectifier,smd,diotec,abs4,400v,síťové-usměrnění',
+  },
+  {
+    name: 'ABS6',
+    packageType: 'shodné s ABS2 — viz poznámka u ABS2 pro plné mechanické specifikace',
+    value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 600 V, IFAV 0,8/1 A',
+    notes:
+      'Diotec Semiconductor "ABS2...ABS10-16" — součást řady ABS2–ABS10-16, viz záznam "ABS2" ' +
+      'v této knihovně pro plné společné elektrické/mechanické specifikace. Max. vstupní ' +
+      'střídavé napětí VVRMS 420V. Doporučený ochranný odpor Rt=29,6Ω, přípustný nabíjecí ' +
+      'kondenzátor CL=169µF.',
+    tags: 'dioda,usměrňovací,můstek,bridge-rectifier,smd,diotec,abs6,600v,síťové-usměrnění',
+  },
+  {
+    name: 'ABS8',
+    packageType: 'shodné s ABS2 — viz poznámka u ABS2 pro plné mechanické specifikace',
+    value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 800 V, IFAV 0,8/1 A',
+    notes:
+      'Diotec Semiconductor "ABS2...ABS10-16" — součást řady ABS2–ABS10-16, viz záznam "ABS2" ' +
+      'v této knihovně pro plné společné elektrické/mechanické specifikace. Max. vstupní ' +
+      'střídavé napětí VVRMS 560V. Doporučený ochranný odpor Rt=37,0Ω, přípustný nabíjecí ' +
+      'kondenzátor CL=125µF.',
+    tags: 'dioda,usměrňovací,můstek,bridge-rectifier,smd,diotec,abs8,800v,síťové-usměrnění',
+  },
+  {
+    name: 'ABS10',
+    packageType: 'shodné s ABS2 — viz poznámka u ABS2 pro plné mechanické specifikace',
+    value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 1000 V, IFAV 0,8/1 A',
+    notes:
+      'Diotec Semiconductor "ABS2...ABS10-16" — součást řady ABS2–ABS10-16, viz záznam "ABS2" ' +
+      'v této knihovně pro plné společné elektrické/mechanické specifikace. Max. vstupní ' +
+      'střídavé napětí VVRMS 700V. Doporučený ochranný odpor Rt=64,0Ω, přípustný nabíjecí ' +
+      'kondenzátor CL=78µF — ⚠️ POZOR na záměnu se sourozeneckým typem "ABS10-16" (stejný ' +
+      'prefix ABS10, ale VRRM 1600V, ne 1000V, a odlišné Rt/CL hodnoty shodné s ABS2).',
+    tags: 'dioda,usměrňovací,můstek,bridge-rectifier,smd,diotec,abs10,1000v,síťové-usměrnění',
+  },
+  {
+    name: 'ABS10-16',
+    packageType: 'shodné s ABS2 — viz poznámka u ABS2 pro plné mechanické specifikace',
+    value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 1600 V, IFAV 0,8/1 A',
+    notes:
+      'Diotec Semiconductor "ABS2...ABS10-16" — součást řady ABS2–ABS10-16, viz záznam "ABS2" ' +
+      'v této knihovně pro plné společné elektrické/mechanické specifikace. Nejvyšší napěťová ' +
+      'varianta celé řady. Max. vstupní střídavé napětí VVRMS 1120V. Doporučený ochranný odpor ' +
+      'Rt=14,8Ω, přípustný nabíjecí kondenzátor CL=338µF (shodné s ABS2, přestože VRRM je ' +
+      '8× vyšší — dáno vztahem Rt=VRRM/IFSM při stejném IFSM).',
+    tags: 'dioda,usměrňovací,můstek,bridge-rectifier,smd,diotec,abs10-16,1600v,síťové-usměrnění',
+  },
 ];
 
 const TRANSISTOR_SPECS: PartSpec[] = [
