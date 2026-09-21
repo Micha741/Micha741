@@ -334,14 +334,28 @@ const RELAY_SPECS: RelaySpec[] = [
       'Elektromagnetické relé, 4-pólové (4CO), 6 A, cívka AC nebo DC 24/230 V, spínaný výkon ' +
       '1500 VA/180 W',
     notes:
-      'Schrack Technik katalog "Relé" (k-relaycz3.pdf) — řada RS5, str. 12–17. ⚠️ SOUHRNNÝ ' +
-      'KATALOGOVÝ ZÁZNAM (viz poznámka u "Schrack PT" pro kontext katalogu jako celku) — ' +
-      'miniaturní průmyslové relé menší než řada PT, materiál kontaktů AgNi neobsahuje kadmium. ' +
-      'Konkrétní kódy: RS500024 (24VDC), RS500524 (24VAC), RS500730 (230VAC). Odpor kontaktů ' +
-      '≤50mΩ, elektrická životnost ≥10⁵ sepnutí (1800/h), mechanická životnost ≥10⁷ sepnutí ' +
-      '(18000/h). Izolační napětí ≥1000MΩ (500VDC), spotřeba cívky ~0,9W DC / ~1,2VA AC, doba ' +
-      'rozběhu/návratu ≤20ms. Okolní teplota -55 až +70°C, odolnost rázům 10G, vibracím 10-55Hz. ' +
-      'Hmotnost relé ~35g. Dostupné moduly do patice: ochranná dioda (YRS13250), LED+dioda ' +
+      'Schrack Technik katalog "Relé" (k-relaycz3.pdf) — řada RS5, str. 12–17; doplněno o ' +
+      'samostatný prospekt "S-relé série 4" (F-SREL-CZ5, 2015). ⚠️ SOUHRNNÝ KATALOGOVÝ ZÁZNAM ' +
+      '(viz poznámka u "Schrack PT" pro kontext katalogu jako celku) — miniaturní průmyslové ' +
+      'relé menší než řada PT, materiál kontaktů AgNi neobsahuje kadmium. Elementární relé "Série ' +
+      '4" je certifikováno VDE (DIN EN 61810-1) pod typovým označením RS210 (2-pólové), RS310 ' +
+      '(3-pólové) a RS410 (4-pólové) — v katalogu "Relé" jsou 4-pólové varianty nabízeny pod ' +
+      'objednacími kódy RS500024/RS500524/RS500730, v samostatném prospektu S-relé série 4 pod ' +
+      'kódy RS410024 (24VDC), RS410LC4 (24VDC s ochrannou diodou a LED), RS410524 (24VAC), ' +
+      'RS410730 (230VAC) a RS410T30 (230VAC s LED) — jde o tutéž fyzickou řadu (shodné technické ' +
+      'parametry i rozměry), jen s odlišným značením v různých tiskovinách výrobce. Kategorie ' +
+      'spínání (dle prospektu S-relé série 4): AC1 6A/250VAC, AC15 1,5A/120VAC nebo 0,75A/240VAC, ' +
+      'AC3 125W (jednofázový motor), DC1 6A/24VDC, DC13 0,22A/120V nebo 0,1A/250V. Min. spínaný ' +
+      'proud 5mA, max. spínaný proud 12A, max. spínaný výkon AC1 1500VA, min. spínaný výkon ' +
+      '0,3W (AgNi). Max. provozní frekvence 1200 cyklů/h (při jmenovité zátěži) / 18000 cyklů/h ' +
+      '(bez zátěže). Doba rozběhu/návratu: AC 10ms/8ms, DC 13ms/3ms. Elektrická životnost >10⁵ ' +
+      'sepnutí (odporová zátěž AC1, 6A/250VAC), mechanická >2×10⁷ sepnutí. Rozměry ' +
+      '27,5×21,2×35,6mm, kryt IP40, teplota skladování -40 až +85°C, provoz AC -40 až +55°C / ' +
+      'DC -40 až +70°C, pájecí teplota max. 270°C/5s. Odpor kontaktů ≤50mΩ (dle katalogu Relé) / ' +
+      '≤100mΩ (dle prospektu S-relé). Izolační napětí ≥1000MΩ (500VDC), spotřeba cívky ~0,9W DC / ' +
+      '~1,2VA (dle katalogu Relé) nebo 1,6VA (dle prospektu). Okolní teplota -55 až +70°C, ' +
+      'odolnost rázům 10G, vibracím 10-55Hz. Hmotnost relé ~35g. Dostupné moduly do patice: ' +
+      'ochranná dioda (YRS13250), LED+dioda ' +
       '(YRS12024), LED (YRS11524/YRS11730), RC člen (YRS14524/YRS14730).',
     tags: 'relé,elektromagnetické,paticové,schrack,rs5,din-lišta',
   },
