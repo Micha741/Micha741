@@ -3045,6 +3045,40 @@ const IC_SPECS: IcSpec[] = [
       'jako TRA 1 Series v této knihovně. Pouzdro UL94V-0.',
     tags: 'io,dc-dc,měnič,izolovaný,neregulovaný,napájecí-obvod,recom,econoline,rez-series,sip7,2w',
   },
+
+  // Optočleny
+  {
+    name: 'LTV-356T',
+    packageType:
+      'SMD mini-flat pouzdro (4 vývody typu gull-wing), rozměry cca 5,3×3,85×2,0 mm, rozteč ' +
+      'vývodů 2,54 mm, taping 12mm/3000ks na cívce (varianta -TP nebo bez přípony), MSL1',
+    value:
+      'Optočlen (fototranzistorový optočlen) s galvanickým oddělením, proudový přenosový ' +
+      'poměr CTR 50–600 % @IF=5mA/VCE=5V dle rankové třídy, izolační napětí Viso 3750 Vrms, ' +
+      'VCEO 80 V',
+    notes:
+      'LITE-ON Optoelectronics "LTV-356T series — Photocoupler" (dok. DS70-2001-010, rev. R, ' +
+      'účinnost 23.3.2024). ⚠️ NOVÁ SUB-KATEGORIE v "IO": první optočlen (photocoupler) v této ' +
+      'knihovně — dvojice IR LED (vstup) + fototranzistor (výstup) v jednom pouzdře, poskytující ' +
+      'galvanické oddělení mezi vstupním a výstupním obvodem (na rozdíl od "tripolárních" ' +
+      'TLP140/200/270 v této knihovně, což jsou navzdory podobnému názvu Toshiba TLP série ' +
+      'TRISIL přepěťové ochrany, ne optočleny). Zapojení pinů: 1=Anoda, 2=Katoda, 3=Emitor, ' +
+      '4=Kolektor. Vstup (LED): VF typ. 1,2V/max 1,4V @IF=20mA, IF max 50mA (trvale), IFP max ' +
+      '1A (impulzně 100µs/100Hz), VR max 6V, IR max 10µA @VR=4V, CT max 250pF, výkonová ztráta ' +
+      'P max 70mW. Výstup (fototranzistor): VCEO 80V, VECO 6V, IC max 50mA, PC max 150mW, ' +
+      'ICEO max 100nA @VCE=20V/IF=0. CTR (proudový přenosový poměr, IC/IF×100%) 50–600% ' +
+      '@IF=5mA/VCE=5V — dostupné rankové třídy A (80-160%), B (130-260%), C (200-400%), D ' +
+      '(300-600%), nebo neroztříděné (50-600%). VCE(sat) max 0,2V @IF=20mA/IC=1mA. Izolační ' +
+      'odpor Riso 5×10¹⁰–1×10¹¹ Ω @DC500V/40-60% RH. Plovoucí kapacita Cf typ. 0,6pF/max 1pF ' +
+      '@f=1MHz. Doba odezvy: náběh tr typ. 4µs/max 18µs, doběh tf typ. 3µs/max 18µs @VCC=5V/ ' +
+      'IC=2mA/RL=100Ω. Celkový ztrátový výkon Ptot 170mW. Izolační napětí Viso 3750Vrms (AC, ' +
+      '1 min, měřeno mezi zkratovanou anodou/katodou a zkratovaným kolektorem/emitorem). ' +
+      'Provozní teplota -55 až +110°C, skladovací -55 až +150°C, pájecí teplota 260°C. ' +
+      'Certifikace: UL1577, VDE DIN EN60747-5-5 (VDE 0884-5), CSA CA5A, CQC GB4943.1-2022/ ' +
+      'GB8898-2011, FIMKO/DEMKO/SEMKO/NEMKO. ESD odolnost HBM 8000V/MM2000V/CDM2000V. RoHS, ' +
+      'MSL1, k dispozici i bezhalogenová varianta.',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,liteon,ltv-356t,mini-flat,smd',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
