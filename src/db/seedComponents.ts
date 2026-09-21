@@ -2731,6 +2731,62 @@ const DIODE_SPECS: PartSpec[] = [
       'zotavení, tepelné odpory — shodné s -04C variantou dle katalogového listu).',
     tags: 'dioda,fred,fast-recovery,epitaxní,výkonový-modul,ixys,dsei-2x61,minibloc,sot-227,600v,duální',
   },
+  {
+    name: 'LL4148',
+    packageType:
+      'SMD ~SOD-80C (Glass MiniMELF), válcová skleněná pouzdra, Ø1,45mm, délka 3,5±0,1mm, ' +
+      'pásková balení 2500ks/7", hmotnost ~0,04g',
+    value:
+      'Spínací (small signal) dioda, IFAV 150 mA, VRRM 100 V, VF<1,0V @IF=10mA, doba zotavení ' +
+      'trr<4ns',
+    notes:
+      'Diotec Semiconductor "LL4148, LL4150, LL4151, LL4448 — SMD Small Signal Switching ' +
+      'Diodes" (verze 2022-02-01). SMD (MiniMELF) ekvivalent THT diody 1N4148 (DO-35) již ' +
+      'evidované v této knihovně — dle výrobce elektricky totožná dioda, jen jiné pouzdro ' +
+      '(výrobce uvádí LL4148 = 1N4148 v DO-35, Q-MiniMELF = LS4148, Q-MicroMELF = MCL4148, ' +
+      'SOD-123F = 1N4148W, SOD-323F = 1N4148WS — celá rodina alternativních pouzder stejného ' +
+      'čipu). Typické použití: zpracování signálu, vysokorychlostní spínání. Dostupné i ' +
+      'varianty -Q (AEC-Q101 compliant) / -AQ (v procesu AEC-Q101 kvalifikace). Max. periodický ' +
+      'špičkový proud IFRM 500mA, nárazový proud IFSM 2000mA (tp=1µs), max. ztrátový výkon Ptot ' +
+      '500mW. Závěrný proud IR<25nA @VR=20V/25°C (<50µA @150°C), <5µA @VR=75V/25°C. Kapacita ' +
+      'přechodu CT typ. 4pF @VR=0V/1MHz. Tepelný odpor přechod-okolí RthA typ. 300K/W. TJ a ' +
+      'Tstg -50 až +175°C. Pájecí podmínky 260°C/10s, MSL=1. Shoda s RoHS (výjimka 7c), REACH, ' +
+      'Conflict Minerals.',
+    tags: 'dioda,spínací,signálová,smd,minimelf,sod-80c,diotec,ll4148,1n4148-ekvivalent',
+  },
+  {
+    name: 'LL4150',
+    packageType: 'shodné s LL4148 (SOD-80C MiniMELF) — viz jeho záznam pro plné mechanické specifikace',
+    value: 'Spínací dioda, IFAV 300 mA, VRRM 50 V, VF<1,2V @IF=100mA',
+    notes:
+      'Diotec "LL4148, LL4150, LL4151, LL4448" — součást rodiny, viz záznam "LL4148" v této ' +
+      'knihovně pro plné společné mechanické specifikace a kontext. Vyšší proudová (300mA) a ' +
+      'nižší napěťová (50V) varianta rodiny — IFRM 600mA, IFSM 4000mA, IR<100nA @20V/25°C ' +
+      '(<100µA @150°C).',
+    tags: 'dioda,spínací,signálová,smd,minimelf,sod-80c,diotec,ll4150',
+  },
+  {
+    name: 'LL4151',
+    packageType: 'shodné s LL4148 (SOD-80C MiniMELF) — viz jeho záznam pro plné mechanické specifikace',
+    value: 'Spínací dioda, IFAV 200 mA, VRRM 75 V, VF<1,0V @IF=50mA',
+    notes:
+      'Diotec "LL4148, LL4150, LL4151, LL4448" — součást rodiny, viz záznam "LL4148" v této ' +
+      'knihovně pro plné společné mechanické specifikace a kontext. IFRM 500mA, IFSM 2000mA, ' +
+      'IR<50nA @20V/25°C (<50µA @150°C).',
+    tags: 'dioda,spínací,signálová,smd,minimelf,sod-80c,diotec,ll4151',
+  },
+  {
+    name: 'LL4448',
+    packageType: 'shodné s LL4148 (SOD-80C MiniMELF) — viz jeho záznam pro plné mechanické specifikace',
+    value: 'Spínací dioda, IFAV 150 mA, VRRM 100 V, VF 0,62–0,72V @IF=5mA',
+    notes:
+      'Diotec "LL4148, LL4150, LL4151, LL4448" — součást rodiny, viz záznam "LL4148" v této ' +
+      'knihovně pro plné společné mechanické specifikace a kontext. SMD ekvivalent 1N4448 ' +
+      '(DO-35) — přesnější (těsnější) definice propustného napětí VF (0,62-0,72V @5mA) než ' +
+      'LL4148, jinak shodné mezní hodnoty (IFRM 500mA, IFSM 2000mA), IR<25nA @20V/25°C ' +
+      '(<50µA @150°C), <5µA @75V/25°C.',
+    tags: 'dioda,spínací,signálová,smd,minimelf,sod-80c,diotec,ll4448,1n4448-ekvivalent',
+  },
 ];
 
 const BRIDGE_SPECS: PartSpec[] = [
