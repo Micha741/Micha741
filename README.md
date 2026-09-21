@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    810 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    819 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220; tenkovrstvá
@@ -176,14 +176,16 @@ i návrh schémat obvodů a plošných spojů.
     elektromagnetických ventilů TORK T-SB1/T-SB2 (230/24/12 V AC/DC, IP65), profesionální
     flexibilní indukční ohřevová cívka Schaeffler MF-INDUCTOR (3,5-44 kW, 28 rozměrových
     variant) a flexibilní Rogowského proudové cívky Schneider Electric CTRx (METSECTR30500U až
-    90500U, 2-5 kA, třída přesnosti 1-A1)) a 21
+    90500U, 2-5 kA, třída přesnosti 1-A1)) a 30
     spínačů/relé (tlačítkové mikrospínače, páčkové a posuvné přepínače, mikrospínač, DIP
     spínače, rotační enkodér EC11, otočný přepínač, výkonové elektromagnetické relé Tianbo
     TRA1, 4dílná rodina PCB výkonových relé Omron G5LE — SPDT/SPST-NO, flux/fully sealed,
     10A/250VAC; bezpečnostní koncové spínače Turck SI-LS100F a SI-LS42DSH (se zámkem, PL e/SIL 3
     dle ISO 13849-1/IEC 61508); vakuový/tlakový spínač Festo VPEV-1/8-M12; bezkontaktní
-    jazýčkový (reed) spínač Erich Jäger 031828 dle ISO 11446; a panelový klíčový přepínač
-    Schrack/Eaton M22-WS). Tlačítkem „Knihovna”
+    jazýčkový (reed) spínač Erich Jäger 031828 dle ISO 11446; panelový klíčový přepínač
+    Schrack/Eaton M22-WS; a 9dílný souhrn katalogové řady relé Schrack Technik — paticová PT/
+    RS5/MU/RMX, interfaceová RXT, výkonová PCB RT/RPS, set SNR a bezpečnostní relé s nuceně
+    vedenými kontakty SR2/SR4/SR6 dle EN 50205). Tlačítkem „Knihovna”
     v horní liště lze kdykoli doplnit chybějící položky (např. po smazání), aniž
     by se duplikovaly už existující.
 

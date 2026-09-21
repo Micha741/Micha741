@@ -302,6 +302,185 @@ const RELAY_SPECS: RelaySpec[] = [
       'používání < 100 cyklů. Montážní poloha libovolná.',
     tags: 'spínač,klíčový,panelový,m22,m22-ws,schrack,eaton,mm216881,ip66',
   },
+  {
+    name: 'Schrack PT (paticové relé)',
+    packageType:
+      'paticové (plug-in) elektromagnetické relé, instalační výška 29 mm, THT vývody (pájecí ' +
+      'nebo zásuvné), k dostání i s LED indikací a/nebo pozlacenými kontakty; patice na DIN ' +
+      'lištu nebo do plošného spoje (8/11/14 pin dle počtu pólů)',
+    value:
+      'Elektromagnetické relé, 2-pólové 12 A, 3-pólové 10 A nebo 4-pólové 6 A (přepínací ' +
+      'kontakty), cívka AC nebo DC 6...230 V, do 3000 VA spínaného výkonu',
+    notes:
+      'Schrack Technik katalog "Relé" (k-relaycz3.pdf) — řada PT, str. 6–11. ⚠️ SOUHRNNÝ ' +
+      'KATALOGOVÝ ZÁZNAM: tento katalog pokrývá celou produktovou řadu Schrack relé (paticová, ' +
+      'interfaceová, výkonová i bezpečnostní), tento záznam reprezentuje řadu PT jako celek — ' +
+      'desítky konkrétních objednacích kódů dle napětí cívky/počtu pólů/provedení (např. ' +
+      'PT570024 = 4P/24VDC, PT570730 = 4P/230VAC, PT270024 = 2P/24VDC, PT370730 = 3P/230VAC), ' +
+      'viz katalog pro úplný přehled. Materiál kontaktů AgNi 90/10 (neobsahuje kadmium), zkušební ' +
+      'tlačítko chráněné proti dotyku s volitelnou aretací, mechanický a elektrický ukazatel ' +
+      'provozního stavu. Cívka 6-230V DC nebo 6-230V AC (50Hz), jmenovitý výkon cívky 750mW DC / ' +
+      '1,0VA AC. Dielektrická pevnost cívka/kontakty 2500Veff, mezi rozpojenými kontakty ' +
+      '1200Veff. Okolní teplota -40 až +70/80°C dle provedení. Dostupné příslušenství: ochranné a ' +
+      'LED moduly, popisné štítky, upevňovací spony, propojovací můstky.',
+    tags: 'relé,elektromagnetické,paticové,schrack,pt,pt2,pt3,pt5,din-lišta',
+  },
+  {
+    name: 'Schrack RS5 (paticové S-relé)',
+    packageType:
+      'miniaturní paticové (plug-in) elektromagnetické relé, THT vývody, 14pinová patice na ' +
+      'DIN lištu (šroubové nebo bezšroubové svorky)',
+    value:
+      'Elektromagnetické relé, 4-pólové (4CO), 6 A, cívka AC nebo DC 24/230 V, spínaný výkon ' +
+      '1500 VA/180 W',
+    notes:
+      'Schrack Technik katalog "Relé" (k-relaycz3.pdf) — řada RS5, str. 12–17. ⚠️ SOUHRNNÝ ' +
+      'KATALOGOVÝ ZÁZNAM (viz poznámka u "Schrack PT" pro kontext katalogu jako celku) — ' +
+      'miniaturní průmyslové relé menší než řada PT, materiál kontaktů AgNi neobsahuje kadmium. ' +
+      'Konkrétní kódy: RS500024 (24VDC), RS500524 (24VAC), RS500730 (230VAC). Odpor kontaktů ' +
+      '≤50mΩ, elektrická životnost ≥10⁵ sepnutí (1800/h), mechanická životnost ≥10⁷ sepnutí ' +
+      '(18000/h). Izolační napětí ≥1000MΩ (500VDC), spotřeba cívky ~0,9W DC / ~1,2VA AC, doba ' +
+      'rozběhu/návratu ≤20ms. Okolní teplota -55 až +70°C, odolnost rázům 10G, vibracím 10-55Hz. ' +
+      'Hmotnost relé ~35g. Dostupné moduly do patice: ochranná dioda (YRS13250), LED+dioda ' +
+      '(YRS12024), LED (YRS11524/YRS11730), RC člen (YRS14524/YRS14730).',
+    tags: 'relé,elektromagnetické,paticové,schrack,rs5,din-lišta',
+  },
+  {
+    name: 'Schrack RXT (interfaceové S-relé)',
+    packageType:
+      'tenké kompaktní paticové relé s manuálním ovládáním, testovacím tlačítkem a kontrolním ' +
+      'okénkem; patice na DIN lištu (šroubové nebo bezšroubové svorky, 5mm rozteč)',
+    value:
+      'Elektromagnetické interfaceové relé, 1-pólové 10 A nebo 2-pólové 5 A (přepínací ' +
+      'kontakty), cívka AC nebo DC, identifikace napětí barvou tlačítka (AC červená/DC modrá)',
+    notes:
+      'Schrack Technik katalog "Relé" (k-relaycz3.pdf) — řada RXT, str. 18–23. ⚠️ SOUHRNNÝ ' +
+      'KATALOGOVÝ ZÁZNAM (viz poznámka u "Schrack PT"). Určeno pro rozhraní PLC/řídicích systémů ' +
+      '(galvanické oddělení signálu). Kódy patic: YRXT1010 (1P šroubová, 16A), YRXT1110 ' +
+      '(1P bezšroubová), YRXT2010 (2P šroubová, 10A), YRXT2110 (2P bezšroubová). Materiál ' +
+      'kontaktů slitina stříbra, odpor ≤50mΩ, elektrická životnost ≥10⁵ sepnutí (1800/h), ' +
+      'mechanická ≥10⁷ sepnutí (1800/h). Spínaný výkon 1P: 3000VA/360W; 2P: 2000VA/240W. Cívka ' +
+      '12/24V DC nebo 24/230V AC (odpor cívky např. 24VDC=1100Ω, 230VAC=23000Ω). Izolační napětí ' +
+      '≥1000MΩ. Okolní teplota -40 až +55°C.',
+    tags: 'relé,elektromagnetické,interfaceové,paticové,schrack,rxt,din-lišta',
+  },
+  {
+    name: 'Schrack MU (paticové S-relé)',
+    packageType:
+      'kulaté (octal) paticové relé s manuálním ovládáním, testovacím tlačítkem a kontrolním ' +
+      'okénkem, THT vývody; 8pinová (MU2) nebo 11pinová (MU3) patice na DIN lištu se ' +
+      'šroubovými svorkami',
+    value:
+      'Elektromagnetické relé, 2-pólové nebo 3-pólové (přepínací kontakty), 10 A, cívka AC nebo ' +
+      'DC 12...230 V, spínaný výkon 2500 VA/300 W',
+    notes:
+      'Schrack Technik katalog "Relé" (k-relaycz3.pdf) — řada MU, str. 24–27. ⚠️ SOUHRNNÝ ' +
+      'KATALOGOVÝ ZÁZNAM (viz poznámka u "Schrack PT"). Desítky konkrétních kódů dle napětí ' +
+      'cívky/počtu pólů/provedení (např. MU321024 = 3P/24VDC, MU326230 = 3P/230VAC, i verze s ' +
+      'LED "MU323xxx"/"MU328xxx" a pozlacenými kontakty "Au"). Materiál kontaktů slitina stříbra, ' +
+      'odpor ≤50mΩ, elektrická životnost ≥10⁵ sepnutí (1800/h), mechanická ≥10⁷ sepnutí (1800/h). ' +
+      'Spotřeba cívky ~1,5W DC / ~2,7VA AC, doba rozběhu ≤30ms, návratu ≤20ms. Izolační napětí ' +
+      '≥100MΩ (500VDC). Okolní teplota -10 až +55°C. Hmotnost ~85g. Svorky patice zabraňují ' +
+      'nesprávnému zasunutí relé.',
+    tags: 'relé,elektromagnetické,paticové,schrack,mu,mu2,mu3,din-lišta',
+  },
+  {
+    name: 'Schrack RMX (paticové S-relé)',
+    packageType:
+      'paticové relé s manuálním ovládáním, testovacím tlačítkem a kontrolním okénkem, THT ' +
+      'vývody; 11pinová patice na DIN lištu se šroubovými svorkami',
+    value:
+      'Elektromagnetické relé, 3-pólové (3 přepínací kontakty), 16 A, cívka AC nebo DC ' +
+      '12...400 V, spínaný výkon 6400 VA/480 W (odporová zátěž)',
+    notes:
+      'Schrack Technik katalog "Relé" (k-relaycz3.pdf) — řada RMX, str. 28–31. ⚠️ SOUHRNNÝ ' +
+      'KATALOGOVÝ ZÁZNAM (viz poznámka u "Schrack PT"). Výkonnější nástupce řady MU (16A vs. ' +
+      '10A). Konkrétní kódy: RMX72012 (12VDC), RMX72024 (24VDC), RMX72060 (60VDC), RMX72524 ' +
+      '(24VAC), RMX72730 (230VAC), RMX72900 (400VAC). Motorová zátěž 1/2P S/1PS 120-240VAC. ' +
+      'Materiál kontaktů slitina stříbra, odpor ≤50mΩ, elektrická životnost ≥10⁵ sepnutí (1800/h), ' +
+      'mechanická ≥10⁷ sepnutí (1800/h). Spotřeba cívky ~1,7W DC / ~2,5VA AC. Izolační napětí ' +
+      '≥100MΩ (500VDC). Okolní teplota -40 až +55°C. Hmotnost ~90g. Patice YRMX78705: 25A/500V.',
+    tags: 'relé,elektromagnetické,paticové,výkonové,schrack,rmx,din-lišta',
+  },
+  {
+    name: 'Schrack RT (výkonové PCB relé)',
+    packageType:
+      'THT výkonové PCB relé, nízká instalační výška 15,7 mm, třída ochrany II (VDE 0700), ' +
+      'bezpečné oddělení dle VDE 0160 ve spojení s paticí; k dispozici i patice na DIN lištu',
+    value:
+      'Elektromagnetické relé — RT1: 1-pólové (1 přepínací kontakt) 12 A nebo 16 A; RT2: ' +
+      '2-pólové (2 přepínací kontakty) 8 A; cívka AC nebo DC 5...230 V, nízká spotřeba ' +
+      '400mW/0,75VA',
+    notes:
+      'Schrack Technik katalog "Relé" (k-relaycz3.pdf) — řada RT, str. 32–37. ⚠️ SOUHRNNÝ ' +
+      'KATALOGOVÝ ZÁZNAM (viz poznámka u "Schrack PT"). Určeno pro přímou montáž do DPS ' +
+      '(řízení kotlů, garážových vrat, prodejních automatů u RT1; domácí spotřebiče, řízení ' +
+      'topení, nouzové osvětlení, modemy u RT2). K dodání i s tvrdě zlacenými kontakty. ' +
+      'Materiál kontaktů AgNi 90/10 (i tvrdě zlacené AgNi 90/10 htv). RT1: mezní trvalý proud ' +
+      '12A nebo 16A (UL 20A), max. spínací výkon AC 3000/4000VA, zapínací proud 25/30A. RT2: ' +
+      'mezní proud 8A (UL 10A), max. výkon 2000VA. Izolační systém cívky třída F dle UL1446, ' +
+      '5kV/10mm izolace cívka-kontakty. Cívka DC 5-110V (400mW) nebo AC 24-230V (0,74VA).',
+    tags: 'relé,elektromagnetické,výkonové,pcb,schrack,rt,rt1,rt2',
+  },
+  {
+    name: 'Schrack RPS (výkonové PCB set relé)',
+    packageType:
+      'THT set relé + patice, nízká instalační výška 15,7 mm, v souladu s VDE 0700; patice ' +
+      'YRTS0626/RT78725/RT7872P',
+    value:
+      'Elektromagnetické relé, 2-pólové (2 přepínací kontakty), 8 A, cívka AC nebo DC, 5kV/10mm ' +
+      'izolace cívka-kontakty',
+    notes:
+      'Schrack Technik katalog "Relé" (k-relaycz3.pdf) — řada RPS, str. 38–39. ⚠️ SOUHRNNÝ ' +
+      'KATALOGOVÝ ZÁZNAM (viz poznámka u "Schrack PT") — set relé+patice+spona+štítek, ' +
+      'určeno pro domácí spotřebiče, řízení topení, nouzové osvětlení, modemy. Konkrétní kódy: ' +
+      'RPS42024 (24VDC), RPS42524 (24VAC), RPS42730 (230VAC). Jmenovitý proud 8A/250VAC, max. ' +
+      'spínací napětí 440VAC/300VDC, max. spínací výkon 2000VA. Odpor kontaktů ≤100mΩ, materiál ' +
+      'AgNi, elektrická životnost ≥10⁴ sepnutí, mechanická ≥10⁷ sepnutí. Přepětí (cívka-kontakty) ' +
+      '10kV (1,2/50µs). Okolní teplota -40 až +85°C. Hmotnost relé ~13,5g.',
+    tags: 'relé,elektromagnetické,výkonové,pcb,set,schrack,rps',
+  },
+  {
+    name: 'Schrack SNR (set relé s paticí)',
+    packageType:
+      'kompaktní set relé + patice na DIN lištu, šířka modulu jen 6,2 mm, THT vývody, ' +
+      'šroubové nebo bezšroubové svorky, ochranná dioda, stupeň krytí patice IP20',
+    value:
+      'Elektromagnetické relé, 1-pólové (1 přepínací kontakt), 6 A, cívka DC 12/24 V nebo ' +
+      'AC/DC 115/230 V',
+    notes:
+      'Schrack Technik katalog "Relé" (k-relaycz3.pdf) — řada SNR, str. 40–41. ⚠️ SOUHRNNÝ ' +
+      'KATALOGOVÝ ZÁZNAM (viz poznámka u "Schrack PT") — malá stavební šířka umožňuje vysokou ' +
+      'hustotu montáže na DIN lištu. Konkrétní kódy: ST3P3LB2 (12VDC), ST3P3LC4 (24VDC), ' +
+      'ST3P2LC4 (24VDC, pozlacené), ST3P3TP0 (230V AC/DC) — všechny s LED indikací. Materiál ' +
+      'kontaktů AgSnO₂/AgSnO₂ htv, max. spínací výkon 1500VA, zapínací schopnost 10A/20ms. ' +
+      'Příkon cívky 12VDC=184mW, 24VDC=220mW, 115VAC=403mVA, 230VAC=736mVA. Okolní teplota -40 ' +
+      'až +55°C. Odpovídá směrnici RoHS 2002/95/EC.',
+    tags: 'relé,elektromagnetické,set,din-lišta,schrack,snr',
+  },
+  {
+    name: 'Schrack SR (bezpečnostní relé s nuceně vedenými kontakty)',
+    packageType:
+      'THT relé pro montáž do DPS, zesílená izolace mezi kontakty/póly dle EN 50205; SR2 ' +
+      'kompaktní, SR4 a SR6 na místo úsporné provedení',
+    value:
+      'Bezpečnostní relé s nuceně (mechanicky) vedenými kontakty (force-guided) — SR2: ' +
+      '2-pólové 6 A (2 přepínací); SR4: 4-pólové 8 A (2 zapínací+2 rozpínací nebo 3+1); SR6: ' +
+      '6-pólové 8 A (4 zapínací+2 rozpínací); cívka 24 V DC',
+    notes:
+      'Schrack Technik katalog "Relé" (k-relaycz3.pdf) — řada SR ("Relé s nuceně vedenými ' +
+      'kontakty — bezpečnostní"), str. 63–66 (verze do plošného spoje; existuje i verze na DIN ' +
+      'lištu, str. 67–69, mimo rozsah tohoto záznamu). ⚠️ SOUHRNNÝ KATALOGOVÝ ZÁZNAM (viz ' +
+      'poznámka u "Schrack PT"). NOVÁ SUB-KATEGORIE: první relé s nuceně vedenými (force-guided) ' +
+      'kontakty v knihovně — mechanická konstrukce zaručuje, že se zapínací a rozpínací kontakty ' +
+      'nemohou sepnout současně ani při svaření kontaktu, používá se v bezpečnostních obvodech ' +
+      '(nouzové vypínání strojů, řízení výtahů a pojízdných schodů). Odpovídá EN 50205. ' +
+      'Konkrétní kódy: SR2Y5024 (SR2, 24VDC), SR4D4024/SR4M4024 (SR4, 24VDC), SR6B4024 (SR6, ' +
+      '24VDC). Materiál kontaktů SR2 AgNi, SR4/SR6 AgSnO₂. Dielektrická pevnost kontakt-cívka ' +
+      '1500-4000Veff dle typu, zesílená izolace mezi sousedními kontakty. Mechanická životnost ' +
+      '10×10⁶ cyklů. Okolní teplota -25 až +70°C.',
+    tags: 'relé,bezpečnostní,nuceně-vedené-kontakty,force-guided,schrack,sr,sr2,sr4,sr6,en-50205',
+  },
 ];
 
 export function buildRelaySeed(): ComponentInput[] {
