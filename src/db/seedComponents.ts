@@ -2927,6 +2927,65 @@ const DIODE_SPECS: PartSpec[] = [
       'VRSM 1000V.',
     tags: 'dioda,usměrňovací,standardní-zotavení,smd,sma,do-214ac,diotec,m7,1000v,síťové-usměrnění',
   },
+  {
+    name: 'BAV99',
+    packageType:
+      'SMD SOT-23 (TO-236), 3 vývody: 1=anoda D1, 2=anoda D2, 3=společná katoda, rozměry cca ' +
+      '2,9×1,3×1,1mm, pásková balení 3000ks/7", hmotnost ~0,01g',
+    value:
+      'Duální (2×) spínací SMD dioda se společnou katodou v jednom pouzdře, IFAV 215 mA/dioda, ' +
+      'VRRM 85 V, VF<855mV @IF=10mA, doba zotavení trr<4ns',
+    notes:
+      'Diotec Semiconductor "BAV99, BAV99L, BAV199 — SMD Small Signal Diodes" (verze ' +
+      '2025-11-18). ⚠️ NOVÝ TYP součástky v této knihovně: první DUÁLNÍ (2 diody v jednom ' +
+      'SOT-23 pouzdře) small-signal dioda — na rozdíl od jednotlivých THT/SMD spínacích diod ' +
+      '(1N4148, LL4148/LL4448 aj. v této knihovně) integruje 2 diody se společnou katodou (pin ' +
+      '3) v úsporném 3pinovém SOT-23 pouzdru — typicky pro logické hradlování/ochranu vstupů, ' +
+      'sériové/paralelní kombinace v jednom pouzdře úsporném na místo na DPS. Objednací ' +
+      'varianty: BAV99-C (commercial grade, VRRM 70V), BAV99/-Q/-AQ (industrial/automotive ' +
+      'grade, VRRM 85V, nejvyšší rychlost přepínání ze skupiny) — viz sourozenecké záznamy ' +
+      '"BAV99L" (100V verze) a "BAV199" (extrémně nízký svodový proud) pro odlišné varianty ve ' +
+      'stejném pouzdře/pinoutu. Max. ztrátový výkon Ptot 225mW (BAV99-C) / 350mW (BAV99/-Q/-AQ, ' +
+      'na 3mm² Cu plošky). Max. trvalý proud IFAV 215mA (zatížena jen jedna dioda) / 125mA ' +
+      '(zatíženy obě diody současně). Periodický špičkový proud IFRM 300mA. Nárazový proud ' +
+      'IFSM 0,5A (tp≤1s) / 1A (tp≤1ms) / 2A (tp≤1µs). VF (BAV99/-Q/-AQ, TJ=25°C): <715mV @1mA, ' +
+      '<855mV @10mA, <1,0V @50mA, <1,25V @150mA. Závěrný proud IR<30nA @VR=70V/25°C (<30µA ' +
+      '@150°C). Kapacita přechodu Cj<2pF @VR=0V/1MHz. Tepelný odpor přechod-okolí RthA 357K/W ' +
+      '(BAV99/-Q/-AQ, na 3mm² Cu plošky). TJ a Tstg -55 až +150°C. Pouzdro UL94V-0, pájecí ' +
+      'podmínky 260°C/10s, MSL=1. Shoda s RoHS (bez výjimky), REACH, Conflict Minerals, ' +
+      'bezolovnatá/bezhalogenová konstrukce.',
+    tags: 'dioda,spínací,signálová,duální,smd,sot-23,diotec,bav99,společná-katoda',
+  },
+  {
+    name: 'BAV99L',
+    packageType: 'shodné s BAV99 (SOT-23) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      'Duální spínací SMD dioda se společnou katodou, IFAV 215 mA/dioda, VRRM 100 V, ' +
+      'VF<855mV @IF=10mA, trr<4ns',
+    notes:
+      'Diotec "BAV99, BAV99L, BAV199" — součást rodiny, viz záznam "BAV99" v této knihovně pro ' +
+      'plné společné mechanické specifikace a kontext. Vyšší napěťová varianta (VRRM 100V vs. ' +
+      '85V u BAV99), jinak elektricky shodná s BAV99/-Q/-AQ (stejné VF, trr, Ptot, RthA). Pouze ' +
+      've variantě -AQ (AEC-Q101 qualified).',
+    tags: 'dioda,spínací,signálová,duální,smd,sot-23,diotec,bav99l,společná-katoda,100v',
+  },
+  {
+    name: 'BAV199',
+    packageType: 'shodné s BAV99 (SOT-23) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      'Duální spínací SMD dioda se společnou katodou, extrémně nízký svodový proud, IFAV 215 ' +
+      'mA/dioda, VRRM 85 V, VF<1,0V @IF=10mA, trr<3000ns',
+    notes:
+      'Diotec "BAV99, BAV99L, BAV199" — součást rodiny, viz záznam "BAV99" v této knihovně pro ' +
+      'plné společné mechanické specifikace a kontext. ⚠️ Na rozdíl od BAV99 (optimalizováno ' +
+      'na rychlost přepínání, trr<4ns) je BAV199 optimalizováno na EXTRÉMNĚ NÍZKÝ SVODOVÝ ' +
+      '(leakage) PROUD — IR<5nA @VR=75V/25°C (<80nA @150°C), řádově nižší než u BAV99/BAV99L ' +
+      '— za cenu výrazně pomalejší doby zotavení (trr<3000ns, cca 750× pomalejší než BAV99). ' +
+      'Vhodné pro aplikace citlivé na svodový proud (např. vzorkovací obvody, vysokoimpedanční ' +
+      'senzorové rozhraní), ne pro vysokorychlostní spínání. VF<900mV @1mA/<1,0V @10mA/<1,1V ' +
+      '@50mA/<1,25V @150mA. Kapacita přechodu Cj typ. 2pF. Pouze ve variantách -Q/-AQ.',
+    tags: 'dioda,spínací,signálová,duální,smd,sot-23,diotec,bav199,společná-katoda,nízký-svodový-proud',
+  },
 ];
 
 const BRIDGE_SPECS: PartSpec[] = [

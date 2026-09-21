@@ -13,7 +13,7 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    914 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    917 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
     RT1206; laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220; tenkovrstvá
@@ -25,7 +25,7 @@ i návrh schémat obvodů a plošných spojů.
     disková řada Illinois Capacitor GMR/GQR; NP0 disk Meritek CCNPO101J50V5B1; fóliová IGBT
     snubber řada Cornell Dubilier SCD; radiální tantalový kondenzátor RCD Components
     TRA10-103; vysokonapěťová 1250V fóliová řada Okaya HCPB; a širší vysokonapěťová fóliová řada
-    Okaya HCP-S (450-1250V)), 226 diod
+    Okaya HCP-S (450-1250V)), 229 diod
     (usměrňovací (včetně vysokonapěťové řady Diotec GP1120–GP1600, DO-41, 1200–6000V), spínací,
     Schottky (včetně extrémně malé 30V onsemi NSR01L30MX, pouzdro X3DFN2 0,62×0,32mm),
     Zenerovy (včetně SMD řady EIC SMZ25, SOD-123FL,
@@ -50,7 +50,9 @@ i návrh schémat obvodů a plošných spojů.
     LL4448 (150-300mA, 50-100V, SOD-80C, elektrický ekvivalent 1N4148/1N4448 v DO-35); a SMD
     čipové (chip) diody DC Components CD4148W/CD4148WS/CD4148WT (1206/0805/0603, 100V/150mA,
     další ekvivalent 1N4148); a 7dílná řada SMD usměrňovacích diod se standardní dobou
-    zotavení Diotec M1-M7 (50-1000V, 1A, SMA/DO-214AC, budget verze řady S1A-S1M)), 19 můstků
+    zotavení Diotec M1-M7 (50-1000V, 1A, SMA/DO-214AC, budget verze řady S1A-S1M); a duální
+    (2 diody, společná katoda) SOT-23 diody Diotec BAV99/BAV99L (rychlé přepínání, trr<4ns,
+    85/100V) a BAV199 (extrémně nízký svodový proud, IR<5nA)), 19 můstků
     (SMD jednofázové usměrňovací můstky Diotec ABS2/ABS4/ABS6/ABS8/ABS10/ABS10-16, 200-1600V,
     pouzdro ABS; Diotec S40/S80/S125/S250/S380/S500, 80-1000V, pouzdro TO-269AA MiniDIL SLIM;
     a Fairchild/onsemi DF005S/DF01S/DF02S/DF04S/DF06S/DF08S/DF10S, 50-1000V/1,5A, pouzdro SDIP
