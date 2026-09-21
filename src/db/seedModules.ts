@@ -4246,6 +4246,30 @@ const MODULE_SPECS: ModuleSpec[] = [
       'domácí spotřebiče, zabezpečovací/poplašné systémy.',
     tags: 'modul,rf,přijímač,ask,ook,ism,hoperf,rfm210lcf,cob,315mhz,433mhz',
   },
+  {
+    name: 'TX-SAW 434 L',
+    packageType:
+      'THT modul, drátové vývody (rozteč 2,54mm), rozměry 38,1×11×3mm, 7 vývodů: 1=GND, ' +
+      '2/3=Input modulation, 4=GND, 11=RF out, 13=GND, 15=+Vcc',
+    value:
+      'SAW oscilátorový ASK vysílač, nosná frekvence 433,83–434 MHz, napájení 1,8–12 V ' +
+      '(interně regulováno), RF výstupní výkon 9–12 dBm (@3-12V) nebo 6–10 dBm (@1,8-3V)',
+    notes:
+      'AUREL S.p.A. "TX-SAW 434 L" (P.N. 650201409G, dok. rev. A, 15.10.2016). ⚠️ NOVÝ VÝROBCE ' +
+      'RF modulů v této knihovně (italský AUREL, vedle čínského HOPERF — viz jeho RFM01/ ' +
+      'RFM210LCF-S1 záznamy) — na rozdíl od nich jde o THT modul s drátovými vývody (ne SMD/ ' +
+      'COB) a interně regulovaným napájením pro široký rozsah vstupního napětí 1,8-12V (vhodné ' +
+      'přímo z baterie 9V nebo 12V bez externí regulace, na rozdíl od HOPERF modulů ' +
+      'vyžadujících externí regulátor pro vyšší napětí). Náhrada za zastaralý model ' +
+      'TX-SAW-433/s-Z. K dispozici i 3V verze TX-SAW-L-3V (P.N. 650201410G). Klidový (stand-by) ' +
+      'proud typ. 0,1µA/max 1µA — extrémně nízký díky vypnutému oscilátoru mimo vysílání. ' +
+      'Proud při vysílání (TX) typ. 15mA (měřeno s obdélníkovým datovým signálem na vstupu). ' +
+      'RF spurious emise do 4GHz max -40dBm. Modulační kmitočet (obdélníkový signál) do 10kHz. ' +
+      'Úroveň vysoké logické úrovně na datovém vstupu (pin 15): 2,5-3V @napájení 3-12V nebo ' +
+      'až +Vcc @napájení 1,8-3V. Doba přepnutí stand-by→TX max 50µs. Provozní teplota -20 až ' +
+      '+70°C.',
+    tags: 'modul,rf,vysílač,saw,ask,aurel,tx-saw-434-l,tht,433mhz,regulovaný',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
