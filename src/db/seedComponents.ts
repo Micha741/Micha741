@@ -4054,6 +4054,39 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,mosfet,n-kanál,to-220,irf3205,spínací,pozor-proud',
   },
   { name: '2N7000', packageType: 'TO-92', value: 'N-MOSFET, 60 V, 200 mA', notes: 'Malovýkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál' },
+  {
+    name: 'BSS138PS',
+    packageType:
+      'SMD plastové pouzdro SOT363 (SC-88), 6 vývodů, rozteč e1=1,3 mm — piny zkříženě: ' +
+      '1=S1, 2=G1, 3=D2, 4=S2, 5=G2, 6=D1 (dva nezávislé tranzistory, NE v jednoduchém pořadí ' +
+      '1-2-3=tranzistor1)',
+    value:
+      'Duální N-MOSFET (2× nezávislý tranzistor v jednom pouzdře), logic-level, VDS 60 V, ' +
+      'VGS ±20 V, ID 320 mA/tranzistor (@Tamb=25 °C), RDS(on) max 1,6 Ω (@VGS=10 V/ID=300 mA)',
+    notes:
+      'Nexperia "BSS138PS — 60 V, 320 mA dual N-channel Trench MOSFET" (dok. Rev.1, 2.11.2010) — ' +
+      '⚠️ NOVÝ TYP součástky v této knihovně: první DUÁLNÍ MOSFET (dvě nezávislé N-MOSFET struktury ' +
+      'v jednom pouzdře) — na rozdíl od jednotlivých MOSFETů jako 2N7000/IRFZ44N výše obsahuje ' +
+      'BSS138PS dva samostatné tranzistory s vlastním gate/drain/source, ale sdíleným pouzdrem ' +
+      'SOT363 (6 vývodů), což šetří místo na DPS. Elektricky příbuzný velmi rozšířenému jednoduchému ' +
+      'N-MOSFETu BSS138 (stejná Trench technologie/čip) — ten je oblíbený jako obousměrný I2C/' +
+      'logický level-shifter (5V↔3,3V); BSS138PS nabízí rovnou dva takové tranzistory pohromadě. ' +
+      'Logic-level kompatibilní (plně sepnutý i při VGS=5 V — RDS(on) max 2 Ω/typ 1 Ω @VGS=5V/' +
+      'ID=50mA), velmi rychlé spínání, AEC-Q101 kvalifikovaný pro automotive. ' +
+      'Mezní hodnoty na tranzistor: VDS max 60 V, VGS max ±20 V, ID max 320 mA (@Tamb=25 °C, ' +
+      'standardní footprint; 200 mA @100 °C), IDM (pulzní, 10 µs) max 1,2 A. ' +
+      'Ztrátový výkon: 280 mW/tranzistor (standardní footprint) až 320 mW (plocha pro drain 1 cm²), ' +
+      '420 mW na celé pouzdro (oba tranzistory). Tj max 150 °C, Tamb -55 až +150 °C. ' +
+      'VGS(th) (práh sepnutí) 0,9–1,5 V (typ 1,2 V) @ID=250 µA. ' +
+      'RDS(on) typ 0,9 Ω/max 1,6 Ω @VGS=10V/ID=300mA (typ 1 Ω/max 2 Ω @VGS=5V/ID=50mA). ' +
+      'IDSS (unikání) max 1 µA @VDS=60V/VGS=0V/Tj=25°C (max 10 µA @Tj=150°C). ' +
+      'Vlastní zpětná source-drain dioda: VSD typ 0,75 V (max 1,1 V) @IS=115 mA. ' +
+      'Aplikace dle výrobce: relé driver, vysokorychlostní line driver, low-side load switch, ' +
+      'obecné spínací obvody.',
+    tags:
+      'tranzistor,mosfet,n-kanál,duální,logic-level,nexperia,bss138ps,bss138,sot363,sc-88,' +
+      'trench,level-shifter',
+  },
 
   {
     name: 'IRF9540',
