@@ -5335,6 +5335,49 @@ const RESISTOR_SPECS: PartSpec[] = [
     tags: 'rezistor,smd,1206,precision,tenkovrstvý,thin-film,yageo,phicomp,rt-series',
   },
   {
+    name: 'ROYALOHM Thick Film Chip Resistor',
+    packageType:
+      'SMD tlustovrstvý (thick film) čipový rezistor, standardní velikosti 0201(0603 metric)/' +
+      '0402(1005)/0603(1608)/0805(2012)/1206(3216)/1210(3225)/1812/2010(5025)/2512(6432) + ' +
+      'širokoterminálové varianty 0508/0612/1020/1218/1225; terminace Sn (vnější)/Ni bariéra ' +
+      '(střední)/Ag (vnitřní) na vysocečisté alumina keramice, bezolovnaté (RoHS), MSL1',
+    value:
+      'Obecná řada 5% (i 1/2%) tlustovrstvých SMD rezistorů, E-24/E-96, 0,1 Ω–10 MΩ (dle ' +
+      'velikosti), výkon 1/20 W (0201) až 1 W (2512), provozní teplota -55 až +155 °C',
+    notes:
+      'ROYALOHM (UNI-ROYAL Group) "Thick Film Chip Resistors" — katalogový datasheet celé řady ' +
+      '(www.royalohm.com). ⚠️ NOVÝ TYP v této knihovně: první OBECNÁ (generic-purpose) SMD ' +
+      'tlustovrstvá čipová řada — na rozdíl od precizní tenkovrstvé Yageo RT-series (viz záznam ' +
+      'výše) jde o běžné 5% (příp. 1/2%) rezistory pro obecné použití, a na rozdíl od THT E12 ' +
+      'řady (0,25 W, drátové vývody) v této knihovně jde o SMD čipové provedení v celé škále ' +
+      'standardních velikostí — pravděpodobně nejběžnější typ rezistoru v moderních DPS. ' +
+      'Objednací kód dekódován dle výrobce, např. "1206S4J0100T5E" = 1206 (velikost) S4 (výkon ' +
+      '1/4W-S) J (tolerance ±5%) 0100 (odporová hodnota, E-24: 1.–3. číslice=platné číslice, ' +
+      '4.=počet nul → 010×10⁰=10Ω) T (páska/cívka) 5 (5000 ks/cívka) E (bezolovnaté, RoHS). ' +
+      'U E-96 kódu (tolerance ±1%) mají 1.–3. číslice význam platných číslic přímo, 4. číslice ' +
+      'počet nul (písmena J/K/L nahrazují desetinnou čárku pro hodnoty <100: "012J"=1,2Ω, ' +
+      '"226K"=22,6Ω). Tolerance: D=±0,5%, F=±1%, G=±2%, J=±5%. ' +
+      '⚠️ Historie výkonových tříd (viz doprovodný dopis výrobce "Part No Explanation", ' +
+      'aktualizace 14.9.2022): do r. 2000 měl každý rozměr pouzdra jednu pevnou výkonovou třídu ' +
+      '(0402=1/16W, 0603=1/16W, 0805=1/10W, 1206=1/8W, 1210=1/4W, 2010=1/2W, 2512=1W); od r. 2000 ' +
+      'byly výkonové třídy navýšeny (0603→1/10W, 0805→1/8W, 1206→1/4W, 1210→1/2W, 2010→3/4W), ' +
+      'přičemž nové/vyšší výkonové značení nese příponu "-S" (resp. u 1210 "-SS") — starší i ' +
+      'novější díly jsou elektricky/výrobně TOTOŽNÉ (stejný čip, jen jiné objednací značení kvůli ' +
+      'historické kontinuitě se staršími zákaznickými schváleními), 0402 a 2512 zůstaly beze ' +
+      'změny výkonu. Aktuální (navýšené) výkonové třídy dle velikosti: 0201=1/20W, 0402=1/16W, ' +
+      '0603=1/10W-S/1/16W, 0805=1/8W-S/1/10W, 1206=1/4W-S/1/8W, 1210=1/2W-SS/1/3W-S/1/4W, ' +
+      '1812=1/2W/3/4W-S, 2010=3/4W-S/1/2W, 2512=1W. Max. pracovní napětí/proud dle velikosti: ' +
+      '0201 25V/0,5A, 0402 50V/1A, 0603 75V/1A, 0805 150V/2A, 1206 200V/2A, 1210 200V/2A, ' +
+      '1812 200V/2A, 2010 200V/2A, 2512 200V/2A (max. přetížitelné 2–10A dle velikosti). ' +
+      'Dielektrická pevnost 100–500V dle velikosti (0402 100V, 0603 300V, 0805+ 500V). Teplotní ' +
+      'koeficient (TCR): 0Ω1–0Ω99 ±800ppm/°C, 1Ω–10Ω ±400ppm/°C, 10,1Ω–100Ω ±200ppm/°C, >100Ω ' +
+      '±100ppm/°C (u 0201: >100Ω ±200ppm/°C). Izolační odpor min. 1000 MΩ. Nízkoodporová řada ' +
+      '(0,1–0,99Ω) dostupná pro velikosti 0402/0603/0805/1206/1210/2010/2512. Standard: E-96 ' +
+      '(0,5%/1%), E-24 (2%/5%). Jumper (0Ω propojka) dostupný pro všechny velikosti (<50 mΩ). ' +
+      'Vhodné pro vlnové i reflow pájení, standardní cívka 7" (4"/10"/13" na vyžádání).',
+    tags: 'rezistor,smd,tlustovrstvý,thick-film,chip,royalohm,uni-royal,e24,e96,obecný,katalog',
+  },
+  {
     name: 'Susumu RT0603',
     packageType:
       'SMD pouzdro velikosti 0201 (L 0,60±0,05 × W 0,30±0,05 × T 0,23±0,05 mm, kontakt P ' +

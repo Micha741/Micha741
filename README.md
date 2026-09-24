@@ -13,10 +13,11 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    921 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    922 běžných součástek: 118 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
-    RT1206; laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220; tenkovrstvá
+    RT1206; obecná tlustovrstvá SMD čipová řada ROYALOHM (0201–2512, E-24/E-96); laserem
+    in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220; tenkovrstvá
     izolovaná rezistorová síť Vishay Dale TRA06E; kombinovaná rezistorová/kapacitní síť RCD
     Components RC0801-100J100J; a otočné potenciometry a trimry (lineární/logaritmické, THT/SMD)),
     51 kondenzátorů (keramické,
