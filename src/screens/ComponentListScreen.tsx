@@ -12,7 +12,7 @@ import { useSQLiteContext } from 'expo-sqlite';
 import { useFocusEffect } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
-import { importMissingDefaultComponents, listComponents } from '../db/componentRepository';
+import { listComponents, syncSeedComponents } from '../db/componentRepository';
 import type { ElectronicComponent } from '../types/component';
 import { COMPONENT_CATEGORIES } from '../types/component';
 
@@ -40,15 +40,38 @@ export default function ComponentListScreen({ navigation }: Props) {
       navigation.setOptions({
         headerRight: () => (
           <Pressable
-            onPress={async () => {
-              const added = await importMissingDefaultComponents(db);
-              await reload();
-              Alert.alert(
-                'Výchozí knihovna',
-                added > 0
-                  ? `Doplněno ${added} součástek z výchozí knihovny.`
-                  : 'Výchozí knihovna je již kompletní.'
-              );
+            onPress={() => {
+              Alert.alert('Výchozí knihovna', 'Jak chceš knihovnu synchronizovat?', [
+                { text: 'Zrušit', style: 'cancel' },
+                {
+                  text: 'Jen přidat nové',
+                  onPress: async () => {
+                    const { added } = await syncSeedComponents(db, { updateExisting: false });
+                    await reload();
+                    Alert.alert(
+                      'Výchozí knihovna',
+                      added > 0
+                        ? `Doplněno ${added} součástek z výchozí knihovny.`
+                        : 'Výchozí knihovna je již kompletní.'
+                    );
+                  },
+                },
+                {
+                  text: 'Přidat i aktualizovat',
+                  onPress: async () => {
+                    const { added, updated } = await syncSeedComponents(db, {
+                      updateExisting: true,
+                    });
+                    await reload();
+                    Alert.alert(
+                      'Výchozí knihovna',
+                      added > 0 || updated > 0
+                        ? `Doplněno ${added} nových, aktualizováno ${updated} stávajících součástek.`
+                        : 'Výchozí knihovna je již aktuální.'
+                    );
+                  },
+                },
+              ]);
             }}
             hitSlop={8}
           >

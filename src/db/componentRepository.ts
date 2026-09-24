@@ -101,18 +101,81 @@ export async function deleteComponent(db: SQLiteDatabase, id: number): Promise<v
 
 const SEED_DONE_KEY = 'default_components_seeded';
 
-async function insertMissingSeedComponents(db: SQLiteDatabase): Promise<number> {
-  const existing = await db.getAllAsync<{ name: string }>('SELECT name FROM components');
-  const existingNames = new Set(existing.map((row) => row.name.toLowerCase()));
-  const missing = SEED_COMPONENTS.filter((c) => !existingNames.has(c.name.toLowerCase()));
+type ExistingSeedRow = {
+  id: number;
+  name: string;
+  category: string;
+  manufacturer: string | null;
+  packageType: string | null;
+  value: string | null;
+  notes: string | null;
+  tags: string | null;
+  datasheetUrl: string | null;
+};
+
+export interface SyncSeedComponentsResult {
+  added: number;
+  updated: number;
+}
+
+export async function syncSeedComponents(
+  db: SQLiteDatabase,
+  options: { updateExisting: boolean } = { updateExisting: false }
+): Promise<SyncSeedComponentsResult> {
+  const existing = await db.getAllAsync<ExistingSeedRow>(
+    'SELECT id, name, category, manufacturer, packageType, value, notes, tags, datasheetUrl FROM components'
+  );
+  const existingByName = new Map(existing.map((row) => [row.name.toLowerCase(), row]));
+
+  let added = 0;
+  let updated = 0;
 
   await db.withTransactionAsync(async () => {
-    for (const component of missing) {
-      await createComponent(db, component);
+    for (const seed of SEED_COMPONENTS) {
+      const match = existingByName.get(seed.name.toLowerCase());
+
+      if (!match) {
+        await createComponent(db, seed);
+        added += 1;
+        continue;
+      }
+
+      if (!options.updateExisting) continue;
+
+      const changed =
+        match.category !== seed.category ||
+        (match.manufacturer ?? '') !== (seed.manufacturer ?? '') ||
+        (match.packageType ?? '') !== (seed.packageType ?? '') ||
+        (match.value ?? '') !== (seed.value ?? '') ||
+        (match.notes ?? '') !== (seed.notes ?? '') ||
+        (match.tags ?? '') !== (seed.tags ?? '') ||
+        (match.datasheetUrl ?? '') !== (seed.datasheetUrl ?? '');
+
+      if (!changed) continue;
+
+      const now = new Date().toISOString();
+      await db.runAsync(
+        `UPDATE components SET
+          category = ?, manufacturer = ?, packageType = ?, value = ?,
+          notes = ?, tags = ?, datasheetUrl = ?, updatedAt = ?
+         WHERE id = ?`,
+        [
+          seed.category,
+          seed.manufacturer,
+          seed.packageType,
+          seed.value,
+          seed.notes,
+          seed.tags,
+          seed.datasheetUrl,
+          now,
+          match.id,
+        ]
+      );
+      updated += 1;
     }
   });
 
-  return missing.length;
+  return { added, updated };
 }
 
 export async function ensureDefaultComponentsSeededOnce(db: SQLiteDatabase): Promise<void> {
@@ -122,7 +185,7 @@ export async function ensureDefaultComponentsSeededOnce(db: SQLiteDatabase): Pro
   );
   if (flag) return;
 
-  await insertMissingSeedComponents(db);
+  await syncSeedComponents(db, { updateExisting: false });
   await db.runAsync('INSERT OR REPLACE INTO app_meta (key, value) VALUES (?, ?)', [
     SEED_DONE_KEY,
     '1',
@@ -130,5 +193,6 @@ export async function ensureDefaultComponentsSeededOnce(db: SQLiteDatabase): Pro
 }
 
 export async function importMissingDefaultComponents(db: SQLiteDatabase): Promise<number> {
-  return insertMissingSeedComponents(db);
+  const { added } = await syncSeedComponents(db, { updateExisting: false });
+  return added;
 }
