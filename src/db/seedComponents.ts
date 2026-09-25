@@ -3729,6 +3729,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: 'TIP33C',
     packageType: 'TO-247 (3 vývody): 1=báze, 2=kolektor, 3=emitor',
     value: 'NPN, VCEO(sus) 100 V (min), IC 10 A (trvale), hFE 20–100 (@ IC=3 A)',
+    schematicImage: 'TIP33C.jpg',
     notes:
       'Výkonový bipolární tranzistor pro vysoké proudy, PNP komplement TIP34C. Datasheet MOSPEC pro ' +
       'rodinu TIP33/33A/33B/33C (NPN) a TIP34/34A/34B/34C (PNP) — TIP33C/34C má nejvyšší napěťovou ' +
@@ -3754,6 +3755,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'TO-220 (3 vývody): 1=báze, 2=kolektor, 3=emitor — POZOR, prostřední pin (kolektor) je ' +
       'přímo spojen s montážní/chladicí ploškou (na rozdíl od 4vývodových TIP41C/TIP120)',
     value: 'NPN, VCEO 100 V, VCBO 140 V, IC 1 A (trvale), hFE 15–75 (@ IC=1 A)',
+    schematicImage: 'TIP29C.jpg',
     notes:
       'Výkonový spínací/zesilovací tranzistor navržený pro komplementární použití s řadou TIP30 (PNP). ' +
       'Datasheet Power Innovations Ltd. (1997, staré TI označení). TIP29C má nejvyšší napěťovou třídu ' +
@@ -3777,6 +3779,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'TO-220 (3 vývody): 1=báze, 2=kolektor, 3=emitor — POZOR, prostřední pin (kolektor) je ' +
       'přímo spojen s montážní/chladicí ploškou (na rozdíl od 4vývodových TIP41C/TIP120)',
     value: 'NPN, VCEO 100 V, VCER 115 V, IC 6 A (trvale), hFE min 15 (@ IC=3 A)',
+    schematicImage: 'BD243C.jpg',
     notes:
       'Výkonový spínací/zesilovací tranzistor navržený pro komplementární použití s řadou BD244 (PNP). ' +
       'Datasheet Power Innovations Ltd. (1997, staré TI označení), stejná konstrukční řada jako TIP29/TIP30. ' +
@@ -3802,6 +3805,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'TO-247 (dříve i SOT-93/TO-218, od 6/2012 jen TO-247) — vývody: 1=báze, 2=kolektor, ' +
       '3=emitor, 4=kolektor (u TO-218/TO-247 stejné jako chladicí ploška)',
     value: 'NPN, VCEO 60 V, IC 15 A (trvale), hFE 20–70 (@ IC=4 A)',
+    schematicImage: 'TIP3055.jpg',
     notes:
       'Plastová/výkonová obdoba klasického 2N3055 (stejná elektrická rodina — datasheet ON ' +
       'Semiconductor odkazuje na charakteristické křivky 2N3055), PNP komplement TIP2955. ' +

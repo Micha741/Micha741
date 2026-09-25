@@ -15,4 +15,8 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'IRF9540N.jpg': require('../../assets/schematics/IRF9540N.jpg'),
   'TIP120.jpg': require('../../assets/schematics/TIP120.jpg'),
   'TIP41C.jpg': require('../../assets/schematics/TIP41C.jpg'),
+  'TIP33C.jpg': require('../../assets/schematics/TIP33C.jpg'),
+  'TIP29C.jpg': require('../../assets/schematics/TIP29C.jpg'),
+  'BD243C.jpg': require('../../assets/schematics/BD243C.jpg'),
+  'TIP3055.jpg': require('../../assets/schematics/TIP3055.jpg'),
 };
