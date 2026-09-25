@@ -2617,6 +2617,7 @@ const DIODE_SPECS: PartSpec[] = [
   {
     name: 'TYN50W-1600T / TYN80W-1600T',
     packageType: 'TO-247, 3 vývody (anoda/katoda/gate), planárně pasivované',
+    schematicImage: 'TYN50W-1600T.jpg',
     value:
       'Tyristor (SCR), vysokonapěťový 1600 V — TYN50W: IT(AV) 50 A, IT(RMS) 79 A; TYN80W: ' +
       'IT(AV) 80 A, IT(RMS) 126 A; VDRM 1600 V, IGT max 80 mA, TJ(max) 150 °C',
@@ -2640,6 +2641,7 @@ const DIODE_SPECS: PartSpec[] = [
   },
   {
     name: 'BTA330 (30A Hi-Com triak)',
+    schematicImage: 'BTA330.jpg',
     packageType:
       'TO220 (BTA330-800BT), TO220FP izolované (BTA330X-800BT), IITO220 vnitřně izolované ' +
       '(BTA330Y-800BT/CT), D²PAK SMD (BTA330B-800BT/CT)',
@@ -5970,7 +5972,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 7;
+export const SEED_LIBRARY_VERSION = 8;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),

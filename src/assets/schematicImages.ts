@@ -36,4 +36,6 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'DF005S.jpg': require('../../assets/schematics/DF005S.jpg'),
   'CL05M6F.jpg': require('../../assets/schematics/CL05M6F.jpg'),
   'SKKT92.jpg': require('../../assets/schematics/SKKT92.jpg'),
+  'TYN50W-1600T.jpg': require('../../assets/schematics/TYN50W-1600T.jpg'),
+  'BTA330.jpg': require('../../assets/schematics/BTA330.jpg'),
 };
