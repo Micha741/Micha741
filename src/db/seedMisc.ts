@@ -74,6 +74,7 @@ const MISC_SPECS: MiscSpec[] = [
       '6místný 7segmentový multiplexovaný LCD displej (1/4 duty, 1/3 bias) s doplňkovými ' +
       'ikonovými/šipkovými segmenty (T1-T8) a kruhovým ikonovým polem, 6 desetinných teček ' +
       '(DP1-DP6), napájení 3,0 V, TN typ, transflektivní',
+    schematicImage: 'GD-458P.jpg',
     notes:
       'AZ Displays, Inc. mechanický výkres "GD-458P" (datováno 9. 1. 1997) — ⚠️ pasivní ' +
       'segmentové LCD sklo jako GD-342AP (samostatný záznam) — viz tam pro obecné vysvětlení ' +
