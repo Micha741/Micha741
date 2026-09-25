@@ -3589,6 +3589,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'TO-220, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=kolektor ' +
       '(chladicí ploška pouzdra je elektricky spojená s kolektorem!)',
     value: 'NPN Darlington, VCEO(sus) 60 V (min), IC 5 A (trvale), hFE min 1000',
+    schematicImage: 'TIP120.jpg',
     notes:
       'Monolitický Darlington s integrovaným rezistorem báze-emitor a vestavěnou ochrannou ' +
       '(zpětnou) diodou mezi kolektorem a emitorem — vhodný pro přímé spínání induktivní zátěže ' +
@@ -3709,6 +3710,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'TO-220, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=kolektor ' +
       '(chladicí ploška pouzdra je elektricky spojená s kolektorem!)',
     value: 'NPN, VCEO(sus) 100 V (min), IC 6 A (trvale), hFE 15–75 (@ IC=3 A)',
+    schematicImage: 'TIP41C.jpg',
     notes:
       'Výkonový bipolární tranzistor, PNP komplement TIP42C. Datasheet MOSPEC pro rodinu ' +
       'TIP41/41A/41B/41C (NPN) a TIP42/42A/42B/42C (PNP) — TIP41C/42C má nejvyšší napěťovou třídu ' +
@@ -4109,6 +4111,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: 'IRF9540N',
     packageType: 'TO-220AB, 4 vývody: 1=gate, 2=drain, 3=source, 4=drain (chladicí ploška = drain)',
     value: 'P-MOSFET, VDSS -100 V, ID -23 A (@TC=25 °C), RDS(on) max 0,117 Ω (@VGS=-10 V)',
+    schematicImage: 'IRF9540N.jpg',
     notes:
       '5. generace HEXFET od International Rectifier — odlišný/novější díl od generického „IRF9540" ' +
       '(ten má ID=-19 A). Hodnoty v datasheetu jsou v P-kanálové konvenci záporné, zde uvedeny stejně. ' +
@@ -4189,6 +4192,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     packageType:
       'TO-220AB, 4 vývody: 1=gate, 2=drain, 3=source, 4=drain (chladicí ploška = drain)',
     value: 'P-MOSFET, VDSS -55 V, ID -74 A (@TC=25 °C), RDS(on) max 0,020 Ω (@VGS=-10 V)',
+    schematicImage: 'IRF4905.jpg',
     notes:
       'HEXFET Power MOSFET, International Rectifier (datasheet 8/25/97). ' +
       'Mezní hodnoty: VDSS=-55 V, VGS=±20 V, ID(trvalý)=-74 A @TC=25 °C (-52 A @TC=100 °C), ' +
