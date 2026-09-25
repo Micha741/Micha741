@@ -27,4 +27,6 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'NSR01L30MXT5G.jpg': require('../../assets/schematics/NSR01L30MXT5G.jpg'),
   'NCP330MUTBG.jpg': require('../../assets/schematics/NCP330MUTBG.jpg'),
   'BC817-16LT1G.jpg': require('../../assets/schematics/BC817-16LT1G.jpg'),
+  'CD4148W.jpg': require('../../assets/schematics/CD4148W.jpg'),
+  'BAV99.jpg': require('../../assets/schematics/BAV99.jpg'),
 };

@@ -2805,6 +2805,7 @@ const DIODE_SPECS: PartSpec[] = [
     packageType:
       'SMD čipové pouzdro 1206 (3,40×1,70mm), epoxidová pryskyřice UL94V-0, pájecí terminály ' +
       'dle MIL-STD-202E metoda 208, hmotnost ~10mg, montáž v libovolné poloze',
+    schematicImage: 'CD4148W.jpg',
     value:
       'Spínací (switching) dioda, VRRM 100 V, IF 150 mA, IFSM 500 mA, VF max 1,0V, trr max 4ns',
     notes:
@@ -2828,6 +2829,7 @@ const DIODE_SPECS: PartSpec[] = [
     name: 'CD4148WS',
     packageType:
       'SMD čipové pouzdro 0805 (2,20×1,45mm), epoxidová pryskyřice UL94V-0, hmotnost ~6mg',
+    schematicImage: 'CD4148W.jpg',
     value:
       'Spínací dioda, VRRM 100 V, IF 150 mA, IFSM 500 mA, VF max 1,0V, trr max 4ns',
     notes:
@@ -2841,6 +2843,7 @@ const DIODE_SPECS: PartSpec[] = [
     name: 'CD4148WT',
     packageType:
       'SMD čipové pouzdro 0603 (1,65×0,90mm), epoxidová pryskyřice UL94V-0, hmotnost ~4mg',
+    schematicImage: 'CD4148W.jpg',
     value:
       'Spínací dioda, VRRM 100 V, IF 150 mA, IFSM 500 mA, VF max 1,0V, trr max 4ns',
     notes:
@@ -2935,16 +2938,18 @@ const DIODE_SPECS: PartSpec[] = [
   {
     name: 'BAV99',
     packageType:
-      'SMD SOT-23 (TO-236), 3 vývody: 1=anoda D1, 2=anoda D2, 3=společná katoda, rozměry cca ' +
-      '2,9×1,3×1,1mm, pásková balení 3000ks/7", hmotnost ~0,01g',
+      'SMD SOT-23 (TO-236), 3 vývody: 1=katoda D1, 2=katoda D2, 3=společná anoda (ověřeno ze ' +
+      'schématu v datasheetu — pozor, dřívější verze této poznámky měla polaritu obráceně), ' +
+      'rozměry cca 2,9×1,3×1,1mm, pásková balení 3000ks/7", hmotnost ~0,01g',
+    schematicImage: 'BAV99.jpg',
     value:
-      'Duální (2×) spínací SMD dioda se společnou katodou v jednom pouzdře, IFAV 215 mA/dioda, ' +
+      'Duální (2×) spínací SMD dioda se společnou anodou v jednom pouzdře, IFAV 215 mA/dioda, ' +
       'VRRM 85 V, VF<855mV @IF=10mA, doba zotavení trr<4ns',
     notes:
       'Diotec Semiconductor "BAV99, BAV99L, BAV199 — SMD Small Signal Diodes" (verze ' +
       '2025-11-18). ⚠️ NOVÝ TYP součástky v této knihovně: první DUÁLNÍ (2 diody v jednom ' +
       'SOT-23 pouzdře) small-signal dioda — na rozdíl od jednotlivých THT/SMD spínacích diod ' +
-      '(1N4148, LL4148/LL4448 aj. v této knihovně) integruje 2 diody se společnou katodou (pin ' +
+      '(1N4148, LL4148/LL4448 aj. v této knihovně) integruje 2 diody se společnou anodou (pin ' +
       '3) v úsporném 3pinovém SOT-23 pouzdru — typicky pro logické hradlování/ochranu vstupů, ' +
       'sériové/paralelní kombinace v jednom pouzdře úsporném na místo na DPS. Objednací ' +
       'varianty: BAV99-C (commercial grade, VRRM 70V), BAV99/-Q/-AQ (industrial/automotive ' +
@@ -2959,26 +2964,28 @@ const DIODE_SPECS: PartSpec[] = [
       '(BAV99/-Q/-AQ, na 3mm² Cu plošky). TJ a Tstg -55 až +150°C. Pouzdro UL94V-0, pájecí ' +
       'podmínky 260°C/10s, MSL=1. Shoda s RoHS (bez výjimky), REACH, Conflict Minerals, ' +
       'bezolovnatá/bezhalogenová konstrukce.',
-    tags: 'dioda,spínací,signálová,duální,smd,sot-23,diotec,bav99,společná-katoda',
+    tags: 'dioda,spínací,signálová,duální,smd,sot-23,diotec,bav99,společná-anoda',
   },
   {
     name: 'BAV99L',
     packageType: 'shodné s BAV99 (SOT-23) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'BAV99.jpg',
     value:
-      'Duální spínací SMD dioda se společnou katodou, IFAV 215 mA/dioda, VRRM 100 V, ' +
+      'Duální spínací SMD dioda se společnou anodou, IFAV 215 mA/dioda, VRRM 100 V, ' +
       'VF<855mV @IF=10mA, trr<4ns',
     notes:
       'Diotec "BAV99, BAV99L, BAV199" — součást rodiny, viz záznam "BAV99" v této knihovně pro ' +
       'plné společné mechanické specifikace a kontext. Vyšší napěťová varianta (VRRM 100V vs. ' +
       '85V u BAV99), jinak elektricky shodná s BAV99/-Q/-AQ (stejné VF, trr, Ptot, RthA). Pouze ' +
       've variantě -AQ (AEC-Q101 qualified).',
-    tags: 'dioda,spínací,signálová,duální,smd,sot-23,diotec,bav99l,společná-katoda,100v',
+    tags: 'dioda,spínací,signálová,duální,smd,sot-23,diotec,bav99l,společná-anoda,100v',
   },
   {
     name: 'BAV199',
     packageType: 'shodné s BAV99 (SOT-23) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'BAV99.jpg',
     value:
-      'Duální spínací SMD dioda se společnou katodou, extrémně nízký svodový proud, IFAV 215 ' +
+      'Duální spínací SMD dioda se společnou anodou, extrémně nízký svodový proud, IFAV 215 ' +
       'mA/dioda, VRRM 85 V, VF<1,0V @IF=10mA, trr<3000ns',
     notes:
       'Diotec "BAV99, BAV99L, BAV199" — součást rodiny, viz záznam "BAV99" v této knihovně pro ' +
@@ -2989,7 +2996,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Vhodné pro aplikace citlivé na svodový proud (např. vzorkovací obvody, vysokoimpedanční ' +
       'senzorové rozhraní), ne pro vysokorychlostní spínání. VF<900mV @1mA/<1,0V @10mA/<1,1V ' +
       '@50mA/<1,25V @150mA. Kapacita přechodu Cj typ. 2pF. Pouze ve variantách -Q/-AQ.',
-    tags: 'dioda,spínací,signálová,duální,smd,sot-23,diotec,bav199,společná-katoda,nízký-svodový-proud',
+    tags: 'dioda,spínací,signálová,duální,smd,sot-23,diotec,bav199,společná-anoda,nízký-svodový-proud',
   },
   {
     name: 'SKKT 92 (SEMIPACK 1)',
@@ -5929,7 +5936,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 2;
+export const SEED_LIBRARY_VERSION = 3;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
