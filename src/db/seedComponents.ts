@@ -2741,6 +2741,7 @@ const DIODE_SPECS: PartSpec[] = [
     packageType:
       'SMD ~SOD-80C (Glass MiniMELF), válcová skleněná pouzdra, Ø1,45mm, délka 3,5±0,1mm, ' +
       'pásková balení 2500ks/7", hmotnost ~0,04g',
+    schematicImage: 'LL4148.jpg',
     value:
       'Spínací (small signal) dioda, IFAV 150 mA, VRRM 100 V, VF<1,0V @IF=10mA, doba zotavení ' +
       'trr<4ns',
@@ -2768,6 +2769,7 @@ const DIODE_SPECS: PartSpec[] = [
   {
     name: 'LL4150',
     packageType: 'shodné s LL4148 (SOD-80C MiniMELF) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'LL4148.jpg',
     value: 'Spínací dioda, IFAV 300 mA, VRRM 50 V, VF<1,2V @IF=100mA',
     notes:
       'Diotec "LL4148, LL4150, LL4151, LL4448" — součást rodiny, viz záznam "LL4148" v této ' +
@@ -2779,6 +2781,7 @@ const DIODE_SPECS: PartSpec[] = [
   {
     name: 'LL4151',
     packageType: 'shodné s LL4148 (SOD-80C MiniMELF) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'LL4148.jpg',
     value: 'Spínací dioda, IFAV 200 mA, VRRM 75 V, VF<1,0V @IF=50mA',
     notes:
       'Diotec "LL4148, LL4150, LL4151, LL4448" — součást rodiny, viz záznam "LL4148" v této ' +
@@ -2789,6 +2792,7 @@ const DIODE_SPECS: PartSpec[] = [
   {
     name: 'LL4448',
     packageType: 'shodné s LL4148 (SOD-80C MiniMELF) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'LL4148.jpg',
     value: 'Spínací dioda, IFAV 150 mA, VRRM 100 V, VF 0,62–0,72V @IF=5mA',
     notes:
       'Diotec "LL4148, LL4150, LL4151, LL4448" — součást rodiny, viz záznam "LL4148" v této ' +
@@ -3260,6 +3264,7 @@ const BRIDGE_SPECS: PartSpec[] = [
     packageType:
       'SMD pouzdro SDIP 4L (4-Lead, 6,5mm šířka), rozměry cca 8,5×6,5×2,6 mm, pásková balení, ' +
       'top mark shodný s názvem dílu',
+    schematicImage: 'DF005S.jpg',
     value:
       'Jednofázový můstkový usměrňovač (SMD), VRRM 50 V, IFAV 1,5 A, VF max 1,1V @1,5A, IFSM ' +
       '50 A (8,3ms půlvlna)',
@@ -3286,6 +3291,7 @@ const BRIDGE_SPECS: PartSpec[] = [
   {
     name: 'DF01S',
     packageType: 'shodné s DF005S — viz poznámka u DF005S pro plné mechanické specifikace',
+    schematicImage: 'DF005S.jpg',
     value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 100 V, IFAV 1,5 A',
     notes:
       'Fairchild "DF005S - DF10S" — součást řady DF005S–DF10S, viz záznam "DF005S" v této ' +
@@ -3296,6 +3302,7 @@ const BRIDGE_SPECS: PartSpec[] = [
   {
     name: 'DF02S',
     packageType: 'shodné s DF005S — viz poznámka u DF005S pro plné mechanické specifikace',
+    schematicImage: 'DF005S.jpg',
     value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 200 V, IFAV 1,5 A',
     notes:
       'Fairchild "DF005S - DF10S" — součást řady DF005S–DF10S, viz záznam "DF005S" v této ' +
@@ -3306,6 +3313,7 @@ const BRIDGE_SPECS: PartSpec[] = [
   {
     name: 'DF04S',
     packageType: 'shodné s DF005S — viz poznámka u DF005S pro plné mechanické specifikace',
+    schematicImage: 'DF005S.jpg',
     value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 400 V, IFAV 1,5 A',
     notes:
       'Fairchild "DF005S - DF10S" — součást řady DF005S–DF10S, viz záznam "DF005S" v této ' +
@@ -3316,6 +3324,7 @@ const BRIDGE_SPECS: PartSpec[] = [
   {
     name: 'DF06S',
     packageType: 'shodné s DF005S — viz poznámka u DF005S pro plné mechanické specifikace',
+    schematicImage: 'DF005S.jpg',
     value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 600 V, IFAV 1,5 A',
     notes:
       'Fairchild "DF005S - DF10S" — součást řady DF005S–DF10S, viz záznam "DF005S" v této ' +
@@ -3326,6 +3335,7 @@ const BRIDGE_SPECS: PartSpec[] = [
   {
     name: 'DF08S',
     packageType: 'shodné s DF005S — viz poznámka u DF005S pro plné mechanické specifikace',
+    schematicImage: 'DF005S.jpg',
     value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 800 V, IFAV 1,5 A',
     notes:
       'Fairchild "DF005S - DF10S" — součást řady DF005S–DF10S, viz záznam "DF005S" v této ' +
@@ -3336,6 +3346,7 @@ const BRIDGE_SPECS: PartSpec[] = [
   {
     name: 'DF10S',
     packageType: 'shodné s DF005S — viz poznámka u DF005S pro plné mechanické specifikace',
+    schematicImage: 'DF005S.jpg',
     value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 1000 V, IFAV 1,5 A',
     notes:
       'Fairchild "DF005S - DF10S" — součást řady DF005S–DF10S, viz záznam "DF005S" v této ' +
@@ -5955,7 +5966,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 5;
+export const SEED_LIBRARY_VERSION = 6;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
