@@ -31,4 +31,5 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'BAV99.jpg': require('../../assets/schematics/BAV99.jpg'),
   'M1.jpg': require('../../assets/schematics/M1.jpg'),
   'S40.jpg': require('../../assets/schematics/S40.jpg'),
+  'ABS2.jpg': require('../../assets/schematics/ABS2.jpg'),
 };

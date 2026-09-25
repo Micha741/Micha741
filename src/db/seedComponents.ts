@@ -3079,6 +3079,7 @@ const BRIDGE_SPECS: PartSpec[] = [
       'SMD můstkové pouzdro "ABS", 4 vývody (~ / ~ / + / -), rozteč vývodů 4 mm (kvůli vyšším ' +
       'vzdušným/povrchovým vzdálenostem), rozměry cca 6,2×5,0×1,4 mm, pásková balení ' +
       '5000ks/13"',
+    schematicImage: 'ABS2.jpg',
     value:
       'Jednofázový můstkový usměrňovač (SMD), VRRM 200 V, IFAV 0,8/1 A, VF<0,95V @0,4A, IFSM ' +
       '25 A (50Hz)/27 A (60Hz)',
@@ -3107,6 +3108,7 @@ const BRIDGE_SPECS: PartSpec[] = [
   {
     name: 'ABS4',
     packageType: 'shodné s ABS2 — viz poznámka u ABS2 pro plné mechanické specifikace',
+    schematicImage: 'ABS2.jpg',
     value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 400 V, IFAV 0,8/1 A',
     notes:
       'Diotec Semiconductor "ABS2...ABS10-16" — součást řady ABS2–ABS10-16, viz záznam "ABS2" ' +
@@ -3118,6 +3120,7 @@ const BRIDGE_SPECS: PartSpec[] = [
   {
     name: 'ABS6',
     packageType: 'shodné s ABS2 — viz poznámka u ABS2 pro plné mechanické specifikace',
+    schematicImage: 'ABS2.jpg',
     value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 600 V, IFAV 0,8/1 A',
     notes:
       'Diotec Semiconductor "ABS2...ABS10-16" — součást řady ABS2–ABS10-16, viz záznam "ABS2" ' +
@@ -3129,6 +3132,7 @@ const BRIDGE_SPECS: PartSpec[] = [
   {
     name: 'ABS8',
     packageType: 'shodné s ABS2 — viz poznámka u ABS2 pro plné mechanické specifikace',
+    schematicImage: 'ABS2.jpg',
     value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 800 V, IFAV 0,8/1 A',
     notes:
       'Diotec Semiconductor "ABS2...ABS10-16" — součást řady ABS2–ABS10-16, viz záznam "ABS2" ' +
@@ -3140,6 +3144,7 @@ const BRIDGE_SPECS: PartSpec[] = [
   {
     name: 'ABS10',
     packageType: 'shodné s ABS2 — viz poznámka u ABS2 pro plné mechanické specifikace',
+    schematicImage: 'ABS2.jpg',
     value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 1000 V, IFAV 0,8/1 A',
     notes:
       'Diotec Semiconductor "ABS2...ABS10-16" — součást řady ABS2–ABS10-16, viz záznam "ABS2" ' +
@@ -3152,6 +3157,7 @@ const BRIDGE_SPECS: PartSpec[] = [
   {
     name: 'ABS10-16',
     packageType: 'shodné s ABS2 — viz poznámka u ABS2 pro plné mechanické specifikace',
+    schematicImage: 'ABS2.jpg',
     value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 1600 V, IFAV 0,8/1 A',
     notes:
       'Diotec Semiconductor "ABS2...ABS10-16" — součást řady ABS2–ABS10-16, viz záznam "ABS2" ' +
@@ -5949,7 +5955,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 4;
+export const SEED_LIBRARY_VERSION = 5;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
