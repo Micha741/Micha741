@@ -572,6 +572,7 @@ const IC_SPECS: IcSpec[] = [
     value:
       'Kompletní napájecí řešení pro DDR2/DDR3/DDR3L/LPDDR3 paměti: synchronní buck řadič ' +
       '(VDDQ) + 2A sink/source sledovací LDO (VTT) + pufferovaná reference (VTTREF)',
+    schematicImage: 'TPS51716.jpg',
     notes:
       'Texas Instruments "TPS51716 — Complete DDR2, DDR3, DDR3L, and LPDDR3 Memory Power ' +
       'Solution" (dok. SLUSB94, říjen 2012). Integruje synchronní buck regulátor (D-CAP2™ mód, ' +
@@ -3015,6 +3016,7 @@ const IC_SPECS: IcSpec[] = [
       'Polovodičový (SnO2) plynový senzor ozónu (O3), odporový typ, detekční rozsah 10 ppb–2 ppm ' +
       'O3, napájení senzoru Vc 5 V AC/DC, topné napětí Vh 6 V AC/DC, topný odpor 31 Ω, spotřeba ' +
       'topení < 1100 mW',
+    schematicImage: 'MQ-131.jpg',
     notes:
       'Hanwei Electronics "MQ-131 Gas Sensor — Technical Data" — ⚠️ NOVÁ TŘÍDA senzoru v této ' +
       'knihovně: první polovodičový (metal-oxidový) plynový senzor, dosud žádný podobný typ ' +
