@@ -2695,9 +2695,12 @@ const DIODE_SPECS: PartSpec[] = [
   {
     name: 'DSEI 2x 61-04C',
     packageType:
-      'výkonový modul miniBLOC (ISOTOP kompatibilní, SOT-227B), 2 nezávislé diody se společnou ' +
-      'katodou (dvojice pinů + šroubové M4 terminály), izolační napětí pouzdra 2500 V~, hmotnost ' +
-      '30 g, šroubovací montáž (moment 1,5 Nm)',
+      'výkonový modul miniBLOC (ISOTOP kompatibilní, SOT-227B), 2 elektricky ZCELA NEZÁVISLÉ ' +
+      '(nepropojené) diody — každá se svými vlastními 2 vývody, dohromady 4 šroubové M4 ' +
+      'terminály (ověřeno ze schématu v datasheetu — žádné společné propojení vývodů mezi diodami, ' +
+      'na rozdíl od dřívější verze této poznámky, která mylně uváděla "společnou katodu"), ' +
+      'izolační napětí pouzdra 2500 V~, hmotnost 30 g, šroubovací montáž (moment 1,5 Nm)',
+    schematicImage: 'DSEI2X61.jpg',
     value:
       'Rychlá epitaxní dioda (FRED — Fast Recovery Epitaxial Diode), 2× v jednom pouzdře, VRRM ' +
       '400 V, IFAVM 2×60 A, doba zotavení trr typ. 35 ns (velmi rychlá/měkká charakteristika)',
@@ -2729,6 +2732,7 @@ const DIODE_SPECS: PartSpec[] = [
   {
     name: 'DSEI 2x 61-06C',
     packageType: 'shodné s DSEI 2x 61-04C — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'DSEI2X61.jpg',
     value:
       'Rychlá epitaxní dioda (FRED), 2× v jednom pouzdře, VRRM 600 V, IFAVM 2×60 A, doba ' +
       'zotavení trr typ. 35 ns',
@@ -5987,7 +5991,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 11;
+export const SEED_LIBRARY_VERSION = 12;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
