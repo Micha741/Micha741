@@ -5246,6 +5246,7 @@ const RESISTOR_SPECS: PartSpec[] = [
     value:
       'PTC termistor pro nadproudovou ochranu (samočinně zotavitelná "polyfuse"), RR 9 Ω ±20 %, ' +
       'ISmax 1,0 A @230 V AC',
+    schematicImage: 'B59081G1120A161.jpg',
     notes:
       'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications, ' +
       'Single SMDs" (dok. listopad 2009) — ⚠️ jiný typ termistoru než NTC řada D-5…D-25 v této ' +
@@ -5275,12 +5276,13 @@ const RESISTOR_SPECS: PartSpec[] = [
       'SMD "Gamma I" pouzdro, kupolovitý tvar Ø8±0,2 mm, výška 3,3 mm max., 2 ploché SMD ' +
       'kontakty, balení 16mm páska/cívka',
     value: 'PTC termistor pro nadproudovou ochranu, RR 10 Ω ±20 %, ISmax 1,0 A @230 V AC',
+    schematicImage: 'B59081G1120A161.jpg',
     notes:
       'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications" ' +
       '(dok. listopad 2009) — součást stejné řady 8 typů jako B59081/83/84/86/40/12-... (Gamma I: ' +
       'G1080/G1081/G1083/G1084/G1086; Gamma L: G1012/G1040, samostatné záznamy) — viz záznam ' +
       'B59081G1120A161 (typ G1081) pro plný popis principu funkce PTC a shody se standardy. Typ ' +
-      'G1085: RR 10 Ω ±20 %, R25,match max 0,5 Ω. IR max 180 mA @25 °C / 120 mA @70 °C. IS typ. ' +
+      'G1085: RR 10 Ω ±20 %, R25,match max 1,0 Ω. IR max 180 mA @25 °C / 120 mA @70 °C. IS typ. ' +
       '400 mA @25 °C. ISmax 1,0 A @230 V AC. Doba přepnutí typ. 3,9 s @ISmax/230 V AC, 3,9 s ' +
       '@1 A/230 V AC, 19,0 s @500 mA/230 V AC.',
     tags: 'rezistor,ptc,termistor,nadproudová-ochrana,polyfuse,telekom,epcos,tdk,gamma-i',
@@ -5291,13 +5293,14 @@ const RESISTOR_SPECS: PartSpec[] = [
       'SMD "Gamma I" pouzdro, kupolovitý tvar Ø8±0,2 mm, výška 3,3 mm max., 2 ploché SMD ' +
       'kontakty, balení 16mm páska/cívka',
     value: 'PTC termistor pro nadproudovou ochranu, RR 16 Ω ±20 %, ISmax 1,5 A @230 V AC',
+    schematicImage: 'B59081G1120A161.jpg',
     notes:
       'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications" ' +
       '(dok. listopad 2009) — součást stejné řady 8 typů jako B59081/85/84/86/40/12-... (Gamma I: ' +
       'G1080/G1081/G1084/G1085/G1086; Gamma L: G1012/G1040, samostatné záznamy) — viz záznam ' +
       'B59081G1120A161 (typ G1081) pro plný popis principu funkce PTC a shody se standardy. Typ ' +
       'G1083: RR 16 Ω ±20 %, R25,match max 0,5 Ω. IR max 150 mA @25 °C / 100 mA @70 °C. IS typ. ' +
-      '300 mA @25 °C. ISmax 1,5 A @230 V AC. Doba přepnutí typ. 2,5 s @ISmax/230 V AC, 2,4 s ' +
+      '300 mA @25 °C. ISmax 1,5 A @230 V AC. Doba přepnutí typ. 1,0 s @ISmax/230 V AC, 2,4 s ' +
       '@1 A/230 V AC, 11,0 s @500 mA/230 V AC.',
     tags: 'rezistor,ptc,termistor,nadproudová-ochrana,polyfuse,telekom,epcos,tdk,gamma-i',
   },
@@ -5307,6 +5310,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'SMD "Gamma I" pouzdro, kupolovitý tvar Ø8±0,2 mm, výška 3,3 mm max., 2 ploché SMD ' +
       'kontakty, balení 16mm páska/cívka',
     value: 'PTC termistor pro nadproudovou ochranu, RR 25 Ω ±20 %, ISmax 2,8 A @230 V AC',
+    schematicImage: 'B59081G1120A161.jpg',
     notes:
       'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications" ' +
       '(dok. listopad 2009) — součást stejné řady 8 typů jako B59081/83/84/85/86/40/12-... (Gamma ' +
@@ -5323,6 +5327,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'SMD "Gamma I" pouzdro, kupolovitý tvar Ø8±0,2 mm, výška 3,3 mm max., 2 ploché SMD ' +
       'kontakty, balení 16mm páska/cívka',
     value: 'PTC termistor pro nadproudovou ochranu, RR 29 Ω ±20 %, ISmax 2,8 A @230 V AC',
+    schematicImage: 'B59081G1120A161.jpg',
     notes:
       'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications" ' +
       '(dok. listopad 2009) — součást stejné řady 8 typů jako B59081/83/84/85/80/40/12-... (Gamma ' +
@@ -5339,6 +5344,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'SMD "Gamma I" pouzdro, kupolovitý tvar Ø8±0,2 mm, výška 3,3 mm max., 2 ploché SMD ' +
       'kontakty, balení 16mm páska/cívka — nejvyšší jmenovitý odpor v podřadě Gamma I',
     value: 'PTC termistor pro nadproudovou ochranu, RR 50 Ω ±15 %, ISmax 2,5 A @230 V AC',
+    schematicImage: 'B59081G1120A161.jpg',
     notes:
       'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications" ' +
       '(dok. listopad 2009) — součást stejné řady 8 typů jako B59081/83/85/86/80/40/12-... (Gamma ' +
@@ -5356,6 +5362,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'SMD "Gamma L" pouzdro, kupolovitý tvar Ø7±0,2 mm, výška 3,8 mm max., 2 ploché SMD ' +
       'kontakty (rozteč 11 mm mezi středy pájecích plošek), balení 24mm páska/cívka',
     value: 'PTC termistor pro nadproudovou ochranu, RR 25 Ω ±20 %, ISmax 4,0 A @230 V AC',
+    schematicImage: 'B59081G1120A161.jpg',
     notes:
       'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications" ' +
       '(dok. listopad 2009) — součást stejné řady 8 typů jako B59081/83/84/85/86/80/12-... (Gamma ' +
@@ -5375,6 +5382,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'SMD "Gamma L" pouzdro, kupolovitý tvar Ø7±0,2 mm, výška 3,8 mm max., 2 ploché SMD ' +
       'kontakty, balení 24mm páska/cívka — nejvyšší proudová třída v celé řadě',
     value: 'PTC termistor pro nadproudovou ochranu, RR 35 Ω +15/−20 %, ISmax 4,6 A @230 V AC',
+    schematicImage: 'B59081G1120A161.jpg',
     notes:
       'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications" ' +
       '(dok. listopad 2009) — součást stejné řady 8 typů jako B59081/83/84/85/86/80/40 (Gamma I: ' +
@@ -6001,7 +6009,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 20;
+export const SEED_LIBRARY_VERSION = 21;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),

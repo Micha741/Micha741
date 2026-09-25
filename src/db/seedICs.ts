@@ -2162,6 +2162,7 @@ const IC_SPECS: IcSpec[] = [
       'Jednoosý vibrační křemenný (piezoelektrický) gyroskop (senzor úhlové rychlosti), ' +
       'analogový ratiometrický výstup, rozsah ±60°/s, citlivost 25 mV/(°/s) typ., napájení ' +
       '5,0 V ±0,25 V',
+    schematicImage: 'XV-8000CB.jpg',
     notes:
       'Epson Toyocom "XV-8000CB — Ultra Miniature Size Gyro Sensor (for Car Navigation System)" — ' +
       'jednoosý (yaw rate) analogový gyroskop založený na vibrujícím křemenném rezonátoru ' +

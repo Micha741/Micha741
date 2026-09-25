@@ -2863,6 +2863,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Optický senzor prachu/částic (PM2.5), princip rozptylu infračerveného světla s aktivním ' +
       'ohřevem vzduchu, detekce částic ≥1 µm, výstup PWM (poměr nízké úrovně) nebo UART (9600 ' +
       'Bd), napájení 5 V DC',
+    schematicImage: 'ZPH02.jpg',
     notes:
       'Zhengzhou Winsen Electronics Technology "ZPH02 Particles Sensor — Manual" (verze 1.2, ' +
       'platnost od 16.5.2018) — kompletní optoelektronický modul pro detekci prachových částic ' +
