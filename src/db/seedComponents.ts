@@ -3432,6 +3432,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: '2N3904',
     packageType: 'TO-92, 3 vývody: 1=emitor, 2=báze, 3=kolektor (pohled zepředu na popsanou stranu)',
     value: 'NPN, VCEO 40 V, IC 200 mA, hFE 100–300 (@ IC=10 mA)',
+    schematicImage: '2N3904.jpg',
     notes:
       'Malovýkonový bipolární NPN tranzistor pro obecné spínací a zesilovací aplikace — komplementární ' +
       'k 2N3906. Datasheet GTM Corporation (jejich verze „G2N3904"), vydán 2003, revize 2005/06/24. ' +
@@ -3525,6 +3526,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: '2N3906',
     packageType: 'TO-92, 3 vývody: 1=emitor, 2=báze, 3=kolektor (pohled zepředu na popsanou stranu)',
     value: 'PNP, VCEO -40 V, IC -200 mA, hFE 100–300 (@ IC=-10 mA)',
+    schematicImage: '2N3906.jpg',
     notes:
       'Malovýkonový bipolární PNP tranzistor pro obecné spínací a zesilovací aplikace — komplementární ' +
       'k 2N3904. Datasheet GTM Corporation (jejich verze „G2N3906"), vydán 2004, revize 2005/06/24. ' +
@@ -4245,6 +4247,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     packageType:
       'TO-92, 3 vývody: 1=source, 2=gate, 3=drain (pohled zepředu na popsanou stranu, značka „S G D")',
     value: 'N-MOSFET (logická úroveň, malý signál), VDSS 60 V, ID 200 mA, RDS(on) max 5,0 Ω @VGS=10 V',
+    schematicImage: 'G2N7000.jpg',
     notes:
       'Malý spínací N-MOSFET, GTM Corporation (datasheet vydán 2004, revize 2006/10/30). ' +
       'Určen pro spínací regulátory, měniče, budiče relé a solenoidů. Elektricky kompatibilní ' +
@@ -4268,6 +4271,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     packageType:
       'SOT-23 (SMD), 3 vývody: 1=gate, 2=source, 3=drain (pohled zepředu na popsanou stranu, značka „702")',
     value: 'N-MOSFET (SMD, malý signál), VDS 60 V, ID 500 mA, RDS(on) max 4,5 Ω @VGS=10 V',
+    schematicImage: 'G2N7002.jpg',
     notes:
       '⚠️ Jiný díl než „G2N7000" (TO-92, ID=200 mA) — jde o SMD ekvivalent, elektricky odpovídá ' +
       'běžnému 2N7002, ne 2N7000. GTM Corporation (datasheet vydán 2003, revize 2006/01/17), ' +

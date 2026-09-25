@@ -7,4 +7,8 @@ import type { ImageSourcePropType } from 'react-native';
 export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'BC546.jpg': require('../../assets/schematics/BC546.jpg'),
   'P2N2222A.jpg': require('../../assets/schematics/P2N2222A.jpg'),
+  '2N3904.jpg': require('../../assets/schematics/2N3904.jpg'),
+  '2N3906.jpg': require('../../assets/schematics/2N3906.jpg'),
+  'G2N7000.jpg': require('../../assets/schematics/G2N7000.jpg'),
+  'G2N7002.jpg': require('../../assets/schematics/G2N7002.jpg'),
 };
