@@ -3454,6 +3454,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     packageType:
       'SMD, miniaturní pouzdro (KEC "TSM", cca 2,9 × 1,6 × 1,0 mm) — vývody: 1=emitor, 2=báze, 3=kolektor',
     value: 'NPN, VCEO 30 V, IC 3 A (DC), hFE 200–560 (@ IC=500 mA)',
+    schematicImage: 'KTC3542T.jpg',
     notes:
       'SMD spínací/výkonový tranzistor pro relé, žárovky, motory a blesky (strobe aplikace) — ' +
       'datasheet KEC, 2001. PNP komplement: KTA1542T. ' +
@@ -3624,6 +3625,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     packageType:
       'SMD (TO-276AA „SMD05" nebo TO-276AB „SMD1", dle varianty) — Pad 1=báze, Pad 2=kolektor, Pad 3=emitor',
     value: 'PNP Darlington, VCEO 80 V, IC 8 A (trvale), hFE 750–18 000 (@ IC=4 A)',
+    schematicImage: '2N6299SMD.jpg',
     notes:
       'Výkonový PNP Darlington v SMD pouzdru, monolitická konstrukce s vestavěným rezistorem ' +
       'báze-emitor. NPN komplement: 2N6301SMD (shodné parametry, opačná polarita). Datasheet Semelab ' +
@@ -3645,6 +3647,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'TO-220AB, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=montážní ploška ' +
       '(elektricky spojená s kolektorem!)',
     value: 'NPN Darlington, VCEO 80 V, IC 10 A (trvale), hFE min 1000 (@ IC=5 A)',
+    schematicImage: 'D44E3.jpg',
     notes:
       'Velmi vysokozisková NPN Darlington výkonová "Silicon Power Pac" — driver, regulátor, budič relé/ ' +
       'solenoidu, audio výstup. Vyrobena epitaxním base procesem se 2 integrovanými rezistory a 1 diodou ' +
@@ -3677,6 +3680,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: 'BC517',
     packageType:
       'TO-92 — vývody: 1=kolektor, 2=báze, 3=emitor (3L, rovné nebo ohnuté vývody dle balení)',
+    schematicImage: 'BC517.jpg',
     value:
       'NPN Darlington, VCEO 30 V, IC 1,2 A (trvale, dle ON Semiconductor), hFE min 30 000 ' +
       '(@ IC=20 mA)',
