@@ -3991,6 +3991,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: 'IRF540N',
     packageType:
       'TO-220AB — vývody: 1=gate, 2=drain, 3=source (chladicí ploška je spojena s drainem)',
+    schematicImage: 'IRF540N.jpg',
     value: 'N-MOSFET, VDSS 100 V, ID 33 A (@TC=25 °C), RDS(on) typ 0,033 Ω (max 0,040 Ω @VGS=10 V)',
     notes:
       'Výkonový spínací N-MOSFET s nízkým odporem v sepnutém stavu. Datasheet Intersil, 2000. ' +
@@ -4067,6 +4068,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: 'IRLZ44N',
     packageType: 'TO-220AB, 4 vývody: 1=gate, 2=drain, 3=source, 4=drain (chladicí ploška = drain)',
     value: 'N-MOSFET (logic level), VDSS 55 V, ID 47 A (@TC=25 °C), RDS(on) max 0,022 Ω (@VGS=10 V)',
+    schematicImage: 'IRLZ44N.jpg',
     notes:
       '⚠️ POZOR na záměnu tří podobně znějících dílů: „IRFZ44N" (běžný gate, potřebuje ~10 V pro plné ' +
       'sepnutí), „IRLZ44" (Samsung, logic level, 60 V/35 A, RDS(on) max 0,04 Ω) a tento „IRLZ44N" ' +
@@ -4095,6 +4097,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: 'IRF3205',
     packageType:
       'TO-220AB, 4 vývody: 1=gate, 2=drain, 3=source, 4=drain (chladicí ploška = drain)',
+    schematicImage: 'IRF3205.jpg',
     value: 'N-MOSFET, VDSS 55 V, ID 110 A (viz poznámka o reálném limitu), RDS(on) max 8,0 mΩ',
     notes:
       '⚠️ Hlavičková hodnota ID=110 A je dle datasheetu jen vypočtená hodnota na základě max. teploty ' +
@@ -5984,7 +5987,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 10;
+export const SEED_LIBRARY_VERSION = 11;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
