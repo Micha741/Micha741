@@ -2254,6 +2254,7 @@ const IC_SPECS: IcSpec[] = [
       'Hallův lineární izolovaný senzor proudu (chopper-stabilizovaný BiCMOS Hall IC), obousměrný ' +
       '±50 A, citlivost 40 mV/A typ., napájení 5,0 V, izolační napětí 3 kVRMS, dostupný v ' +
       'průmyslové (S, -20 až +85 °C) i automotive (L, -40 až +150 °C) teplotní verzi',
+    schematicImage: 'ACS754xCB-050.jpg',
     notes:
       'Allegro MicroSystems "ACS754xCB-050" katalogový datasheet (ACS754050-DS, Rev. 3) — sourozenec ' +
       'ACS752SCA-050 v této knihovně v rámci téže výrobcem deklarované rodiny "ACS75x" (shodná ' +
@@ -2292,6 +2293,7 @@ const IC_SPECS: IcSpec[] = [
       'Hallův lineární izolovaný senzor proudu (chopper-stabilizovaný BiCMOS Hall IC), obousměrný ' +
       '±150 A, citlivost 13,3 mV/A typ., napájení 5,0 V, izolační napětí 3 kVRMS, dostupný v ' +
       'průmyslové (S, -20 až +85 °C) i automotive (K, -40 až +125 °C) teplotní verzi',
+    schematicImage: 'ACS754xCB-150.jpg',
     notes:
       'Allegro MicroSystems "ACS754xCB-150" katalogový datasheet (ACS754150-DS, Rev. 4) — ⚠️ ' +
       'vyšší-proudová varianta ACS754xCB-050 v této knihovně (samostatný záznam): stejné ' +
@@ -2328,6 +2330,7 @@ const IC_SPECS: IcSpec[] = [
       'Hallův lineární izolovaný senzor proudu (chopper-stabilizovaný BiCMOS Hall IC), ' +
       'JEDNOSMĚRNÝ (unipolární) 0–50 A, citlivost 60 mV/A typ., klidové výstupní napětí 0,6 V, ' +
       'napájení 5,0 V, izolační napětí 3 kVRMS',
+    schematicImage: 'ACS755xCB-050.jpg',
     notes:
       'Allegro MicroSystems "ACS755xCB-050" katalogový datasheet (ACS755050-DS, Rev. 2, 2005) — ' +
       'další sourozenec ACS752SCA-050/ACS754xCB-050/ACS754xCB-150 v této knihovně v rámci téže ' +
