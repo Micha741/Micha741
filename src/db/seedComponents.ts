@@ -4396,6 +4396,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   {
     name: '2N5484',
     packageType: 'TO-92, 3 vývody (pohled zepředu): 1=gate, 2=source, 3=drain (S/D vzájemně zaměnitelné)',
+    schematicImage: '2N5484.jpg',
     value: 'N-JFET (RF), VGS(off) -0,3 až -3,0 V, IDSS 1,0-5,0 mA (@ VDS=15 V)',
     notes:
       'Silikonový N-kanálový JFET pro RF zesilovače, určený primárně pro elektronické spínání ' +
@@ -4414,6 +4415,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   {
     name: '2N5485',
     packageType: 'TO-92, 3 vývody (pohled zepředu): 1=gate, 2=source, 3=drain (S/D vzájemně zaměnitelné)',
+    schematicImage: '2N5484.jpg',
     value: 'N-JFET (RF), VGS(off) -0,5 až -4,0 V, IDSS 4,0-10 mA (@ VDS=15 V)',
     notes:
       'Silikonový N-kanálový JFET pro RF zesilovače, určený primárně pro elektronické spínání ' +
@@ -4432,6 +4434,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   {
     name: '2N5486',
     packageType: 'TO-92, 3 vývody (pohled zepředu): 1=gate, 2=source, 3=drain (S/D vzájemně zaměnitelné)',
+    schematicImage: '2N5484.jpg',
     value: 'N-JFET (RF), VGS(off) -2,0 až -6,0 V, IDSS 8,0-20 mA (@ VDS=15 V)',
     notes:
       'Silikonový N-kanálový JFET pro RF zesilovače, určený primárně pro elektronické spínání ' +
@@ -4450,6 +4453,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   {
     name: 'MMBF5484',
     packageType: 'SOT-23 (SMD), G/S/D (S/D vzájemně zaměnitelné), značení na pouzdře: 6B',
+    schematicImage: '2N5484.jpg',
     value: 'N-JFET (RF), VGS(off) -0,3 až -3,0 V, IDSS 1,0-5,0 mA (@ VDS=15 V)',
     notes:
       'SMD verze 2N5484 (stejný křemíkový čip, stejný datasheet, jen SOT-23 pouzdro a nižší PD) — ' +
@@ -4464,6 +4468,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   {
     name: 'MMBF5485',
     packageType: 'SOT-23 (SMD), G/S/D (S/D vzájemně zaměnitelné), značení na pouzdře: 6M',
+    schematicImage: '2N5484.jpg',
     value: 'N-JFET (RF), VGS(off) -0,5 až -4,0 V, IDSS 4,0-10 mA (@ VDS=15 V)',
     notes:
       'SMD verze 2N5485 (stejný křemíkový čip, stejný datasheet, jen SOT-23 pouzdro a nižší PD) — ' +
@@ -4478,6 +4483,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   {
     name: 'MMBF5486',
     packageType: 'SOT-23 (SMD), G/S/D (S/D vzájemně zaměnitelné), značení na pouzdře: 6H',
+    schematicImage: '2N5484.jpg',
     value: 'N-JFET (RF), VGS(off) -2,0 až -6,0 V, IDSS 8,0-20 mA (@ VDS=15 V)',
     notes:
       'SMD verze 2N5486 (stejný křemíkový čip, stejný datasheet, jen SOT-23 pouzdro a nižší PD) — ' +
@@ -4494,6 +4500,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: 'BSR58LT1',
     packageType:
       'SOT-23 (SMD), 3 vývody: 1=drain, 2=source, 3=gate (case 318, style 10)',
+    schematicImage: 'BSR58LT1.jpg',
     value: 'N-JFET (depletion, chopper), VDG max -40 V, VGS(off) -0,8 až -4,0 V, IDSS 8–80 mA',
     notes:
       'JFET chopper tranzistor, ON Semiconductor (datasheet BSR58LT1/D, rev. 1, srpen 2005), ' +
@@ -4514,6 +4521,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: 'MMBFJ177LT1G',
     packageType:
       'SOT-23 (SMD), 3 vývody: 1=drain, 2=source, 3=gate (case 318-08, style 10)',
+    schematicImage: 'MMBFJ177LT1G.jpg',
     value: 'P-JFET (depletion, chopper), VDG max 25 V, VGS(off) 0,8–2,5 V, IDSS 1,5–20 mA',
     notes:
       '⚠️ P-kanálový JFET (na rozdíl od dosud zavedených N-kanálových JFETů 2N5457/BF245/BSR58LT1 ' +
@@ -4531,6 +4539,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   {
     name: 'J110',
     packageType: 'TO-92 (case 29, style 5), 3 vývody: 1=drain, 2=source, 3=gate',
+    schematicImage: 'J110.jpg',
     value: 'N-JFET (depletion, obecné použití), VGS -25 V, RDS(on) max 18 Ω, IDSS min 10 mA',
     notes:
       'JFET pro obecné použití (audio zesilovače, analogové spínače, choppery), ON Semiconductor ' +
@@ -5972,7 +5981,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 8;
+export const SEED_LIBRARY_VERSION = 9;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),

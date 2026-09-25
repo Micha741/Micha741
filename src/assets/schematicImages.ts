@@ -38,4 +38,8 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'SKKT92.jpg': require('../../assets/schematics/SKKT92.jpg'),
   'TYN50W-1600T.jpg': require('../../assets/schematics/TYN50W-1600T.jpg'),
   'BTA330.jpg': require('../../assets/schematics/BTA330.jpg'),
+  '2N5484.jpg': require('../../assets/schematics/2N5484.jpg'),
+  'BSR58LT1.jpg': require('../../assets/schematics/BSR58LT1.jpg'),
+  'MMBFJ177LT1G.jpg': require('../../assets/schematics/MMBFJ177LT1G.jpg'),
+  'J110.jpg': require('../../assets/schematics/J110.jpg'),
 };
