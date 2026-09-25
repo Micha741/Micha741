@@ -4018,6 +4018,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   },
   {
     name: 'IRF540NS',
+    schematicImage: 'IRF540NS.jpg',
     packageType:
       'D2Pak (SMD) — POZOR, jiné pouzdro než TO-220 „IRF540N"! Vývody/pady: 1=gate, 2=drain, 3=source. ' +
       'Nízkoprofilová THT varianta stejné elektrické rodiny: IRF540NL v pouzdře TO-262.',
@@ -4193,6 +4194,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   },
   {
     name: 'IRF9540NS',
+    schematicImage: 'IRF9540NS.jpg',
     packageType:
       'D2Pak (SMD, „IRF9540NS") nebo TO-262 (nízkoprofilová THT, „IRF9540NL") — POZOR, jiné pouzdro ' +
       'než TO-220 „IRF9540N"! Vývody/pady: 1=gate, 2=drain, 3=source (u TO-262 i pin 4=drain).',
@@ -5991,7 +5993,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 12;
+export const SEED_LIBRARY_VERSION = 13;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
