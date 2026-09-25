@@ -700,6 +700,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     value:
       'Evaluační deska pro ROHM RPR-0521RS — kombinovaný senzor přiblížení (PS) a okolního ' +
       'osvětlení (ALS), I2C rozhraní, piny VDD/GND/SDA/SCL/INT',
+    schematicImage: 'RPR-0521RS-EVK-001.jpg',
     notes:
       'ROHM "RPR-0521RS-EVK-001 Manual" (User\'s Guide, dok. č. 60UG059E Rev.001, leden 2018) — ' +
       '⚠️ jde o User\'s Guide k evaluační desce, NIKOLI o plný datasheet čipu RPR-0521RS — obsahuje ' +

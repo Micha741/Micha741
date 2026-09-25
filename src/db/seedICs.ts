@@ -3362,6 +3362,7 @@ const IC_SPECS: IcSpec[] = [
     value:
       'DVOUKANÁLOVÝ optočlen (2× fototranzistorový optočlen v jednom pouzdře) s galvanickým ' +
       'oddělením, CTR 40–80 % @IF=10mA/VCE=5V, izolační napětí Viso 3000 Vrms, BVCEO 70 V',
+    schematicImage: 'ILD205T.jpg',
     notes:
       'Vishay Semiconductors "ILD205T/206T/207T/211T/213T/217T — Optocoupler, Phototransistor ' +
       'Output, Dual Channel, SOIC-8 package" (dok. č. 83647, rev. 1.4, 26.10.2004). ⚠️ NOVÁ ' +
@@ -3393,6 +3394,7 @@ const IC_SPECS: IcSpec[] = [
     value:
       'DVOUKANÁLOVÝ optočlen, CTR 63–125 % @IF=10mA/VCE=5V, izolační napětí Viso 3000 Vrms, ' +
       'BVCEO 70 V',
+    schematicImage: 'ILD205T.jpg',
     notes:
       'Vishay "ILD205T/206T/207T/211T/213T/217T" — součást řady, viz záznam "ILD205T" v této ' +
       'knihovně pro plné společné elektrické/mechanické specifikace. CTRDC @VCE=5V/IF=10mA: ' +
@@ -3405,6 +3407,7 @@ const IC_SPECS: IcSpec[] = [
     value:
       'DVOUKANÁLOVÝ optočlen, CTR 100–200 % @IF=10mA/VCE=5V, izolační napětí Viso 3000 Vrms, ' +
       'BVCEO 70 V',
+    schematicImage: 'ILD205T.jpg',
     notes:
       'Vishay "ILD205T/206T/207T/211T/213T/217T" — součást řady, viz záznam "ILD205T" v této ' +
       'knihovně pro plné společné elektrické/mechanické specifikace. Nejvyšší CTR varianta s ' +
@@ -3417,6 +3420,7 @@ const IC_SPECS: IcSpec[] = [
     packageType: 'shodné s ILD205T — viz jeho záznam pro plné mechanické specifikace',
     value: 'DVOUKANÁLOVÝ optočlen, CTR > 20 % @IF=10mA/VCE=5V, izolační napětí Viso 3000 Vrms, ' +
       'BVCEO 70 V',
+    schematicImage: 'ILD205T.jpg',
     notes:
       'Vishay "ILD205T/206T/207T/211T/213T/217T" — součást řady, viz záznam "ILD205T" v této ' +
       'knihovně pro plné společné elektrické/mechanické specifikace. ⚠️ Datasheet uvádí pro ' +
@@ -3429,6 +3433,7 @@ const IC_SPECS: IcSpec[] = [
     packageType: 'shodné s ILD205T — viz jeho záznam pro plné mechanické specifikace',
     value: 'DVOUKANÁLOVÝ optočlen, CTR > 100 % @IF=10mA/VCE=5V, izolační napětí Viso 3000 Vrms, ' +
       'BVCEO 70 V',
+    schematicImage: 'ILD205T.jpg',
     notes:
       'Vishay "ILD205T/206T/207T/211T/213T/217T" — součást řady, viz záznam "ILD205T" v této ' +
       'knihovně pro plné společné elektrické/mechanické specifikace. ⚠️ Datasheet uvádí pro ' +
@@ -3441,6 +3446,7 @@ const IC_SPECS: IcSpec[] = [
     packageType: 'shodné s ILD205T — viz jeho záznam pro plné mechanické specifikace',
     value: 'DVOUKANÁLOVÝ optočlen, CTR > 100 % @IF=1mA/VCE=5V, izolační napětí Viso 3000 Vrms, ' +
       'BVCEO 70 V',
+    schematicImage: 'ILD205T.jpg',
     notes:
       'Vishay "ILD205T/206T/207T/211T/213T/217T" — součást řady, viz záznam "ILD205T" v této ' +
       'knihovně pro plné společné elektrické/mechanické specifikace. ⚠️ POZOR: na rozdíl od ' +
