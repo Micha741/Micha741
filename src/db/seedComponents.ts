@@ -3406,6 +3406,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     packageType:
       'TO-18 — vývody: 1=emitor, 2=báze, 3=kolektor (kolektor je spojen s kovovým pouzdrem/case!)',
     value: 'NPN, 40 V, 800 mA',
+    schematicImage: '2N2221A.jpg',
     notes:
       'Malovýkonový bipolární tranzistor. Pořadí vývodů (1=E, 2=B, 3=K) a spojení kolektoru s pouzdrem ' +
       'potvrzeno dle MIL-PRF-19500/255 (Microchip DS00005314A) pro celou rodinu 2N222x v TO-18 — ' +
@@ -3418,6 +3419,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'TO-18 (TO-206AA) — vývody: 1=emitor, 2=báze, 3=kolektor (kolektor spojen s pouzdrem); ' +
       'existují i SMD varianty UA (4 vývody)/UB/UBC (keramický leadless chip carrier)',
     value: 'NPN, VCEO 50 V (MIL spec), IC 800 mA, hFE 35–150 (@ IC=1 mA)',
+    schematicImage: '2N2221A.jpg',
     notes:
       'Radiačně odolný (radiation hardened) NPN spínací tranzistor kvalifikovaný dle MIL-PRF-19500/255 ' +
       '(vojenské/kosmické aplikace; třídy odolnosti JANTXV/JANS 3K až 1MEG rad Si). Menší sourozenec ' +
@@ -3440,6 +3442,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     packageType:
       'TO-18 — vývody: 1=emitor, 2=báze, 3=kolektor (kolektor je spojen s kovovým pouzdrem/case!)',
     value: 'NPN, VCEO 40–50 V (dle třídy/výrobce), VCBO 75 V, IC 600–800 mA',
+    schematicImage: '2N2221A.jpg',
     notes:
       'OPRAVA pořadí vývodů: dříve uvedeno chybně jako 1=kolektor,2=báze,3=emitor (převzato z odlišné ' +
       'konvence TO-92 Motorola). Dle MIL-PRF-19500/255 (Microchip DS00005314A) je pro TO-18 2N222x ' +
@@ -3542,6 +3545,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     packageType:
       'TO-18 — vývody: 1=emitor, 2=báze, 3=kolektor (kolektor je spojen s kovovým pouzdrem/case!)',
     value: 'PNP, 40 V, 600 mA',
+    schematicImage: '2N2221A.jpg',
     notes:
       'Malovýkonový bipolární tranzistor. Pořadí vývodů (1=E, 2=B, 3=K) a spojení kolektoru s pouzdrem ' +
       'odvozeno z konvence TO-18 dle MIL-PRF-19500/255 pro rodinu 2N222x/2N29xx ve stejném pouzdře ' +
@@ -5993,7 +5997,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 13;
+export const SEED_LIBRARY_VERSION = 14;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
