@@ -2665,6 +2665,7 @@ const DIODE_SPECS: PartSpec[] = [
   {
     name: 'CL05M6F',
     packageType: 'SOD-123FL (SMD), 2 vývody (anoda/katoda), pásková balení 3000ks/7"',
+    schematicImage: 'CL05M6F.jpg',
     value:
       'Proudově omezující dioda (Current Limiting Diode / CLD, konstantní proudový zdroj), ' +
       'IP(nom) 5,6 mA, VAK max 190 V, Ptot 0,7 W (1,2 W při větší chladicí plošce)',
@@ -3011,6 +3012,7 @@ const DIODE_SPECS: PartSpec[] = [
   },
   {
     name: 'SKKT 92 (SEMIPACK 1)',
+    schematicImage: 'SKKT92.jpg',
     packageType:
       'šroubovací výkonový modul SEMIPACK 1, keramická izolační destička (přenos tepla přes ' +
       'destičku z oxidu hlinitého), tvrdé pájené spoje, rozměry 93×30×9mm (case A46), 3 ' +
@@ -3046,6 +3048,7 @@ const DIODE_SPECS: PartSpec[] = [
   {
     name: 'SKKT 92B (SEMIPACK 1)',
     packageType: 'shodné s SKKT 92 (case A48) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'SKKT92.jpg',
     value:
       'Duální tyristorový modul (2× SCR se společnou anodou), ITAV 95 A/tyristor, ITRMS 150 A, ' +
       'VRRM/VDRM 800–1800 V dle objednacího kódu',
@@ -3061,6 +3064,7 @@ const DIODE_SPECS: PartSpec[] = [
   {
     name: 'SKKH 92 (SEMIPACK 1)',
     packageType: 'shodné s SKKT 92 (case A47) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'SKKT92.jpg',
     value:
       'Poloviční řízený modul (1× tyristor SCR + 1× dioda), ITAV 95 A, ITRMS 150 A, VRRM/VDRM ' +
       '800–1800 V dle objednacího kódu',
@@ -5966,7 +5970,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 6;
+export const SEED_LIBRARY_VERSION = 7;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
