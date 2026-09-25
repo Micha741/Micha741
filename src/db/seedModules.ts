@@ -497,6 +497,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     value:
       '6,86" IPS TFT displej 480×1280 (RGB stripe), 16,7M barev, MIPI-DSI 4-lane, jas 920 cd/m² ' +
       'typ., s 5bodovým kapacitním dotykovým panelem (I2C, FT7311)',
+    schematicImage: 'ATM0680L2A-CT.jpg',
     notes:
       'AZ Displays "ATM0680L2A-CT TFT Module" (specifikace ver. 1.1, srpen 2019) — kompletní ' +
       'displejový modul (LCD panel + řadič + LED podsvícení + kapacitní dotykový senzor), první ' +
@@ -527,6 +528,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     value:
       '6,86" IPS TFT displej 480×1280 (RGB stripe), 16,7M barev, MIPI-DSI 4-lane, jas 1100 cd/m² ' +
       'typ. — bez dotykové vrstvy',
+    schematicImage: 'ATM0680L2A.jpg',
     notes:
       'AZ Displays "ATM0680L2A TFT Module" (specifikace ver. 1.3, srpen 2019) — ⚠️ stejný LCD ' +
       'panel/řadič/podsvícení jako dotyková verze ATM0680L2A-CT (samostatný záznam), ale BEZ ' +

@@ -2598,6 +2598,7 @@ const IC_SPECS: IcSpec[] = [
     value:
       'USB-I2C most (single-chip USB to I2C interface), USB 2.0 Full Speed, I2C do 3,4 MHz ' +
       '(High Speed mode), VCC 2,97–5,5 V',
+    schematicImage: 'FT200XD.jpg',
     notes:
       'FTDI (Future Technology Devices International) FT200XD "USB I2C Slave IC Datasheet" ' +
       'v1.3 (dok. FT_000628). Jednočipové řešení USB↔I2C bez nutnosti psát USB firmware — celý ' +
