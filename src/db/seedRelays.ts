@@ -6,6 +6,7 @@ interface RelaySpec {
   value: string;
   notes: string;
   tags: string;
+  schematicImage?: string;
 }
 
 const RELAY_SPECS: RelaySpec[] = [
@@ -718,6 +719,7 @@ export function buildRelaySeed(): ComponentInput[] {
     quantity: 0,
     location: null,
     datasheetUrl: null,
+    schematicImage: spec.schematicImage ?? null,
     notes: spec.notes,
     tags: spec.tags,
   }));

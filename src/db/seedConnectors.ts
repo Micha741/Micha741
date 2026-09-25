@@ -6,6 +6,7 @@ interface ConnectorSpec {
   value: string;
   notes: string;
   tags: string;
+  schematicImage?: string;
 }
 
 const CONNECTOR_SPECS: ConnectorSpec[] = [
@@ -169,6 +170,7 @@ export function buildConnectorSeed(): ComponentInput[] {
     quantity: 0,
     location: null,
     datasheetUrl: null,
+    schematicImage: spec.schematicImage ?? null,
     notes: spec.notes,
     tags: spec.tags,
   }));

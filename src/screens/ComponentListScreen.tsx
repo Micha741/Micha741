@@ -20,6 +20,7 @@ import {
 } from '../db/componentRepository';
 import type { ElectronicComponent } from '../types/component';
 import { COMPONENT_CATEGORIES } from '../types/component';
+import { fetchRemoteLibraryVersion } from '../services/libraryVersionCheck';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ComponentList'>;
 
@@ -86,6 +87,25 @@ export default function ComponentListScreen({ navigation }: Props) {
                           ? `Doplněno ${added} nových, aktualizováno ${updated} stávajících součástek.`
                           : 'Výchozí knihovna je již aktuální.'
                       }\nVerze knihovny: ${codeVersion}.`
+                    );
+                  },
+                },
+                {
+                  text: 'Zkontrolovat online (GitHub)',
+                  onPress: async () => {
+                    const remote = await fetchRemoteLibraryVersion();
+                    if (!remote) {
+                      Alert.alert(
+                        'Online kontrola',
+                        'Kontrolu se nepodařilo provést (jsi offline, nebo GitHub momentálně neodpovídá). Appka funguje dál normálně offline.'
+                      );
+                      return;
+                    }
+                    Alert.alert(
+                      'Online kontrola',
+                      remote.version > codeVersion
+                        ? `Na GitHubu je dostupná novější verze knihovny (${remote.version}) než máš v nainstalované appce (${codeVersion}). Stáhni nejnovější kód (git pull) a appku znovu sestav.`
+                        : `Máš nainstalovanou nejnovější verzi knihovny (${codeVersion}).`
                     );
                   },
                 },

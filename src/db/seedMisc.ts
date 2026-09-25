@@ -6,6 +6,7 @@ interface MiscSpec {
   value: string;
   notes: string;
   tags: string;
+  schematicImage?: string;
 }
 
 const MISC_SPECS: MiscSpec[] = [
@@ -306,6 +307,7 @@ export function buildMiscSeed(): ComponentInput[] {
     quantity: 0,
     location: null,
     datasheetUrl: null,
+    schematicImage: spec.schematicImage ?? null,
     notes: spec.notes,
     tags: spec.tags,
   }));

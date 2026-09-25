@@ -47,8 +47,8 @@ export async function createComponent(
   const now = new Date().toISOString();
   const result = await db.runAsync(
     `INSERT INTO components
-      (name, category, manufacturer, packageType, value, quantity, location, datasheetUrl, notes, tags, createdAt, updatedAt)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      (name, category, manufacturer, packageType, value, quantity, location, datasheetUrl, notes, tags, schematicImage, createdAt, updatedAt)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       input.name,
       input.category,
@@ -60,6 +60,7 @@ export async function createComponent(
       input.datasheetUrl,
       input.notes,
       input.tags,
+      input.schematicImage,
       now,
       now,
     ]
@@ -76,7 +77,7 @@ export async function updateComponent(
   await db.runAsync(
     `UPDATE components SET
       name = ?, category = ?, manufacturer = ?, packageType = ?, value = ?,
-      quantity = ?, location = ?, datasheetUrl = ?, notes = ?, tags = ?, updatedAt = ?
+      quantity = ?, location = ?, datasheetUrl = ?, notes = ?, tags = ?, schematicImage = ?, updatedAt = ?
      WHERE id = ?`,
     [
       input.name,
@@ -89,6 +90,7 @@ export async function updateComponent(
       input.datasheetUrl,
       input.notes,
       input.tags,
+      input.schematicImage,
       now,
       id,
     ]
@@ -124,6 +126,7 @@ type ExistingSeedRow = {
   notes: string | null;
   tags: string | null;
   datasheetUrl: string | null;
+  schematicImage: string | null;
 };
 
 export interface SyncSeedComponentsResult {
@@ -136,7 +139,7 @@ export async function syncSeedComponents(
   options: { updateExisting: boolean } = { updateExisting: false }
 ): Promise<SyncSeedComponentsResult> {
   const existing = await db.getAllAsync<ExistingSeedRow>(
-    'SELECT id, name, category, manufacturer, packageType, value, notes, tags, datasheetUrl FROM components'
+    'SELECT id, name, category, manufacturer, packageType, value, notes, tags, datasheetUrl, schematicImage FROM components'
   );
   const existingByName = new Map(existing.map((row) => [row.name.toLowerCase(), row]));
 
@@ -162,7 +165,8 @@ export async function syncSeedComponents(
         (match.value ?? '') !== (seed.value ?? '') ||
         (match.notes ?? '') !== (seed.notes ?? '') ||
         (match.tags ?? '') !== (seed.tags ?? '') ||
-        (match.datasheetUrl ?? '') !== (seed.datasheetUrl ?? '');
+        (match.datasheetUrl ?? '') !== (seed.datasheetUrl ?? '') ||
+        (match.schematicImage ?? '') !== (seed.schematicImage ?? '');
 
       if (!changed) continue;
 
@@ -170,7 +174,7 @@ export async function syncSeedComponents(
       await db.runAsync(
         `UPDATE components SET
           category = ?, manufacturer = ?, packageType = ?, value = ?,
-          notes = ?, tags = ?, datasheetUrl = ?, updatedAt = ?
+          notes = ?, tags = ?, datasheetUrl = ?, schematicImage = ?, updatedAt = ?
          WHERE id = ?`,
         [
           seed.category,
@@ -180,6 +184,7 @@ export async function syncSeedComponents(
           seed.notes,
           seed.tags,
           seed.datasheetUrl,
+          seed.schematicImage,
           now,
           match.id,
         ]

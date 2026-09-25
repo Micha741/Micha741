@@ -1,11 +1,21 @@
 import { useCallback, useState } from 'react';
-import { Alert, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  Alert,
+  Image,
+  Linking,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useFocusEffect } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { deleteComponent, getComponent } from '../db/componentRepository';
 import type { ElectronicComponent } from '../types/component';
+import { SCHEMATIC_IMAGES } from '../assets/schematicImages';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ComponentDetail'>;
 
@@ -64,6 +74,17 @@ export default function ComponentDetailScreen({ route, navigation }: Props) {
       <Field label="Umístění" value={item.location} />
       <Field label="Tagy" value={item.tags} />
 
+      {item.schematicImage && SCHEMATIC_IMAGES[item.schematicImage] ? (
+        <View style={styles.field}>
+          <Text style={styles.fieldLabel}>Schéma zapojení</Text>
+          <Image
+            source={SCHEMATIC_IMAGES[item.schematicImage]}
+            style={styles.schematic}
+            resizeMode="contain"
+          />
+        </View>
+      ) : null}
+
       {item.datasheetUrl ? (
         <Pressable style={styles.field} onPress={() => Linking.openURL(item.datasheetUrl!)}>
           <Text style={styles.fieldLabel}>Datasheet</Text>
@@ -101,6 +122,13 @@ const styles = StyleSheet.create({
   },
   fieldLabel: { fontSize: 12, color: '#888', textTransform: 'uppercase' },
   fieldValue: { fontSize: 16, color: '#111', marginTop: 2 },
+  schematic: {
+    width: '100%',
+    height: 260,
+    marginTop: 8,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+  },
   link: { color: '#2f6fed', textDecorationLine: 'underline' },
   actions: { flexDirection: 'row', marginTop: 24, gap: 12 },
   button: { flex: 1, paddingVertical: 12, borderRadius: 10, alignItems: 'center' },

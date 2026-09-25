@@ -6,6 +6,7 @@ interface CoilSpec {
   value: string;
   notes: string;
   tags: string;
+  schematicImage?: string;
 }
 
 const COIL_SPECS: CoilSpec[] = [
@@ -483,6 +484,7 @@ export function buildCoilSeed(): ComponentInput[] {
     quantity: 0,
     location: null,
     datasheetUrl: null,
+    schematicImage: spec.schematicImage ?? null,
     notes: spec.notes,
     tags: spec.tags,
   }));

@@ -6,6 +6,7 @@ interface IcSpec {
   value: string;
   notes: string;
   tags: string;
+  schematicImage?: string;
 }
 
 const IC_SPECS: IcSpec[] = [
@@ -3830,6 +3831,7 @@ export function buildIcSeed(): ComponentInput[] {
     quantity: 0,
     location: null,
     datasheetUrl: null,
+    schematicImage: spec.schematicImage ?? null,
     notes: spec.notes,
     tags: spec.tags,
   }));

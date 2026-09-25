@@ -37,6 +37,8 @@ export interface ElectronicComponent {
   datasheetUrl: string | null;
   notes: string | null;
   tags: string | null;
+  /** Klíč do SCHEMATIC_IMAGES (src/assets/schematicImages.ts), např. "BSS138PS.png". */
+  schematicImage: string | null;
   createdAt: string;
   updatedAt: string;
 }

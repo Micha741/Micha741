@@ -39,6 +39,7 @@ export default function ComponentFormScreen({ route, navigation }: Props) {
   const [datasheetUrl, setDatasheetUrl] = useState('');
   const [tags, setTags] = useState(prefill?.tags ?? '');
   const [notes, setNotes] = useState(prefill?.notes ?? '');
+  const [schematicImage, setSchematicImage] = useState<string | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -55,6 +56,7 @@ export default function ComponentFormScreen({ route, navigation }: Props) {
         setDatasheetUrl(item.datasheetUrl ?? '');
         setTags(item.tags ?? '');
         setNotes(item.notes ?? '');
+        setSchematicImage(item.schematicImage);
       });
     }, [db, editingId])
   );
@@ -77,6 +79,7 @@ export default function ComponentFormScreen({ route, navigation }: Props) {
       datasheetUrl: nullableText(datasheetUrl),
       notes: nullableText(notes),
       tags: nullableText(tags),
+      schematicImage,
     };
 
     if (editingId) {

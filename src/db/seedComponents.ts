@@ -36,6 +36,7 @@ function buildResistorSeed(): ComponentInput[] {
         quantity: 0,
         location: null,
         datasheetUrl: null,
+        schematicImage: null,
         notes: 'Metalizovaný rezistor, řada E12, tolerance 5 %, 0,25 W',
         tags: 'rezistor,E12,0.25W,5%',
       });
@@ -96,6 +97,7 @@ function buildCapacitorSeed(): ComponentInput[] {
     quantity: 0,
     location: null,
     datasheetUrl: null,
+    schematicImage: null,
     notes: spec.notes,
     tags: `kondenzátor,${spec.type.split(' ')[0]}`,
   }));
@@ -107,6 +109,8 @@ interface PartSpec {
   value: string;
   notes: string;
   tags: string;
+  /** Klíč do SCHEMATIC_IMAGES (src/assets/schematicImages.ts), pokud pro díl existuje schéma. */
+  schematicImage?: string;
 }
 
 const DIODE_SPECS: PartSpec[] = [
@@ -5898,6 +5902,7 @@ function buildFromSpecs(
     quantity: 0,
     location: null,
     datasheetUrl: null,
+    schematicImage: spec.schematicImage ?? null,
     notes: spec.notes,
     tags: spec.tags,
   }));
