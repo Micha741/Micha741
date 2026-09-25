@@ -2858,6 +2858,7 @@ const DIODE_SPECS: PartSpec[] = [
     packageType:
       'SMD ~SMA / ~DO-214AC, rozměry cca 5,3×2,7×2,2mm, pásková balení 7500ks/13", hmotnost ' +
       '~0,07g',
+    schematicImage: 'M1.jpg',
     value:
       'Usměrňovací dioda se standardní dobou zotavení, VRRM 50 V, IFAV 1 A, VF<1,1V @IF=1A, ' +
       'IFSM 27/30 A',
@@ -2883,6 +2884,7 @@ const DIODE_SPECS: PartSpec[] = [
   {
     name: 'M2',
     packageType: 'shodné s M1 (SMA/DO-214AC) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'M1.jpg',
     value: 'Usměrňovací dioda se standardní dobou zotavení, VRRM 100 V, IFAV 1 A',
     notes:
       'Diotec "M1...M7" — součást řady M1-M7, viz záznam "M1" v této knihovně pro plné ' +
@@ -2892,6 +2894,7 @@ const DIODE_SPECS: PartSpec[] = [
   {
     name: 'M3',
     packageType: 'shodné s M1 (SMA/DO-214AC) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'M1.jpg',
     value: 'Usměrňovací dioda se standardní dobou zotavení, VRRM 200 V, IFAV 1 A',
     notes:
       'Diotec "M1...M7" — součást řady M1-M7, viz záznam "M1" v této knihovně pro plné ' +
@@ -2901,6 +2904,7 @@ const DIODE_SPECS: PartSpec[] = [
   {
     name: 'M4',
     packageType: 'shodné s M1 (SMA/DO-214AC) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'M1.jpg',
     value: 'Usměrňovací dioda se standardní dobou zotavení, VRRM 400 V, IFAV 1 A',
     notes:
       'Diotec "M1...M7" — součást řady M1-M7, viz záznam "M1" v této knihovně pro plné ' +
@@ -2910,6 +2914,7 @@ const DIODE_SPECS: PartSpec[] = [
   {
     name: 'M5',
     packageType: 'shodné s M1 (SMA/DO-214AC) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'M1.jpg',
     value: 'Usměrňovací dioda se standardní dobou zotavení, VRRM 600 V, IFAV 1 A',
     notes:
       'Diotec "M1...M7" — součást řady M1-M7, viz záznam "M1" v této knihovně pro plné ' +
@@ -2919,6 +2924,7 @@ const DIODE_SPECS: PartSpec[] = [
   {
     name: 'M6',
     packageType: 'shodné s M1 (SMA/DO-214AC) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'M1.jpg',
     value: 'Usměrňovací dioda se standardní dobou zotavení, VRRM 800 V, IFAV 1 A',
     notes:
       'Diotec "M1...M7" — součást řady M1-M7, viz záznam "M1" v této knihovně pro plné ' +
@@ -2928,6 +2934,7 @@ const DIODE_SPECS: PartSpec[] = [
   {
     name: 'M7',
     packageType: 'shodné s M1 (SMA/DO-214AC) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'M1.jpg',
     value: 'Usměrňovací dioda se standardní dobou zotavení, VRRM 1000 V, IFAV 1 A',
     notes:
       'Diotec "M1...M7" — součást řady M1-M7, viz záznam "M1" v této knihovně pro plné ' +
@@ -3159,6 +3166,7 @@ const BRIDGE_SPECS: PartSpec[] = [
     packageType:
       'SMD pouzdro TO-269AA "MiniDIL SLIM", 4 vývody (~ / ~ / + / -), nízký profil, rozměry cca ' +
       '6,5×5,1×1,65 mm, pásková balení 5000ks/13"',
+    schematicImage: 'S40.jpg',
     value:
       'Jednofázový diodový můstkový usměrňovač (SMD), VRRM 80 V, IFAV 0,8 A, VF<0,95V @0,4A, ' +
       'IFSM 40 A (50Hz)/44 A (60Hz)',
@@ -3184,6 +3192,7 @@ const BRIDGE_SPECS: PartSpec[] = [
   {
     name: 'S80',
     packageType: 'shodné s S40 — viz poznámka u S40 pro plné mechanické specifikace',
+    schematicImage: 'S40.jpg',
     value: 'Jednofázový diodový můstkový usměrňovač (SMD), VRRM 160 V, IFAV 0,8 A',
     notes:
       'Diotec Semiconductor "S40...S500" — součást řady S40–S500, viz záznam "S40" v této ' +
@@ -3195,6 +3204,7 @@ const BRIDGE_SPECS: PartSpec[] = [
   {
     name: 'S125',
     packageType: 'shodné s S40 — viz poznámka u S40 pro plné mechanické specifikace',
+    schematicImage: 'S40.jpg',
     value: 'Jednofázový diodový můstkový usměrňovač (SMD), VRRM 250 V, IFAV 0,8 A',
     notes:
       'Diotec Semiconductor "S40...S500" — součást řady S40–S500, viz záznam "S40" v této ' +
@@ -3206,6 +3216,7 @@ const BRIDGE_SPECS: PartSpec[] = [
   {
     name: 'S250',
     packageType: 'shodné s S40 — viz poznámka u S40 pro plné mechanické specifikace',
+    schematicImage: 'S40.jpg',
     value: 'Jednofázový diodový můstkový usměrňovač (SMD), VRRM 600 V, IFAV 0,8 A',
     notes:
       'Diotec Semiconductor "S40...S500" — součást řady S40–S500, viz záznam "S40" v této ' +
@@ -3217,6 +3228,7 @@ const BRIDGE_SPECS: PartSpec[] = [
   {
     name: 'S380',
     packageType: 'shodné s S40 — viz poznámka u S40 pro plné mechanické specifikace',
+    schematicImage: 'S40.jpg',
     value: 'Jednofázový diodový můstkový usměrňovač (SMD), VRRM 800 V, IFAV 0,8 A',
     notes:
       'Diotec Semiconductor "S40...S500" — součást řady S40–S500, viz záznam "S40" v této ' +
@@ -3228,6 +3240,7 @@ const BRIDGE_SPECS: PartSpec[] = [
   {
     name: 'S500',
     packageType: 'shodné s S40 — viz poznámka u S40 pro plné mechanické specifikace',
+    schematicImage: 'S40.jpg',
     value: 'Jednofázový diodový můstkový usměrňovač (SMD), VRRM 1000 V, IFAV 0,8 A',
     notes:
       'Diotec Semiconductor "S40...S500" — součást řady S40–S500, viz záznam "S40" v této ' +
@@ -5936,7 +5949,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 3;
+export const SEED_LIBRARY_VERSION = 4;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
