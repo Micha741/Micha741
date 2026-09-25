@@ -3325,6 +3325,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'TO-92 — POZOR, pořadí vývodů závisí na výrobci (viz poznámka): ' +
       'Motorola/ON Semi a UTC/Unisonic (většina) = C-B-E, Philips/NXP (SOT54/SC-43A, výjimka) = E-B-C',
     value: 'NPN, VCEO 65 V, IC 100 mA, hFE 110–450 (@ IC=2 mA)',
+    schematicImage: 'BC546.jpg',
     notes:
       '⚠️ PINOUT SE LIŠÍ PODLE VÝROBCE — vždy ověř podle konkrétního kusu: ' +
       '• Motorola/ON Semi TO-92 (Case 29-04, styl 17) a UTC/Unisonic TO-92: 1=kolektor, 2=báze, 3=emitor (většinová konvence). ' +
@@ -3407,6 +3408,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: 'P2N2222A',
     packageType: 'TO-92 (TO-226AA, Case 29-04, styl 17) — vývody: 1=kolektor, 2=báze, 3=emitor',
     value: 'NPN, VCEO 40 V, VCBO 75 V, IC(trvalý) 600 mA, hFE 100–300 (@ IC=150 mA)',
+    schematicImage: 'P2N2222A.jpg',
     notes:
       'Plastová TO-92 verze tranzistoru 2N2222A (elektricky stejná třída "A" jako kovový TO-18 ' +
       '2N2222A, ale nižší proudové/výkonové zatížení pouzdra). Datasheet Motorola P2N2222A/D. ' +
