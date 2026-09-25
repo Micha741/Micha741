@@ -3525,6 +3525,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: 'BC557',
     packageType: 'TO-92 — vývody: 1=kolektor, 2=báze, 3=emitor',
     value: 'PNP, VCEO 45 V, IC 100 mA, hFE 75–800 (@ IC=2 mA, tříděno A/B/C)',
+    schematicImage: 'BC557.jpg',
     notes:
       'PNP komplement k BC546/BC547 (řada BC556/557/558/559). Elektrické parametry ' +
       'dle datasheetu HSMC HBC557 (ekvivalent/druhý zdroj BC557), hodnoty v PNP konvenci ' +
@@ -4791,12 +4792,14 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: '2SA1873',
     packageType:
       'SOT-353 (SC-88, 5 vývodů: 1, 2, 3 dole, 4, 5 nahoře) — dva PNP tranzistory v jednom ' +
-      'pouzdře; kvůli pouze 5 pinům (na rozdíl od 6pinového SOT-363 u BC807U/BC856S) je jeden ' +
-      'vývod pravděpodobně sdílený mezi oběma tranzistory — přesné přiřazení pinů ověř v diagramu ' +
-      'výrobce před pájením; značení na pouzdru "SY" (rank Y) nebo "SGR" (rank GR)',
+      'pouzdře se sdílenou (společnou) bází: 1=emitor T1, 2=báze T1+T2 (společná), 3=emitor T2, ' +
+      '4=kolektor T2, 5=kolektor T1 — potvrzeno dle schématu vývodů v datasheetu JCET (pin 2 je ' +
+      'na schématu vyznačen tečkou jako společný uzel obou bází); značení na pouzdru "SY" (rank Y) ' +
+      'nebo "SGR" (rank GR)',
     value:
-      'Duální PNP tranzistor (2× PNP v pouzdře), VCEO -50 V, IC -150 mA, hFE 120–400 ' +
+      'Duální PNP tranzistor (2× PNP v pouzdře, společná báze), VCEO -50 V, IC -150 mA, hFE 120–400 ' +
       '@IC=-2 mA (dle binu)',
+    schematicImage: '2SA1873.jpg',
     notes:
       'Jiangsu Changjiang Electronics Technology (JCET) 2SA1873 "Dual Transistor (PNP+PNP)" ' +
       '(dok. rev. D, březen 2016) — menší SOT-353 pouzdro (na rozdíl od 6pinového SOT-363 ' +
@@ -4874,11 +4877,12 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   {
     name: 'BC857S',
     packageType:
-      'SOT-363 (SC-70-6), 6 vývodů (piny 1, 2, 3 dole, 4, 5, 6 nahoře), pravděpodobně shodný ' +
-      'pinout 1/4=E1/E2, 2/5=B1/B2, 3/6=C2/C1 jako u BC856S (stejný výrobce/pouzdro/kresba, ' +
-      'ověřeno u BC856S i originálním Siemens datasheetem) — dva nezávislé PNP tranzistory bez ' +
-      'vzájemného ovlivňování; značení na pouzdru "3C"',
+      'SOT-363 (SC-70-6), 6 vývodů (piny 1, 2, 3 dole, 4, 5, 6 nahoře): 1=emitor T1, 2=báze T1, ' +
+      '6=kolektor T1, 4=emitor T2, 5=báze T2, 3=kolektor T2 — potvrzeno dle schématu vývodů v ' +
+      'datasheetu JCET (dva zcela nezávislé PNP tranzistory, žádný sdílený pin, na rozdíl od ' +
+      '5pinového 2SA1873); značení na pouzdru "3C"',
     value: 'Duální PNP tranzistor (2× PNP v pouzdře), VCEO -45 V, IC -0,2 A, hFE 125–630 @IC=-2 mA (bin S)',
+    schematicImage: 'BC857S.jpg',
     notes:
       'Jiangsu Changjiang Electronics Technology (JCET) BC857S "Dual Transistor (PNP+PNP)" ' +
       '(dok. rev. E, březen 2016) — ⚠️ na rozdíl od BC857BV (samostatný záznam, menší SOT-563 ' +
@@ -5997,7 +6001,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 14;
+export const SEED_LIBRARY_VERSION = 15;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
