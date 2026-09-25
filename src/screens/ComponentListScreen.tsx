@@ -12,7 +12,12 @@ import { useSQLiteContext } from 'expo-sqlite';
 import { useFocusEffect } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
-import { listComponents, syncSeedComponents } from '../db/componentRepository';
+import {
+  getCodeLibraryVersion,
+  getSyncedLibraryVersion,
+  listComponents,
+  syncSeedComponents,
+} from '../db/componentRepository';
 import type { ElectronicComponent } from '../types/component';
 import { COMPONENT_CATEGORIES } from '../types/component';
 
@@ -40,8 +45,17 @@ export default function ComponentListScreen({ navigation }: Props) {
       navigation.setOptions({
         headerRight: () => (
           <Pressable
-            onPress={() => {
-              Alert.alert('Výchozí knihovna', 'Jak chceš knihovnu synchronizovat?', [
+            onPress={async () => {
+              const codeVersion = getCodeLibraryVersion();
+              const syncedVersion = await getSyncedLibraryVersion(db);
+              const versionLine =
+                syncedVersion === 0
+                  ? `Verze v kódu appky: ${codeVersion} (dosud nesynchronizováno).`
+                  : syncedVersion < codeVersion
+                    ? `Tvoje knihovna je na verzi ${syncedVersion}, v kódu appky je novější verze ${codeVersion}.`
+                    : `Tvoje knihovna je na aktuální verzi ${syncedVersion}.`;
+
+              Alert.alert('Výchozí knihovna', `${versionLine}\n\nJak chceš synchronizovat?`, [
                 { text: 'Zrušit', style: 'cancel' },
                 {
                   text: 'Jen přidat nové',
@@ -50,9 +64,11 @@ export default function ComponentListScreen({ navigation }: Props) {
                     await reload();
                     Alert.alert(
                       'Výchozí knihovna',
-                      added > 0
-                        ? `Doplněno ${added} součástek z výchozí knihovny.`
-                        : 'Výchozí knihovna je již kompletní.'
+                      `${
+                        added > 0
+                          ? `Doplněno ${added} součástek z výchozí knihovny.`
+                          : 'Výchozí knihovna je již kompletní.'
+                      }\nVerze knihovny: ${codeVersion}.`
                     );
                   },
                 },
@@ -65,9 +81,11 @@ export default function ComponentListScreen({ navigation }: Props) {
                     await reload();
                     Alert.alert(
                       'Výchozí knihovna',
-                      added > 0 || updated > 0
-                        ? `Doplněno ${added} nových, aktualizováno ${updated} stávajících součástek.`
-                        : 'Výchozí knihovna je již aktuální.'
+                      `${
+                        added > 0 || updated > 0
+                          ? `Doplněno ${added} nových, aktualizováno ${updated} stávajících součástek.`
+                          : 'Výchozí knihovna je již aktuální.'
+                      }\nVerze knihovny: ${codeVersion}.`
                     );
                   },
                 },

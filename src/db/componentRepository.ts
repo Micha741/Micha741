@@ -1,6 +1,6 @@
 import { type SQLiteDatabase } from 'expo-sqlite';
 import type { ComponentInput, ElectronicComponent } from '../types/component';
-import { SEED_COMPONENTS } from './seedComponents';
+import { SEED_COMPONENTS, SEED_LIBRARY_VERSION } from './seedComponents';
 
 export async function listComponents(
   db: SQLiteDatabase,
@@ -100,6 +100,19 @@ export async function deleteComponent(db: SQLiteDatabase, id: number): Promise<v
 }
 
 const SEED_DONE_KEY = 'default_components_seeded';
+const LIBRARY_VERSION_KEY = 'seed_library_version';
+
+export async function getSyncedLibraryVersion(db: SQLiteDatabase): Promise<number> {
+  const row = await db.getFirstAsync<{ value: string }>(
+    'SELECT value FROM app_meta WHERE key = ?',
+    [LIBRARY_VERSION_KEY]
+  );
+  return row ? Number(row.value) : 0;
+}
+
+export function getCodeLibraryVersion(): number {
+  return SEED_LIBRARY_VERSION;
+}
 
 type ExistingSeedRow = {
   id: number;
@@ -174,6 +187,11 @@ export async function syncSeedComponents(
       updated += 1;
     }
   });
+
+  await db.runAsync('INSERT OR REPLACE INTO app_meta (key, value) VALUES (?, ?)', [
+    LIBRARY_VERSION_KEY,
+    String(SEED_LIBRARY_VERSION),
+  ]);
 
   return { added, updated };
 }
