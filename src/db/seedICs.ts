@@ -817,6 +817,7 @@ const IC_SPECS: IcSpec[] = [
     value:
       '8× Darlingtonův budič se společnými emitory, kolektorový proud 500 mA trvale/600 mA ' +
       'špičkově na kanál, výstupní napětí do 50 V, vstupní odpor 2,7 kΩ (verze pro 5V TTL/CMOS)',
+    schematicImage: 'ULN2803.jpg',
     notes:
       'STMicroelectronics "ULN2801A, ULN2802A, ULN2803A, ULN2804A — Eight Darlington array" ' +
       '(dok. DocID1536 Rev. 3, listopad 2012) — konkrétně varianta ULN2803A (vstupní odpor ' +
@@ -841,6 +842,7 @@ const IC_SPECS: IcSpec[] = [
     value:
       '8× Darlingtonův budič se společnými emitory, kolektorový proud 500 mA trvale na kanál, ' +
       'výstupní napětí do 50 V, obecná verze pro PMOS/CMOS s vestavěným omezovacím rezistorem',
+    schematicImage: 'ULN2803.jpg',
     notes:
       'STMicroelectronics "ULN2801A/2802A/2803A/2804A" — součást rodiny, viz záznam "ULN2803" ' +
       'v této knihovně pro plné společné elektrické/mechanické specifikace. Obecná (general ' +
@@ -855,6 +857,7 @@ const IC_SPECS: IcSpec[] = [
     value:
       '8× Darlingtonův budič se společnými emitory, kolektorový proud 500 mA trvale na kanál, ' +
       'výstupní napětí do 50 V, vstupní odpor 10,5 kΩ se Zenerovou diodou pro 14-25V PMOS',
+    schematicImage: 'ULN2803.jpg',
     notes:
       'STMicroelectronics "ULN2801A/2802A/2803A/2804A" — součást rodiny, viz záznam "ULN2803" ' +
       'v této knihovně pro plné společné elektrické/mechanické specifikace. Varianta s ' +
@@ -869,6 +872,7 @@ const IC_SPECS: IcSpec[] = [
     value:
       '8× Darlingtonův budič se společnými emitory, kolektorový proud 500 mA trvale na kanál, ' +
       'výstupní napětí do 50 V, vstupní odpor 10,5 kΩ pro 6-15V CMOS/PMOS',
+    schematicImage: 'ULN2803.jpg',
     notes:
       'STMicroelectronics "ULN2801A/2802A/2803A/2804A" — součást rodiny, viz záznam "ULN2803" ' +
       'v této knihovně pro plné společné elektrické/mechanické specifikace. Varianta s ' +
@@ -3276,6 +3280,7 @@ const IC_SPECS: IcSpec[] = [
     value:
       'Optočlen (fototranzistorový optočlen) s galvanickým oddělením, proudový přenosový poměr ' +
       'CTR 50–600 % @IF=5mA/VCE=5V dle rankové třídy, izolační napětí Viso 5000 Vrms, VCEO 35 V',
+    schematicImage: 'EL817.jpg',
     notes:
       'Everlight Electronics "EL817 Series — 4 Pin DIP Phototransistor Photocoupler" (dok. ' +
       'DPC-0000046, rev. 10, vydáno 21.4.2010/aktualizováno 2010-05-29). Druhý optočlen v této ' +
