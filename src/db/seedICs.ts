@@ -387,6 +387,7 @@ const IC_SPECS: IcSpec[] = [
       'TO-220 (T suffix, case 221AB/221A) — vývody: 1=ADJ, 2=výstup (Vout), 3=vstup (Vin), ' +
       'chladicí ploška spojena s pinem 2 (Vout); dostupné i v D²PAK-3 (D2T suffix, case 936, ' +
       'stejný pinout a stejně spojená chladicí ploška)',
+    schematicImage: 'LM317.jpg',
     value:
       'Nastavitelný kladný lineární regulátor, výstup 1,2 až 37 V, výstupní proud přes 1,5 A, ' +
       'Vref 1,25 V typ.',
@@ -604,6 +605,7 @@ const IC_SPECS: IcSpec[] = [
   {
     name: 'NCP330MUTBG',
     packageType: 'UDFN4 (1,2×1,6 mm, rozteč 0,5 mm), exponovaná ploška PAD1',
+    schematicImage: 'NCP330MUTBG.jpg',
     value:
       'Napájecí spínač (load switch) s pozvolným náběhem (soft-start), N-MOSFET RDS(on) 26 mΩ ' +
       'typ., DC proud až 3 A, VIN 1,8–5,5 V',

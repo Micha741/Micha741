@@ -348,6 +348,7 @@ const DIODE_SPECS: PartSpec[] = [
     packageType:
       'X3DFN2 (SMD), rozměry 0,62×0,32×0,24 mm, rozteč 0,35 mm, 2 vývody: 1=katoda, 2=anoda',
     value: 'Schottky dioda, VR 30 V, IF 100 mA (DC), VF max 350 mV @IF=1 mA',
+    schematicImage: 'NSR01L30MXT5G.jpg',
     notes:
       'onsemi "NSR01L30MX — Schottky Barrier Diode" (dok. NSR01L30MX/D, rev. 5, 2026) — extrémně ' +
       'malé pouzdro (velikost srovnatelná s 0201 pasivní SMD součástkou), optimalizováno na nízký ' +
@@ -4632,6 +4633,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   {
     name: 'BC817-16LT1G',
     packageType: 'SOT-23 (SMD), 3 vývody: 1=báze, 2=emitor, 3=kolektor; značení na pouzdře "6A"',
+    schematicImage: 'BC817-16LT1G.jpg',
     value: 'NPN tranzistor, VCEO 45 V, IC 500 mA, hFE 100–250 @IC=100 mA',
     notes:
       'onsemi "BC817-16L, SBC817-16L, BC817-25L, SBC817-25L, BC817-40L, SBC817-40L — General ' +

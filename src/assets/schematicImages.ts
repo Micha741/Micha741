@@ -23,4 +23,8 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   '2N6299SMD.jpg': require('../../assets/schematics/2N6299SMD.jpg'),
   'BC517.jpg': require('../../assets/schematics/BC517.jpg'),
   'KTC3542T.jpg': require('../../assets/schematics/KTC3542T.jpg'),
+  'LM317.jpg': require('../../assets/schematics/LM317.jpg'),
+  'NSR01L30MXT5G.jpg': require('../../assets/schematics/NSR01L30MXT5G.jpg'),
+  'NCP330MUTBG.jpg': require('../../assets/schematics/NCP330MUTBG.jpg'),
+  'BC817-16LT1G.jpg': require('../../assets/schematics/BC817-16LT1G.jpg'),
 };
