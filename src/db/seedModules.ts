@@ -1086,6 +1086,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     value:
       'Indukční (bezkontaktní) přibližovací spínač, klasický feritový typ, spínací vzdálenost ' +
       '3 mm (zápustná montáž), 2vodičové DC zapojení, spínací (NO) kontakt, 5–60 V DC',
+    schematicImage: 'NBB3-V3-Z4.jpg',
     notes:
       'Pepperl+Fuchs "Inductive sensor NBB3-V3-Z4" (301158_eng.xml, vydáno 5. 8. 2019) — ⚠️ jiný ' +
       'výrobce než indukční senzory TURCK v této knihovně (BI1.5U-EG08-RP6X-H1341, ' +
@@ -1607,6 +1608,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     value:
       'Indukční (bezkontaktní) přibližovací spínač, spínací vzdálenost 4 mm (zápustná montáž), ' +
       '3vodičové DC zapojení, PNP výstup, ROZPÍNACÍ (NC) kontakt, 10–30 V DC',
+    schematicImage: 'NBB4-12GM30-E3.jpg',
     notes:
       'Pepperl+Fuchs "Inductive sensor NBB4-12GM30-E3" (087742_eng.xml, vydáno 15. 1. 2015) — ⚠️ ' +
       'POZOR na záměnu s NBB4-12GM30-E2-V3 v této knihovně (samostatný záznam) — přes velmi ' +
@@ -1711,6 +1713,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Indukční (bezkontaktní) přibližovací spínač s otočnou hlavou, spínací vzdálenost 20 mm, ' +
       '4vodičové DC zapojení, krytí IP68/IP69K, rozšířený teplotní rozsah -25 až +100 °C ' +
       '(nejširší v rodině NBB v této knihovně), 10–30 V DC',
+    schematicImage: 'NBB20-U1-A2-T.jpg',
     notes:
       'Pepperl+Fuchs "Inductive sensor NBB20-U1-A2-T" (296370_eng.xml, vydáno 22. 3. 2017) — ⚠️ ' +
       'mechanicky zcela odlišné provedení oproti NBB20-L3M-A2-C3-V1 v této knihovně (obě mají ' +
