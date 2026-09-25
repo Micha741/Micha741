@@ -3594,6 +3594,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: '2N4401',
     packageType: 'TO-92, 3 vývody: 1=emitor, 2=báze, 3=kolektor (pohled zepředu na popsanou stranu)',
     value: 'NPN, VCEO 40 V, IC 600 mA, hFE 100–300 (@ IC=150 mA)',
+    schematicImage: '2N4401.jpg',
     notes:
       'Malovýkonový bipolární NPN tranzistor pro obecné spínací a zesilovací aplikace — komplementární ' +
       'k 2N4403, vyšší proudová zatížitelnost a vyšší hFE při vyšším proudu než u 2N3904. Datasheet ' +
@@ -3613,6 +3614,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: '2N5551',
     packageType: 'TO-92, 3 vývody: 1=emitor, 2=báze, 3=kolektor (pohled zepředu na popsanou stranu)',
     value: 'NPN, VCEO 160 V, VCBO 180 V, IC 600 mA, hFE 80–400 (@ IC=10 mA)',
+    schematicImage: '2N5551.jpg',
     notes:
       'Malovýkonový bipolární NPN tranzistor s vysokým průrazným napětím — komplementární k PNP typu ' +
       '2N5401. Datasheet GTM Corporation (jejich verze „G2N5551"), vydán 2004, revize 2004/11/29. ' +
@@ -4558,6 +4560,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   },
   {
     name: 'ACE8205A',
+    schematicImage: 'ACE8205A.jpg',
     packageType:
       'TSSOP-8 (SMD), dvojice N-MOSFETů se společným pouzdrem: piny 1/8=D1/D2 (společný drain), ' +
       '2,3=S1, 4=G1, 5=G2, 6,7=S2 — vhodné pro battery-protection zapojení se dvěma sériovými ' +
@@ -5981,7 +5984,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 9;
+export const SEED_LIBRARY_VERSION = 10;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
