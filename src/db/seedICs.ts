@@ -1151,6 +1151,7 @@ const IC_SPECS: IcSpec[] = [
       '(V0.6 uváděl GPIO8, GPIO9, GPIO10) — určují boot mód (SPI boot / download boot); ' +
       'kombinace GPIO8=0 a GPIO9=0 je neplatná. Je nutné na ně dbát při návrhu DPS ' +
       '(viz aplikační poznámky výrobce a Technical Reference Manual).',
+    schematicImage: 'ESP32-C3.jpg',
     tags: 'io,mikrokontrolér,soc,esp32,esp32-c3,wifi,bluetooth,ble,risc-v,qfn32',
   },
   {
@@ -1191,6 +1192,7 @@ const IC_SPECS: IcSpec[] = [
       '802.11g MCS7/+14 dBm typ. 180 mA, RX 802.11b/g/n typ. 95–100 mA; BT/BLE TX @0 dBm typ. 130 mA, ' +
       'RX typ. 95–100 mA. Spolehlivost: ESD HBM ±1500 V / CDM ±500 V (JEDEC), MSL3. Strapping piny: ' +
       'MTDI, GPIO0, GPIO2, MTDO, GPIO5 (určují boot mód, napětí VDD_SDIO a další nastavení při resetu).',
+    schematicImage: 'ESP32.jpg',
     tags: 'io,mikrokontrolér,soc,esp32,wifi,bluetooth,ble,xtensa,qfn48',
   },
   {
@@ -1226,6 +1228,7 @@ const IC_SPECS: IcSpec[] = [
       'typ. 80 mA. Krystal: 24–52 MHz, zátěžová kapacita max 32 pF. Strapping/boot piny: GPIO2, ' +
       'GPIO0 a MTDO volí boot mód a SDIO mód; piny SDIO_CMD/SDIO_CLK/SDIO_DATA_0/SDIO_DATA_1 jsou ' +
       'interně vyhrazeny pro připojení vestavěné flash a nedoporučuje se je použít jinak.',
+    schematicImage: 'ESP8285.jpg',
     tags: 'io,mikrokontrolér,soc,esp8285,esp8266,wifi,tensilica,qfn32',
   },
   {
@@ -1260,6 +1263,7 @@ const IC_SPECS: IcSpec[] = [
       'teplota -40 až 125 °C, skladovací -40 až 150 °C. Digitální IO piny mají obousměrnou tri-state ' +
       'strukturu s volitelnou funkcí "hold" (udržení posledního stavu při vypnutí napájení) a ' +
       'ochranu proti přepětí/ESD (snap-back obvod, ~6 V spouštěcí napětí).',
+    schematicImage: 'ESP8089.jpg',
     tags: 'io,wifi,adaptér,sdio,esp8089,qfn32',
   },
   {
@@ -1301,6 +1305,7 @@ const IC_SPECS: IcSpec[] = [
       'RX 802.11b/g/n špička 65 mA; BLE TX @20 dBm špička 320 mA, RX špička 62 mA. Spolehlivost: ' +
       'ESD HBM ±2000 V / CDM ±1000 V, HTOL/HTSL/LTSL/TCT/uHAST dle JEDEC — přísnější ESD hodnoty ' +
       'než starší ESP32-C3 (tam jen orientační údaje v revizích datasheetu).',
+    schematicImage: 'ESP8684.jpg',
     tags: 'io,mikrokontrolér,soc,esp8684,esp32-c2,wifi,bluetooth,ble,risc-v,qfn24',
   },
 

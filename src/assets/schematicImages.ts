@@ -141,4 +141,9 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'ATmega640-1280-2560.jpg': require('../../assets/schematics/ATmega640-1280-2560.jpg'),
   'ATmega1281-2561.jpg': require('../../assets/schematics/ATmega1281-2561.jpg'),
   'AT90CAN128-64-TQFP.jpg': require('../../assets/schematics/AT90CAN128-64-TQFP.jpg'),
+  'ESP32-C3.jpg': require('../../assets/schematics/ESP32-C3.jpg'),
+  'ESP32.jpg': require('../../assets/schematics/ESP32.jpg'),
+  'ESP8285.jpg': require('../../assets/schematics/ESP8285.jpg'),
+  'ESP8089.jpg': require('../../assets/schematics/ESP8089.jpg'),
+  'ESP8684.jpg': require('../../assets/schematics/ESP8684.jpg'),
 };
