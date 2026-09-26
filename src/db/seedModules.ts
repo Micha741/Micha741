@@ -3183,6 +3183,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Průmyslový vizuální senzor (smart kamera) s vlastním obrazovým procesorem, monochromní ' +
       'CMOS snímač 1280×1024 px (SXGA), 50 fps, čtení čárových/2D kódů a OCR, kontrola tvaru/ ' +
       'kontrastu/polohy, Ethernet (100 Mbit/s, EtherNet/IP, PROFINET, FTP, TCP/IP), 24 V DC',
+    schematicImage: 'SBSC-U-AF-R2B.jpg',
     notes:
       'Festo AG & Co. KG "Universal sensor SBSC-U-AF-R2B" (obj. č. 8058736, datový list ' +
       '1.6.2021, interní typový kód "SBSI") — ⚠️ zcela odlišná kategorie kamerového zařízení než ' +
@@ -3210,6 +3211,40 @@ const MODULE_SPECS: ModuleSpec[] = [
       'vibracím dle EN 60068-2-6, proti rázům dle EN 60068-2-27. Certifikace: c UL us (Listed), ' +
       'CE (EU EMC), RCM, KC EMC. RoHS.',
     tags: 'modul,kamera,vizuální-senzor,vision-sensor,čtečka-kódů,barcode,ocr,ethernet,festo,sbsc,průmyslový',
+  },
+  {
+    name: 'SBSC-Q-AF-R3B',
+    packageType:
+      'Kompaktní kvádrové pouzdro s chladicími žebry, tvářená hliníková slitina (eloxovaná) + ' +
+      'kryt ABS s výztuží, rozměry 45×45×76,7 mm, hmotnost 160 g, objímka objektivu CS mount, ' +
+      'konektory M12 (Ethernet 4pin, sériové rozhraní 5pin, napájení/IO 12pin), lze doplnit ' +
+      'ochrannou trubicí objektivu',
+    value:
+      'Průmyslový MONOCHROMNÍ vizuální senzor ("object sensor") s vyměnitelným CS mount ' +
+      'objektivem, CMOS snímač 736×480 px (WideVGA), 50 fps, plná sada geometrických detektorů ' +
+      '(tvar, kontura, hrany, BLOB), BEZ čtení kódů/OCR, Ethernet, 24 V DC',
+    schematicImage: 'SBSC-Q-AF-R3B.jpg',
+    notes:
+      'Festo AG & Co. KG "Object sensor SBSC-Q-AF-R3B" (obj. č. 8058728, datový list 1.6.2021, ' +
+      'typový kód "SBSC") — ⚠️ objektová varianta ve stejné SBSC platformě jako univerzální ' +
+      'senzor SBSC-U-AF-R2B v této knihovně (samostatný záznam) — sdílí stejné pouzdro, stejný ' +
+      'vyměnitelný CS mount objektiv (na rozdíl od integrované pevné optiky u SBSI-Q-AF-R2B-F12-W/ ' +
+      'SBSI-Q-R3B-F6-NR), stejnou plnou programovací kapacitu 255 programů/255 detektorů, ale ' +
+      'NIŽŠÍ rozlišení 736×480 WideVGA (oproti 1280×1024 SXGA u SBSC-U-AF-R2B) a ⚠️ BEZ ČTENÍ ' +
+      'ČÁROVÝCH/2D KÓDŮ A OCR — funkce detektorů omezena na sledování polohy přes kontur, ' +
+      'porovnávání vzorů, porovnávání kontur, detekci hran, kontrast, jas, prahování šedé úrovně, ' +
+      'Vernier caliper a BLOB (stejná sada jako u integrovaně-osvětlených SBSI object/color ' +
+      'senzorů, ale zde s vyměnitelným objektivem místo pevné optiky) — určeno čistě pro ' +
+      'geometrickou/tvarovou inspekci bez identifikace kódů. Sériové rozhraní RS232/RS422 ' +
+      '(5pin M12), Ethernet 4pin M12 100 Mbit/s (EtherNet/IP, FTP, PROFINET, SMB, TCP/IP). ' +
+      'Digitální I/O: 2 vstupy + 2 výstupy + 4 volitelné, PNP/NPN přepínatelné, max. 50 mA. ' +
+      'Napájení 24 V DC (-25 %/+10 %), max. spotřeba 550 mA, klidová spotřeba 200 mA. Provozní ' +
+      'teplota 0 až +50 °C, skladovací -20 až +60 °C. Krytí IP67 s ochrannou trubicí objektivu ' +
+      '(vyšší než IP65 u SBSC-U-AF-R2B se stejnou trubicí). Zařazeno do kategorie "Modul" jako ' +
+      'kompletní osazený přístroj, stejně jako ostatní Festo vizuální senzory v této knihovně. ' +
+      'Odolnost proti vibracím dle EN 60068-2-6, proti rázům dle EN 60068-2-27 (stupeň závažnosti ' +
+      '2). Certifikace: c UL us (Listed), CE (EU EMC), RCM, KC EMC. RoHS.',
+    tags: 'modul,kamera,vizuální-senzor,vision-sensor,object-sensor,monochromní,cs-mount,ethernet,festo,sbsc,průmyslový',
   },
   {
     name: 'SBSI-F-R3C-F6-W',
@@ -4581,6 +4616,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'ISM pásmový transceiver modul, 433/868/915MHz, FSK/GFSK/OOK modulace, citlivost ' +
       '-121dBm, výstupní výkon RFM22B do +20dBm / RFM23B do +13dBm, datová rychlost ' +
       '0,123-256kbps, VDD 1,8-3,6V',
+    schematicImage: 'RFM22B-RFM23B.jpg',
     notes:
       'HOPERF (Hope Microelectronics) "RFM22B/23B — ISM Transceiver Module" (dok. V1.0, 73 ' +
       'stran, postaveno na čipu příbuzném Silicon Labs Si4432). ⚠️ Odlišný přístup od ' +

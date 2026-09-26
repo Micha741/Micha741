@@ -86,4 +86,7 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   '2N3055.jpg': require('../../assets/schematics/2N3055.jpg'),
   'QLT-SSR-10-40A.jpg': require('../../assets/schematics/QLT-SSR-10-40A.jpg'),
   'QLT-SSR-40-120A.jpg': require('../../assets/schematics/QLT-SSR-40-120A.jpg'),
+  'RFM22B-RFM23B.jpg': require('../../assets/schematics/RFM22B-RFM23B.jpg'),
+  'SBSC-Q-AF-R3B.jpg': require('../../assets/schematics/SBSC-Q-AF-R3B.jpg'),
+  'SBSC-U-AF-R2B.jpg': require('../../assets/schematics/SBSC-U-AF-R2B.jpg'),
 };
