@@ -6024,7 +6024,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 31;
+export const SEED_LIBRARY_VERSION = 32;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),

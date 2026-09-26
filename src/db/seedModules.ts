@@ -3459,6 +3459,41 @@ const MODULE_SPECS: ModuleSpec[] = [
     tags: 'modul,senzor,tlak,podtlak,vakuum,mechanický-spínač,pneumatický,atex,festo,vpev,ip65',
   },
   {
+    name: 'SOOE-MS-L-PNLK-T',
+    packageType:
+      'Kompaktní kvádrové pouzdro ("block design"), materiál PC/PMMA, konektor M8×1 A-coded ' +
+      '(3piny, šroubový zámek), montáž skrz díru pro šroub M3, hmotnost 10 g, LED indikace ' +
+      '(zelená=připraveno, žlutá=spínací stav)',
+    value:
+      'Laserový optoelektronický vzdálenostní senzor s IO-Link, měřicí rozsah 40–100 mm, ' +
+      'rozlišení 0,1 mm, přepínatelný PNP/NPN push-pull výstup, 10–30 V DC',
+    schematicImage: 'SOOE-MS-L-PNLK-T.jpg',
+    notes:
+      'Festo AG & Co. KG "Distance sensor SOOE-MS-L-PNLK-T" (obj. č. 8075673, datový list ' +
+      '27.5.2021) — ⚠️ NOVÁ SUB-KATEGORIE senzorů v této knihovně: první LASEROVÝ ' +
+      'vzdálenostní/polohový senzor s IO-LINK rozhraním — na rozdíl od jednoduchých binárních ' +
+      'přibližovacích spínačů (NBB/NBN/CBB v této knihovně) měří SPOJITOU vzdálenost k objektu ' +
+      'v rozsahu 40–100 mm s rozlišením 0,1 mm a opakovatelností 0,5 mm, navíc s digitální ' +
+      'komunikací IO-Link (protokol verze 1.1, "Smart sensor profile", COM2 38,4 kBd, port ' +
+      'třídy A) pro čtení naměřené vzdálenosti (16bit PDV), indikátoru kvality signálu a stavu ' +
+      'přepínacího výstupu (SSC) přímo digitálně, kromě klasického analogového PNP/NPN výstupu. ' +
+      'Princip: červený laser (třída bezpečnosti 1), max. průměr stopy 3 mm při šířce skenu ' +
+      '100 mm, min. detekovatelný průměr objektu 4 mm, referenční materiál standardní bílá 90 % ' +
+      '(100×100 mm). Teplotní koeficient 0,03 %/K, linearita FS 0,75 %. Přepínací výstup: ' +
+      'push-pull, konfigurovatelný PNP (spíná při jasu) nebo NPN (spíná při tmě), max. spínací ' +
+      'kmitočet 270 Hz, max. výstupní proud 100 mA, úbytek napětí 0–1,5 V, pulzní zkratová ' +
+      'ochrana. Funkce časovače přes IO-Link. IO-Link proces. data: výstup 2bit (1bit emitter ' +
+      'disable + 1bit hold), vstup 3 byte (1bit indikátor kvality signálu + 16bit vzdálenost + ' +
+      '2bit spínací signál SSC), min. cyklus 3 ms, paměť 2000 bajtů. Napájení 10–30 V DC, zvlnění ' +
+      'max 10 %, klidový proud 25 mA, ochrana proti přepólování všech vývodů. Nastavení: IO-Link, ' +
+      'potenciometr nebo Teach-in. Krytí IP65/IP67/IP69K (nejvyšší krytí mezi senzory v této ' +
+      'knihovně). Izolační napětí 500 V, odolnost proti rázovému přepětí 1 kV, CRC třída 1 ' +
+      '(nízké nároky na odolnost korozi), stupeň znečištění 3. Provozní teplota 10 až 60 °C. ' +
+      'Zařazeno do kategorie "Modul" jako kompletní osazený přístroj. Certifikace: c UL us ' +
+      '(Listed), CE (EU EMC + RoHS). RoHS.',
+    tags: 'modul,senzor,vzdálenost,laser,optoelektronický,io-link,pnp,npn,festo,sooe,ip69k',
+  },
+  {
     name: 'SRBE-CA3-YR90-MW-22A-1W-C2M20-EX',
     packageType:
       'Kruhová skříň s montážní přírubou dle ISO 5211/VDI-VDE 3845 (velikost AA1) pro montáž na ' +
