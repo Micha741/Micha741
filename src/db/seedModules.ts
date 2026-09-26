@@ -3428,6 +3428,37 @@ const MODULE_SPECS: ModuleSpec[] = [
     tags: 'modul,senzor,tlak,vysokotlaký,tenkovrstvý,npn,analogový,festo,spaw-p25r,displej,g12,nerez',
   },
   {
+    name: 'VPEV-1/8-M12',
+    packageType:
+      'Válcové pouzdro z tvářené hliníkové slitiny, montáž skrz průchozí díru, pneumatická ' +
+      'přípojka vnější závit G1/8, konektor M12×1 (4piny, kruhové provedení dle EN 60947-5-2), ' +
+      'hmotnost 220 g',
+    value:
+      'Vakuový spínač (pneumaticko-elektrický tlakový převodník), měřicí rozsah -0,1 až 0,16 MPa ' +
+      '(-1 až 1,6 bar), 1× mechanický přepínací (toggle) spínací prvek, AC/DC univerzální ' +
+      'zapojení max. 48 V, ATEX certifikace pro zóny 1/2/21/22',
+    schematicImage: 'VPEV-1-8-M12.jpg',
+    notes:
+      'Festo SE & Co. KG "Vacuum switch VPEV-1/8-M12" (obj. č. 192489) — ⚠️ jiná kategorie ' +
+      'tlakových přístrojů Festo v této knihovně než elektronické SPAW/SPAN senzory s LED ' +
+      'displejem (samostatné záznamy): VPEV-... je jednodušší pneumaticko-elektrický převodník ' +
+      'BEZ displeje, s klasickým MECHANICKÝM PŘEPÍNACÍM (toggle) kontaktem místo elektronického ' +
+      'programovatelného PNP/NPN výstupu — mechanicky nastavitelný prahový bod (rozsah nastavení ' +
+      '-0,95 až -0,2 bar, po přestavbě 0,16 až 1,6 bar), podobný princip jako mechanické senzorové ' +
+      'skříně SRBE-CA3-... v této knihovně, ale pro měření tlaku/podtlaku místo polohy ventilu. ' +
+      'Metoda měření: pneumaticko-elektrický převodník tlaku, měřený rozsah -0,1 až 0,16 MPa ' +
+      '(-1 až 1,6 bar / -14,5 až 23,2 psi), provozní médium stlačený vzduch dle ISO 8573-1:2010 ' +
+      '[7:4:4] (mazaný provoz možný, ale pak nelze upustit). Max. frekvence spínání 3 Hz. ' +
+      'Spínací výstup: přepínací funkce, max. napětí AC/DC 48 V, max. výstupní proud 4000 mA, ' +
+      'min. proud zátěže 1 mA @24 V / 10 mA @10 V / 100 mA @5 V. Kategorie spotřebiče: AC-14/ ' +
+      'DC-13 (indukční zátěž), AC-12/DC-12 (ohmická zátěž). Teplota média i okolí -20 až +80 °C. ' +
+      'Krytí IP65. Třída odolnosti korozi KBK 2 (mírné nároky). Shoda s LABS VDMA24364-B1/B2-L ' +
+      '(nízký obsah látek ovlivňujících smáčivost nátěru laku). ATEX certifikace pro zóny ' +
+      '1/2/21/22, CCC, c UL us (Recognized). Zařazeno do kategorie "Modul" jako kompletní osazený ' +
+      'přístroj. Shoda EN 60947-5-1, CE (Low Voltage Directive), UKCA. RoHS.',
+    tags: 'modul,senzor,tlak,podtlak,vakuum,mechanický-spínač,pneumatický,atex,festo,vpev,ip65',
+  },
+  {
     name: 'SRBE-CA3-YR90-MW-22A-1W-C2M20-EX',
     packageType:
       'Kruhová skříň s montážní přírubou dle ISO 5211/VDI-VDE 3845 (velikost AA1) pro montáž na ' +
@@ -3439,6 +3470,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'ventilového pohonu — 1× mechanický přepínací (toggle) spínač s jedním pólem, rozsah ' +
       'detekce úhlu 0–90°, AC/DC univerzální zapojení 0–250 V AC / 0–30 V DC, ATEX certifikace ' +
       'pro zóny 1/2/21/22',
+    schematicImage: 'SRBE-CA3-YR90-MW-22A-1W-C2M20-EX.jpg',
     notes:
       'Festo AG & Co. KG "Sensor box SRBE-CA3-YR90-MW-22A-1W-C2M20-EX" (obj. č. 3471009, datový ' +
       'list 28.7.2021) — ⚠️ jiná koncepce polohové zpětné vazby než NBN3-F31K-E8-K (kompaktní ' +
@@ -3461,6 +3493,34 @@ const MODULE_SPECS: ModuleSpec[] = [
       'skladovací teplota -20 až +60 °C (výbušné prostředí rovněž -20 až +60 °C). Certifikace: CE ' +
       '(ATEX + Low Voltage Directive), RoHS.',
     tags: 'modul,senzor,poloha,mechanický-spínač,ventilová-jednotka,pneumatický-pohon,atex,sil2,festo,srbe,ip67',
+  },
+  {
+    name: 'SRBE-CA3-YR90-MW-22A-2W-C2M20-EX',
+    packageType:
+      'Kruhová skříň s montážní přírubou dle ISO 5211/VDI-VDE 3845 (velikost AA1) pro montáž na ' +
+      'čtvrtotáčkové pohony ventilů, pouzdro tlakově lité hliníkové (ATEX Ex db pevný závěr), ' +
+      'hřídel/šrouby/montážní konzole/pojistný kroužek/disk z vysoce legované nerezi, ukazatel ' +
+      'polohy PC (žlutý/červený), těsnění NBR, kabelová průchodka M20×1,5, hmotnost 1700 g',
+    value:
+      'Mechanická senzorová skříň ("sensor box") pro zpětnou vazbu polohy čtvrtotáčkového ' +
+      'ventilového pohonu — 2× mechanický přepínací (toggle) spínač (dvoupólový), rozsah ' +
+      'detekce úhlu 0–90°, AC/DC univerzální zapojení 0–250 V AC / 0–30 V DC, ATEX certifikace ' +
+      'pro zóny 1/2/21/22',
+    schematicImage: 'SRBE-CA3-YR90-MW-22A-2W-C2M20-EX.jpg',
+    notes:
+      'Festo AG & Co. KG "Sensor box SRBE-CA3-YR90-MW-22A-2W-C2M20-EX" (obj. č. 3471011, datový ' +
+      'list 28.7.2021) — dvoupólová ("2W" = double-pin toggle switch) varianta stejné mechanické ' +
+      'senzorové skříně jako SRBE-CA3-YR90-MW-22A-1W-C2M20-EX v této knihovně (samostatný záznam, ' +
+      'viz tam pro plný popis principu, ATEX certifikace a mechaniky) — ⚠️ liší se POUZE počtem ' +
+      'přepínacích kontaktů: 2 nezávislé přepínací spínače místo 1, a tomu odpovídajícím vyšším ' +
+      'počtem svorek elektrického připojení (14pin místo 10pin u 1W verze) — typicky pro současnou ' +
+      'signalizaci obou koncových poloh ventilu (otevřeno/zavřeno) na dvou nezávislých obvodech ' +
+      'najednou. Mechanicky a certifikačně jinak zcela shodná: stejná hmotnost 1700 g, stejné ' +
+      'materiály, stejný rozsah detekce úhlu 0–90°, stejný max. proud 10 A AC/6 A DC na kontakt, ' +
+      'stejná ATEX certifikace zóny 1/2/21/22 (Ex db IIC T6 Gb, Ex tb IIIC T75°C Db), SIL 2, ' +
+      'krytí IP67, stupeň znečištění 3, provozní/skladovací teplota -20 až +60 °C. Zařazeno do ' +
+      'kategorie "Modul" jako kompletní osazený produkt, stejně jako 1W sourozenecký záznam.',
+    tags: 'modul,senzor,poloha,mechanický-spínač,ventilová-jednotka,pneumatický-pohon,atex,sil2,festo,srbe,ip67,2w',
   },
   {
     name: 'NJ4-12GM-N-5M-Y123257',

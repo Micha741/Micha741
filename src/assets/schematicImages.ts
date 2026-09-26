@@ -89,4 +89,7 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'RFM22B-RFM23B.jpg': require('../../assets/schematics/RFM22B-RFM23B.jpg'),
   'SBSC-Q-AF-R3B.jpg': require('../../assets/schematics/SBSC-Q-AF-R3B.jpg'),
   'SBSC-U-AF-R2B.jpg': require('../../assets/schematics/SBSC-U-AF-R2B.jpg'),
+  'SRBE-CA3-YR90-MW-22A-2W-C2M20-EX.jpg': require('../../assets/schematics/SRBE-CA3-YR90-MW-22A-2W-C2M20-EX.jpg'),
+  'SRBE-CA3-YR90-MW-22A-1W-C2M20-EX.jpg': require('../../assets/schematics/SRBE-CA3-YR90-MW-22A-1W-C2M20-EX.jpg'),
+  'VPEV-1-8-M12.jpg': require('../../assets/schematics/VPEV-1-8-M12.jpg'),
 };
