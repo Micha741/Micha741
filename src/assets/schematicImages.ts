@@ -74,4 +74,6 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'NBB3-V3-Z4.jpg': require('../../assets/schematics/NBB3-V3-Z4.jpg'),
   'NBB4-12GM30-E3.jpg': require('../../assets/schematics/NBB4-12GM30-E3.jpg'),
   'NBB20-U1-A2-T.jpg': require('../../assets/schematics/NBB20-U1-A2-T.jpg'),
+  'CBB4-12GH70-E2.jpg': require('../../assets/schematics/CBB4-12GH70-E2.jpg'),
+  'NBB2-8GM50-E2-5M.jpg': require('../../assets/schematics/NBB2-8GM50-E2-5M.jpg'),
 };

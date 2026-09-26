@@ -1368,6 +1368,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Indukční (bezkontaktní) přibližovací spínač, spínací vzdálenost 2 mm (zápustná montáž), ' +
       'rozšířený teplotní rozsah -40 až +85 °C, 3vodičové DC zapojení, PNP výstup, spínací (NO) ' +
       'kontakt, 5–30 V DC',
+    schematicImage: 'NBB2-8GM50-E2-5M.jpg',
     notes:
       'Pepperl+Fuchs "Inductive sensor NBB2-8GM50-E2-5M" (304615-0070_eng.xml, vydáno 3. 7. ' +
       '2019) — ⚠️ dvojí sourozenecký vztah v rámci skupiny "NBB2-8GM" v této knihovně: (1) ' +
@@ -3107,6 +3108,36 @@ const MODULE_SPECS: ModuleSpec[] = [
       '60947-5-2, UL/CSA certifikace. Dostupné příslušenství: montážní příruba BF 12, konektory/ ' +
       'kabely V1-G/V1-W/V1-G-2M-PUR/V1-W-2M-PUR.',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,pepperl-fuchs,cbb4,pnp,nerez,potravinářský,m12,konektor,ip65',
+  },
+  {
+    name: 'CBB4-12GH70-E2',
+    packageType:
+      'Válcové závitové pouzdro M12×1 (threaded barrel), vysoce legovaná nerezová ocel 1.4404/ ' +
+      'AISI 316L, celková délka 69 mm (38 mm závitové části), Ø10,5 mm, aktivní čelo PEEK, ' +
+      'integrální kabel PUR 2 m (Ø5 mm, 3 žíly 0,34 mm²: BN=L+, BK=výstup, BU=L-), potenciometr ' +
+      'pro nastavení citlivosti, 4× indikační žlutá LED (viditelnost z více úhlů)',
+    value:
+      'Kapacitní (bezkontaktní) přibližovací spínač, zapustitelný ("flush"), spínací vzdálenost ' +
+      '4 mm (nastavitelná potenciometrem), 3vodičové DC zapojení, PNP výstup, spínací (NO) ' +
+      'kontakt, 10–36 V DC',
+    schematicImage: 'CBB4-12GH70-E2.jpg',
+    notes:
+      'Pepperl+Fuchs "Capacitive sensor CBB4-12GH70-E2" (210620_eng.xml, vydáno 14.3.2019) — ' +
+      'elektricky TOTOŽNÝ kapacitní senzor jako CBB4-12GH60-E2-V1 (samostatný záznam v této ' +
+      'knihovně) — stejná polarita PNP/NO, stejné napájení 10–36 V DC, stejná spínací vzdálenost ' +
+      '4 mm nastavitelná potenciometrem, stejné pouzdro z nerezi 316L s čelem PEEK pro ' +
+      'potravinářské/agresivní prostředí — ⚠️ liší se POUZE typem elektrického připojení: ' +
+      'CBB4-12GH60-E2-V1 má odnímatelný zásuvný konektor M12×1, zatímco tato varianta ' +
+      'CBB4-12GH70-E2 má integrální kabel PUR 2 m (obdobný vztah jako mezi konektorovými a ' +
+      'kabelovými variantami indukčních senzorů NBB v této knihovně) — proto i mírně odlišná ' +
+      'celková délka pouzdra (69 mm vs. 59,8 mm) a číslo v označení "-70" místo "-60". Zajištěná ' +
+      'spínací vzdálenost sa 0–2,88 mm. Nízký spínací kmitočet 0–50 Hz (typické pro kapacitní ' +
+      'senzory). Ochrana proti přepólování a pulzní zkratová ochrana. Úbytek napětí max 2,5 V. ' +
+      'Provozní proud 0–100 mA, klidový proud max 12 mA. Funkční bezpečnostní parametry: MTTFd ' +
+      '1272 let, doba mise 20 let, diagnostické pokrytí 0 %. Krytí IP65. Provozní teplota -25 až ' +
+      '+70 °C. Shoda EN/IEC 60947-5-2, UL/CSA certifikace. Dostupné příslušenství: montážní ' +
+      'příruba BF 12.',
+    tags: 'modul,senzor,kapacitní,přibližovací,proximity,pepperl-fuchs,cbb4,pnp,nerez,potravinářský,m12,kabel,ip65',
   },
   {
     name: 'CBB8-18GS75-E2',
