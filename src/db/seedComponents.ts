@@ -3746,6 +3746,40 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,npn,bipolární,darlington,to-220,d44e3,relé,pozor-chladič',
   },
   {
+    name: 'D44E1',
+    packageType:
+      'TO-220AB, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=montážní ploška ' +
+      '(elektricky spojená s kolektorem!)',
+    value: 'NPN Darlington, VCEO 40 V, IC 10 A (trvale), hFE min 1000 (@ IC=5 A)',
+    schematicImage: 'D44E3.jpg',
+    notes:
+      'Central Semiconductor/New Jersey Semi-Conductor "D44E1/D44E2/D44E3 — Silicon NPN ' +
+      'Darlington Power Transistors" — nejnižší napěťová třída rodiny (D44E1=40 V, viz záznam ' +
+      '"D44E3" v této knihovně pro plný popis principu, srovnání obou datasheetů a všechny ' +
+      'sdílené elektrické/mezní hodnoty, které jsou pro celou rodinu D44E1/E2/E3 shodné — liší se ' +
+      'jen jmenovité VCEO/VCES). D44E1: VCEO=VCES=40 V (oproti 60 V u D44E2, 80 V u D44E3), ' +
+      'ostatní parametry (IC=10 A, IB max=1 A, hFE min 1000 @IC=5 A/VCE=5 V, VCE(sat)/VBE(sat), ' +
+      'Ptot, RθJC/RθJA, spínací časy) shodné s D44E3 dle obou zdrojových datasheetů.',
+    tags: 'tranzistor,npn,bipolární,darlington,to-220,d44e1,relé,pozor-chladič',
+  },
+  {
+    name: 'D44E2',
+    packageType:
+      'TO-220AB, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=montážní ploška ' +
+      '(elektricky spojená s kolektorem!)',
+    value: 'NPN Darlington, VCEO 60 V, IC 10 A (trvale), hFE min 1000 (@ IC=5 A)',
+    schematicImage: 'D44E3.jpg',
+    notes:
+      'Central Semiconductor/New Jersey Semi-Conductor "D44E1/D44E2/D44E3 — Silicon NPN ' +
+      'Darlington Power Transistors" — prostřední napěťová třída rodiny (D44E2=60 V, mezi ' +
+      'D44E1=40 V a D44E3=80 V) — viz záznam "D44E3" v této knihovně pro plný popis principu, ' +
+      'srovnání obou datasheetů a všechny sdílené elektrické/mezní hodnoty, které jsou pro celou ' +
+      'rodinu D44E1/E2/E3 shodné — liší se jen jmenovité VCEO/VCES. D44E2: VCEO=VCES=60 V, ' +
+      'ostatní parametry (IC=10 A, IB max=1 A, hFE min 1000 @IC=5 A/VCE=5 V, VCE(sat)/VBE(sat), ' +
+      'Ptot, RθJC/RθJA, spínací časy) shodné s D44E3 dle obou zdrojových datasheetů.',
+    tags: 'tranzistor,npn,bipolární,darlington,to-220,d44e2,relé,pozor-chladič',
+  },
+  {
     name: 'BC517',
     packageType:
       'TO-92 — vývody: 1=kolektor, 2=báze, 3=emitor (3L, rovné nebo ohnuté vývody dle balení)',
@@ -3797,6 +3831,65 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '⚠️ Chladicí ploška (pin 4 i kovový tab) je na potenciálu kolektoru — při montáži na uzemněný ' +
       'nebo sdílený chladič použij izolační podložku, pokud kolektor není na zemním potenciálu.',
     tags: 'tranzistor,npn,bipolární,výkonový,to-220,tip41c,pozor-chladič',
+  },
+  {
+    name: 'TIP41',
+    packageType:
+      'TO-220, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=kolektor ' +
+      '(chladicí ploška pouzdra je elektricky spojená s kolektorem!)',
+    value: 'NPN, VCEO(sus) 40 V (min), IC 6 A (trvale), hFE 15–75 (@ IC=3 A)',
+    schematicImage: 'TIP41C.jpg',
+    notes:
+      'Výkonový bipolární tranzistor, nejnižší napěťová třída rodiny TIP41/41A/41B/41C — viz ' +
+      'záznam "TIP41C" v této knihovně pro plný popis principu a všechny sdílené elektrické/ ' +
+      'mezní hodnoty (Datasheet MOSPEC). PNP komplement TIP42. Mezní hodnoty: VCEO=VCBO=40 V, ' +
+      'VEBO=5,0 V, IC(trvalý)=6 A, ICM=10 A, IB max=2 A, Ptot=65 W @TC=25 °C (odvod 0,52 W/°C), ' +
+      'TJ/Tstg=-65 až +150 °C. RθJC=1,92 °C/W. ICEO max 0,7 mA @VCE=30 V (nižší testovací napětí ' +
+      'než TIP41B/C kvůli nižší napěťové třídě). ICES max 0,4 mA @VCE=40 V/VEB=0. IEBO max ' +
+      '1,0 mA @VEB=5 V. hFE: min 30 @IC=0,3 A/VCE=4 V; min 15, max 75 @IC=3,0 A/VCE=4 V. VCE(sat) ' +
+      'max 1,5 V @IC=6,0 A/IB=600 mA. VBE(on) max 2,0 V @IC=6,0 A/VCE=4,0 V. fT min 3,0 MHz ' +
+      '@IC=500 mA/VCE=10 V/f=1 MHz. ⚠️ Chladicí ploška je na potenciálu kolektoru — použij ' +
+      'izolační podložku při montáži na sdílený chladič.',
+    tags: 'tranzistor,npn,bipolární,výkonový,to-220,tip41,pozor-chladič',
+  },
+  {
+    name: 'TIP41A',
+    packageType:
+      'TO-220, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=kolektor ' +
+      '(chladicí ploška pouzdra je elektricky spojená s kolektorem!)',
+    value: 'NPN, VCEO(sus) 60 V (min), IC 6 A (trvale), hFE 15–75 (@ IC=3 A)',
+    schematicImage: 'TIP41C.jpg',
+    notes:
+      'Výkonový bipolární tranzistor, prostřední napěťová třída rodiny TIP41/41A/41B/41C — viz ' +
+      'záznam "TIP41C" v této knihovně pro plný popis principu a všechny sdílené elektrické/ ' +
+      'mezní hodnoty (Datasheet MOSPEC). PNP komplement TIP42A. Mezní hodnoty: VCEO=VCBO=60 V, ' +
+      'VEBO=5,0 V, IC(trvalý)=6 A, ICM=10 A, IB max=2 A, Ptot=65 W @TC=25 °C (odvod 0,52 W/°C), ' +
+      'TJ/Tstg=-65 až +150 °C. RθJC=1,92 °C/W. ICEO max 0,7 mA @VCE=30 V. ICES max 0,4 mA ' +
+      '@VCE=60 V/VEB=0. IEBO max 1,0 mA @VEB=5 V. hFE: min 30 @IC=0,3 A/VCE=4 V; min 15, max 75 ' +
+      '@IC=3,0 A/VCE=4 V. VCE(sat) max 1,5 V @IC=6,0 A/IB=600 mA. VBE(on) max 2,0 V @IC=6,0 A/' +
+      'VCE=4,0 V. fT min 3,0 MHz @IC=500 mA/VCE=10 V/f=1 MHz. ⚠️ Chladicí ploška je na potenciálu ' +
+      'kolektoru — použij izolační podložku při montáži na sdílený chladič.',
+    tags: 'tranzistor,npn,bipolární,výkonový,to-220,tip41a,pozor-chladič',
+  },
+  {
+    name: 'TIP41B',
+    packageType:
+      'TO-220, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=kolektor ' +
+      '(chladicí ploška pouzdra je elektricky spojená s kolektorem!)',
+    value: 'NPN, VCEO(sus) 80 V (min), IC 6 A (trvale), hFE 15–75 (@ IC=3 A)',
+    schematicImage: 'TIP41C.jpg',
+    notes:
+      'Výkonový bipolární tranzistor, druhá nejvyšší napěťová třída rodiny TIP41/41A/41B/41C — ' +
+      'viz záznam "TIP41C" v této knihovně pro plný popis principu a všechny sdílené elektrické/ ' +
+      'mezní hodnoty (Datasheet MOSPEC). PNP komplement TIP42B. Mezní hodnoty: VCEO=VCBO=80 V, ' +
+      'VEBO=5,0 V, IC(trvalý)=6 A, ICM=10 A, IB max=2 A, Ptot=65 W @TC=25 °C (odvod 0,52 W/°C), ' +
+      'TJ/Tstg=-65 až +150 °C. RθJC=1,92 °C/W. ICEO max 0,7 mA @VCE=60 V (stejné testovací napětí ' +
+      'jako TIP41C). ICES max 0,4 mA @VCE=80 V/VEB=0. IEBO max 1,0 mA @VEB=5 V. hFE: min 30 ' +
+      '@IC=0,3 A/VCE=4 V; min 15, max 75 @IC=3,0 A/VCE=4 V. VCE(sat) max 1,5 V @IC=6,0 A/' +
+      'IB=600 mA. VBE(on) max 2,0 V @IC=6,0 A/VCE=4,0 V. fT min 3,0 MHz @IC=500 mA/VCE=10 V/' +
+      'f=1 MHz. ⚠️ Chladicí ploška je na potenciálu kolektoru — použij izolační podložku při ' +
+      'montáži na sdílený chladič.',
+    tags: 'tranzistor,npn,bipolární,výkonový,to-220,tip41b,pozor-chladič',
   },
   {
     name: 'TIP33C',
@@ -3956,7 +4049,86 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,npn,bipolární,výkonový,sot-32,to-126,bd139,audio',
   },
 
-  { name: 'TIP42C', packageType: 'TO-220', value: 'PNP, 100 V, 6 A', notes: 'Výkonový bipolární tranzistor', tags: 'tranzistor,pnp,výkonový' },
+  {
+    name: 'TIP42C',
+    packageType:
+      'TO-220, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=kolektor ' +
+      '(chladicí ploška pouzdra je elektricky spojená s kolektorem!)',
+    value: 'PNP, VCEO(sus) 100 V (min), IC 6 A (trvale), hFE 15–75 (@ IC=3 A)',
+    schematicImage: 'TIP41C.jpg',
+    notes:
+      'Výkonový bipolární tranzistor, NPN komplement TIP41C (samostatný záznam v této knihovně, ' +
+      'sdílí stejný Mospec datasheet pro rodinu TIP41/41A/41B/41C (NPN) a TIP42/42A/42B/42C ' +
+      '(PNP), veškeré elektrické parametry v tabulkách jsou pro NPN/PNP komplementy shodné). ' +
+      'TIP42C má nejvyšší napěťovou třídu rodiny (TIP42=40 V, TIP42A=60 V, TIP42B=80 V, ' +
+      'TIP42C=100 V). Mezní hodnoty: VCEO=VCBO=100 V, VEBO=5,0 V, IC(trvalý)=6 A, ICM ' +
+      '(špičkově)=10 A, IB max=2 A, Ptot=65 W @TC=25 °C (odvod 0,52 W/°C), TJ/Tstg=-65 až ' +
+      '+150 °C. RθJC=1,92 °C/W. ICEO max 0,7 mA @VCE=60 V. ICES max 0,4 mA @VCE=100 V/VEB=0. ' +
+      'IEBO max 1,0 mA @VEB=5 V. hFE: min 30 @IC=0,3 A/VCE=4 V; min 15, max 75 @IC=3,0 A/VCE=4 V. ' +
+      'VCE(sat) max 1,5 V @IC=6,0 A/IB=600 mA. VBE(on) max 2,0 V @IC=6,0 A/VCE=4,0 V. fT min ' +
+      '3,0 MHz @IC=500 mA/VCE=10 V/f=1 MHz. hfe (malý signál) min 20 @IC=500 mA/VCE=10 V/f=1 kHz. ' +
+      '⚠️ Chladicí ploška (pin 4 i kovový tab) je na potenciálu kolektoru — při montáži na ' +
+      'uzemněný nebo sdílený chladič použij izolační podložku, pokud kolektor není na zemním ' +
+      'potenciálu.',
+    tags: 'tranzistor,pnp,bipolární,výkonový,to-220,tip42c,pozor-chladič',
+  },
+  {
+    name: 'TIP42',
+    packageType:
+      'TO-220, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=kolektor ' +
+      '(chladicí ploška pouzdra je elektricky spojená s kolektorem!)',
+    value: 'PNP, VCEO(sus) 40 V (min), IC 6 A (trvale), hFE 15–75 (@ IC=3 A)',
+    schematicImage: 'TIP41C.jpg',
+    notes:
+      'Výkonový bipolární tranzistor, nejnižší napěťová třída rodiny TIP42/42A/42B/42C — viz ' +
+      'záznam "TIP42C" v této knihovně pro plný popis principu a všechny sdílené elektrické/ ' +
+      'mezní hodnoty (Datasheet MOSPEC). NPN komplement TIP41. Mezní hodnoty: VCEO=VCBO=40 V, ' +
+      'VEBO=5,0 V, IC(trvalý)=6 A, ICM=10 A, IB max=2 A, Ptot=65 W @TC=25 °C (odvod 0,52 W/°C), ' +
+      'TJ/Tstg=-65 až +150 °C. RθJC=1,92 °C/W. ICEO max 0,7 mA @VCE=30 V. ICES max 0,4 mA ' +
+      '@VCE=40 V/VEB=0. IEBO max 1,0 mA @VEB=5 V. hFE: min 30 @IC=0,3 A/VCE=4 V; min 15, max 75 ' +
+      '@IC=3,0 A/VCE=4 V. VCE(sat) max 1,5 V @IC=6,0 A/IB=600 mA. VBE(on) max 2,0 V @IC=6,0 A/' +
+      'VCE=4,0 V. fT min 3,0 MHz @IC=500 mA/VCE=10 V/f=1 MHz. ⚠️ Chladicí ploška je na potenciálu ' +
+      'kolektoru — použij izolační podložku při montáži na sdílený chladič.',
+    tags: 'tranzistor,pnp,bipolární,výkonový,to-220,tip42,pozor-chladič',
+  },
+  {
+    name: 'TIP42A',
+    packageType:
+      'TO-220, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=kolektor ' +
+      '(chladicí ploška pouzdra je elektricky spojená s kolektorem!)',
+    value: 'PNP, VCEO(sus) 60 V (min), IC 6 A (trvale), hFE 15–75 (@ IC=3 A)',
+    schematicImage: 'TIP41C.jpg',
+    notes:
+      'Výkonový bipolární tranzistor, prostřední napěťová třída rodiny TIP42/42A/42B/42C — viz ' +
+      'záznam "TIP42C" v této knihovně pro plný popis principu a všechny sdílené elektrické/ ' +
+      'mezní hodnoty (Datasheet MOSPEC). NPN komplement TIP41A. Mezní hodnoty: VCEO=VCBO=60 V, ' +
+      'VEBO=5,0 V, IC(trvalý)=6 A, ICM=10 A, IB max=2 A, Ptot=65 W @TC=25 °C (odvod 0,52 W/°C), ' +
+      'TJ/Tstg=-65 až +150 °C. RθJC=1,92 °C/W. ICEO max 0,7 mA @VCE=30 V. ICES max 0,4 mA ' +
+      '@VCE=60 V/VEB=0. IEBO max 1,0 mA @VEB=5 V. hFE: min 30 @IC=0,3 A/VCE=4 V; min 15, max 75 ' +
+      '@IC=3,0 A/VCE=4 V. VCE(sat) max 1,5 V @IC=6,0 A/IB=600 mA. VBE(on) max 2,0 V @IC=6,0 A/' +
+      'VCE=4,0 V. fT min 3,0 MHz @IC=500 mA/VCE=10 V/f=1 MHz. ⚠️ Chladicí ploška je na potenciálu ' +
+      'kolektoru — použij izolační podložku při montáži na sdílený chladič.',
+    tags: 'tranzistor,pnp,bipolární,výkonový,to-220,tip42a,pozor-chladič',
+  },
+  {
+    name: 'TIP42B',
+    packageType:
+      'TO-220, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=kolektor ' +
+      '(chladicí ploška pouzdra je elektricky spojená s kolektorem!)',
+    value: 'PNP, VCEO(sus) 80 V (min), IC 6 A (trvale), hFE 15–75 (@ IC=3 A)',
+    schematicImage: 'TIP41C.jpg',
+    notes:
+      'Výkonový bipolární tranzistor, druhá nejvyšší napěťová třída rodiny TIP42/42A/42B/42C — ' +
+      'viz záznam "TIP42C" v této knihovně pro plný popis principu a všechny sdílené elektrické/ ' +
+      'mezní hodnoty (Datasheet MOSPEC). NPN komplement TIP41B. Mezní hodnoty: VCEO=VCBO=80 V, ' +
+      'VEBO=5,0 V, IC(trvalý)=6 A, ICM=10 A, IB max=2 A, Ptot=65 W @TC=25 °C (odvod 0,52 W/°C), ' +
+      'TJ/Tstg=-65 až +150 °C. RθJC=1,92 °C/W. ICEO max 0,7 mA @VCE=60 V. ICES max 0,4 mA ' +
+      '@VCE=80 V/VEB=0. IEBO max 1,0 mA @VEB=5 V. hFE: min 30 @IC=0,3 A/VCE=4 V; min 15, max 75 ' +
+      '@IC=3,0 A/VCE=4 V. VCE(sat) max 1,5 V @IC=6,0 A/IB=600 mA. VBE(on) max 2,0 V @IC=6,0 A/' +
+      'VCE=4,0 V. fT min 3,0 MHz @IC=500 mA/VCE=10 V/f=1 MHz. ⚠️ Chladicí ploška je na potenciálu ' +
+      'kolektoru — použij izolační podložku při montáži na sdílený chladič.',
+    tags: 'tranzistor,pnp,bipolární,výkonový,to-220,tip42b,pozor-chladič',
+  },
   {
     name: 'BD136',
     packageType: 'SOT-32 (=TO-126), vývody: 1=báze, 2=kolektor, 3=emitor',
@@ -6024,7 +6196,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 32;
+export const SEED_LIBRARY_VERSION = 33;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
