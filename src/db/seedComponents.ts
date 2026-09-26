@@ -4099,6 +4099,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '@IC=150 mA/VCE=2 V, min 25 @IC=0,5 A/VCE=2 V (vše pulzně, 300 µs/1,5 % duty). Dostupné ' +
       'i gain-selected varianty BD135-16 (hFE 100–250 @150 mA, stejné jinak) — pokud je gain-bin ' +
       'kritický, je nutné objednat konkrétní suffix.',
+    schematicImage: 'BD13x-SOT32.jpg',
     tags: 'tranzistor,npn,bipolární,výkonový,sot-32,to-126,bd135,audio',
   },
   {
@@ -4117,6 +4118,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'IB=0,05 A. VBE max 1 V @IC=0,5 A/VCE=2 V. hFE: min 25 @IC=5 mA/VCE=2 V, min 40 max 250 ' +
       '@IC=150 mA/VCE=2 V, min 25 @IC=0,5 A/VCE=2 V (vše pulzně, 300 µs/1,5 % duty). Dostupné i ' +
       'gain-selected varianty BD139-10 (hFE 63–160 @150 mA) a BD139-16 (hFE 100–250 @150 mA).',
+    schematicImage: 'BD13x-SOT32.jpg',
     tags: 'tranzistor,npn,bipolární,výkonový,sot-32,to-126,bd139,audio',
   },
 
@@ -4216,6 +4218,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'VCE=-2 V. hFE: min 25 @IC=-5 mA/VCE=-2 V, min 40 max 250 @IC=-150 mA/VCE=-2 V, min 25 ' +
       '@IC=-0,5 A/VCE=-2 V (vše pulzně, 300 µs/1,5 % duty). Dostupné i gain-selected varianta ' +
       'BD136-16 (hFE 100–250 @-150 mA).',
+    schematicImage: 'BD13x-SOT32.jpg',
     tags: 'tranzistor,pnp,bipolární,výkonový,sot-32,to-126,bd136,audio',
   },
   {
@@ -4234,6 +4237,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'VCE=-2 V. hFE: min 25 @IC=-5 mA/VCE=-2 V, min 40 max 250 @IC=-150 mA/VCE=-2 V, min 25 ' +
       '@IC=-0,5 A/VCE=-2 V (vše pulzně, 300 µs/1,5 % duty). Dostupné i gain-selected varianty ' +
       'BD140-10 (hFE 63–160 @-150 mA) a BD140-16 (hFE 100–250 @-150 mA).',
+    schematicImage: 'BD13x-SOT32.jpg',
     tags: 'tranzistor,pnp,bipolární,výkonový,sot-32,to-126,bd140,audio',
   },
 
@@ -4306,7 +4310,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'trr typ 115, max 170 ns @IF=16 A. Qrr typ 505, max 760 nC @di/dt=100 A/µs.',
     tags: 'tranzistor,mosfet,n-kanál,smd,d2pak,irf540ns,irf540nl,spínací',
   },
-  { name: 'IRFZ44N', packageType: 'TO-220', value: 'N-MOSFET, 55 V, 49 A', notes: 'Výkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál' },
+  { name: 'IRFZ44N', packageType: 'TO-220', value: 'N-MOSFET, 55 V, 49 A', notes: 'Výkonový spínací MOSFET', schematicImage: 'IRLZ44N.jpg', tags: 'tranzistor,mosfet,n-kanál' },
   {
     name: 'IRLZ44',
     packageType: 'TO-220 — vývody: 1=gate, 2=drain, 3=source',
@@ -4330,6 +4334,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'úbytek oproti jiným MOSFETům). trr max 600 ns @IF=35 A/dIF/dt=100 A/µs. ' +
       '⚠️ Nezaměňovat s „IRLZ44N" (International Rectifier) — podobný název, ale novější/výkonnější díl ' +
       's jinými parametry, viz samostatná položka.',
+    schematicImage: 'IRLZ44N.jpg',
     tags: 'tranzistor,mosfet,n-kanál,to-220,irlz44,irlz40,logic-level,spínací',
   },
   {
@@ -4430,6 +4435,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     notes:
       'Výkonový spínací MOSFET. Existuje i novější/mírně odlišný díl „IRF9540N" (5. generace HEXFET, ' +
       'ID=-23 A, RDS(on)=0,117 Ω) — viz samostatná položka, pokud máš konkrétně tuto verzi.',
+    schematicImage: 'IRF9540N.jpg',
     tags: 'tranzistor,mosfet,p-kanál',
   },
   {
@@ -4991,6 +4997,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'BC817-16LT1G pro plné společné specifikace (mezní hodnoty, pouzdro, spínací časy). Střední ' +
       'proudová (hFE) varianta. ⚠️ Automotive ekvivalent SBC817-25L (AEC-Q101) má shodné elektrické ' +
       'parametry.',
+    schematicImage: 'BC817-16LT1G.jpg',
     tags: 'tranzistor,npn,bipolární,sot-23,onsemi,bc817,bc817-25l,smd',
   },
   {
@@ -5002,6 +5009,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'BC817-16LT1G pro plné společné specifikace (mezní hodnoty, pouzdro, spínací časy). Nejvyšší ' +
       'proudová (hFE) varianta. ⚠️ Automotive ekvivalent SBC817-40L (AEC-Q101) má shodné elektrické ' +
       'parametry.',
+    schematicImage: 'BC817-16LT1G.jpg',
     tags: 'tranzistor,npn,bipolární,sot-23,onsemi,bc817,bc817-40l,smd',
   },
   {
@@ -6267,7 +6275,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 36;
+export const SEED_LIBRARY_VERSION = 37;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
