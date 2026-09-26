@@ -149,6 +149,7 @@ const RELAY_SPECS: RelaySpec[] = [
       'Odolnost vůči vibracím 10-55-10Hz/0,75mm, rázová odolnost 1000 m/s² (destrukce)/100 m/s² ' +
       '(porucha). Provozní teplota -25 až +85°C, vlhkost 35-85%. Certifikace UL (E41643), CSA ' +
       '(LR31928), VDE/TÜV EN/IEC. RoHS.',
+    schematicImage: 'G5LE-SPDT.jpg',
     tags: 'relé,elektromagnetické,výkonové,omron,g5le,g5le-1,spdt,10a,pcb',
   },
   {
@@ -163,6 +164,7 @@ const RELAY_SPECS: RelaySpec[] = [
       'Součást rodiny Omron G5LE (viz poznámka u G5LE-1 pro plné společné specifikace) — plně ' +
       'utěsněná (fully sealed) varianta SPDT, vhodná pro mytí desky po pájení, jinak elektricky ' +
       'shodná s G5LE-1.',
+    schematicImage: 'G5LE-SPDT.jpg',
     tags: 'relé,elektromagnetické,výkonové,omron,g5le,g5le-14,spdt,10a,pcb,sealed',
   },
   {
@@ -177,6 +179,7 @@ const RELAY_SPECS: RelaySpec[] = [
       'Součást rodiny Omron G5LE (viz poznámka u G5LE-1 pro plné společné specifikace) — spínací ' +
       '(SPST-NO, jen jeden spínací kontakt bez rozpínacího) varianta, jinak elektricky shodná s ' +
       'G5LE-1.',
+    schematicImage: 'G5LE-SPST.jpg',
     tags: 'relé,elektromagnetické,výkonové,omron,g5le,g5le-1a,spst-no,10a,pcb',
   },
   {
@@ -190,6 +193,7 @@ const RELAY_SPECS: RelaySpec[] = [
     notes:
       'Součást rodiny Omron G5LE (viz poznámka u G5LE-1 pro plné společné specifikace) — plně ' +
       'utěsněná (fully sealed) varianta SPST-NO, jinak elektricky shodná s G5LE-1A.',
+    schematicImage: 'G5LE-SPST.jpg',
     tags: 'relé,elektromagnetické,výkonové,omron,g5le,g5le-1a4,spst-no,10a,pcb,sealed',
   },
   {

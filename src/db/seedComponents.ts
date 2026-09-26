@@ -5796,6 +5796,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'napětí 30 V. Balení 15 000 ks/cívka. RoHS, zcela bezolovnaté. Kód objednávky: RT<velikost>' +
       '<TCR kód>-<3místný EIA odporový kód>-<tolerance kód M>, např. RT0816P-102-M = 1 kΩ, ' +
       'TCR ±25 ppm/°C, tolerance ±20 %.',
+    schematicImage: 'Susumu-RT-series.jpg',
     tags: 'rezistor,smd,0201,trimovatelný,trimmable,laditelný,susumu,thin-film,rt-series',
   },
   {
@@ -5815,6 +5816,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       '100/270/1,5k Ω (dostupná i varianta s počáteční hodnotou 50 Ω), laditelné nahoru až na ' +
       'horní mez 820/2,1k/10k Ω. TCR ±25 ppm/°C (kód P). Tolerance ±20 % (kód M). Výkon 1/16 W, ' +
       'max. pracovní napětí 25 V, max. přetížitelné napětí 50 V. Balení 10 000 ks/cívka.',
+    schematicImage: 'Susumu-RT-series.jpg',
     tags: 'rezistor,smd,0402,trimovatelný,trimmable,laditelný,susumu,thin-film,rt-series',
   },
   {
@@ -5835,6 +5837,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'hodnoty 100/330/1k/3,3k/10k Ω, laditelné nahoru na horní meze 2,7k/8,0k/8,8k/37k/40k Ω. ' +
       'TCR ±25 ppm/°C (kód P) nebo ±100 ppm/°C (kód R). Tolerance ±20 % (kód M). Výkon 1/16 W, ' +
       'max. pracovní napětí 75 V, max. přetížitelné napětí 150 V. Balení 5 000 ks/cívka.',
+    schematicImage: 'Susumu-RT-series.jpg',
     tags: 'rezistor,smd,0603,trimovatelný,trimmable,laditelný,susumu,thin-film,rt-series',
   },
   {
@@ -5857,6 +5860,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       '±50 ppm/°C (kód Q), ±25 ppm/°C (kód P) nebo ±100 ppm/°C (kód R) dle konkrétní hodnoty. ' +
       'Tolerance ±20 % (kód M). Výkon 1/10 W, max. pracovní napětí 100 V, max. přetížitelné ' +
       'napětí 200 V. Balení 5 000 ks/cívka.',
+    schematicImage: 'Susumu-RT-series.jpg',
     tags: 'rezistor,smd,0805,trimovatelný,trimmable,laditelný,susumu,thin-film,rt-series',
   },
   {
@@ -6297,7 +6301,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 43;
+export const SEED_LIBRARY_VERSION = 44;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),

@@ -126,4 +126,7 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'QL78F6S.jpg': require('../../assets/schematics/QL78F6S.jpg'),
   'QL78J6S.jpg': require('../../assets/schematics/QL78J6S.jpg'),
   'QL85J6S-L.jpg': require('../../assets/schematics/QL85J6S-L.jpg'),
+  'Susumu-RT-series.jpg': require('../../assets/schematics/Susumu-RT-series.jpg'),
+  'G5LE-SPDT.jpg': require('../../assets/schematics/G5LE-SPDT.jpg'),
+  'G5LE-SPST.jpg': require('../../assets/schematics/G5LE-SPST.jpg'),
 };
