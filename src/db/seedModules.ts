@@ -2761,6 +2761,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     value:
       'Nízkotlaký průmyslový tlakový senzor/spínač s displejem, měřicí rozsah -1 až 1 bar (max. ' +
       'přetížení 2 bar), 2× PNP volně programovatelný spínací výstup, 15–35 V DC',
+    schematicImage: 'SPAW-B2R-G12M-2P-M12.jpg',
     notes:
       'Festo AG & Co. KG "Pressure sensor SPAW-B2R-G12M-2P-M12" (obj. č. 8022749, datový list ' +
       '25.5.2021) — nejnižší tlakový rozsah ze SPAW rodiny v této knihovně (vedle ' +
@@ -3221,6 +3222,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Průmyslový BAREVNÝ vizuální senzor (smart kamera) s integrovanou optikou a osvětlením, ' +
       'barevný CMOS snímač 736×480 px (WideVGA), 40 fps, detekce barevných ploch/kontrastu/ ' +
       'polohy přes kontur, Ethernet (100 Mbit/s), 24 V DC',
+    schematicImage: 'SBSI-F-R3C-F6-W.jpg',
     notes:
       'Festo AG & Co. KG "Color sensor SBSI-F-R3C-F6-W" (obj. č. 8058731, datový list 2.6.2021, ' +
       'typový kód "SBSI") — stejná fyzická platforma/pouzdro/rozhraní jako univerzální vizuální ' +
@@ -3257,6 +3259,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Plnohodnotný průmyslový BAREVNÝ vizuální senzor s integrovanou optikou a osvětlením, ' +
       'barevný CMOS snímač 736×480 px (WideVGA), 40 fps, pracovní vzdálenost 30 mm–nekonečno, ' +
       'kompletní sada detektorů (tvar, kontura, hrany, BLOB, barva), Ethernet, 24 V DC',
+    schematicImage: 'SBSI-F-AF-R3C-F12-W.jpg',
     notes:
       'Festo AG & Co. KG "Color sensor SBSI-F-AF-R3C-F12-W" (obj. č. 8058734, datový list ' +
       '2.6.2021, typový kód "SBSI") — "plná" verze barevného senzoru ze stejné SBSI rodiny jako ' +
@@ -3294,6 +3297,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Průmyslový MONOCHROMNÍ vizuální senzor ("object sensor") s integrovanou optikou a ' +
       'osvětlením, monochromní CMOS snímač 1280×1024 px (SXGA), 40 fps, plná sada geometrických ' +
       'detektorů (tvar, kontura, hrany, BLOB), BEZ čtení kódů, Ethernet, 24 V DC',
+    schematicImage: 'SBSI-Q-AF-R2B-F12-W.jpg',
     notes:
       'Festo AG & Co. KG "Object sensor SBSI-Q-AF-R2B-F12-W" (obj. č. 8058730, datový list ' +
       '2.6.2021, typový kód "SBSI") — třetí varianta ve stejné SBSI/SBSC vizuální rodině Festo v ' +
@@ -3318,6 +3322,46 @@ const MODULE_SPECS: ModuleSpec[] = [
       'této knihovně. Odolnost proti vibracím dle EN 60068-2-6, proti rázům dle EN 60068-2-27. ' +
       'Certifikace: c UL us (Listed), CE (EU EMC), RCM, KC EMC. RoHS.',
     tags: 'modul,kamera,vizuální-senzor,vision-sensor,object-sensor,monochromní,ethernet,festo,sbsi,průmyslový',
+  },
+  {
+    name: 'SBSI-Q-R3B-F6-NR',
+    packageType:
+      'Kompaktní kvádrové pouzdro s chladicími žebry, tvářená hliníková slitina (eloxovaná) + ' +
+      'kryt ABS s výztuží, rozměry 45×45×76,7 mm, hmotnost 160 g, INTEGROVANÁ pevná optika ' +
+      '(ohnisko 6 mm) s vestavěným IR LED osvětlením, zaostření nastavitelným šroubem, konektor ' +
+      'M12 (Ethernet 4pin, napájení/IO 12pin) — bez sériového rozhraní',
+    value:
+      'Průmyslový MONOCHROMNÍ vizuální senzor ("object sensor") s integrovanou optikou a ' +
+      'infračerveným osvětlením (880 nm), CMOS snímač 736×480 px (WideVGA), 50 fps, pracovní ' +
+      'vzdálenost 6 mm–nekonečno, max. 8 inspekčních programů/32 detektorů, Ethernet, 24 V DC',
+    schematicImage: 'SBSI-Q-R3B-F6-NR.jpg',
+    notes:
+      'Festo AG & Co. KG "Object sensor SBSI-Q-R3B-F6-NR" (obj. č. 2942265, datový list 2.6.2021, ' +
+      'typový kód "SBSI") — "zjednodušená" varianta objektového senzoru ve stejné SBSI rodině ' +
+      'jako SBSI-Q-AF-R2B-F12-W v této knihovně (obdobný vztah jako mezi SBSI-F-R3C-F6-W a ' +
+      'SBSI-F-AF-R3C-F12-W u barevných senzorů): kratší ohnisko 6 mm (oproti 12 mm), kratší ' +
+      'pracovní vzdálenost 6 mm–nekonečno (oproti 16×13 mm zornému poli u F12-W varianty), menší ' +
+      'zorné pole min. 5×4 mm, nižší rozlišení 736×480 WideVGA (oproti 1280×1024 SXGA u ' +
+      'AF-R2B-F12-W) a omezenější programovací kapacita — max. 8 programů/32 detektorů (oproti ' +
+      '255/255). ⚠️ Na rozdíl od monochromních viditelných senzorů v této knihovně používá IR ' +
+      '(infračervené, 880 nm) LED osvětlení místo bílého — vhodné pro aplikace citlivé na viditelné ' +
+      'světlo nebo detekci bez rušení obsluhy. Detektory dle datasheetu: sledování polohy přes ' +
+      'kontur, porovnávání vzorů, porovnávání kontur, kontrast, jas, prahování šedé úrovně ' +
+      '— ⚠️ nekonzistence v datasheetu: tabulka "typických dob cyklu" navíc uvádí i časy pro ' +
+      'Vernier caliper (8 ms) a BLOB (30 ms), ačkoli tyto dva detektory nejsou vyjmenovány v ' +
+      'seznamu "Function of detectors" o pár řádků výše — pravděpodobně tedy podporovány, ale ' +
+      'výrobcem nedopatřením vynechány ze seznamu, uvedeno jak v datasheetu, nedourčeno. Chybí ' +
+      'sériové rozhraní RS232/RS422 (na rozdíl od SBSI-F-AF-R3C-F12-W). Ethernet 4pin M12, ' +
+      '100 Mbit/s, protokoly EtherNet/IP, FTP, PROFINET, SMB, TCP/IP. Digitální I/O: 2 vstupy + ' +
+      '2 výstupy + 2 volitelné (méně voleb než 4 u F12-W variant), PNP/NPN přepínatelné, max. ' +
+      '50 mA, spínací úrovně: signál 0 ≤3 V, signál 1 ≥UB-1 V. Zkratová ochrana všech elektrických ' +
+      'připojení. Napájení 24 V DC (-25 %/+10 %), max. spotřeba 550 mA, klidová spotřeba (bez ' +
+      'zátěže výstupů) 200 mA. Provozní teplota 0 až +50 °C, skladovací -20 až +60 °C. Krytí IP67. ' +
+      'Zařazeno do kategorie "Modul" jako kompletní osazený přístroj, stejně jako ostatní Festo ' +
+      'vizuální senzory v této knihovně. Odolnost proti vibracím dle EN 60068-2-6, proti rázům ' +
+      'dle EN 60068-2-27 (stupeň závažnosti 2). Certifikace: c UL us (Listed), CE (EU EMC), RCM, ' +
+      'KC EMC. RoHS.',
+    tags: 'modul,kamera,vizuální-senzor,vision-sensor,object-sensor,monochromní,infračervený,ethernet,festo,sbsi,průmyslový',
   },
   {
     name: 'SPAW-P25R-G12M-2NV-M12',

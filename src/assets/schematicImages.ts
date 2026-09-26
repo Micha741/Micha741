@@ -76,4 +76,9 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'NBB20-U1-A2-T.jpg': require('../../assets/schematics/NBB20-U1-A2-T.jpg'),
   'CBB4-12GH70-E2.jpg': require('../../assets/schematics/CBB4-12GH70-E2.jpg'),
   'NBB2-8GM50-E2-5M.jpg': require('../../assets/schematics/NBB2-8GM50-E2-5M.jpg'),
+  'SPAW-B2R-G12M-2P-M12.jpg': require('../../assets/schematics/SPAW-B2R-G12M-2P-M12.jpg'),
+  'SBSI-Q-R3B-F6-NR.jpg': require('../../assets/schematics/SBSI-Q-R3B-F6-NR.jpg'),
+  'SBSI-F-R3C-F6-W.jpg': require('../../assets/schematics/SBSI-F-R3C-F6-W.jpg'),
+  'SBSI-F-AF-R3C-F12-W.jpg': require('../../assets/schematics/SBSI-F-AF-R3C-F12-W.jpg'),
+  'SBSI-Q-AF-R2B-F12-W.jpg': require('../../assets/schematics/SBSI-Q-AF-R2B-F12-W.jpg'),
 };
