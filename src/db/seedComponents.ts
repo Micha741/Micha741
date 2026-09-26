@@ -1181,6 +1181,7 @@ const DIODE_SPECS: PartSpec[] = [
       'IEC61000-4-2 level 4 (±15 kV vzduchový/±8 kV kontaktní výboj), MIL-STD-883H metoda ' +
       '3015-8 třída 3B, UL94 V0 (pryskyřice), MIL-STD-750 metoda 2026 (pájitelnost), EIA ' +
       'RS-481/IEC60286-3 (balení), IPC 7531 (footprint), UL497B (soubor E136224).',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
   },
   {
@@ -1198,6 +1199,7 @@ const DIODE_SPECS: PartSpec[] = [
       'hodnot a shody se standardy. SMP0900SCMC: VRM 75 V, IRM max 5 µA @VRM. VBR typ 90 V. VBO ' +
       'max 98 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 80 pF @VR=2 V / 45 pF @VR=50 V. ' +
       'αT=9,1×10⁻⁴/°C.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
   },
   {
@@ -1215,6 +1217,7 @@ const DIODE_SPECS: PartSpec[] = [
       'hodnot a shody se standardy. SMP1100SCMC: VRM 90 V, IRM max 5 µA @VRM. VBR typ 110 V. VBO ' +
       'max 130 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 75 pF @VR=2 V / 40 pF @VR=50 V. ' +
       'αT=9,3×10⁻⁴/°C.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
   },
   {
@@ -1232,6 +1235,7 @@ const DIODE_SPECS: PartSpec[] = [
       'hodnot a shody se standardy. SMP1300SCMC: VRM 120 V, IRM max 5 µA @VRM. VBR typ 130 V. ' +
       'VBO max 160 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 75 pF @VR=2 V / 40 pF @VR=50 V. ' +
       'αT=9,5×10⁻⁴/°C.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
   },
   {
@@ -1249,6 +1253,7 @@ const DIODE_SPECS: PartSpec[] = [
       'hodnot a shody se standardy. SMP1500SCMC: VRM 140 V, IRM max 5 µA @VRM. VBR typ 150 V. ' +
       'VBO max 180 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 75 pF @VR=2 V / 40 pF @VR=50 V. ' +
       'αT=9,7×10⁻⁴/°C.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
   },
   {
@@ -1266,6 +1271,7 @@ const DIODE_SPECS: PartSpec[] = [
       'hodnot a shody se standardy. SMP1800SCMC: VRM 170 V, IRM max 5 µA @VRM. VBR typ 180 V. ' +
       'VBO max 220 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 70 pF @VR=2 V / 35 pF @VR=50 V. ' +
       'αT=9,9×10⁻⁴/°C.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
   },
   {
@@ -1283,6 +1289,7 @@ const DIODE_SPECS: PartSpec[] = [
       'hodnot a shody se standardy. SMP2100SCMC: VRM 180 V, IRM max 5 µA @VRM. VBR typ 210 V. ' +
       'VBO max 240 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 45 pF @VR=2 V / 25 pF @VR=50 V. ' +
       'αT=10,2×10⁻⁴/°C.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
   },
   {
@@ -1300,6 +1307,7 @@ const DIODE_SPECS: PartSpec[] = [
       'hodnot a shody se standardy. SMP2300SCMC: VRM 190 V, IRM max 5 µA @VRM. VBR typ 230 V. ' +
       'VBO max 260 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 45 pF @VR=2 V / 25 pF @VR=50 V. ' +
       'αT=10,3×10⁻⁴/°C.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
   },
   {
@@ -1317,6 +1325,7 @@ const DIODE_SPECS: PartSpec[] = [
       'hodnot a shody se standardy. SMP2600SCMC: VRM 220 V, IRM max 5 µA @VRM. VBR typ 260 V. ' +
       'VBO max 300 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 40 pF @VR=2 V / 20 pF @VR=50 V. ' +
       'αT=10,6×10⁻⁴/°C.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
   },
   {
@@ -1334,6 +1343,7 @@ const DIODE_SPECS: PartSpec[] = [
       'hodnot a shody se standardy. SMP3100SCMC: VRM 275 V, IRM max 5 µA @VRM. VBR typ 310 V. ' +
       'VBO max 350 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 40 pF @VR=2 V / 20 pF @VR=50 V. ' +
       'αT=11×10⁻⁴/°C — nejvyšší napěťová třída v celé řadě SMP-0SCMC (72–310 V).',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
   },
   {
@@ -1367,6 +1377,7 @@ const DIODE_SPECS: PartSpec[] = [
       'RθJ-vývody 20 °C/W, RθJ-okolí 100 °C/W (na standardní DPS). Shoda se standardy: GR-1089 ' +
       'core, ITU-T-K20/K21, IEC61000-4-5, TIA/EIA IS-968, UL60950/IEC950/CSA C22.2, UL1459, ' +
       'UL94 V0 (pryskyřice), UL497B (soubor E136224).',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1383,6 +1394,7 @@ const DIODE_SPECS: PartSpec[] = [
       'záznam SMP100MC-140 pro plný popis principu funkce, mezních hodnot a shody se standardy. ' +
       'SMP100MC-160: VRM 144 V, IRM max 2 µA @VRM. VR 160 V, IR max 5 µA @VR. VBO max 200 V ' +
       '@IBO=800 mA; dynamický VBO max 205 V. IH min 150 mA. C typ 25 pF @VR=50 V / 50 pF @VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1399,6 +1411,7 @@ const DIODE_SPECS: PartSpec[] = [
       'záznam SMP100MC-140 pro plný popis principu funkce, mezních hodnot a shody se standardy. ' +
       'SMP100MC-200: VRM 180 V, IRM max 2 µA @VRM. VR 200 V, IR max 5 µA @VR. VBO max 250 V ' +
       '@IBO=800 mA; dynamický VBO max 255 V. IH min 150 mA. C typ 20 pF @VR=50 V / 45 pF @VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1415,6 +1428,7 @@ const DIODE_SPECS: PartSpec[] = [
       'záznam SMP100MC-140 pro plný popis principu funkce, mezních hodnot a shody se standardy. ' +
       'SMP100MC-230: VRM 207 V, IRM max 2 µA @VRM. VR 230 V, IR max 5 µA @VR. VBO max 285 V ' +
       '@IBO=800 mA; dynamický VBO max 295 V. IH min 150 mA. C typ 20 pF @VR=50 V / 40 pF @VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1434,6 +1448,7 @@ const DIODE_SPECS: PartSpec[] = [
       '⚠️ Datasheet dokládá funkční test tohoto konkrétního dílu (SMP100MC-270) v sérii ' +
       's pojistkou Cooper Bussmann TCP 1.25 A proti simulovanému blesku (2/10 µs, ±2,5 a 5 kV, ' +
       '500 A) i proti "power cross" (277 V/25 A) — Trisil i pojistka po testu funkční (GR-1089).',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1450,6 +1465,7 @@ const DIODE_SPECS: PartSpec[] = [
       'záznam SMP100MC-140 pro plný popis principu funkce, mezních hodnot a shody se standardy. ' +
       'SMP100MC-320: VRM 290 V, IRM max 2 µA @VRM. VR 320 V, IR max 5 µA @VR. VBO max 390 V ' +
       '@IBO=800 mA; dynamický VBO max 400 V. IH min 150 mA. C typ 15 pF @VR=50 V / 35 pF @VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1466,6 +1482,7 @@ const DIODE_SPECS: PartSpec[] = [
       'záznam SMP100MC-140 pro plný popis principu funkce, mezních hodnot a shody se standardy. ' +
       'SMP100MC-360: VRM 325 V, IRM max 2 µA @VRM. VR 360 V, IR max 5 µA @VR. VBO max 450 V ' +
       '@IBO=800 mA; dynamický VBO max 460 V. IH min 150 mA. C typ 15 pF @VR=50 V / 35 pF @VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1483,6 +1500,7 @@ const DIODE_SPECS: PartSpec[] = [
       'SMP100MC-400: VRM 360 V, IRM max 2 µA @VRM. VR 400 V, IR max 5 µA @VR. VBO max 530 V ' +
       '@IBO=800 mA; dynamický VBO max 540 V. IH min 150 mA. C typ 15 pF @VR=50 V / 30 pF @VR=2 V ' +
       '— nejvyšší napěťová třída v celé řadě SMP100MC (140–400 V).',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1517,6 +1535,7 @@ const DIODE_SPECS: PartSpec[] = [
       'pájecí teplota vývodů 260 °C/10 s. Tepelný odpor: RθJ-vývody 20 °C/W, RθJ-okolí 100 °C/W ' +
       '(na standardní DPS). Shoda se standardy: GR-1089 core, ITU-T-K20/K21, VDE0433/0878, ' +
       'IEC61000-4-5, FCC Part 68, UL60950/IEC950/CSA C22.2, UL1459, UL94 V0 (pryskyřice).',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1534,6 +1553,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-25: VRM 22 V, IRM max 2 µA @VRM. VR 25 V, IR max 5 µA @VR. VBO max ' +
       '35 V @IBO=800 mA; dynamický VBO max 40 V. IH min 150 mA. C typ 65 pF @VR=2 V (@50V ' +
       'neudáno).',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1551,6 +1571,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-35: VRM 32 V, IRM max 2 µA @VRM. VR 35 V, IR max 5 µA @VR. VBO max ' +
       '55 V @IBO=800 mA; dynamický VBO max 55 V. IH min 150 mA. C typ 55 pF @VR=2 V (@50V ' +
       'neudáno).',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1568,6 +1589,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-65: VRM 55 V, IRM max 2 µA @VRM. VR 65 V, IR max 5 µA @VR. VBO max ' +
       '85 V @IBO=800 mA; dynamický VBO max 85 V. IH min 150 mA. C typ 45 pF @VR=50 V / 90 pF ' +
       '@VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1585,6 +1607,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-90: VRM 81 V, IRM max 2 µA @VRM. VR 90 V, IR max 5 µA @VR. VBO max ' +
       '125 V @IBO=800 mA; dynamický VBO max 120 V. IH min 150 mA. C typ 40 pF @VR=50 V / 80 pF ' +
       '@VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1602,6 +1625,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-120: VRM 108 V, IRM max 2 µA @VRM. VR 120 V, IR max 5 µA @VR. VBO max ' +
       '160 V @IBO=800 mA; dynamický VBO max 155 V. IH min 150 mA. C typ 35 pF @VR=50 V / 75 pF ' +
       '@VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1621,6 +1645,7 @@ const DIODE_SPECS: PartSpec[] = [
       'díly, pouze o sdílenou napěťovou třídu napříč dvěma příbuznými produktovými řadami. ' +
       'SMP100LC-140: VRM 120 V, IRM max 2 µA @VRM. VR 140 V, IR max 5 µA @VR. VBO max 190 V ' +
       '@IBO=800 mA; dynamický VBO max 185 V. IH min 150 mA. C typ 30 pF @VR=50 V / 65 pF @VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1638,6 +1663,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-160: VRM 144 V, IRM max 2 µA @VRM. VR 160 V, IR max 5 µA @VR. VBO max ' +
       '200 V @IBO=800 mA; dynamický VBO max 205 V. IH min 150 mA. C typ 30 pF @VR=50 V / 65 pF ' +
       '@VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1655,6 +1681,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-200: VRM 180 V, IRM max 2 µA @VRM. VR 200 V, IR max 5 µA @VR. VBO max ' +
       '250 V @IBO=800 mA; dynamický VBO max 255 V. IH min 150 mA. C typ 30 pF @VR=50 V / 60 pF ' +
       '@VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1672,6 +1699,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-230: VRM 207 V, IRM max 2 µA @VRM. VR 230 V, IR max 5 µA @VR. VBO max ' +
       '285 V @IBO=800 mA; dynamický VBO max 295 V. IH min 150 mA. C typ 30 pF @VR=50 V / 60 pF ' +
       '@VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1689,6 +1717,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-270: VRM 243 V, IRM max 2 µA @VRM. VR 270 V, IR max 5 µA @VR. VBO max ' +
       '335 V @IBO=800 mA; dynamický VBO max 345 V. IH min 150 mA. C typ 30 pF @VR=50 V / 60 pF ' +
       '@VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1706,6 +1735,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-320: VRM 290 V, IRM max 2 µA @VRM. VR 320 V, IR max 5 µA @VR. VBO max ' +
       '390 V @IBO=800 mA; dynamický VBO max 400 V. IH min 150 mA. C typ 25 pF @VR=50 V / 50 pF ' +
       '@VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1723,6 +1753,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-360: VRM 325 V, IRM max 2 µA @VRM. VR 360 V, IR max 5 µA @VR. VBO max ' +
       '450 V @IBO=800 mA; dynamický VBO max 460 V. IH min 150 mA. C typ 25 pF @VR=50 V / 50 pF ' +
       '@VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1740,6 +1771,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-400: VRM 360 V, IRM max 2 µA @VRM. VR 400 V, IR max 5 µA @VR. VBO max ' +
       '530 V @IBO=800 mA; dynamický VBO max 540 V. IH min 150 mA. C typ 20 pF @VR=50 V / 45 pF ' +
       '@VR=2 V — nejvyšší napěťová třída v celé řadě SMP100LC (8–400 V).',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1882,6 +1914,7 @@ const DIODE_SPECS: PartSpec[] = [
       '100 °C/W (na standardní DPS). Shoda se standardy: GR-1089 core, ITU-T-K20/K21, ' +
       'VDE0433/0878, IEC61000-4-5, FCC Part 68, UL1950/IEC950/CSA C22.2, UL1459, UL94 V0 ' +
       '(pryskyřice).',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,ethernet',
   },
   {
@@ -6234,7 +6267,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 35;
+export const SEED_LIBRARY_VERSION = 36;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),

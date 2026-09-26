@@ -101,4 +101,5 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'LCW-CR7P-OSLON80.jpg': require('../../assets/schematics/LCW-CR7P-OSLON80.jpg'),
   'TOPLED-Black.jpg': require('../../assets/schematics/TOPLED-Black.jpg'),
   'LYM67K.jpg': require('../../assets/schematics/LYM67K.jpg'),
+  'SMP-0SCMC.jpg': require('../../assets/schematics/SMP-0SCMC.jpg'),
 };
