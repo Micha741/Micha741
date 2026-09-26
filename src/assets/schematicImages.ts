@@ -146,4 +146,10 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'ESP8285.jpg': require('../../assets/schematics/ESP8285.jpg'),
   'ESP8089.jpg': require('../../assets/schematics/ESP8089.jpg'),
   'ESP8684.jpg': require('../../assets/schematics/ESP8684.jpg'),
+  'DS18B20.jpg': require('../../assets/schematics/DS18B20.jpg'),
+  'DS1822.jpg': require('../../assets/schematics/DS1822.jpg'),
+  'DHT11.jpg': require('../../assets/schematics/DHT11.jpg'),
+  'SHT7x.jpg': require('../../assets/schematics/SHT7x.jpg'),
+  'SHT85.jpg': require('../../assets/schematics/SHT85.jpg'),
+  'TC625.jpg': require('../../assets/schematics/TC625.jpg'),
 };

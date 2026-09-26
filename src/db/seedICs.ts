@@ -1622,6 +1622,7 @@ const IC_SPECS: IcSpec[] = [
       'max 25 pF. Časování 1-Wire sběrnice (nutné dodržet v aplikaci): reset pulz min. 480 µs, ' +
       'time slot 60–120 µs, zotavovací doba min. 1 µs mezi bity; při parazitním napájení může ' +
       'tRSTL > 960 µs vyvolat power-on reset.',
+    schematicImage: 'DS18B20.jpg',
     tags: 'io,senzor,teploměr,ds18b20,1-wire,dallas,maxim',
   },
   {
@@ -1662,6 +1663,7 @@ const IC_SPECS: IcSpec[] = [
       'do EEPROM) typ. 1 mA (max 1,5 mA @VDD=5V). Drift ±0,2 °C (1000hodinový zátěžový test ' +
       '@125 °C/VDD=5,5 V). Vstupní/výstupní kapacita DQ max 25 pF. Časování 1-Wire sběrnice: ' +
       'reset pulz min. 480 µs, time slot 60–120 µs, zotavovací doba min. 1 µs mezi bity.',
+    schematicImage: 'DS1822.jpg',
     tags: 'io,senzor,teploměr,ds1822,1-wire,dallas,maxim,econo',
   },
   {
@@ -1689,6 +1691,7 @@ const IC_SPECS: IcSpec[] = [
       'variantu N externí pull-up na DOUT, pro variantu C není potřeba nic). Nízkonapěťový ' +
       'provoz VDD 2,7–5,5 V. K dispozici byla vývojová sada TC625EV (evaluační kit pro TC625 ' +
       'a TC12 — není součástka, nedošlo k jejímu přidání do knihovny).',
+    schematicImage: 'TC625.jpg',
     tags: 'io,senzor,teploměr,tc625,1-wire,telcom,pwm',
   },
   {
@@ -1724,6 +1727,7 @@ const IC_SPECS: IcSpec[] = [
       'filtrační kondenzátor 100 nF mezi VDD a GND. Proudový odběr: měření 0,5–2,5 mA, průměr ' +
       '0,2–1 mA, klidový (standby) 100–150 µA. Pájecí teplota max 260 °C, kontakt max 10 s. ' +
       'Skladování 10–40 °C, <60 %RH. Nedoporučeno pro bezpečnostní/nouzové aplikace.',
+    schematicImage: 'DHT11.jpg',
     tags: 'io,senzor,vlhkoměr,teploměr,dht11,jednovodičový',
   },
   {
@@ -1760,6 +1764,7 @@ const IC_SPECS: IcSpec[] = [
       'Příkazy (přes status registr/command bity): Measure Temperature (00011), Measure RH ' +
       '(00101), Read/Write Status Register (00111/00110), Soft reset (11110, min. 11 ms čekání ' +
       'před dalším příkazem). Volitelný CRC-8 kontrolní součet.',
+    schematicImage: 'SHT7x.jpg',
     tags: 'io,senzor,vlhkoměr,teploměr,sht71,sht7x,sensirion,2vodičové',
   },
   {
@@ -1777,6 +1782,7 @@ const IC_SPECS: IcSpec[] = [
       'spotřeby a příkazů), liší se pouze binováním přesnosti: SHT75 typ. ±1,8 %RH (vs. ±3,0 %RH ' +
       'u SHT71) a typ. ±0,3 °C (vs. ±0,4 °C u SHT71). Vyšší cena oproti SHT71 za lepší garantovanou ' +
       'přesnost ze stejné výrobní linky (třídění dle kalibrace).',
+    schematicImage: 'SHT7x.jpg',
     tags: 'io,senzor,vlhkoměr,teploměr,sht75,sht7x,sensirion,2vodičové',
   },
   {
@@ -1864,6 +1870,7 @@ const IC_SPECS: IcSpec[] = [
       'i hardwarový reset, čtecí stavový registr a unikátní 32bit výrobní sériové číslo (příkaz ' +
       '0x3682) pro individuální identifikaci kusu. Všechny příkazy a data chráněny CRC kontrolním ' +
       'součtem. RoHS (bez Pb/Cd/Hg), kvalifikace dle JEDEC JESD47.',
+    schematicImage: 'SHT85.jpg',
     tags: 'io,senzor,vlhkoměr,teploměr,sht85,sht3x,sensirion,i2c',
   },
   {
