@@ -2679,6 +2679,7 @@ const IC_SPECS: IcSpec[] = [
       '(v režimu SHDN) / 60 µA (jiný způsob vypnutí, dle poznámky výrobce). Teplotní rozsah ' +
       '-40 až +85 °C (EIBZ/EIVZ) nebo -40 až +125 °C (EFBZ/EFVZ). Použití: telekomunikační ' +
       'zařízení, řízení motorů/enkodéry, PLC, průmyslové/procesní sítě.',
+    schematicImage: 'ISL32173E-273E.jpg',
     tags: 'io,rs485,rs422,přijímač,receiver,isl32173e,transceiver,soic,tssop',
   },
   {
@@ -2696,6 +2697,7 @@ const IC_SPECS: IcSpec[] = [
       'elektricky shodné s ISL32173E. ⚠️ Dle datasheetu (2016) je tento díl "No longer available" ' +
       '— výrobcem doporučená náhrada je ISL32173E (s jiným typem enable pinů, EN/EN̄ místo EN12/' +
       'EN34 — nutná úprava zapojení).',
+    schematicImage: 'ISL32175E-275E.jpg',
     tags: 'io,rs485,rs422,přijímač,receiver,isl32175e,transceiver,soic,tssop,nedostupné',
   },
   {
@@ -2715,6 +2717,7 @@ const IC_SPECS: IcSpec[] = [
       'VOH/VOL a prahy vstupů se řídí VL, ne VCC. Rychlost 80 Mbps, max. tPLH/tPHL 16 ns, part-to-' +
       'part skew 8 ns. Odběr: 15 mA max (plné zatížení), 8,5 mA (poloviční), 2,5 mA (SHDN via ' +
       'SHDNEN). Nutno napájet VCC dříve než VL (pokud odděleně).',
+    schematicImage: 'ISL32177E-277E.jpg',
     tags: 'io,rs485,rs422,přijímač,receiver,isl32177e,transceiver,qfn,shdn',
   },
   {
@@ -2731,6 +2734,7 @@ const IC_SPECS: IcSpec[] = [
       'výrazně nižší odběr: 5,5 mA max (aktivní, plné zatížení) oproti 15 mA u 80Mbps verze. ' +
       'tPLH/tPHL max 55 ns, part-to-part skew max 20 ns (vyšší než u 80Mbps verze — nižší nároky ' +
       'na přesné párování kanálů při pomalejších datových tocích).',
+    schematicImage: 'ISL32173E-273E.jpg',
     tags: 'io,rs485,rs422,přijímač,receiver,isl32273e,transceiver,soic,tssop,nízký-odběr',
   },
   {
@@ -2745,6 +2749,7 @@ const IC_SPECS: IcSpec[] = [
       'vlastností rodiny. ISL32275E: nízkopříkonová (20 Mbps) obdoba ISL32175E — stejné ' +
       '16vývodové pouzdro a párové enable piny EN12/EN34 (na rozdíl od ISL32273E se společným ' +
       'EN/EN̄), odběr max 5,5 mA (plné zatížení) / 3,5 mA (poloviční zatížení přes EN12/EN34).',
+    schematicImage: 'ISL32175E-275E.jpg',
     tags: 'io,rs485,rs422,přijímač,receiver,isl32275e,transceiver,soic,tssop,nízký-odběr',
   },
   {
@@ -2761,6 +2766,7 @@ const IC_SPECS: IcSpec[] = [
       'napěťové systémy, ale nižší max. datový tok (20 Mbps) výměnou za nižší odběr: max 5,5 mA ' +
       '(plné zatížení) / 3,5 mA (poloviční) / 1,2 mA (SHDN via SHDNEN), oproti 15/8,5/2,5 mA ' +
       'u 80Mbps verze ISL32177E.',
+    schematicImage: 'ISL32177E-277E.jpg',
     tags: 'io,rs485,rs422,přijímač,receiver,isl32277e,transceiver,qfn,shdn,nízký-odběr',
   },
 
@@ -3630,6 +3636,7 @@ const IC_SPECS: IcSpec[] = [
       'min 120ms/typ. 200ms/max 280ms. Doba šíření tPHL (VDD do RESET, sestupná hrana) typ. ' +
       '10µs. Doporučen bypass keramický kondenzátor 0,1µF na VDD pro stabilitu prahového ' +
       'napětí.',
+    schematicImage: 'TPS3809.jpg',
     tags: 'io,supervizor,reset,napěťový-supervizor,voltage-supervisor,ti,tps3809,tps3809j25,sot-23,2.25v',
   },
   {
@@ -3642,6 +3649,7 @@ const IC_SPECS: IcSpec[] = [
       'TI "TPS3809x" — součást rodiny TPS3809, viz záznam "TPS3809J25" v této knihovně pro ' +
       'plné společné elektrické/mechanické specifikace. Prahové napětí VIT- 2,58-2,7V (min-max), ' +
       'hystereze Vhys 35mV (typ.). Objednací kód TPS3809L30DBVR (funkce 9, práh L=2,64V).',
+    schematicImage: 'TPS3809.jpg',
     tags: 'io,supervizor,reset,napěťový-supervizor,voltage-supervisor,ti,tps3809,tps3809l30,sot-23,2.64v',
   },
   {
@@ -3656,6 +3664,7 @@ const IC_SPECS: IcSpec[] = [
       'hystereze Vhys 40mV (typ.). Objednací kód TPS3809K33DBVR (funkce 9, práh K=2,93V). Podle ' +
       'aplikačního schématu v datasheetu typicky použit se supervizí 3,3V sběrnice (např. TI ' +
       'TMS320LC54x DSP).',
+    schematicImage: 'TPS3809.jpg',
     tags: 'io,supervizor,reset,napěťový-supervizor,voltage-supervisor,ti,tps3809,tps3809k33,sot-23,2.93v',
   },
   {
@@ -3669,6 +3678,7 @@ const IC_SPECS: IcSpec[] = [
       'plné společné elektrické/mechanické specifikace. Nejvyšší prahová varianta celé řady ' +
       '(určeno pro supervizi 5V sběrnice). Prahové napětí VIT- 4,45-4,65V (min-max), hystereze ' +
       'Vhys 60mV (typ.). Objednací kód TPS3809I50DBVR (funkce 9, práh I=4,55V).',
+    schematicImage: 'TPS3809.jpg',
     tags: 'io,supervizor,reset,napěťový-supervizor,voltage-supervisor,ti,tps3809,tps3809i50,sot-23,4.55v',
   },
   {

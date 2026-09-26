@@ -5399,6 +5399,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       '1200–1500 °C. Rt = odpor při dané teplotě (nulový výkon), R25 = jmenovitý odpor při 25 °C ' +
       '(nulový výkon, uváděn na součástce), Imax = max. trvalý proud @25 °C, δ = disipační ' +
       'konstanta (poměr změny ztrátového výkonu ku změně teploty okolí).',
+    schematicImage: 'NTC-Dxx.jpg',
     tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-5',
   },
   {
@@ -5416,6 +5417,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       '9–11 mW/°C, tepelná časová konstanta 27–28 s. Operační rozsah -55 až +200 °C. Použití: ' +
       'omezení nárazového proudu ve spínaných zdrojích/UPS/ballastech, ochrana filamentu CRT/' +
       'žárovek, obecná teplotní ochrana obvodů.',
+    schematicImage: 'NTC-Dxx.jpg',
     tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-7',
   },
   {
@@ -5433,6 +5435,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'celou řadou), tepelná časová konstanta 30–35 s. Operační rozsah -55 až +200 °C. Typické ' +
       'použití: omezovač nárazového proudu ve spínaných zdrojích (nejběžnější velikost pro tuto ' +
       'aplikaci v malých/středních spotřebičích).',
+    schematicImage: 'NTC-Dxx.jpg',
     tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-9',
   },
   {
@@ -5448,6 +5451,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'hodnoty: 2,5; 3; 4; 5; 6; 8; 10; 12; 16; 20; 22; 30; 33; 50; 60; 80; 120 Ω. Imax 5,0–1,2 A, ' +
       'disipační konstanta δ 13–16 mW/°C, tepelná časová konstanta 43–65 s. Operační rozsah -55 ' +
       'až +200 °C. Vhodné pro omezení nárazového proudu u výkonnějších spotřebičů než D-9.',
+    schematicImage: 'NTC-Dxx.jpg',
     tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-11',
   },
   {
@@ -5463,6 +5467,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'hodnoty: 1,3; 1,5; 2,5; 3; 4; 5; 6; 7; 8; 10; 12; 15; 16; 20; 30; 47; 120 Ω. Imax 7,0–1,2 A, ' +
       'disipační konstanta δ 13–17 mW/°C, tepelná časová konstanta 60–68 s. Operační rozsah -55 ' +
       'až +200 °C.',
+    schematicImage: 'NTC-Dxx.jpg',
     tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-13',
   },
   {
@@ -5479,6 +5484,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'disipační konstanta δ 18–22 mW/°C, tepelná časová konstanta 68–87 s. Operační rozsah -55 ' +
       'až +200 °C. Vyšší proudová zatížitelnost vhodná pro omezení nárazového proudu u výkonnějších ' +
       'zdrojů/spotřebičů.',
+    schematicImage: 'NTC-Dxx.jpg',
     tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-15',
   },
   {
@@ -5495,6 +5501,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'omezení nárazového proudu u vyšších výkonů (desítky až stovky W spínaných zdrojů). ' +
       'Imax 11,0–5,0 A, disipační konstanta δ 24–25 mW/°C, tepelná časová konstanta 87–105 s. ' +
       'Operační rozsah -55 až +200 °C.',
+    schematicImage: 'NTC-Dxx.jpg',
     tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-20',
   },
   {
@@ -5511,6 +5518,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'Imax 12,0–6,0 A, disipační konstanta δ 30–35 mW/°C, tepelná časová konstanta 120–126 s. ' +
       'Operační rozsah -55 až +200 °C. Určeno pro omezení nárazového proudu u výkonných spínaných ' +
       'zdrojů/UPS v řádu stovek wattů.',
+    schematicImage: 'NTC-Dxx.jpg',
     tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-25',
   },
   {
@@ -6284,7 +6292,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 41;
+export const SEED_LIBRARY_VERSION = 42;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),

@@ -2,7 +2,7 @@
   "expo": {
     "name": "CircuitKit",
     "slug": "circuitkit",
-    "version": "1.4.29",
+    "version": "1.4.30",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -10,7 +10,7 @@
       "supportsTablet": true
     },
     "android": {
-      "versionCode": 49,
+      "versionCode": 50,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
