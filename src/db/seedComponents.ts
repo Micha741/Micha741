@@ -1975,6 +1975,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(laserová dioda) max 2 V, VR(PD) (monitorovací fotodioda) max 30 V. Provozní teplota -10 až ' +
       '+60 °C, skladovací -40 až +85 °C. Typické použití: čárové skenery, dálkoměry, zaměřovací ' +
       'laserové moduly, optické senzory.',
+    schematicImage: 'QL85H6S.jpg',
     tags: 'dioda,laser,laserová-dioda,algaas,to-18,monitorovací-fotodioda,apc,roithner,ql85h6s',
   },
   {
@@ -2003,6 +2004,7 @@ const DIODE_SPECS: PartSpec[] = [
       'typ. 5 µm. Závěrná napětí: laserová dioda max 2 V, monitorovací fotodioda max 30 V. ' +
       'Provozní teplota -10 až +60 °C, skladovací -40 až +85 °C. Určeno pro průmyslové optické ' +
       'moduly a senzorové aplikace.',
+    schematicImage: 'QL78I6S.jpg',
     tags: 'dioda,laser,laserová-dioda,algaas,to-18,monitorovací-fotodioda,apc,roithner,ql78i6s',
   },
   {
@@ -2034,6 +2036,7 @@ const DIODE_SPECS: PartSpec[] = [
       '0,5–1,5 mA) @Po=10mW. Astigmatismus max 10 µm. Optická vzdálenost max ±60 µm. Závěrná ' +
       'napětí: laserová dioda max 2 V, monitorovací fotodioda max 30 V. Provozní teplota -10 až ' +
       '+60 °C, skladovací -40 až +85 °C. MUSÍ být provozována v režimu APC.',
+    schematicImage: 'QL78F6S.jpg',
     tags: 'dioda,laser,laserová-dioda,algaas,to-18,monitorovací-fotodioda,apc,roithner,ql78f6s',
   },
   {
@@ -2067,6 +2070,7 @@ const DIODE_SPECS: PartSpec[] = [
       '5 µm. Optická vzdálenost max ±60 µm. Závěrná napětí: laserová dioda max 2 V, monitorovací ' +
       'fotodioda max 30 V. Provozní teplota -10 až +60 °C, skladovací -40 až +85 °C. MUSÍ být ' +
       'provozována v režimu APC.',
+    schematicImage: 'QL78J6S.jpg',
     tags: 'dioda,laser,laserová-dioda,algaas,to-18,monitorovací-fotodioda,apc,roithner,ql78j6s',
   },
   {
@@ -2100,6 +2104,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(rozsah 0,05–0,5 mA) @Po=40mW. Astigmatismus max 15 µm. Optická vzdálenost max ±60 µm. ' +
       'Závěrná napětí: laserová dioda max 2 V, monitorovací fotodioda max 30 V. Provozní teplota ' +
       '-10 až +60 °C, skladovací -40 až +85 °C. MUSÍ být provozována v režimu APC.',
+    schematicImage: 'QL85J6S-L.jpg',
     tags: 'dioda,laser,laserová-dioda,algaas,to-18,monitorovací-fotodioda,apc,roithner,ql85j6s',
   },
   {
@@ -6292,7 +6297,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 42;
+export const SEED_LIBRARY_VERSION = 43;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),

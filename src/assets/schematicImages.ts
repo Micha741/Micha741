@@ -121,4 +121,9 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'ISL32173E-273E.jpg': require('../../assets/schematics/ISL32173E-273E.jpg'),
   'ISL32175E-275E.jpg': require('../../assets/schematics/ISL32175E-275E.jpg'),
   'ISL32177E-277E.jpg': require('../../assets/schematics/ISL32177E-277E.jpg'),
+  'QL85H6S.jpg': require('../../assets/schematics/QL85H6S.jpg'),
+  'QL78I6S.jpg': require('../../assets/schematics/QL78I6S.jpg'),
+  'QL78F6S.jpg': require('../../assets/schematics/QL78F6S.jpg'),
+  'QL78J6S.jpg': require('../../assets/schematics/QL78J6S.jpg'),
+  'QL85J6S-L.jpg': require('../../assets/schematics/QL85J6S-L.jpg'),
 };
