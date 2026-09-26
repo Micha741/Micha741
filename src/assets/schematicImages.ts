@@ -94,4 +94,5 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'SRBE-CA3-YR90-MW-22A-1W-C2M20-EX.jpg': require('../../assets/schematics/SRBE-CA3-YR90-MW-22A-1W-C2M20-EX.jpg'),
   'VPEV-1-8-M12.jpg': require('../../assets/schematics/VPEV-1-8-M12.jpg'),
   'SOOE-MS-L-PNLK-T.jpg': require('../../assets/schematics/SOOE-MS-L-PNLK-T.jpg'),
+  'Talema-55xxx.jpg': require('../../assets/schematics/Talema-55xxx.jpg'),
 };

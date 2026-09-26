@@ -209,6 +209,7 @@ const COIL_SPECS: CoilSpec[] = [
       'Síťový toroidní transformátor s DVOJITÝM (symetrickým) sekundárním vinutím, primár ' +
       '230V/50-60Hz, výkonová řada 15–1000VA, sekundární napětí 2×12 až 2×55V dle konkrétního ' +
       'kódu, s tepelnou pojistkou ve vinutí',
+    schematicImage: 'Talema-55xxx.jpg',
     notes:
       'Talema Group "Toroidal Transformers with Dual Secondary Winding — 55xxx Series" ' +
       '(datasheet, soubor 55000-Series.pdf). ⚠️ PARAMETRICKÁ ŘADA (desítky kombinací výkon× ' +
