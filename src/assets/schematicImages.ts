@@ -95,4 +95,10 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'VPEV-1-8-M12.jpg': require('../../assets/schematics/VPEV-1-8-M12.jpg'),
   'SOOE-MS-L-PNLK-T.jpg': require('../../assets/schematics/SOOE-MS-L-PNLK-T.jpg'),
   'Talema-55xxx.jpg': require('../../assets/schematics/Talema-55xxx.jpg'),
+  'GP1xxx.jpg': require('../../assets/schematics/GP1xxx.jpg'),
+  'SS12-S100.jpg': require('../../assets/schematics/SS12-S100.jpg'),
+  'LXML-Rebel-Color.jpg': require('../../assets/schematics/LXML-Rebel-Color.jpg'),
+  'LCW-CR7P-OSLON80.jpg': require('../../assets/schematics/LCW-CR7P-OSLON80.jpg'),
+  'TOPLED-Black.jpg': require('../../assets/schematics/TOPLED-Black.jpg'),
+  'LYM67K.jpg': require('../../assets/schematics/LYM67K.jpg'),
 };

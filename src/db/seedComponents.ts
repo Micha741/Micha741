@@ -142,6 +142,7 @@ const DIODE_SPECS: PartSpec[] = [
       'vakuové pájení čipu bez dutin (void-free), IRM max 1,0 µA @25°C při jmenovitém VDC, CJ typ ' +
       '12 pF @1MHz/4V, TJ/Tstg -65 až +150°C. Io=1000 mA (@TA=50°C, délka vývodu 9,5mm), IFSM=35 A ' +
       '(8,3ms půlvlna), VFM max 1,5 V (při jmenovitém proudu).',
+    schematicImage: 'GP1xxx.jpg',
     tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1120,do-41',
   },
   {
@@ -152,6 +153,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Diotec Electronics Corp. "High Voltage Diode Rectifiers" (dok. HVGP-1000-1C/2B) — součást ' +
       'řady GP1120–GP1600, viz poznámka u GP1120 pro společné specifikace. VRM=1500 V, VRRM=1500 V, ' +
       'VRMS=1050 V. Io=1000 mA (@TA=50°C), IFSM=35 A, VFM max 1,5 V.',
+    schematicImage: 'GP1xxx.jpg',
     tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1150,do-41',
   },
   {
@@ -162,6 +164,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
       'poznámka u GP1120 pro společné specifikace. VRM=1800 V, VRRM=1800 V, VRMS=1260 V. Io=1000 mA ' +
       '(@TA=50°C), IFSM=35 A, VFM max 1,5 V.',
+    schematicImage: 'GP1xxx.jpg',
     tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1180,do-41',
   },
   {
@@ -172,6 +175,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
       'poznámka u GP1120 pro společné specifikace. VRM=2000 V, VRRM=2000 V, VRMS=1400 V. Io=1000 mA ' +
       '(@TA=50°C), IFSM=35 A, VFM max 1,5 V.',
+    schematicImage: 'GP1xxx.jpg',
     tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1200,do-41',
   },
   {
@@ -182,6 +186,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
       'poznámka u GP1120 pro společné specifikace. VRM=2500 V, VRRM=2500 V, VRMS=1750 V. Io=500 mA ' +
       '(@TA=50°C), IFSM=25 A, VFM max 3,0 V.',
+    schematicImage: 'GP1xxx.jpg',
     tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1250,do-41',
   },
   {
@@ -192,6 +197,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
       'poznámka u GP1120 pro společné specifikace. VRM=3000 V, VRRM=3000 V, VRMS=2100 V. Io=500 mA ' +
       '(@TA=50°C), IFSM=25 A, VFM max 3,0 V.',
+    schematicImage: 'GP1xxx.jpg',
     tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1300,do-41',
   },
   {
@@ -202,6 +208,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
       'poznámka u GP1120 pro společné specifikace. VRM=4000 V, VRRM=4000 V, VRMS=2800 V. Io=500 mA ' +
       '(@TA=50°C), IFSM=25 A, VFM max 3,0 V.',
+    schematicImage: 'GP1xxx.jpg',
     tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1400,do-41',
   },
   {
@@ -212,6 +219,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
       'poznámka u GP1120 pro společné specifikace. VRM=5000 V, VRRM=5000 V, VRMS=3500 V. Io=200 mA ' +
       '(@TA=50°C), IFSM=15 A, VFM max 4,5 V.',
+    schematicImage: 'GP1xxx.jpg',
     tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1500,do-41',
   },
   {
@@ -222,6 +230,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
       'poznámka u GP1120 pro společné specifikace. VRM=6000 V, VRRM=6000 V, VRMS=4200 V. Io=200 mA ' +
       '(@TA=50°C), IFSM=15 A, VFM max 6,0 V.',
+    schematicImage: 'GP1xxx.jpg',
     tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1600,do-41',
   },
 
@@ -248,6 +257,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
       'RθJA=88 °C/W (na FR4 desce). ' +
       'VF max 500 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    schematicImage: 'SS12-S100.jpg',
     tags: 'dioda,schottky,smd,sma,ss12',
   },
   {
@@ -261,6 +271,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
       'RθJA=88 °C/W (na FR4 desce). ' +
       'VF max 500 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    schematicImage: 'SS12-S100.jpg',
     tags: 'dioda,schottky,smd,sma,ss13',
   },
   {
@@ -274,6 +285,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
       'RθJA=88 °C/W (na FR4 desce). ' +
       'VF max 500 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    schematicImage: 'SS12-S100.jpg',
     tags: 'dioda,schottky,smd,sma,ss14',
   },
   {
@@ -287,6 +299,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
       'RθJA=88 °C/W (na FR4 desce). ' +
       'VF max 700 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    schematicImage: 'SS12-S100.jpg',
     tags: 'dioda,schottky,smd,sma,ss15',
   },
   {
@@ -300,6 +313,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
       'RθJA=88 °C/W (na FR4 desce). ' +
       'VF max 700 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    schematicImage: 'SS12-S100.jpg',
     tags: 'dioda,schottky,smd,sma,ss16',
   },
   {
@@ -313,6 +327,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
       'RθJA=88 °C/W (na FR4 desce). ' +
       'VF max 850 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    schematicImage: 'SS12-S100.jpg',
     tags: 'dioda,schottky,smd,sma,ss18',
   },
   {
@@ -326,6 +341,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
       'RθJA=88 °C/W (na FR4 desce). ' +
       'VF max 850 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    schematicImage: 'SS12-S100.jpg',
     tags: 'dioda,schottky,smd,sma,ss19',
   },
   {
@@ -340,6 +356,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
       'RθJA=88 °C/W (na FR4 desce). ' +
       'VF max 850 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    schematicImage: 'SS12-S100.jpg',
     tags: 'dioda,schottky,smd,sma,s100',
   },
   { name: 'SS34', packageType: 'SMB (SMD)', value: '3 A / 40 V', notes: 'Schottky dioda, SMD', tags: 'dioda,schottky,smd' },
@@ -457,6 +474,7 @@ const DIODE_SPECS: PartSpec[] = [
       '875 mA (pulz ≤5 ms, duty ≤50 %), TJ max 135 °C, provozní teplota pouzdra -40 až 120 °C, ' +
       'ESD třída 3A (ANSI/ESDA/JEDEC JS-001-2012), vlhkostní citlivost MSL1 (JEDEC 020c), pájení ' +
       'reflow max 260 °C (max. 3 cykly). LUXEON LED nejsou určeny k provozu v závěrném směru.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,far-red',
   },
   {
@@ -477,6 +495,7 @@ const DIODE_SPECS: PartSpec[] = [
       'úhel 145°/125° (typ.). Tepelný odpor přechod–pájecí ploška 8,00 °C/W. Mezní hodnoty stejná ' +
       'skupina jako Far Red: DC 700 mA, špičkově 875 mA, TJ max 135 °C, pouzdro -40 až 120 °C, ' +
       'ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,deep-red',
   },
   {
@@ -498,6 +517,7 @@ const DIODE_SPECS: PartSpec[] = [
       'jde o tři odlišné objednací kódy, ne o binovou variantu jedné součástky. Pološířka 20 nm, ' +
       'teplotní koef. vlnové délky 0,05 nm/°C, vyzařovací úhel 145°/125° (typ.). Mezní hodnoty: ' +
       'DC 700 mA, špičkově 875 mA, TJ max 135 °C, pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,red,lxm2',
   },
   {
@@ -518,6 +538,7 @@ const DIODE_SPECS: PartSpec[] = [
       '20 nm, teplotní koef. vlnové délky 0,05 nm/°C, vyzařovací úhel 145°/125° (typ.). Tepelný ' +
       'odpor přechod–pájecí ploška 12,00 °C/W. Mezní hodnoty: DC 700 mA, špičkově 875 mA, TJ max ' +
       '135 °C, pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,red,lxml',
   },
   {
@@ -536,6 +557,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Testováno IF=350 mA, TJ=25 °C. Pološířka 20 nm, teplotní koef. vlnové délky 0,05 nm/°C, ' +
       'vyzařovací úhel 145°/125° (typ.). Mezní hodnoty: DC 700 mA, špičkově 875 mA, TJ max 135 °C, ' +
       'pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,red,lxm5',
   },
   {
@@ -554,6 +576,7 @@ const DIODE_SPECS: PartSpec[] = [
       '— tři odlišné objednací kódy. Testováno IF=350 mA, TJ=25 °C. Pološířka 20 nm, teplotní koef. ' +
       'vlnové délky 0,08 nm/°C, vyzařovací úhel 145°/125° (typ.). Mezní hodnoty: DC 700 mA, ' +
       'špičkově 875 mA, TJ max 135 °C, pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,red-orange,lxm2',
   },
   {
@@ -571,6 +594,7 @@ const DIODE_SPECS: PartSpec[] = [
       'TJ=25 °C. Pološířka 20 nm, teplotní koef. vlnové délky 0,08 nm/°C, vyzařovací úhel 145°/125° ' +
       '(typ.). Tepelný odpor přechod–pájecí ploška 12,00 °C/W. Mezní hodnoty: DC 700 mA, špičkově ' +
       '875 mA, TJ max 135 °C, pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,red-orange,lxml',
   },
   {
@@ -588,6 +612,7 @@ const DIODE_SPECS: PartSpec[] = [
       'minimu (90 lm typ. při min. 50 lm). Testováno IF=350 mA, TJ=25 °C. Pološířka 20 nm, teplotní ' +
       'koef. vlnové délky 0,08 nm/°C, vyzařovací úhel 145°/125° (typ.). Mezní hodnoty: DC 700 mA, ' +
       'špičkově 875 mA, TJ max 135 °C, pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,red-orange,lxm5',
   },
   {
@@ -609,6 +634,7 @@ const DIODE_SPECS: PartSpec[] = [
       'hodnoty PC Amber jsou přísnější než u ostatní rodiny Far Red/Deep Red/Red/Red-Orange/Amber: ' +
       'TJ max jen 130 °C (ne 135 °C) a provozní teplota pouzdra jen -40 až 110 °C (ne -40 až ' +
       '120 °C), přestože DC proud 700 mA a špičkový 875 mA jsou stejné. ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,pc-amber,lxm2',
   },
   {
@@ -627,6 +653,7 @@ const DIODE_SPECS: PartSpec[] = [
       'IF=350 mA, TJ=25 °C. Pološířka 20 nm, teplotní koef. vlnové délky 0,10 nm/°C, vyzařovací ' +
       'úhel 145°/125° (typ.). Mezní hodnoty stejná skupina jako Far Red/Red/Red-Orange: DC 700 mA, ' +
       'špičkově 875 mA, TJ max 135 °C, pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,amber,lxml',
   },
   {
@@ -644,6 +671,7 @@ const DIODE_SPECS: PartSpec[] = [
       'odpor v rodině Amber (7,00 °C/W). Testováno IF=350 mA, TJ=25 °C. Pološířka 20 nm, teplotní ' +
       'koef. vlnové délky 0,10 nm/°C, vyzařovací úhel 145°/125° (typ.). Mezní hodnoty: DC 700 mA, ' +
       'špičkově 875 mA, TJ max 135 °C, pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,amber,lxm5',
   },
   {
@@ -664,6 +692,7 @@ const DIODE_SPECS: PartSpec[] = [
       '145°/125° (typ.). Tepelný odpor přechod–pájecí ploška 6,00 °C/W. Mezní hodnoty (tabulka pro ' +
       'TJ=85 °C): DC proud 1000 mA, špičkový 1200 mA, TJ max 150 °C, provozní teplota pouzdra -40 ' +
       'až 135 °C, ESD 3A, autokláv 100% RH/96 h max.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,lime',
   },
   {
@@ -681,6 +710,7 @@ const DIODE_SPECS: PartSpec[] = [
       'odpor přechod–pájecí ploška 10,00 °C/W. Mezní hodnoty (skupina Green/Cyan/Blue/Royal Blue): ' +
       'DC proud 1000 mA, špičkový pulzní proud 1200 mA, TJ max 150 °C, provozní teplota pouzdra ' +
       '-40 až 135 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,green',
   },
   {
@@ -697,6 +727,7 @@ const DIODE_SPECS: PartSpec[] = [
       'úhel 145°/125° (typ.). Tepelný odpor přechod–pájecí ploška 10,00 °C/W. Mezní hodnoty ' +
       '(skupina Green/Cyan/Blue/Royal Blue): DC proud 1000 mA, špičkový 1200 mA, TJ max 150 °C, ' +
       'provozní teplota pouzdra -40 až 135 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,cyan',
   },
   {
@@ -715,6 +746,7 @@ const DIODE_SPECS: PartSpec[] = [
       'vlnové délky 0,05 nm/°C, vyzařovací úhel 145°/125° (typ.). Tepelný odpor přechod–pájecí ' +
       'ploška 10,00 °C/W. Mezní hodnoty (skupina Green/Cyan/Blue/Royal Blue): DC proud 1000 mA, ' +
       'špičkový 1200 mA, TJ max 150 °C, provozní teplota pouzdra -40 až 135 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,blue',
   },
   {
@@ -735,6 +767,7 @@ const DIODE_SPECS: PartSpec[] = [
       'odpor přechod–pájecí ploška 10,00 °C/W. Mezní hodnoty (skupina Green/Cyan/Blue/Royal Blue): ' +
       'DC proud 1000 mA, špičkový 1200 mA, TJ max 150 °C, provozní teplota pouzdra -40 až 135 °C, ' +
       'ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,royal-blue',
   },
   {
@@ -756,6 +789,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Tepelný odpor přechod–pájecí ploška 6,00 °C/W (nižší než u PR01 díky odlišné mechanice). ' +
       'Mezní hodnoty (skupina ES Blue/ES Royal Blue): DC proud 1000 mA, špičkový pulzní proud ' +
       '1200 mA, TJ max 150 °C, provozní teplota pouzdra -40 až 135 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,royal-blue,es',
   },
   {
@@ -784,6 +818,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(ANSI/ESDA/JEDEC JS-001, třída 3B — výrazně vyšší než běžné LED). Zvýšená odolnost proti ' +
       'korozi (testováno 40 °C/90 % RH/15 ppm H2S/336 h). Pájení reflow: MSL2 (JEDEC J-STD-020D.01), ' +
       'doporučený vrchol 245 °C (max. 260 °C).',
+    schematicImage: 'LCW-CR7P-OSLON80.jpg',
     tags: 'dioda,led,výkonová,smd,bílá,oslon,oslon-ssl-80,osram',
   },
   {
@@ -812,6 +847,7 @@ const DIODE_SPECS: PartSpec[] = [
       'odpovídající IV typ. 3300–8270 mcd), 3 skupin dominantní vlnové délky (2/3/4, 600–609 nm) ' +
       'a 4 skupin propustného napětí (3A/3B/4A/4B, 1,80–2,40 V) — zákazník obdrží v jedné baleny ' +
       'jednotce vždy jen jednu konkrétní kombinaci skupin (např. LO T64F-CBEB-24-1).',
+    schematicImage: 'TOPLED-Black.jpg',
     tags: 'dioda,led,výkonová,smd,oranžová,plcc-2,černé-pouzdro,vms,osram,topled-black',
   },
   {
@@ -838,6 +874,7 @@ const DIODE_SPECS: PartSpec[] = [
       'oranžového LO T64F, který má 3 vlnové skupiny, LR T66F má jen jednu (užší výrobní rozptyl ' +
       'nebo novější/zjednodušený binning). Objednací kódy např. LR T66F-BABB-1, ' +
       'LR T66F-ABBA-1-1, LR T66F-AACA-1-3A4B.',
+    schematicImage: 'TOPLED-Black.jpg',
     tags: 'dioda,led,výkonová,smd,červená,plcc-2,černé-pouzdro,vms,osram,topled-black',
   },
   {
@@ -864,6 +901,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Binováno do 6 jasových skupin (J1/J2/K1/K2/L1/L2, IV 4,5–18 mcd @IF=2 mA, světelný tok ' +
       'typ. 15,2–48 mlm) a 5 skupin dominantní vlnové délky (2–6, 580–595 nm). Objednací kód ' +
       'např. LY M67K-J1L2-26.',
+    schematicImage: 'LYM67K.jpg',
     tags: 'dioda,led,smd,žlutá,mini-topled,indikátor,podsvícení,automotive,osram',
   },
   {
@@ -6196,7 +6234,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 34;
+export const SEED_LIBRARY_VERSION = 35;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
