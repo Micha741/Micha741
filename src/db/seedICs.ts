@@ -1980,6 +1980,7 @@ const IC_SPECS: IcSpec[] = [
       'zorného pole se typicky kombinuje s externí Fresnelovou čočkou — viz související záznam ' +
       'Murata IML-0638 v kategorii Ostatní (čočka pro příbuznou "IRA-E" řadu se stejným ' +
       'mechanickým TO-5 pouzdrem).',
+    schematicImage: 'IRA-S-TO5.jpg',
     tags: 'io,senzor,pir,pyroelektrický,pohybový,murata,ira-s410st03,jfet',
   },
   {
@@ -2008,6 +2009,7 @@ const IC_SPECS: IcSpec[] = [
       'impedanční přizpůsobení) shodný s IRA-S410ST03 — viz tam pro obecný popis. Pro rozšíření/ ' +
       'tvarování zorného pole se typicky kombinuje s externí Fresnelovou čočkou — viz související ' +
       'záznamy Murata IML-0637 a IML-0638 v kategorii Ostatní.',
+    schematicImage: 'IRA-S-TO5.jpg',
     tags: 'io,senzor,pir,pyroelektrický,pohybový,murata,ira-s230st01,jfet',
   },
   {
@@ -2037,6 +2039,7 @@ const IC_SPECS: IcSpec[] = [
       'viz tam pro obecný popis. Pro rozšíření/tvarování zorného pole se typicky kombinuje s ' +
       'externí Fresnelovou čočkou — viz související záznamy Murata IML-0637 a IML-0638 v kategorii ' +
       'Ostatní.',
+    schematicImage: 'IRA-S-TO5.jpg',
     tags: 'io,senzor,pir,pyroelektrický,pohybový,murata,ira-s510st01,jfet,kvadrátní',
   },
   {
@@ -2502,6 +2505,7 @@ const IC_SPECS: IcSpec[] = [
       '@Ee=0,1mW/cm²/535nm/VR=5V, temný proud typ. 1 nA (max 5 nA) @VR=5V, kapacita typ. 5 pF ' +
       '@VR=5V/1MHz, VR max 16 V. Provozní/skladovací teplota -40 až +85 °C. ESD odolnost 2 kV ' +
       '(HBM).',
+    schematicImage: 'SFH7051.jpg',
     tags: 'io,senzor,ppg,biomon,tepová-frekvence,fotodioda,zelená-led,osram,sfh7051,wearable,optický',
   },
   {
@@ -2538,6 +2542,7 @@ const IC_SPECS: IcSpec[] = [
       'Provozní/skladovací teplota -40 až +85 °C. ESD odolnost 2 kV (HBM). Určeno pro nositelnou ' +
       'elektroniku (chytré hodinky, fitness náramky) a mobilní zařízení s funkcí měření tepové ' +
       'frekvence a saturace kyslíku v krvi.',
+    schematicImage: 'SFH7050.jpg',
     tags: 'io,senzor,ppg,spo2,pulzní-oxymetrie,biomon,tepová-frekvence,fotodioda,osram,sfh7050,wearable,optický',
   },
   {
@@ -2572,6 +2577,7 @@ const IC_SPECS: IcSpec[] = [
       'skladovací teplota -40 až +85 °C. ESD odolnost 2 kV (HBM). Určeno pro nositelnou ' +
       'elektroniku (chytré hodinky, fitness náramky) a mobilní zařízení s nejvyššími nároky na ' +
       'přesnost měření tepové frekvence a SpO2.',
+    schematicImage: 'SFH7060.jpg',
     tags: 'io,senzor,ppg,spo2,pulzní-oxymetrie,biomon,tepová-frekvence,fotodioda,osram,sfh7060,wearable,optický',
   },
   {
