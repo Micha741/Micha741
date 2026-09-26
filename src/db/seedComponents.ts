@@ -3890,6 +3890,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: '2N3055',
     packageType: 'TO-3 — vývody: 1=báze, 2=emitor, 3=kolektor (kolektor je spojen s kovovým pouzdrem/case!)',
     value: 'NPN, VCEO 60 V, IC 15 A (trvale), hFE 20–70 (@ IC=4 A)',
+    schematicImage: '2N3055.jpg',
     notes:
       'Klasický výkonový tranzistor pro obecné zesilovací a spínací aplikace. Datasheet Multicomp Pro ' +
       '(2019), pouzdro TO-3. ' +
@@ -6012,7 +6013,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 26;
+export const SEED_LIBRARY_VERSION = 27;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),

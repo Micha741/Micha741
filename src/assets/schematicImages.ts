@@ -83,4 +83,5 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'SBSI-Q-AF-R2B-F12-W.jpg': require('../../assets/schematics/SBSI-Q-AF-R2B-F12-W.jpg'),
   'SCD4x.jpg': require('../../assets/schematics/SCD4x.jpg'),
   'TLPxxM.jpg': require('../../assets/schematics/TLPxxM.jpg'),
+  '2N3055.jpg': require('../../assets/schematics/2N3055.jpg'),
 };
