@@ -505,6 +505,7 @@ const RELAY_SPECS: RelaySpec[] = [
     value:
       'Jednofázové AC polovodičové relé (SSR), triakový výstup, zatížitelnost 10/15/25/40 A, ' +
       'spínané napětí 280 V nebo 480 V AC, řídicí vstup DC 4-16V / DC 3-32V / AC 90-250V',
+    schematicImage: 'QLT-SSR-10-40A.jpg',
     notes:
       'QLT Power "Semiconductor Device — Solid State Relays, SSR 10 to 40 Amps AC SSR" ' +
       '(SSR120A.pdf, str. 1–2). ⚠️ NOVÁ SUB-KATEGORIE v "Spínač/Relé": první POLOVODIČOVÉ ' +
@@ -540,6 +541,7 @@ const RELAY_SPECS: RelaySpec[] = [
       'Jednofázové AC polovodičové relé (SSR), duální SCR (hybridní tyristorový) výstup, ' +
       'zatížitelnost 40/60/80/100/120 A, spínané napětí 280 V nebo 480 V AC, řídicí vstup ' +
       'DC 4-16V / DC 3-32V / AC 90-250V',
+    schematicImage: 'QLT-SSR-40-120A.jpg',
     notes:
       'QLT Power "Semiconductor Device — Solid State Relays, SSR 40 to 120 Amps AC SSR" ' +
       '(SSR120A.pdf, str. 3–4) — ⚠️ SOUHRNNÝ ZÁZNAM, viz poznámka u "QLT Power SSR 10-40A" pro ' +
