@@ -1702,6 +1702,7 @@ const DIODE_SPECS: PartSpec[] = [
     value:
       'TRIPOLÁRNÍ TRISIL — 3fázová (TIP-RING, TIP-GND, RING-GND) přepěťová ochrana telefonní ' +
       'linky v jednom pouzdře, VRM 120 V, IPP 100 A (10/1000 µs)',
+    schematicImage: 'TLPxxM.jpg',
     notes:
       'STMicroelectronics "TLPxxM/G/G-1 — Tripolar Overvoltage Protection for Telecom Line" ' +
       '(dok. září 1998, ed. 3C) — ⚠️ zásadně odlišná topologie od ostatních TRISIL dílů v této ' +
@@ -1737,6 +1738,7 @@ const DIODE_SPECS: PartSpec[] = [
     value:
       'TRIPOLÁRNÍ TRISIL — 3fázová (TIP-RING, TIP-GND, RING-GND) přepěťová ochrana telefonní ' +
       'linky v jednom pouzdře, VRM 180 V, IPP 100 A (10/1000 µs)',
+    schematicImage: 'TLPxxM.jpg',
     notes:
       'STMicroelectronics "TLPxxM/G/G-1" (dok. září 1998, ed. 3C) — součást stejné řady 3 ' +
       'napěťových tříd jako TLP140 a TLP270 (samostatné záznamy) — viz záznam TLP140M/G/G-1 pro ' +
@@ -1755,6 +1757,7 @@ const DIODE_SPECS: PartSpec[] = [
     value:
       'TRIPOLÁRNÍ TRISIL — 3fázová (TIP-RING, TIP-GND, RING-GND) přepěťová ochrana telefonní ' +
       'linky v jednom pouzdře, VRM 230 V, IPP 100 A (10/1000 µs)',
+    schematicImage: 'TLPxxM.jpg',
     notes:
       'STMicroelectronics "TLPxxM/G/G-1" (dok. září 1998, ed. 3C) — součást stejné řady 3 ' +
       'napěťových tříd jako TLP140 a TLP200 (samostatné záznamy) — viz záznam TLP140M/G/G-1 pro ' +
@@ -6009,7 +6012,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 25;
+export const SEED_LIBRARY_VERSION = 26;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),

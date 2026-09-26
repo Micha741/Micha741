@@ -2541,6 +2541,7 @@ const IC_SPECS: IcSpec[] = [
     value:
       'Miniaturní fotoakustický CO2 senzor s integrovaným senzorem vlhkosti/teploty (SHT4x), I2C ' +
       'rozhraní (adr. 0x62), rozsah 0–40 000 ppm, přesnost ±(50 ppm + 5 %) v 400–2000 ppm, VDD 2,4–5,5 V',
+    schematicImage: 'SCD4x.jpg',
     notes:
       'Sensirion "SCD4x — Breaking the size barrier in CO2 sensing" (verze 1.1, duben 2021) — ' +
       'nejmenší CO2 senzorový modul Sensirion, založený na patentované fotoakustické senzorové ' +
@@ -2573,6 +2574,7 @@ const IC_SPECS: IcSpec[] = [
     value:
       'Miniaturní fotoakustický CO2 senzor, vyšší přesnostní třída s podporou single-shot měření ' +
       '— rozsah 400–5000 ppm, přesnost ±(40 ppm + 5 %), jinak elektricky shodný se SCD40',
+    schematicImage: 'SCD4x.jpg',
     notes:
       'Sensirion "SCD4x" (verze 1.1, duben 2021) — vyšší přesnostní varianta ve stejné rodině ' +
       'jako SCD40 (samostatný záznam, viz tam pro plný popis fotoakustické PASens® technologie, ' +
