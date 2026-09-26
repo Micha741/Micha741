@@ -1331,6 +1331,7 @@ const IC_SPECS: IcSpec[] = [
       '@4,5–5,5 V; verze "V" (nízkonapěťová, např. ATmega640V) 0–4 MHz @1,8–5,5 V nebo 0–8 MHz ' +
       '@2,7–5,5 V. Spotřeba (typ.): aktivní režim @1 MHz/1,8 V cca 510 µA, power-down @1,8 V cca ' +
       '0,1 µA. Provozní teplota -40 až 85 °C (průmyslový rozsah). RoHS/bezolovnaté provedení.',
+    schematicImage: 'ATmega640-1280-2560.jpg',
     tags: 'io,mikrokontrolér,avr,atmega,atmega640,8bit',
   },
   {
@@ -1344,6 +1345,7 @@ const IC_SPECS: IcSpec[] = [
       '4 USART, 16 ADC kanálů) — použit např. v deskách Arduino Mega. Architektura, periferie, ' +
       'JTAG, napájecí rozsahy a spotřeba shodné s ATmega640 (viz jeho záznam pro plný popis). ' +
       '4 KB EEPROM, 8 KB SRAM, do 64 KB volitelné externí paměti.',
+    schematicImage: 'ATmega640-1280-2560.jpg',
     tags: 'io,mikrokontrolér,avr,atmega,atmega1280,8bit,arduino-mega',
   },
   {
@@ -1359,6 +1361,7 @@ const IC_SPECS: IcSpec[] = [
       'jsou dostupné jen ve 100pinové verzi (ATmega1280/2560), ne zde. Architektura, JTAG, ' +
       'napájecí rozsahy a spotřeba shodné s ATmega640 (viz jeho záznam pro plný popis). ' +
       '4 KB EEPROM, 8 KB SRAM.',
+    schematicImage: 'ATmega1281-2561.jpg',
     tags: 'io,mikrokontrolér,avr,atmega,atmega1281,8bit',
   },
   {
@@ -1372,6 +1375,7 @@ const IC_SPECS: IcSpec[] = [
       '— nejpoužívanější člen rodiny, osazuje např. desky Arduino Mega 2560. Architektura, ' +
       'periferie, JTAG, napájecí rozsahy a spotřeba shodné s ATmega640 (viz jeho záznam pro plný ' +
       'popis). 4 KB EEPROM, 8 KB SRAM, do 64 KB volitelné externí paměti.',
+    schematicImage: 'ATmega640-1280-2560.jpg',
     tags: 'io,mikrokontrolér,avr,atmega,atmega2560,8bit,arduino-mega',
   },
   {
@@ -1386,6 +1390,7 @@ const IC_SPECS: IcSpec[] = [
       '(ne 12), 2 USART (ne 4), 8kanálový ADC (ne 16) — porty H/J/K/L, DAC a časovače T/C4, T/C5 ' +
       'nejsou dostupné. Architektura, JTAG, napájecí rozsahy a spotřeba shodné s ATmega640 (viz ' +
       'jeho záznam pro plný popis). 4 KB EEPROM, 8 KB SRAM.',
+    schematicImage: 'ATmega1281-2561.jpg',
     tags: 'io,mikrokontrolér,avr,atmega,atmega2561,8bit',
   },
   {
@@ -1443,6 +1448,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást produktové řady AT90CAN32/64/128 (AVR jádro) a T89C51CC01/02, AT89C51CC03 (8051 ' +
       'jádro, samostatné záznamy) — všech 6 typů sdílí kompatibilní CAN periferii a jsou ' +
       'doporučeny s párovým CAN transceiverem ATA6660.',
+    schematicImage: 'AT90CAN128-64-TQFP.jpg',
     tags: 'io,mikrokontrolér,avr,at90can128,can,8bit,tqfp64,qfn64',
   },
   {
@@ -1474,6 +1480,7 @@ const IC_SPECS: IcSpec[] = [
       '"Green"/RoHS varianty (přípona "U", např. AT90CAN32-16AU/16MU). Starší AVR čipy tohoto ' +
       'typu bývají postupně nahrazovány novějšími řadami (např. ATmega32/64/128M1 s CAN) — ověř ' +
       'aktuální dostupnost u výrobce.',
+    schematicImage: 'AT90CAN128-64-TQFP.jpg',
     tags: 'io,mikrokontrolér,avr,at90can32,can,8bit,tqfp64,qfn64',
   },
   {
@@ -1502,6 +1509,7 @@ const IC_SPECS: IcSpec[] = [
       'produkty nejsou určeny pro automotive aplikace; u konkrétního nakupovaného kusu ověř ' +
       'aktuální stav u výrobce. Dostupné i bezolovnaté "Green"/RoHS varianty (přípona "U", ' +
       'např. AT90CAN64-16AU/16MU).',
+    schematicImage: 'AT90CAN128-64-TQFP.jpg',
     tags: 'io,mikrokontrolér,avr,at90can64,can,8bit,tqfp64,qfn64',
   },
 

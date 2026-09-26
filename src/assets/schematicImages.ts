@@ -138,4 +138,7 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'Schrack-RPS.jpg': require('../../assets/schematics/Schrack-RPS.jpg'),
   'Schrack-SNR.jpg': require('../../assets/schematics/Schrack-SNR.jpg'),
   'Schrack-SR.jpg': require('../../assets/schematics/Schrack-SR.jpg'),
+  'ATmega640-1280-2560.jpg': require('../../assets/schematics/ATmega640-1280-2560.jpg'),
+  'ATmega1281-2561.jpg': require('../../assets/schematics/ATmega1281-2561.jpg'),
+  'AT90CAN128-64-TQFP.jpg': require('../../assets/schematics/AT90CAN128-64-TQFP.jpg'),
 };
