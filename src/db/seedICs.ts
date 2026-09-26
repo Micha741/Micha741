@@ -2252,6 +2252,7 @@ const IC_SPECS: IcSpec[] = [
       'napětí VB 12 V. Provozní teplota -40 až +120 °C, skladovací -65 až +120 °C. Určeno pro ' +
       'bezkontaktní měření stejnosměrného i střídavého proudu v průmyslových a energetických ' +
       'aplikacích (proudové senzory, ochrany, měřicí přístroje).',
+    schematicImage: 'ZMC10.jpg',
     tags: 'io,senzor,proud,magnetorezistivní,proudový-senzor,galvanické-oddělení,zmc10,dil-14',
   },
   {
@@ -2286,6 +2287,7 @@ const IC_SPECS: IcSpec[] = [
       '+85 °C, max. teplota přechodu 165 °C, max. skladovací teplota 170 °C. UL rozpoznáno. ' +
       'Doporučen externí blokovací kondenzátor 0,1 µF na Vcc. Určeno pro řízení motorů, detekci/ ' +
       'management zátěže, spínané zdroje, nadproudovou ochranu, elektrická vozidla.',
+    schematicImage: 'ACS752SCA-050.jpg',
     tags: 'io,senzor,proud,hallův-jev,proudový-senzor,galvanické-oddělení,allegro,acs752,izolovaný',
   },
   {
@@ -2471,6 +2473,7 @@ const IC_SPECS: IcSpec[] = [
       '(typ. 15 µs), typické pro darlingtonové zapojení (vyšší zesílení na úkor rychlosti). ' +
       'Provozní/skladovací teplota -40 až +85 °C. Optimální detekční vzdálenost od odrazné plochy ' +
       'cca 0,15" (3,8 mm) dle grafu závislosti kolektorového proudu na vzdálenosti.',
+    schematicImage: 'HOA0709-011.jpg',
     tags: 'io,senzor,reflexní,optický,photodarlington,ired,honeywell,hoa0709,proximity',
   },
   {

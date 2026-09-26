@@ -156,4 +156,7 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'SFH7051.jpg': require('../../assets/schematics/SFH7051.jpg'),
   'SFH7050.jpg': require('../../assets/schematics/SFH7050.jpg'),
   'SFH7060.jpg': require('../../assets/schematics/SFH7060.jpg'),
+  'ACS752SCA-050.jpg': require('../../assets/schematics/ACS752SCA-050.jpg'),
+  'HOA0709-011.jpg': require('../../assets/schematics/HOA0709-011.jpg'),
+  'ZMC10.jpg': require('../../assets/schematics/ZMC10.jpg'),
 };
