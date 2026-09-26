@@ -4086,6 +4086,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '60601-1-2 4th ed. (ESD 8 kV kontakt/15 kV vzduch, emise třída B dle EN 55011/32). ' +
       'Hmotnost 0,80 lb (open frame) / 1,28 lb (chassis+cover). MTBF 100 000 h (MIL-HDBK-217F, ' +
       '25 °C). 2 roky záruka.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
   },
   {
@@ -4096,6 +4097,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace (univerzální vstup 85–264 V AC, ' +
       'ochrany, certifikace, mechanické provedení, EMC). Liší se jen výstupním napětím.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
   },
   {
@@ -4105,6 +4107,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     notes:
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Liší se jen výstupním napětím.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
   },
   {
@@ -4114,6 +4117,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     notes:
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Liší se jen výstupním napětím.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
   },
   {
@@ -4123,6 +4127,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     notes:
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Liší se jen výstupním napětím.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
   },
   {
@@ -4132,6 +4137,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     notes:
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Liší se jen výstupním napětím.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
   },
   {
@@ -4141,6 +4147,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     notes:
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Liší se jen výstupním napětím.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
   },
   {
@@ -4150,6 +4157,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     notes:
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Liší se jen výstupním napětím.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
   },
   {
@@ -4160,6 +4168,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,dvouvýstupový',
   },
   {
@@ -4170,6 +4179,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,dvouvýstupový',
   },
   {
@@ -4180,6 +4190,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,dvouvýstupový',
   },
   {
@@ -4190,6 +4201,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,dvouvýstupový',
   },
   {
@@ -4200,6 +4212,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,dvouvýstupový',
   },
   {
@@ -4210,6 +4223,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,dvouvýstupový',
   },
   {
@@ -4219,6 +4233,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     notes:
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,trojvýstupový',
   },
   {
@@ -4228,6 +4243,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     notes:
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,trojvýstupový',
   },
   {
@@ -4237,6 +4253,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     notes:
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,trojvýstupový',
   },
   {
@@ -4246,6 +4263,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     notes:
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,trojvýstupový',
   },
   {
@@ -4256,6 +4274,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
   },
   {
@@ -4266,6 +4285,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
   },
   {
@@ -4276,6 +4296,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
   },
   {
@@ -4286,6 +4307,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
   },
   {
@@ -4296,6 +4318,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
   },
   {
@@ -4306,6 +4329,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
   },
   {
@@ -4316,6 +4340,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
   },
   {
@@ -4326,6 +4351,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
   },
   {
