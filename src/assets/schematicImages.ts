@@ -111,4 +111,9 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   '2N5457-59.jpg': require('../../assets/schematics/2N5457-59.jpg'),
   'BF240.jpg': require('../../assets/schematics/BF240.jpg'),
   'REL-110.jpg': require('../../assets/schematics/REL-110.jpg'),
+  'KA78LXXA.jpg': require('../../assets/schematics/KA78LXXA.jpg'),
+  'L1117-SOT223.jpg': require('../../assets/schematics/L1117-SOT223.jpg'),
+  'L1117-TO220.jpg': require('../../assets/schematics/L1117-TO220.jpg'),
+  'L1117-TO252.jpg': require('../../assets/schematics/L1117-TO252.jpg'),
+  'L1117-TO263.jpg': require('../../assets/schematics/L1117-TO263.jpg'),
 };

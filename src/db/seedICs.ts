@@ -284,6 +284,7 @@ const IC_SPECS: IcSpec[] = [
       'napětí typ 40 µV/Vo (10Hz-100kHz). Absolutní max.: Vin 30 V (pro Vo=5V/8V), TJ provozní ' +
       '0 až +150 °C, skladovací -65 až +150 °C. Doporučené blokovací kondenzátory: 0,33 µF na ' +
       'vstupu, 0,1 µF na výstupu (co nejblíže pouzdru).',
+    schematicImage: 'KA78LXXA.jpg',
     tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l05az,to-92,5v',
   },
   {
@@ -294,6 +295,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 9dílné TO-92 řady KA78LXXA (Fairchild) — viz poznámka u KA78L05AZ pro plné společné ' +
       'specifikace. Výstupní napětí 5,75–6,0–6,25 V. Ripple rejection typ 46 dB (min 40 dB) @120Hz ' +
       '(nižší než ostatní hodnoty řady dle datasheetu).',
+    schematicImage: 'KA78LXXA.jpg',
     tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l06az,to-92,6v',
   },
   {
@@ -304,6 +306,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 9dílné TO-92 řady KA78LXXA (Fairchild) — viz poznámka u KA78L05AZ pro plné společné ' +
       'specifikace. Výstupní napětí 7,7–8,0–8,3 V. Ripple rejection typ 70 dB (min 39 dB) @120Hz. ' +
       'Dostupná i v pouzdrech 8-SOP (KA78L08AD) a SOT-89 (KA78L08AM).',
+    schematicImage: 'KA78LXXA.jpg',
     tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l08az,to-92,8v',
   },
   {
@@ -313,6 +316,7 @@ const IC_SPECS: IcSpec[] = [
     notes:
       'Součást 9dílné TO-92 řady KA78LXXA (Fairchild) — viz poznámka u KA78L05AZ pro plné společné ' +
       'specifikace. Výstupní napětí 8,64–9,0–9,36 V. Ripple rejection typ 44 dB (min 38 dB) @120Hz.',
+    schematicImage: 'KA78LXXA.jpg',
     tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l09az,to-92,9v',
   },
   {
@@ -322,6 +326,7 @@ const IC_SPECS: IcSpec[] = [
     notes:
       'Součást 9dílné TO-92 řady KA78LXXA (Fairchild) — viz poznámka u KA78L05AZ pro plné společné ' +
       'specifikace. Výstupní napětí 9,6–10,0–10,4 V. Ripple rejection typ 43 dB (min 38 dB) @120Hz.',
+    schematicImage: 'KA78LXXA.jpg',
     tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l10az,to-92,10v',
   },
   {
@@ -333,6 +338,7 @@ const IC_SPECS: IcSpec[] = [
       'specifikace. Výstupní napětí 11,5–12,0–12,5 V. Ripple rejection typ 65 dB (min 37 dB) ' +
       '@120Hz. Abs. max Vin=35V (od 12V verze výše). Dostupná i v pouzdrech 8-SOP (KA78L12AD) a ' +
       'SOT-89 (KA78L12AM).',
+    schematicImage: 'KA78LXXA.jpg',
     tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l12az,to-92,12v',
   },
   {
@@ -343,6 +349,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 9dílné TO-92 řady KA78LXXA (Fairchild) — viz poznámka u KA78L05AZ pro plné společné ' +
       'specifikace. Výstupní napětí 14,4–15,0–15,6 V. Ripple rejection typ 60 dB (min 34 dB) ' +
       '@120Hz. Abs. max Vin=35V.',
+    schematicImage: 'KA78LXXA.jpg',
     tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l15az,to-92,15v',
   },
   {
@@ -353,6 +360,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 9dílné TO-92 řady KA78LXXA (Fairchild) — viz poznámka u KA78L05AZ pro plné společné ' +
       'specifikace. Výstupní napětí 17,3–18,0–18,7 V. Ripple rejection typ 48 dB (min 34 dB) ' +
       '@120Hz. Abs. max Vin=35V.',
+    schematicImage: 'KA78LXXA.jpg',
     tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l18az,to-92,18v',
   },
   {
@@ -365,6 +373,7 @@ const IC_SPECS: IcSpec[] = [
       '27-38V), load regulation typ 40 mV (max 200 mV, 1-100mA). Ripple rejection typ 45 dB (min ' +
       '34 dB) @120Hz. Klidový proud typ 2,2 mA (max 6,0 mA). Nejvyšší napěťová varianta řady — abs. ' +
       'max Vin=40 V (jediná v této hodnotě, ostatní verze 30 nebo 35 V).',
+    schematicImage: 'KA78LXXA.jpg',
     tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l24az,to-92,24v',
   },
   {
@@ -453,6 +462,7 @@ const IC_SPECS: IcSpec[] = [
       '5V→2,5V/3,3V regulace, nízkonapěťové mikrokontroléry, nabíječky baterií, post-regulátor za ' +
       'spínaným zdrojem. Typické zapojení vyžaduje Cin 10µF a Cout 10-22µF (elektrolytické/ ' +
       'tantalové) pro stabilitu.',
+    schematicImage: 'L1117-SOT223.jpg',
     tags: 'io,regulátor,ldo,nastavitelný,niko-sem,l1117,l1117l,sot-223',
   },
   {
@@ -463,6 +473,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — TO-252 verze nastavitelného (ADJ) ' +
       'modelu, elektricky shodná s L1117L (SOT-223). Viz poznámka u L1117L pro plné společné ' +
       'specifikace. θJA (TO-252) = 70 °C/W.',
+    schematicImage: 'L1117-TO252.jpg',
     tags: 'io,regulátor,ldo,nastavitelný,niko-sem,l1117,l1117d,to-252',
   },
   {
@@ -473,6 +484,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — pevná 2,5V verze v SOT-223. Viz ' +
       'poznámka u L1117L pro plné společné specifikace. Výstupní napětí 2,45–2,55 V (@Vin=5V, ' +
       'Iout=10mA).',
+    schematicImage: 'L1117-SOT223.jpg',
     tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117l-2.5,sot-223,2.5v',
   },
   {
@@ -484,6 +496,7 @@ const IC_SPECS: IcSpec[] = [
       'určená mj. pro aktivní SCSI terminátory (18-27 linek). Viz poznámka u L1117L pro plné ' +
       'společné specifikace. Výstupní napětí 2,793–2,907 V (@Vin=5V, Iout=10mA), max Vin pro tuto ' +
       'variantu jen 8V (ne 15V jako ostatní).',
+    schematicImage: 'L1117-SOT223.jpg',
     tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117l-2.85,sot-223,scsi',
   },
   {
@@ -494,6 +507,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — pevná 3,3V verze v SOT-223, časté ' +
       'napájení pro FPGA/mikrokontroléry z 5V. Viz poznámka u L1117L pro plné společné specifikace. ' +
       'Výstupní napětí 3,234–3,367 V (@Vin=5V, Iout=10mA).',
+    schematicImage: 'L1117-SOT223.jpg',
     tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117l-3.3,sot-223,3.3v',
   },
   {
@@ -504,6 +518,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — TO-252 verze pevné 3,3V varianty, ' +
       'elektricky shodná s L1117L-3.3. Viz poznámka u L1117L pro plné společné specifikace. θJA ' +
       '(TO-252) = 70 °C/W.',
+    schematicImage: 'L1117-TO252.jpg',
     tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117d-3.3,to-252,3.3v',
   },
   {
@@ -514,6 +529,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — pevná 5V verze v SOT-223. Viz ' +
       'poznámka u L1117L pro plné společné specifikace. Výstupní napětí 4,90–5,10 V (@Vin=8V, ' +
       'Iout=10mA), vyžaduje Vin>6,5V.',
+    schematicImage: 'L1117-SOT223.jpg',
     tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117l-5,sot-223,5v',
   },
   {
@@ -524,6 +540,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — TO-252 verze pevné 5V varianty, ' +
       'elektricky shodná s L1117L-5. Viz poznámka u L1117L pro plné společné specifikace. θJA ' +
       '(TO-252) = 70 °C/W.',
+    schematicImage: 'L1117-TO252.jpg',
     tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117d-5,to-252,5v',
   },
   {
@@ -534,6 +551,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — TO-220 verze nastavitelného (ADJ) ' +
       'modelu, elektricky shodná s L1117L (SOT-223). Viz poznámka u L1117L pro plné společné ' +
       'specifikace. θJA (TO-220) = 50 °C/W (nejnižší z celé řady).',
+    schematicImage: 'L1117-TO220.jpg',
     tags: 'io,regulátor,ldo,nastavitelný,niko-sem,l1117,l1117t,to-220',
   },
   {
@@ -543,6 +561,7 @@ const IC_SPECS: IcSpec[] = [
     notes:
       'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — TO-220 verze pevné 3,3V varianty. ' +
       'Viz poznámka u L1117L pro plné společné specifikace. θJA (TO-220) = 50 °C/W.',
+    schematicImage: 'L1117-TO220.jpg',
     tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117t-3.3,to-220,3.3v',
   },
   {
@@ -552,6 +571,7 @@ const IC_SPECS: IcSpec[] = [
     notes:
       'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — TO-220 verze pevné 5V varianty. ' +
       'Viz poznámka u L1117L pro plné společné specifikace. θJA (TO-220) = 50 °C/W.',
+    schematicImage: 'L1117-TO220.jpg',
     tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117t-5,to-220,5v',
   },
   {
@@ -562,6 +582,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — TO-263 (D²PAK, SMD) verze pevné 5V ' +
       'varianty, jediná v pouzdru pro povrchovou montáž s výkonovou tabulí. Viz poznámka u L1117L ' +
       'pro plné společné specifikace. θJA (TO-263) = 60 °C/W.',
+    schematicImage: 'L1117-TO263.jpg',
     tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117s-5,to-263,d2pak,5v,smd',
   },
 
