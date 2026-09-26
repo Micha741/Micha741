@@ -3659,6 +3659,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'CCBO=8 pF max @VCB=10 V. CEBO=30 pF max @VEB=2 V. ' +
       'Spínací časy (IC=150 mA, IB=15 mA, VCC=30 V): td=10 ns, tr=40 ns, ton=45 ns, ts=190 ns, ' +
       'tf=30 ns, toff=220 ns.',
+    schematicImage: 'MMBT2907A.jpg',
     tags: 'tranzistor,pnp,bipolární,sot-23,smd,zesilovací,spínací,mmbt2907a,2n2907a',
   },
   {
@@ -4255,6 +4256,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'BVDSS min 600 V @VGS=0/ID=10 mA. IDSS max 1 µA @VDS=600 V/VGS=0. IGSS max ±100 nA ' +
       '@VGS=±20V/VDS=0. VGS(th) 3,0–4,0 V @VDS=VGS/ID=1 mA. RDS(on) max 0,38 Ω @VGS=10 V/ID=10 A. ' +
       'VSD (dioda těla) max 1,4 V @IS=20 A/VGS=0.',
+    schematicImage: 'H5N6001P.jpg',
     tags: 'tranzistor,mosfet,n-kanál,výkonový,to-3p,isc,inchange,h5n6001p,600v',
   },
 
@@ -4517,6 +4519,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '731nC @TC=175°C (výrazně horší zotavení za horka). Erec typ 51µJ @TC=175°C. ' +
       'Aplikace: palubní nabíječky (OBC), kompresory klimatizace, PTC topení, pohony motorů a ' +
       'další automotive napájecí/pomocné aplikace. Pb-free, RoHS.',
+    schematicImage: 'AFGB40T65SPD-BW.jpg',
     tags: 'tranzistor,igbt,field-stop-trench,onsemi,afgb40t65spd,d2pak,to-263,650v,automotive,aec-q101',
   },
   {
@@ -4576,6 +4579,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'tf typ 110 ns. Ciss typ 5480 pF, Coss typ 1210 pF, Crss typ 280 pF (@VGS=0/VDS=25 V/f=1 MHz). ' +
       'Tělesová dioda: IS=174 A (trvale), ISM=680 A (pulzně), VSD max 1,3 V @IS=101 A/VGS=0, ' +
       'trr typ 88 ns (max 130 ns) @IF=101 A/di/dt=100 A/µs, Qrr typ 250 max 380 nC.',
+    schematicImage: 'IRFBA1405P.jpg',
     tags: 'tranzistor,mosfet,n-kanál,super-220,to-220,automotive,irfba1405p,spínací',
   },
   {
@@ -4880,6 +4884,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'IC=0,5 A. Spínací časy (VCC=125 V, IC=8 A, IB1=-IB2=1,6 A, RL=15,6 Ω): tON max 1,1 µs, ' +
       'tSTG (storage) max 3 µs, tF max 0,7 µs — relativně pomalé vypínání typické pro tuto ' +
       'kategorii vysokonapěťových bipolárních spínačů (na rozdíl od MOSFETů).',
+    schematicImage: 'KSE13009F.jpg',
     tags: 'tranzistor,npn,bipolární,vysokonapěťový,spínací,to-220,13009,smps',
   },
   {
@@ -6275,7 +6280,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 37;
+export const SEED_LIBRARY_VERSION = 38;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),

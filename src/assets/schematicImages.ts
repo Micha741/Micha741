@@ -103,4 +103,9 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'LYM67K.jpg': require('../../assets/schematics/LYM67K.jpg'),
   'SMP-0SCMC.jpg': require('../../assets/schematics/SMP-0SCMC.jpg'),
   'BD13x-SOT32.jpg': require('../../assets/schematics/BD13x-SOT32.jpg'),
+  'MMBT2907A.jpg': require('../../assets/schematics/MMBT2907A.jpg'),
+  'KSE13009F.jpg': require('../../assets/schematics/KSE13009F.jpg'),
+  'IRFBA1405P.jpg': require('../../assets/schematics/IRFBA1405P.jpg'),
+  'H5N6001P.jpg': require('../../assets/schematics/H5N6001P.jpg'),
+  'AFGB40T65SPD-BW.jpg': require('../../assets/schematics/AFGB40T65SPD-BW.jpg'),
 };
