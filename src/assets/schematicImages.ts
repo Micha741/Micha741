@@ -108,4 +108,6 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'IRFBA1405P.jpg': require('../../assets/schematics/IRFBA1405P.jpg'),
   'H5N6001P.jpg': require('../../assets/schematics/H5N6001P.jpg'),
   'AFGB40T65SPD-BW.jpg': require('../../assets/schematics/AFGB40T65SPD-BW.jpg'),
+  '2N5457-59.jpg': require('../../assets/schematics/2N5457-59.jpg'),
+  'BF240.jpg': require('../../assets/schematics/BF240.jpg'),
 };

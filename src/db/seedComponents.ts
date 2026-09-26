@@ -4643,6 +4643,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'VGS(off) 0,5–6,0 V @VDS=15 V/ID=10 nA. IDSS 1,0–5,0 mA @VDS=15 V. ' +
       'Crss max 3,0 pF, Ciss max 7,0 pF @VDS=15 V/VGS=0/f=1,0 MHz. ' +
       'gfs 1,0–5,0 mS (1,0K–5,0K µS) @VDS=15 V/VGS=0/f=1,0 kHz. gos max 50 µS @stejných podmínkách.',
+    schematicImage: '2N5457-59.jpg',
     tags: 'tranzistor,jfet,n-kanál,to-92,2n5457,zesilovací,spínací',
   },
   {
@@ -4659,6 +4660,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'VGS(off) 1,0–7,0 V @VDS=15 V/ID=10 nA. IDSS 2,0–9,0 mA @VDS=15 V. ' +
       'Crss max 3,0 pF, Ciss max 7,0 pF @VDS=15 V/VGS=0/f=1,0 MHz. ' +
       'gfs 1,5–5,5 mS (1,5K–5,5K µS) @VDS=15 V/VGS=0/f=1,0 kHz. gos max 50 µS @stejných podmínkách.',
+    schematicImage: '2N5457-59.jpg',
     tags: 'tranzistor,jfet,n-kanál,to-92,2n5458,zesilovací,spínací',
   },
   {
@@ -4675,6 +4677,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'VGS(off) 2,0–8,0 V @VDS=15 V/ID=10 nA. IDSS 4,0–16 mA @VDS=15 V. ' +
       'Crss max 3,0 pF, Ciss max 7,0 pF @VDS=15 V/VGS=0/f=1,0 MHz. ' +
       'gfs 2,0–6,0 mS (2,0K–6,0K µS) @VDS=15 V/VGS=0/f=1,0 kHz. gos max 50 µS @stejných podmínkách.',
+    schematicImage: '2N5457-59.jpg',
     tags: 'tranzistor,jfet,n-kanál,to-92,2n5459,zesilovací,spínací',
   },
   {
@@ -4904,6 +4907,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '@IC=7,0 mA/VCE=10 V/f=100 MHz (velmi vysoký tranzitní kmitočet, typický pro VF aplikace ' +
       'jako FM/VKV přijímače, směšovače a oscilátory — nevhodné pro výkonové spínání). Cre ' +
       '(zpětná přenosová kapacita v zapojení SE) max 0,34 pF @VCB=10 V/IE=0/f=1,0 MHz.',
+    schematicImage: 'BF240.jpg',
     tags: 'tranzistor,npn,bipolární,rf,vf,vysokofrekvenční,to-92,bf240',
   },
   {
@@ -6280,7 +6284,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 38;
+export const SEED_LIBRARY_VERSION = 39;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
