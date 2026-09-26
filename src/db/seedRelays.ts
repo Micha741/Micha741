@@ -328,6 +328,7 @@ const RELAY_SPECS: RelaySpec[] = [
       '1,0VA AC. Dielektrická pevnost cívka/kontakty 2500Veff, mezi rozpojenými kontakty ' +
       '1200Veff. Okolní teplota -40 až +70/80°C dle provedení. Dostupné příslušenství: ochranné a ' +
       'LED moduly, popisné štítky, upevňovací spony, propojovací můstky.',
+    schematicImage: 'Schrack-PT.jpg',
     tags: 'relé,elektromagnetické,paticové,schrack,pt,pt2,pt3,pt5,din-lišta',
   },
   {
@@ -362,6 +363,7 @@ const RELAY_SPECS: RelaySpec[] = [
       'odolnost rázům 10G, vibracím 10-55Hz. Hmotnost relé ~35g. Dostupné moduly do patice: ' +
       'ochranná dioda (YRS13250), LED+dioda ' +
       '(YRS12024), LED (YRS11524/YRS11730), RC člen (YRS14524/YRS14730).',
+    schematicImage: 'Schrack-RS5.jpg',
     tags: 'relé,elektromagnetické,paticové,schrack,rs5,din-lišta',
   },
   {
@@ -381,6 +383,7 @@ const RELAY_SPECS: RelaySpec[] = [
       'mechanická ≥10⁷ sepnutí (1800/h). Spínaný výkon 1P: 3000VA/360W; 2P: 2000VA/240W. Cívka ' +
       '12/24V DC nebo 24/230V AC (odpor cívky např. 24VDC=1100Ω, 230VAC=23000Ω). Izolační napětí ' +
       '≥1000MΩ. Okolní teplota -40 až +55°C.',
+    schematicImage: 'Schrack-RXT.jpg',
     tags: 'relé,elektromagnetické,interfaceové,paticové,schrack,rxt,din-lišta',
   },
   {
@@ -401,6 +404,7 @@ const RELAY_SPECS: RelaySpec[] = [
       'Spotřeba cívky ~1,5W DC / ~2,7VA AC, doba rozběhu ≤30ms, návratu ≤20ms. Izolační napětí ' +
       '≥100MΩ (500VDC). Okolní teplota -10 až +55°C. Hmotnost ~85g. Svorky patice zabraňují ' +
       'nesprávnému zasunutí relé.',
+    schematicImage: 'Schrack-MU.jpg',
     tags: 'relé,elektromagnetické,paticové,schrack,mu,mu2,mu3,din-lišta',
   },
   {
@@ -419,6 +423,7 @@ const RELAY_SPECS: RelaySpec[] = [
       'Materiál kontaktů slitina stříbra, odpor ≤50mΩ, elektrická životnost ≥10⁵ sepnutí (1800/h), ' +
       'mechanická ≥10⁷ sepnutí (1800/h). Spotřeba cívky ~1,7W DC / ~2,5VA AC. Izolační napětí ' +
       '≥100MΩ (500VDC). Okolní teplota -40 až +55°C. Hmotnost ~90g. Patice YRMX78705: 25A/500V.',
+    schematicImage: 'Schrack-RMX.jpg',
     tags: 'relé,elektromagnetické,paticové,výkonové,schrack,rmx,din-lišta',
   },
   {
@@ -439,6 +444,7 @@ const RELAY_SPECS: RelaySpec[] = [
       '12A nebo 16A (UL 20A), max. spínací výkon AC 3000/4000VA, zapínací proud 25/30A. RT2: ' +
       'mezní proud 8A (UL 10A), max. výkon 2000VA. Izolační systém cívky třída F dle UL1446, ' +
       '5kV/10mm izolace cívka-kontakty. Cívka DC 5-110V (400mW) nebo AC 24-230V (0,74VA).',
+    schematicImage: 'Schrack-RT.jpg',
     tags: 'relé,elektromagnetické,výkonové,pcb,schrack,rt,rt1,rt2',
   },
   {
@@ -457,6 +463,7 @@ const RELAY_SPECS: RelaySpec[] = [
       'spínací napětí 440VAC/300VDC, max. spínací výkon 2000VA. Odpor kontaktů ≤100mΩ, materiál ' +
       'AgNi, elektrická životnost ≥10⁴ sepnutí, mechanická ≥10⁷ sepnutí. Přepětí (cívka-kontakty) ' +
       '10kV (1,2/50µs). Okolní teplota -40 až +85°C. Hmotnost relé ~13,5g.',
+    schematicImage: 'Schrack-RPS.jpg',
     tags: 'relé,elektromagnetické,výkonové,pcb,set,schrack,rps',
   },
   {
@@ -475,6 +482,7 @@ const RELAY_SPECS: RelaySpec[] = [
       'kontaktů AgSnO₂/AgSnO₂ htv, max. spínací výkon 1500VA, zapínací schopnost 10A/20ms. ' +
       'Příkon cívky 12VDC=184mW, 24VDC=220mW, 115VAC=403mVA, 230VAC=736mVA. Okolní teplota -40 ' +
       'až +55°C. Odpovídá směrnici RoHS 2002/95/EC.',
+    schematicImage: 'Schrack-SNR.jpg',
     tags: 'relé,elektromagnetické,set,din-lišta,schrack,snr',
   },
   {
@@ -498,6 +506,7 @@ const RELAY_SPECS: RelaySpec[] = [
       '24VDC). Materiál kontaktů SR2 AgNi, SR4/SR6 AgSnO₂. Dielektrická pevnost kontakt-cívka ' +
       '1500-4000Veff dle typu, zesílená izolace mezi sousedními kontakty. Mechanická životnost ' +
       '10×10⁶ cyklů. Okolní teplota -25 až +70°C.',
+    schematicImage: 'Schrack-SR.jpg',
     tags: 'relé,bezpečnostní,nuceně-vedené-kontakty,force-guided,schrack,sr,sr2,sr4,sr6,en-50205',
   },
   {

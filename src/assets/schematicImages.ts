@@ -129,4 +129,13 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'Susumu-RT-series.jpg': require('../../assets/schematics/Susumu-RT-series.jpg'),
   'G5LE-SPDT.jpg': require('../../assets/schematics/G5LE-SPDT.jpg'),
   'G5LE-SPST.jpg': require('../../assets/schematics/G5LE-SPST.jpg'),
+  'Schrack-PT.jpg': require('../../assets/schematics/Schrack-PT.jpg'),
+  'Schrack-RS5.jpg': require('../../assets/schematics/Schrack-RS5.jpg'),
+  'Schrack-RXT.jpg': require('../../assets/schematics/Schrack-RXT.jpg'),
+  'Schrack-MU.jpg': require('../../assets/schematics/Schrack-MU.jpg'),
+  'Schrack-RMX.jpg': require('../../assets/schematics/Schrack-RMX.jpg'),
+  'Schrack-RT.jpg': require('../../assets/schematics/Schrack-RT.jpg'),
+  'Schrack-RPS.jpg': require('../../assets/schematics/Schrack-RPS.jpg'),
+  'Schrack-SNR.jpg': require('../../assets/schematics/Schrack-SNR.jpg'),
+  'Schrack-SR.jpg': require('../../assets/schematics/Schrack-SR.jpg'),
 };
