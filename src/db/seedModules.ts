@@ -1139,6 +1139,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'AC/DC, zbytkový proud max 0,8 mA. Krytí IP67. Provozní teplota -25 až +70 °C. Shoda EN/IEC ' +
       '60947-5-2, UL/CSA/CCC certifikace. Dostupné příslušenství: rychloupínací montážní konzole ' +
       'EXG-12 s pevným dorazem.',
+    schematicImage: 'NBB4-12GM75-US.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb4,ac-dc,m12,mosaz,ip67,průmyslový',
   },
   {
@@ -1172,6 +1173,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'MTTFd 1870 let, doba mise 20 let, diagnostické pokrytí 0 %. Krytí IP67. Shoda EN/IEC ' +
       '60947-5-2, UL/CSA/CCC certifikace. Dostupné příslušenství: montážní příruba BF 18, ' +
       'rychloupínací konzole EXG-18.',
+    schematicImage: 'NBB5-18GM40-Z0-V1.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb5,m18,mosaz,konektor,ip67,průmyslový',
   },
   {
@@ -1204,6 +1206,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'mise 20 let, diagnostické pokrytí 0 %. Krytí IP67. Shoda EN/IEC 60947-5-2, UL/CSA ' +
       'certifikace (CCC nevyžadováno pro produkty ≤36V). Dostupné příslušenství: montážní ' +
       'příruba BF 18, rychloupínací konzole EXG-18 (shodné s NBB5-18GM40-Z0-V1).',
+    schematicImage: 'NBB8-18GM50-E2.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb8,pnp,3vodičový,m18,mosaz,ip67,průmyslový',
   },
   {
@@ -1238,6 +1241,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'typ. 0,1 mA @25°C. Krytí IP67. Provozní teplota -25 až +70 °C. Shoda EN/IEC 60947-5-2, ' +
       'UL/CSA certifikace (CCC nevyžadováno pro produkty ≤36V). Dostupné příslušenství: montážní ' +
       'příruba BF 4.',
+    schematicImage: 'NBB1-4GM22-E0.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb1,npn,miniaturní,m4,nerez,ip67,průmyslový',
   },
   {
@@ -1271,6 +1275,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'variantou pro nízké teploty, ale zde navíc s vyšší horní mezí +85°C). Krytí IP67. UL ' +
       'certifikace (Class 2 Power Source). Dostupné příslušenství: montážní příruba BF 8, ' +
       'rychloupínací konzole EXG-08.',
+    schematicImage: 'NBB2-8GM25-E0-V3.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,npn,3vodičový,m8,konektor,ip67,průmyslový',
   },
   {
@@ -1296,6 +1301,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'různými vstupními obvody PLC. Viz záznam NBB2-8GM25-E0-V3 pro plný popis společných ' +
       'parametrů. Dostupné příslušenství: montážní příruba BF 8, konektorové kabely V3-GM/V3-WM/ ' +
       'V3-WM-2M-PUR, rychloupínací konzole EXG-08 (shodné s NBB2-8GM25-E0-V3).',
+    schematicImage: 'NBB2-8GM25-E2-V3.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,pnp,3vodičový,m8,konektor,ip67,průmyslový',
   },
   {
@@ -1324,6 +1330,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'V1-W-2M-PUR) — stejná konektorová rodina jako u NBB5-18GM40-Z0-V1 v této knihovně. Viz ' +
       'záznam NBB2-8GM25-E2-V3 pro plný popis společných elektrických parametrů. Dostupné ' +
       'příslušenství: montážní příruba BF 8, rychloupínací konzole EXG-08.',
+    schematicImage: 'NBB2-8GM40-E2-V1.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,pnp,m8,m12,konektor,ip67,průmyslový',
   },
   {
@@ -1356,6 +1363,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'diagnostické pokrytí 0 %. Krytí IP67. UL certifikace (Class 2 Power Source). Dostupné ' +
       'příslušenství: montážní příruba BF 8, rychloupínací konzole EXG-08 (shodné s ostatními ' +
       'NBB2-8GM variantami).',
+    schematicImage: 'NBB2-8GM50-E0.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,npn,kabel,m8,ip67,průmyslový',
   },
   {
@@ -1414,6 +1422,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'ostatní elektrické parametry shodné s NBB2-8GM40-E2-V1 — viz tam pro plný popis. UL ' +
       'certifikace (Class 2 Power Source). Dostupné příslušenství: montážní příruba BF 8, ' +
       'konektorové kabely V1-G/V1-W/V1-G-2M-PUR/V1-W-2M-PUR, rychloupínací konzole EXG-08.',
+    schematicImage: 'NBB2-8GS35-E2-V1.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,pnp,nerez,m8,m12,konektor,ip67,průmyslový',
   },
   {
@@ -1442,6 +1451,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'let, doba mise 20 let, diagnostické pokrytí 0 %. Krytí IP67. UL certifikace (Class 2 ' +
       'Power Source). Dostupné příslušenství: montážní příruba BF 8, rychloupínací konzole ' +
       'EXG-08.',
+    schematicImage: 'NBB2-8GS40-E2-5M-PUR.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,pnp,nerez,kabel,5m,pur,m8,ip67,průmyslový',
   },
   {
@@ -1471,6 +1481,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'diagnostické pokrytí 0 %. Krytí IP67. Provozní teplota -25 až +70 °C. Shoda EN/IEC ' +
       '60947-5-2, UL/CSA certifikace. Dostupné příslušenství: montážní příruba BF 12, ' +
       'rychloupínací konzole EXG-12 (shodné s NBB4-12GM75-US).',
+    schematicImage: 'NBB2-12GM60-A2.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,pnp,komplementární,m12,embeddable,ip67,průmyslový',
   },
   {
@@ -1501,6 +1512,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'diagnostické pokrytí 0 %. Krytí IP67. Provozní teplota -25 až +70 °C. Shoda EN/IEC ' +
       '60947-5-2, EAC (TR CU 020/2011), UL/CSA certifikace. Dostupné příslušenství: montážní ' +
       'příruba BF 12, rychloupínací konzole EXG-12, konektorové kabely V3-GM/V3-WM/V3-WM-2M-PUR.',
+    schematicImage: 'NBB4-12GM30-E2-V3.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb4,pnp,m12,m8,konektor,ip67,průmyslový',
   },
   {
@@ -1535,6 +1547,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'ms. Funkční bezpečnostní parametry: MTTFd 1723 let, doba mise 20 let, diagnostické ' +
       'pokrytí 0 %. UL certifikace (Class 2 Power Source). Dostupné příslušenství: montážní ' +
       'příruba BF 12, konektorové kabely V1-G/V1-W/V1-G-2M-PUR/V1-W-2M-PUR.',
+    schematicImage: 'NBB4-12GM35-A2-V1-M1.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb4,pnp,komplementární,automotive,e1,ip68,ip69k,m12,průmyslový',
   },
   {
@@ -1569,6 +1582,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '-25 až +70 °C (standardní, viz ovšem výše uvedené Ex-specifické teplotní omezení dle ' +
       'proudu/napětí). UL/CSA certifikace. Dostupné příslušenství: montážní příruba BF 12, ' +
       'rychloupínací konzole EXG-12.',
+    schematicImage: 'NBB4-12GM50-E2-3G-3D.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb4,pnp,atex,ex,výbušné-prostředí,m12,ip67,průmyslový',
   },
   {
@@ -1598,6 +1612,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'parametry: MTTFd 1374 let, doba mise 20 let, diagnostické pokrytí 0 %. Krytí IP67. ' +
       'Provozní teplota -25 až +70 °C. Shoda EN/IEC 60947-5-2, UL/CSA certifikace. Dostupné ' +
       'příslušenství: montážní příruba BF 30, rychloupínací konzole EXG-30.',
+    schematicImage: 'NBB10-30GM50-E0.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb10,npn,m30,velký-dosah,ip67,průmyslový',
   },
   {
@@ -1661,6 +1676,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'parametry: MTTFd 1835 let, doba mise 20 let, diagnostické pokrytí 0 %. Krytí IP67. ' +
       'Provozní teplota -25 až +70 °C. UL/CSA certifikace. Dostupné příslušenství: montážní ' +
       'příruba BF 30, rychloupínací konzole EXG-30.',
+    schematicImage: 'NBB10-30GM50-E2-C3-V1.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb10,pnp,svařovací,weld-immune,keramika,ptfe,m30,ip67,průmyslový',
   },
   {
@@ -1698,6 +1714,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Funkční bezpečnostní parametry: MTTFd 1420 let, doba mise 20 let, diagnostické pokrytí ' +
       '0 %. Krytí IP67. Rozšířený provozní rozsah -25 až +85 °C (skladovací -40 až +85 °C — ' +
       'nejširší v rodině NBB v této knihovně vedle NBB4-12GM35-A2-V1-M1). UL certifikace.',
+    schematicImage: 'NBB20-L3M-A2-C3-V1.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb20,pnp,komplementární,svařovací,weld-immune,duroplast,m12,ip67,průmyslový',
   },
   {
@@ -1776,6 +1793,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'rozdíl od senzorové části), s ochranou proti přepólování (při obráceném zapojení výstupu ' +
       'přestane fungovat indikační LED, ale ventil dostává více výkonu — zvláštní chování ' +
       'uvedené přímo výrobcem). Provozní teplota -25 až +70 °C. Krytí IP67. UL/CSA certifikace.',
+    schematicImage: 'NBN3-F31K-E8-K.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,ventilová-jednotka,pneumatický-pohon,solenoid,pepperl-fuchs,nbn3,f31,dvoukanálový,ip67,průmyslový',
   },
   {
@@ -1806,6 +1824,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'bezpečnostní parametry: MTTFd 960 let, doba mise 20 let, diagnostické pokrytí 0 %. Krytí ' +
       'IP67. Rozšířený provozní rozsah -25 až +85 °C (skladovací -40 až +85 °C). UL certifikace ' +
       '(Class 2 Power Source). Dostupné příslušenství: montážní příruba BF 8.',
+    schematicImage: 'NEN6-8GM40-E2-PUR.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nen6,pnp,nezápustný,non-flush,m8,ip67,průmyslový',
   },
   {
@@ -1840,6 +1859,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'diagnostické pokrytí 0 %. Shoda EN/IEC 60947-5-2, EN 12895:2015, UL certifikace (Class 2 ' +
       'Power Source). Dostupné příslušenství: montážní příruba BF 18, konektorové kabely V1-G/ ' +
       'V1-W/V1-G-2M-PUR/V1-W-2M-PUR.',
+    schematicImage: 'NBB8-18GM50-A0-V1-M1.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb8,npn,komplementární,automotive,e1,ip68,ip69k,m18,průmyslový',
   },
   {
@@ -2928,6 +2948,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'let, diagnostické pokrytí 0 %. Shoda EN/IEC 60947-5-2, UL/CSA certifikace, E1 typové ' +
       'schválení 10R-04. Dostupné příslušenství: montážní příruba BF 30, rychloupínací konzole ' +
       'EXG-30.',
+    schematicImage: 'NBB15-30GM50-E0-M-Y242746.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb15,npn,3vodičový,m30,mosaz,e1,automotive,ip68,ip69k',
   },
   {
@@ -2960,6 +2981,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'MTTFd 1560 let, doba mise 20 let, diagnostické pokrytí 0 %. Krytí IP67. Dodáváno se 2 ' +
       'maticemi (bez ozubeného pojištění). Shoda EN/IEC 60947-5-2 (vč. dodatku A1:2012), UL ' +
       'certifikace. Dostupné příslušenství: montážní příruba BF 12.',
+    schematicImage: 'NBN8-12GM50-E2-V1-Y323749.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbn8,pnp,3vodičový,m12,mosaz,nezápustný,konektor,ip67,průmyslový',
   },
   {
@@ -2995,6 +3017,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'a stav sepnutí (žlutá). Funkční bezpečnostní parametry: MTTFd 870 let, doba mise 20 let, ' +
       'diagnostické pokrytí 0 %. Shoda EN/IEC 60947-5-2, UL/CSA/CCC certifikace, E1 typové ' +
       'schválení 10R-04. Dostupné příslušenství: modulární montážní konzole MHW 01.',
+    schematicImage: 'NBN40-U1-E0-M.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbn40,npn,3vodičový,otočná-hlava,varikont,e1,automotive,ip68,ip69k',
   },
   {
@@ -3027,6 +3050,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'produkt s vlastním konektorem, stejně jako ostatní přibližovací spínače v této knihovně. ' +
       'Shoda EN/IEC 60947-5-2, UL/CSA certifikace. Dostupné příslušenství: montážní příruba ' +
       'BF 12, konektory/kabely V1-G/V1-W/V1-G-2M-PUR/V1-W-2M-PUR.',
+    schematicImage: 'CBB4-12GH60-E0-V1.jpg',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,pepperl-fuchs,cbb4,npn,nerez,potravinářský,m12,konektor,ip65',
   },
   {
@@ -3108,6 +3132,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'konektorem, stejně jako ostatní přibližovací spínače v této knihovně. Shoda EN/IEC ' +
       '60947-5-2, UL/CSA certifikace. Dostupné příslušenství: montážní příruba BF 12, konektory/ ' +
       'kabely V1-G/V1-W/V1-G-2M-PUR/V1-W-2M-PUR.',
+    schematicImage: 'CBB4-12GH60-E2-V1.jpg',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,pepperl-fuchs,cbb4,pnp,nerez,potravinářský,m12,konektor,ip65',
   },
   {
@@ -3170,6 +3195,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'knihovně. Krytí IP67 (vyšší než IP65 u CBB4-...). Shoda EN/IEC 60947-5-2, UL/CCC ' +
       'certifikace (CCC nevyžadováno pro produkty ≤36V). Dostupné příslušenství: montážní ' +
       'příruba BF 18, rychloupínací konzole EXG-18.',
+    schematicImage: 'CBB8-18GS75-E2.jpg',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,pepperl-fuchs,cbb8,pnp,nerez,nastavitelný,m18,ip67,průmyslový',
   },
   {
@@ -3590,6 +3616,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'pokrytí 0 %. Krytí IP67. Zařazeno do kategorie "Modul" jako kompletní osazený produkt s ' +
       'vlastním kabelem, stejně jako ostatní indukční senzory v této knihovně. Shoda EN/IEC ' +
       '60947-5-2 a 60947-5-6 (NAMUR), UL/CSA/CCC certifikace.',
+    schematicImage: 'NJ4-12GM-N-5M-Y123257.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,namur,jiskrově-bezpečný,pepperl-fuchs,nj4,atex,zóna-20,nerez,ip67',
   },
   {
