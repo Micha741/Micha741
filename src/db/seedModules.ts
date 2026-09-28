@@ -220,6 +220,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Ochrany: nadproud (proudové čidlo), přehřátí (teplotní čidlo), přechodové jevy (filtry), ' +
       'katastrofická porucha řešena externí vstupní pojistkou (dle aplikace) + zemnicí pojistkou ' +
       '1 A.',
+    schematicImage: 'PowerTector-terminals.jpg',
     tags: 'modul,alfatronix,powertector,battery-guard,low-voltage-disconnect,odpojovač-baterie',
   },
   {
@@ -242,6 +243,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Programovatelná odpojovací mez, zelená LED indikace, vývod pro externí alarm. Bez vývodu ' +
       'pro zapalování/ruční spínač (dostupné až od PT40 výše). Ochrany: nadproud, přehřátí, ' +
       'přechodové jevy, externí vstupní pojistka (dle aplikace) + zemnicí pojistka 1 A.',
+    schematicImage: 'PowerTector-terminals.jpg',
     tags: 'modul,alfatronix,powertector,battery-guard,low-voltage-disconnect,odpojovač-baterie',
   },
   {
@@ -269,6 +271,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'nebo ruční spínač (u PT10/PT20 chybí). Programovatelná odpojovací mez, zelená LED indikace, ' +
       'vývod pro externí alarm. Ochrany: nadproud, přehřátí, přechodové jevy, externí vstupní ' +
       'pojistka (dle aplikace) + zemnicí pojistka 1 A.',
+    schematicImage: 'PowerTector-terminals.jpg',
     tags: 'modul,alfatronix,powertector,battery-guard,low-voltage-disconnect,odpojovač-baterie',
   },
   {
@@ -293,6 +296,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Programovatelná odpojovací mez, zelená LED indikace, vývod pro externí alarm. Ochrany: ' +
       'nadproud, přehřátí, přechodové jevy, externí vstupní pojistka (dle aplikace) + zemnicí ' +
       'pojistka 1 A.',
+    schematicImage: 'PowerTector-terminals.jpg',
     tags: 'modul,alfatronix,powertector,battery-guard,low-voltage-disconnect,odpojovač-baterie',
   },
   {
@@ -321,6 +325,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'prošetřila příčinu odpojení před resetem. Programovatelná odpojovací mez, zelená LED ' +
       'indikace, vývod pro externí alarm i zapalování/ruční spínač. Ochrany: nadproud, přehřátí, ' +
       'přechodové jevy, externí vstupní pojistka (dle aplikace) + zemnicí pojistka 1 A.',
+    schematicImage: 'PowerTector-terminals.jpg',
     tags: 'modul,alfatronix,powertector,battery-guard,low-voltage-disconnect,odpojovač-baterie',
   },
   {
@@ -345,6 +350,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'pro nucené odblokování po vybavení ochrany. Programovatelná odpojovací mez, zelená LED ' +
       'indikace, vývod pro externí alarm i zapalování/ruční spínač. Ochrany: nadproud, přehřátí, ' +
       'přechodové jevy, externí vstupní pojistka (dle aplikace) + zemnicí pojistka 1 A.',
+    schematicImage: 'PowerTector-terminals.jpg',
     tags: 'modul,alfatronix,powertector,battery-guard,low-voltage-disconnect,odpojovač-baterie',
   },
   {
@@ -374,6 +380,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '-30 až +70 °C, provozní vlhkost 0–100 % nekondenzující @25 °C. Certifikace FCC, TELEC, ' +
       'CE (dle konkrétního projektu). Kompatibilní se standardními LoRaWAN bránami a síťovými ' +
       'servery (ne jen s Advantech USM-S67).',
+    schematicImage: 'LEO-S55.jpg',
     tags: 'modul,lorawan,senzor,teploměr,vlhkoměr,iot,advantech,baterie,ip67',
   },
   {
@@ -403,6 +410,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '-40 až +85 °C, provozní vlhkost 0–95 % nekondenzující @25 °C. Zabezpečení: vestavěná ' +
       'podpora VPN (IPsec/OpenVPN/L2TP/PPTP/DMVPN). Vestavěný síťový server, MQTT/HTTP/HTTPS API, ' +
       'vestavěné Python SDK pro vlastní vývoj, programovatelné přes Node-RED. Certifikace CE, FCC.',
+    schematicImage: 'USM-S67.jpg',
     tags: 'modul,lorawan,gateway,brána,wifi,advantech,arm,sx1302,iot',
   },
   {
@@ -430,6 +438,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'analyzovat úroveň rušení (noise level) s přehledným diagramem pro plánování instalace — ' +
       'funkce, kterou plná verze v datasheetu neuvádí. Stejná podpora VPN, vestavěný síťový ' +
       'server a MQTT/HTTP/HTTPS API jako plná verze.',
+    schematicImage: 'USM-S67-Compact.jpg',
     tags: 'modul,lorawan,gateway,brána,advantech,arm,iot,kompaktní',
   },
   {
@@ -660,6 +669,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'napětí min 3,2 Vpp (zátěž 600 Ω, useknutá sinusovka, DC odděleno kondenzátorem), napájení ' +
       '12 V (standardní), odběr typ. 2 mA (4 mA typ. s vestavěným teplotním senzorem). TSU-20G: ' +
       'max. změna kmitočtu (na plném rozsahu) typ. 4 kHz. RoHS.',
+    schematicImage: 'TSU-series.jpg',
     tags: 'modul,senzor,tlak,křemenný,frekvenční,seiko-epson,tsu-20g,průmyslový',
   },
   {
@@ -676,6 +686,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'plný popis principu funkce (křemenný rezonátor s tlakově závislým kmitočtem) a společných ' +
       'parametrů (přesnost, teplotní rozsah, napájení, mechanika). TSU-70G: rozsah 0–700 kPa, ' +
       'max. změna kmitočtu typ. 7 kHz (shodná s TSU-100G).',
+    schematicImage: 'TSU-series.jpg',
     tags: 'modul,senzor,tlak,křemenný,frekvenční,seiko-epson,tsu-70g,průmyslový',
   },
   {
@@ -691,6 +702,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'tlakových rozsahů jako TSU-20G a TSU-70G (samostatné záznamy) — viz záznam TSU-20G pro ' +
       'plný popis principu funkce a společných parametrů. TSU-100G: rozsah 0–1 MPa (nejvyšší v ' +
       'řadě), max. změna kmitočtu typ. 7 kHz (shodná s TSU-70G).',
+    schematicImage: 'TSU-series.jpg',
     tags: 'modul,senzor,tlak,křemenný,frekvenční,seiko-epson,tsu-100g,průmyslový',
   },
   {
@@ -754,6 +766,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '60947-5-2. Existuje i varianta se šroubovacím otočným M12 konektorem místo kabelu a ' +
       'varianta pro univerzální 24–240 V AC/DC napájení (dle popisu produktové řady) — nahraný ' +
       'díl WTB250-2N1131 je konkrétně kabelová 10–30 V DC verze.',
+    schematicImage: 'WTB250-2N1131.jpg',
     tags: 'modul,senzor,optoelektronický,fotoelektrický,přiblížení,proximity,background-suppression,sick,wtb250,npn,ip67,průmyslový',
   },
   {
@@ -783,6 +796,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'III. Provozní teplota -25 až +55 °C, skladovací -40 až +70 °C. UL certifikace, shoda EN ' +
       '60947-5-2. Kabelová verze s 10–30 V DC napájením (existují i M12 konektor a univerzální ' +
       'AC/DC varianty dle produktové řady).',
+    schematicImage: 'WTB250-2N1151.jpg',
     tags: 'modul,senzor,optoelektronický,fotoelektrický,přiblížení,proximity,background-suppression,sick,wtb250,npn,ip67,průmyslový',
   },
   {
@@ -819,6 +833,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'aktualizaci firmwaru micro-boardu je potřeba přídavná deska MAXDAP Pico Adapter (není ' +
       'součástí balení senzorového náramku samotného, uvedena v seznamu vybavení datasheetu). ' +
       'Napájeno interní baterií, nabíjení přes USB Type-C.',
+    schematicImage: 'MAXREFDES103.jpg',
     tags: 'modul,senzor,ppg,biosenzor,tepová-frekvence,spo2,wearable,náramek,maxim,maxrefdes103,bluetooth,ble,imu',
   },
   {
@@ -853,6 +868,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'skladovací -40 až +85 °C, provozní vlhkost 0–95 %RH (nekondenzující). Dostupná i diskrétní ' +
       '(bezkonektorová) a analogová (napěťový výstup) varianta v rámci téže produktové řady dle ' +
       'schématu značení.',
+    schematicImage: 'HPM-100GD-A01.jpg',
     tags: 'modul,senzor,tlak,mems,piezorezistivní,frekvenční,eeprom,hokuriku,hdk,hpm-100gd',
   },
   {

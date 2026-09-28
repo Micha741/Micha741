@@ -244,4 +244,13 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'ESP32-C3-WROOM-02.jpg': require('../../assets/schematics/ESP32-C3-WROOM-02.jpg'),
   'ESP8684-MINI-1.jpg': require('../../assets/schematics/ESP8684-MINI-1.jpg'),
   'ESP-12S.jpg': require('../../assets/schematics/ESP-12S.jpg'),
+  'PowerTector-terminals.jpg': require('../../assets/schematics/PowerTector-terminals.jpg'),
+  'LEO-S55.jpg': require('../../assets/schematics/LEO-S55.jpg'),
+  'USM-S67.jpg': require('../../assets/schematics/USM-S67.jpg'),
+  'USM-S67-Compact.jpg': require('../../assets/schematics/USM-S67-Compact.jpg'),
+  'HPM-100GD-A01.jpg': require('../../assets/schematics/HPM-100GD-A01.jpg'),
+  'TSU-series.jpg': require('../../assets/schematics/TSU-series.jpg'),
+  'WTB250-2N1131.jpg': require('../../assets/schematics/WTB250-2N1131.jpg'),
+  'WTB250-2N1151.jpg': require('../../assets/schematics/WTB250-2N1151.jpg'),
+  'MAXREFDES103.jpg': require('../../assets/schematics/MAXREFDES103.jpg'),
 };
