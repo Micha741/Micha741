@@ -38,6 +38,7 @@ const MISC_SPECS: MiscSpec[] = [
       '50 Ω, výkonová zatížitelnost 20 W (CW). RF konektory 2,92 mm samičí (K), tělo hliníkové s ' +
       'černým lakováním. Provozní teplota -40 až +80 °C (specifikováno při +25 °C). RoHS. ' +
       'Doporučen speciální momentový klíč Eravant SCH-08008-S1 pro správné dotažení konektorů.',
+    schematicImage: 'SCD-0134032010-KF-SA.jpg',
     tags: 'rf,mikrovlny,směrový-odbočovač,directional-coupler,koaxiální,sage-millimeter,eravant,k-konektor',
   },
   {
@@ -62,6 +63,7 @@ const MISC_SPECS: MiscSpec[] = [
       'shora), duty cycle statický (přímé buzení, žádné sdílené COM elektrody), budicí napětí ' +
       '5,0 V (typicky střídavé, pro zabránění degradaci LCD stejnosměrným polem). Provozní ' +
       'teplota 0 až +50 °C, skladovací -15 až +60 °C.',
+    schematicImage: 'GD-342AP.jpg',
     tags: 'lcd,displej,segmentový,statický,az-displays,gd-342ap,7segment,pasivní',
   },
   {
@@ -137,6 +139,7 @@ const MISC_SPECS: MiscSpec[] = [
       'od téhož výrobce. Provozní teplota -25 až +60 °C, skladovací teplota -30 až +80 °C. ' +
       'Zařazeno do kategorie "Ostatní" jako čistě pasivní optická/mechanická součástka bez ' +
       'vlastní elektroniky.',
+    schematicImage: 'IML-0638.jpg',
     tags: 'optika,fresnelova-čočka,hdpe,pir,murata,ira-e,pohybový-senzor,pasivní',
   },
   {
@@ -167,6 +170,7 @@ const MISC_SPECS: MiscSpec[] = [
       'dráhu čočky. Materiál HDPE (vysokohustotní polyetylen), barva přírodní/bílá. Provozní ' +
       'teplota -25 až +60 °C, skladovací teplota -30 až +80 °C. Zařazeno do kategorie "Ostatní" ' +
       'jako čistě pasivní optická/mechanická součástka bez vlastní elektroniky.',
+    schematicImage: 'IML-0637.jpg',
     tags: 'optika,fresnelova-čočka,hdpe,pir,murata,ira-e,pohybový-senzor,pasivní',
   },
   {
@@ -195,6 +199,7 @@ const MISC_SPECS: MiscSpec[] = [
       'Materiál HDPE (vysokohustotní polyetylen), barva přírodní/bílá. Provozní teplota -25 až ' +
       '+60 °C, skladovací teplota -30 až +80 °C. Zařazeno do kategorie "Ostatní" jako čistě ' +
       'pasivní optická/mechanická součástka bez vlastní elektroniky.',
+    schematicImage: 'IML-0662N000-T1.jpg',
     tags: 'optika,fresnelova-čočka,hdpe,pir,murata,smd,pohybový-senzor,pasivní',
   },
   {
@@ -221,6 +226,7 @@ const MISC_SPECS: MiscSpec[] = [
       'skladovací teplota -30 až +80 °C (shodné s ostatními čočkami řady IML v této knihovně). ' +
       'Zařazeno do kategorie "Ostatní" jako čistě pasivní optická/mechanická součástka bez ' +
       'vlastní elektroniky.',
+    schematicImage: 'IML-0660.jpg',
     tags: 'optika,fresnelova-čočka,hdpe,pir,murata,smd,pohybový-senzor,pasivní,discontinued',
   },
   {
