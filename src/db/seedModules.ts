@@ -950,6 +950,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'IEC IP67. Provozní teplota -40 až +65 °C. UL certifikace (E224071), ETSI/EN 300 440, FCC ' +
       'ID UE3RGAGE1XX. ⚠️ Výrobcem výslovně vyloučeno pro aplikace ochrany osob (nemá redundantní ' +
       'bezpečnostní obvody).',
+    schematicImage: 'Q130RA.jpg',
     tags: 'modul,senzor,radar,fmcw,proximity,detekce-pohybu,banner,r-gage,q130ra,24ghz,ip67,průmyslový',
   },
   {
@@ -4033,6 +4034,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'proti vibracím/rázům dle IEC 60068-2-6/2-27. Zařazeno do kategorie "Modul" jako kompletní ' +
       'osazený produkt s vlastní elektronikou. Certifikace: CE, cULus Listed. Výstraha výrobce: ' +
       'riziko poškození sluchu při nesprávné instalaci (odkaz na normu OSHA 1910.95).',
+    schematicImage: 'SG-TL70-AP.jpg',
     tags: 'modul,signalizace,zvukový,houkačka,tower-light,mp3,wav,programovatelný,banner,tl70,usb',
   },
   {
@@ -4063,6 +4065,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '-25 až +55 °C. Krytí IP65. Zařazeno do kategorie "Modul" jako kompletní osazený produkt s ' +
       'vlastním konektorem, stejně jako Banner TL70 signalizační segmenty v této knihovně. ' +
       'Materiál: černý ABS plast. Certifikace: UKCA, RoHS, CE.',
+    schematicImage: 'LED-TLM-AUD-02.jpg',
     tags: 'modul,signalizace,zvukový,houkačka,tower-light,bzučák,moflash,led-tlm,eco,ip65',
   },
   {

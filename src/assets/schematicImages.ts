@@ -237,4 +237,7 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'OBG5000-R101-2EP1-IO.jpg': require('../../assets/schematics/OBG5000-R101-2EP1-IO.jpg'),
   'PHA400-F200A-B17-V1D.jpg': require('../../assets/schematics/PHA400-F200A-B17-V1D.jpg'),
   'PHA400-F200-B17-V1D.jpg': require('../../assets/schematics/PHA400-F200-B17-V1D.jpg'),
+  'Q130RA.jpg': require('../../assets/schematics/Q130RA.jpg'),
+  'SG-TL70-AP.jpg': require('../../assets/schematics/SG-TL70-AP.jpg'),
+  'LED-TLM-AUD-02.jpg': require('../../assets/schematics/LED-TLM-AUD-02.jpg'),
 };
