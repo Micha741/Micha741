@@ -2068,6 +2068,7 @@ const IC_SPECS: IcSpec[] = [
       'trvání 0,5 ms). Frekvenční charakteristika má výraznou rezonanční špičku okolo 20 kHz (viz ' +
       'graf v datasheetu) — mimo tuto oblast prakticky rovný výstup v rozsahu cca 1 Hz–10 kHz. ' +
       'Určeno pro spotřební elektroniku (detekce pádu/nárazu, ochrana disků, alarmy apod.).',
+    schematicImage: 'PKGS-00LDP1-R.jpg',
     tags: 'io,senzor,piezoelektrický,rázový,vibrační,náboj,murata,pkgs,shock-sensor',
   },
   {
@@ -2096,6 +2097,7 @@ const IC_SPECS: IcSpec[] = [
       'PKGS-00LDP1-R kvůli automotive nasazení). Izolační odpor min. 10 000 MΩ. Nelinearita typ. ' +
       '1 %. Rázová odolnost 3000 G (doba trvání 0,3 ms). Frekvenční charakteristika s výraznou ' +
       'rezonanční špičkou okolo 37 kHz, mimo tuto oblast plochý výstup v pásmu cca 1 Hz–10 kHz.',
+    schematicImage: 'PKGS-45TAV-R.jpg',
     tags: 'io,senzor,piezoelektrický,rázový,vibrační,napěťový,murata,pkgs,shock-sensor,automotive,tpms,aec-q200',
   },
   {
@@ -2124,6 +2126,7 @@ const IC_SPECS: IcSpec[] = [
       'PKGS-00LDP1-R). Výstupem je elektrický náboj úměrný zrychlení/rázu, pro použitelný napěťový ' +
       'signál vyžaduje externí nábojový zesilovač (charge amplifier) — viz záznam PKGS-00LDP1-R pro ' +
       'obecné vysvětlení principu. Určeno pro spotřební elektroniku.',
+    schematicImage: 'PKGS-25WXP1-R.jpg',
     tags: 'io,senzor,piezoelektrický,rázový,vibrační,náboj,murata,pkgs,shock-sensor',
   },
   {
@@ -2158,6 +2161,7 @@ const IC_SPECS: IcSpec[] = [
       'teplota -40 až +85 °C. Určeno primárně pro detekci nárazu/rázu a ochranu proti zápisu u ' +
       'HDD nebo optických pickup mechanismů, případně pro feedforward kompenzaci setrvačných sil ' +
       'u téhož typu mechanismů.',
+    schematicImage: 'BD3852MUZ-Z.jpg',
     tags: 'io,zesilovač,nábojový-zesilovač,rázový-senzor,shock-sensor,notch-filtr,rohm,bd3852muz,vqfn',
   },
   {
@@ -2436,6 +2440,7 @@ const IC_SPECS: IcSpec[] = [
       'teplotou klesá lineárně na cca 60 % @75°C), skladovací -30 až +90 °C. Bezpečnostní ' +
       'certifikace UL 508, hořlavost UL94V-0. Doporučen externí blokovací kondenzátor 1 µF mezi ' +
       'piny 4 (GND) a 1 (+5V) pro potlačení šumu.',
+    schematicImage: 'CSXX05B.jpg',
     tags: 'io,senzor,proud,hallův-jev,proudový-senzor,galvanické-oddělení,cui,csxx05b,open-loop,izolovaný,sip',
   },
   {

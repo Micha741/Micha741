@@ -159,4 +159,9 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'ACS752SCA-050.jpg': require('../../assets/schematics/ACS752SCA-050.jpg'),
   'HOA0709-011.jpg': require('../../assets/schematics/HOA0709-011.jpg'),
   'ZMC10.jpg': require('../../assets/schematics/ZMC10.jpg'),
+  'PKGS-00LDP1-R.jpg': require('../../assets/schematics/PKGS-00LDP1-R.jpg'),
+  'PKGS-45TAV-R.jpg': require('../../assets/schematics/PKGS-45TAV-R.jpg'),
+  'PKGS-25WXP1-R.jpg': require('../../assets/schematics/PKGS-25WXP1-R.jpg'),
+  'CSXX05B.jpg': require('../../assets/schematics/CSXX05B.jpg'),
+  'BD3852MUZ-Z.jpg': require('../../assets/schematics/BD3852MUZ-Z.jpg'),
 };
