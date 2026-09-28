@@ -240,4 +240,8 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'Q130RA.jpg': require('../../assets/schematics/Q130RA.jpg'),
   'SG-TL70-AP.jpg': require('../../assets/schematics/SG-TL70-AP.jpg'),
   'LED-TLM-AUD-02.jpg': require('../../assets/schematics/LED-TLM-AUD-02.jpg'),
+  'ESP32-C3-MINI-1.jpg': require('../../assets/schematics/ESP32-C3-MINI-1.jpg'),
+  'ESP32-C3-WROOM-02.jpg': require('../../assets/schematics/ESP32-C3-WROOM-02.jpg'),
+  'ESP8684-MINI-1.jpg': require('../../assets/schematics/ESP8684-MINI-1.jpg'),
+  'ESP-12S.jpg': require('../../assets/schematics/ESP-12S.jpg'),
 };

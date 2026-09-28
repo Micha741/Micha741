@@ -43,6 +43,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '(R=10 kΩ, C=1 µF) pro stabilní náběh napájení. ' +
       'Certifikace: RoHS/REACH, ESD HBM ±2000 V / CDM ±500 V, MSL3 (nutno zpracovat do 168 h po ' +
       'vybalení nebo předsušit).',
+    schematicImage: 'ESP32-C3-MINI-1.jpg',
     tags:
       'modul,esp32,esp32-c3,esp32-c3-mini-1,wifi,bluetooth,ble,risc-v,smd,pcb-anténa,mikrokontrolér',
   },
@@ -79,6 +80,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '(R=10 kΩ, C=1 µF) pro stabilní náběh napájení. ' +
       'Certifikace: RoHS/REACH, ESD HBM ±2000 V / CDM ±500 V, MSL3 (nutno zpracovat do 168 h po ' +
       'vybalení nebo předsušit).',
+    schematicImage: 'ESP32-C3-WROOM-02.jpg',
     tags:
       'modul,esp32,esp32-c3,esp32-c3-wroom-02,wifi,bluetooth,ble,risc-v,smd,pcb-anténa,mikrokontrolér',
   },
@@ -152,6 +154,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Piny IO0, IO1, IO3 a IO5/MTDI mají při náběhu napájení krátké nízkoúrovňové zákmity (viz ' +
       'datasheet). ' +
       'Certifikace: RoHS/REACH, HTOL/HTSL/uHAST/TCT/ESD/Latch-up dle JEDEC.',
+    schematicImage: 'ESP8684-MINI-1.jpg',
     tags:
       'modul,esp8684,esp32-c2,wifi,bluetooth,ble,risc-v,smd,pcb-anténa,mikrokontrolér',
   },
@@ -184,6 +187,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '0,02 mA (20 µA). Zabezpečení WEP/WPA-PSK/WPA2-PSK. Napájení 3,0–3,6 V, doporučený zdroj ' +
       'proudu >300 mA. Provozní teplota -20 až 85 °C, skladovací prostředí -40 až 90 °C při <90 % RH. ' +
       'Certifikace FCC, CE.',
+    schematicImage: 'ESP-12S.jpg',
     tags: 'modul,esp8266,esp-12,esp-12s,wifi,smd,pcb-anténa,tensilica',
   },
   {
