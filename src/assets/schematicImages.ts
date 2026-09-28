@@ -164,4 +164,10 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'PKGS-25WXP1-R.jpg': require('../../assets/schematics/PKGS-25WXP1-R.jpg'),
   'CSXX05B.jpg': require('../../assets/schematics/CSXX05B.jpg'),
   'BD3852MUZ-Z.jpg': require('../../assets/schematics/BD3852MUZ-Z.jpg'),
+  'TORK-T-SB1.jpg': require('../../assets/schematics/TORK-T-SB1.jpg'),
+  'TORK-T-SB2.jpg': require('../../assets/schematics/TORK-T-SB2.jpg'),
+  'METSECTR-CTRx.jpg': require('../../assets/schematics/METSECTR-CTRx.jpg'),
+  'H1102NL.jpg': require('../../assets/schematics/H1102NL.jpg'),
+  'INDEL-KK60-EI.jpg': require('../../assets/schematics/INDEL-KK60-EI.jpg'),
+  'INDEL-TOR.jpg': require('../../assets/schematics/INDEL-TOR.jpg'),
 };

@@ -168,6 +168,7 @@ const COIL_SPECS: CoilSpec[] = [
       'osová vzdálenost vývodů m=32,5mm). Typ vývodů (koncovky): LZ, G1, P, X (varianty ' +
       'provedení pinů/pájecích ploch, blíže nespecifikováno v tomto listu). Hmotnost 0,6 kg ' +
       '(EI22) / 0,7 kg (EI23) / 0,8 kg (EI24).',
+    schematicImage: 'INDEL-KK60-EI.jpg',
     tags: 'cívka,transformátor,síťový-transformátor,ei60,indel,kk60,epoxidová-zalévačka,mechanická-platforma',
   },
   {
@@ -197,6 +198,7 @@ const COIL_SPECS: CoilSpec[] = [
       'menší hmotnost/objem při daném výkonu než EI-jádrové provedení, typicky s vyšší cenou. ' +
       'Modely 1500VA a výše ("na specjalne zamówienie") dostupné jen na objednávku po ' +
       'individuálním odsouhlasení.',
+    schematicImage: 'INDEL-TOR.jpg',
     tags: 'cívka,transformátor,síťový-transformátor,toroidní,toroid,indel,tor01,mechanická-platforma',
   },
   {
@@ -264,6 +266,7 @@ const COIL_SPECS: CoilSpec[] = [
       '(pájitelnost @245°C reflow), J-STD-020 úroveň 1 (bez citlivosti na vlhkost), J-STD-075 ' +
       'R7 (max 245°C přes reflow pájku). RoHS. Páskové balení na objednávku (přípona "T", ' +
       'H1102NL → H1102NLT).',
+    schematicImage: 'H1102NL.jpg',
     tags: 'cívka,transformátor,pulzní-transformátor,lan-magnetics,ethernet,izolační,pulse-electronics,h1102nl,smd,ieee-802.3',
   },
 ];
@@ -294,6 +297,7 @@ const TORK_SPECS: CoilSpec[] = [
       'konektor se k cívce připevňuje jen jediným možným způsobem a zajišťuje upevňovacím ' +
       'šroubem; cívkou lze otáčet i po zapojení. ⚠️ Za provozu se cívka může zahřát na horký ' +
       'povrch (vlivem teploty média nebo dlouhodobého připojení pod napětím).',
+    schematicImage: 'TORK-T-SB1.jpg',
     tags: 'cívka,solenoidový-ventil,elektromagnetický-ventil,tork,t-sb,t-sb1,230vac,ip65',
   },
   {
@@ -305,6 +309,7 @@ const TORK_SPECS: CoilSpec[] = [
     notes:
       'Součást řady TORK T-SB (viz poznámka u T-SB1.230A pro plné společné specifikace). ' +
       'Série T-SB2, varianta 24 V AC.',
+    schematicImage: 'TORK-T-SB2.jpg',
     tags: 'cívka,solenoidový-ventil,elektromagnetický-ventil,tork,t-sb,t-sb2,24vac,ip65',
   },
   {
@@ -316,6 +321,7 @@ const TORK_SPECS: CoilSpec[] = [
     notes:
       'Součást řady TORK T-SB (viz poznámka u T-SB1.230A pro plné společné specifikace). ' +
       'Série T-SB2, varianta 24 V DC.',
+    schematicImage: 'TORK-T-SB2.jpg',
     tags: 'cívka,solenoidový-ventil,elektromagnetický-ventil,tork,t-sb,t-sb2,24vdc,ip65',
   },
   {
@@ -327,6 +333,7 @@ const TORK_SPECS: CoilSpec[] = [
     notes:
       'Součást řady TORK T-SB (viz poznámka u T-SB1.230A pro plné společné specifikace). ' +
       'Série T-SB2, varianta 12 V AC.',
+    schematicImage: 'TORK-T-SB2.jpg',
     tags: 'cívka,solenoidový-ventil,elektromagnetický-ventil,tork,t-sb,t-sb2,12vac,ip65',
   },
   {
@@ -338,6 +345,7 @@ const TORK_SPECS: CoilSpec[] = [
     notes:
       'Součást řady TORK T-SB (viz poznámka u T-SB1.230A pro plné společné specifikace). ' +
       'Série T-SB2, varianta 12 V DC.',
+    schematicImage: 'TORK-T-SB2.jpg',
     tags: 'cívka,solenoidový-ventil,elektromagnetický-ventil,tork,t-sb,t-sb2,12vdc,ip65',
   },
 ];
@@ -426,6 +434,7 @@ const SCHNEIDER_SPECS: CoilSpec[] = [
       'zůstat naprázdno pod proudem v primáru. Nevhodné pro aplikace ochrany života/bezpečnosti ' +
       'osob. Nesmí zabírat víc než 75 % průřezu vedení v zařízení, nesmí blokovat ventilaci ani ' +
       'být v oblasti odvádění oblouku jističe. "Not suitable for Class 2 wiring methods".',
+    schematicImage: 'METSECTR-CTRx.jpg',
     tags: 'cívka,rogowski,proudový-transformátor,proudový-senzor,schneider-electric,ctrx,metsectr30500u',
   },
   {
@@ -441,6 +450,7 @@ const SCHNEIDER_SPECS: CoilSpec[] = [
       'Součást řady Schneider Electric CTRx (viz poznámka u METSECTR30500U pro plné společné ' +
       'specifikace). Vnitřní průměr smyčky 146,4 mm, Ip=5000A, měřicí rozsah 50–5000 A. ' +
       'Provozní teplota -35 až +60°C (v rozsahu 2–5 kA, jinak jako u ostatních modelů).',
+    schematicImage: 'METSECTR-CTRx.jpg',
     tags: 'cívka,rogowski,proudový-transformátor,proudový-senzor,schneider-electric,ctrx,metsectr46500u',
   },
   {
@@ -456,6 +466,7 @@ const SCHNEIDER_SPECS: CoilSpec[] = [
       'Součást řady Schneider Electric CTRx (viz poznámka u METSECTR30500U pro plné společné ' +
       'specifikace). Vnitřní průměr smyčky 191,0 mm, Ip=5000A, měřicí rozsah 50–5000 A. ' +
       'Provozní teplota -35 až +60°C (v rozsahu 2–5 kA, jinak jako u ostatních modelů).',
+    schematicImage: 'METSECTR-CTRx.jpg',
     tags: 'cívka,rogowski,proudový-transformátor,proudový-senzor,schneider-electric,ctrx,metsectr60500u',
   },
   {
@@ -471,6 +482,7 @@ const SCHNEIDER_SPECS: CoilSpec[] = [
       'Součást řady Schneider Electric CTRx (viz poznámka u METSECTR30500U pro plné společné ' +
       'specifikace). Největší (286,5 mm) model řady, pro svazky vodičů většího průřezu. ' +
       'Ip=5000A, měřicí rozsah 50–5000 A. Provozní teplota -35 až +60°C (v rozsahu 2–5 kA).',
+    schematicImage: 'METSECTR-CTRx.jpg',
     tags: 'cívka,rogowski,proudový-transformátor,proudový-senzor,schneider-electric,ctrx,metsectr90500u',
   },
 ];
