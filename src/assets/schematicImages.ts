@@ -170,4 +170,8 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'H1102NL.jpg': require('../../assets/schematics/H1102NL.jpg'),
   'INDEL-KK60-EI.jpg': require('../../assets/schematics/INDEL-KK60-EI.jpg'),
   'INDEL-TOR.jpg': require('../../assets/schematics/INDEL-TOR.jpg'),
+  'TRA1.jpg': require('../../assets/schematics/TRA1.jpg'),
+  'M22-WS-MM216881.jpg': require('../../assets/schematics/M22-WS-MM216881.jpg'),
+  'reed-switch-031828.jpg': require('../../assets/schematics/reed-switch-031828.jpg'),
+  'VPEV-1-8-M12-schematic.jpg': require('../../assets/schematics/VPEV-1-8-M12-schematic.jpg'),
 };

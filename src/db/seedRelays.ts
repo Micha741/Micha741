@@ -42,6 +42,7 @@ const RELAY_SPECS: RelaySpec[] = [
       'teplota -40 až +85 °C, vlhkost 40–85 %. Odolnost proti rázu (provozní extrémy 10G/11ms, ' +
       'meze poškození 100G/6ms), proti vibracím 10–55 Hz/1,5 mm. Max. spínací kmitočet: mechanicky ' +
       '18 000 sepnutí/h, elektricky 1 800 sepnutí/h. Certifikace: UL, cUL, TÜV, CQC.',
+    schematicImage: 'TRA1.jpg',
     tags: 'relé,elektromagnetické,výkonové,tianbo,tra1,form-a,form-c,10a,pcb',
   },
   {
@@ -266,6 +267,7 @@ const RELAY_SPECS: RelaySpec[] = [
       '100 mA@5V. Kategorie spotřebiče: indukční zátěž AC-14/DC-13, ohmická zátěž AC-12/DC-12. ' +
       'Materiál tělesa tvárná slitina hliníku, materiál spínacího kontaktu postříbřený. Třída ' +
       'odolnosti korozi KBK 2 (mírné nároky), shoda s LABS VDMA24364-B1/B2-L.',
+    schematicImage: 'VPEV-1-8-M12-schematic.jpg',
     tags: 'spínač,tlakový,vakuový,pneumatický,festo,vpev,192489,m12,ip65',
   },
   {
@@ -284,6 +286,7 @@ const RELAY_SPECS: RelaySpec[] = [
       'Datasheet neuvádí elektrické parametry nad rámec max. spínacího proudu (0,5 A) a stupně ' +
       'krytí IP67 — bez údajů o spínacím napětí, odporu v sepnutém stavu nebo mechanické ' +
       'životnosti.',
+    schematicImage: 'reed-switch-031828.jpg',
     tags: 'spínač,jazýčkový,reed,bezkontaktní,magnetický,erich-jaeger,031828,iso-11446,automotive',
   },
   {
@@ -305,6 +308,7 @@ const RELAY_SPECS: RelaySpec[] = [
       'Provozní teplota -25 až +70 °C, klimatická odolnost dle IEC 60068-2-78 (vlhké teplo ' +
       'cyklické i konstantní). Mechanická životnost 100 000 spínacích cyklů, doporučená frekvence ' +
       'používání < 100 cyklů. Montážní poloha libovolná.',
+    schematicImage: 'M22-WS-MM216881.jpg',
     tags: 'spínač,klíčový,panelový,m22,m22-ws,schrack,eaton,mm216881,ip66',
   },
   {
