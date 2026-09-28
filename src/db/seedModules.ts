@@ -2174,6 +2174,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'jako ostatní Festo SME-8M/SMT-8M/SDBT-BSW snímače polohy pístu v této knihovně. Provozní ' +
       'teplota -40 až +70 °C (pevná instalace), -5 až +70 °C (pohyblivá instalace kabelu). Krytí ' +
       'IP65/IP67. Certifikace: CE (EU EMC), RCM.',
+    schematicImage: 'SME-8-K5-LED-24.jpg',
     tags: 'modul,senzor,proximity,poloha-pístu,reed,jazýčkový-kontakt,magnetický,festo,sme-8-k5,pneumatika',
   },
   {
@@ -2202,6 +2203,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'pístu v této knihovně. Žlutá LED indikace sepnutí. Materiál bez mědi a PTFE. Provozní ' +
       'teplota -40 až +70 °C (pevná instalace), -5 až +70 °C (pohyblivá instalace kabelu). ' +
       'Certifikace: CE (EU EMC), RCM.',
+    schematicImage: 'SME-8-S-LED-24.jpg',
     tags: 'modul,senzor,proximity,poloha-pístu,reed,jazýčkový-kontakt,magnetický,festo,sme-8-s,pneumatika,m8',
   },
   {
@@ -2233,6 +2235,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'kategorie "Modul" jako kompletní osazený produkt s vlastním kabelem, stejně jako ostatní ' +
       'Festo SME/SMT/SDBT-BSW snímače polohy pístu v této knihovně. Krytí IP65/IP67, max. ' +
       'utahovací moment upevňovacího příslušenství 0,5 Nm. Bez mědi a PTFE.',
+    schematicImage: 'SMEO-8E-K-24-S6.jpg',
     tags: 'modul,senzor,proximity,poloha-pístu,reed,jazýčkový-kontakt,magnetický,festo,smeo-8e,pneumatika,vysokoteplotní',
   },
   {
@@ -2265,6 +2268,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'pístu v této knihovně. Krytí IP65/IP67, rázové přepětí 0,8 kV, stupeň znečištění 3, max. ' +
       'utahovací moment upevňovacího příslušenství 0,5 Nm. Bez mědi a PTFE, RoHS. Certifikace: ' +
       'CE (EU EMC), RCM.',
+    schematicImage: 'SMEO-8E-M12-LED-24.jpg',
     tags: 'modul,senzor,proximity,poloha-pístu,reed,jazýčkový-kontakt,magnetický,festo,smeo-8e,pneumatika,m12,konektor',
   },
   {
@@ -2300,6 +2304,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'polohy pístu v této knihovně. Krytí IP65/IP67, stupeň znečištění 3, max. utahovací moment ' +
       'upevňovacího příslušenství 0,5 Nm. Bez mědi a PTFE. Certifikace: CE (EU EMC + Low Voltage), ' +
       'RCM.',
+    schematicImage: 'SMEO-8E-M12-LED-230.jpg',
     tags: 'modul,senzor,proximity,poloha-pístu,reed,jazýčkový-kontakt,magnetický,festo,smeo-8e,pneumatika,m12,síťové-napětí',
   },
   {
@@ -2333,6 +2338,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'pístu v této knihovně — i přes odlišný (čistě pneumatický) princip funkce jde o ' +
       'mechanicky/aplikačně identickou kategorii produktů (snímače polohy pístu pro T-drážku ' +
       'pneumatického válce).',
+    schematicImage: 'SMPO-8E.jpg',
     tags: 'modul,senzor,proximity,poloha-pístu,pneumatický,ventil,magnetický,atex,festo,smpo-8e,pneumatika',
   },
   {
@@ -2366,6 +2372,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'ostatní Festo snímače polohy pístu v této knihovně. Krytí IP65/IP67, opakovatelnost ' +
       '±0,2 mm, max. utahovací moment upevňovacího příslušenství 0,5 Nm. Provozní teplota -25 až ' +
       '+70 °C. Bez mědi a PTFE. Certifikace: CE (EU EMC), RCM.',
+    schematicImage: 'SMTSO-8E-NS-M12-LED-24.jpg',
     tags: 'modul,senzor,proximity,poloha-pístu,magnetoindukční,svařování,weld-resistant,npn,festo,smtso-8e,pneumatika,m12',
   },
   {
@@ -2457,6 +2464,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'přibližovací spínače (TURCK/Pepperl+Fuchs/Festo) v této knihovně. Žlutá LED indikace ' +
       'sepnutí. Provozní teplota -25 až +70 °C (pevná instalace), -5 až +70 °C (pohyblivá ' +
       'instalace kabelu). Certifikace: c UL us (Listed), CE (EU EMC), RCM. Bez mědi a PTFE.',
+    schematicImage: 'SIEH-3B-PS-S-L.jpg',
     tags: 'modul,senzor,proximity,indukční,pnp,festo,sieh-3b,miniaturní,m8,průmyslový',
   },
   {
@@ -2608,6 +2616,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'osazený produkt s vlastním kabelem, stejně jako ostatní Festo SDE5/SPAN tlakové senzory v ' +
       'této knihovně. Krytí IP40, korozní odolnost CRC třída 2. Provozní teplota média i okolí ' +
       '0 až +50 °C. Certifikace: c UL us (Recognized), CE (EU EMC + RoHS), RCM.',
+    schematicImage: 'SDE5-D10-NF-Q6E-V-K.jpg',
     tags: 'modul,senzor,tlak,analogový,piezorezistivní,festo,sde5,qs-konektor,transmitter',
   },
   {
@@ -2634,6 +2643,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Festo SDE5/SPAN tlakové senzory v této knihovně. Krytí IP40, korozní odolnost CRC třída 2. ' +
       'Provozní teplota média i okolí 0 až +50 °C. Certifikace: c UL us (Recognized), CE (EU EMC ' +
       '+ RoHS), RCM.',
+    schematicImage: 'SDE5-D10-NF-Q6E-V-M8.jpg',
     tags: 'modul,senzor,tlak,analogový,piezorezistivní,festo,sde5,qs-konektor,m8,transmitter',
   },
   {
@@ -2658,6 +2668,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'tlakové senzory v této knihovně. Krytí IP40, korozní odolnost CRC třída 2. Provozní ' +
       'teplota média i okolí 0 až +50 °C. Certifikace: c UL us (Recognized), CE (EU EMC + RoHS), ' +
       'RCM.',
+    schematicImage: 'SDE5-D10-O-Q6E-P-M8.jpg',
     tags: 'modul,senzor,tlak,tlakový-spínač,piezorezistivní,pnp,festo,sde5,qs-konektor,m8,no-kontakt',
   },
   {
@@ -2684,6 +2695,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'produkt s vlastním konektorem, stejně jako ostatní Festo SDE5/SPAN tlakové senzory v této ' +
       'knihovně. Krytí IP40, korozní odolnost CRC třída 2. Provozní teplota média i okolí 0 až ' +
       '+50 °C. Certifikace: c UL us (Recognized), CE (EU EMC + RoHS), RCM.',
+    schematicImage: 'SDE5-V1-NF-Q6-V-M8.jpg',
     tags: 'modul,senzor,tlak,vakuum,podtlak,analogový,piezorezistivní,festo,sde5,qs-konektor,m8,transmitter',
   },
   {
@@ -2716,6 +2728,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '[7:4:4]) nebo inertní plyn, provoz s olejovým mazáním možný. Krytí IP40, korozní odolnost ' +
       'CRC třída 2. Provozní teplota média i okolí 0 až +50 °C. Certifikace: c UL us (Listed, UL ' +
       'E322346), CE (EU EMC + RoHS), RCM.',
+    schematicImage: 'SPAN-B11R-M5F-PN-PN-L1.jpg',
     tags: 'modul,senzor,tlak,tlakový-spínač,piezorezistivní,pnp,npn,festo,span-b11r,displej,bez-io-link',
   },
   {
