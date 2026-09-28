@@ -174,4 +174,8 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'M22-WS-MM216881.jpg': require('../../assets/schematics/M22-WS-MM216881.jpg'),
   'reed-switch-031828.jpg': require('../../assets/schematics/reed-switch-031828.jpg'),
   'VPEV-1-8-M12-schematic.jpg': require('../../assets/schematics/VPEV-1-8-M12-schematic.jpg'),
+  'HB12201.jpg': require('../../assets/schematics/HB12201.jpg'),
+  'ESP-100-POE.jpg': require('../../assets/schematics/ESP-100-POE.jpg'),
+  'Han-Modular-09140010722.jpg': require('../../assets/schematics/Han-Modular-09140010722.jpg'),
+  'Han-Modular-09140010321.jpg': require('../../assets/schematics/Han-Modular-09140010321.jpg'),
 };

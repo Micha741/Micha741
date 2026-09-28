@@ -34,6 +34,7 @@ const CONNECTOR_SPECS: ConnectorSpec[] = [
       'montáž co nejblíže chráněnému zařízení, pro vnitřní i venkovní použití (venku jen ve ' +
       'vodotěsném krytu). Provozní teplota -40 až +85 °C, skladovací -40 až +85 °C, vlhkost ' +
       '0–95 % nekondenzující. Shoda s IEC 61643-21.',
+    schematicImage: 'ESP-100-POE.jpg',
     tags: 'konektor,rj45,ethernet,poe,přepěťová-ochrana,bleskojistka,surge-protector',
   },
   {
@@ -60,6 +61,7 @@ const CONNECTOR_SPECS: ConnectorSpec[] = [
       'vývody (HB02/04/14/15) a dvouřadé varianty HC (přímé HC11/12/08/13, pravoúhlé HC02/04/14/' +
       '15) se stejným systémem kódování stylu/pozic/povrchové úpravy — do knihovny přidán jen ' +
       'konkrétní pojmenovaný díl HB12201 z názvu souboru.',
+    schematicImage: 'HB12201.jpg',
     tags: 'konektor,pin-header,kolíková-lišta,break-away,foxconn,hb-series,tht,2,54mm',
   },
   {
@@ -89,6 +91,7 @@ const CONNECTOR_SPECS: ConnectorSpec[] = [
       'UL94 V-0), barva RAL 7032 kamenná šedá. Provozní teplota -40 až +85 °C, min. 500 spojovacích ' +
       'cyklů. Zařazeno do kategorie "Konektor". Shoda EN 60664-1, IEC 61984, CE. RoHS/ELV ' +
       'compliant, bez REACH SVHC látek.',
+    schematicImage: 'Han-Modular-09140010722.jpg',
     tags: 'konektor,průmyslový,han-modular,eco,pouzdro,hood,harting,ip20,kabel-kabel',
   },
   {
@@ -117,6 +120,7 @@ const CONNECTOR_SPECS: ConnectorSpec[] = [
       'polykarbonát (samozhášivý, UL94 V-0), barva RAL 7032 kamenná šedá. Provozní teplota -40 až ' +
       '+85 °C, min. 500 spojovacích cyklů. Zařazeno do kategorie "Konektor". Shoda EN 60664-1, ' +
       'IEC 61984, CE. RoHS/ELV compliant, bez REACH SVHC látek.',
+    schematicImage: 'Han-Modular-09140010321.jpg',
     tags: 'konektor,průmyslový,han-modular,eco,pouzdro,hood,harting,ip65,panelové,pe',
   },
   {
