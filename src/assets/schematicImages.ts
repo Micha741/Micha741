@@ -232,4 +232,9 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'SDE5-D10-NF-Q6E-V-K.jpg': require('../../assets/schematics/SDE5-D10-NF-Q6E-V-K.jpg'),
   'SDE5-D10-NF-Q6E-V-M8.jpg': require('../../assets/schematics/SDE5-D10-NF-Q6E-V-M8.jpg'),
   'SDE5-V1-NF-Q6-V-M8.jpg': require('../../assets/schematics/SDE5-V1-NF-Q6-V-M8.jpg'),
+  'OBG4000-R103-2EP-IO.jpg': require('../../assets/schematics/OBG4000-R103-2EP-IO.jpg'),
+  'OBG5000-R100-EP-IO-V3.jpg': require('../../assets/schematics/OBG5000-R100-EP-IO-V3.jpg'),
+  'OBG5000-R101-2EP1-IO.jpg': require('../../assets/schematics/OBG5000-R101-2EP1-IO.jpg'),
+  'PHA400-F200A-B17-V1D.jpg': require('../../assets/schematics/PHA400-F200A-B17-V1D.jpg'),
+  'PHA400-F200-B17-V1D.jpg': require('../../assets/schematics/PHA400-F200-B17-V1D.jpg'),
 };

@@ -3820,6 +3820,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '(E87056, cULus Listed, class 2 power supply). Dostupné příslušenství: konektorové kabely ' +
       'V31-WM/GM-2M-PUR, IO-Link master, montážní úchyty/konzole, celá řada reflektorů (H33, H50, ' +
       'H85-2, H32G-2, ORR50G-2) a reflexní páska OFR-100/100.',
+    schematicImage: 'OBG4000-R103-2EP-IO.jpg',
     tags: 'modul,senzor,fotoelektrický,optický,reflexní,retroreflexní,io-link,pepperl-fuchs,obg4000,r103,transparentní-objekty,ip69k',
   },
   {
@@ -3854,6 +3855,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'knihovně. MTTFd 600 let. UL certifikace (E87056). Dostupné příslušenství: konektorové ' +
       'kabely V31-GM/WM-2M-PUR, IO-Link master, montážní úchyty, reflektory (H33/H50/H85-2/ ' +
       'H32G-2/ORR50G-2) a reflexní páska OFR-100/100.',
+    schematicImage: 'OBG5000-R100-EP-IO-V3.jpg',
     tags: 'modul,senzor,fotoelektrický,optický,reflexní,retroreflexní,io-link,pepperl-fuchs,obg5000,r100,transparentní-objekty,m8,ip69k',
   },
   {
@@ -3886,6 +3888,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'stejně jako ostatní přibližovací/fotoelektrické senzory v této knihovně. MTTFd 600 let. UL ' +
       'certifikace (E87056). Dostupné příslušenství shodné s R103 sérií (montážní svorky OMH-R101/ ' +
       'OMH-4.1/OMH-ML6, reflektory H33/H50/H85-2, reflexní páska OFR-100/100).',
+    schematicImage: 'OBG5000-R101-2EP1-IO.jpg',
     tags: 'modul,senzor,fotoelektrický,optický,reflexní,retroreflexní,io-link,pepperl-fuchs,obg5000,r101,transparentní-objekty,ip69k',
   },
   {
@@ -3924,6 +3927,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'osazený přístroj s vlastním procesorem/optikou/osvětlením/konektory, stejně jako ostatní ' +
       'vizuální senzory v této knihovně. MTTFd 95 let. Certifikace: CE, UL (cULus Listed, Class 2 ' +
       'Power Source), CCC.',
+    schematicImage: 'PHA400-F200A-B17-V1D.jpg',
     tags: 'modul,kamera,vizuální-senzor,vision-sensor,polohování,regálový-zakladač,profinet,pepperl-fuchs,pha400,ir-osvětlení,skladová-automatizace',
   },
   {
@@ -3954,6 +3958,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'zadní přístup ke konektorům), ne o rozdílnou funkci senzoru. Zařazeno do kategorie "Modul" ' +
       'jako kompletní osazený přístroj, stejně jako PHA400-F200A-B17-V1D v této knihovně. ' +
       'Certifikace shodné: CE, UL (cULus Listed, Class 2 Power Source), CCC.',
+    schematicImage: 'PHA400-F200-B17-V1D.jpg',
     tags: 'modul,kamera,vizuální-senzor,vision-sensor,polohování,regálový-zakladač,profinet,pepperl-fuchs,pha400,ir-osvětlení,skladová-automatizace',
   },
   {
