@@ -253,4 +253,7 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'WTB250-2N1131.jpg': require('../../assets/schematics/WTB250-2N1131.jpg'),
   'WTB250-2N1151.jpg': require('../../assets/schematics/WTB250-2N1151.jpg'),
   'MAXREFDES103.jpg': require('../../assets/schematics/MAXREFDES103.jpg'),
+  'N142.jpg': require('../../assets/schematics/N142.jpg'),
+  'N152.jpg': require('../../assets/schematics/N152.jpg'),
+  'D10-Series.jpg': require('../../assets/schematics/D10-Series.jpg'),
 };

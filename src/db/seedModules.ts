@@ -586,6 +586,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'DIN EN 61010-1 (třída ochrany II, kategorie přepětí II, stupeň znečištění 2), EMC dle DIN ' +
       'EN 61000-6-2/6-3, schválení UL/cUL. Objednací kód např. N 142.13A01 (Ø25mm hřídel, ' +
       'nakloněný displej, 24 VDC, kabelový výstup 0,5m motor. kabel, RS485).',
+    schematicImage: 'N142.jpg',
     tags: 'modul,polohový-displej,enkodér,multiturn,rs485,baumer,ivo,n142,vřeteno,duté-hřídel',
   },
   {
@@ -613,6 +614,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '(krátkodobě), napájení 24 VDC ±10 %, odběr max 40 mA. Shoda s DIN EN 61010-1, EMC dle DIN ' +
       'EN 61000-6-2/6-3, schválení UL/cUL. Displej dostupný nakloněný (A) nebo horizontální ' +
       'vpředu (B) — na rozdíl od N 142, který má jen nakloněnou variantu.',
+    schematicImage: 'N152.jpg',
     tags: 'modul,polohový-displej,enkodér,multiturn,rs485,baumer,ivo,n152,vřeteno,duté-hřídel',
   },
   {
@@ -4129,6 +4131,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '+55°C (bargraf), skladovací -20 až +80/+85°C. Zařazeno do kategorie "Modul" jako kompletní ' +
       'osazený produkt s vlastním konektorem/displejem, stejně jako ostatní fotoelektrické ' +
       'senzory v této knihovně. Certifikace CE, cULus.',
+    schematicImage: 'D10-Series.jpg',
     tags: 'modul,senzor,fotoelektrický,optický,optické-vlákno,fiber-optic,zesilovač,banner,d10,teach,din-lišta',
   },
   {
