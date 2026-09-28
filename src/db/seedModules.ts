@@ -882,6 +882,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'funkcí). Provozní teplota -30 až +85 °C. MTTF 874 let dle SN 29500 @40°C. Průměr aktivní ' +
       'plochy Ø8 mm. Dodává se řada montážních příslušenství (konzole QM-08/BST-08B/MW-08/BSS-08/ ' +
       'MBS80).',
+    schematicImage: 'BI1.5U-EG08-RP6X-H1341.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,uprox,factor1,turck,pnp,m8,ip67,průmyslový',
   },
   {
@@ -912,6 +913,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '10 %. Izolační zkušební napětí 0,5 kV. Odolnost proti vibracím 55 Hz (1 mm), proti rázům ' +
       '30 g (11 ms). Krytí IP67. Provozní teplota -25 až +70 °C (užší rozsah než "uprox" varianta). ' +
       'MTTF 2283 let dle SN 29500 @40°C. Průměr aktivní plochy Ø5 mm.',
+    schematicImage: 'BI1-EG05K-AN6X-V1331.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,turck,npn,m5,ip67,průmyslový',
   },
   {
@@ -980,6 +982,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Izolační zkušební napětí 1,5 kV. Odolnost proti vibracím 55 Hz (1 mm), proti rázům 30 g ' +
       '(11 ms). Krytí IP67. Provozní teplota -25 až +70 °C. MTTF 1080 let dle SN 29500 @40°C. ' +
       'Průměr aktivní plochy Ø30 mm.',
+    schematicImage: 'BC10-PT30-AZ3X.jpg',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,hladina,turck,ac,m30,pvdf,ip67,průmyslový',
   },
   {
@@ -1013,6 +1016,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Izolační zkušební napětí 0,5 kV. UL certifikace. Odolnost proti vibracím 55 Hz (1 mm), ' +
       'proti rázům 30 g (11 ms). Krytí IP67. Provozní teplota -25 až +70 °C. MTTF 1080 let dle ' +
       'SN 29500 @40°C.',
+    schematicImage: 'BC10-Q14-VN4X2.jpg',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,turck,dc,npn,komplementární,q14,ip67,průmyslový',
   },
   {
@@ -1047,6 +1051,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '10–30 V DC, zvlnění max 10 %. Izolační zkušební napětí 0,5 kV. UL certifikace. Odolnost ' +
       'proti vibracím 55 Hz (1 mm), proti rázům 30 g (11 ms). Krytí IP67. Provozní teplota -25 ' +
       'až +70 °C. MTTF 1080 let dle SN 29500 @40°C. Průměr aktivní plochy Ø20 mm.',
+    schematicImage: 'BC10-QF5.5-RN6X2.jpg',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,turck,dc,npn,plochý,qf5,ip67,průmyslový',
   },
   {
@@ -1075,6 +1080,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '5 mA, zbytkový proud max 1,7 mA, úbytek napětí max 7 V, spínací kmitočet 0,02 kHz (20 Hz). ' +
       'Izolační zkušební napětí 1,5 kV. Odolnost proti vibracím 55 Hz (1 mm), proti rázům 30 g ' +
       '(11 ms). Krytí IP67. Provozní teplota -25 až +70 °C. MTTF 1080 let dle SN 29500 @40°C.',
+    schematicImage: 'BC20-Q20-RZ3X2.jpg',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,turck,ac,nc,q20,ip67,průmyslový',
   },
   {
@@ -1896,6 +1902,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Provozní teplota -25 až +55 °C, skladovací -30 až +75 °C. Zařazeno do kategorie "Modul" ' +
       'jako kompletní osazený produkt s vlastní elektronikou/konektorem, obdobně jako fotoelektrické ' +
       'snímače SICK WTB250-2N1131/WTB250-2N1151 v této knihovně.',
+    schematicImage: 'GRSE18S-N2421V.jpg',
     tags: 'modul,senzor,fotoelektrický,optický,through-beam,jednocestná-závora,sick,gr18-inox,nerez,m18,ip69k,průmyslový',
   },
   {
@@ -1932,6 +1939,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '-40 až +125 °C. 24pinový FPC konektor (piny 1-SDA, 2-SCL, 3-DOVDD1.8V, 4-MCP, 5-MCN, ' +
       '6/9/12/24-DGND, 7-MDP0, 8-MDN0, 10-MDP1, 11-MDN1, 13-PWDN, 14-ATEST, 15-AGND, 16/23-NC, ' +
       '17-SID, 18-DVDD1.2V, 19-XCLK, 20-STROBE, 21-XSHUTDOWN, 22-AVDD2.8).',
+    schematicImage: 'LI-OS05A20-MIPI-110H.jpg',
     tags: 'modul,kamera,kamerový-modul,mipi,csi-2,os05a20,leopard-imaging,snímač-obrazu,sccb,objektiv',
   },
   {

@@ -211,4 +211,12 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'NBB1-4GM22-E0.jpg': require('../../assets/schematics/NBB1-4GM22-E0.jpg'),
   'CBB4-12GH60-E0-V1.jpg': require('../../assets/schematics/CBB4-12GH60-E0-V1.jpg'),
   'CBB8-18GS75-E2.jpg': require('../../assets/schematics/CBB8-18GS75-E2.jpg'),
+  'BC10-PT30-AZ3X.jpg': require('../../assets/schematics/BC10-PT30-AZ3X.jpg'),
+  'BC10-Q14-VN4X2.jpg': require('../../assets/schematics/BC10-Q14-VN4X2.jpg'),
+  'BC10-QF5.5-RN6X2.jpg': require('../../assets/schematics/BC10-QF5.5-RN6X2.jpg'),
+  'BC20-Q20-RZ3X2.jpg': require('../../assets/schematics/BC20-Q20-RZ3X2.jpg'),
+  'BI1.5U-EG08-RP6X-H1341.jpg': require('../../assets/schematics/BI1.5U-EG08-RP6X-H1341.jpg'),
+  'BI1-EG05K-AN6X-V1331.jpg': require('../../assets/schematics/BI1-EG05K-AN6X-V1331.jpg'),
+  'GRSE18S-N2421V.jpg': require('../../assets/schematics/GRSE18S-N2421V.jpg'),
+  'LI-OS05A20-MIPI-110H.jpg': require('../../assets/schematics/LI-OS05A20-MIPI-110H.jpg'),
 };
