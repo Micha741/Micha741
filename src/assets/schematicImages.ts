@@ -274,4 +274,11 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'ISL78010.jpg': require('../../assets/schematics/ISL78010.jpg'),
   'EC9223.jpg': require('../../assets/schematics/EC9223.jpg'),
   'XC9516.jpg': require('../../assets/schematics/XC9516.jpg'),
+  'LTR-706PS-01.jpg': require('../../assets/schematics/LTR-706PS-01.jpg'),
+  'LTR-329ALS-01.jpg': require('../../assets/schematics/LTR-329ALS-01.jpg'),
+  'TRA-1-Series.jpg': require('../../assets/schematics/TRA-1-Series.jpg'),
+  'BM28720MUV.jpg': require('../../assets/schematics/BM28720MUV.jpg'),
+  'BM28723MUV.jpg': require('../../assets/schematics/BM28723MUV.jpg'),
+  'BMP280.jpg': require('../../assets/schematics/BMP280.jpg'),
+  'BME280.jpg': require('../../assets/schematics/BME280.jpg'),
 };

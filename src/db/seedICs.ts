@@ -3063,6 +3063,7 @@ const IC_SPECS: IcSpec[] = [
       'VDD 3,8 V, VCSEL proud 15 mA, ESD (HBM) 2000 V (200 V na LEDA pinu kvůli VCSEL). Provozní ' +
       'teplota -30 až +70 °C. Aplikace: detekce přiblížení objektu, touch panel control v mobilních/' +
       'přenosných zařízeních. RoHS a bez halogenu.',
+    schematicImage: 'LTR-706PS-01.jpg',
     tags: 'io,senzor,proximity,i2c,vcsel,liteon,ltr-706ps-01,optický,chipled',
   },
   {
@@ -3094,6 +3095,7 @@ const IC_SPECS: IcSpec[] = [
       '400 kbit/s. Aplikace: automatické řízení jasu podsvícení displeje (mobilní telefony, ' +
       'notebooky, monitory, TV, navigace, digitální fotorámečky, palubní desky). RoHS a bez ' +
       'halogenu.',
+    schematicImage: 'LTR-329ALS-01.jpg',
     tags: 'io,senzor,als,okolní-osvětlení,i2c,liteon,ltr-329als-01,optický,chipled',
   },
   {
@@ -3161,6 +3163,7 @@ const IC_SPECS: IcSpec[] = [
       'vlhkost max 95 % nekondenzující. Provoz do nadmořské výšky 5000 m. MTBF >2 000 000 h (dle ' +
       'MIL-HDBK-217F @25°C). Pájecí teplota max 260°C/10s. Certifikace: CB scheme (IEC 60950-1), ' +
       'UL 60950-1, CSA 60950-1-07. RoHS 2011/65/EU, REACH.',
+    schematicImage: 'TRA-1-Series.jpg',
     tags: 'io,dc-dc,měnič,izolovaný,napájecí-obvod,tracopower,tra1,sip,1w',
   },
   {
@@ -3191,6 +3194,7 @@ const IC_SPECS: IcSpec[] = [
       '80 dB, výstupní šum typ 80 µVrms (A-vážený). PWM vzorkovací kmitočet 256/352,8/384 kHz dle ' +
       'fs=32/44,1/48 kHz. Aplikace: ploché TV (LCD/OLED), domácí audio, desktop PC, zábavní ' +
       'zařízení, elektronické hudební nástroje.',
+    schematicImage: 'BM28720MUV.jpg',
     tags: 'io,zesilovač,audio,class-d,dsp,digitální,rohm,bm28720muv,reproduktor,i2s,vqfn',
   },
   {
@@ -3223,6 +3227,7 @@ const IC_SPECS: IcSpec[] = [
       'Doporučený napájecí rozsah 10–24 V. Zařazeno do kategorie "IO", stejně jako BM28720MUV v ' +
       'této knihovně. Aplikace: TV (LCD/OLED), domácí audio, desktop PC, zábavní zařízení, ' +
       'elektronické hudební nástroje.',
+    schematicImage: 'BM28723MUV.jpg',
     tags: 'io,zesilovač,audio,class-d,dsp,digitální,rohm,bm28723muv,reproduktor,i2s,vqfn',
   },
   {
@@ -3256,6 +3261,7 @@ const IC_SPECS: IcSpec[] = [
       'dead-reckoning), detekce podlaží ve výtahu, outdoor navigace, předpověď počasí, indikace ' +
       'vertikální rychlosti (výstup/sestup). Cílová zařízení: mobilní telefony, tablety, GPS ' +
       'zařízení, domácí meteostanice, letecké hračky, hodinky.',
+    schematicImage: 'BMP280.jpg',
     tags: 'io,senzor,tlak,barometrický,i2c,spi,mems,piezorezistivní,bosch,bmp280,lga',
   },
   {
@@ -3295,6 +3301,7 @@ const IC_SPECS: IcSpec[] = [
       '(detekce patra), předpověď počasí, indikace vertikální rychlosti. Cílová zařízení: mobilní ' +
       'telefony, tablety, GPS zařízení, navigační systémy, herní ovladače, kamery, domácí ' +
       'meteostanice, letecké hračky, hodinky.',
+    schematicImage: 'BME280.jpg',
     tags: 'io,senzor,vlhkost,tlak,teplota,barometrický,i2c,spi,mems,bosch,bme280,lga',
   },
   {
