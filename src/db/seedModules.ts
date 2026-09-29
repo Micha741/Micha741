@@ -475,6 +475,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Teach-in (párování) tlačítkem s LED indikací. Provozní podmínky -20 až +60 °C, 0–93 %RH ' +
       'nekondenzující, IP40, jen vnitřní použití. Skladovací podmínky doporučeně +10 až 30 °C, ' +
       '<60 %RH, max. 36 měsíců v transportním režimu.',
+    schematicImage: 'ETHSA-ETHSU.jpg',
     tags: 'modul,enocean,easyfit,senzor,teploměr,vlhkoměr,solární,bezdrátový,ethsa',
   },
   {
@@ -498,6 +499,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'uvedenou tray varientu). Všechny ostatní parametry (senzor teploty/vlhkosti, EEP profil, ' +
       'zabezpečení, napájení, mechanika, provozní/skladovací podmínky) shodné s ETHSA — viz jeho ' +
       'záznam pro plný popis.',
+    schematicImage: 'ETHSA-ETHSU.jpg',
     tags: 'modul,enocean,easyfit,senzor,teploměr,vlhkoměr,solární,bezdrátový,ethsu',
   },
   {
@@ -3694,6 +3696,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'RaDec Ceiling Kit. Zařazeno do kategorie "Modul" jako kompletní osazený produkt s vlastním ' +
       'kabelem/konektorem, stejně jako Q130RA v této knihovně. CE (2014/53/EU), EAC. FCC ' +
       'schválení NENÍ uděleno — použití v Severní Americe zakázáno.',
+    schematicImage: 'RaDec-M.jpg',
     tags: 'modul,senzor,radar,doppler,pohybový,relé,pepperl-fuchs,radec-m,24ghz,dveře',
   },
   {
@@ -3731,6 +3734,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'průmyslové prostředí). Provozní/skladovací teplota -30 až +60 °C. Zařazeno do kategorie ' +
       '"Modul" jako kompletní osazený produkt s vlastním kabelem/svorkami, stejně jako RaDec-M v ' +
       'této knihovně.',
+    schematicImage: 'RAVE-D-NA.jpg',
     tags: 'modul,senzor,radar,doppler,pohybový,relé,pepperl-fuchs,rave-d,24ghz,dveře,fcc,usa',
   },
   {
@@ -3767,6 +3771,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Zařazeno do kategorie "Modul" jako kompletní osazený produkt s vlastním kabelem/svorkami, ' +
       'stejně jako RaDec-M/RAVE-D v této knihovně. Dostupné příslušenství: povětrnostní kryt RMS ' +
       'Weather Cap, stropní montážní sada RMS/RaDec Ceiling Kit.',
+    schematicImage: 'RMS-G-RC.jpg',
     tags: 'modul,senzor,radar,doppler,pohybový,relé,pepperl-fuchs,rms-g,24ghz,dveře,ce,fcc',
   },
   {
@@ -3801,6 +3806,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'produkt s vlastním kabelem/svorkami, stejně jako ostatní radarové senzory Pepperl+Fuchs v ' +
       'této knihovně. Dostupné příslušenství: povětrnostní kryt RMS Weather Cap, IR dálkový ' +
       'ovladač RMS Remote Control, stropní montážní sada RMS/RaDec Ceiling Kit.',
+    schematicImage: 'RMS-M-RC.jpg',
     tags: 'modul,senzor,radar,doppler,pohybový,relé,pepperl-fuchs,rms-m,24ghz,dveře,ce,dálkové-ovládání',
   },
   {
@@ -4455,6 +4461,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '69CW/69HCW/23BPW (315-915MHz, do 550kbps, SPI/TWI rozhraní). Aplikace dle katalogu: ' +
       'chytrá domácnost (dálkové spínače, dveřní zvonky, termostaty), automobilové ' +
       'zabezpečení (anti-theft, TPMS), osvětlení, zabezpečovací systémy, aktivní RFID.',
+    schematicImage: 'HOPERF-RFM-HM-TR-Series.jpg',
     tags: 'modul,rf,sub-ghz,vysílač,přijímač,transceiver,hoperf,rfm,hm-tr,315mhz,433mhz,868mhz,915mhz',
   },
   {
@@ -4472,6 +4479,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'nízký proud 16-33mA Tx, kompatibilní s nRF24L01+ protokolem). Nejvyšší dosažená ' +
       'citlivost -139dBm (RFM95W/98W @LoRa). Vhodné pro dálkové bezdrátové senzorové sítě ' +
       '(LPWAN), IoT uzly s bateriovým napájením.',
+    schematicImage: 'HOPERF-RFM9xW-RFM75W-Series.jpg',
     tags: 'modul,rf,lora,2.4ghz,transceiver,hoperf,rfm9x,rfm75,lpwan,iot,spi',
   },
   {
@@ -4495,6 +4503,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '(dálkové ovládání, termostaty), bezpečnostní kontrola (bezdrátový magnetometr, tísňové ' +
       'volání), automobilová anti-theft ochrana/TPMS, osvětlení, aktivní RFID, datová ' +
       'transparentní přenosová zařízení.',
+    schematicImage: 'HOPERF-HM-WF-BT-LWNH-Series.jpg',
     tags: 'modul,rf,wifi,ble,bluetooth,lorawan,hoperf,hm-wf,hm-bt,hm-lwnh,uart',
   },
   {
@@ -4535,6 +4544,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Typické aplikace: dálkové ovládání, domácí zabezpečení/alarm, bezdrátová klávesnice/ ' +
       'myš, dálkové bezklíčové ovládání vozidel, TPMS, telemetrie, dálkový odečet měřidel ' +
       '(AMR).',
+    schematicImage: 'RFM01.jpg',
     tags: 'modul,rf,přijímač,fsk,ism,hoperf,rfm01,spi,315mhz,433mhz,868mhz,915mhz,standalone',
   },
   {
@@ -4562,6 +4572,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Shoda s FCC a ETSI. Typické aplikace: dálkové vstupní systémy, zabezpečení elektrických ' +
       'vozítek, dálkově ovládané zásuvky/zvonky, bezdrátový přenos dat, osvětlení, hračky, ' +
       'domácí spotřebiče, zabezpečovací/poplašné systémy.',
+    schematicImage: 'RFM210LCF-S1.jpg',
     tags: 'modul,rf,přijímač,ask,ook,ism,hoperf,rfm210lcf,cob,315mhz,433mhz',
   },
   {
@@ -4619,6 +4630,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '(2Mbps). Citlivost (BER 10⁻³): -96dBm@250kbps, -91dBm@1Mbps, -88dBm@2Mbps. Max. vstupní ' +
       'výkon 10dBm. Typické aplikace: bezdrátové PC periferie, gamepady, bezdrátové audio, ' +
       'dálkové ovládání, domácí automatizace, hračky.',
+    schematicImage: 'RFM75.jpg',
     tags: 'modul,rf,transceiver,gfsk,2.4ghz,hoperf,beken,rfm75,rfm75c,spi,nrf24l01-kompatibilní',
   },
   {
@@ -4692,6 +4704,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '470D/S, 868D/S, 915D/S (D=DIP, S=SMD). Shoda s FCC, ETSI. Aplikace: dálkové ovládání/ ' +
       'měření, přístupové systémy, bezdrátové měřiče, identifikační systémy, sběr dat, chytré/ ' +
       'inteligentní domácí spotřebiče, monitorování kojenců.',
+    schematicImage: 'HM-TRP-Series.jpg',
     tags: 'modul,rf,transceiver,fsk,transparentní,uart,hoperf,hm-trp,dip,smd,433mhz,470mhz,868mhz,915mhz,100mw',
   },
   {
@@ -4721,6 +4734,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'datová rychlost 1,2-115,2kbps, 8 datových bitů, 1 stop bit. Tovární výchozí nastavení ' +
       'shodné s HM-TRP: 9,6kbps, 105kHz šířka pásma, 35kHz deviace, +20dBm výkon. Objednací ' +
       'kódy: HM-TRP-RS485-433/470/868/915. Shoda s FCC, ETSI.',
+    schematicImage: 'HM-TRP-RS485-Series.jpg',
     tags: 'modul,rf,transceiver,fsk,rs485,hoperf,hm-trp-rs485,433mhz,470mhz,868mhz,915mhz,100mw,průmyslová-sběrnice',
   },
   {
@@ -4765,6 +4779,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Absolutní maximum: napájení -0,3 až 4,0V, max. výkon na vstupu přijímače 0dBm, TJ -40 až ' +
       '+85°C, ESD (HBM) 2000V. Aplikace: přesné lokalizační systémy v reálném čase (RTLS), ' +
       'lokalizačně uvědomělé bezdrátové senzorové sítě.',
+    schematicImage: 'DWM1000.jpg',
     tags: 'modul,rf,transceiver,uwb,ultra-wideband,lokalizace,rtls,ranging,decawave,dwm1000,ieee-802.15.4,spi',
   },
   {
@@ -4804,6 +4819,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'zabezpečovací systémy, domácí/budovní automatizace, 6LoWPAN sítě, automatický odečet ' +
       'měřidel, bezdrátové senzorové sítě, dálkové ovládání, veřejné osvětlení, parkovací ' +
       'senzory, environmentální senzory, smart grid.',
+    schematicImage: 'RC-WLE5-868.jpg',
     tags: 'modul,mcu,rf,lora,lpwan,stm32wle5,arm,cortex-m4,radiocontrolli,rc-wle5-868,868mhz,sx126x',
   },
   {

@@ -160,6 +160,7 @@ const CONNECTOR_SPECS: ConnectorSpec[] = [
       '+60 °C. Halogen-free (dle IEC 61249-2-21). Aplikace: propojení baterie/NFC/USB/LCD/kamery/ ' +
       'sluchátkového konektoru k hlavní desce v tenkých/kompaktních zařízeních. Zařazeno do ' +
       'kategorie "Konektor".',
+    schematicImage: 'BM28-Series.jpg',
     tags: 'konektor,board-to-board,board-to-fpc,smd,hirose,bm28,0,35mm,výkonový-kontakt,usb3-1',
   },
 ];

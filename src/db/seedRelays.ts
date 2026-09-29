@@ -730,6 +730,7 @@ const RELAY_SPECS: RelaySpec[] = [
       'kombinovat s TeSys U startérem (viz "Schneider TeSys U" v této knihovně) sdílejícím ' +
       'stejnou výkonovou základnu, nebo použít samostatně. Objednací kód dle výkonu motoru, např. ' +
       'ATSU01N206LT = 1-2HP/6A. Certifikace UL (E164862), CSA (LR43364).',
+    schematicImage: 'Altistart-ATSU01.jpg',
     tags: 'softstartér,soft-start,motor,schneider,altistart,atsu01,tesys-u',
   },
 ];

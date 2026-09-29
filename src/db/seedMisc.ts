@@ -116,6 +116,7 @@ const MISC_SPECS: MiscSpec[] = [
       'pojmenovaný díl FE0202W-EU z názvu souboru. Určeno pro provoz v širokém teplotním rozsahu ' +
       'a vysoké vlhkosti (přesné meze v tomto souhrnném katalogu neuvedeny, jen v plném ' +
       'datasheetu dílu).',
+    schematicImage: 'FE0202W-EU.jpg',
     tags: 'lcd,displej,segmentový,panel,and-displays,purdy,fe0202w,7segment,pasivní,transflektivní',
   },
   {

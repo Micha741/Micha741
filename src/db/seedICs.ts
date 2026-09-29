@@ -3919,6 +3919,7 @@ const IC_SPECS: IcSpec[] = [
       'wakeup). Deklarované výhody výrobce: plně softwarově konfigurovatelné parametry (bez ' +
       'nutnosti přeprogramování), 100% shoda s CE/FCC, pin-kompatibilní náhrady napříč řadou, ' +
       'vestavěné EEPROM (volitelně).',
+    schematicImage: 'CMOSTEK-CMT2xxx-Series.jpg',
     tags: 'io,rf,vysílač,přijímač,transceiver,cmostek,cmt,hoperf,sub-ghz,ook,fsk',
   },
   {
@@ -3943,6 +3944,7 @@ const IC_SPECS: IcSpec[] = [
       'přímou instalaci do potrubí/nádrže. Typické aplikace: měření nadmořské výšky/relativní ' +
       'výšky, předpověď počasí, detekce pádu/potápění, lokalizace GPS+tlak, měření tlaku ' +
       'uhelného/výfukového plynu.',
+    schematicImage: 'HOPERF-HPxxx-HP5xxx-Series.jpg',
     tags: 'io,senzor,tlakový,tlakoměr,barometr,hoperf,i2c,spi,vodotěsný',
   },
 ];
