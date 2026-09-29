@@ -170,6 +170,7 @@ const IC_SPECS: IcSpec[] = [
       '(enable, aktivní L), 14=BOUT, 15=GOUT, 16=ROUT. Doporučené blokování: 4,7µF tantalový + ' +
       '0,1µF keramický na VS-/VCC pin. Pb-free verze dostupná (ISL59837IAZ, ISL59837IAZ-T7 na ' +
       'pásce/cívce 7").',
+    schematicImage: 'ISL59837.jpg',
     tags: 'io,video,zesilovač,buffer,rgb,ypbpr,charge-pump,nábojová-pumpa,renesas,intersil,isl59837,qsop,ntsc',
   },
   {
@@ -213,6 +214,7 @@ const IC_SPECS: IcSpec[] = [
       '29=AGND, 15/32/37=DGND, 28=VAA, 30=VAAPIX, 16/36=VDD, 34=VDDDAC, 40=VDDPLL. Aplikace: ' +
       'bezpečnostní/CCTV kamery, síťové (IP) kamery s aktivním/pasivním overlay, 900MHz/2,4GHz ' +
       'bezdrátové kamery, "smart" kamery.',
+    schematicImage: 'MT9V135C12STC.jpg',
     tags: 'io,senzor,obrazový-senzor,kamera,cmos,soc,vga,ntsc,pal,lvds,ccir656,micron,mt9v135,clcc',
   },
 
@@ -688,6 +690,7 @@ const IC_SPECS: IcSpec[] = [
       '(balast) zářivkových trubic — blokové schéma: EMI filtr → usměrňovač → Boost PFC → ' +
       'rezonanční výstupní obvod (half-bridge) → lampa, s řídicím IC poskytujícím PFC control, ' +
       'UVLO, Resonant control a zpracování Lamp Fault signálu.',
+    schematicImage: 'IRS2580DSPbF.jpg',
     tags: 'io,řadič,ballast,pfc,half-bridge,předřadník,zářivka,international-rectifier,ir,irs2580,soic',
   },
 
@@ -794,6 +797,7 @@ const IC_SPECS: IcSpec[] = [
       'kapacita CI max 10pF. Kmitočet hodin fclock: SN74HC595 min 25MHz @4,5V / 29MHz @6V / ' +
       '5MHz @2V. Tepelný odpor přechod-okolí RθJA: 73°C/W (SOIC-16) / 108°C/W (TSSOP-16) / ' +
       '67°C/W (PDIP-16) dle konkrétního pouzdra. Provozní teplota SN74HC595: -40 až +85°C.',
+    schematicImage: '74HC595.jpg',
     tags: 'io,logika,74hc595,posuvný-registr,shift-register,3-state,latch,led,ti',
   },
   {
@@ -976,6 +980,7 @@ const IC_SPECS: IcSpec[] = [
       'CIN max 6 pF, COUT max 8 pF. Spolehlivost: 100 000 cyklů mazání/zápisu (typicky), 20 let ' +
       'retence dat, ochrana proti latch-up do 100 mA v rozsahu -1 V až VCC+1 V. RoHS/bezolovnaté ' +
       'provedení (Pb-free, "G" suffix).',
+    schematicImage: 'MX25L6406E.jpg',
     tags: 'io,paměť,flash,spi,serial-flash,mx25l6406e,macronix,64mbit',
   },
   {
@@ -1006,6 +1011,7 @@ const IC_SPECS: IcSpec[] = [
       'mazání čipu max 20 mA, klidový (standby) max 25 µA, deep power-down max 10 µA. Vstupní/' +
       'výstupní kapacita CIN max 6 pF, COUT max 8 pF. Spolehlivost: min. 100 000 cyklů mazání/' +
       'zápisu, 20 let retence dat. RoHS/bezolovnaté a bezhalogenové provedení.',
+    schematicImage: 'MX25L1026E.jpg',
     tags: 'io,paměť,flash,spi,serial-flash,mx25l1026e,macronix,1mbit',
   },
 
@@ -1048,6 +1054,7 @@ const IC_SPECS: IcSpec[] = [
       'VCC+0,5 V, zkratový výstupní proud max 200 mA. Provozní: Industrial grade -40 až +85 °C, ' +
       'VCC 2,7–3,6 V. Latch-up ochrana do 100 mA v rozsahu -1 V až 1,5×VCC. Spolehlivost: typ. ' +
       '100 000 cyklů mazání/zápisu, 20 let retence dat. RoHS/bezhalogenové provedení.',
+    schematicImage: 'MX29GL320ET-B.jpg',
     tags: 'io,paměť,flash,paralelní,parallel-flash,mx29gl320e,macronix,32mbit,top-boot',
   },
   {
@@ -1067,6 +1074,7 @@ const IC_SPECS: IcSpec[] = [
       'chrání dolní dva sektory. Všechny ostatní parametry (organizace paměti, buffery, ' +
       'bezpečnostní sektor, ochrana sektorů, elektrické charakteristiky, mezní hodnoty) shodné ' +
       's MX29GL320ET — viz jeho záznam pro plný popis.',
+    schematicImage: 'MX29GL320ET-B.jpg',
     tags: 'io,paměť,flash,paralelní,parallel-flash,mx29gl320e,macronix,32mbit,bottom-boot',
   },
   {
@@ -1090,6 +1098,7 @@ const IC_SPECS: IcSpec[] = [
       '8 bit / 2 097 152 × 16 bit, 16B/8slovní page read buffer, 32B/16slovní write buffer, ' +
       'extra 128slovní bezpečnostní sektor, CFI podpora, RY/BY#, RESET#, doba přístupu 70 ns, ' +
       'Industrial -40 až +85 °C, 100 000 cyklů, 20 let retence.',
+    schematicImage: 'MX29GL320EH-L.jpg',
     tags: 'io,paměť,flash,paralelní,parallel-flash,mx29gl320e,macronix,32mbit,uniform',
   },
   {
@@ -1107,6 +1116,7 @@ const IC_SPECS: IcSpec[] = [
       'architekturu jako EH (64× 64KB), ale WP#/ACC=Vil chrání NEJNIŽŠÍ adresní sektor (na rozdíl ' +
       'od EH, kde chrání nejvyšší). Všechny ostatní parametry shodné s MX29GL320ET/EH — viz jejich ' +
       'záznamy pro plný popis.',
+    schematicImage: 'MX29GL320EH-L.jpg',
     tags: 'io,paměť,flash,paralelní,parallel-flash,mx29gl320e,macronix,32mbit,uniform',
   },
 
@@ -1823,6 +1833,7 @@ const IC_SPECS: IcSpec[] = [
       'UL60730-1A/-2-9/-2-13, CAN/CSA E60730. 5letá záruka na výrobek, kalibrační záruka přesnosti ' +
       'vlhkosti 2 roky za standardních podmínek (agresivní plyny jako chlor/ozon/čpavek nebo ' +
       'extrémní vlhkost/teplo mohou vlhkoměrný člen degradovat mimo záruku).',
+    schematicImage: '22DTH-51M.jpg',
     tags: 'io,senzor,vlhkoměr,teploměr,duct,hvac,belimo,analogový,0-10v',
   },
   {
@@ -1910,6 +1921,7 @@ const IC_SPECS: IcSpec[] = [
       'TH08 (přesnost ±0,3°C/±2%RH) a TH06 (±0,5°C/±5%RH), a teplotní (bez vlhkosti) varianta ' +
       'T06 v pouzdře SOT23-5 (viz jejich samostatné záznamy v této knihovně pro katalogové ' +
       'souhrnné parametry).',
+    schematicImage: 'TH10.jpg',
     tags: 'io,senzor,vlhkoměr,teploměr,th10,hoperf,i2c',
   },
   {
