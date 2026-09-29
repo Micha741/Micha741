@@ -3666,6 +3666,7 @@ const IC_SPECS: IcSpec[] = [
       'sériové/paralelní/USB-na-Ethernet převodníky, bezpečnostní systémy (DVR, IP kamery), ' +
       'průmyslová a budovní automatizace, zdravotnická monitorovací zařízení, vestavěné ' +
       'servery.',
+    schematicImage: 'W5500.jpg',
     tags: 'io,ethernet,tcp-ip,síťový-kontrolér,wiznet,w5500,spi,lqfp-48,hardwired',
   },
 
@@ -3781,6 +3782,7 @@ const IC_SPECS: IcSpec[] = [
       'nejvyšší). ADC10 dostupný pouze na G2x53 devices (chybí na sesterské G2x13 řadě). ' +
       'Typické aplikace: nízkonákladové senzorové systémy (např. základ populárního TI ' +
       'LaunchPad vývojového kitu MSP-EXP430G2).',
+    schematicImage: 'MSP430G2553.jpg',
     tags: 'io,mikrokontrolér,mcu,msp430,msp430g2553,ti,risc,16bit,nízkopříkonový,launchpad,adc,usci',
   },
   {
@@ -3817,6 +3819,7 @@ const IC_SPECS: IcSpec[] = [
       'ochranou. Součást širší rodiny MSPM0L13x3-x6 lišící se pamětí (8-64KB Flash, 2-4KB RAM) ' +
       'a počtem GPIO/ADC kanálů dle pouzdra (16-32 pinů). Vývojová podpora: LP-MSPM0L1306 ' +
       'LaunchPad kit, MSP Software Development Kit (SDK), Code Composer Studio IDE.',
+    schematicImage: 'MSPM0L1306.jpg',
     tags: 'io,mikrokontrolér,mcu,mspm0,mspm0l1306,ti,arm,cortex-m0+,32bit,nízkopříkonový,launchpad,adc,opa',
   },
   {
@@ -3852,6 +3855,7 @@ const IC_SPECS: IcSpec[] = [
       'F1481 (48KB/2KB), F147/F1471 (32KB/1KB), F135 (16KB/512B), F133 (8KB/256B) — všechny se ' +
       '48 I/O, 8kanálovým ADC12 a shodným 64pinovým pouzdrem. Aplikace: senzorové systémy, ' +
       'průmyslové řízení, ruční měřicí přístroje.',
+    schematicImage: 'MSP430F149.jpg',
     tags: 'io,mikrokontrolér,mcu,msp430,msp430f149,ti,risc,16bit,nízkopříkonový,adc12,usart,hardwarová-násobička',
   },
   {
@@ -3886,6 +3890,7 @@ const IC_SPECS: IcSpec[] = [
       'MSP430G2553/F149). Palubní sériové programování bez externího programovacího napětí, ' +
       'programovatelná ochrana kódu (security fuse). Aplikace: jednoduché senzorové systémy, ' +
       'samostatné RF senzorové front-endy.',
+    schematicImage: 'MSP430F1121A.jpg',
     tags: 'io,mikrokontrolér,mcu,msp430,msp430f1121a,ti,risc,16bit,nízkopříkonový,komparátor,malé-pouzdro',
   },
 

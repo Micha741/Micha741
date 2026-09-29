@@ -287,4 +287,9 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'LTV-817.jpg': require('../../assets/schematics/LTV-817.jpg'),
   'LTV-827.jpg': require('../../assets/schematics/LTV-827.jpg'),
   'LTV-847.jpg': require('../../assets/schematics/LTV-847.jpg'),
+  'W5500.jpg': require('../../assets/schematics/W5500.jpg'),
+  'MSP430G2553.jpg': require('../../assets/schematics/MSP430G2553.jpg'),
+  'MSPM0L1306.jpg': require('../../assets/schematics/MSPM0L1306.jpg'),
+  'MSP430F149.jpg': require('../../assets/schematics/MSP430F149.jpg'),
+  'MSP430F1121A.jpg': require('../../assets/schematics/MSP430F1121A.jpg'),
 };
