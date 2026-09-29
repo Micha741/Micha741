@@ -4444,6 +4444,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'Vlastní zpětná source-drain dioda: VSD typ 0,75 V (max 1,1 V) @IS=115 mA. ' +
       'Aplikace dle výrobce: relé driver, vysokorychlostní line driver, low-side load switch, ' +
       'obecné spínací obvody.',
+    schematicImage: 'BSS138PS.jpg',
     tags:
       'tranzistor,mosfet,n-kanál,duální,logic-level,nexperia,bss138ps,bss138,sot363,sc-88,' +
       'trench,level-shifter',
@@ -4989,6 +4990,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'tranzistoru BC807 v běžném SOT-23 pouzdře (ten v knihovně zatím není zpracován) — toto je ' +
       'duální varianta se dvěma nezávislými tranzistory v jednom SMD pouzdře, jiný počet pinů ' +
       'a jiný footprint.',
+    schematicImage: 'BC807U.jpg',
     tags: 'tranzistor,pnp,bipolární,duální,sot-363,sc-70-6,bc807,bc807u,smd,af',
   },
   {
@@ -5080,6 +5082,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '(nový parametr). Malosignálové h-parametry v zapojení SE @IC=2 mA/VCE=5 V/f=1 kHz (zcela ' +
       'nové, JCET je neuváděl): h11e typ 4,5 kΩ (vstupní impedance), h12e typ 2×10⁻⁴ (zpětný ' +
       'napěťový přenos), h21e min 330 (proudové zesílení), h22e typ 30 µS (výstupní admitance).',
+    schematicImage: 'BC856S.jpg',
     tags: 'tranzistor,pnp,bipolární,duální,sot-363,sc-70-6,bc856,bc856s,smd',
   },
   {
@@ -5140,6 +5143,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'V(BR)EBO min 7 V @IE=50 µA/IC=0. ICBO max 0,1 µA @VCB=60 V/IE=0. IEBO max 0,1 µA @VEB=7 V/' +
       'IC=0. hFE min 120 max 560 @VCE=6 V/IC=1 mA. VCE(sat) max 0,4 V @IC=50 mA/IB=5 mA. fT typ ' +
       '180 MHz @VCE=12 V/IC=2 mA/f=100 MHz. Cob 2,0–3,5 pF @VCB=12 V/IE=0/f=1 MHz.',
+    schematicImage: 'EMZ8.jpg',
     tags: 'tranzistor,pnp,npn,bipolární,duální,komplementární,sot-563,emz8,smd',
   },
   {
@@ -5166,6 +5170,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '100 MHz @VCE=-5 V/IC=-10 mA/f=100 MHz. Cob max 4,5 pF @VCB=-10 V/IE=0/f=1 MHz. Šumové ' +
       'číslo (NF) typ 10 dB @VCE=-5 V/IC=-0,2 mA/f=1 kHz/Rs=2 kΩ/BW=200 Hz — parametr uváděný jen ' +
       'u tohoto dílu z rodiny (relevantní pro malosignálové audio/mikrofonní předzesilovače).',
+    schematicImage: 'BC857BV.jpg',
     tags: 'tranzistor,pnp,bipolární,duální,sot-563,bc857,bc857bv,smd',
   },
   {
@@ -5223,6 +5228,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '@VCB=-10 V/IE=0/f=1 MHz. Cib max 30 pF @VEB=-2 V/IC=0/f=1 MHz. Spínací časy: td max ' +
       '10 ns, tr max 40 ns (@VCC=-30 V/IC=-150 mA/IB1=-15 mA); ts max 225 ns, tf max 60 ns ' +
       '(@VCC=-6 V/IC=-150 mA/IB1=IB2=-15 mA).',
+    schematicImage: 'MMDT2907A.jpg',
     tags: 'tranzistor,pnp,bipolární,duální,sot-363,sc-70-6,mmdt2907a,2n2907,mmbt2907a,smd',
   },
   {
@@ -5248,6 +5254,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'fT typ 250 MHz @VCE=-20 V/IC=-10 mA/f=100 MHz. Cob max 4,5 pF @VCB=-5 V/IE=0/f=1 MHz. ' +
       'NF typ 4 dB @VCE=-5 V/IC=-0,1 mA/f=1 kHz/Rg=1 kΩ. Spínací časy (VCC=-3 V, IC=-10 mA, ' +
       'IB1=-IB2=-1 mA): td max 35 ns, tr max 35 ns (VBE=0,5 V), ts max 225 ns, tf max 75 ns.',
+    schematicImage: 'MMDT3906.jpg',
     tags: 'tranzistor,pnp,bipolární,duální,sot-363,sc-70-6,mmdt3906,2n3906,smd',
   },
   {
@@ -5274,6 +5281,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '@IC=-50 mA/IB=-5 mA. VBE(sat) max -1 V @IC=-10 mA/IB=-1 mA; max -1 V @IC=-50 mA/IB=-5 mA. ' +
       'fT min 100 MHz @VCE=-10 V/IC=-10 mA/f=100 MHz. Cob max 6 pF @VCB=-10 V/IE=0/f=1 MHz. ' +
       'NF max 8,0 dB @VCE=-5,0 V/IC=-200 µA/RS=10 Ω/f=1,0 kHz.',
+    schematicImage: 'MMDT5401.jpg',
     tags: 'tranzistor,pnp,bipolární,duální,sot-363,sc-70-6,mmdt5401,2n5401,vysokonapěťový,smd',
   },
   {
@@ -6315,7 +6323,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 69;
+export const SEED_LIBRARY_VERSION = 70;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),

@@ -303,4 +303,12 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'TIL302.jpg': require('../../assets/schematics/TIL302.jpg'),
   'TIL303.jpg': require('../../assets/schematics/TIL303.jpg'),
   'TIL304.jpg': require('../../assets/schematics/TIL304.jpg'),
+  'BSS138PS.jpg': require('../../assets/schematics/BSS138PS.jpg'),
+  'BC807U.jpg': require('../../assets/schematics/BC807U.jpg'),
+  'BC856S.jpg': require('../../assets/schematics/BC856S.jpg'),
+  'EMZ8.jpg': require('../../assets/schematics/EMZ8.jpg'),
+  'BC857BV.jpg': require('../../assets/schematics/BC857BV.jpg'),
+  'MMDT2907A.jpg': require('../../assets/schematics/MMDT2907A.jpg'),
+  'MMDT3906.jpg': require('../../assets/schematics/MMDT3906.jpg'),
+  'MMDT5401.jpg': require('../../assets/schematics/MMDT5401.jpg'),
 };
