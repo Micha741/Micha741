@@ -142,11 +142,18 @@ const IC_SPECS: IcSpec[] = [
   },
   {
     name: 'LM741',
-    packageType: 'DIP-8',
-    value: 'Klasický OZ, ±5–18 V',
+    packageType: 'TO-99-8 / CDIP-8 / PDIP-8, piny (DIP): 1/5=OFFSET NULL, 2=IN-, 3=IN+, ' +
+      '4=V-, 6=OUTPUT, 7=V+, 8=NC',
+    value: 'Klasický OZ, obecný účel, ±5–18 V, vstupní ochrana proti přetížení',
     notes:
-      'Historicky nejznámější operační zesilovač, dnes už spíš pro výuku — nižší šířka pásma a vyšší ' +
-      'vstupní proud než modernější typy (LM358, TL071).',
+      'Texas Instruments "LM741 Operational Amplifier" (dok. SNOSC25D, květen 1998, ' +
+      'revidováno říjen 2015). Historicky nejznámější operační zesilovač, přímá záměna za ' +
+      '709C/LM201/MC1439/748 — dnes už spíš pro výuku, nižší šířka pásma a vyšší vstupní proud ' +
+      'než modernější typy (LM358, TL071). Ochrana proti přetížení na vstupu i výstupu, žádný ' +
+      'latch-up při překročení souhlasného rozsahu. LM741C je elektricky shodný s LM741/LM741A, ' +
+      'liší se jen zaručeným teplotním rozsahem (LM741C: 0 až +70°C, LM741/A: -55 až +125°C). ' +
+      'Piny 1 a 5 (offset null) slouží k vyvážení vstupního offsetu externím trimrem.',
+    schematicImage: 'LM741.jpg',
     tags: 'io,operační-zesilovač,lm741,ua741',
   },
 
