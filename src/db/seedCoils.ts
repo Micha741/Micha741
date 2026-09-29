@@ -42,6 +42,7 @@ const COIL_SPECS: CoilSpec[] = [
       '(špičkově @40% duty cycle), OCL (open circuit inductance) měřena @15,75 kHz/0,1 VRMS. ' +
       'Izolační pevnost (hipot) min 500 VRMS mezi vinutími. Provozní kmitočet 50 kHz až 1 MHz ' +
       '(typické pro SMPS aplikace). Provozní teplota -40 až +85 °C. RoHS.',
+    schematicImage: 'P4100E5-series.jpg',
     tags: 'cívka,transformátor,proudový-transformátor,current-sense,smd,mps-industries,p4100e5,smps',
   },
   {
@@ -397,6 +398,7 @@ const SCHAEFFLER_SPECS: CoilSpec[] = [
       '44kW; poškozenou vrchní silikonovou vrstvu u 180°C variant lze opravit samovulkanizační ' +
       'silikonovou páskou; 300°C varianty se musí při poškození vyměnit celé (nebo zkrátit, je-li ' +
       'poškození u jednoho z konců). CE (LVD 2014/35/EU, RoHS 2011/65/EU), EN 60204-1:2018.',
+    schematicImage: 'MF-INDUCTOR.jpg',
     tags: 'cívka,induktor,indukční-ohřev,schaeffler,mf-inductor,ba86,generátor,ohřev-ložisek',
   },
 ];

@@ -328,4 +328,6 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'TeSys-U.jpg': require('../../assets/schematics/TeSys-U.jpg'),
   'TeSys-H.jpg': require('../../assets/schematics/TeSys-H.jpg'),
   'TeSys-GV.jpg': require('../../assets/schematics/TeSys-GV.jpg'),
+  'P4100E5-series.jpg': require('../../assets/schematics/P4100E5-series.jpg'),
+  'MF-INDUCTOR.jpg': require('../../assets/schematics/MF-INDUCTOR.jpg'),
 };
