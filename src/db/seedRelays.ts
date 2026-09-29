@@ -604,6 +604,7 @@ const RELAY_SPECS: RelaySpec[] = [
       '(bimetalové) nadproudové relé LR2K (třída 10, jmenovité rozsahy 0,11–14 A) s ' +
       'kompenzací okolní teploty, ruční nebo automatický reset. Certifikace UL (E164862), CSA ' +
       '(LR43364).',
+    schematicImage: 'TeSys-K.jpg',
     tags: 'stykač,kontaktor,relé,elektromagnetické,schneider,tesys,tesys-k,motor,nadproudové-relé',
   },
   {
@@ -626,6 +627,7 @@ const RELAY_SPECS: RelaySpec[] = [
       'LR9D (0,1–150 A, i selektovatelná třída 10/20/30). K dispozici i kompletní zapouzdřené ' +
       'startéry (enclosed starters, Type 1 / Type 12/3R kryt) a fúzní/jisticí kombinované startéry ' +
       '(fuse/circuit-breaker combination). Certifikace UL (E164862), CSA (LR43364).',
+    schematicImage: 'TeSys-D.jpg',
     tags: 'stykač,kontaktor,relé,elektromagnetické,schneider,tesys,tesys-d,motor,nadproudové-relé,kondenzátorový',
   },
   {
@@ -644,6 +646,7 @@ const RELAY_SPECS: RelaySpec[] = [
       'jeden díl LC2F). Elektronická nadproudová relé LR9F (samostatné provedení, třída 10/20/30 ' +
       'volitelná, rozsahy 30–630 A). Definiční (motor-protection) tabulka pro hermetické ' +
       'chladicí kompresory do 100 000 cyklů. Certifikace UL (E164862), CSA (LR43364).',
+    schematicImage: 'TeSys-F.jpg',
     tags: 'stykač,kontaktor,relé,elektromagnetické,schneider,tesys,tesys-f,motor,nadproudové-relé,výkonový',
   },
   {
@@ -669,6 +672,7 @@ const RELAY_SPECS: RelaySpec[] = [
       'startér dle UL 508 Type E) a komunikační moduly pro připojení do průmyslové sběrnice. ' +
       'Lze kombinovat se softstartérem Altistart ATSU01 (viz samostatný záznam "Schneider ' +
       'Altistart ATSU01" v této knihovně).',
+    schematicImage: 'TeSys-U.jpg',
     tags: 'startér,motorový-startér,elektronické,schneider,tesys,tesys-u,modulární,komunikace',
   },
   {
@@ -687,6 +691,7 @@ const RELAY_SPECS: RelaySpec[] = [
       '(LZ7H.../LZ8H...) certifikována SIL3 dle IEC 61508 a PLe dle ISO 13849-1 s funkcí Safe ' +
       'Torque Off (STO) — vhodná pro potravinářský/nápojový, logistický a jinak bezpečnostně ' +
       'náročný průmysl. Cívka 24VDC nebo 110-230VAC (50/60Hz).',
+    schematicImage: 'TeSys-H.jpg',
     tags: 'startér,motorový-startér,elektronické,schneider,tesys,tesys-h,sil3,ple,safe-torque-off,ultrakompaktní',
   },
   {
@@ -709,6 +714,7 @@ const RELAY_SPECS: RelaySpec[] = [
       'Doplňkově zmíněny i skříňové (PowerPact) elektronické motorové ochranné jističe H/J/L-Frame ' +
       '(30–600A FLA, katalog str. 18-34) jako alternativa pro vyšší proudové rozsahy — nejsou ' +
       'zde evidovány samostatně.',
+    schematicImage: 'TeSys-GV.jpg',
     tags: 'startér,ruční-startér,motor-circuit-breaker,schneider,tesys,gv2,gv3,gv7,ul508,self-protected',
   },
   {

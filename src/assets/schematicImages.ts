@@ -322,4 +322,10 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'CCNPO101J50V5B1.jpg': require('../../assets/schematics/CCNPO101J50V5B1.jpg'),
   'TRA10-103.jpg': require('../../assets/schematics/TRA10-103.jpg'),
   'HCPB-Series.jpg': require('../../assets/schematics/HCPB-Series.jpg'),
+  'TeSys-K.jpg': require('../../assets/schematics/TeSys-K.jpg'),
+  'TeSys-D.jpg': require('../../assets/schematics/TeSys-D.jpg'),
+  'TeSys-F.jpg': require('../../assets/schematics/TeSys-F.jpg'),
+  'TeSys-U.jpg': require('../../assets/schematics/TeSys-U.jpg'),
+  'TeSys-H.jpg': require('../../assets/schematics/TeSys-H.jpg'),
+  'TeSys-GV.jpg': require('../../assets/schematics/TeSys-GV.jpg'),
 };
