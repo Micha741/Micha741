@@ -5307,6 +5307,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'λ=940 nm — binování dle citlivosti do 6 skupin (BIN A–F): A=0,20–0,60 mA, B=0,40–1,08 mA, ' +
       'C=0,72–1,56 mA, D=1,04–1,80 mA, E=1,20–2,40 mA, F=1,60 mA min (bez horní meze v datasheetu) ' +
       '— při objednávání/výběru dílu je nutno specifikovat požadovaný BIN.',
+    schematicImage: 'LTR-306.jpg',
     tags: 'tranzistor,fototranzistor,ir,detektor,npn,liteon,ltr-306,optoelektronika,side-looking',
   },
   {
@@ -5335,6 +5336,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'temný proud ICEO max 100 nA @VCE=10 V/Ee=0. Skladovací teplota -55 až +100 °C, pájecí ' +
       'teplota 260 °C/5 s (1,6 mm od těla). Při objednávání/výběru dílu nutno specifikovat ' +
       'požadovaný BIN.',
+    schematicImage: 'LTR-1650D.jpg',
     tags: 'tranzistor,fototranzistor,ir,detektor,npn,liteon,ltr-1650d,optoelektronika,top-view',
   },
   {
@@ -5366,6 +5368,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'podsvícení displejů). Bezolovnaté pájení. Určeno pro soumrakové spínače domácího osvětlení, ' +
       'stmívání podsvícení LCD monitorů/displejů, automatickou expozici (AE) fotoaparátů, ' +
       'náhradu CdS senzorů.',
+    schematicImage: 'PT23GP11.jpg',
     tags: 'tranzistor,fototranzistor,viditelné-světlo,daylight-sensor,npn,kodenshi,pt23gp11,cds-náhrada,optoelektronika',
   },
 ];
@@ -5402,6 +5405,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'Volitelné příslušenství: nerezová jímka (AISI 316L, závit R1/2 s M12 kabelovou průchodkou) ' +
       'pro instalaci standardní sondy do potrubí/nádrže — prodává se samostatně, není součástí ' +
       'této položky.',
+    schematicImage: 'Pt100.jpg',
     tags: 'rezistor,senzor,teploměr,rtd,pt100,platinový,baumer',
   },
   {
@@ -5746,6 +5750,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'laditelných (trimmable) rezistorů se stejným prefixem "RT" i podobnými velikostními kódy ' +
       '(např. Susumu RT0603 = pouzdro 0201!) — viz samostatné záznamy Susumu RT0603/RT0510/' +
       'RT0816/RT1220, které s touto Yageo řadou nesouvisí.',
+    schematicImage: 'RT1206FRE073K01L.jpg',
     tags: 'rezistor,smd,1206,precision,tenkovrstvý,thin-film,yageo,phicomp,rt-series',
   },
   {
@@ -5789,6 +5794,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       '(0,1–0,99Ω) dostupná pro velikosti 0402/0603/0805/1206/1210/2010/2512. Standard: E-96 ' +
       '(0,5%/1%), E-24 (2%/5%). Jumper (0Ω propojka) dostupný pro všechny velikosti (<50 mΩ). ' +
       'Vhodné pro vlnové i reflow pájení, standardní cívka 7" (4"/10"/13" na vyžádání).',
+    schematicImage: 'ROYALOHM-ThickFilm.jpg',
     tags: 'rezistor,smd,tlustovrstvý,thick-film,chip,royalohm,uni-royal,e24,e96,obecný,katalog',
   },
   {
@@ -5915,6 +5921,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       '575: endurance test 1000 h @70 °C (±3,0 %), přetížení (±2,0 %), teplotní šok (±1,0 %), ' +
       'vlhkostní odolnost (±1,0 %), odolnost pájecímu teplu 10 s @260 °C (±2,0 %), pájitelnost ' +
       '95% pokrytí.',
+    schematicImage: 'TRA06E.jpg',
     tags: 'rezistor,rezistorová-síť,resistor-array,smd,tenkovrstvý,thin-film,vishay-dale,tra06e,izolovaný',
   },
   {
@@ -5947,6 +5954,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       '+125 °C. Zařazeno do kategorie "Rezistor" jako pasivní síťová součástka, obdobně jako ' +
       'TRA06E v této knihovně. RoHS kompatibilní verze "W" (bezolovnaté zakončení) odolná pájení ' +
       'do 260°C.',
+    schematicImage: 'RC0801-100J100J.jpg',
     tags: 'rezistor,kondenzátor,rezistorová-síť,rc-network,sip,rcd-components,rc-series,kombinovaná-síť',
   },
   {
@@ -6179,6 +6187,7 @@ const CAPACITOR_PART_SPECS: PartSpec[] = [
       '(platí pro tento díl, 100 pF) je Q min. 1000. Zkušební napětí 250 % jmenovitého napětí ' +
       '(max. nabíjecí proud 50 mA) = 125 V pro tento 50V díl. Izolační odpor min. 10 000 MΩ ' +
       '(měřeno při jmenovitém napětí, 60 s). RoHS.',
+    schematicImage: 'CCNPO101J50V5B1.jpg',
     tags: 'kondenzátor,keramický,disk,meritek,np0,c0g,class1,cc-series',
   },
   {
@@ -6242,6 +6251,7 @@ const CAPACITOR_PART_SPECS: PartSpec[] = [
       'dipovaný (UL94V-0 samozhášivý), nízký svodový proud a impedance, vysoká odolnost proti ' +
       'vlhkosti/teplu, laserem značené tělo kondenzátoru. Zakončení "W" (bezolovnaté, std.) je ' +
       'RoHS kompatibilní a odolné pájení do 260°C.',
+    schematicImage: 'TRA10-103.jpg',
     tags: 'kondenzátor,tantalový,radiální,epoxidový,rcd-components,tr-series,tangold',
   },
   {
@@ -6269,6 +6279,7 @@ const CAPACITOR_PART_SPECS: PartSpec[] = [
       '0,001 @1000±100Hz. Zkušební napětí 1,75× jmenovité napětí (2-5s). Izolační odpor min ' +
       '50 kMΩ @20°C/100VDC. Provozní teplota -40 až +85 °C. Kruhový (o) symbol v patičce ' +
       'datasheetu indikuje UL/CSA schválení pro daný typ.',
+    schematicImage: 'HCPB-Series.jpg',
     tags: 'kondenzátor,fóliový,vysokonapěťový,okaya,hcpb-series,spínaný-zdroj,radiální',
   },
   {
@@ -6323,7 +6334,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 70;
+export const SEED_LIBRARY_VERSION = 71;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
