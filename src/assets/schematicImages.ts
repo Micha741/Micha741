@@ -281,4 +281,10 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'BM28723MUV.jpg': require('../../assets/schematics/BM28723MUV.jpg'),
   'BMP280.jpg': require('../../assets/schematics/BMP280.jpg'),
   'BME280.jpg': require('../../assets/schematics/BME280.jpg'),
+  'REZ-Series.jpg': require('../../assets/schematics/REZ-Series.jpg'),
+  'LTV-356T.jpg': require('../../assets/schematics/LTV-356T.jpg'),
+  'PC817-Series.jpg': require('../../assets/schematics/PC817-Series.jpg'),
+  'LTV-817.jpg': require('../../assets/schematics/LTV-817.jpg'),
+  'LTV-827.jpg': require('../../assets/schematics/LTV-827.jpg'),
+  'LTV-847.jpg': require('../../assets/schematics/LTV-847.jpg'),
 };

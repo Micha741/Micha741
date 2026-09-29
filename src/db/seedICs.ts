@@ -3333,6 +3333,7 @@ const IC_SPECS: IcSpec[] = [
       'grafu nad určitou teplotou), skladovací -55 až +125 °C, vlhkost 95 % RH. MTBF @25°C ' +
       '915×10³ hodin, @85°C 170×10³ hodin (dle MIL-HDBK 217F). Zařazeno do kategorie "IO", stejně ' +
       'jako TRA 1 Series v této knihovně. Pouzdro UL94V-0.',
+    schematicImage: 'REZ-Series.jpg',
     tags: 'io,dc-dc,měnič,izolovaný,neregulovaný,napájecí-obvod,recom,econoline,rez-series,sip7,2w',
   },
 
@@ -3367,6 +3368,7 @@ const IC_SPECS: IcSpec[] = [
       'Certifikace: UL1577, VDE DIN EN60747-5-5 (VDE 0884-5), CSA CA5A, CQC GB4943.1-2022/ ' +
       'GB8898-2011, FIMKO/DEMKO/SEMKO/NEMKO. ESD odolnost HBM 8000V/MM2000V/CDM2000V. RoHS, ' +
       'MSL1, k dispozici i bezhalogenová varianta.',
+    schematicImage: 'LTV-356T.jpg',
     tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,liteon,ltv-356t,mini-flat,smd',
   },
   {
@@ -3444,6 +3446,7 @@ const IC_SPECS: IcSpec[] = [
       'pájecí teplota 270°C/10s. Schváleno UL (E64380, "under preparation" v tomto dok.), CSA ' +
       '("under preparation"). Shoda s RoHS (2011/65/EU), bez ODS látek a bromovaných retardérů ' +
       'hoření (PBB/PBDE). Datum kódu na pouzdru: 3místný kód (rok+týden výroby).',
+    schematicImage: 'PC817-Series.jpg',
     tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,sharp,pc817,dip-4,tht',
   },
   {
@@ -3577,6 +3580,7 @@ const IC_SPECS: IcSpec[] = [
       'mají -40 až +105°C), skladovací -55 až +125°C, pájecí teplota 260°C/10s. Certifikace ' +
       'UL1577, VDE DIN EN60747-5-5 (VDE 0884-5), CSA CA5A, CQC GB4943.1-2022, Nordic Safety ' +
       '(FIMKO/NEMKO/SEMKO/DEMKO), BSI. RoHS, MSL1, halogenová volná varianta k dispozici.',
+    schematicImage: 'LTV-817.jpg',
     tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,liteon,ltv-817,dip-4,tht,1-kanálový',
   },
   {
@@ -3598,6 +3602,7 @@ const IC_SPECS: IcSpec[] = [
       '8=Kolektor(ch1) — shodné s Vishay ILD205T. Rankové třídy CTR (na kanál, @IF=5mA/VCE=5V): ' +
       'bez binu (50-600%), A (80-160%), B (130-260%), C (200-400%), D (300-600%), BC ' +
       '(130-400%), CD (200-600%). ⚠️ Provozní teplota LTV-827 užší než LTV-817: -40 až +105°C.',
+    schematicImage: 'LTV-827.jpg',
     tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,dvoukanálový,liteon,ltv-827,dip-8,tht',
   },
   {
@@ -3622,6 +3627,7 @@ const IC_SPECS: IcSpec[] = [
       'kanál, @IF=5mA/VCE=5V): bez binu (50-600%), BC (130-400%), CD (200-600%) — užší nabídka ' +
       'ranků než LTV-817/827 (bez samostatných A/B/C/D tříd). ⚠️ Provozní teplota shodná s ' +
       'LTV-827: -40 až +105°C (užší než LTV-817).',
+    schematicImage: 'LTV-847.jpg',
     tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,čtyřkanálový,liteon,ltv-847,dip-16,tht',
   },
 
