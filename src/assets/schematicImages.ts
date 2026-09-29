@@ -350,4 +350,7 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'HOPERF-RFM-HM-TR-Series.jpg': require('../../assets/schematics/HOPERF-RFM-HM-TR-Series.jpg'),
   'HOPERF-RFM9xW-RFM75W-Series.jpg': require('../../assets/schematics/HOPERF-RFM9xW-RFM75W-Series.jpg'),
   'HOPERF-HM-WF-BT-LWNH-Series.jpg': require('../../assets/schematics/HOPERF-HM-WF-BT-LWNH-Series.jpg'),
+  'SDE5-D10-C3-Q6E-P-K.jpg': require('../../assets/schematics/SDE5-D10-C3-Q6E-P-K.jpg'),
+  'SDE5-D10-C-Q4E-P-M8.jpg': require('../../assets/schematics/SDE5-D10-C-Q4E-P-M8.jpg'),
+  'BC20-Q20-AN4X2.jpg': require('../../assets/schematics/BC20-Q20-AN4X2.jpg'),
 };

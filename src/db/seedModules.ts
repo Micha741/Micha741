@@ -2588,6 +2588,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'produkt s vlastním kabelem, stejně jako SPAN tlakové senzory v této knihovně. Krytí IP40, ' +
       'korozní odolnost CRC třída 2. Provozní teplota média i okolí 0 až +50 °C. Certifikace: ' +
       'c UL us (Recognized), CE (EU EMC + RoHS), RCM.',
+    schematicImage: 'SDE5-D10-C3-Q6E-P-K.jpg',
     tags: 'modul,senzor,tlak,tlakový-spínač,piezorezistivní,pnp,festo,sde5,qs-konektor',
   },
   {
@@ -2614,6 +2615,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'konektorem, stejně jako ostatní Festo SDE5/SPAN tlakové senzory v této knihovně. Krytí ' +
       'IP40, korozní odolnost CRC třída 2. Provozní teplota média i okolí 0 až +50 °C. ' +
       'Certifikace: c UL us (Recognized), CE (EU EMC + RoHS), RCM.',
+    schematicImage: 'SDE5-D10-C-Q4E-P-M8.jpg',
     tags: 'modul,senzor,tlak,tlakový-spínač,piezorezistivní,pnp,festo,sde5,qs-konektor,m8',
   },
   {
@@ -3125,6 +3127,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'cyklická, ochrana proti přepólování a přerušení vodiče kompletní. Izolační zkušební napětí ' +
       '0,5 kV. Odolnost proti vibracím 55 Hz (1 mm), proti rázům 30 g (11 ms). Krytí IP67. ' +
       'Provozní teplota -25 až +70 °C. MTTF 1080 let dle SN 29500 (Ed. 99) @40°C. UL certifikace.',
+    schematicImage: 'BC20-Q20-AN4X2.jpg',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,turck,dc,npn,q20,ip67,průmyslový',
   },
   {
