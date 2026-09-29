@@ -2210,6 +2210,7 @@ const IC_SPECS: IcSpec[] = [
       '(MEMS) — nutná opatrná manipulace. Typické aplikace: GPS navigace, rozpoznávání a ' +
       'logování nárazů, herní/VR ovladače, detekce pohybu, úsporné řízení spotřeby přenosných ' +
       'zařízení, monitorování/kompenzace vibrací, detekce volného pádu, 6D orientace.',
+    schematicImage: 'LSM330DL.jpg',
     tags: 'io,senzor,akcelerometr,gyroskop,imu,mems,6osý,i2c,spi,st,lsm330dl',
   },
   {
@@ -2844,6 +2845,7 @@ const IC_SPECS: IcSpec[] = [
       'bufferu (jen 4kanálové napájení TFT budičů) — viz samostatné záznamy MAX25221 (s VCOM ' +
       'bufferem a NTC teplotní kompenzací) a MAX25221B (s VCOM bufferem a odlišným chováním EN ' +
       'pinu při zapnutí) pro rozdíly v rámci rodiny.',
+    schematicImage: 'MAX25220.jpg',
     tags: 'io,napájecí-obvod,tft-lcd,automotive,max25220,boost,i2c,aec-q100',
   },
   {
@@ -2864,6 +2866,7 @@ const IC_SPECS: IcSpec[] = [
       'flickeru LCD napříč provozní teplotou). Dostupný i v 32 TQFN-EP i 32 SWTQFN-EP (side-' +
       'wettable, pro AOI kontrolu pájených spojů) pouzdru — SWTQFN varianta byla v době ' +
       'vydání datasheetu označena jako "future product".',
+    schematicImage: 'MAX25221-B.jpg',
     tags: 'io,napájecí-obvod,tft-lcd,automotive,max25221,vcom,boost,i2c,aec-q100,ntc',
   },
   {
@@ -2881,6 +2884,7 @@ const IC_SPECS: IcSpec[] = [
       'výrobce) — určeno pro aplikace vyžadující odlišné řízení zapínání oproti standardnímu ' +
       'I2C/stand-alone sekvenování MAX25221. Dostupný pouze v 32 TQFN-EP pouzdru (bez SWTQFN ' +
       'varianty).',
+    schematicImage: 'MAX25221-B.jpg',
     tags: 'io,napájecí-obvod,tft-lcd,automotive,max25221b,vcom,boost,i2c,aec-q100',
   },
   {
@@ -2908,6 +2912,7 @@ const IC_SPECS: IcSpec[] = [
       'výstup (open-drain). IN 2,65–5,5 V (ATEC vyžaduje 4,5–5,5 V), interní V18 LDO 1,8 V @50 mA. ' +
       'Varianty: ATEA (420 kHz, AVDD/HVINP do 10,5 V), ATEB (2,1 MHz, do 10,5 V), ATEC (2,1 MHz, ' +
       'do 12 V, vyšší min. IN 4,5 V). Dostupný v TQFN-EP i SWTQFN-EP (side-wettable) pouzdru.',
+    schematicImage: 'MAX25520.jpg',
     tags: 'io,napájecí-obvod,tft-lcd,automotive,max25520,boost,invertor,aec-q100',
   },
   {
@@ -2938,6 +2943,7 @@ const IC_SPECS: IcSpec[] = [
       '4,5–20 V. Ochrany: UVLO (7,6–8,0 V na PVIN), tepelné vypnutí při 150 °C (reset při 100 °C), ' +
       'programovatelný soft-start (SS/SSB/DLY1/DLY2 piny) pro řízené sekvenování všech výstupů. ' +
       'Dostupný jako ISL97652IRZ (48 Ld 7×7 QFN, i v -T/-TK verzích pro pásmo/cívku).',
+    schematicImage: 'ISL97652.jpg',
     tags: 'io,napájecí-obvod,lcd-tv,vcom,boost,buck,nábojová-pumpa,isl97652,intersil,qfn',
   },
   {
@@ -2968,6 +2974,7 @@ const IC_SPECS: IcSpec[] = [
       'externí ochranný FET. Bandgap reference VREF s bypass kondenzátorem. Vstup VDD 3–5,5 V, ' +
       'klidový proud 1,7 mA (aktivní)/750 µA (disabled). Dostupný jako ISL78010ANZ (32 Ld 5×5 ' +
       'TQFP), i s evaluačním kitem ISL78010EVAL1Z.',
+    schematicImage: 'ISL78010.jpg',
     tags: 'io,napájecí-obvod,tft-lcd,automotive,ldo,boost,isl78010,renesas,intersil,tqfp',
   },
   {
@@ -2994,6 +3001,7 @@ const IC_SPECS: IcSpec[] = [
       'a časované zpožděné poruchové zablokování (fault latch) na všech výstupech, tepelné ' +
       'vypnutí. VIN 2,5–5,5 V, aktivní enable pin (EN) se 4µA pull-down. Dostupný jako ' +
       'EC9223NNQ1R.',
+    schematicImage: 'EC9223.jpg',
     tags: 'io,napájecí-obvod,tft-lcd,vcom,boost,nábojová-pumpa,ec9223,e-cmos,wqfn',
   },
   {
@@ -3024,6 +3032,7 @@ const IC_SPECS: IcSpec[] = [
       'kóduje UVLO práh, přepěťový a nadproudový limit a variantu balení (např. ' +
       'XC9516A21AZR-G = UVLO 1,87 V, OVP 21 V, OCP 1,3 A, QFN-20, 1000 ks/cívka, bezhalogenová ' +
       '"-G" verze). RoHS/Pb-free.',
+    schematicImage: 'XC9516.jpg',
     tags: 'io,napájecí-obvod,tft-lcd,boost,nábojová-pumpa,xc9516,torex,qfn',
   },
   {

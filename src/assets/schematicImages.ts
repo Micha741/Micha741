@@ -266,4 +266,12 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'MX29GL320EH-L.jpg': require('../../assets/schematics/MX29GL320EH-L.jpg'),
   '22DTH-51M.jpg': require('../../assets/schematics/22DTH-51M.jpg'),
   'TH10.jpg': require('../../assets/schematics/TH10.jpg'),
+  'LSM330DL.jpg': require('../../assets/schematics/LSM330DL.jpg'),
+  'MAX25220.jpg': require('../../assets/schematics/MAX25220.jpg'),
+  'MAX25221-B.jpg': require('../../assets/schematics/MAX25221-B.jpg'),
+  'MAX25520.jpg': require('../../assets/schematics/MAX25520.jpg'),
+  'ISL97652.jpg': require('../../assets/schematics/ISL97652.jpg'),
+  'ISL78010.jpg': require('../../assets/schematics/ISL78010.jpg'),
+  'EC9223.jpg': require('../../assets/schematics/EC9223.jpg'),
+  'XC9516.jpg': require('../../assets/schematics/XC9516.jpg'),
 };
