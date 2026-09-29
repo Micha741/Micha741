@@ -44,6 +44,7 @@ const IC_SPECS: IcSpec[] = [
       '/ 98,5°C/W (PDIP-8) / 124,5°C/W (SO-8) / 164,2°C/W (TSSOP-8). Typické zapojení: pulzní ' +
       'tvarovací obvody, detektory chybějícího pulzu, PWM/PPM modulátory, sekvenční časovače, ' +
       'generátory pulzů, kmitočtové děličky, průmyslové řízení.',
+    schematicImage: 'NE555.jpg',
     tags: 'io,časovač,555,ne555,oscilátor,pwm,monostabilní,astabilní,ti',
   },
   {
@@ -81,25 +82,41 @@ const IC_SPECS: IcSpec[] = [
       '0,67V, ITRIG/ITH/IRESET typ. 10pA (extrémně nízké díky CMOS vstupům), VRESET typ. 1,1V. ' +
       '@VCC=3V/25°C: ICC typ. 90µA/max 230µA, VCL typ. 2V, VOH typ. 2,9V/min 2,5V. Funkční ' +
       'tabulka RS-FF shodná s klasickým 555 (Reset má přednost před Trigger/Threshold).',
+    schematicImage: 'TS555.jpg',
     tags: 'io,časovač,555,ts555,cmos,st,nízkopříkonový,oscilátor,pwm,monostabilní,astabilní',
   },
 
   // Operační zesilovače
   {
     name: 'LM358',
-    packageType: 'DIP-8 / SO-8',
-    value: 'Dvojitý OZ, jednoduché napájení 3–32 V (nebo ±1,5–16 V)',
+    packageType: 'DIP-8 / SO-8 / TSSOP-8 / VSSOP-8, piny: 1=OUT1, 2=IN1-, 3=IN1+, 4=V-/GND, ' +
+      '5=IN2+, 6=IN2-, 7=OUT2, 8=V+',
+    value: 'Dvojitý OZ, jednoduché napájení 3–32 V (nebo ±1,5–16 V), unity-gain bandwidth 1 MHz',
     notes:
-      'Obecný nízkopříkonový operační zesilovač, funguje i z jednoho napájecího napětí (bez záporné ' +
-      'větve) — vhodný pro senzorové obvody, komparátory, filtry. Zapojení DIP-8: 1=OUT1, 2=IN1-, ' +
-      '3=IN1+, 4=GND/V-, 5=IN2+, 6=IN2-, 7=OUT2, 8=VCC/V+.',
+      'Texas Instruments "LM158/LM258/LM358/LM2904 — Industry-Standard Dual Operational ' +
+      'Amplifiers" (dok. SLOS068V, červen 1976, revidováno září 2018). Obecný nízkopříkonový ' +
+      'operační zesilovač, funguje i z jednoho napájecího napětí (bez záporné větve), ' +
+      'souhlasné vstupní napětí zahrnuje zem — vhodný pro senzorové obvody, komparátory, ' +
+      'filtry. LM158/LM258/LM358 se liší jen teplotním rozsahem (LM158: -55 až +125°C, LM258: ' +
+      '-25 až +85°C, LM358: 0 až +70°C), novější "B" verze (LM358B) má nižší klidový proud ' +
+      '(typ. 300µA), nižší offset (max 3mV) a integrovaný RF/EMI filtr.',
+    schematicImage: 'LM358.jpg',
     tags: 'io,operační-zesilovač,lm358',
   },
   {
     name: 'LM324',
-    packageType: 'DIP-14 / SO-14',
-    value: 'Čtyřnásobný OZ, jednoduché napájení 3–32 V',
-    notes: 'Čtyři operační zesilovače v pouzdře, stejná rodina jako LM358 — obecné použití, nízká cena.',
+    packageType: 'DIP-14 / SO-14, piny: 1=OUT1, 2=IN1-, 3=IN1+, 4=V+, 5=IN2+, 6=IN2-, 7=OUT2, ' +
+      '8=OUT3, 9=IN3-, 10=IN3+, 11=GND, 12=IN4+, 13=IN4-, 14=OUT4',
+    value: 'Čtyřnásobný OZ, jednoduché napájení 3–32 V (nebo ±1,5–15 V), unity-gain bandwidth 1 MHz',
+    notes: 'Philips Semiconductors "LM124/224/324/324A/SA534/LM2902 — Low power quad op amps" ' +
+      '(product specification, 27.11.1995). Čtyři nezávislé, vysokozisková (100dB), interně ' +
+      'frekvenčně kompenzované operační zesilovače v jednom pouzdře — stejná rodina principu ' +
+      'jako LM358 (viz jeho záznam), jen 4 kanály místo 2. Souhlasné vstupní napětí zahrnuje ' +
+      'zem, výstup může sklopit až k zemi i při jednom napájecím napětí. Nízký klidový proud ' +
+      '(~1mW/OZ @+5V), nízký vstupní klidový proud 45nA (teplotně kompenzovaný). LM124/224/324 ' +
+      'se liší jen teplotním rozsahem (LM124: -55 až +125°C, LM224: -25 až +85°C, LM324: 0 až ' +
+      '+70°C).',
+    schematicImage: 'LM324.jpg',
     tags: 'io,operační-zesilovač,lm324',
   },
   {

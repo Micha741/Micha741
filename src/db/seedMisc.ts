@@ -1,4 +1,4 @@
-import type { ComponentInput } from '../types/component';
+import type { ComponentCategory, ComponentInput } from '../types/component';
 
 interface MiscSpec {
   name: string;
@@ -7,6 +7,7 @@ interface MiscSpec {
   notes: string;
   tags: string;
   schematicImage?: string;
+  category?: ComponentCategory;
 }
 
 const MISC_SPECS: MiscSpec[] = [
@@ -64,6 +65,7 @@ const MISC_SPECS: MiscSpec[] = [
       '5,0 V (typicky střídavé, pro zabránění degradaci LCD stejnosměrným polem). Provozní ' +
       'teplota 0 až +50 °C, skladovací -15 až +60 °C.',
     schematicImage: 'GD-342AP.jpg',
+    category: 'LCD',
     tags: 'lcd,displej,segmentový,statický,az-displays,gd-342ap,7segment,pasivní',
   },
   {
@@ -89,6 +91,7 @@ const MISC_SPECS: MiscSpec[] = [
       'směrové šipky/ukazatele stavu) a jedno kruhové ikonové pole (u T4, možný symbol napájení/ ' +
       'stupně/baterie) — vhodné pro měřicí přístroj s doplňkovými stavovými indikátory. Pozorovací ' +
       'úhel 12 hodin. Budicí napětí 3,0 V. Provozní teplota 0 až +55 °C, skladovací -15 až +60 °C.',
+    category: 'LCD',
     tags: 'lcd,displej,segmentový,multiplexovaný,az-displays,gd-458p,7segment,pasivní,ikony',
   },
   {
@@ -117,6 +120,7 @@ const MISC_SPECS: MiscSpec[] = [
       'a vysoké vlhkosti (přesné meze v tomto souhrnném katalogu neuvedeny, jen v plném ' +
       'datasheetu dílu).',
     schematicImage: 'FE0202W-EU.jpg',
+    category: 'LCD',
     tags: 'lcd,displej,segmentový,panel,and-displays,purdy,fe0202w,7segment,pasivní,transflektivní',
   },
   {
@@ -308,7 +312,7 @@ const MISC_SPECS: MiscSpec[] = [
 export function buildMiscSeed(): ComponentInput[] {
   return MISC_SPECS.map((spec) => ({
     name: spec.name,
-    category: 'Ostatní',
+    category: spec.category ?? 'Ostatní',
     manufacturer: null,
     packageType: spec.packageType,
     value: spec.value,

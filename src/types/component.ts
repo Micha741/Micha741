@@ -9,6 +9,7 @@ export type ComponentCategory =
   | 'Konektor'
   | 'Spínač/Relé'
   | 'Modul'
+  | 'LCD'
   | 'Ostatní';
 
 export const COMPONENT_CATEGORIES: ComponentCategory[] = [
@@ -22,6 +23,7 @@ export const COMPONENT_CATEGORIES: ComponentCategory[] = [
   'Konektor',
   'Spínač/Relé',
   'Modul',
+  'LCD',
   'Ostatní',
 ];
 
