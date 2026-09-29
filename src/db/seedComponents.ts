@@ -1886,6 +1886,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Zbytkové napětí po zásahu ochrany v testech dle CCITT K20: nepřesahuje +2,5 V/-60 V ' +
       '(bleskový test se sekundární LCP1511D ochranou) resp. do 270 V (indukční test bez ' +
       'sekundární ochrany).',
+    schematicImage: 'CLP200M.jpg',
     tags: 'dioda,přepěťová-ochrana,nadproudová-ochrana,telekom,powerso-10,clp200m,aktivní-ochrana',
   },
   {
@@ -1945,6 +1946,7 @@ const DIODE_SPECS: PartSpec[] = [
       'proud) min 100 µA. IDRM (blokovací proud) max 10 µA @25 °C / 200 µA @125 °C. Mezní gate ' +
       'hodnoty: PGM 0,5 W, PG(AV) 0,1 W, IFGM 0,3 A, VRGM 6,0 V. Tepelný odpor RθJ-pouzdro 3,12 ' +
       '°C/W, RθJ-okolí 89 °C/W. TJ a Tstg -40 až +125 °C.',
+    schematicImage: 'SCD4C60S.jpg',
     tags: 'tyristor,scr,silicon-controlled-rectifier,semiwell,d-pak,to-252,řízený-spínač',
   },
   {
@@ -2399,6 +2401,7 @@ const DIODE_SPECS: PartSpec[] = [
       '3,0 V @IF=10 mA. IR max 100 µA @VR=3 V. IV/seg min 2,3/typ. 3,8 mcd @IF=10 mA. λp typ. ' +
       '635 nm, Δλ typ. 40 nm. Pájecí teplota max 260 °C/3 s, ohyb vývodů max 5 mm od těla bez ' +
       'pnutí. RoHS.',
+    schematicImage: 'AND-8010-B.jpg',
     tags: 'dioda,led,displej,16segment,alfanumerický,and-optoelectronics,and-8010,červená,gaasp',
   },
   {
@@ -2418,6 +2421,7 @@ const DIODE_SPECS: PartSpec[] = [
       '2,1 V/max 3,0 V @IF=10 mA. IR max 100 µA @VR=5 V. IV/seg min 2,0/typ. 3,3 mcd @IF=10 mA. ' +
       'λp typ. 567 nm, Δλ typ. 30 nm (užší než 40 nm u červené). Ostatní mezní hodnoty (IF/IFP, ' +
       'teploty) shodné s AND-8010-B (red).',
+    schematicImage: 'AND-8010-B.jpg',
     tags: 'dioda,led,displej,16segment,alfanumerický,and-optoelectronics,and-8010,zelená,gap',
   },
   {
@@ -2447,6 +2451,7 @@ const DIODE_SPECS: PartSpec[] = [
       'napětí max 6,0 V @IR=100 µA. Tepelný odpor přechod-okolí ΘJA 160 °C/W, teplotní koeficient ' +
       'VF typ. -1,5 mV/°C. Doporučený kontrastní filtr: Panelgraphic Yellow 25 nebo Amber 23 ' +
       '(příp. Homalite 190-1720 nebo 100-1726).',
+    schematicImage: 'MV5x164.jpg',
     tags: 'dioda,led,bargraf,displej,žlutá,qt-optoelectronics,mv53164,dip-20',
   },
   {
@@ -2470,6 +2475,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(nižší než 26 Ω u žluté/červené). Kapacita typ. 40 pF. Teplotní koeficient VF typ. ' +
       '-1,4 mV/°C. Ostatní parametry (ΘJA, doba přepnutí, reverzní napětí) shodné s MV53164. ' +
       'Doporučený kontrastní filtr: Panelgraphic Green 48 (příp. Homalite 100-1440 Green).',
+    schematicImage: 'MV5x164.jpg',
     tags: 'dioda,led,bargraf,displej,zelená,vysoce-účinná,qt-optoelectronics,mv54164,dip-20',
   },
   {
@@ -2491,6 +2497,7 @@ const DIODE_SPECS: PartSpec[] = [
       'koeficient VF typ. -2,0 mV/°C (⚠️ nejvyšší teplotní drift v řadě). Ostatní parametry (ΘJA, ' +
       'doba přepnutí, reverzní napětí) shodné s MV53164/MV54164. Doporučený kontrastní filtr: ' +
       'Panelgraphic Red 60 (příp. Homalite 100-1605).',
+    schematicImage: 'MV5x164.jpg',
     tags: 'dioda,led,bargraf,displej,červená,vysoce-účinná,qt-optoelectronics,mv57164,dip-20',
   },
   {
@@ -2544,6 +2551,7 @@ const DIODE_SPECS: PartSpec[] = [
       '1,0 mcd. λp typ. 428 nm, λd (dominantní) typ. 466 nm, Δλ typ. 65 nm @IF=20 mA. Kategorizováno ' +
       '(binováno) dle svítivosti. Piny: 1=NC, 2=katoda D, 3=společná anoda, 4=katoda C, ' +
       '5=katoda DP, 6=katoda B, 7=katoda A, 8=společná anoda, 9=katoda F, 10=katoda G.',
+    schematicImage: 'ELS-512UBWA.jpg',
     tags: 'dioda,led,displej,7segment,modrá,gan,sic,everlight,els-512ubwa,jednomístný',
   },
   {
@@ -2573,6 +2581,7 @@ const DIODE_SPECS: PartSpec[] = [
       '200 mA. Ostatní varianty stejného TD-09 pouzdra (BT-M512RD až BT-M51DRD / BT-N512RD až ' +
       'BT-N51DRD) pokrývají zelenou (568 nm), žlutou (585 nm), oranžovou/hi-eff červenou (635 nm) ' +
       'a dvě varianty super červené GaAlAs (660 nm, IV až 7 mcd/seg).',
+    schematicImage: 'BT-M511RD.jpg',
     tags: 'dioda,led,displej,7segment,3místný,multiplex,yellow-stone,bt-m511rd,červená,gaasp,td-09',
   },
   {
@@ -2599,6 +2608,7 @@ const DIODE_SPECS: PartSpec[] = [
       '/ min 2,0-typ. 4,0 mcd @IF=10 mA. λp typ. 621 nm, λd (dominantní) typ. 615 nm, Δλ typ. ' +
       '18 nm @IF=20 mA — bílé segmenty na šedém čele pouzdra pro dobrý kontrast na jasném ' +
       'okolním světle, čitelnost do 7 m. Balení 13 ks/tuba, 54 tub/box.',
+    schematicImage: 'ELT-511USOWA.jpg',
     tags: 'dioda,led,displej,7segment,3místný,multiplex,everlight,elt-511usowa,oranžová,algainp',
   },
   {
@@ -2625,6 +2635,7 @@ const DIODE_SPECS: PartSpec[] = [
       '1,4-typ. 3,0 mcd @IF=10 mA. λp typ. 575 nm, λd (dominantní) typ. 573 nm, Δλ typ. 20 nm ' +
       '@IF=20 mA. Bílé segmenty na šedém čele pouzdra pro dobrý kontrast na jasném okolním ' +
       'světle. Určeno pro audio zařízení, přístrojové panely, digitální ukazatele.',
+    schematicImage: 'ELS-2326SYGWA.jpg',
     tags: 'dioda,led,displej,7segment,jednomístný,velký,žlutozelená,everlight,els-2326sygwa,algainp',
   },
   {
@@ -2655,6 +2666,7 @@ const DIODE_SPECS: PartSpec[] = [
       'αVF typ. -2,7 mV/°C, IR max 100 µA @VR=6 V, C typ. 85 pF @VR=0/1 MHz. Desetinná tečka: IV ' +
       'min 40/typ. 110 µcd, VF min 1,5/typ. 1,65/max 2 V, αVF typ. -1,4 mV/°C, IR max 100 µA ' +
       '@VR=3 V, C typ. 120 pF.',
+    schematicImage: 'TIL302.jpg',
     tags: 'dioda,led,displej,7segment,texas-instruments,til302,červená,vintage',
   },
   {
@@ -2676,6 +2688,7 @@ const DIODE_SPECS: PartSpec[] = [
       'desetinné tečky je na opačné (pravé) straně znaku oproti TIL302 (levá tečka). Fyzicky ' +
       'shodné pouzdro/rozměry jako TIL302, mechanicky zaměnitelné, ale vyžaduje odlišné řídicí ' +
       'zapojení kvůli jinému sdružení segmentových pinů.',
+    schematicImage: 'TIL303.jpg',
     tags: 'dioda,led,displej,7segment,texas-instruments,til303,červená,vintage',
   },
   {
@@ -2702,6 +2715,7 @@ const DIODE_SPECS: PartSpec[] = [
       'segment, 3 V/tečka, špičkový propustný proud 200 mA/segment (PRR≥60 Hz, duty≤10 %), ' +
       'provozní teplota 0 až +70 °C, skladovací -25 až +85 °C. Piny: 1=C+D, 7=D, 8=C, 9=DP, ' +
       '10=B, 11=A, 14=A+B+DP.',
+    schematicImage: 'TIL304.jpg',
     tags: 'dioda,led,displej,znaménkový,přetokový,texas-instruments,til304,červená,vintage',
   },
   {
@@ -6301,7 +6315,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 68;
+export const SEED_LIBRARY_VERSION = 69;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
