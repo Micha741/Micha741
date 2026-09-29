@@ -147,12 +147,15 @@ const IC_SPECS: IcSpec[] = [
     value: 'Klasický OZ, obecný účel, ±5–18 V, vstupní ochrana proti přetížení',
     notes:
       'Texas Instruments "LM741 Operational Amplifier" (dok. SNOSC25D, květen 1998, ' +
-      'revidováno říjen 2015). Historicky nejznámější operační zesilovač, přímá záměna za ' +
-      '709C/LM201/MC1439/748 — dnes už spíš pro výuku, nižší šířka pásma a vyšší vstupní proud ' +
-      'než modernější typy (LM358, TL071). Ochrana proti přetížení na vstupu i výstupu, žádný ' +
-      'latch-up při překročení souhlasného rozsahu. LM741C je elektricky shodný s LM741/LM741A, ' +
-      'liší se jen zaručeným teplotním rozsahem (LM741C: 0 až +70°C, LM741/A: -55 až +125°C). ' +
-      'Piny 1 a 5 (offset null) slouží k vyvážení vstupního offsetu externím trimrem.',
+      'revidováno říjen 2015); schéma vnitřního zapojení (tranzistory Q1-Q22) převzato z ' +
+      'ekvivalentního National Semiconductor datasheetu "LM741" (DS009341, květen 1998) — oba ' +
+      'výrobci popisují elektricky identický díl. Historicky nejznámější operační zesilovač, ' +
+      'přímá záměna za 709C/LM201/MC1439/748 — dnes už spíš pro výuku, nižší šířka pásma a ' +
+      'vyšší vstupní proud než modernější typy (LM358, TL071). Ochrana proti přetížení na ' +
+      'vstupu i výstupu, žádný latch-up při překročení souhlasného rozsahu. LM741C je ' +
+      'elektricky shodný s LM741/LM741A, liší se jen zaručeným teplotním rozsahem (LM741C: 0 ' +
+      'až +70°C, LM741/A: -55 až +125°C). Piny 1 a 5 (offset null) slouží k vyvážení vstupního ' +
+      'offsetu externím trimrem (10kΩ potenciometr).',
     schematicImage: 'LM741.jpg',
     tags: 'io,operační-zesilovač,lm741,ua741',
   },
