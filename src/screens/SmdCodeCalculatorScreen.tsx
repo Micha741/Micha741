@@ -10,12 +10,49 @@ import {
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { decodeSmdCode, SMD_CODE_TYPE_LABELS } from '../utils/smdResistorCode';
+import { useTheme, type ThemeColors } from '../theme/ThemeContext';
+import { useI18n } from '../i18n/I18nContext';
+import type { Locale } from '../db/appSettings';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SmdCodeCalculator'>;
 
 const EXAMPLES = ['103', '4R7', '1002', '22R1', '01C', '68A'];
 
+function HelpText({ locale, colors }: { locale: Locale; colors: ThemeColors }) {
+  const boldStyle = [styles.helpBold, { color: colors.text }];
+  if (locale === 'en') {
+    return (
+      <Text style={[styles.helpText, { color: colors.textSecondary }]}>
+        • <Text style={boldStyle}>3-digit</Text> (5% tol.): the first two digits are significant,
+        the third is the multiplier (zero count). "103" = 10×10³ = 10 kΩ.{'\n\n'}
+        • <Text style={boldStyle}>4-digit</Text> (1% tol.): the first three digits are significant,
+        the fourth is the multiplier. "1002" = 100×10² = 10 kΩ.{'\n\n'}
+        • <Text style={boldStyle}>R notation</Text>: the letter R replaces the decimal point.
+        "4R7" = 4.7 Ω, "22R1" = 22.1 Ω.{'\n\n'}
+        • <Text style={boldStyle}>EIA-96</Text>: two digits (01–96) index the E96 table value, the
+        last letter is the multiplier. "01C" = 100×100 = 10 kΩ.{'\n\n'}
+        • <Text style={boldStyle}>0 or 000</Text> = 0 Ω (jumper).
+      </Text>
+    );
+  }
+  return (
+    <Text style={[styles.helpText, { color: colors.textSecondary }]}>
+      • <Text style={boldStyle}>3místný</Text> (tol. 5 %): první dvě číslice jsou platné
+      číslice, třetí je počet nul. „103“ = 10×10³ = 10 kΩ.{'\n\n'}
+      • <Text style={boldStyle}>4místný</Text> (tol. 1 %): první tři číslice jsou platné
+      číslice, čtvrtá je počet nul. „1002“ = 100×10² = 10 kΩ.{'\n\n'}
+      • <Text style={boldStyle}>R-zápis</Text>: písmeno R nahrazuje desetinnou čárku.
+      „4R7“ = 4,7 Ω, „22R1“ = 22,1 Ω.{'\n\n'}
+      • <Text style={boldStyle}>EIA-96</Text>: dvě číslice (01–96) určují hodnotu z tabulky
+      E96, poslední písmeno je násobitel. „01C“ = 100×100 = 10 kΩ.{'\n\n'}
+      • <Text style={boldStyle}>0 nebo 000</Text> = 0 Ω (propojka).
+    </Text>
+  );
+}
+
 export default function SmdCodeCalculatorScreen({ navigation }: Props) {
+  const { colors } = useTheme();
+  const { t, locale } = useI18n();
   const [code, setCode] = useState('');
 
   const result = useMemo(() => decodeSmdCode(code), [code]);
@@ -28,58 +65,60 @@ export default function SmdCodeCalculatorScreen({ navigation }: Props) {
         category: 'Rezistor',
         value: result.formattedValue,
         tags: 'rezistor,smd',
-        notes: `Kód na pouzdře: ${code.trim().toUpperCase()} (${SMD_CODE_TYPE_LABELS[result.codeType]})`,
+        notes: t('smdCalc.codeOnPackage', {
+          code: code.trim().toUpperCase(),
+          type: SMD_CODE_TYPE_LABELS[result.codeType],
+        }),
       },
     });
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-      <Text style={styles.label}>Kód na SMD rezistoru</Text>
+    <ScrollView
+      style={{ backgroundColor: colors.background }}
+      contentContainerStyle={styles.container}
+      keyboardShouldPersistTaps="handled"
+    >
+      <Text style={[styles.label, { color: colors.textSecondary }]}>{t('smdCalc.label')}</Text>
       <TextInput
-        style={styles.input}
+        style={[styles.input, { borderColor: colors.border, color: colors.text, backgroundColor: colors.card }]}
         value={code}
         onChangeText={setCode}
-        placeholder="např. 103, 4R7, 1002, 01C"
+        placeholder={t('smdCalc.placeholder')}
+        placeholderTextColor={colors.placeholder}
         autoCapitalize="characters"
         autoCorrect={false}
       />
 
       <View style={styles.exampleRow}>
         {EXAMPLES.map((ex) => (
-          <Pressable key={ex} style={styles.exampleChip} onPress={() => setCode(ex)}>
-            <Text style={styles.exampleChipText}>{ex}</Text>
+          <Pressable
+            key={ex}
+            style={[styles.exampleChip, { backgroundColor: colors.chipBackground }]}
+            onPress={() => setCode(ex)}
+          >
+            <Text style={[styles.exampleChipText, { color: colors.text }]}>{ex}</Text>
           </Pressable>
         ))}
       </View>
 
       {result && (
-        <View style={styles.resultBox}>
-          <Text style={styles.resultValue}>{result.formattedValue}</Text>
-          <Text style={styles.resultType}>{SMD_CODE_TYPE_LABELS[result.codeType]}</Text>
-          <Pressable style={styles.useButton} onPress={handleUseValue}>
-            <Text style={styles.useButtonText}>Použít → Nová součástka</Text>
+        <View style={[styles.resultBox, { backgroundColor: colors.surface }]}>
+          <Text style={[styles.resultValue, { color: colors.primary }]}>{result.formattedValue}</Text>
+          <Text style={[styles.resultType, { color: colors.textSecondary }]}>
+            {SMD_CODE_TYPE_LABELS[result.codeType]}
+          </Text>
+          <Pressable style={[styles.useButton, { backgroundColor: colors.primary }]} onPress={handleUseValue}>
+            <Text style={styles.useButtonText}>{t('smdCalc.useValue')}</Text>
           </Pressable>
         </View>
       )}
 
-      {showInvalid && (
-        <Text style={styles.invalid}>Kód nerozpoznán. Zkus jiný formát (viz nápověda níže).</Text>
-      )}
+      {showInvalid && <Text style={styles.invalid}>{t('smdCalc.invalid')}</Text>}
 
-      <View style={styles.helpBox}>
-        <Text style={styles.helpTitle}>Formáty kódů</Text>
-        <Text style={styles.helpText}>
-          • <Text style={styles.helpBold}>3místný</Text> (tol. 5 %): první dvě číslice jsou platné
-          číslice, třetí je počet nul. „103“ = 10×10³ = 10 kΩ.{'\n\n'}
-          • <Text style={styles.helpBold}>4místný</Text> (tol. 1 %): první tři číslice jsou platné
-          číslice, čtvrtá je počet nul. „1002“ = 100×10² = 10 kΩ.{'\n\n'}
-          • <Text style={styles.helpBold}>R-zápis</Text>: písmeno R nahrazuje desetinnou čárku.
-          „4R7“ = 4,7 Ω, „22R1“ = 22,1 Ω.{'\n\n'}
-          • <Text style={styles.helpBold}>EIA-96</Text>: dvě číslice (01–96) určují hodnotu z tabulky
-          E96, poslední písmeno je násobitel. „01C“ = 100×100 = 10 kΩ.{'\n\n'}
-          • <Text style={styles.helpBold}>0 nebo 000</Text> = 0 Ω (propojka).
-        </Text>
+      <View style={[styles.helpBox, { backgroundColor: colors.surface }]}>
+        <Text style={[styles.helpTitle, { color: colors.text }]}>{t('smdCalc.helpTitle')}</Text>
+        <HelpText locale={locale} colors={colors} />
       </View>
     </ScrollView>
   );
@@ -87,10 +126,9 @@ export default function SmdCodeCalculatorScreen({ navigation }: Props) {
 
 const styles = StyleSheet.create({
   container: { padding: 16, paddingBottom: 48 },
-  label: { fontSize: 13, color: '#666', marginBottom: 6 },
+  label: { fontSize: 13, marginBottom: 6 },
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 10,
@@ -103,21 +141,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
-    backgroundColor: '#f0f0f0',
   },
-  exampleChipText: { color: '#333', fontSize: 13 },
+  exampleChipText: { fontSize: 13 },
   resultBox: {
     marginTop: 20,
     padding: 16,
     borderRadius: 12,
-    backgroundColor: '#eef3fe',
     alignItems: 'center',
   },
-  resultValue: { fontSize: 32, fontWeight: '700', color: '#2f6fed' },
-  resultType: { fontSize: 13, color: '#555', marginTop: 4 },
+  resultValue: { fontSize: 32, fontWeight: '700' },
+  resultType: { fontSize: 13, marginTop: 4 },
   useButton: {
     marginTop: 14,
-    backgroundColor: '#2f6fed',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 10,
@@ -128,9 +163,8 @@ const styles = StyleSheet.create({
     marginTop: 28,
     padding: 14,
     borderRadius: 10,
-    backgroundColor: '#f7f7f7',
   },
-  helpTitle: { fontSize: 14, fontWeight: '700', color: '#333', marginBottom: 8 },
-  helpText: { fontSize: 13, color: '#444', lineHeight: 19 },
+  helpTitle: { fontSize: 14, fontWeight: '700', marginBottom: 8 },
+  helpText: { fontSize: 13, lineHeight: 19 },
   helpBold: { fontWeight: '700' },
 });

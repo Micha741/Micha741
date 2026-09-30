@@ -219,3 +219,18 @@ export async function importMissingDefaultComponents(db: SQLiteDatabase): Promis
   const { added } = await syncSeedComponents(db, { updateExisting: false });
   return added;
 }
+
+/**
+ * Spouští se při každém startu appky. Pokud kód appky nese novější verzi
+ * knihovny součástek než je uloženo v databázi, tiše doplní nové a
+ * aktualizuje změněné záznamy (nová/upravená schémata, poznámky…) — bez
+ * nutnosti ručně mačkat tlačítko "Knihovna". Uživatelovy vlastní úpravy
+ * (množství, umístění, vlastní záznamy) syncSeedComponents nepřepisuje.
+ */
+export async function autoSyncSeedComponentsIfNewer(
+  db: SQLiteDatabase
+): Promise<SyncSeedComponentsResult | null> {
+  const synced = await getSyncedLibraryVersion(db);
+  if (synced >= SEED_LIBRARY_VERSION) return null;
+  return syncSeedComponents(db, { updateExisting: true });
+}

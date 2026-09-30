@@ -15,6 +15,8 @@ import TextRecognition from '@react-native-ml-kit/text-recognition';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { decodeSmdCode, SMD_CODE_TYPE_LABELS } from '../utils/smdResistorCode';
+import { useTheme } from '../theme/ThemeContext';
+import { useI18n } from '../i18n/I18nContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SmdCodeScanner'>;
 
@@ -44,6 +46,8 @@ function extractCandidates(text: string): string[] {
 }
 
 export default function SmdCodeScannerScreen({ navigation }: Props) {
+  const { colors } = useTheme();
+  const { t } = useI18n();
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef<CameraView>(null);
   const [state, setState] = useState<ScanState>({ phase: 'camera' });
@@ -56,7 +60,7 @@ export default function SmdCodeScannerScreen({ navigation }: Props) {
     setState({ phase: 'processing' });
     try {
       const photo = await cameraRef.current.takePictureAsync({ quality: 1 });
-      if (!photo) throw new Error('Fotografii se nepodařilo pořídit.');
+      if (!photo) throw new Error(t('smdScanner.photoFailed'));
 
       const cropRect = {
         originX: Math.round(GUIDE.xFrac * photo.width),
@@ -80,7 +84,7 @@ export default function SmdCodeScannerScreen({ navigation }: Props) {
     } catch (err) {
       setState({
         phase: 'error',
-        message: err instanceof Error ? err.message : 'Rozpoznávání se nezdařilo.',
+        message: err instanceof Error ? err.message : t('smdScanner.recognitionFailed'),
       });
     }
   };
@@ -97,14 +101,17 @@ export default function SmdCodeScannerScreen({ navigation }: Props) {
         category: 'Rezistor',
         value: decoded.formattedValue,
         tags: 'rezistor,smd,sken',
-        notes: `Hodnota určena OCR skenem kódu na pouzdře: ${code.trim().toUpperCase()} (${SMD_CODE_TYPE_LABELS[decoded.codeType]}).`,
+        notes: t('smdScanner.scanNote', {
+          code: code.trim().toUpperCase(),
+          type: SMD_CODE_TYPE_LABELS[decoded.codeType],
+        }),
       },
     });
   };
 
   if (!permission) {
     return (
-      <View style={styles.center}>
+      <View style={[styles.center, { backgroundColor: colors.background }]}>
         <ActivityIndicator size="large" />
       </View>
     );
@@ -112,12 +119,12 @@ export default function SmdCodeScannerScreen({ navigation }: Props) {
 
   if (!permission.granted) {
     return (
-      <View style={styles.center}>
-        <Text style={styles.permissionText}>
-          Pro sken SMD kódu je potřeba přístup ke kameře.
+      <View style={[styles.center, { backgroundColor: colors.background }]}>
+        <Text style={[styles.permissionText, { color: colors.text }]}>
+          {t('smdScanner.permission')}
         </Text>
-        <Pressable style={styles.primaryButton} onPress={requestPermission}>
-          <Text style={styles.primaryButtonText}>Povolit kameru</Text>
+        <Pressable style={[styles.primaryButton, { backgroundColor: colors.primary }]} onPress={requestPermission}>
+          <Text style={styles.primaryButtonText}>{t('smdScanner.allowCamera')}</Text>
         </Pressable>
       </View>
     );
@@ -139,14 +146,12 @@ export default function SmdCodeScannerScreen({ navigation }: Props) {
               },
             ]}
           />
-          <Text style={styles.guideHint}>
-            Umísti kód vytištěný na součástce doprostřed rámečku, ať je co nejvíc čitelný
-          </Text>
+          <Text style={styles.guideHint}>{t('smdScanner.guideHint')}</Text>
         </View>
         {state.phase === 'processing' ? (
           <View style={styles.processingOverlay}>
             <ActivityIndicator size="large" color="#fff" />
-            <Text style={styles.processingText}>Rozpoznávám text…</Text>
+            <Text style={styles.processingText}>{t('smdScanner.processing')}</Text>
           </View>
         ) : (
           <Pressable style={styles.shutter} onPress={handleCapture}>
@@ -159,10 +164,10 @@ export default function SmdCodeScannerScreen({ navigation }: Props) {
 
   if (state.phase === 'error') {
     return (
-      <View style={styles.center}>
-        <Text style={styles.permissionText}>{state.message}</Text>
-        <Pressable style={styles.primaryButton} onPress={handleRetake}>
-          <Text style={styles.primaryButtonText}>Zkusit znovu</Text>
+      <View style={[styles.center, { backgroundColor: colors.background }]}>
+        <Text style={[styles.permissionText, { color: colors.text }]}>{state.message}</Text>
+        <Pressable style={[styles.primaryButton, { backgroundColor: colors.primary }]} onPress={handleRetake}>
+          <Text style={styles.primaryButtonText}>{t('smdScanner.tryAgain')}</Text>
         </Pressable>
       </View>
     );
@@ -170,61 +175,86 @@ export default function SmdCodeScannerScreen({ navigation }: Props) {
 
   // state.phase === 'result'
   return (
-    <ScrollView contentContainerStyle={styles.resultContainer}>
+    <ScrollView
+      style={{ backgroundColor: colors.background }}
+      contentContainerStyle={styles.resultContainer}
+    >
       <Image source={{ uri: state.imageUri }} style={styles.cropImage} resizeMode="contain" />
 
       {state.candidates.length > 1 && (
         <>
-          <Text style={styles.sectionLabel}>Nalezeno více možných kódů, vyber správný</Text>
+          <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>
+            {t('smdScanner.multipleCandidates')}
+          </Text>
           <View style={styles.candidateRow}>
-            {state.candidates.map((c) => (
-              <Pressable
-                key={c}
-                style={[styles.candidateChip, code === c && styles.candidateChipActive]}
-                onPress={() => setCode(c)}
-              >
-                <Text
-                  style={[styles.candidateChipText, code === c && styles.candidateChipTextActive]}
+            {state.candidates.map((c) => {
+              const active = code === c;
+              return (
+                <Pressable
+                  key={c}
+                  style={[
+                    styles.candidateChip,
+                    { backgroundColor: colors.chipBackground },
+                    active && { backgroundColor: colors.chipActiveBackground },
+                  ]}
+                  onPress={() => setCode(c)}
                 >
-                  {c}
-                </Text>
-              </Pressable>
-            ))}
+                  <Text
+                    style={[
+                      styles.candidateChipText,
+                      { color: colors.text },
+                      active && { color: colors.primaryText },
+                    ]}
+                  >
+                    {c}
+                  </Text>
+                </Pressable>
+              );
+            })}
           </View>
         </>
       )}
 
       {state.candidates.length === 0 && (
         <Text style={styles.warning}>
-          Nepodařilo se automaticky rozpoznat platný kód. Rozpoznaný text: „{state.rawText.trim() || '(nic)'}
-          “. Zkus lepší osvětlení/ostření, nebo kód uprav ručně níže.
+          {t('smdScanner.noCandidates', { text: state.rawText.trim() || t('smdScanner.noText') })}
         </Text>
       )}
 
-      <Text style={styles.sectionLabel}>Kód (uprav, pokud je potřeba)</Text>
+      <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>
+        {t('smdScanner.editLabel')}
+      </Text>
       <TextInput
-        style={styles.input}
+        style={[styles.input, { borderColor: colors.border, color: colors.text, backgroundColor: colors.card }]}
         value={code}
         onChangeText={setCode}
         autoCapitalize="characters"
         autoCorrect={false}
-        placeholder="např. 103, 4R7, 01C"
+        placeholder={t('smdScanner.codePlaceholder')}
+        placeholderTextColor={colors.placeholder}
       />
 
       {decoded && (
-        <View style={styles.resultCard}>
-          <Text style={styles.resultValue}>{decoded.formattedValue}</Text>
-          <Text style={styles.resultDetail}>{SMD_CODE_TYPE_LABELS[decoded.codeType]}</Text>
+        <View style={[styles.resultCard, { backgroundColor: colors.surface }]}>
+          <Text style={[styles.resultValue, { color: colors.text }]}>{decoded.formattedValue}</Text>
+          <Text style={[styles.resultDetail, { color: colors.textSecondary }]}>
+            {SMD_CODE_TYPE_LABELS[decoded.codeType]}
+          </Text>
         </View>
       )}
 
       <View style={styles.actionRow}>
-        <Pressable style={styles.secondaryButton} onPress={handleRetake}>
-          <Text style={styles.secondaryButtonText}>Vyfotit znovu</Text>
+        <Pressable
+          style={[styles.secondaryButton, { backgroundColor: colors.chipBackground }]}
+          onPress={handleRetake}
+        >
+          <Text style={[styles.secondaryButtonText, { color: colors.text }]}>
+            {t('smdScanner.retake')}
+          </Text>
         </Pressable>
         {decoded && (
-          <Pressable style={styles.primaryButton} onPress={handleUseValue}>
-            <Text style={styles.primaryButtonText}>Použít → Nová součástka</Text>
+          <Pressable style={[styles.primaryButton, { backgroundColor: colors.primary }]} onPress={handleUseValue}>
+            <Text style={styles.primaryButtonText}>{t('smdScanner.useValue')}</Text>
           </Pressable>
         )}
       </View>
@@ -240,7 +270,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
-    backgroundColor: '#fff',
   },
   overlay: { ...StyleSheet.absoluteFill, alignItems: 'center' },
   guideBox: {
@@ -280,21 +309,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   shutterInner: { width: 56, height: 56, borderRadius: 28, backgroundColor: '#fff' },
-  permissionText: { textAlign: 'center', fontSize: 15, color: '#333', marginBottom: 16 },
+  permissionText: { textAlign: 'center', fontSize: 15, marginBottom: 16 },
   primaryButton: {
-    backgroundColor: '#2f6fed',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,
   },
   primaryButtonText: { color: '#fff', fontSize: 15, fontWeight: '700' },
   secondaryButton: {
-    backgroundColor: '#eee',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,
   },
-  secondaryButtonText: { color: '#333', fontSize: 15, fontWeight: '600' },
+  secondaryButtonText: { fontSize: 15, fontWeight: '600' },
   resultContainer: { padding: 16, alignItems: 'center', paddingBottom: 48 },
   cropImage: {
     width: '100%',
@@ -303,20 +330,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#ddd',
     marginBottom: 16,
   },
-  sectionLabel: { fontSize: 13, color: '#666', marginBottom: 8, marginTop: 8 },
+  sectionLabel: { fontSize: 13, marginBottom: 8, marginTop: 8 },
   candidateRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 8 },
   candidateChip: {
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 16,
-    backgroundColor: '#f0f0f0',
   },
-  candidateChipActive: { backgroundColor: '#2f6fed' },
-  candidateChipText: { color: '#333', fontSize: 15, fontWeight: '600' },
-  candidateChipTextActive: { color: '#fff' },
+  candidateChipText: { fontSize: 15, fontWeight: '600' },
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 10,
@@ -329,14 +352,13 @@ const styles = StyleSheet.create({
   resultCard: {
     marginTop: 20,
     alignItems: 'center',
-    backgroundColor: '#f5f7ff',
     borderRadius: 12,
     paddingVertical: 16,
     paddingHorizontal: 24,
     width: '100%',
   },
-  resultValue: { fontSize: 32, fontWeight: '800', color: '#111' },
-  resultDetail: { fontSize: 14, color: '#555', marginTop: 4 },
+  resultValue: { fontSize: 32, fontWeight: '800' },
+  resultDetail: { fontSize: 14, marginTop: 4 },
   warning: { fontSize: 14, color: '#a33', textAlign: 'center', marginTop: 8 },
   actionRow: { flexDirection: 'row', gap: 12, marginTop: 24 },
 });

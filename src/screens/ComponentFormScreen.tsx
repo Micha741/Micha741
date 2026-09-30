@@ -14,6 +14,8 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { createComponent, getComponent, updateComponent } from '../db/componentRepository';
 import { COMPONENT_CATEGORIES, type ComponentCategory } from '../types/component';
+import { useTheme } from '../theme/ThemeContext';
+import { useI18n } from '../i18n/I18nContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ComponentForm'>;
 
@@ -24,6 +26,8 @@ function nullableText(value: string): string | null {
 
 export default function ComponentFormScreen({ route, navigation }: Props) {
   const db = useSQLiteContext();
+  const { colors } = useTheme();
+  const { t } = useI18n();
   const editingId = route.params?.id;
   const prefill = route.params?.prefill;
 
@@ -63,7 +67,7 @@ export default function ComponentFormScreen({ route, navigation }: Props) {
 
   const handleSave = async () => {
     if (name.trim().length === 0) {
-      Alert.alert('Chybí název', 'Zadej název součástky.');
+      Alert.alert(t('form.missingNameTitle'), t('form.missingNameMessage'));
       return;
     }
     const parsedQuantity = Number.parseInt(quantity, 10);
@@ -90,82 +94,131 @@ export default function ComponentFormScreen({ route, navigation }: Props) {
     navigation.goBack();
   };
 
-  return (
-    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-      <Text style={styles.label}>Název *</Text>
-      <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="např. NE555" />
+  const inputStyle = [
+    styles.input,
+    { borderColor: colors.border, color: colors.text, backgroundColor: colors.card },
+  ];
 
-      <Text style={styles.label}>Kategorie</Text>
+  return (
+    <ScrollView
+      style={{ backgroundColor: colors.background }}
+      contentContainerStyle={styles.container}
+      keyboardShouldPersistTaps="handled"
+    >
+      <Text style={[styles.label, { color: colors.textSecondary }]}>{t('form.name')}</Text>
+      <TextInput
+        style={inputStyle}
+        value={name}
+        onChangeText={setName}
+        placeholder={t('form.namePlaceholder')}
+        placeholderTextColor={colors.placeholder}
+      />
+
+      <Text style={[styles.label, { color: colors.textSecondary }]}>{t('form.category')}</Text>
       <View style={styles.chipRow}>
-        {COMPONENT_CATEGORIES.map((cat) => (
-          <Pressable
-            key={cat}
-            style={[styles.chip, category === cat && styles.chipActive]}
-            onPress={() => setCategory(cat)}
-          >
-            <Text style={[styles.chipText, category === cat && styles.chipTextActive]}>{cat}</Text>
-          </Pressable>
-        ))}
+        {COMPONENT_CATEGORIES.map((cat) => {
+          const active = category === cat;
+          return (
+            <Pressable
+              key={cat}
+              style={[
+                styles.chip,
+                { backgroundColor: colors.chipBackground },
+                active && { backgroundColor: colors.chipActiveBackground },
+              ]}
+              onPress={() => setCategory(cat)}
+            >
+              <Text
+                style={[
+                  styles.chipText,
+                  { color: colors.text },
+                  active && { color: colors.primaryText, fontWeight: '600' },
+                ]}
+              >
+                {cat}
+              </Text>
+            </Pressable>
+          );
+        })}
       </View>
 
-      <Text style={styles.label}>Výrobce</Text>
-      <TextInput style={styles.input} value={manufacturer} onChangeText={setManufacturer} />
+      <Text style={[styles.label, { color: colors.textSecondary }]}>{t('form.manufacturer')}</Text>
+      <TextInput style={inputStyle} value={manufacturer} onChangeText={setManufacturer} />
 
       <View style={styles.labelRow}>
-        <Text style={[styles.label, styles.labelInRow]}>Pouzdro</Text>
+        <Text style={[styles.label, styles.labelInRow, { color: colors.textSecondary }]}>
+          {t('form.packageType')}
+        </Text>
         <Pressable onPress={() => navigation.navigate('PackageReference')} hitSlop={8}>
-          <Text style={styles.helpLink}>Přehled pouzder IC</Text>
+          <Text style={[styles.helpLink, { color: colors.primary }]}>
+            {t('form.packageReferenceLink')}
+          </Text>
         </Pressable>
       </View>
       <TextInput
-        style={styles.input}
+        style={inputStyle}
         value={packageType}
         onChangeText={setPackageType}
-        placeholder="např. DIP-8, 0805, TO-92"
+        placeholder={t('form.packageTypePlaceholder')}
+        placeholderTextColor={colors.placeholder}
       />
 
-      <Text style={styles.label}>Hodnota</Text>
+      <Text style={[styles.label, { color: colors.textSecondary }]}>{t('form.value')}</Text>
       <TextInput
-        style={styles.input}
+        style={inputStyle}
         value={value}
         onChangeText={setValue}
-        placeholder="např. 10kΩ, 100nF"
+        placeholder={t('form.valuePlaceholder')}
+        placeholderTextColor={colors.placeholder}
       />
 
-      <Text style={styles.label}>Skladem (ks)</Text>
+      <Text style={[styles.label, { color: colors.textSecondary }]}>{t('form.quantity')}</Text>
       <TextInput
-        style={styles.input}
+        style={inputStyle}
         value={quantity}
         onChangeText={setQuantity}
         keyboardType="number-pad"
       />
 
-      <Text style={styles.label}>Umístění</Text>
-      <TextInput style={styles.input} value={location} onChangeText={setLocation} placeholder="např. krabička A2" />
-
-      <Text style={styles.label}>Odkaz na datasheet</Text>
+      <Text style={[styles.label, { color: colors.textSecondary }]}>{t('form.location')}</Text>
       <TextInput
-        style={styles.input}
+        style={inputStyle}
+        value={location}
+        onChangeText={setLocation}
+        placeholder={t('form.locationPlaceholder')}
+        placeholderTextColor={colors.placeholder}
+      />
+
+      <Text style={[styles.label, { color: colors.textSecondary }]}>{t('form.datasheetUrl')}</Text>
+      <TextInput
+        style={inputStyle}
         value={datasheetUrl}
         onChangeText={setDatasheetUrl}
         placeholder="https://…"
+        placeholderTextColor={colors.placeholder}
         autoCapitalize="none"
         keyboardType="url"
       />
 
-      <Text style={styles.label}>Tagy (oddělené čárkou)</Text>
-      <TextInput style={styles.input} value={tags} onChangeText={setTags} placeholder="timer, analog" />
-
-      <Text style={styles.label}>Poznámky</Text>
+      <Text style={[styles.label, { color: colors.textSecondary }]}>{t('form.tags')}</Text>
       <TextInput
-        style={[styles.input, styles.multiline]}
+        style={inputStyle}
+        value={tags}
+        onChangeText={setTags}
+        placeholder={t('form.tagsPlaceholder')}
+        placeholderTextColor={colors.placeholder}
+      />
+
+      <Text style={[styles.label, { color: colors.textSecondary }]}>{t('form.notes')}</Text>
+      <TextInput
+        style={[inputStyle, styles.multiline]}
         value={notes}
         onChangeText={setNotes}
         multiline
       />
 
-      <Pressable style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>{editingId ? 'Uložit změny' : 'Přidat součástku'}</Text>
+      <Pressable style={[styles.saveButton, { backgroundColor: colors.primary }]} onPress={handleSave}>
+        <Text style={styles.saveButtonText}>{editingId ? t('form.saveEdit') : t('form.saveNew')}</Text>
       </Pressable>
     </ScrollView>
   );
@@ -173,7 +226,7 @@ export default function ComponentFormScreen({ route, navigation }: Props) {
 
 const styles = StyleSheet.create({
   container: { padding: 16, paddingBottom: 48 },
-  label: { fontSize: 13, color: '#666', marginTop: 14, marginBottom: 6 },
+  label: { fontSize: 13, marginTop: 14, marginBottom: 6 },
   labelRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -181,10 +234,9 @@ const styles = StyleSheet.create({
     marginTop: 14,
   },
   labelInRow: { marginTop: 0 },
-  helpLink: { fontSize: 13, color: '#2f6fed', fontWeight: '600' },
+  helpLink: { fontSize: 13, fontWeight: '600' },
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 10,
@@ -196,14 +248,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
-    backgroundColor: '#f0f0f0',
   },
-  chipActive: { backgroundColor: '#2f6fed' },
-  chipText: { color: '#333', fontSize: 13 },
-  chipTextActive: { color: '#fff', fontWeight: '600' },
+  chipText: { fontSize: 13 },
   saveButton: {
     marginTop: 28,
-    backgroundColor: '#2f6fed',
     paddingVertical: 14,
     borderRadius: 10,
     alignItems: 'center',
