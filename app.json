@@ -2,7 +2,7 @@
   "expo": {
     "name": "CircuitKit",
     "slug": "circuitkit",
-    "version": "1.5.1",
+    "version": "1.5.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -10,7 +10,7 @@
       "supportsTablet": true
     },
     "android": {
-      "versionCode": 88,
+      "versionCode": 89,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -37,7 +37,10 @@
       "policy": "fingerprint"
     },
     "updates": {
-      "url": "https://u.expo.dev/7c6c6519-2b05-459c-83b7-91a93d55ce54"
+      "url": "https://u.expo.dev/7c6c6519-2b05-459c-83b7-91a93d55ce54",
+      "requestHeaders": {
+        "expo-channel-name": "production"
+      }
     },
     "extra": {
       "eas": {
