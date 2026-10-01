@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Alert,
   FlatList,
@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useFocusEffect } from '@react-navigation/native';
+import { useObserve } from 'expo-observe';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { importMissingDefaultComponents, listComponents } from '../db/componentRepository';
@@ -23,11 +24,20 @@ export default function ComponentListScreen({ navigation }: Props) {
   const [items, setItems] = useState<ElectronicComponent[]>([]);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState<string | null>(null);
+  const [hasLoaded, setHasLoaded] = useState(false);
+  const { markInteractive } = useObserve();
 
   const reload = useCallback(async () => {
     const rows = await listComponents(db, { search, category: category ?? undefined });
     setItems(rows);
+    setHasLoaded(true);
   }, [db, search, category]);
+
+  useEffect(() => {
+    if (hasLoaded) {
+      markInteractive();
+    }
+  }, [hasLoaded, markInteractive]);
 
   useFocusEffect(
     useCallback(() => {

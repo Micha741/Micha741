@@ -12,6 +12,7 @@ import {
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 import TextRecognition from '@react-native-ml-kit/text-recognition';
+import { Observe } from 'expo-observe';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { decodeSmdCode, SMD_CODE_TYPE_LABELS } from '../utils/smdResistorCode';
@@ -78,6 +79,7 @@ export default function SmdCodeScannerScreen({ navigation }: Props) {
       setCode(bestGuess);
       setState({ phase: 'result', imageUri: saved.uri, candidates, rawText: recognized.text });
     } catch (err) {
+      Observe.reportError(err);
       setState({
         phase: 'error',
         message: err instanceof Error ? err.message : 'Rozpoznávání se nezdařilo.',

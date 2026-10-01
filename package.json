@@ -10,6 +10,7 @@
     "expo-camera": "~57.0.4",
     "expo-dev-client": "~57.0.19",
     "expo-image-manipulator": "~57.0.4",
+    "expo-observe": "~57.0.22",
     "expo-sqlite": "^57.0.3",
     "expo-status-bar": "~57.0.1",
     "jpeg-js": "^0.4.4",

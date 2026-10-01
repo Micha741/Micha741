@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
+import { Observe } from 'expo-observe';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { scanResistorBandsFromJpegBase64, type DetectedBand } from '../utils/imageColorScan';
@@ -71,6 +72,7 @@ export default function ResistorScannerScreen({ navigation }: Props) {
 
       setState({ phase: 'result', stripUri: saved.uri, bands, decoded });
     } catch (err) {
+      Observe.reportError(err);
       setState({
         phase: 'error',
         message: err instanceof Error ? err.message : 'Rozpoznávání se nezdařilo.',
