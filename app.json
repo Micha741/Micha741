@@ -31,6 +31,12 @@
         }
       ],
       "expo-dev-client"
-    ]
+    ],
+    "owner": "micha741",
+    "extra": {
+      "eas": {
+        "projectId": "dd9309e5-f8bf-4c7a-ae8a-43611a2ad572"
+      }
+    }
   }
 }
