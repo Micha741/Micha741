@@ -9,6 +9,7 @@ import {
   autoSyncSeedComponentsIfNewer,
   ensureDefaultComponentsSeededOnce,
 } from './src/db/componentRepository';
+import { autoSyncCircuitProjectsIfNewer } from './src/db/circuitRepository';
 import { ThemeProvider, useTheme } from './src/theme/ThemeContext';
 import { I18nProvider } from './src/i18n/I18nContext';
 import RootNavigator from './src/navigation/RootNavigator';
@@ -20,6 +21,7 @@ async function initializeDatabase(db: SQLiteDatabase) {
   // nese novější verzi seed dat než je v databázi — bez nutnosti ručně mačkat
   // tlačítko "Knihovna". Uživatelovy vlastní úpravy zůstávají nedotčené.
   await autoSyncSeedComponentsIfNewer(db);
+  await autoSyncCircuitProjectsIfNewer(db);
 }
 
 export default function App() {

@@ -129,6 +129,9 @@ export default function ComponentListScreen({ navigation }: Props) {
                 {t('list.headerButton')}
               </Text>
             </Pressable>
+            <Pressable onPress={() => navigation.navigate('CircuitList')} hitSlop={8}>
+              <Text style={styles.headerIcon}>🛠️</Text>
+            </Pressable>
             <Pressable onPress={() => navigation.navigate('Settings')} hitSlop={8}>
               <Text style={styles.headerIcon}>⚙️</Text>
             </Pressable>

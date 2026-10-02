@@ -12,6 +12,8 @@ export const cs = {
   'nav.capacitorCodeCalculator': 'Kód kondenzátoru',
   'nav.packageReference': 'Pouzdra IC',
   'nav.settings': 'Nastavení',
+  'nav.circuitList': 'Projekty',
+  'nav.circuitDetail': 'Detail projektu',
 
   // Component list
   'list.headerButton': 'Knihovna',
@@ -144,6 +146,15 @@ export const cs = {
   // Package reference
   'packageRef.intro': 'Rychlá vizuální identifikace běžných pouzder IC podle tvaru a typu vývodů.',
   'packageRef.pitch': 'Rozteč vývodů: {pitch}',
+
+  // Circuit projects
+  'circuits.searchPlaceholder': 'Hledat projekt...',
+  'circuits.empty': 'Zatím žádné projekty.',
+  'circuits.partsCount': '{count} součástek',
+  'circuit.notFound': 'Projekt nenalezen.',
+  'circuit.partsTitle': 'Potřebné součástky',
+  'circuit.have': 'Máš ({count} ks)',
+  'circuit.missing': 'Chybí',
 } as const;
 
 export const en: Record<TranslationKey, string> = {
@@ -158,6 +169,8 @@ export const en: Record<TranslationKey, string> = {
   'nav.capacitorCodeCalculator': 'Capacitor Code',
   'nav.packageReference': 'IC Packages',
   'nav.settings': 'Settings',
+  'nav.circuitList': 'Projects',
+  'nav.circuitDetail': 'Project Detail',
 
   // Component list
   'list.headerButton': 'Library',
@@ -290,4 +303,13 @@ export const en: Record<TranslationKey, string> = {
   // Package reference
   'packageRef.intro': 'Quick visual identification of common IC packages by shape and lead type.',
   'packageRef.pitch': 'Lead pitch: {pitch}',
+
+  // Circuit projects
+  'circuits.searchPlaceholder': 'Search projects...',
+  'circuits.empty': 'No projects yet.',
+  'circuits.partsCount': '{count} parts',
+  'circuit.notFound': 'Project not found.',
+  'circuit.partsTitle': 'Required parts',
+  'circuit.have': 'In stock ({count})',
+  'circuit.missing': 'Missing',
 };

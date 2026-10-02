@@ -8,6 +8,8 @@ import SmdCodeScannerScreen from '../screens/SmdCodeScannerScreen';
 import CapacitorCodeCalculatorScreen from '../screens/CapacitorCodeCalculatorScreen';
 import PackageReferenceScreen from '../screens/PackageReferenceScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import CircuitListScreen from '../screens/CircuitListScreen';
+import CircuitDetailScreen from '../screens/CircuitDetailScreen';
 import { useI18n } from '../i18n/I18nContext';
 
 export interface ComponentFormPrefill {
@@ -30,6 +32,8 @@ export type RootStackParamList = {
   CapacitorCodeCalculator: undefined;
   PackageReference: undefined;
   Settings: undefined;
+  CircuitList: undefined;
+  CircuitDetail: { id: number };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -85,6 +89,16 @@ export default function RootNavigator() {
         name="Settings"
         component={SettingsScreen}
         options={{ title: t('nav.settings') }}
+      />
+      <Stack.Screen
+        name="CircuitList"
+        component={CircuitListScreen}
+        options={{ title: t('nav.circuitList') }}
+      />
+      <Stack.Screen
+        name="CircuitDetail"
+        component={CircuitDetailScreen}
+        options={{ title: t('nav.circuitDetail') }}
       />
     </Stack.Navigator>
   );

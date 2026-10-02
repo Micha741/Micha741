@@ -15,6 +15,7 @@ export interface ThemeColors {
   chipActiveBackground: string;
   fabBackground: string;
   danger: string;
+  success: string;
   placeholder: string;
   statusBarStyle: 'light' | 'dark';
 }
@@ -32,6 +33,7 @@ const lightColors: ThemeColors = {
   chipActiveBackground: '#2f6fed',
   fabBackground: '#333333',
   danger: '#d64545',
+  success: '#2e7d32',
   placeholder: '#999999',
   statusBarStyle: 'dark',
 };
@@ -49,6 +51,7 @@ const darkColors: ThemeColors = {
   chipActiveBackground: '#5b8dff',
   fabBackground: '#2a2a2c',
   danger: '#ff6b6b',
+  success: '#5ed165',
   placeholder: '#7a7a7d',
   statusBarStyle: 'light',
 };
