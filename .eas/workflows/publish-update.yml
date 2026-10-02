@@ -1,0 +1,7 @@
+name: Publish OTA Update
+
+jobs:
+  publish_update:
+    type: update
+    params:
+      channel: production
