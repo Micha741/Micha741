@@ -3,6 +3,7 @@ import {
   Alert,
   Image,
   Linking,
+  Modal,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -45,6 +46,7 @@ export default function ComponentDetailScreen({ route, navigation }: Props) {
   const { t } = useI18n();
   const { id } = route.params;
   const [item, setItem] = useState<ElectronicComponent | null>(null);
+  const [schematicFullscreen, setSchematicFullscreen] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -94,13 +96,38 @@ export default function ComponentDetailScreen({ route, navigation }: Props) {
           <Text style={[styles.fieldLabel, { color: colors.textSecondary }]}>
             {t('detail.schematic')}
           </Text>
-          <Image
-            source={SCHEMATIC_IMAGES[item.schematicImage]}
-            style={[styles.schematic, { backgroundColor: colors.surface }]}
-            resizeMode="contain"
-          />
+          <Pressable onPress={() => setSchematicFullscreen(true)}>
+            <Image
+              source={SCHEMATIC_IMAGES[item.schematicImage]}
+              style={[styles.schematic, { backgroundColor: colors.surface }]}
+              resizeMode="contain"
+            />
+            <Text style={[styles.schematicHint, { color: colors.textSecondary }]}>
+              {t('detail.schematicTapToZoom')}
+            </Text>
+          </Pressable>
         </View>
       ) : null}
+
+      <Modal
+        visible={schematicFullscreen}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setSchematicFullscreen(false)}
+      >
+        <Pressable
+          style={styles.schematicModalBackdrop}
+          onPress={() => setSchematicFullscreen(false)}
+        >
+          {item.schematicImage && SCHEMATIC_IMAGES[item.schematicImage] ? (
+            <Image
+              source={SCHEMATIC_IMAGES[item.schematicImage]}
+              style={styles.schematicModalImage}
+              resizeMode="contain"
+            />
+          ) : null}
+        </Pressable>
+      </Modal>
 
       {item.datasheetUrl ? (
         <Pressable
@@ -149,6 +176,14 @@ const styles = StyleSheet.create({
     marginTop: 8,
     borderRadius: 8,
   },
+  schematicHint: { fontSize: 11, textAlign: 'center', marginTop: 4 },
+  schematicModalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.92)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  schematicModalImage: { width: '100%', height: '100%' },
   link: { textDecorationLine: 'underline' },
   actions: { flexDirection: 'row', marginTop: 24, gap: 12 },
   button: { flex: 1, paddingVertical: 12, borderRadius: 10, alignItems: 'center' },
