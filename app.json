@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "CircuitKit",
-    "slug": "circuitkit",
+    "slug": "circuitkit-",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -35,7 +35,7 @@
     "owner": "micha741",
     "extra": {
       "eas": {
-        "projectId": "dd9309e5-f8bf-4c7a-ae8a-43611a2ad572"
+        "projectId": "21e2e3ea-51de-4e40-99f0-5543a38b180a"
       }
     }
   }
