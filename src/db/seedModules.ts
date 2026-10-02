@@ -6,6 +6,7 @@ interface ModuleSpec {
   value: string;
   notes: string;
   tags: string;
+  schematicImage?: string;
 }
 
 const MODULE_SPECS: ModuleSpec[] = [
@@ -42,6 +43,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '(R=10 kΩ, C=1 µF) pro stabilní náběh napájení. ' +
       'Certifikace: RoHS/REACH, ESD HBM ±2000 V / CDM ±500 V, MSL3 (nutno zpracovat do 168 h po ' +
       'vybalení nebo předsušit).',
+    schematicImage: 'ESP32-C3-MINI-1.jpg',
     tags:
       'modul,esp32,esp32-c3,esp32-c3-mini-1,wifi,bluetooth,ble,risc-v,smd,pcb-anténa,mikrokontrolér',
   },
@@ -78,6 +80,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '(R=10 kΩ, C=1 µF) pro stabilní náběh napájení. ' +
       'Certifikace: RoHS/REACH, ESD HBM ±2000 V / CDM ±500 V, MSL3 (nutno zpracovat do 168 h po ' +
       'vybalení nebo předsušit).',
+    schematicImage: 'ESP32-C3-WROOM-02.jpg',
     tags:
       'modul,esp32,esp32-c3,esp32-c3-wroom-02,wifi,bluetooth,ble,risc-v,smd,pcb-anténa,mikrokontrolér',
   },
@@ -151,6 +154,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Piny IO0, IO1, IO3 a IO5/MTDI mají při náběhu napájení krátké nízkoúrovňové zákmity (viz ' +
       'datasheet). ' +
       'Certifikace: RoHS/REACH, HTOL/HTSL/uHAST/TCT/ESD/Latch-up dle JEDEC.',
+    schematicImage: 'ESP8684-MINI-1.jpg',
     tags:
       'modul,esp8684,esp32-c2,wifi,bluetooth,ble,risc-v,smd,pcb-anténa,mikrokontrolér',
   },
@@ -183,6 +187,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '0,02 mA (20 µA). Zabezpečení WEP/WPA-PSK/WPA2-PSK. Napájení 3,0–3,6 V, doporučený zdroj ' +
       'proudu >300 mA. Provozní teplota -20 až 85 °C, skladovací prostředí -40 až 90 °C při <90 % RH. ' +
       'Certifikace FCC, CE.',
+    schematicImage: 'ESP-12S.jpg',
     tags: 'modul,esp8266,esp-12,esp-12s,wifi,smd,pcb-anténa,tensilica',
   },
   {
@@ -215,6 +220,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Ochrany: nadproud (proudové čidlo), přehřátí (teplotní čidlo), přechodové jevy (filtry), ' +
       'katastrofická porucha řešena externí vstupní pojistkou (dle aplikace) + zemnicí pojistkou ' +
       '1 A.',
+    schematicImage: 'PowerTector-terminals.jpg',
     tags: 'modul,alfatronix,powertector,battery-guard,low-voltage-disconnect,odpojovač-baterie',
   },
   {
@@ -237,6 +243,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Programovatelná odpojovací mez, zelená LED indikace, vývod pro externí alarm. Bez vývodu ' +
       'pro zapalování/ruční spínač (dostupné až od PT40 výše). Ochrany: nadproud, přehřátí, ' +
       'přechodové jevy, externí vstupní pojistka (dle aplikace) + zemnicí pojistka 1 A.',
+    schematicImage: 'PowerTector-terminals.jpg',
     tags: 'modul,alfatronix,powertector,battery-guard,low-voltage-disconnect,odpojovač-baterie',
   },
   {
@@ -264,6 +271,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'nebo ruční spínač (u PT10/PT20 chybí). Programovatelná odpojovací mez, zelená LED indikace, ' +
       'vývod pro externí alarm. Ochrany: nadproud, přehřátí, přechodové jevy, externí vstupní ' +
       'pojistka (dle aplikace) + zemnicí pojistka 1 A.',
+    schematicImage: 'PowerTector-terminals.jpg',
     tags: 'modul,alfatronix,powertector,battery-guard,low-voltage-disconnect,odpojovač-baterie',
   },
   {
@@ -288,6 +296,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Programovatelná odpojovací mez, zelená LED indikace, vývod pro externí alarm. Ochrany: ' +
       'nadproud, přehřátí, přechodové jevy, externí vstupní pojistka (dle aplikace) + zemnicí ' +
       'pojistka 1 A.',
+    schematicImage: 'PowerTector-terminals.jpg',
     tags: 'modul,alfatronix,powertector,battery-guard,low-voltage-disconnect,odpojovač-baterie',
   },
   {
@@ -316,6 +325,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'prošetřila příčinu odpojení před resetem. Programovatelná odpojovací mez, zelená LED ' +
       'indikace, vývod pro externí alarm i zapalování/ruční spínač. Ochrany: nadproud, přehřátí, ' +
       'přechodové jevy, externí vstupní pojistka (dle aplikace) + zemnicí pojistka 1 A.',
+    schematicImage: 'PowerTector-terminals.jpg',
     tags: 'modul,alfatronix,powertector,battery-guard,low-voltage-disconnect,odpojovač-baterie',
   },
   {
@@ -340,6 +350,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'pro nucené odblokování po vybavení ochrany. Programovatelná odpojovací mez, zelená LED ' +
       'indikace, vývod pro externí alarm i zapalování/ruční spínač. Ochrany: nadproud, přehřátí, ' +
       'přechodové jevy, externí vstupní pojistka (dle aplikace) + zemnicí pojistka 1 A.',
+    schematicImage: 'PowerTector-terminals.jpg',
     tags: 'modul,alfatronix,powertector,battery-guard,low-voltage-disconnect,odpojovač-baterie',
   },
   {
@@ -369,6 +380,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '-30 až +70 °C, provozní vlhkost 0–100 % nekondenzující @25 °C. Certifikace FCC, TELEC, ' +
       'CE (dle konkrétního projektu). Kompatibilní se standardními LoRaWAN bránami a síťovými ' +
       'servery (ne jen s Advantech USM-S67).',
+    schematicImage: 'LEO-S55.jpg',
     tags: 'modul,lorawan,senzor,teploměr,vlhkoměr,iot,advantech,baterie,ip67',
   },
   {
@@ -398,6 +410,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '-40 až +85 °C, provozní vlhkost 0–95 % nekondenzující @25 °C. Zabezpečení: vestavěná ' +
       'podpora VPN (IPsec/OpenVPN/L2TP/PPTP/DMVPN). Vestavěný síťový server, MQTT/HTTP/HTTPS API, ' +
       'vestavěné Python SDK pro vlastní vývoj, programovatelné přes Node-RED. Certifikace CE, FCC.',
+    schematicImage: 'USM-S67.jpg',
     tags: 'modul,lorawan,gateway,brána,wifi,advantech,arm,sx1302,iot',
   },
   {
@@ -425,6 +438,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'analyzovat úroveň rušení (noise level) s přehledným diagramem pro plánování instalace — ' +
       'funkce, kterou plná verze v datasheetu neuvádí. Stejná podpora VPN, vestavěný síťový ' +
       'server a MQTT/HTTP/HTTPS API jako plná verze.',
+    schematicImage: 'USM-S67-Compact.jpg',
     tags: 'modul,lorawan,gateway,brána,advantech,arm,iot,kompaktní',
   },
   {
@@ -461,6 +475,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Teach-in (párování) tlačítkem s LED indikací. Provozní podmínky -20 až +60 °C, 0–93 %RH ' +
       'nekondenzující, IP40, jen vnitřní použití. Skladovací podmínky doporučeně +10 až 30 °C, ' +
       '<60 %RH, max. 36 měsíců v transportním režimu.',
+    schematicImage: 'ETHSA-ETHSU.jpg',
     tags: 'modul,enocean,easyfit,senzor,teploměr,vlhkoměr,solární,bezdrátový,ethsa',
   },
   {
@@ -484,6 +499,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'uvedenou tray varientu). Všechny ostatní parametry (senzor teploty/vlhkosti, EEP profil, ' +
       'zabezpečení, napájení, mechanika, provozní/skladovací podmínky) shodné s ETHSA — viz jeho ' +
       'záznam pro plný popis.',
+    schematicImage: 'ETHSA-ETHSU.jpg',
     tags: 'modul,enocean,easyfit,senzor,teploměr,vlhkoměr,solární,bezdrátový,ethsu',
   },
   {
@@ -496,6 +512,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     value:
       '6,86" IPS TFT displej 480×1280 (RGB stripe), 16,7M barev, MIPI-DSI 4-lane, jas 920 cd/m² ' +
       'typ., s 5bodovým kapacitním dotykovým panelem (I2C, FT7311)',
+    schematicImage: 'ATM0680L2A-CT.jpg',
     notes:
       'AZ Displays "ATM0680L2A-CT TFT Module" (specifikace ver. 1.1, srpen 2019) — kompletní ' +
       'displejový modul (LCD panel + řadič + LED podsvícení + kapacitní dotykový senzor), první ' +
@@ -526,6 +543,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     value:
       '6,86" IPS TFT displej 480×1280 (RGB stripe), 16,7M barev, MIPI-DSI 4-lane, jas 1100 cd/m² ' +
       'typ. — bez dotykové vrstvy',
+    schematicImage: 'ATM0680L2A.jpg',
     notes:
       'AZ Displays "ATM0680L2A TFT Module" (specifikace ver. 1.3, srpen 2019) — ⚠️ stejný LCD ' +
       'panel/řadič/podsvícení jako dotyková verze ATM0680L2A-CT (samostatný záznam), ale BEZ ' +
@@ -570,6 +588,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'DIN EN 61010-1 (třída ochrany II, kategorie přepětí II, stupeň znečištění 2), EMC dle DIN ' +
       'EN 61000-6-2/6-3, schválení UL/cUL. Objednací kód např. N 142.13A01 (Ø25mm hřídel, ' +
       'nakloněný displej, 24 VDC, kabelový výstup 0,5m motor. kabel, RS485).',
+    schematicImage: 'N142.jpg',
     tags: 'modul,polohový-displej,enkodér,multiturn,rs485,baumer,ivo,n142,vřeteno,duté-hřídel',
   },
   {
@@ -597,6 +616,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '(krátkodobě), napájení 24 VDC ±10 %, odběr max 40 mA. Shoda s DIN EN 61010-1, EMC dle DIN ' +
       'EN 61000-6-2/6-3, schválení UL/cUL. Displej dostupný nakloněný (A) nebo horizontální ' +
       'vpředu (B) — na rozdíl od N 142, který má jen nakloněnou variantu.',
+    schematicImage: 'N152.jpg',
     tags: 'modul,polohový-displej,enkodér,multiturn,rs485,baumer,ivo,n152,vřeteno,duté-hřídel',
   },
   {
@@ -653,6 +673,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'napětí min 3,2 Vpp (zátěž 600 Ω, useknutá sinusovka, DC odděleno kondenzátorem), napájení ' +
       '12 V (standardní), odběr typ. 2 mA (4 mA typ. s vestavěným teplotním senzorem). TSU-20G: ' +
       'max. změna kmitočtu (na plném rozsahu) typ. 4 kHz. RoHS.',
+    schematicImage: 'TSU-series.jpg',
     tags: 'modul,senzor,tlak,křemenný,frekvenční,seiko-epson,tsu-20g,průmyslový',
   },
   {
@@ -669,6 +690,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'plný popis principu funkce (křemenný rezonátor s tlakově závislým kmitočtem) a společných ' +
       'parametrů (přesnost, teplotní rozsah, napájení, mechanika). TSU-70G: rozsah 0–700 kPa, ' +
       'max. změna kmitočtu typ. 7 kHz (shodná s TSU-100G).',
+    schematicImage: 'TSU-series.jpg',
     tags: 'modul,senzor,tlak,křemenný,frekvenční,seiko-epson,tsu-70g,průmyslový',
   },
   {
@@ -684,6 +706,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'tlakových rozsahů jako TSU-20G a TSU-70G (samostatné záznamy) — viz záznam TSU-20G pro ' +
       'plný popis principu funkce a společných parametrů. TSU-100G: rozsah 0–1 MPa (nejvyšší v ' +
       'řadě), max. změna kmitočtu typ. 7 kHz (shodná s TSU-70G).',
+    schematicImage: 'TSU-series.jpg',
     tags: 'modul,senzor,tlak,křemenný,frekvenční,seiko-epson,tsu-100g,průmyslový',
   },
   {
@@ -697,6 +720,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     value:
       'Evaluační deska pro ROHM RPR-0521RS — kombinovaný senzor přiblížení (PS) a okolního ' +
       'osvětlení (ALS), I2C rozhraní, piny VDD/GND/SDA/SCL/INT',
+    schematicImage: 'RPR-0521RS-EVK-001.jpg',
     notes:
       'ROHM "RPR-0521RS-EVK-001 Manual" (User\'s Guide, dok. č. 60UG059E Rev.001, leden 2018) — ' +
       '⚠️ jde o User\'s Guide k evaluační desce, NIKOLI o plný datasheet čipu RPR-0521RS — obsahuje ' +
@@ -746,6 +770,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '60947-5-2. Existuje i varianta se šroubovacím otočným M12 konektorem místo kabelu a ' +
       'varianta pro univerzální 24–240 V AC/DC napájení (dle popisu produktové řady) — nahraný ' +
       'díl WTB250-2N1131 je konkrétně kabelová 10–30 V DC verze.',
+    schematicImage: 'WTB250-2N1131.jpg',
     tags: 'modul,senzor,optoelektronický,fotoelektrický,přiblížení,proximity,background-suppression,sick,wtb250,npn,ip67,průmyslový',
   },
   {
@@ -775,6 +800,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'III. Provozní teplota -25 až +55 °C, skladovací -40 až +70 °C. UL certifikace, shoda EN ' +
       '60947-5-2. Kabelová verze s 10–30 V DC napájením (existují i M12 konektor a univerzální ' +
       'AC/DC varianty dle produktové řady).',
+    schematicImage: 'WTB250-2N1151.jpg',
     tags: 'modul,senzor,optoelektronický,fotoelektrický,přiblížení,proximity,background-suppression,sick,wtb250,npn,ip67,průmyslový',
   },
   {
@@ -811,6 +837,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'aktualizaci firmwaru micro-boardu je potřeba přídavná deska MAXDAP Pico Adapter (není ' +
       'součástí balení senzorového náramku samotného, uvedena v seznamu vybavení datasheetu). ' +
       'Napájeno interní baterií, nabíjení přes USB Type-C.',
+    schematicImage: 'MAXREFDES103.jpg',
     tags: 'modul,senzor,ppg,biosenzor,tepová-frekvence,spo2,wearable,náramek,maxim,maxrefdes103,bluetooth,ble,imu',
   },
   {
@@ -845,6 +872,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'skladovací -40 až +85 °C, provozní vlhkost 0–95 %RH (nekondenzující). Dostupná i diskrétní ' +
       '(bezkonektorová) a analogová (napěťový výstup) varianta v rámci téže produktové řady dle ' +
       'schématu značení.',
+    schematicImage: 'HPM-100GD-A01.jpg',
     tags: 'modul,senzor,tlak,mems,piezorezistivní,frekvenční,eeprom,hokuriku,hdk,hpm-100gd',
   },
   {
@@ -878,6 +906,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'funkcí). Provozní teplota -30 až +85 °C. MTTF 874 let dle SN 29500 @40°C. Průměr aktivní ' +
       'plochy Ø8 mm. Dodává se řada montážních příslušenství (konzole QM-08/BST-08B/MW-08/BSS-08/ ' +
       'MBS80).',
+    schematicImage: 'BI1.5U-EG08-RP6X-H1341.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,uprox,factor1,turck,pnp,m8,ip67,průmyslový',
   },
   {
@@ -908,6 +937,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '10 %. Izolační zkušební napětí 0,5 kV. Odolnost proti vibracím 55 Hz (1 mm), proti rázům ' +
       '30 g (11 ms). Krytí IP67. Provozní teplota -25 až +70 °C (užší rozsah než "uprox" varianta). ' +
       'MTTF 2283 let dle SN 29500 @40°C. Průměr aktivní plochy Ø5 mm.',
+    schematicImage: 'BI1-EG05K-AN6X-V1331.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,turck,npn,m5,ip67,průmyslový',
   },
   {
@@ -944,6 +974,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'IEC IP67. Provozní teplota -40 až +65 °C. UL certifikace (E224071), ETSI/EN 300 440, FCC ' +
       'ID UE3RGAGE1XX. ⚠️ Výrobcem výslovně vyloučeno pro aplikace ochrany osob (nemá redundantní ' +
       'bezpečnostní obvody).',
+    schematicImage: 'Q130RA.jpg',
     tags: 'modul,senzor,radar,fmcw,proximity,detekce-pohybu,banner,r-gage,q130ra,24ghz,ip67,průmyslový',
   },
   {
@@ -976,6 +1007,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Izolační zkušební napětí 1,5 kV. Odolnost proti vibracím 55 Hz (1 mm), proti rázům 30 g ' +
       '(11 ms). Krytí IP67. Provozní teplota -25 až +70 °C. MTTF 1080 let dle SN 29500 @40°C. ' +
       'Průměr aktivní plochy Ø30 mm.',
+    schematicImage: 'BC10-PT30-AZ3X.jpg',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,hladina,turck,ac,m30,pvdf,ip67,průmyslový',
   },
   {
@@ -1009,6 +1041,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Izolační zkušební napětí 0,5 kV. UL certifikace. Odolnost proti vibracím 55 Hz (1 mm), ' +
       'proti rázům 30 g (11 ms). Krytí IP67. Provozní teplota -25 až +70 °C. MTTF 1080 let dle ' +
       'SN 29500 @40°C.',
+    schematicImage: 'BC10-Q14-VN4X2.jpg',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,turck,dc,npn,komplementární,q14,ip67,průmyslový',
   },
   {
@@ -1043,6 +1076,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '10–30 V DC, zvlnění max 10 %. Izolační zkušební napětí 0,5 kV. UL certifikace. Odolnost ' +
       'proti vibracím 55 Hz (1 mm), proti rázům 30 g (11 ms). Krytí IP67. Provozní teplota -25 ' +
       'až +70 °C. MTTF 1080 let dle SN 29500 @40°C. Průměr aktivní plochy Ø20 mm.',
+    schematicImage: 'BC10-QF5.5-RN6X2.jpg',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,turck,dc,npn,plochý,qf5,ip67,průmyslový',
   },
   {
@@ -1071,6 +1105,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '5 mA, zbytkový proud max 1,7 mA, úbytek napětí max 7 V, spínací kmitočet 0,02 kHz (20 Hz). ' +
       'Izolační zkušební napětí 1,5 kV. Odolnost proti vibracím 55 Hz (1 mm), proti rázům 30 g ' +
       '(11 ms). Krytí IP67. Provozní teplota -25 až +70 °C. MTTF 1080 let dle SN 29500 @40°C.',
+    schematicImage: 'BC20-Q20-RZ3X2.jpg',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,turck,ac,nc,q20,ip67,průmyslový',
   },
   {
@@ -1082,6 +1117,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     value:
       'Indukční (bezkontaktní) přibližovací spínač, klasický feritový typ, spínací vzdálenost ' +
       '3 mm (zápustná montáž), 2vodičové DC zapojení, spínací (NO) kontakt, 5–60 V DC',
+    schematicImage: 'NBB3-V3-Z4.jpg',
     notes:
       'Pepperl+Fuchs "Inductive sensor NBB3-V3-Z4" (301158_eng.xml, vydáno 5. 8. 2019) — ⚠️ jiný ' +
       'výrobce než indukční senzory TURCK v této knihovně (BI1.5U-EG08-RP6X-H1341, ' +
@@ -1134,6 +1170,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'AC/DC, zbytkový proud max 0,8 mA. Krytí IP67. Provozní teplota -25 až +70 °C. Shoda EN/IEC ' +
       '60947-5-2, UL/CSA/CCC certifikace. Dostupné příslušenství: rychloupínací montážní konzole ' +
       'EXG-12 s pevným dorazem.',
+    schematicImage: 'NBB4-12GM75-US.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb4,ac-dc,m12,mosaz,ip67,průmyslový',
   },
   {
@@ -1167,6 +1204,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'MTTFd 1870 let, doba mise 20 let, diagnostické pokrytí 0 %. Krytí IP67. Shoda EN/IEC ' +
       '60947-5-2, UL/CSA/CCC certifikace. Dostupné příslušenství: montážní příruba BF 18, ' +
       'rychloupínací konzole EXG-18.',
+    schematicImage: 'NBB5-18GM40-Z0-V1.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb5,m18,mosaz,konektor,ip67,průmyslový',
   },
   {
@@ -1199,6 +1237,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'mise 20 let, diagnostické pokrytí 0 %. Krytí IP67. Shoda EN/IEC 60947-5-2, UL/CSA ' +
       'certifikace (CCC nevyžadováno pro produkty ≤36V). Dostupné příslušenství: montážní ' +
       'příruba BF 18, rychloupínací konzole EXG-18 (shodné s NBB5-18GM40-Z0-V1).',
+    schematicImage: 'NBB8-18GM50-E2.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb8,pnp,3vodičový,m18,mosaz,ip67,průmyslový',
   },
   {
@@ -1233,6 +1272,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'typ. 0,1 mA @25°C. Krytí IP67. Provozní teplota -25 až +70 °C. Shoda EN/IEC 60947-5-2, ' +
       'UL/CSA certifikace (CCC nevyžadováno pro produkty ≤36V). Dostupné příslušenství: montážní ' +
       'příruba BF 4.',
+    schematicImage: 'NBB1-4GM22-E0.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb1,npn,miniaturní,m4,nerez,ip67,průmyslový',
   },
   {
@@ -1266,6 +1306,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'variantou pro nízké teploty, ale zde navíc s vyšší horní mezí +85°C). Krytí IP67. UL ' +
       'certifikace (Class 2 Power Source). Dostupné příslušenství: montážní příruba BF 8, ' +
       'rychloupínací konzole EXG-08.',
+    schematicImage: 'NBB2-8GM25-E0-V3.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,npn,3vodičový,m8,konektor,ip67,průmyslový',
   },
   {
@@ -1291,6 +1332,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'různými vstupními obvody PLC. Viz záznam NBB2-8GM25-E0-V3 pro plný popis společných ' +
       'parametrů. Dostupné příslušenství: montážní příruba BF 8, konektorové kabely V3-GM/V3-WM/ ' +
       'V3-WM-2M-PUR, rychloupínací konzole EXG-08 (shodné s NBB2-8GM25-E0-V3).',
+    schematicImage: 'NBB2-8GM25-E2-V3.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,pnp,3vodičový,m8,konektor,ip67,průmyslový',
   },
   {
@@ -1319,6 +1361,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'V1-W-2M-PUR) — stejná konektorová rodina jako u NBB5-18GM40-Z0-V1 v této knihovně. Viz ' +
       'záznam NBB2-8GM25-E2-V3 pro plný popis společných elektrických parametrů. Dostupné ' +
       'příslušenství: montážní příruba BF 8, rychloupínací konzole EXG-08.',
+    schematicImage: 'NBB2-8GM40-E2-V1.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,pnp,m8,m12,konektor,ip67,průmyslový',
   },
   {
@@ -1351,6 +1394,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'diagnostické pokrytí 0 %. Krytí IP67. UL certifikace (Class 2 Power Source). Dostupné ' +
       'příslušenství: montážní příruba BF 8, rychloupínací konzole EXG-08 (shodné s ostatními ' +
       'NBB2-8GM variantami).',
+    schematicImage: 'NBB2-8GM50-E0.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,npn,kabel,m8,ip67,průmyslový',
   },
   {
@@ -1363,6 +1407,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Indukční (bezkontaktní) přibližovací spínač, spínací vzdálenost 2 mm (zápustná montáž), ' +
       'rozšířený teplotní rozsah -40 až +85 °C, 3vodičové DC zapojení, PNP výstup, spínací (NO) ' +
       'kontakt, 5–30 V DC',
+    schematicImage: 'NBB2-8GM50-E2-5M.jpg',
     notes:
       'Pepperl+Fuchs "Inductive sensor NBB2-8GM50-E2-5M" (304615-0070_eng.xml, vydáno 3. 7. ' +
       '2019) — ⚠️ dvojí sourozenecký vztah v rámci skupiny "NBB2-8GM" v této knihovně: (1) ' +
@@ -1408,6 +1453,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'ostatní elektrické parametry shodné s NBB2-8GM40-E2-V1 — viz tam pro plný popis. UL ' +
       'certifikace (Class 2 Power Source). Dostupné příslušenství: montážní příruba BF 8, ' +
       'konektorové kabely V1-G/V1-W/V1-G-2M-PUR/V1-W-2M-PUR, rychloupínací konzole EXG-08.',
+    schematicImage: 'NBB2-8GS35-E2-V1.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,pnp,nerez,m8,m12,konektor,ip67,průmyslový',
   },
   {
@@ -1436,6 +1482,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'let, doba mise 20 let, diagnostické pokrytí 0 %. Krytí IP67. UL certifikace (Class 2 ' +
       'Power Source). Dostupné příslušenství: montážní příruba BF 8, rychloupínací konzole ' +
       'EXG-08.',
+    schematicImage: 'NBB2-8GS40-E2-5M-PUR.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,pnp,nerez,kabel,5m,pur,m8,ip67,průmyslový',
   },
   {
@@ -1465,6 +1512,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'diagnostické pokrytí 0 %. Krytí IP67. Provozní teplota -25 až +70 °C. Shoda EN/IEC ' +
       '60947-5-2, UL/CSA certifikace. Dostupné příslušenství: montážní příruba BF 12, ' +
       'rychloupínací konzole EXG-12 (shodné s NBB4-12GM75-US).',
+    schematicImage: 'NBB2-12GM60-A2.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb2,pnp,komplementární,m12,embeddable,ip67,průmyslový',
   },
   {
@@ -1495,6 +1543,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'diagnostické pokrytí 0 %. Krytí IP67. Provozní teplota -25 až +70 °C. Shoda EN/IEC ' +
       '60947-5-2, EAC (TR CU 020/2011), UL/CSA certifikace. Dostupné příslušenství: montážní ' +
       'příruba BF 12, rychloupínací konzole EXG-12, konektorové kabely V3-GM/V3-WM/V3-WM-2M-PUR.',
+    schematicImage: 'NBB4-12GM30-E2-V3.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb4,pnp,m12,m8,konektor,ip67,průmyslový',
   },
   {
@@ -1529,6 +1578,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'ms. Funkční bezpečnostní parametry: MTTFd 1723 let, doba mise 20 let, diagnostické ' +
       'pokrytí 0 %. UL certifikace (Class 2 Power Source). Dostupné příslušenství: montážní ' +
       'příruba BF 12, konektorové kabely V1-G/V1-W/V1-G-2M-PUR/V1-W-2M-PUR.',
+    schematicImage: 'NBB4-12GM35-A2-V1-M1.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb4,pnp,komplementární,automotive,e1,ip68,ip69k,m12,průmyslový',
   },
   {
@@ -1563,6 +1613,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '-25 až +70 °C (standardní, viz ovšem výše uvedené Ex-specifické teplotní omezení dle ' +
       'proudu/napětí). UL/CSA certifikace. Dostupné příslušenství: montážní příruba BF 12, ' +
       'rychloupínací konzole EXG-12.',
+    schematicImage: 'NBB4-12GM50-E2-3G-3D.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb4,pnp,atex,ex,výbušné-prostředí,m12,ip67,průmyslový',
   },
   {
@@ -1592,6 +1643,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'parametry: MTTFd 1374 let, doba mise 20 let, diagnostické pokrytí 0 %. Krytí IP67. ' +
       'Provozní teplota -25 až +70 °C. Shoda EN/IEC 60947-5-2, UL/CSA certifikace. Dostupné ' +
       'příslušenství: montážní příruba BF 30, rychloupínací konzole EXG-30.',
+    schematicImage: 'NBB10-30GM50-E0.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb10,npn,m30,velký-dosah,ip67,průmyslový',
   },
   {
@@ -1603,6 +1655,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     value:
       'Indukční (bezkontaktní) přibližovací spínač, spínací vzdálenost 4 mm (zápustná montáž), ' +
       '3vodičové DC zapojení, PNP výstup, ROZPÍNACÍ (NC) kontakt, 10–30 V DC',
+    schematicImage: 'NBB4-12GM30-E3.jpg',
     notes:
       'Pepperl+Fuchs "Inductive sensor NBB4-12GM30-E3" (087742_eng.xml, vydáno 15. 1. 2015) — ⚠️ ' +
       'POZOR na záměnu s NBB4-12GM30-E2-V3 v této knihovně (samostatný záznam) — přes velmi ' +
@@ -1654,6 +1707,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'parametry: MTTFd 1835 let, doba mise 20 let, diagnostické pokrytí 0 %. Krytí IP67. ' +
       'Provozní teplota -25 až +70 °C. UL/CSA certifikace. Dostupné příslušenství: montážní ' +
       'příruba BF 30, rychloupínací konzole EXG-30.',
+    schematicImage: 'NBB10-30GM50-E2-C3-V1.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb10,pnp,svařovací,weld-immune,keramika,ptfe,m30,ip67,průmyslový',
   },
   {
@@ -1691,6 +1745,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Funkční bezpečnostní parametry: MTTFd 1420 let, doba mise 20 let, diagnostické pokrytí ' +
       '0 %. Krytí IP67. Rozšířený provozní rozsah -25 až +85 °C (skladovací -40 až +85 °C — ' +
       'nejširší v rodině NBB v této knihovně vedle NBB4-12GM35-A2-V1-M1). UL certifikace.',
+    schematicImage: 'NBB20-L3M-A2-C3-V1.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb20,pnp,komplementární,svařovací,weld-immune,duroplast,m12,ip67,průmyslový',
   },
   {
@@ -1707,6 +1762,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Indukční (bezkontaktní) přibližovací spínač s otočnou hlavou, spínací vzdálenost 20 mm, ' +
       '4vodičové DC zapojení, krytí IP68/IP69K, rozšířený teplotní rozsah -25 až +100 °C ' +
       '(nejširší v rodině NBB v této knihovně), 10–30 V DC',
+    schematicImage: 'NBB20-U1-A2-T.jpg',
     notes:
       'Pepperl+Fuchs "Inductive sensor NBB20-U1-A2-T" (296370_eng.xml, vydáno 22. 3. 2017) — ⚠️ ' +
       'mechanicky zcela odlišné provedení oproti NBB20-L3M-A2-C3-V1 v této knihovně (obě mají ' +
@@ -1768,6 +1824,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'rozdíl od senzorové části), s ochranou proti přepólování (při obráceném zapojení výstupu ' +
       'přestane fungovat indikační LED, ale ventil dostává více výkonu — zvláštní chování ' +
       'uvedené přímo výrobcem). Provozní teplota -25 až +70 °C. Krytí IP67. UL/CSA certifikace.',
+    schematicImage: 'NBN3-F31K-E8-K.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,ventilová-jednotka,pneumatický-pohon,solenoid,pepperl-fuchs,nbn3,f31,dvoukanálový,ip67,průmyslový',
   },
   {
@@ -1798,6 +1855,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'bezpečnostní parametry: MTTFd 960 let, doba mise 20 let, diagnostické pokrytí 0 %. Krytí ' +
       'IP67. Rozšířený provozní rozsah -25 až +85 °C (skladovací -40 až +85 °C). UL certifikace ' +
       '(Class 2 Power Source). Dostupné příslušenství: montážní příruba BF 8.',
+    schematicImage: 'NEN6-8GM40-E2-PUR.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nen6,pnp,nezápustný,non-flush,m8,ip67,průmyslový',
   },
   {
@@ -1832,6 +1890,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'diagnostické pokrytí 0 %. Shoda EN/IEC 60947-5-2, EN 12895:2015, UL certifikace (Class 2 ' +
       'Power Source). Dostupné příslušenství: montážní příruba BF 18, konektorové kabely V1-G/ ' +
       'V1-W/V1-G-2M-PUR/V1-W-2M-PUR.',
+    schematicImage: 'NBB8-18GM50-A0-V1-M1.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb8,npn,komplementární,automotive,e1,ip68,ip69k,m18,průmyslový',
   },
   {
@@ -1868,6 +1927,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Provozní teplota -25 až +55 °C, skladovací -30 až +75 °C. Zařazeno do kategorie "Modul" ' +
       'jako kompletní osazený produkt s vlastní elektronikou/konektorem, obdobně jako fotoelektrické ' +
       'snímače SICK WTB250-2N1131/WTB250-2N1151 v této knihovně.',
+    schematicImage: 'GRSE18S-N2421V.jpg',
     tags: 'modul,senzor,fotoelektrický,optický,through-beam,jednocestná-závora,sick,gr18-inox,nerez,m18,ip69k,průmyslový',
   },
   {
@@ -1904,6 +1964,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '-40 až +125 °C. 24pinový FPC konektor (piny 1-SDA, 2-SCL, 3-DOVDD1.8V, 4-MCP, 5-MCN, ' +
       '6/9/12/24-DGND, 7-MDP0, 8-MDN0, 10-MDP1, 11-MDN1, 13-PWDN, 14-ATEST, 15-AGND, 16/23-NC, ' +
       '17-SID, 18-DVDD1.2V, 19-XCLK, 20-STROBE, 21-XSHUTDOWN, 22-AVDD2.8).',
+    schematicImage: 'LI-OS05A20-MIPI-110H.jpg',
     tags: 'modul,kamera,kamerový-modul,mipi,csi-2,os05a20,leopard-imaging,snímač-obrazu,sccb,objektiv',
   },
   {
@@ -2138,6 +2199,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'jako ostatní Festo SME-8M/SMT-8M/SDBT-BSW snímače polohy pístu v této knihovně. Provozní ' +
       'teplota -40 až +70 °C (pevná instalace), -5 až +70 °C (pohyblivá instalace kabelu). Krytí ' +
       'IP65/IP67. Certifikace: CE (EU EMC), RCM.',
+    schematicImage: 'SME-8-K5-LED-24.jpg',
     tags: 'modul,senzor,proximity,poloha-pístu,reed,jazýčkový-kontakt,magnetický,festo,sme-8-k5,pneumatika',
   },
   {
@@ -2166,6 +2228,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'pístu v této knihovně. Žlutá LED indikace sepnutí. Materiál bez mědi a PTFE. Provozní ' +
       'teplota -40 až +70 °C (pevná instalace), -5 až +70 °C (pohyblivá instalace kabelu). ' +
       'Certifikace: CE (EU EMC), RCM.',
+    schematicImage: 'SME-8-S-LED-24.jpg',
     tags: 'modul,senzor,proximity,poloha-pístu,reed,jazýčkový-kontakt,magnetický,festo,sme-8-s,pneumatika,m8',
   },
   {
@@ -2197,6 +2260,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'kategorie "Modul" jako kompletní osazený produkt s vlastním kabelem, stejně jako ostatní ' +
       'Festo SME/SMT/SDBT-BSW snímače polohy pístu v této knihovně. Krytí IP65/IP67, max. ' +
       'utahovací moment upevňovacího příslušenství 0,5 Nm. Bez mědi a PTFE.',
+    schematicImage: 'SMEO-8E-K-24-S6.jpg',
     tags: 'modul,senzor,proximity,poloha-pístu,reed,jazýčkový-kontakt,magnetický,festo,smeo-8e,pneumatika,vysokoteplotní',
   },
   {
@@ -2229,6 +2293,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'pístu v této knihovně. Krytí IP65/IP67, rázové přepětí 0,8 kV, stupeň znečištění 3, max. ' +
       'utahovací moment upevňovacího příslušenství 0,5 Nm. Bez mědi a PTFE, RoHS. Certifikace: ' +
       'CE (EU EMC), RCM.',
+    schematicImage: 'SMEO-8E-M12-LED-24.jpg',
     tags: 'modul,senzor,proximity,poloha-pístu,reed,jazýčkový-kontakt,magnetický,festo,smeo-8e,pneumatika,m12,konektor',
   },
   {
@@ -2264,6 +2329,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'polohy pístu v této knihovně. Krytí IP65/IP67, stupeň znečištění 3, max. utahovací moment ' +
       'upevňovacího příslušenství 0,5 Nm. Bez mědi a PTFE. Certifikace: CE (EU EMC + Low Voltage), ' +
       'RCM.',
+    schematicImage: 'SMEO-8E-M12-LED-230.jpg',
     tags: 'modul,senzor,proximity,poloha-pístu,reed,jazýčkový-kontakt,magnetický,festo,smeo-8e,pneumatika,m12,síťové-napětí',
   },
   {
@@ -2297,6 +2363,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'pístu v této knihovně — i přes odlišný (čistě pneumatický) princip funkce jde o ' +
       'mechanicky/aplikačně identickou kategorii produktů (snímače polohy pístu pro T-drážku ' +
       'pneumatického válce).',
+    schematicImage: 'SMPO-8E.jpg',
     tags: 'modul,senzor,proximity,poloha-pístu,pneumatický,ventil,magnetický,atex,festo,smpo-8e,pneumatika',
   },
   {
@@ -2330,6 +2397,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'ostatní Festo snímače polohy pístu v této knihovně. Krytí IP65/IP67, opakovatelnost ' +
       '±0,2 mm, max. utahovací moment upevňovacího příslušenství 0,5 Nm. Provozní teplota -25 až ' +
       '+70 °C. Bez mědi a PTFE. Certifikace: CE (EU EMC), RCM.',
+    schematicImage: 'SMTSO-8E-NS-M12-LED-24.jpg',
     tags: 'modul,senzor,proximity,poloha-pístu,magnetoindukční,svařování,weld-resistant,npn,festo,smtso-8e,pneumatika,m12',
   },
   {
@@ -2421,6 +2489,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'přibližovací spínače (TURCK/Pepperl+Fuchs/Festo) v této knihovně. Žlutá LED indikace ' +
       'sepnutí. Provozní teplota -25 až +70 °C (pevná instalace), -5 až +70 °C (pohyblivá ' +
       'instalace kabelu). Certifikace: c UL us (Listed), CE (EU EMC), RCM. Bez mědi a PTFE.',
+    schematicImage: 'SIEH-3B-PS-S-L.jpg',
     tags: 'modul,senzor,proximity,indukční,pnp,festo,sieh-3b,miniaturní,m8,průmyslový',
   },
   {
@@ -2519,6 +2588,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'produkt s vlastním kabelem, stejně jako SPAN tlakové senzory v této knihovně. Krytí IP40, ' +
       'korozní odolnost CRC třída 2. Provozní teplota média i okolí 0 až +50 °C. Certifikace: ' +
       'c UL us (Recognized), CE (EU EMC + RoHS), RCM.',
+    schematicImage: 'SDE5-D10-C3-Q6E-P-K.jpg',
     tags: 'modul,senzor,tlak,tlakový-spínač,piezorezistivní,pnp,festo,sde5,qs-konektor',
   },
   {
@@ -2545,6 +2615,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'konektorem, stejně jako ostatní Festo SDE5/SPAN tlakové senzory v této knihovně. Krytí ' +
       'IP40, korozní odolnost CRC třída 2. Provozní teplota média i okolí 0 až +50 °C. ' +
       'Certifikace: c UL us (Recognized), CE (EU EMC + RoHS), RCM.',
+    schematicImage: 'SDE5-D10-C-Q4E-P-M8.jpg',
     tags: 'modul,senzor,tlak,tlakový-spínač,piezorezistivní,pnp,festo,sde5,qs-konektor,m8',
   },
   {
@@ -2572,6 +2643,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'osazený produkt s vlastním kabelem, stejně jako ostatní Festo SDE5/SPAN tlakové senzory v ' +
       'této knihovně. Krytí IP40, korozní odolnost CRC třída 2. Provozní teplota média i okolí ' +
       '0 až +50 °C. Certifikace: c UL us (Recognized), CE (EU EMC + RoHS), RCM.',
+    schematicImage: 'SDE5-D10-NF-Q6E-V-K.jpg',
     tags: 'modul,senzor,tlak,analogový,piezorezistivní,festo,sde5,qs-konektor,transmitter',
   },
   {
@@ -2598,6 +2670,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Festo SDE5/SPAN tlakové senzory v této knihovně. Krytí IP40, korozní odolnost CRC třída 2. ' +
       'Provozní teplota média i okolí 0 až +50 °C. Certifikace: c UL us (Recognized), CE (EU EMC ' +
       '+ RoHS), RCM.',
+    schematicImage: 'SDE5-D10-NF-Q6E-V-M8.jpg',
     tags: 'modul,senzor,tlak,analogový,piezorezistivní,festo,sde5,qs-konektor,m8,transmitter',
   },
   {
@@ -2622,6 +2695,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'tlakové senzory v této knihovně. Krytí IP40, korozní odolnost CRC třída 2. Provozní ' +
       'teplota média i okolí 0 až +50 °C. Certifikace: c UL us (Recognized), CE (EU EMC + RoHS), ' +
       'RCM.',
+    schematicImage: 'SDE5-D10-O-Q6E-P-M8.jpg',
     tags: 'modul,senzor,tlak,tlakový-spínač,piezorezistivní,pnp,festo,sde5,qs-konektor,m8,no-kontakt',
   },
   {
@@ -2648,6 +2722,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'produkt s vlastním konektorem, stejně jako ostatní Festo SDE5/SPAN tlakové senzory v této ' +
       'knihovně. Krytí IP40, korozní odolnost CRC třída 2. Provozní teplota média i okolí 0 až ' +
       '+50 °C. Certifikace: c UL us (Recognized), CE (EU EMC + RoHS), RCM.',
+    schematicImage: 'SDE5-V1-NF-Q6-V-M8.jpg',
     tags: 'modul,senzor,tlak,vakuum,podtlak,analogový,piezorezistivní,festo,sde5,qs-konektor,m8,transmitter',
   },
   {
@@ -2680,6 +2755,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '[7:4:4]) nebo inertní plyn, provoz s olejovým mazáním možný. Krytí IP40, korozní odolnost ' +
       'CRC třída 2. Provozní teplota média i okolí 0 až +50 °C. Certifikace: c UL us (Listed, UL ' +
       'E322346), CE (EU EMC + RoHS), RCM.',
+    schematicImage: 'SPAN-B11R-M5F-PN-PN-L1.jpg',
     tags: 'modul,senzor,tlak,tlakový-spínač,piezorezistivní,pnp,npn,festo,span-b11r,displej,bez-io-link',
   },
   {
@@ -2753,6 +2829,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     value:
       'Nízkotlaký průmyslový tlakový senzor/spínač s displejem, měřicí rozsah -1 až 1 bar (max. ' +
       'přetížení 2 bar), 2× PNP volně programovatelný spínací výstup, 15–35 V DC',
+    schematicImage: 'SPAW-B2R-G12M-2P-M12.jpg',
     notes:
       'Festo AG & Co. KG "Pressure sensor SPAW-B2R-G12M-2P-M12" (obj. č. 8022749, datový list ' +
       '25.5.2021) — nejnižší tlakový rozsah ze SPAW rodiny v této knihovně (vedle ' +
@@ -2859,6 +2936,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Optický senzor prachu/částic (PM2.5), princip rozptylu infračerveného světla s aktivním ' +
       'ohřevem vzduchu, detekce částic ≥1 µm, výstup PWM (poměr nízké úrovně) nebo UART (9600 ' +
       'Bd), napájení 5 V DC',
+    schematicImage: 'ZPH02.jpg',
     notes:
       'Zhengzhou Winsen Electronics Technology "ZPH02 Particles Sensor — Manual" (verze 1.2, ' +
       'platnost od 16.5.2018) — kompletní optoelektronický modul pro detekci prachových částic ' +
@@ -2918,6 +2996,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'let, diagnostické pokrytí 0 %. Shoda EN/IEC 60947-5-2, UL/CSA certifikace, E1 typové ' +
       'schválení 10R-04. Dostupné příslušenství: montážní příruba BF 30, rychloupínací konzole ' +
       'EXG-30.',
+    schematicImage: 'NBB15-30GM50-E0-M-Y242746.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbb15,npn,3vodičový,m30,mosaz,e1,automotive,ip68,ip69k',
   },
   {
@@ -2950,6 +3029,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'MTTFd 1560 let, doba mise 20 let, diagnostické pokrytí 0 %. Krytí IP67. Dodáváno se 2 ' +
       'maticemi (bez ozubeného pojištění). Shoda EN/IEC 60947-5-2 (vč. dodatku A1:2012), UL ' +
       'certifikace. Dostupné příslušenství: montážní příruba BF 12.',
+    schematicImage: 'NBN8-12GM50-E2-V1-Y323749.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbn8,pnp,3vodičový,m12,mosaz,nezápustný,konektor,ip67,průmyslový',
   },
   {
@@ -2985,6 +3065,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'a stav sepnutí (žlutá). Funkční bezpečnostní parametry: MTTFd 870 let, doba mise 20 let, ' +
       'diagnostické pokrytí 0 %. Shoda EN/IEC 60947-5-2, UL/CSA/CCC certifikace, E1 typové ' +
       'schválení 10R-04. Dostupné příslušenství: modulární montážní konzole MHW 01.',
+    schematicImage: 'NBN40-U1-E0-M.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,feritový,pepperl-fuchs,nbn40,npn,3vodičový,otočná-hlava,varikont,e1,automotive,ip68,ip69k',
   },
   {
@@ -3017,6 +3098,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'produkt s vlastním konektorem, stejně jako ostatní přibližovací spínače v této knihovně. ' +
       'Shoda EN/IEC 60947-5-2, UL/CSA certifikace. Dostupné příslušenství: montážní příruba ' +
       'BF 12, konektory/kabely V1-G/V1-W/V1-G-2M-PUR/V1-W-2M-PUR.',
+    schematicImage: 'CBB4-12GH60-E0-V1.jpg',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,pepperl-fuchs,cbb4,npn,nerez,potravinářský,m12,konektor,ip65',
   },
   {
@@ -3045,6 +3127,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'cyklická, ochrana proti přepólování a přerušení vodiče kompletní. Izolační zkušební napětí ' +
       '0,5 kV. Odolnost proti vibracím 55 Hz (1 mm), proti rázům 30 g (11 ms). Krytí IP67. ' +
       'Provozní teplota -25 až +70 °C. MTTF 1080 let dle SN 29500 (Ed. 99) @40°C. UL certifikace.',
+    schematicImage: 'BC20-Q20-AN4X2.jpg',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,turck,dc,npn,q20,ip67,průmyslový',
   },
   {
@@ -3098,7 +3181,38 @@ const MODULE_SPECS: ModuleSpec[] = [
       'konektorem, stejně jako ostatní přibližovací spínače v této knihovně. Shoda EN/IEC ' +
       '60947-5-2, UL/CSA certifikace. Dostupné příslušenství: montážní příruba BF 12, konektory/ ' +
       'kabely V1-G/V1-W/V1-G-2M-PUR/V1-W-2M-PUR.',
+    schematicImage: 'CBB4-12GH60-E2-V1.jpg',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,pepperl-fuchs,cbb4,pnp,nerez,potravinářský,m12,konektor,ip65',
+  },
+  {
+    name: 'CBB4-12GH70-E2',
+    packageType:
+      'Válcové závitové pouzdro M12×1 (threaded barrel), vysoce legovaná nerezová ocel 1.4404/ ' +
+      'AISI 316L, celková délka 69 mm (38 mm závitové části), Ø10,5 mm, aktivní čelo PEEK, ' +
+      'integrální kabel PUR 2 m (Ø5 mm, 3 žíly 0,34 mm²: BN=L+, BK=výstup, BU=L-), potenciometr ' +
+      'pro nastavení citlivosti, 4× indikační žlutá LED (viditelnost z více úhlů)',
+    value:
+      'Kapacitní (bezkontaktní) přibližovací spínač, zapustitelný ("flush"), spínací vzdálenost ' +
+      '4 mm (nastavitelná potenciometrem), 3vodičové DC zapojení, PNP výstup, spínací (NO) ' +
+      'kontakt, 10–36 V DC',
+    schematicImage: 'CBB4-12GH70-E2.jpg',
+    notes:
+      'Pepperl+Fuchs "Capacitive sensor CBB4-12GH70-E2" (210620_eng.xml, vydáno 14.3.2019) — ' +
+      'elektricky TOTOŽNÝ kapacitní senzor jako CBB4-12GH60-E2-V1 (samostatný záznam v této ' +
+      'knihovně) — stejná polarita PNP/NO, stejné napájení 10–36 V DC, stejná spínací vzdálenost ' +
+      '4 mm nastavitelná potenciometrem, stejné pouzdro z nerezi 316L s čelem PEEK pro ' +
+      'potravinářské/agresivní prostředí — ⚠️ liší se POUZE typem elektrického připojení: ' +
+      'CBB4-12GH60-E2-V1 má odnímatelný zásuvný konektor M12×1, zatímco tato varianta ' +
+      'CBB4-12GH70-E2 má integrální kabel PUR 2 m (obdobný vztah jako mezi konektorovými a ' +
+      'kabelovými variantami indukčních senzorů NBB v této knihovně) — proto i mírně odlišná ' +
+      'celková délka pouzdra (69 mm vs. 59,8 mm) a číslo v označení "-70" místo "-60". Zajištěná ' +
+      'spínací vzdálenost sa 0–2,88 mm. Nízký spínací kmitočet 0–50 Hz (typické pro kapacitní ' +
+      'senzory). Ochrana proti přepólování a pulzní zkratová ochrana. Úbytek napětí max 2,5 V. ' +
+      'Provozní proud 0–100 mA, klidový proud max 12 mA. Funkční bezpečnostní parametry: MTTFd ' +
+      '1272 let, doba mise 20 let, diagnostické pokrytí 0 %. Krytí IP65. Provozní teplota -25 až ' +
+      '+70 °C. Shoda EN/IEC 60947-5-2, UL/CSA certifikace. Dostupné příslušenství: montážní ' +
+      'příruba BF 12.',
+    tags: 'modul,senzor,kapacitní,přibližovací,proximity,pepperl-fuchs,cbb4,pnp,nerez,potravinářský,m12,kabel,ip65',
   },
   {
     name: 'CBB8-18GS75-E2',
@@ -3130,6 +3244,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'knihovně. Krytí IP67 (vyšší než IP65 u CBB4-...). Shoda EN/IEC 60947-5-2, UL/CCC ' +
       'certifikace (CCC nevyžadováno pro produkty ≤36V). Dostupné příslušenství: montážní ' +
       'příruba BF 18, rychloupínací konzole EXG-18.',
+    schematicImage: 'CBB8-18GS75-E2.jpg',
     tags: 'modul,senzor,kapacitní,přibližovací,proximity,pepperl-fuchs,cbb8,pnp,nerez,nastavitelný,m18,ip67,průmyslový',
   },
   {
@@ -3143,6 +3258,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Průmyslový vizuální senzor (smart kamera) s vlastním obrazovým procesorem, monochromní ' +
       'CMOS snímač 1280×1024 px (SXGA), 50 fps, čtení čárových/2D kódů a OCR, kontrola tvaru/ ' +
       'kontrastu/polohy, Ethernet (100 Mbit/s, EtherNet/IP, PROFINET, FTP, TCP/IP), 24 V DC',
+    schematicImage: 'SBSC-U-AF-R2B.jpg',
     notes:
       'Festo AG & Co. KG "Universal sensor SBSC-U-AF-R2B" (obj. č. 8058736, datový list ' +
       '1.6.2021, interní typový kód "SBSI") — ⚠️ zcela odlišná kategorie kamerového zařízení než ' +
@@ -3172,6 +3288,40 @@ const MODULE_SPECS: ModuleSpec[] = [
     tags: 'modul,kamera,vizuální-senzor,vision-sensor,čtečka-kódů,barcode,ocr,ethernet,festo,sbsc,průmyslový',
   },
   {
+    name: 'SBSC-Q-AF-R3B',
+    packageType:
+      'Kompaktní kvádrové pouzdro s chladicími žebry, tvářená hliníková slitina (eloxovaná) + ' +
+      'kryt ABS s výztuží, rozměry 45×45×76,7 mm, hmotnost 160 g, objímka objektivu CS mount, ' +
+      'konektory M12 (Ethernet 4pin, sériové rozhraní 5pin, napájení/IO 12pin), lze doplnit ' +
+      'ochrannou trubicí objektivu',
+    value:
+      'Průmyslový MONOCHROMNÍ vizuální senzor ("object sensor") s vyměnitelným CS mount ' +
+      'objektivem, CMOS snímač 736×480 px (WideVGA), 50 fps, plná sada geometrických detektorů ' +
+      '(tvar, kontura, hrany, BLOB), BEZ čtení kódů/OCR, Ethernet, 24 V DC',
+    schematicImage: 'SBSC-Q-AF-R3B.jpg',
+    notes:
+      'Festo AG & Co. KG "Object sensor SBSC-Q-AF-R3B" (obj. č. 8058728, datový list 1.6.2021, ' +
+      'typový kód "SBSC") — ⚠️ objektová varianta ve stejné SBSC platformě jako univerzální ' +
+      'senzor SBSC-U-AF-R2B v této knihovně (samostatný záznam) — sdílí stejné pouzdro, stejný ' +
+      'vyměnitelný CS mount objektiv (na rozdíl od integrované pevné optiky u SBSI-Q-AF-R2B-F12-W/ ' +
+      'SBSI-Q-R3B-F6-NR), stejnou plnou programovací kapacitu 255 programů/255 detektorů, ale ' +
+      'NIŽŠÍ rozlišení 736×480 WideVGA (oproti 1280×1024 SXGA u SBSC-U-AF-R2B) a ⚠️ BEZ ČTENÍ ' +
+      'ČÁROVÝCH/2D KÓDŮ A OCR — funkce detektorů omezena na sledování polohy přes kontur, ' +
+      'porovnávání vzorů, porovnávání kontur, detekci hran, kontrast, jas, prahování šedé úrovně, ' +
+      'Vernier caliper a BLOB (stejná sada jako u integrovaně-osvětlených SBSI object/color ' +
+      'senzorů, ale zde s vyměnitelným objektivem místo pevné optiky) — určeno čistě pro ' +
+      'geometrickou/tvarovou inspekci bez identifikace kódů. Sériové rozhraní RS232/RS422 ' +
+      '(5pin M12), Ethernet 4pin M12 100 Mbit/s (EtherNet/IP, FTP, PROFINET, SMB, TCP/IP). ' +
+      'Digitální I/O: 2 vstupy + 2 výstupy + 4 volitelné, PNP/NPN přepínatelné, max. 50 mA. ' +
+      'Napájení 24 V DC (-25 %/+10 %), max. spotřeba 550 mA, klidová spotřeba 200 mA. Provozní ' +
+      'teplota 0 až +50 °C, skladovací -20 až +60 °C. Krytí IP67 s ochrannou trubicí objektivu ' +
+      '(vyšší než IP65 u SBSC-U-AF-R2B se stejnou trubicí). Zařazeno do kategorie "Modul" jako ' +
+      'kompletní osazený přístroj, stejně jako ostatní Festo vizuální senzory v této knihovně. ' +
+      'Odolnost proti vibracím dle EN 60068-2-6, proti rázům dle EN 60068-2-27 (stupeň závažnosti ' +
+      '2). Certifikace: c UL us (Listed), CE (EU EMC), RCM, KC EMC. RoHS.',
+    tags: 'modul,kamera,vizuální-senzor,vision-sensor,object-sensor,monochromní,cs-mount,ethernet,festo,sbsc,průmyslový',
+  },
+  {
     name: 'SBSI-F-R3C-F6-W',
     packageType:
       'Kompaktní kvádrové pouzdro s chladicími žebry, tvářená hliníková slitina (eloxovaná) + ' +
@@ -3182,6 +3332,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Průmyslový BAREVNÝ vizuální senzor (smart kamera) s integrovanou optikou a osvětlením, ' +
       'barevný CMOS snímač 736×480 px (WideVGA), 40 fps, detekce barevných ploch/kontrastu/ ' +
       'polohy přes kontur, Ethernet (100 Mbit/s), 24 V DC',
+    schematicImage: 'SBSI-F-R3C-F6-W.jpg',
     notes:
       'Festo AG & Co. KG "Color sensor SBSI-F-R3C-F6-W" (obj. č. 8058731, datový list 2.6.2021, ' +
       'typový kód "SBSI") — stejná fyzická platforma/pouzdro/rozhraní jako univerzální vizuální ' +
@@ -3218,6 +3369,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Plnohodnotný průmyslový BAREVNÝ vizuální senzor s integrovanou optikou a osvětlením, ' +
       'barevný CMOS snímač 736×480 px (WideVGA), 40 fps, pracovní vzdálenost 30 mm–nekonečno, ' +
       'kompletní sada detektorů (tvar, kontura, hrany, BLOB, barva), Ethernet, 24 V DC',
+    schematicImage: 'SBSI-F-AF-R3C-F12-W.jpg',
     notes:
       'Festo AG & Co. KG "Color sensor SBSI-F-AF-R3C-F12-W" (obj. č. 8058734, datový list ' +
       '2.6.2021, typový kód "SBSI") — "plná" verze barevného senzoru ze stejné SBSI rodiny jako ' +
@@ -3255,6 +3407,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Průmyslový MONOCHROMNÍ vizuální senzor ("object sensor") s integrovanou optikou a ' +
       'osvětlením, monochromní CMOS snímač 1280×1024 px (SXGA), 40 fps, plná sada geometrických ' +
       'detektorů (tvar, kontura, hrany, BLOB), BEZ čtení kódů, Ethernet, 24 V DC',
+    schematicImage: 'SBSI-Q-AF-R2B-F12-W.jpg',
     notes:
       'Festo AG & Co. KG "Object sensor SBSI-Q-AF-R2B-F12-W" (obj. č. 8058730, datový list ' +
       '2.6.2021, typový kód "SBSI") — třetí varianta ve stejné SBSI/SBSC vizuální rodině Festo v ' +
@@ -3279,6 +3432,46 @@ const MODULE_SPECS: ModuleSpec[] = [
       'této knihovně. Odolnost proti vibracím dle EN 60068-2-6, proti rázům dle EN 60068-2-27. ' +
       'Certifikace: c UL us (Listed), CE (EU EMC), RCM, KC EMC. RoHS.',
     tags: 'modul,kamera,vizuální-senzor,vision-sensor,object-sensor,monochromní,ethernet,festo,sbsi,průmyslový',
+  },
+  {
+    name: 'SBSI-Q-R3B-F6-NR',
+    packageType:
+      'Kompaktní kvádrové pouzdro s chladicími žebry, tvářená hliníková slitina (eloxovaná) + ' +
+      'kryt ABS s výztuží, rozměry 45×45×76,7 mm, hmotnost 160 g, INTEGROVANÁ pevná optika ' +
+      '(ohnisko 6 mm) s vestavěným IR LED osvětlením, zaostření nastavitelným šroubem, konektor ' +
+      'M12 (Ethernet 4pin, napájení/IO 12pin) — bez sériového rozhraní',
+    value:
+      'Průmyslový MONOCHROMNÍ vizuální senzor ("object sensor") s integrovanou optikou a ' +
+      'infračerveným osvětlením (880 nm), CMOS snímač 736×480 px (WideVGA), 50 fps, pracovní ' +
+      'vzdálenost 6 mm–nekonečno, max. 8 inspekčních programů/32 detektorů, Ethernet, 24 V DC',
+    schematicImage: 'SBSI-Q-R3B-F6-NR.jpg',
+    notes:
+      'Festo AG & Co. KG "Object sensor SBSI-Q-R3B-F6-NR" (obj. č. 2942265, datový list 2.6.2021, ' +
+      'typový kód "SBSI") — "zjednodušená" varianta objektového senzoru ve stejné SBSI rodině ' +
+      'jako SBSI-Q-AF-R2B-F12-W v této knihovně (obdobný vztah jako mezi SBSI-F-R3C-F6-W a ' +
+      'SBSI-F-AF-R3C-F12-W u barevných senzorů): kratší ohnisko 6 mm (oproti 12 mm), kratší ' +
+      'pracovní vzdálenost 6 mm–nekonečno (oproti 16×13 mm zornému poli u F12-W varianty), menší ' +
+      'zorné pole min. 5×4 mm, nižší rozlišení 736×480 WideVGA (oproti 1280×1024 SXGA u ' +
+      'AF-R2B-F12-W) a omezenější programovací kapacita — max. 8 programů/32 detektorů (oproti ' +
+      '255/255). ⚠️ Na rozdíl od monochromních viditelných senzorů v této knihovně používá IR ' +
+      '(infračervené, 880 nm) LED osvětlení místo bílého — vhodné pro aplikace citlivé na viditelné ' +
+      'světlo nebo detekci bez rušení obsluhy. Detektory dle datasheetu: sledování polohy přes ' +
+      'kontur, porovnávání vzorů, porovnávání kontur, kontrast, jas, prahování šedé úrovně ' +
+      '— ⚠️ nekonzistence v datasheetu: tabulka "typických dob cyklu" navíc uvádí i časy pro ' +
+      'Vernier caliper (8 ms) a BLOB (30 ms), ačkoli tyto dva detektory nejsou vyjmenovány v ' +
+      'seznamu "Function of detectors" o pár řádků výše — pravděpodobně tedy podporovány, ale ' +
+      'výrobcem nedopatřením vynechány ze seznamu, uvedeno jak v datasheetu, nedourčeno. Chybí ' +
+      'sériové rozhraní RS232/RS422 (na rozdíl od SBSI-F-AF-R3C-F12-W). Ethernet 4pin M12, ' +
+      '100 Mbit/s, protokoly EtherNet/IP, FTP, PROFINET, SMB, TCP/IP. Digitální I/O: 2 vstupy + ' +
+      '2 výstupy + 2 volitelné (méně voleb než 4 u F12-W variant), PNP/NPN přepínatelné, max. ' +
+      '50 mA, spínací úrovně: signál 0 ≤3 V, signál 1 ≥UB-1 V. Zkratová ochrana všech elektrických ' +
+      'připojení. Napájení 24 V DC (-25 %/+10 %), max. spotřeba 550 mA, klidová spotřeba (bez ' +
+      'zátěže výstupů) 200 mA. Provozní teplota 0 až +50 °C, skladovací -20 až +60 °C. Krytí IP67. ' +
+      'Zařazeno do kategorie "Modul" jako kompletní osazený přístroj, stejně jako ostatní Festo ' +
+      'vizuální senzory v této knihovně. Odolnost proti vibracím dle EN 60068-2-6, proti rázům ' +
+      'dle EN 60068-2-27 (stupeň závažnosti 2). Certifikace: c UL us (Listed), CE (EU EMC), RCM, ' +
+      'KC EMC. RoHS.',
+    tags: 'modul,kamera,vizuální-senzor,vision-sensor,object-sensor,monochromní,infračervený,ethernet,festo,sbsi,průmyslový',
   },
   {
     name: 'SPAW-P25R-G12M-2NV-M12',
@@ -3310,6 +3503,72 @@ const MODULE_SPECS: ModuleSpec[] = [
     tags: 'modul,senzor,tlak,vysokotlaký,tenkovrstvý,npn,analogový,festo,spaw-p25r,displej,g12,nerez',
   },
   {
+    name: 'VPEV-1/8-M12',
+    packageType:
+      'Válcové pouzdro z tvářené hliníkové slitiny, montáž skrz průchozí díru, pneumatická ' +
+      'přípojka vnější závit G1/8, konektor M12×1 (4piny, kruhové provedení dle EN 60947-5-2), ' +
+      'hmotnost 220 g',
+    value:
+      'Vakuový spínač (pneumaticko-elektrický tlakový převodník), měřicí rozsah -0,1 až 0,16 MPa ' +
+      '(-1 až 1,6 bar), 1× mechanický přepínací (toggle) spínací prvek, AC/DC univerzální ' +
+      'zapojení max. 48 V, ATEX certifikace pro zóny 1/2/21/22',
+    schematicImage: 'VPEV-1-8-M12.jpg',
+    notes:
+      'Festo SE & Co. KG "Vacuum switch VPEV-1/8-M12" (obj. č. 192489) — ⚠️ jiná kategorie ' +
+      'tlakových přístrojů Festo v této knihovně než elektronické SPAW/SPAN senzory s LED ' +
+      'displejem (samostatné záznamy): VPEV-... je jednodušší pneumaticko-elektrický převodník ' +
+      'BEZ displeje, s klasickým MECHANICKÝM PŘEPÍNACÍM (toggle) kontaktem místo elektronického ' +
+      'programovatelného PNP/NPN výstupu — mechanicky nastavitelný prahový bod (rozsah nastavení ' +
+      '-0,95 až -0,2 bar, po přestavbě 0,16 až 1,6 bar), podobný princip jako mechanické senzorové ' +
+      'skříně SRBE-CA3-... v této knihovně, ale pro měření tlaku/podtlaku místo polohy ventilu. ' +
+      'Metoda měření: pneumaticko-elektrický převodník tlaku, měřený rozsah -0,1 až 0,16 MPa ' +
+      '(-1 až 1,6 bar / -14,5 až 23,2 psi), provozní médium stlačený vzduch dle ISO 8573-1:2010 ' +
+      '[7:4:4] (mazaný provoz možný, ale pak nelze upustit). Max. frekvence spínání 3 Hz. ' +
+      'Spínací výstup: přepínací funkce, max. napětí AC/DC 48 V, max. výstupní proud 4000 mA, ' +
+      'min. proud zátěže 1 mA @24 V / 10 mA @10 V / 100 mA @5 V. Kategorie spotřebiče: AC-14/ ' +
+      'DC-13 (indukční zátěž), AC-12/DC-12 (ohmická zátěž). Teplota média i okolí -20 až +80 °C. ' +
+      'Krytí IP65. Třída odolnosti korozi KBK 2 (mírné nároky). Shoda s LABS VDMA24364-B1/B2-L ' +
+      '(nízký obsah látek ovlivňujících smáčivost nátěru laku). ATEX certifikace pro zóny ' +
+      '1/2/21/22, CCC, c UL us (Recognized). Zařazeno do kategorie "Modul" jako kompletní osazený ' +
+      'přístroj. Shoda EN 60947-5-1, CE (Low Voltage Directive), UKCA. RoHS.',
+    tags: 'modul,senzor,tlak,podtlak,vakuum,mechanický-spínač,pneumatický,atex,festo,vpev,ip65',
+  },
+  {
+    name: 'SOOE-MS-L-PNLK-T',
+    packageType:
+      'Kompaktní kvádrové pouzdro ("block design"), materiál PC/PMMA, konektor M8×1 A-coded ' +
+      '(3piny, šroubový zámek), montáž skrz díru pro šroub M3, hmotnost 10 g, LED indikace ' +
+      '(zelená=připraveno, žlutá=spínací stav)',
+    value:
+      'Laserový optoelektronický vzdálenostní senzor s IO-Link, měřicí rozsah 40–100 mm, ' +
+      'rozlišení 0,1 mm, přepínatelný PNP/NPN push-pull výstup, 10–30 V DC',
+    schematicImage: 'SOOE-MS-L-PNLK-T.jpg',
+    notes:
+      'Festo AG & Co. KG "Distance sensor SOOE-MS-L-PNLK-T" (obj. č. 8075673, datový list ' +
+      '27.5.2021) — ⚠️ NOVÁ SUB-KATEGORIE senzorů v této knihovně: první LASEROVÝ ' +
+      'vzdálenostní/polohový senzor s IO-LINK rozhraním — na rozdíl od jednoduchých binárních ' +
+      'přibližovacích spínačů (NBB/NBN/CBB v této knihovně) měří SPOJITOU vzdálenost k objektu ' +
+      'v rozsahu 40–100 mm s rozlišením 0,1 mm a opakovatelností 0,5 mm, navíc s digitální ' +
+      'komunikací IO-Link (protokol verze 1.1, "Smart sensor profile", COM2 38,4 kBd, port ' +
+      'třídy A) pro čtení naměřené vzdálenosti (16bit PDV), indikátoru kvality signálu a stavu ' +
+      'přepínacího výstupu (SSC) přímo digitálně, kromě klasického analogového PNP/NPN výstupu. ' +
+      'Princip: červený laser (třída bezpečnosti 1), max. průměr stopy 3 mm při šířce skenu ' +
+      '100 mm, min. detekovatelný průměr objektu 4 mm, referenční materiál standardní bílá 90 % ' +
+      '(100×100 mm). Teplotní koeficient 0,03 %/K, linearita FS 0,75 %. Přepínací výstup: ' +
+      'push-pull, konfigurovatelný PNP (spíná při jasu) nebo NPN (spíná při tmě), max. spínací ' +
+      'kmitočet 270 Hz, max. výstupní proud 100 mA, úbytek napětí 0–1,5 V, pulzní zkratová ' +
+      'ochrana. Funkce časovače přes IO-Link. IO-Link proces. data: výstup 2bit (1bit emitter ' +
+      'disable + 1bit hold), vstup 3 byte (1bit indikátor kvality signálu + 16bit vzdálenost + ' +
+      '2bit spínací signál SSC), min. cyklus 3 ms, paměť 2000 bajtů. Napájení 10–30 V DC, zvlnění ' +
+      'max 10 %, klidový proud 25 mA, ochrana proti přepólování všech vývodů. Nastavení: IO-Link, ' +
+      'potenciometr nebo Teach-in. Krytí IP65/IP67/IP69K (nejvyšší krytí mezi senzory v této ' +
+      'knihovně). Izolační napětí 500 V, odolnost proti rázovému přepětí 1 kV, CRC třída 1 ' +
+      '(nízké nároky na odolnost korozi), stupeň znečištění 3. Provozní teplota 10 až 60 °C. ' +
+      'Zařazeno do kategorie "Modul" jako kompletní osazený přístroj. Certifikace: c UL us ' +
+      '(Listed), CE (EU EMC + RoHS). RoHS.',
+    tags: 'modul,senzor,vzdálenost,laser,optoelektronický,io-link,pnp,npn,festo,sooe,ip69k',
+  },
+  {
     name: 'SRBE-CA3-YR90-MW-22A-1W-C2M20-EX',
     packageType:
       'Kruhová skříň s montážní přírubou dle ISO 5211/VDI-VDE 3845 (velikost AA1) pro montáž na ' +
@@ -3321,6 +3580,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'ventilového pohonu — 1× mechanický přepínací (toggle) spínač s jedním pólem, rozsah ' +
       'detekce úhlu 0–90°, AC/DC univerzální zapojení 0–250 V AC / 0–30 V DC, ATEX certifikace ' +
       'pro zóny 1/2/21/22',
+    schematicImage: 'SRBE-CA3-YR90-MW-22A-1W-C2M20-EX.jpg',
     notes:
       'Festo AG & Co. KG "Sensor box SRBE-CA3-YR90-MW-22A-1W-C2M20-EX" (obj. č. 3471009, datový ' +
       'list 28.7.2021) — ⚠️ jiná koncepce polohové zpětné vazby než NBN3-F31K-E8-K (kompaktní ' +
@@ -3343,6 +3603,34 @@ const MODULE_SPECS: ModuleSpec[] = [
       'skladovací teplota -20 až +60 °C (výbušné prostředí rovněž -20 až +60 °C). Certifikace: CE ' +
       '(ATEX + Low Voltage Directive), RoHS.',
     tags: 'modul,senzor,poloha,mechanický-spínač,ventilová-jednotka,pneumatický-pohon,atex,sil2,festo,srbe,ip67',
+  },
+  {
+    name: 'SRBE-CA3-YR90-MW-22A-2W-C2M20-EX',
+    packageType:
+      'Kruhová skříň s montážní přírubou dle ISO 5211/VDI-VDE 3845 (velikost AA1) pro montáž na ' +
+      'čtvrtotáčkové pohony ventilů, pouzdro tlakově lité hliníkové (ATEX Ex db pevný závěr), ' +
+      'hřídel/šrouby/montážní konzole/pojistný kroužek/disk z vysoce legované nerezi, ukazatel ' +
+      'polohy PC (žlutý/červený), těsnění NBR, kabelová průchodka M20×1,5, hmotnost 1700 g',
+    value:
+      'Mechanická senzorová skříň ("sensor box") pro zpětnou vazbu polohy čtvrtotáčkového ' +
+      'ventilového pohonu — 2× mechanický přepínací (toggle) spínač (dvoupólový), rozsah ' +
+      'detekce úhlu 0–90°, AC/DC univerzální zapojení 0–250 V AC / 0–30 V DC, ATEX certifikace ' +
+      'pro zóny 1/2/21/22',
+    schematicImage: 'SRBE-CA3-YR90-MW-22A-2W-C2M20-EX.jpg',
+    notes:
+      'Festo AG & Co. KG "Sensor box SRBE-CA3-YR90-MW-22A-2W-C2M20-EX" (obj. č. 3471011, datový ' +
+      'list 28.7.2021) — dvoupólová ("2W" = double-pin toggle switch) varianta stejné mechanické ' +
+      'senzorové skříně jako SRBE-CA3-YR90-MW-22A-1W-C2M20-EX v této knihovně (samostatný záznam, ' +
+      'viz tam pro plný popis principu, ATEX certifikace a mechaniky) — ⚠️ liší se POUZE počtem ' +
+      'přepínacích kontaktů: 2 nezávislé přepínací spínače místo 1, a tomu odpovídajícím vyšším ' +
+      'počtem svorek elektrického připojení (14pin místo 10pin u 1W verze) — typicky pro současnou ' +
+      'signalizaci obou koncových poloh ventilu (otevřeno/zavřeno) na dvou nezávislých obvodech ' +
+      'najednou. Mechanicky a certifikačně jinak zcela shodná: stejná hmotnost 1700 g, stejné ' +
+      'materiály, stejný rozsah detekce úhlu 0–90°, stejný max. proud 10 A AC/6 A DC na kontakt, ' +
+      'stejná ATEX certifikace zóny 1/2/21/22 (Ex db IIC T6 Gb, Ex tb IIIC T75°C Db), SIL 2, ' +
+      'krytí IP67, stupeň znečištění 3, provozní/skladovací teplota -20 až +60 °C. Zařazeno do ' +
+      'kategorie "Modul" jako kompletní osazený produkt, stejně jako 1W sourozenecký záznam.',
+    tags: 'modul,senzor,poloha,mechanický-spínač,ventilová-jednotka,pneumatický-pohon,atex,sil2,festo,srbe,ip67,2w',
   },
   {
     name: 'NJ4-12GM-N-5M-Y123257',
@@ -3377,6 +3665,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'pokrytí 0 %. Krytí IP67. Zařazeno do kategorie "Modul" jako kompletní osazený produkt s ' +
       'vlastním kabelem, stejně jako ostatní indukční senzory v této knihovně. Shoda EN/IEC ' +
       '60947-5-2 a 60947-5-6 (NAMUR), UL/CSA/CCC certifikace.',
+    schematicImage: 'NJ4-12GM-N-5M-Y123257.jpg',
     tags: 'modul,senzor,indukční,přibližovací,proximity,namur,jiskrově-bezpečný,pepperl-fuchs,nj4,atex,zóna-20,nerez,ip67',
   },
   {
@@ -3410,6 +3699,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'RaDec Ceiling Kit. Zařazeno do kategorie "Modul" jako kompletní osazený produkt s vlastním ' +
       'kabelem/konektorem, stejně jako Q130RA v této knihovně. CE (2014/53/EU), EAC. FCC ' +
       'schválení NENÍ uděleno — použití v Severní Americe zakázáno.',
+    schematicImage: 'RaDec-M.jpg',
     tags: 'modul,senzor,radar,doppler,pohybový,relé,pepperl-fuchs,radec-m,24ghz,dveře',
   },
   {
@@ -3447,6 +3737,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'průmyslové prostředí). Provozní/skladovací teplota -30 až +60 °C. Zařazeno do kategorie ' +
       '"Modul" jako kompletní osazený produkt s vlastním kabelem/svorkami, stejně jako RaDec-M v ' +
       'této knihovně.',
+    schematicImage: 'RAVE-D-NA.jpg',
     tags: 'modul,senzor,radar,doppler,pohybový,relé,pepperl-fuchs,rave-d,24ghz,dveře,fcc,usa',
   },
   {
@@ -3483,6 +3774,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Zařazeno do kategorie "Modul" jako kompletní osazený produkt s vlastním kabelem/svorkami, ' +
       'stejně jako RaDec-M/RAVE-D v této knihovně. Dostupné příslušenství: povětrnostní kryt RMS ' +
       'Weather Cap, stropní montážní sada RMS/RaDec Ceiling Kit.',
+    schematicImage: 'RMS-G-RC.jpg',
     tags: 'modul,senzor,radar,doppler,pohybový,relé,pepperl-fuchs,rms-g,24ghz,dveře,ce,fcc',
   },
   {
@@ -3517,6 +3809,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'produkt s vlastním kabelem/svorkami, stejně jako ostatní radarové senzory Pepperl+Fuchs v ' +
       'této knihovně. Dostupné příslušenství: povětrnostní kryt RMS Weather Cap, IR dálkový ' +
       'ovladač RMS Remote Control, stropní montážní sada RMS/RaDec Ceiling Kit.',
+    schematicImage: 'RMS-M-RC.jpg',
     tags: 'modul,senzor,radar,doppler,pohybový,relé,pepperl-fuchs,rms-m,24ghz,dveře,ce,dálkové-ovládání',
   },
   {
@@ -3559,6 +3852,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '(E87056, cULus Listed, class 2 power supply). Dostupné příslušenství: konektorové kabely ' +
       'V31-WM/GM-2M-PUR, IO-Link master, montážní úchyty/konzole, celá řada reflektorů (H33, H50, ' +
       'H85-2, H32G-2, ORR50G-2) a reflexní páska OFR-100/100.',
+    schematicImage: 'OBG4000-R103-2EP-IO.jpg',
     tags: 'modul,senzor,fotoelektrický,optický,reflexní,retroreflexní,io-link,pepperl-fuchs,obg4000,r103,transparentní-objekty,ip69k',
   },
   {
@@ -3593,6 +3887,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'knihovně. MTTFd 600 let. UL certifikace (E87056). Dostupné příslušenství: konektorové ' +
       'kabely V31-GM/WM-2M-PUR, IO-Link master, montážní úchyty, reflektory (H33/H50/H85-2/ ' +
       'H32G-2/ORR50G-2) a reflexní páska OFR-100/100.',
+    schematicImage: 'OBG5000-R100-EP-IO-V3.jpg',
     tags: 'modul,senzor,fotoelektrický,optický,reflexní,retroreflexní,io-link,pepperl-fuchs,obg5000,r100,transparentní-objekty,m8,ip69k',
   },
   {
@@ -3625,6 +3920,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'stejně jako ostatní přibližovací/fotoelektrické senzory v této knihovně. MTTFd 600 let. UL ' +
       'certifikace (E87056). Dostupné příslušenství shodné s R103 sérií (montážní svorky OMH-R101/ ' +
       'OMH-4.1/OMH-ML6, reflektory H33/H50/H85-2, reflexní páska OFR-100/100).',
+    schematicImage: 'OBG5000-R101-2EP1-IO.jpg',
     tags: 'modul,senzor,fotoelektrický,optický,reflexní,retroreflexní,io-link,pepperl-fuchs,obg5000,r101,transparentní-objekty,ip69k',
   },
   {
@@ -3663,6 +3959,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'osazený přístroj s vlastním procesorem/optikou/osvětlením/konektory, stejně jako ostatní ' +
       'vizuální senzory v této knihovně. MTTFd 95 let. Certifikace: CE, UL (cULus Listed, Class 2 ' +
       'Power Source), CCC.',
+    schematicImage: 'PHA400-F200A-B17-V1D.jpg',
     tags: 'modul,kamera,vizuální-senzor,vision-sensor,polohování,regálový-zakladač,profinet,pepperl-fuchs,pha400,ir-osvětlení,skladová-automatizace',
   },
   {
@@ -3693,6 +3990,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'zadní přístup ke konektorům), ne o rozdílnou funkci senzoru. Zařazeno do kategorie "Modul" ' +
       'jako kompletní osazený přístroj, stejně jako PHA400-F200A-B17-V1D v této knihovně. ' +
       'Certifikace shodné: CE, UL (cULus Listed, Class 2 Power Source), CCC.',
+    schematicImage: 'PHA400-F200-B17-V1D.jpg',
     tags: 'modul,kamera,vizuální-senzor,vision-sensor,polohování,regálový-zakladač,profinet,pepperl-fuchs,pha400,ir-osvětlení,skladová-automatizace',
   },
   {
@@ -3767,6 +4065,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'proti vibracím/rázům dle IEC 60068-2-6/2-27. Zařazeno do kategorie "Modul" jako kompletní ' +
       'osazený produkt s vlastní elektronikou. Certifikace: CE, cULus Listed. Výstraha výrobce: ' +
       'riziko poškození sluchu při nesprávné instalaci (odkaz na normu OSHA 1910.95).',
+    schematicImage: 'SG-TL70-AP.jpg',
     tags: 'modul,signalizace,zvukový,houkačka,tower-light,mp3,wav,programovatelný,banner,tl70,usb',
   },
   {
@@ -3797,6 +4096,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '-25 až +55 °C. Krytí IP65. Zařazeno do kategorie "Modul" jako kompletní osazený produkt s ' +
       'vlastním konektorem, stejně jako Banner TL70 signalizační segmenty v této knihovně. ' +
       'Materiál: černý ABS plast. Certifikace: UKCA, RoHS, CE.',
+    schematicImage: 'LED-TLM-AUD-02.jpg',
     tags: 'modul,signalizace,zvukový,houkačka,tower-light,bzučák,moflash,led-tlm,eco,ip65',
   },
   {
@@ -3840,6 +4140,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '+55°C (bargraf), skladovací -20 až +80/+85°C. Zařazeno do kategorie "Modul" jako kompletní ' +
       'osazený produkt s vlastním konektorem/displejem, stejně jako ostatní fotoelektrické ' +
       'senzory v této knihovně. Certifikace CE, cULus.',
+    schematicImage: 'D10-Series.jpg',
     tags: 'modul,senzor,fotoelektrický,optický,optické-vlákno,fiber-optic,zesilovač,banner,d10,teach,din-lišta',
   },
   {
@@ -3873,6 +4174,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       '60601-1-2 4th ed. (ESD 8 kV kontakt/15 kV vzduch, emise třída B dle EN 55011/32). ' +
       'Hmotnost 0,80 lb (open frame) / 1,28 lb (chassis+cover). MTBF 100 000 h (MIL-HDBK-217F, ' +
       '25 °C). 2 roky záruka.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
   },
   {
@@ -3883,6 +4185,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace (univerzální vstup 85–264 V AC, ' +
       'ochrany, certifikace, mechanické provedení, EMC). Liší se jen výstupním napětím.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
   },
   {
@@ -3892,6 +4195,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     notes:
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Liší se jen výstupním napětím.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
   },
   {
@@ -3901,6 +4205,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     notes:
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Liší se jen výstupním napětím.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
   },
   {
@@ -3910,6 +4215,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     notes:
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Liší se jen výstupním napětím.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
   },
   {
@@ -3919,6 +4225,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     notes:
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Liší se jen výstupním napětím.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
   },
   {
@@ -3928,6 +4235,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     notes:
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Liší se jen výstupním napětím.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
   },
   {
@@ -3937,6 +4245,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     notes:
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Liší se jen výstupním napětím.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,jednovýstupový',
   },
   {
@@ -3947,6 +4256,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,dvouvýstupový',
   },
   {
@@ -3957,6 +4267,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,dvouvýstupový',
   },
   {
@@ -3967,6 +4278,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,dvouvýstupový',
   },
   {
@@ -3977,6 +4289,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,dvouvýstupový',
   },
   {
@@ -3987,6 +4300,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,dvouvýstupový',
   },
   {
@@ -3997,6 +4311,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,dvouvýstupový',
   },
   {
@@ -4006,6 +4321,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     notes:
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,trojvýstupový',
   },
   {
@@ -4015,6 +4331,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     notes:
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,trojvýstupový',
   },
   {
@@ -4024,6 +4341,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     notes:
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,trojvýstupový',
   },
   {
@@ -4033,6 +4351,7 @@ const MODULE_SPECS: ModuleSpec[] = [
     notes:
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,trojvýstupový',
   },
   {
@@ -4043,6 +4362,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
   },
   {
@@ -4053,6 +4373,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
   },
   {
@@ -4063,6 +4384,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
   },
   {
@@ -4073,6 +4395,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
   },
   {
@@ -4083,6 +4406,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
   },
   {
@@ -4093,6 +4417,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
   },
   {
@@ -4103,6 +4428,7 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
   },
   {
@@ -4113,7 +4439,431 @@ const MODULE_SPECS: ModuleSpec[] = [
       'Součást 26dílné rodiny REL-110 (Integrated Power Designs, AC-DC napájecí modul) — viz ' +
       'poznámka u REL-110-1001 pro plné společné specifikace. Celkový proud výstupů 1+2 nesmí ' +
       'překročit 12 A a výstupů 3+4 nesmí překročit 3 A s konvekčním chlazením.',
+    schematicImage: 'REL-110.jpg',
     tags: 'modul,zdroj,napájecí-zdroj,ac-dc,ipd,integrated-power-designs,rel-110,čtyřvýstupový',
+  },
+  {
+    name: 'HOPERF RFM/HM-TR Series (Sub-GHz RF modul)',
+    packageType:
+      'SMD PCB modul s integrovanou nebo externí anténou, rozměry cca 16×16 až 47×26mm, ' +
+      'rozhraní TWI/SPI/TTL/RS485/RS232 dle typu',
+    value:
+      'Sub-GHz RF vysílač/přijímač/transceiver modul (COB nebo DATA modul), frekvence ' +
+      '315/433/868/915 MHz dle typu, modulace (G)FSK/OOK, VDD 1,8–5,5 V, výstupní výkon do ' +
+      '20 dBm, citlivost do -139 dBm',
+    notes:
+      'HOPERF "RF Module" produktová řada — dle katalogu "HOPERF Catalog 2020" ' +
+      '(HOPERFCatalog2020.pdf, str. 3). ⚠️ SOUHRNNÝ KATALOGOVÝ ZÁZNAM (jen výběrová tabulka, ' +
+      'bez podrobných elektrických parametrů jako u plného datasheetu) — hotové osazené PCB ' +
+      'moduly (na rozdíl od holých RF IC čipů CMOSTEK CMT2xxx v této knihovně, kategorie IO), ' +
+      'typicky obsahují RF IC + krystal + přizpůsobovací obvod + volitelně anténu. RF COB ' +
+      'moduly (chip-on-board, bez pouzdra IC): RFM110W (TX), RFM217LBW/210LBW/217BW/210LCFW ' +
+      '(RX). RF DATA moduly (s digitálním sériovým rozhraním): HM-TRL-SW/HM-TRLR-D/HM-TRPW ' +
+      '(TRX, TTL/RS485/RS232, do 434/868/915MHz), RFM50W (TRX, 256kbps), RFM380F32W (TRX+SoC). ' +
+      'Menší transceiver moduly RFM119W/119SW/119BW/218BW/219BW/219SW, RFM300W/300HW/63W/64W/ ' +
+      '69CW/69HCW/23BPW (315-915MHz, do 550kbps, SPI/TWI rozhraní). Aplikace dle katalogu: ' +
+      'chytrá domácnost (dálkové spínače, dveřní zvonky, termostaty), automobilové ' +
+      'zabezpečení (anti-theft, TPMS), osvětlení, zabezpečovací systémy, aktivní RFID.',
+    schematicImage: 'HOPERF-RFM-HM-TR-Series.jpg',
+    tags: 'modul,rf,sub-ghz,vysílač,přijímač,transceiver,hoperf,rfm,hm-tr,315mhz,433mhz,868mhz,915mhz',
+  },
+  {
+    name: 'HOPERF RFM9xW/RFM75W Series (LoRa/2,4GHz modul)',
+    packageType: 'SMD PCB modul, rozměry 16×16 až 33×18mm, rozhraní SPI (4vodičové)',
+    value:
+      'LoRa nebo 2,4GHz FSK RF modul (TRX), frekvence 137–1020 MHz (LoRa) nebo 2400–2483 MHz ' +
+      '(2,4GHz), VDD 1,8–6,4 V, výstupní výkon do 27/30 dBm, citlivost do -139 dBm',
+    notes:
+      'HOPERF "LoRa Module" / "2.4GHz Module" produktové řady — dle katalogu "HOPERF Catalog ' +
+      '2020" (HOPERFCatalog2020.pdf, str. 3), viz poznámka u "HOPERF RFM/HM-TR Series" pro ' +
+      'kontext katalogu. LoRa moduly s SX127x/podobným LoRa čipem: RFM90W/90CW/95W/95PW/96W ' +
+      '(433-1020MHz, do 300kbps LoRa/62,5kbps GFSK), RFM98W/98PW/99W (169-483MHz nebo ' +
+      '2400-2483MHz, LoRa/FLRC/FSK). 2,4GHz úzkopásmové moduly RFM75W/75PW (GFSK, 250K/1M/2M, ' +
+      'nízký proud 16-33mA Tx, kompatibilní s nRF24L01+ protokolem). Nejvyšší dosažená ' +
+      'citlivost -139dBm (RFM95W/98W @LoRa). Vhodné pro dálkové bezdrátové senzorové sítě ' +
+      '(LPWAN), IoT uzly s bateriovým napájením.',
+    schematicImage: 'HOPERF-RFM9xW-RFM75W-Series.jpg',
+    tags: 'modul,rf,lora,2.4ghz,transceiver,hoperf,rfm9x,rfm75,lpwan,iot,spi',
+  },
+  {
+    name: 'HOPERF HM-WF/HM-BT/HM-LWNH Series (WiFi/BLE/LoRaWan modul)',
+    packageType:
+      'SMD PCB modul s integrovanou nebo externí anténou, rozměry 12×20 až 32×21,5mm, UART ' +
+      'rozhraní',
+    value:
+      'WiFi (2,4GHz b/g/n), BLE (Bluetooth Low Energy) nebo LoRaWan modul s integrovaným ' +
+      'protokolovým stackem, VDD 1,7–3,6 V, UART do 1152 kbps',
+    notes:
+      'HOPERF "Wireless Module" produktová řada (WiFi, BLE, LoRaWan) — dle katalogu "HOPERF ' +
+      'Catalog 2020" (HOPERFCatalog2020.pdf, str. 4), viz poznámka u "HOPERF RFM/HM-TR Series" ' +
+      'pro kontext katalogu. WiFi moduly HM-WF8266 (ESP8266-based, 170mA TX), HM-WF8710/8720 ' +
+      '(vyšší datový tok 218Mbps @1T MCS7/BW20M). BLE moduly HM-BT2201/BT4502/BT4502B (BLE, ' +
+      '2402-2483,5MHz, do 2Mbps, proud <8mA), HM-BT800B (BLE, TX proud jen 8,3mA @-2dBm — ' +
+      'nejúspornější v řadě). LoRaWan modul HM-LWNH (868/915MHz, plný LoRaWan protokolový ' +
+      'stack, TX proud 138mA typ.) — na rozdíl od holých LoRa transceiver modulů RFM90W/95W/ ' +
+      'apod. (viz "HOPERF RFM9xW/RFM75W Series" v této knihovně) má vestavěnou celou LoRaWan ' +
+      'síťovou vrstvu, ne jen fyzickou vrstvu rádia. Aplikace dle katalogu: chytrá domácnost ' +
+      '(dálkové ovládání, termostaty), bezpečnostní kontrola (bezdrátový magnetometr, tísňové ' +
+      'volání), automobilová anti-theft ochrana/TPMS, osvětlení, aktivní RFID, datová ' +
+      'transparentní přenosová zařízení.',
+    schematicImage: 'HOPERF-HM-WF-BT-LWNH-Series.jpg',
+    tags: 'modul,rf,wifi,ble,bluetooth,lorawan,hoperf,hm-wf,hm-bt,hm-lwnh,uart',
+  },
+  {
+    name: 'RFM01',
+    packageType:
+      '16pin SMD (RFM01S) nebo DIP modul, rozteč vývodů 2,54 mm (DIP)/2,0 mm (SMD), přímý ' +
+      'diferenciální anténní vstup (250 Ω), doporučené 0603 SMD blokovací kondenzátory ' +
+      '(C1=2,2µF, C2=10nF, C3 dle pásma: 390pF@315MHz/220pF@433MHz/47pF@868MHz/33pF@915MHz)',
+    value:
+      'Univerzální ISM pásmový FSK přijímač (315/433/868/915 MHz), SPI kompatibilní sériové ' +
+      'rozhraní, citlivost -109 až -100 dBm, přenosová rychlost do 115,2 kbps (digitální ' +
+      'režim) / 256 kbps (analogový režim), VDD 2,2–5,4 V',
+    notes:
+      'Hoperf Electronic "RFM01 Universal ISM Band FSK Receiver" datasheet. ⚠️ Na rozdíl od ' +
+      'souhrnných katalogových záznamů "HOPERF RFM/HM-TR Series" a "HOPERF RFM9xW/RFM75W ' +
+      'Series" v této knihovně (jen tabulková data ze selection guide) jde o PLNÝ DATASHEET ' +
+      'jednoho konkrétního modulu s kompletními elektrickými parametry. Plně integrovaný ' +
+      'jednočipový FSK přijímač (Zero-IF architektura s I/Q demodulací) — nevyžaduje ' +
+      'produkční ladění/kalibraci, jen externí krystal 10MHz a blokovací kondenzátory. ' +
+      'Protějšek (pár) k vysílači RFM02 (zmíněn v datasheetu, není v této knihovně evidován ' +
+      'samostatně). Vestavěný plně integrovaný PLL syntezátor s rychlým usazením (podpora ' +
+      'frequency hopping), programovatelná šířka pásma základního pásma (BW, 6 režimů 67-400 ' +
+      'kHz), automatická korekce kmitočtu (AFC, umožňuje použít levnější/méně přesný krystal), ' +
+      'detektor kvality dat (DQD), 16bitové RX FIFO, standalone provozní režim (bez ' +
+      'mikrokontroléru, řízeno napevno naprogramovanými piny), nízkopříkonový duty-cycle ' +
+      'režim (LPDM, <0,5mA průměrný odběr), budík (wake-up timer, 1,5µA typ., programovatelný ' +
+      '1ms až několik dní ±10%), detektor vybité baterie (programovatelný práh 2,25-5,35V). ' +
+      'LNA vstupní impedance 250Ω, volitelný zisk (0/-6/-14/-20dB) pro odolnost vůči silným ' +
+      'rušičům. Absolutní maximum: VDD -0,5 až 6,0V, napětí na pinu VDD+0,5V, vstupní proud ' +
+      '±25mA, ESD (HBM) 1000V, Tstg -55 až +125°C, pájecí teplota 260°C/10s. Doporučený ' +
+      'provozní rozsah: VDD 2,2-5,4V, Top -40 až +85°C. Proudový odběr (VDD=3,3V/27°C): Idd ' +
+      '9-11mA (315/433MHz) / 10,5-12,5mA (868MHz) / 12-14mA (915MHz), standby Ipd typ. 0,3µA, ' +
+      'idle Ix 3,0-3,5mA (jen krystalový oscilátor a základní pásmo aktivní). Přijímací ' +
+      'kmitočet fLO: 310,24-319,75MHz (315), 430,24-439,75MHz (433), 860,48-879,51MHz (868), ' +
+      '900,72-929,27MHz (915), rozlišení 2,5-7,5kHz dle pásma. Citlivost Pmin -109 až -100dBm ' +
+      '(BER 10⁻³, BW=67kHz, BR=1,2kbps). Vstupní IP3 -21 až -12dBm dle podmínek, max. vstupní ' +
+      'výkon 0dBm (vysoký zisk LNA), vstupní kapacita 1pF, RSSI rozsah 46dB, přesnost ±5dB. ' +
+      'Typické aplikace: dálkové ovládání, domácí zabezpečení/alarm, bezdrátová klávesnice/ ' +
+      'myš, dálkové bezklíčové ovládání vozidel, TPMS, telemetrie, dálkový odečet měřidel ' +
+      '(AMR).',
+    schematicImage: 'RFM01.jpg',
+    tags: 'modul,rf,přijímač,fsk,ism,hoperf,rfm01,spi,315mhz,433mhz,868mhz,915mhz,standalone',
+  },
+  {
+    name: 'RFM210LCF-S1',
+    packageType:
+      'COB (chip-on-board) SMD modul bez pouzdra IC, rozměry 32×11×6mm, 6 vývodů (rozteč ' +
+      '2,54mm): 1=ANT, 2=GND, 3=SDN, 4=VCC, 5=DATA, 6=GND',
+    value:
+      'ASK/OOK bezdrátový přijímací modul, pracovní kmitočet 315MHz nebo 433,92MHz (dle ' +
+      'objednacího kódu), citlivost -114dBm, VDD 1,8–3,6V, pracovní proud 3,9mA typ., ' +
+      'přenosová rychlost 1–5kbps',
+    notes:
+      'HOPE Microelectronics "RFM210LCF-S1 — ASK/OOK Wireless Receiver Module" (Rev 1.0, © ' +
+      '2006). Zmíněn i v katalogu "HOPERF Catalog 2020" jako "RFM210LCFW" v tabulce RF COB ' +
+      'modulů (viz souhrnný záznam "HOPERF RFM/HM-TR Series" v této knihovně) — zde evidován ' +
+      's plnými parametry z vlastního samostatného datasheetu. Na rozdíl od RFM01 (viz jeho ' +
+      'záznam v této knihovně) používá jednodušší ASK/OOK modulaci místo FSK — nižší citlivost ' +
+      'stavu vypnuto/zapnuto, ale jednodušší/levnější implementace, bez SPI konfiguračního ' +
+      'rozhraní (pouze přímý logický DATA výstup a SDN pin pro uspání). Dva objednací kódy dle ' +
+      'kmitočtu: RFM210LCF-315S1 (315MHz) a RFM210LCF-433S1 (433,92MHz), oba se sleep funkcí ' +
+      '(pin SDN). Elektrické parametry (@DC3,3V/25°C): citlivost -114dBm @1kbps, datová ' +
+      'rychlost 1-5kbps (typ. 3,3kbps), šířka přijímacího pásma 330kHz, napájení 1,8-3,6V ' +
+      '(typ. 3,3V), pracovní proud 3,8-4,2mA @433,92MHz, klidový (sleep) proud max 1µA, ' +
+      'potlačení zrcadlového kmitočtu (image rejection) 30dB, provozní teplota -40 až +85°C. ' +
+      'Shoda s FCC a ETSI. Typické aplikace: dálkové vstupní systémy, zabezpečení elektrických ' +
+      'vozítek, dálkově ovládané zásuvky/zvonky, bezdrátový přenos dat, osvětlení, hračky, ' +
+      'domácí spotřebiče, zabezpečovací/poplašné systémy.',
+    schematicImage: 'RFM210LCF-S1.jpg',
+    tags: 'modul,rf,přijímač,ask,ook,ism,hoperf,rfm210lcf,cob,315mhz,433mhz',
+  },
+  {
+    name: 'TX-SAW 434 L',
+    packageType:
+      'THT modul, drátové vývody (rozteč 2,54mm), rozměry 38,1×11×3mm, 7 vývodů: 1=GND, ' +
+      '2/3=Input modulation, 4=GND, 11=RF out, 13=GND, 15=+Vcc',
+    value:
+      'SAW oscilátorový ASK vysílač, nosná frekvence 433,83–434 MHz, napájení 1,8–12 V ' +
+      '(interně regulováno), RF výstupní výkon 9–12 dBm (@3-12V) nebo 6–10 dBm (@1,8-3V)',
+    notes:
+      'AUREL S.p.A. "TX-SAW 434 L" (P.N. 650201409G, dok. rev. A, 15.10.2016). ⚠️ NOVÝ VÝROBCE ' +
+      'RF modulů v této knihovně (italský AUREL, vedle čínského HOPERF — viz jeho RFM01/ ' +
+      'RFM210LCF-S1 záznamy) — na rozdíl od nich jde o THT modul s drátovými vývody (ne SMD/ ' +
+      'COB) a interně regulovaným napájením pro široký rozsah vstupního napětí 1,8-12V (vhodné ' +
+      'přímo z baterie 9V nebo 12V bez externí regulace, na rozdíl od HOPERF modulů ' +
+      'vyžadujících externí regulátor pro vyšší napětí). Náhrada za zastaralý model ' +
+      'TX-SAW-433/s-Z. K dispozici i 3V verze TX-SAW-L-3V (P.N. 650201410G). Klidový (stand-by) ' +
+      'proud typ. 0,1µA/max 1µA — extrémně nízký díky vypnutému oscilátoru mimo vysílání. ' +
+      'Proud při vysílání (TX) typ. 15mA (měřeno s obdélníkovým datovým signálem na vstupu). ' +
+      'RF spurious emise do 4GHz max -40dBm. Modulační kmitočet (obdélníkový signál) do 10kHz. ' +
+      'Úroveň vysoké logické úrovně na datovém vstupu (pin 15): 2,5-3V @napájení 3-12V nebo ' +
+      'až +Vcc @napájení 1,8-3V. Doba přepnutí stand-by→TX max 50µs. Provozní teplota -20 až ' +
+      '+70°C.',
+    tags: 'modul,rf,vysílač,saw,ask,aurel,tx-saw-434-l,tht,433mhz,regulovaný',
+  },
+  {
+    name: 'RFM75 / RFM75C',
+    packageType:
+      'SMD modul s tištěnou (meandr) anténou, rozměry 12,8×16,8×1,5mm (RFM75C, holá QFN20 ' +
+      '4×4mm čipová verze na malé destičce), 8 vývodů (rozteč 1,27mm): GND, VDD, CE, CSN, SCK, ' +
+      'MOSI, MISO, IRQ',
+    value:
+      '2,4GHz GFSK transceiver, 2400–2483,5MHz ISM pásmo, přenosová rychlost 250kbps/1Mbps/ ' +
+      '2Mbps, VDD 1,9–3,6V, SPI rozhraní do 8MHz, RF výstupní výkon do 4dBm, citlivost ' +
+      '-96dBm (250kbps)',
+    notes:
+      'HOPERF "RFM75 — Low Power High Performance 2.4 GHz GFSK Transceiver" (dok. V1.0, © 2013 ' +
+      'Beken Corporation — čip vyrábí Beken, modul distribuuje HOPERF). ⚠️ POZOR na možnou ' +
+      'záměnu s "RFM75W/RFM75PW" zmíněnými jako součást souhrnného katalogového záznamu ' +
+      '"HOPERF RFM9xW/RFM75W Series" v této knihovně — nejasný přesný vztah (možná starší/ ' +
+      'základní verze stejné produktové linie), zde evidováno zvlášť na základě vlastního ' +
+      'samostatného datasheetu s kompletními elektrickými parametry a registrovou mapou ' +
+      '(chybí v katalogovém souhrnu). Protokolově kompatibilní s populárním Nordic ' +
+      'nRF24L01+ (Enhanced ShockBurst — automatické potvrzování paketů/ACK, automatický ' +
+      'opakovaný přenos, 6 datových kanálů/"pipes" pro hvězdicové sítě 1:6, CRC). Burst mode ' +
+      'přenos s velmi nízkou spotřebou v klidu. Proměnná délka payloadu 1-32 bajtů. Formát ' +
+      'paketu: Preamble 1B, Adresa 3-5B, Packet Control 9/10bit (Payload Length 6bit + PID ' +
+      '2bit + NO_ACK 1bit), Payload 0-32B, CRC 2/1B. Stavový automat: Power Down → Standby-I ' +
+      '→ (Standby-II) → TX/RX, řízeno piny CE/VDD a SPI registry PWR_UP/PRIM_RX. RF kanál ' +
+      'F0=2400+RF_CH(MHz), rozlišení 1MHz. Tolerance krystalu ±60ppm @16MHz. Elektrické ' +
+      'parametry: VDD 1,9-3,6V (typ. 3,0V), Top -40 až +85°C. Klidové proudy: power-down typ. ' +
+      '3µA, standby-I typ. 50µA, standby-II typ. 300µA. TX proud dle výstupního výkonu: ' +
+      '9,8mA@-25dBm až 18mA@4dBm (max. výkon). RX proud: 16mA (250kbps/1Mbps) / 16,5mA ' +
+      '(2Mbps). Citlivost (BER 10⁻³): -96dBm@250kbps, -91dBm@1Mbps, -88dBm@2Mbps. Max. vstupní ' +
+      'výkon 10dBm. Typické aplikace: bezdrátové PC periferie, gamepady, bezdrátové audio, ' +
+      'dálkové ovládání, domácí automatizace, hračky.',
+    schematicImage: 'RFM75.jpg',
+    tags: 'modul,rf,transceiver,gfsk,2.4ghz,hoperf,beken,rfm75,rfm75c,spi,nrf24l01-kompatibilní',
+  },
+  {
+    name: 'RX-4MHCS',
+    packageType: 'THT modul, drátové vývody (rozteč 2,54mm), 15 pinů (piny 1/4/5/6 nevyužity)',
+    value:
+      '433,92 MHz OOK (AM) přijímač s dekodérem rolling code (HCS) a 4 výstupními kanály, ' +
+      'napájení 5V DC, výstupy s otevřeným kolektorem do 100 mA/kanál',
+    notes:
+      'AUREL S.p.A. "RX-4MHCS — 433.92 MHz OOK (AM) Receiver, 4 output channels" (User Manual, ' +
+      '16.1.2007). ⚠️ ODLIŠNÁ TŘÍDA součástky od ostatních RF modulů AUREL/HOPERF v této ' +
+      'knihovně (TX-SAW 434 L, RFM01, RFM210LCF-S1, RFM75) — nejde o holý RF přijímač/ ' +
+      'vysílač, ale o KOMPLETNÍ HOTOVÝ SYSTÉM s vestavěným dekodérem rolling code (HCS — ' +
+      'Hopping/Keeloq-like Code, ochrana proti replay útoku záznamem a přehráním signálu) a 4 ' +
+      'uživatelsky programovatelnými výstupy s tranzistory v zapojení otevřeného kolektoru — ' +
+      'určeno přímo pro ovládání relé/spotřebičů bez nutnosti vlastního mikrokontroléru/ ' +
+      'dekódovací logiky. Kompatibilní s dálkovými ovladači (keyfoby) AUREL: HCS-TX-1/2/3 ' +
+      '(OVO), TX1/2/3-HCS-433 (HCS), TX-2/4/6 M-HCS, TX-12 CH — přijímač rozpozná pouze ' +
+      'ovladače s HCS enkodérem naprogramovaným stejným výrobním kódem jako AUREL (na ' +
+      'požádání lze naprogramovat zákaznický kód). Piny: 2/7=GND, 3=Anténa, 8=Test Point ' +
+      '(analogový RX výstup), 9=programovací tlačítko, 10-13=Ch1-4 výstup (otevřený kolektor, ' +
+      'spouští se stiskem odpovídajícího tlačítka na ovladači), 14=LED výstup (anoda, ' +
+      'proud interně omezen na ~20mA rezistorem 180Ω), 15=Vcc (+5V). Každý výstup nezávisle ' +
+      'programovatelný na monostabilní režim (aktivní jen po dobu držení tlačítka na ovladači) ' +
+      'nebo bistabilní režim (přepíná stav při každém stisku — vhodné pro ovládání osvětlení/ ' +
+      'zámků). Paměť pro až 10 naučených ovladačů (auto-learning: přiblížení ovladače a stisk ' +
+      'libovolného tlačítka naučí všechny kanály najednou), možnost úplného smazání paměti ' +
+      'přes programovací tlačítko. Doporučená externí anténa: drát 17cm + zemní plocha. Max. ' +
+      'proud výstupního tranzistoru 100mA — při induktivní zátěži (relé) nutná ochranná dioda ' +
+      'paralelně k zátěži. Vhodné pro DPS s oboustrannou zemní plochou kolem přijímací sekce. ' +
+      'Aplikace: ovládání vrat/bran, poplašné/zabezpečovací systémy, kódovaný radiový spoj.',
+    tags: 'modul,rf,přijímač,ask,ook,rolling-code,hcs,dekodér,aurel,rx-4mhcs,tht,433mhz,relé',
+  },
+  {
+    name: 'HM-TRP Series',
+    packageType:
+      '9pin DIP nebo 9pin SMD modul, rozměry 16×20×2mm, piny: VCC, DTX, GND, DRX, CONFIG, ' +
+      'ENABLE, TEST (nezapojen), ANT (50Ω anténní vstup/výstup), GND',
+    value:
+      'Transparentní (transparent) FSK transceiver s UART rozhraním, 433/470/868/915 MHz ' +
+      '(dle objednacího kódu), VDD 2,4–3,6V, výstupní výkon 1–20 dBm (max. 100mW), citlivost ' +
+      '-117 dBm, přenosová rychlost 1,2–115,2 kbps',
+    notes:
+      'HOPERF (Hope Microelectronics) "HM-TRP Series — 100mW Transceiver Modules" (dok. V1.0). ' +
+      'Zmíněn v katalogu "HOPERF Catalog 2020" jako "HM-TRPW" v tabulce RF DATA modulů (viz ' +
+      'souhrnný záznam "HOPERF RFM/HM-TR Series" v této knihovně) — zde evidován s plnými ' +
+      'parametry z vlastního samostatného datasheetu; přesný vztah HM-TRP vs. HM-TRPW ' +
+      '(pravděpodobně jen jiná verze antény/balení) není v datasheetu specifikován. Na rozdíl ' +
+      'od jednoduchých modulů RFM01/RFM210LCF-S1/RFM75 v této knihovně (přímé řízení přes SPI ' +
+      'registry) je "transparentní" — data se posílají/přijímají přes standardní UART (TTL, ' +
+      'rozšiřitelné na RS232 přes externí MAX3232, schéma v datasheetu), modul sám řeší celé ' +
+      'RF přenosové pásmo, automaticky přepíná mezi vysíláním/příjmem. Piny CONFIG (nízko pro ' +
+      'konfigurační režim) a ENABLE (nízko pro normální provoz, vysoko = sleep mód) ovládají ' +
+      'stav modulu. Softwarová konfigurace přes jednoduché binární příkazy (formát "AA FA + ' +
+      'instrukce + parametr" stejnou rychlostí jako UART): pracovní kmitočet, vysílací výkon ' +
+      '(8 úrovní: 0=+1dBm až 7=+20dBm), přenosová rychlost, přijímací šířka pásma (30-620kHz), ' +
+      'kmitočtová odchylka/deviace (10-160kHz), rychlost UART, čtení RSSI (8bit, 0-255) a ' +
+      'rušivého RSSI. Reset na tovární nastavení a čtení aktuální konfigurace přes vyhrazené ' +
+      'příkazy. LED indikace (červená=TX aktivní, zelená bliká při příjmu dat, obě svítí v ' +
+      'konfiguračním režimu). Absolutní maximum: VCC -0,3 až +3,6V, Tstg -40 až +150°C, Top -40 ' +
+      'až +85°C, pájecí (reflow) teplota +260°C. Elektrické parametry: VCC 2,4-3,6V (typ. ' +
+      '3,3V), pracovní kmitočet dle objednacího kódu HM-TRP-433 (414-454MHz)/-470 (450-490MHz)/ ' +
+      '-868 (849-889MHz)/-915 (895-935MHz), max. výstupní výkon 18-20dBm. Citlivost dle ' +
+      'přenosové rychlosti (FSK, Fdev=35kHz): -117/-115dBm @1,2kbps, -114/-112dBm @9,6kbps, ' +
+      '-111/-109dBm @40kbps, -104/-102dBm @100kbps. TX proud 100-120mA @20dBm výkonu / ' +
+      '40-50mA @14dBm. RX proud 25-30mA. Sleep proud 1-2µA. Modulační rychlost 1,2-115,2kbps, ' +
+      'modulační deviace 10-160kHz, přijímací šířka pásma 30-620kHz. UART: 8 datových bitů, ' +
+      '1 stop bit, rychlost 1,2-115,2kbps. Tovární výchozí nastavení (všechny frekvenční ' +
+      'varianty): 9,6kbps datová/UART rychlost, 105kHz šířka pásma, 35kHz deviace, +20dBm ' +
+      'výkon. Vzdálenost přenosu >1km na otevřeném prostranství. Objednací kódy: HM-TRP-433D/S, ' +
+      '470D/S, 868D/S, 915D/S (D=DIP, S=SMD). Shoda s FCC, ETSI. Aplikace: dálkové ovládání/ ' +
+      'měření, přístupové systémy, bezdrátové měřiče, identifikační systémy, sběr dat, chytré/ ' +
+      'inteligentní domácí spotřebiče, monitorování kojenců.',
+    schematicImage: 'HM-TRP-Series.jpg',
+    tags: 'modul,rf,transceiver,fsk,transparentní,uart,hoperf,hm-trp,dip,smd,433mhz,470mhz,868mhz,915mhz,100mw',
+  },
+  {
+    name: 'HM-TRP-RS485 Series',
+    packageType:
+      'THT/panelová PCB s páskovým konektorem (šroubové svorky) a whip anténou přes SMA-like ' +
+      'konektor, rozměry desky 44,1×30×1,2mm, celková délka s anténou ~105,3mm',
+    value:
+      'Transparentní FSK transceiver s RS-485 rozhraním, 433/470/868/915 MHz (dle objednacího ' +
+      'kódu), VDD 2,4–3,6V, výstupní výkon 1–20 dBm (max. 100mW), citlivost -117 dBm, ' +
+      'přenosová rychlost 1,2–115,2 kbps',
+    notes:
+      'HOPERF (Hope Microelectronics) "HM-TRP-RS485 Series — 100mW Transceiver modules" (dok. ' +
+      'V1.0). Sesterský produkt k "HM-TRP Series" v této knihovně (viz jeho záznam pro plný ' +
+      'kontext transparentního FSK přenosu a konfiguračního protokolu) — VÝHRADNĚ jiné ' +
+      'rozhraní/formfaktor, jinak IDENTICKÝ RF/elektrický základ (shodné frekvence, výkony, ' +
+      'proudy, citlivost, konfigurace přes příkazy "AA FA+instrukce+parametr"). Namísto ' +
+      'jednoduchého TTL UART (piny DTX/DRX u HM-TRP) nabízí integrovaný RS-485 budič ' +
+      '(diferenciální, half-duplex, odolnější proti rušení na delší kabelové trasy typické pro ' +
+      'průmyslové sběrnice), a namísto malého 9pin DIP/SMD modulu jde o samostatnou PCB s ' +
+      'šroubovými svorkami a připojenou whip anténou — určeno pro přímé zapojení do RS-485 ' +
+      'sběrnicové instalace (např. jako bezdrátový most/repeater segmentu RS-485 sítě). ' +
+      'Vlastní RS-485 transceiver čip a jeho ochranné obvody nejsou v tomto dokumentu blíže ' +
+      'specifikovány (schéma zapojení v datasheetu ukazuje obecný diferenciální budič s ' +
+      'ochrannými rezistory na sběrnici). Absolutní maximum a elektrické parametry shodné s ' +
+      'HM-TRP: VCC -0,3 až +3,6V, Tstg -40 až +150°C, Top -40 až +85°C, reflow +260°C. RS-485 ' +
+      'datová rychlost 1,2-115,2kbps, 8 datových bitů, 1 stop bit. Tovární výchozí nastavení ' +
+      'shodné s HM-TRP: 9,6kbps, 105kHz šířka pásma, 35kHz deviace, +20dBm výkon. Objednací ' +
+      'kódy: HM-TRP-RS485-433/470/868/915. Shoda s FCC, ETSI.',
+    schematicImage: 'HM-TRP-RS485-Series.jpg',
+    tags: 'modul,rf,transceiver,fsk,rs485,hoperf,hm-trp-rs485,433mhz,470mhz,868mhz,915mhz,100mw,průmyslová-sběrnice',
+  },
+  {
+    name: 'DWM1000',
+    packageType:
+      'SMD modul s integrovanou anténou (Partron dielektrická čipová anténa ACS5200HFAUWB), ' +
+      '23×13×2,9mm, 24 vývodů typu "side castellation" (poloviční otvory na okraji desky), ' +
+      'SPI rozhraní (slave-only, do 20MHz při zamčeném PLL / 3MHz jinak)',
+    value:
+      'UWB (Ultra-Wideband) transceiver modul dle IEEE 802.15.4-2011, 4 RF pásma 3,5–6,5GHz, ' +
+      'přenosová rychlost 110kbps/850kbps/6,8Mbps, přesnost lokalizace do 10cm (TDOA nebo ' +
+      '2-way ranging), VDD 2,8–3,6V',
+    notes:
+      'Decawave "DWM1000 — IEEE802.15.4-2011 UWB Transceiver Module" (datasheet v1.6, © 2016). ' +
+      '⚠️ ZCELA NOVÁ RF TECHNOLOGIE v této knihovně — na rozdíl od všech ostatních RF modulů ' +
+      '(HOPERF RFM01/RFM75/RFM210LCF-S1/HM-TRP, Aurel TX-SAW/RX-4MHCS, viz jejich záznamy), ' +
+      'které používají úzkopásmovou FSK/GFSK/ASK/OOK modulaci v ISM pásmech pod 1GHz nebo ' +
+      '2,4GHz, DWM1000 vysílá extrémně krátké pulzy přes velmi široké spektrum (UWB — Ultra ' +
+      'Wideband), což umožňuje PŘESNÉ MĚŘENÍ VZDÁLENOSTI/POLOHY na základě doby letu signálu ' +
+      '(ToF) s přesností v řádu centimetrů — ne pouhý přenos dat. Postaveno na čipu Decawave ' +
+      'DW1000, integruje anténu, veškeré RF obvody, správu napájení a hodinové obvody v ' +
+      'jediném modulu (bez nutnosti vlastního RF návrhu). Určeno pro systémy reálného ' +
+      'lokalizování (RTLS) metodou obousměrného měření (two-way ranging) nebo TDOA (Time ' +
+      'Difference of Arrival), a pro lokalizačně uvědomělé bezdrátové senzorové sítě (WSN). ' +
+      'Piny: SPICLK/SPIMISO/SPIMOSI/SPICSn (SPI), WAKEUP (probuzení ze SLEEP/DEEPSLEEP), ' +
+      'EXTON (výstup pro řízení externích obvodů během buzení), RSTn (reset, aktivní nízko), ' +
+      'IRQ/GPIO8, GPIO0-7 (konfigurovatelné, volitelně LED indikace TX/RX/SFD/dobrý rámec), ' +
+      'VDDAON (napájení Always-On paměti), VDD3V3 (hlavní napájení, dočasně 3,8V pro ' +
+      'programování OTP). Vestavěné funkce: Always-On (AON) paměť pro zachování konfigurace v ' +
+      'nízkopříkonových stavech, 56×32bit OTP paměť pro kalibrační data, monitor napětí a ' +
+      'teploty čipu, generování/kontrola CRC a filtrování přijímaných rámců (MAC). Max. délka ' +
+      'paketu 1023 bajtů. Palubní krystal 38,4MHz, tovární kalibrace na ±2ppm (dále ' +
+      'kompenzovatelné softwarově dle teplotního monitoru přes plný rozsah). Programovatelný ' +
+      'výstupní výkon (hrubé kroky 3dB, jemné 0,5dB, celkový rozsah 37dB), navrženo pro shodu s ' +
+      'FCC a ETSI UWB spektrálními maskami (výkonová spektrální hustota -41,3dBm/MHz typicky ' +
+      'pro většinu regionů) — ⚠️ modul samotný NENÍ certifikován pro žádný konkrétní region, ' +
+      'certifikaci hotového výrobku musí zajistit uživatel. Elektrické parametry: proudový ' +
+      'odběr DEEP SLEEP typ. 200nA, SLEEP typ. 550nA, IDLE typ. 13,4mA, INIT typ. 3,5mA, TX ' +
+      'typ. 140mA (kanál 5, výkon 9,3dBm/500MHz), RX typ. 160mA (kanál 5). Citlivost přijímače ' +
+      '(20B payload, PER 10%): -106dBm@110kbps, -102dBm@850kbps, -94dBm@6,8Mbps; (PER 1%): ' +
+      '-102/-101/-93dBm. Frekvenční rozsah 3244-6999MHz, šířka kanálu 500MHz (kanály 1/2/3/5). ' +
+      'Absolutní maximum: napájení -0,3 až 4,0V, max. výkon na vstupu přijímače 0dBm, TJ -40 až ' +
+      '+85°C, ESD (HBM) 2000V. Aplikace: přesné lokalizační systémy v reálném čase (RTLS), ' +
+      'lokalizačně uvědomělé bezdrátové senzorové sítě.',
+    schematicImage: 'DWM1000.jpg',
+    tags: 'modul,rf,transceiver,uwb,ultra-wideband,lokalizace,rtls,ranging,decawave,dwm1000,ieee-802.15.4,spi',
+  },
+  {
+    name: 'RC-WLE5-868',
+    packageType:
+      'SMD modul s kovovým stínicím krytem, 14,5×13×2,8mm, 29 vývodů (rozteč 1,27mm), dvě ' +
+      'varianty: standardní s U.FL konektorem pro externí anténu (i vyvedený RF signál na ' +
+      'pinu 16 pro vlastní anténní návrh na DPS) nebo s integrovanou 868MHz šroubovicovou ' +
+      '(helical) anténou (RC-WLE5-868-HA)',
+    value:
+      'LoRa/multiprotokolový LPWAN modul s integrovaným 32bit Arm Cortex-M4 MCU (STM32WLE5JC), ' +
+      'pásmo 868MHz, VDD 2,5–3,7V, RF výstupní výkon do 18,5dBm, citlivost -140dBm',
+    notes:
+      'Radiocontrolli s.r.l. "RC-WLE5-868 / RC-WLE5-868-HA — Lora Wireless Module STM32WLE5 ' +
+      'based" (rev. 1.2). ⚠️ ARCHITEKTONICKY ODLIŠNÝ MODUL v této knihovně — na rozdíl od ' +
+      'ostatních RF modulů (HOPERF RFM01/RFM75/HM-TRP, Decawave DWM1000, viz jejich záznamy), ' +
+      'které jsou buď holé RF transceivery bez vlastního zpracování protokolu, nebo ' +
+      'transparentní UART mosty, obsahuje RC-WLE5-868 PLNOHODNOTNÝ MIKROKONTROLÉR (STM32WLE5JC ' +
+      '— Arm Cortex-M4 + integrovaný SX126x LoRa transceiver na jednom čipu) — modul lze přímo ' +
+      'naprogramovat vlastním firmwarem (přes SWD/ST-LINK nebo USART bootloader) a provozovat ' +
+      'samostatně bez externího hostitelského MCU, podobně jako ESP32-C3-MINI-1/WROOM-02 v ' +
+      'této knihovně (Wi-Fi/BLE varianta), jen s LoRa/(G)FSK/(G)MSK/BPSK LPWAN rádiem místo ' +
+      'Wi-Fi/BLE. STM32WLE5JC: Flash do 256KB, SRAM do 64KB, 12bit ADC, 12bit DAC se ' +
+      'sample-and-hold, dva ultra-nízkopříkonové komparátory s přesnou referencí, RTC s ' +
+      '32bit sub-sekundovým wakeup čítačem, 1× 16bit časovač, 2× 16bit 4kanálový časovač ' +
+      '(podpora řízení motorů), 1× 32bit 4kanálový časovač, 3× 16bit ultra-nízkopříkonový ' +
+      'časovač. Ochrana Flash/SRAM: readout protection, write protection, proprietární ' +
+      'ochrana čtení kódu. RF přepínač TX/RX řízen firmwarem přes piny PC3/PC4 (nejsou ' +
+      'vyvedeny na patici modulu, musí být ovládány interně). BOOT0 (pin PH3): nízko = ' +
+      'normální běh, vysoko = USART firmware upgrade režim; programování přes SWD nevyžaduje ' +
+      'BOOT0. Elektrické parametry: VCC 2,5-3,7V (typ. 3,3V), proud spánku typ. 2,0µA, proud ' +
+      'příjmu typ. 5,0mA, proud vysílání typ. 120mA, frekvence 868MHz, max. RF výkon 18,5dBm, ' +
+      'citlivost přijímače 140dBm (patrně -140dBm, model-specifický LoRa dosah), provozní ' +
+      'teplota -20 až +70°C. Doporučené zapojení: decoupling kondenzátory 4,7µF+0,1µF a ' +
+      'feritová korálka 600Ω/100MHz na VCC, měděná zemní plocha pod stíněnou zónou modulu s ' +
+      'vyříznutou (bez mědi) oblastí pod anténou. Aplikace: chytré měřiče, bezdrátové ' +
+      'zabezpečovací systémy, domácí/budovní automatizace, 6LoWPAN sítě, automatický odečet ' +
+      'měřidel, bezdrátové senzorové sítě, dálkové ovládání, veřejné osvětlení, parkovací ' +
+      'senzory, environmentální senzory, smart grid.',
+    schematicImage: 'RC-WLE5-868.jpg',
+    tags: 'modul,mcu,rf,lora,lpwan,stm32wle5,arm,cortex-m4,radiocontrolli,rc-wle5-868,868mhz,sx126x',
+  },
+  {
+    name: 'RFM22B / RFM23B',
+    packageType:
+      'SMD (S1/S2, 16×16mm) nebo THT DIP (D, 17×14mm), postaveno na 20pin QFN IC (D2=2,6mm, ' +
+      'JEDEC MO-220 VGGD-8), rozteč vývodů 0,5mm (QFN)/2mm (DIP), piny VCC/GND/GPIO_0-2/SDO/ ' +
+      'SDI/SCLK/nSEL/nIRQ/SDN/TX_ANT/RX_ANT/ANT (dle varianty pouzdra)',
+    value:
+      'ISM pásmový transceiver modul, 433/868/915MHz, FSK/GFSK/OOK modulace, citlivost ' +
+      '-121dBm, výstupní výkon RFM22B do +20dBm / RFM23B do +13dBm, datová rychlost ' +
+      '0,123-256kbps, VDD 1,8-3,6V',
+    schematicImage: 'RFM22B-RFM23B.jpg',
+    notes:
+      'HOPERF (Hope Microelectronics) "RFM22B/23B — ISM Transceiver Module" (dok. V1.0, 73 ' +
+      'stran, postaveno na čipu příbuzném Silicon Labs Si4432). ⚠️ Odlišný přístup od ' +
+      'transparentních modulů HM-TRP/HM-TRP-RS485 v této knihovně (viz jejich záznamy) — ' +
+      'RFM22B/23B je čistě REGISTROVĚ ŘÍZENÝ transceiver bez interního mikrokontroléru/UART ' +
+      'mostu, komunikuje s hostitelem výhradně přes SPI (4-vodičová sériová sběrnice SDI/SDO/ ' +
+      'SCLK/nSEL) a vyžaduje vlastní firmware pro konfiguraci a řízení paketů — podobná třída ' +
+      'jako RFM01/RFM75 v této knihovně, ale s bohatší sadou vestavěných funkcí. RFM22B a ' +
+      'RFM23B jsou identické kromě max. výstupního výkonu (RFM22B +20dBm/RFM23B +13dBm, oba ' +
+      'volitelné 0dBm-max v krocích 3dB). Vestavěné funkce: automatický budík (wake-up timer), ' +
+      'automatická korekce kmitočtu (AFC), power-on-reset (POR), anténní diverzita s řízením ' +
+      'TX/RX přepínače (TX_ANT/RX_ANT piny), konfigurovatelný paketový handler (preambule, ' +
+      'synchronizační slovo, CRC, data whitening/Manchester kódování), 64bajtové TX i RX FIFO, ' +
+      'detektor slabé baterie, teplotní senzor + 8bitový obecný ADC, integrované napěťové ' +
+      'regulátory, možnost frekvenčního hoppingu, on-chip kalibrace krystalu, ultra ' +
+      'nízkopříkonový shutdown mód (typ. 15nA). Elektrické parametry: proudové režimy ' +
+      'shutdown 15nA/standby 450nA/sleep 1µA/ready 800µA/tune 8,5mA, RX 18,5mA, TX 22mA@+1dBm ' +
+      'až 85mA@+20dBm (RFM22B) nebo 38mA@+13dBm (RFM23B). Frekvenční rozsah syntezátoru: ' +
+      '413-453MHz/848-888MHz/901-929MHz. Citlivost přijímače -121dBm (2kbps GFSK) až ' +
+      '-101dBm (125kbps GFSK), citlivost OOK -110 až -102dBm. Šířka přijímacího kanálu ' +
+      '2,6-620kHz. Modulační deviace ±0,625 až ±320kHz. Spurious emise max -54dBm. Provozní ' +
+      'teplota -40 až +85°C. GPIO výstupní proud do 5,4mA (dle konfigurace budiče DRV). ' +
+      'Objednací kód: <RFM22B/RFM23B>-<pásmo>-<pouzdro>, např. RFM22B-433-D (433MHz, DIP), ' +
+      'RFM22B-868-S1 (868MHz, SMD tloušťka 4,9mm). Aplikace: dálkové ovládání, domácí ' +
+      'zabezpečení/alarm, telemetrie, osobní datalogery, hračky, TPMS, bezdrátové periferie ' +
+      'PC, dálkový odečet měřidel, bezklíčový vstup, domácí automatizace, průmyslové řízení, ' +
+      'senzorové sítě, zdravotní monitory, RFID čtečky.',
+    tags: 'modul,rf,transceiver,ism,fsk,gfsk,ook,spi,hoperf,rfm22b,rfm23b,433mhz,868mhz,915mhz,qfn',
   },
 ];
 
@@ -4127,6 +4877,7 @@ export function buildModuleSeed(): ComponentInput[] {
     quantity: 0,
     location: null,
     datasheetUrl: null,
+    schematicImage: spec.schematicImage ?? null,
     notes: spec.notes,
     tags: spec.tags,
   }));

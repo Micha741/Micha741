@@ -1,4 +1,4 @@
-import type { ComponentInput } from '../types/component';
+import type { ComponentCategory, ComponentInput } from '../types/component';
 
 interface MiscSpec {
   name: string;
@@ -6,6 +6,8 @@ interface MiscSpec {
   value: string;
   notes: string;
   tags: string;
+  schematicImage?: string;
+  category?: ComponentCategory;
 }
 
 const MISC_SPECS: MiscSpec[] = [
@@ -37,6 +39,7 @@ const MISC_SPECS: MiscSpec[] = [
       '50 Ω, výkonová zatížitelnost 20 W (CW). RF konektory 2,92 mm samičí (K), tělo hliníkové s ' +
       'černým lakováním. Provozní teplota -40 až +80 °C (specifikováno při +25 °C). RoHS. ' +
       'Doporučen speciální momentový klíč Eravant SCH-08008-S1 pro správné dotažení konektorů.',
+    schematicImage: 'SCD-0134032010-KF-SA.jpg',
     tags: 'rf,mikrovlny,směrový-odbočovač,directional-coupler,koaxiální,sage-millimeter,eravant,k-konektor',
   },
   {
@@ -61,6 +64,8 @@ const MISC_SPECS: MiscSpec[] = [
       'shora), duty cycle statický (přímé buzení, žádné sdílené COM elektrody), budicí napětí ' +
       '5,0 V (typicky střídavé, pro zabránění degradaci LCD stejnosměrným polem). Provozní ' +
       'teplota 0 až +50 °C, skladovací -15 až +60 °C.',
+    schematicImage: 'GD-342AP.jpg',
+    category: 'LCD',
     tags: 'lcd,displej,segmentový,statický,az-displays,gd-342ap,7segment,pasivní',
   },
   {
@@ -73,6 +78,7 @@ const MISC_SPECS: MiscSpec[] = [
       '6místný 7segmentový multiplexovaný LCD displej (1/4 duty, 1/3 bias) s doplňkovými ' +
       'ikonovými/šipkovými segmenty (T1-T8) a kruhovým ikonovým polem, 6 desetinných teček ' +
       '(DP1-DP6), napájení 3,0 V, TN typ, transflektivní',
+    schematicImage: 'GD-458P.jpg',
     notes:
       'AZ Displays, Inc. mechanický výkres "GD-458P" (datováno 9. 1. 1997) — ⚠️ pasivní ' +
       'segmentové LCD sklo jako GD-342AP (samostatný záznam) — viz tam pro obecné vysvětlení ' +
@@ -85,6 +91,7 @@ const MISC_SPECS: MiscSpec[] = [
       'směrové šipky/ukazatele stavu) a jedno kruhové ikonové pole (u T4, možný symbol napájení/ ' +
       'stupně/baterie) — vhodné pro měřicí přístroj s doplňkovými stavovými indikátory. Pozorovací ' +
       'úhel 12 hodin. Budicí napětí 3,0 V. Provozní teplota 0 až +55 °C, skladovací -15 až +60 °C.',
+    category: 'LCD',
     tags: 'lcd,displej,segmentový,multiplexovaný,az-displays,gd-458p,7segment,pasivní,ikony',
   },
   {
@@ -112,6 +119,8 @@ const MISC_SPECS: MiscSpec[] = [
       'pojmenovaný díl FE0202W-EU z názvu souboru. Určeno pro provoz v širokém teplotním rozsahu ' +
       'a vysoké vlhkosti (přesné meze v tomto souhrnném katalogu neuvedeny, jen v plném ' +
       'datasheetu dílu).',
+    schematicImage: 'FE0202W-EU.jpg',
+    category: 'LCD',
     tags: 'lcd,displej,segmentový,panel,and-displays,purdy,fe0202w,7segment,pasivní,transflektivní',
   },
   {
@@ -135,6 +144,7 @@ const MISC_SPECS: MiscSpec[] = [
       'od téhož výrobce. Provozní teplota -25 až +60 °C, skladovací teplota -30 až +80 °C. ' +
       'Zařazeno do kategorie "Ostatní" jako čistě pasivní optická/mechanická součástka bez ' +
       'vlastní elektroniky.',
+    schematicImage: 'IML-0638.jpg',
     tags: 'optika,fresnelova-čočka,hdpe,pir,murata,ira-e,pohybový-senzor,pasivní',
   },
   {
@@ -165,6 +175,7 @@ const MISC_SPECS: MiscSpec[] = [
       'dráhu čočky. Materiál HDPE (vysokohustotní polyetylen), barva přírodní/bílá. Provozní ' +
       'teplota -25 až +60 °C, skladovací teplota -30 až +80 °C. Zařazeno do kategorie "Ostatní" ' +
       'jako čistě pasivní optická/mechanická součástka bez vlastní elektroniky.',
+    schematicImage: 'IML-0637.jpg',
     tags: 'optika,fresnelova-čočka,hdpe,pir,murata,ira-e,pohybový-senzor,pasivní',
   },
   {
@@ -193,6 +204,7 @@ const MISC_SPECS: MiscSpec[] = [
       'Materiál HDPE (vysokohustotní polyetylen), barva přírodní/bílá. Provozní teplota -25 až ' +
       '+60 °C, skladovací teplota -30 až +80 °C. Zařazeno do kategorie "Ostatní" jako čistě ' +
       'pasivní optická/mechanická součástka bez vlastní elektroniky.',
+    schematicImage: 'IML-0662N000-T1.jpg',
     tags: 'optika,fresnelova-čočka,hdpe,pir,murata,smd,pohybový-senzor,pasivní',
   },
   {
@@ -219,6 +231,7 @@ const MISC_SPECS: MiscSpec[] = [
       'skladovací teplota -30 až +80 °C (shodné s ostatními čočkami řady IML v této knihovně). ' +
       'Zařazeno do kategorie "Ostatní" jako čistě pasivní optická/mechanická součástka bez ' +
       'vlastní elektroniky.',
+    schematicImage: 'IML-0660.jpg',
     tags: 'optika,fresnelova-čočka,hdpe,pir,murata,smd,pohybový-senzor,pasivní,discontinued',
   },
   {
@@ -299,13 +312,14 @@ const MISC_SPECS: MiscSpec[] = [
 export function buildMiscSeed(): ComponentInput[] {
   return MISC_SPECS.map((spec) => ({
     name: spec.name,
-    category: 'Ostatní',
+    category: spec.category ?? 'Ostatní',
     manufacturer: null,
     packageType: spec.packageType,
     value: spec.value,
     quantity: 0,
     location: null,
     datasheetUrl: null,
+    schematicImage: spec.schematicImage ?? null,
     notes: spec.notes,
     tags: spec.tags,
   }));

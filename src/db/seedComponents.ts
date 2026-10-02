@@ -36,6 +36,7 @@ function buildResistorSeed(): ComponentInput[] {
         quantity: 0,
         location: null,
         datasheetUrl: null,
+        schematicImage: null,
         notes: 'Metalizovaný rezistor, řada E12, tolerance 5 %, 0,25 W',
         tags: 'rezistor,E12,0.25W,5%',
       });
@@ -96,6 +97,7 @@ function buildCapacitorSeed(): ComponentInput[] {
     quantity: 0,
     location: null,
     datasheetUrl: null,
+    schematicImage: null,
     notes: spec.notes,
     tags: `kondenzátor,${spec.type.split(' ')[0]}`,
   }));
@@ -107,6 +109,8 @@ interface PartSpec {
   value: string;
   notes: string;
   tags: string;
+  /** Klíč do SCHEMATIC_IMAGES (src/assets/schematicImages.ts), pokud pro díl existuje schéma. */
+  schematicImage?: string;
 }
 
 const DIODE_SPECS: PartSpec[] = [
@@ -138,6 +142,7 @@ const DIODE_SPECS: PartSpec[] = [
       'vakuové pájení čipu bez dutin (void-free), IRM max 1,0 µA @25°C při jmenovitém VDC, CJ typ ' +
       '12 pF @1MHz/4V, TJ/Tstg -65 až +150°C. Io=1000 mA (@TA=50°C, délka vývodu 9,5mm), IFSM=35 A ' +
       '(8,3ms půlvlna), VFM max 1,5 V (při jmenovitém proudu).',
+    schematicImage: 'GP1xxx.jpg',
     tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1120,do-41',
   },
   {
@@ -148,6 +153,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Diotec Electronics Corp. "High Voltage Diode Rectifiers" (dok. HVGP-1000-1C/2B) — součást ' +
       'řady GP1120–GP1600, viz poznámka u GP1120 pro společné specifikace. VRM=1500 V, VRRM=1500 V, ' +
       'VRMS=1050 V. Io=1000 mA (@TA=50°C), IFSM=35 A, VFM max 1,5 V.',
+    schematicImage: 'GP1xxx.jpg',
     tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1150,do-41',
   },
   {
@@ -158,6 +164,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
       'poznámka u GP1120 pro společné specifikace. VRM=1800 V, VRRM=1800 V, VRMS=1260 V. Io=1000 mA ' +
       '(@TA=50°C), IFSM=35 A, VFM max 1,5 V.',
+    schematicImage: 'GP1xxx.jpg',
     tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1180,do-41',
   },
   {
@@ -168,6 +175,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
       'poznámka u GP1120 pro společné specifikace. VRM=2000 V, VRRM=2000 V, VRMS=1400 V. Io=1000 mA ' +
       '(@TA=50°C), IFSM=35 A, VFM max 1,5 V.',
+    schematicImage: 'GP1xxx.jpg',
     tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1200,do-41',
   },
   {
@@ -178,6 +186,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
       'poznámka u GP1120 pro společné specifikace. VRM=2500 V, VRRM=2500 V, VRMS=1750 V. Io=500 mA ' +
       '(@TA=50°C), IFSM=25 A, VFM max 3,0 V.',
+    schematicImage: 'GP1xxx.jpg',
     tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1250,do-41',
   },
   {
@@ -188,6 +197,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
       'poznámka u GP1120 pro společné specifikace. VRM=3000 V, VRRM=3000 V, VRMS=2100 V. Io=500 mA ' +
       '(@TA=50°C), IFSM=25 A, VFM max 3,0 V.',
+    schematicImage: 'GP1xxx.jpg',
     tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1300,do-41',
   },
   {
@@ -198,6 +208,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
       'poznámka u GP1120 pro společné specifikace. VRM=4000 V, VRRM=4000 V, VRMS=2800 V. Io=500 mA ' +
       '(@TA=50°C), IFSM=25 A, VFM max 3,0 V.',
+    schematicImage: 'GP1xxx.jpg',
     tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1400,do-41',
   },
   {
@@ -208,6 +219,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
       'poznámka u GP1120 pro společné specifikace. VRM=5000 V, VRRM=5000 V, VRMS=3500 V. Io=200 mA ' +
       '(@TA=50°C), IFSM=15 A, VFM max 4,5 V.',
+    schematicImage: 'GP1xxx.jpg',
     tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1500,do-41',
   },
   {
@@ -218,6 +230,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Diotec Electronics Corp. "High Voltage Diode Rectifiers" — součást řady GP1120–GP1600, viz ' +
       'poznámka u GP1120 pro společné specifikace. VRM=6000 V, VRRM=6000 V, VRMS=4200 V. Io=200 mA ' +
       '(@TA=50°C), IFSM=15 A, VFM max 6,0 V.',
+    schematicImage: 'GP1xxx.jpg',
     tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1600,do-41',
   },
 
@@ -244,6 +257,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
       'RθJA=88 °C/W (na FR4 desce). ' +
       'VF max 500 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    schematicImage: 'SS12-S100.jpg',
     tags: 'dioda,schottky,smd,sma,ss12',
   },
   {
@@ -257,6 +271,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
       'RθJA=88 °C/W (na FR4 desce). ' +
       'VF max 500 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    schematicImage: 'SS12-S100.jpg',
     tags: 'dioda,schottky,smd,sma,ss13',
   },
   {
@@ -270,6 +285,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
       'RθJA=88 °C/W (na FR4 desce). ' +
       'VF max 500 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    schematicImage: 'SS12-S100.jpg',
     tags: 'dioda,schottky,smd,sma,ss14',
   },
   {
@@ -283,6 +299,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
       'RθJA=88 °C/W (na FR4 desce). ' +
       'VF max 700 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    schematicImage: 'SS12-S100.jpg',
     tags: 'dioda,schottky,smd,sma,ss15',
   },
   {
@@ -296,6 +313,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
       'RθJA=88 °C/W (na FR4 desce). ' +
       'VF max 700 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    schematicImage: 'SS12-S100.jpg',
     tags: 'dioda,schottky,smd,sma,ss16',
   },
   {
@@ -309,6 +327,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
       'RθJA=88 °C/W (na FR4 desce). ' +
       'VF max 850 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    schematicImage: 'SS12-S100.jpg',
     tags: 'dioda,schottky,smd,sma,ss18',
   },
   {
@@ -322,6 +341,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
       'RθJA=88 °C/W (na FR4 desce). ' +
       'VF max 850 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    schematicImage: 'SS12-S100.jpg',
     tags: 'dioda,schottky,smd,sma,ss19',
   },
   {
@@ -336,6 +356,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
       'RθJA=88 °C/W (na FR4 desce). ' +
       'VF max 850 mV @IF=1,0 A/25 °C. IR max 0,2 mA @25 °C (max 10 mA @100 °C) při jmenovitém VR.',
+    schematicImage: 'SS12-S100.jpg',
     tags: 'dioda,schottky,smd,sma,s100',
   },
   { name: 'SS34', packageType: 'SMB (SMD)', value: '3 A / 40 V', notes: 'Schottky dioda, SMD', tags: 'dioda,schottky,smd' },
@@ -344,6 +365,7 @@ const DIODE_SPECS: PartSpec[] = [
     packageType:
       'X3DFN2 (SMD), rozměry 0,62×0,32×0,24 mm, rozteč 0,35 mm, 2 vývody: 1=katoda, 2=anoda',
     value: 'Schottky dioda, VR 30 V, IF 100 mA (DC), VF max 350 mV @IF=1 mA',
+    schematicImage: 'NSR01L30MXT5G.jpg',
     notes:
       'onsemi "NSR01L30MX — Schottky Barrier Diode" (dok. NSR01L30MX/D, rev. 5, 2026) — extrémně ' +
       'malé pouzdro (velikost srovnatelná s 0201 pasivní SMD součástkou), optimalizováno na nízký ' +
@@ -452,6 +474,7 @@ const DIODE_SPECS: PartSpec[] = [
       '875 mA (pulz ≤5 ms, duty ≤50 %), TJ max 135 °C, provozní teplota pouzdra -40 až 120 °C, ' +
       'ESD třída 3A (ANSI/ESDA/JEDEC JS-001-2012), vlhkostní citlivost MSL1 (JEDEC 020c), pájení ' +
       'reflow max 260 °C (max. 3 cykly). LUXEON LED nejsou určeny k provozu v závěrném směru.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,far-red',
   },
   {
@@ -472,6 +495,7 @@ const DIODE_SPECS: PartSpec[] = [
       'úhel 145°/125° (typ.). Tepelný odpor přechod–pájecí ploška 8,00 °C/W. Mezní hodnoty stejná ' +
       'skupina jako Far Red: DC 700 mA, špičkově 875 mA, TJ max 135 °C, pouzdro -40 až 120 °C, ' +
       'ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,deep-red',
   },
   {
@@ -493,6 +517,7 @@ const DIODE_SPECS: PartSpec[] = [
       'jde o tři odlišné objednací kódy, ne o binovou variantu jedné součástky. Pološířka 20 nm, ' +
       'teplotní koef. vlnové délky 0,05 nm/°C, vyzařovací úhel 145°/125° (typ.). Mezní hodnoty: ' +
       'DC 700 mA, špičkově 875 mA, TJ max 135 °C, pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,red,lxm2',
   },
   {
@@ -513,6 +538,7 @@ const DIODE_SPECS: PartSpec[] = [
       '20 nm, teplotní koef. vlnové délky 0,05 nm/°C, vyzařovací úhel 145°/125° (typ.). Tepelný ' +
       'odpor přechod–pájecí ploška 12,00 °C/W. Mezní hodnoty: DC 700 mA, špičkově 875 mA, TJ max ' +
       '135 °C, pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,red,lxml',
   },
   {
@@ -531,6 +557,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Testováno IF=350 mA, TJ=25 °C. Pološířka 20 nm, teplotní koef. vlnové délky 0,05 nm/°C, ' +
       'vyzařovací úhel 145°/125° (typ.). Mezní hodnoty: DC 700 mA, špičkově 875 mA, TJ max 135 °C, ' +
       'pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,red,lxm5',
   },
   {
@@ -549,6 +576,7 @@ const DIODE_SPECS: PartSpec[] = [
       '— tři odlišné objednací kódy. Testováno IF=350 mA, TJ=25 °C. Pološířka 20 nm, teplotní koef. ' +
       'vlnové délky 0,08 nm/°C, vyzařovací úhel 145°/125° (typ.). Mezní hodnoty: DC 700 mA, ' +
       'špičkově 875 mA, TJ max 135 °C, pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,red-orange,lxm2',
   },
   {
@@ -566,6 +594,7 @@ const DIODE_SPECS: PartSpec[] = [
       'TJ=25 °C. Pološířka 20 nm, teplotní koef. vlnové délky 0,08 nm/°C, vyzařovací úhel 145°/125° ' +
       '(typ.). Tepelný odpor přechod–pájecí ploška 12,00 °C/W. Mezní hodnoty: DC 700 mA, špičkově ' +
       '875 mA, TJ max 135 °C, pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,red-orange,lxml',
   },
   {
@@ -583,6 +612,7 @@ const DIODE_SPECS: PartSpec[] = [
       'minimu (90 lm typ. při min. 50 lm). Testováno IF=350 mA, TJ=25 °C. Pološířka 20 nm, teplotní ' +
       'koef. vlnové délky 0,08 nm/°C, vyzařovací úhel 145°/125° (typ.). Mezní hodnoty: DC 700 mA, ' +
       'špičkově 875 mA, TJ max 135 °C, pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,red-orange,lxm5',
   },
   {
@@ -604,6 +634,7 @@ const DIODE_SPECS: PartSpec[] = [
       'hodnoty PC Amber jsou přísnější než u ostatní rodiny Far Red/Deep Red/Red/Red-Orange/Amber: ' +
       'TJ max jen 130 °C (ne 135 °C) a provozní teplota pouzdra jen -40 až 110 °C (ne -40 až ' +
       '120 °C), přestože DC proud 700 mA a špičkový 875 mA jsou stejné. ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,pc-amber,lxm2',
   },
   {
@@ -622,6 +653,7 @@ const DIODE_SPECS: PartSpec[] = [
       'IF=350 mA, TJ=25 °C. Pološířka 20 nm, teplotní koef. vlnové délky 0,10 nm/°C, vyzařovací ' +
       'úhel 145°/125° (typ.). Mezní hodnoty stejná skupina jako Far Red/Red/Red-Orange: DC 700 mA, ' +
       'špičkově 875 mA, TJ max 135 °C, pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,amber,lxml',
   },
   {
@@ -639,6 +671,7 @@ const DIODE_SPECS: PartSpec[] = [
       'odpor v rodině Amber (7,00 °C/W). Testováno IF=350 mA, TJ=25 °C. Pološířka 20 nm, teplotní ' +
       'koef. vlnové délky 0,10 nm/°C, vyzařovací úhel 145°/125° (typ.). Mezní hodnoty: DC 700 mA, ' +
       'špičkově 875 mA, TJ max 135 °C, pouzdro -40 až 120 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,amber,lxm5',
   },
   {
@@ -659,6 +692,7 @@ const DIODE_SPECS: PartSpec[] = [
       '145°/125° (typ.). Tepelný odpor přechod–pájecí ploška 6,00 °C/W. Mezní hodnoty (tabulka pro ' +
       'TJ=85 °C): DC proud 1000 mA, špičkový 1200 mA, TJ max 150 °C, provozní teplota pouzdra -40 ' +
       'až 135 °C, ESD 3A, autokláv 100% RH/96 h max.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,lime',
   },
   {
@@ -676,6 +710,7 @@ const DIODE_SPECS: PartSpec[] = [
       'odpor přechod–pájecí ploška 10,00 °C/W. Mezní hodnoty (skupina Green/Cyan/Blue/Royal Blue): ' +
       'DC proud 1000 mA, špičkový pulzní proud 1200 mA, TJ max 150 °C, provozní teplota pouzdra ' +
       '-40 až 135 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,green',
   },
   {
@@ -692,6 +727,7 @@ const DIODE_SPECS: PartSpec[] = [
       'úhel 145°/125° (typ.). Tepelný odpor přechod–pájecí ploška 10,00 °C/W. Mezní hodnoty ' +
       '(skupina Green/Cyan/Blue/Royal Blue): DC proud 1000 mA, špičkový 1200 mA, TJ max 150 °C, ' +
       'provozní teplota pouzdra -40 až 135 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,cyan',
   },
   {
@@ -710,6 +746,7 @@ const DIODE_SPECS: PartSpec[] = [
       'vlnové délky 0,05 nm/°C, vyzařovací úhel 145°/125° (typ.). Tepelný odpor přechod–pájecí ' +
       'ploška 10,00 °C/W. Mezní hodnoty (skupina Green/Cyan/Blue/Royal Blue): DC proud 1000 mA, ' +
       'špičkový 1200 mA, TJ max 150 °C, provozní teplota pouzdra -40 až 135 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,blue',
   },
   {
@@ -730,6 +767,7 @@ const DIODE_SPECS: PartSpec[] = [
       'odpor přechod–pájecí ploška 10,00 °C/W. Mezní hodnoty (skupina Green/Cyan/Blue/Royal Blue): ' +
       'DC proud 1000 mA, špičkový 1200 mA, TJ max 150 °C, provozní teplota pouzdra -40 až 135 °C, ' +
       'ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,royal-blue',
   },
   {
@@ -751,6 +789,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Tepelný odpor přechod–pájecí ploška 6,00 °C/W (nižší než u PR01 díky odlišné mechanice). ' +
       'Mezní hodnoty (skupina ES Blue/ES Royal Blue): DC proud 1000 mA, špičkový pulzní proud ' +
       '1200 mA, TJ max 150 °C, provozní teplota pouzdra -40 až 135 °C, ESD 3A, MSL1.',
+    schematicImage: 'LXML-Rebel-Color.jpg',
     tags: 'dioda,led,výkonová,smd,luxeon,luxeon-rebel,royal-blue,es',
   },
   {
@@ -779,6 +818,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(ANSI/ESDA/JEDEC JS-001, třída 3B — výrazně vyšší než běžné LED). Zvýšená odolnost proti ' +
       'korozi (testováno 40 °C/90 % RH/15 ppm H2S/336 h). Pájení reflow: MSL2 (JEDEC J-STD-020D.01), ' +
       'doporučený vrchol 245 °C (max. 260 °C).',
+    schematicImage: 'LCW-CR7P-OSLON80.jpg',
     tags: 'dioda,led,výkonová,smd,bílá,oslon,oslon-ssl-80,osram',
   },
   {
@@ -807,6 +847,7 @@ const DIODE_SPECS: PartSpec[] = [
       'odpovídající IV typ. 3300–8270 mcd), 3 skupin dominantní vlnové délky (2/3/4, 600–609 nm) ' +
       'a 4 skupin propustného napětí (3A/3B/4A/4B, 1,80–2,40 V) — zákazník obdrží v jedné baleny ' +
       'jednotce vždy jen jednu konkrétní kombinaci skupin (např. LO T64F-CBEB-24-1).',
+    schematicImage: 'TOPLED-Black.jpg',
     tags: 'dioda,led,výkonová,smd,oranžová,plcc-2,černé-pouzdro,vms,osram,topled-black',
   },
   {
@@ -833,6 +874,7 @@ const DIODE_SPECS: PartSpec[] = [
       'oranžového LO T64F, který má 3 vlnové skupiny, LR T66F má jen jednu (užší výrobní rozptyl ' +
       'nebo novější/zjednodušený binning). Objednací kódy např. LR T66F-BABB-1, ' +
       'LR T66F-ABBA-1-1, LR T66F-AACA-1-3A4B.',
+    schematicImage: 'TOPLED-Black.jpg',
     tags: 'dioda,led,výkonová,smd,červená,plcc-2,černé-pouzdro,vms,osram,topled-black',
   },
   {
@@ -859,6 +901,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Binováno do 6 jasových skupin (J1/J2/K1/K2/L1/L2, IV 4,5–18 mcd @IF=2 mA, světelný tok ' +
       'typ. 15,2–48 mlm) a 5 skupin dominantní vlnové délky (2–6, 580–595 nm). Objednací kód ' +
       'např. LY M67K-J1L2-26.',
+    schematicImage: 'LYM67K.jpg',
     tags: 'dioda,led,smd,žlutá,mini-topled,indikátor,podsvícení,automotive,osram',
   },
   {
@@ -869,6 +912,7 @@ const DIODE_SPECS: PartSpec[] = [
     value:
       'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, VRM 56 V, VBO 82 V, IPP 50 A ' +
       '(10/1000 µs)',
+    schematicImage: 'SMTPA-series.jpg',
     notes:
       'STMicroelectronics SMTPA série "TRISIL" (dok. říjen 1998, ed. 7A; ⚠️ aktualizováno a ' +
       'potvrzeno sloučeným datasheetem SMP50/SMTPA/TPA, červen 2007, rev. 3 — beze změny ' +
@@ -886,7 +930,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(hmotnost 0,068 g) a v drátovém pouzdru DO-15 pod ozn. TPAxxx (hmotnost 0,40 g) se ' +
       'shodnými elektrickými parametry jako SMB verze SMTPAxxx v této knihovně. ' +
       'SMTPA62: VRM (stand-off napětí) 56 V, IRM max 2 µA @VRM. VR (trvalé závěrné napětí) 62 V, ' +
-      'IR max 50 µA @VR. VBO (breakover napětí, statický test) max 82 V @IBO=800 mA; dynamický ' +
+      'IR max 5 µA @VR. VBO (breakover napětí, statický test) max 82 V @IBO=800 mA; dynamický ' +
       'VBO (test okruh 1, 100 V/µs, IPP=50 A) max 85 V. IH (přídržný proud) min ' +
       '150 mA. C typ 20 pF @VR=50 V / 40 pF @VR=2 V (C max dle staršího vydání 150 pF). Mezní hodnoty (společné pro celou řadu): výkonová ztráta P=5 W ' +
       '@Tlead=50 °C; IPP (10/1000 µs)=50 A, (8/20 µs)=150 A, (10/560 µs)=55 A, (5/310 µs)=65 A, ' +
@@ -914,11 +958,12 @@ const DIODE_SPECS: PartSpec[] = [
     value:
       'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, VRM 61 V, VBO 90 V, IPP 50 A ' +
       '(10/1000 µs)',
+    schematicImage: 'SMTPA-series.jpg',
     notes:
       'STMicroelectronics SMTPA série "TRISIL" (dok. říjen 1998, ed. 7A) — součást stejné řady ' +
       '10 dílů jako SMTPA62/100/120/130/180/200/220/240/270 (samostatné záznamy) — viz záznam ' +
       'SMTPA62 pro plný popis principu funkce, mezních hodnot a shody se standardy. SMTPA68: ' +
-      'VRM 61 V, IRM max 2 µA @VRM. VR 68 V, IR max 50 µA @VR. VBO max 90 V @IBO=800 mA; ' +
+      'VRM 61 V, IRM max 2 µA @VRM. VR 68 V, IR max 5 µA @VR. VBO max 90 V @IBO=800 mA; ' +
       'dynamický VBO max 93 V. IH min ' +
       '150 mA. C typ 20 pF @VR=50 V / 40 pF @VR=2 V. ⚠️ Dostupné i v pouzdru SMA (SMP50-68) a ' +
       'DO-15 (TPA68) se shodnými parametry (sloučený datasheet 2007).',
@@ -932,11 +977,12 @@ const DIODE_SPECS: PartSpec[] = [
     value:
       'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, VRM 90 V, VBO 133 V, IPP 50 A ' +
       '(10/1000 µs)',
+    schematicImage: 'SMTPA-series.jpg',
     notes:
       'STMicroelectronics SMTPA série "TRISIL" (dok. říjen 1998, ed. 7A) — součást stejné řady ' +
       '10 dílů jako SMTPA62/68/120/130/180/200/220/240/270 (samostatné záznamy) — viz záznam ' +
       'SMTPA62 pro plný popis principu funkce, mezních hodnot a shody se standardy. SMTPA100: ' +
-      'VRM 90 V, IRM max 2 µA @VRM. VR 100 V, IR max 50 µA @VR. VBO max 133 V @IBO=800 mA; ' +
+      'VRM 90 V, IRM max 2 µA @VRM. VR 100 V, IR max 5 µA @VR. VBO max 133 V @IBO=800 mA; ' +
       'dynamický VBO max 135 V. IH ' +
       'min 150 mA. C typ 16 pF @VR=50 V / 35 pF @VR=2 V (nižší než u SMTPA62/68 díky nižší ' +
       'kapacitě přechodu při vyšším napětí). ⚠️ Dostupné i v pouzdru SMA (SMP50-100) a DO-15 ' +
@@ -951,11 +997,12 @@ const DIODE_SPECS: PartSpec[] = [
     value:
       'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, VRM 108 V, VBO 160 V, IPP 50 A ' +
       '(10/1000 µs)',
+    schematicImage: 'SMTPA-series.jpg',
     notes:
       'STMicroelectronics SMTPA série "TRISIL" (dok. říjen 1998, ed. 7A) — součást stejné řady ' +
       '10 dílů jako SMTPA62/68/100/130/180/200/220/240/270 (samostatné záznamy) — viz záznam ' +
       'SMTPA62 pro plný popis principu funkce, mezních hodnot a shody se standardy. SMTPA120: ' +
-      'VRM 108 V, IRM max 2 µA @VRM. VR 120 V, IR max 50 µA @VR. VBO max 160 V @IBO=800 mA; ' +
+      'VRM 108 V, IRM max 2 µA @VRM. VR 120 V, IR max 5 µA @VR. VBO max 160 V @IBO=800 mA; ' +
       'dynamický VBO max 160 V. IH ' +
       'min 150 mA. C typ 16 pF @VR=50 V / 30 pF @VR=2 V. ⚠️ Dostupné i v pouzdru SMA (SMP50-120) ' +
       'a DO-15 (TPA120) se shodnými parametry (sloučený datasheet 2007).',
@@ -969,11 +1016,12 @@ const DIODE_SPECS: PartSpec[] = [
     value:
       'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, VRM 117 V, VBO 173 V, IPP 50 A ' +
       '(10/1000 µs)',
+    schematicImage: 'SMTPA-series.jpg',
     notes:
       'STMicroelectronics SMTPA série "TRISIL" (dok. říjen 1998, ed. 7A) — součást stejné řady ' +
       '10 dílů jako SMTPA62/68/100/120/180/200/220/240/270 (samostatné záznamy) — viz záznam ' +
       'SMTPA62 pro plný popis principu funkce, mezních hodnot a shody se standardy. SMTPA130: ' +
-      'VRM 117 V, IRM max 2 µA @VRM. VR 130 V, IR max 50 µA @VR. VBO max 173 V @IBO=800 mA; ' +
+      'VRM 117 V, IRM max 2 µA @VRM. VR 130 V, IR max 5 µA @VR. VBO max 173 V @IBO=800 mA; ' +
       'dynamický VBO max 173 V. IH ' +
       'min 150 mA. C typ 14 pF @VR=50 V / 30 pF @VR=2 V. ⚠️ Dostupné i v pouzdru SMA (SMP50-130) ' +
       'a DO-15 (TPA130) se shodnými parametry (sloučený datasheet 2007).',
@@ -987,11 +1035,12 @@ const DIODE_SPECS: PartSpec[] = [
     value:
       'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, VRM 162 V, VBO 240 V, IPP 50 A ' +
       '(10/1000 µs)',
+    schematicImage: 'SMTPA-series.jpg',
     notes:
       'STMicroelectronics SMTPA série "TRISIL" (dok. říjen 1998, ed. 7A) — součást stejné řady ' +
       '10 dílů jako SMTPA62/68/100/120/130/200/220/240/270 (samostatné záznamy) — viz záznam ' +
       'SMTPA62 pro plný popis principu funkce, mezních hodnot a shody se standardy. SMTPA180: ' +
-      'VRM 162 V, IRM max 2 µA @VRM. VR 180 V, IR max 50 µA @VR. VBO max 240 V @IBO=800 mA; ' +
+      'VRM 162 V, IRM max 2 µA @VRM. VR 180 V, IR max 5 µA @VR. VBO max 240 V @IBO=800 mA; ' +
       'dynamický VBO max 235 V. IH ' +
       'min 150 mA. C typ 14 pF @VR=50 V / 25 pF @VR=2 V. ⚠️ Test okruh IBO/VBO se u dílů s VBO≥200 V liší (VOUT=480 VRMS, ' +
       'R2=240 Ω) od dílů s VBO<200 V (VOUT=250 VRMS, R1=140 Ω) — SMTPA180 (VBO=240 V) patří do ' +
@@ -1007,11 +1056,12 @@ const DIODE_SPECS: PartSpec[] = [
     value:
       'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, VRM 180 V, VBO 267 V, IPP 50 A ' +
       '(10/1000 µs)',
+    schematicImage: 'SMTPA-series.jpg',
     notes:
       'STMicroelectronics SMTPA série "TRISIL" (dok. říjen 1998, ed. 7A) — součást stejné řady ' +
       '10 dílů jako SMTPA62/68/100/120/130/180/220/240/270 (samostatné záznamy) — viz záznam ' +
       'SMTPA62 pro plný popis principu funkce, mezních hodnot a shody se standardy. SMTPA200: ' +
-      'VRM 180 V, IRM max 2 µA @VRM. VR 200 V, IR max 50 µA @VR. VBO max 267 V @IBO=800 mA; ' +
+      'VRM 180 V, IRM max 2 µA @VRM. VR 200 V, IR max 5 µA @VR. VBO max 267 V @IBO=800 mA; ' +
       'dynamický VBO max 262 V. IH ' +
       'min 150 mA. C typ 12 pF @VR=50 V / 25 pF @VR=2 V. ⚠️ Dostupné i v pouzdru SMA (SMP50-200) ' +
       'a DO-15 (TPA200) se shodnými parametry (sloučený datasheet 2007).',
@@ -1025,11 +1075,12 @@ const DIODE_SPECS: PartSpec[] = [
     value:
       'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, VRM 198 V, VBO 293 V, IPP 50 A ' +
       '(10/1000 µs)',
+    schematicImage: 'SMTPA-series.jpg',
     notes:
       'STMicroelectronics SMTPA série "TRISIL" (dok. říjen 1998, ed. 7A) — součást stejné řady ' +
       '10 dílů jako SMTPA62/68/100/120/130/180/200/240/270 (samostatné záznamy) — viz záznam ' +
       'SMTPA62 pro plný popis principu funkce, mezních hodnot a shody se standardy. SMTPA220: ' +
-      'VRM 198 V, IRM max 2 µA @VRM. VR 220 V, IR max 50 µA @VR. VBO max 293 V @IBO=800 mA; ' +
+      'VRM 198 V, IRM max 2 µA @VRM. VR 220 V, IR max 5 µA @VR. VBO max 293 V @IBO=800 mA; ' +
       'dynamický VBO max 285 V. IH ' +
       'min 150 mA. C typ 12 pF @VR=50 V / 25 pF @VR=2 V. ⚠️ Dostupné i v pouzdru SMA (SMP50-220) ' +
       'a DO-15 (TPA220) se shodnými parametry (sloučený datasheet 2007).',
@@ -1043,11 +1094,12 @@ const DIODE_SPECS: PartSpec[] = [
     value:
       'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, VRM 216 V, VBO 320 V, IPP 50 A ' +
       '(10/1000 µs)',
+    schematicImage: 'SMTPA-series.jpg',
     notes:
       'STMicroelectronics SMTPA série "TRISIL" (dok. říjen 1998, ed. 7A) — součást stejné řady ' +
       '10 dílů jako SMTPA62/68/100/120/130/180/200/220/270 (samostatné záznamy) — viz záznam ' +
       'SMTPA62 pro plný popis principu funkce, mezních hodnot a shody se standardy. SMTPA240: ' +
-      'VRM 216 V, IRM max 2 µA @VRM. VR 240 V, IR max 50 µA @VR. VBO max 320 V @IBO=800 mA; ' +
+      'VRM 216 V, IRM max 2 µA @VRM. VR 240 V, IR max 5 µA @VR. VBO max 320 V @IBO=800 mA; ' +
       'dynamický VBO max 300 V. IH ' +
       'min 150 mA. C typ 12 pF @VR=50 V / 25 pF @VR=2 V. ⚠️ Dostupné i v pouzdru SMA (SMP50-240) ' +
       'a DO-15 (TPA240) se shodnými parametry (sloučený datasheet 2007).',
@@ -1061,11 +1113,12 @@ const DIODE_SPECS: PartSpec[] = [
     value:
       'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, VRM 243 V, VBO 360 V, IPP 50 A ' +
       '(10/1000 µs)',
+    schematicImage: 'SMTPA-series.jpg',
     notes:
       'STMicroelectronics SMTPA série "TRISIL" (dok. říjen 1998, ed. 7A) — součást stejné řady ' +
       '10 dílů jako SMTPA62/68/100/120/130/180/200/220/240 (samostatné záznamy) — viz záznam ' +
       'SMTPA62 pro plný popis principu funkce, mezních hodnot a shody se standardy. SMTPA270: ' +
-      'VRM 243 V, IRM max 2 µA @VRM. VR 270 V, IR max 50 µA @VR. VBO max 360 V @IBO=800 mA; ' +
+      'VRM 243 V, IRM max 2 µA @VRM. VR 270 V, IR max 5 µA @VR. VBO max 360 V @IBO=800 mA; ' +
       'dynamický VBO max 350 V. IH ' +
       'min 150 mA. C typ 12 pF @VR=50 V / 25 pF @VR=2 V. ⚠️ Dostupné i v pouzdru SMA (SMP50-270) ' +
       'a DO-15 (TPA270) se shodnými parametry (sloučený datasheet 2007) — ⚠️ nejvyšší napěťová ' +
@@ -1082,6 +1135,7 @@ const DIODE_SPECS: PartSpec[] = [
     value:
       'TRISIL — obousměrná crowbar (spínací) přepěťová ochrana, VRM 290 V, VBO 400 V, IPP 50 A ' +
       '(10/1000 µs)',
+    schematicImage: 'SMTPA-series.jpg',
     notes:
       'STMicroelectronics sloučený datasheet "SMP50/SMTPA/TPA — Trisil for telecom equipment ' +
       'protection" (červen 2007, rev. 3) — 11. a nejvyšší napěťový díl rodiny SMTPAxx, doplněný ' +
@@ -1127,6 +1181,7 @@ const DIODE_SPECS: PartSpec[] = [
       'IEC61000-4-2 level 4 (±15 kV vzduchový/±8 kV kontaktní výboj), MIL-STD-883H metoda ' +
       '3015-8 třída 3B, UL94 V0 (pryskyřice), MIL-STD-750 metoda 2026 (pájitelnost), EIA ' +
       'RS-481/IEC60286-3 (balení), IPC 7531 (footprint), UL497B (soubor E136224).',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
   },
   {
@@ -1144,6 +1199,7 @@ const DIODE_SPECS: PartSpec[] = [
       'hodnot a shody se standardy. SMP0900SCMC: VRM 75 V, IRM max 5 µA @VRM. VBR typ 90 V. VBO ' +
       'max 98 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 80 pF @VR=2 V / 45 pF @VR=50 V. ' +
       'αT=9,1×10⁻⁴/°C.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
   },
   {
@@ -1161,6 +1217,7 @@ const DIODE_SPECS: PartSpec[] = [
       'hodnot a shody se standardy. SMP1100SCMC: VRM 90 V, IRM max 5 µA @VRM. VBR typ 110 V. VBO ' +
       'max 130 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 75 pF @VR=2 V / 40 pF @VR=50 V. ' +
       'αT=9,3×10⁻⁴/°C.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
   },
   {
@@ -1178,6 +1235,7 @@ const DIODE_SPECS: PartSpec[] = [
       'hodnot a shody se standardy. SMP1300SCMC: VRM 120 V, IRM max 5 µA @VRM. VBR typ 130 V. ' +
       'VBO max 160 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 75 pF @VR=2 V / 40 pF @VR=50 V. ' +
       'αT=9,5×10⁻⁴/°C.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
   },
   {
@@ -1195,6 +1253,7 @@ const DIODE_SPECS: PartSpec[] = [
       'hodnot a shody se standardy. SMP1500SCMC: VRM 140 V, IRM max 5 µA @VRM. VBR typ 150 V. ' +
       'VBO max 180 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 75 pF @VR=2 V / 40 pF @VR=50 V. ' +
       'αT=9,7×10⁻⁴/°C.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
   },
   {
@@ -1212,6 +1271,7 @@ const DIODE_SPECS: PartSpec[] = [
       'hodnot a shody se standardy. SMP1800SCMC: VRM 170 V, IRM max 5 µA @VRM. VBR typ 180 V. ' +
       'VBO max 220 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 70 pF @VR=2 V / 35 pF @VR=50 V. ' +
       'αT=9,9×10⁻⁴/°C.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
   },
   {
@@ -1229,6 +1289,7 @@ const DIODE_SPECS: PartSpec[] = [
       'hodnot a shody se standardy. SMP2100SCMC: VRM 180 V, IRM max 5 µA @VRM. VBR typ 210 V. ' +
       'VBO max 240 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 45 pF @VR=2 V / 25 pF @VR=50 V. ' +
       'αT=10,2×10⁻⁴/°C.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
   },
   {
@@ -1246,6 +1307,7 @@ const DIODE_SPECS: PartSpec[] = [
       'hodnot a shody se standardy. SMP2300SCMC: VRM 190 V, IRM max 5 µA @VRM. VBR typ 230 V. ' +
       'VBO max 260 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 45 pF @VR=2 V / 25 pF @VR=50 V. ' +
       'αT=10,3×10⁻⁴/°C.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
   },
   {
@@ -1263,6 +1325,7 @@ const DIODE_SPECS: PartSpec[] = [
       'hodnot a shody se standardy. SMP2600SCMC: VRM 220 V, IRM max 5 µA @VRM. VBR typ 260 V. ' +
       'VBO max 300 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 40 pF @VR=2 V / 20 pF @VR=50 V. ' +
       'αT=10,6×10⁻⁴/°C.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
   },
   {
@@ -1280,6 +1343,7 @@ const DIODE_SPECS: PartSpec[] = [
       'hodnot a shody se standardy. SMP3100SCMC: VRM 275 V, IRM max 5 µA @VRM. VBR typ 310 V. ' +
       'VBO max 350 V. IH min 150 mA. VT max 3 V @IT=2,2 A. C max 40 pF @VR=2 V / 20 pF @VR=50 V. ' +
       'αT=11×10⁻⁴/°C — nejvyšší napěťová třída v celé řadě SMP-0SCMC (72–310 V).',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl',
   },
   {
@@ -1313,6 +1377,7 @@ const DIODE_SPECS: PartSpec[] = [
       'RθJ-vývody 20 °C/W, RθJ-okolí 100 °C/W (na standardní DPS). Shoda se standardy: GR-1089 ' +
       'core, ITU-T-K20/K21, IEC61000-4-5, TIA/EIA IS-968, UL60950/IEC950/CSA C22.2, UL1459, ' +
       'UL94 V0 (pryskyřice), UL497B (soubor E136224).',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1329,6 +1394,7 @@ const DIODE_SPECS: PartSpec[] = [
       'záznam SMP100MC-140 pro plný popis principu funkce, mezních hodnot a shody se standardy. ' +
       'SMP100MC-160: VRM 144 V, IRM max 2 µA @VRM. VR 160 V, IR max 5 µA @VR. VBO max 200 V ' +
       '@IBO=800 mA; dynamický VBO max 205 V. IH min 150 mA. C typ 25 pF @VR=50 V / 50 pF @VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1345,6 +1411,7 @@ const DIODE_SPECS: PartSpec[] = [
       'záznam SMP100MC-140 pro plný popis principu funkce, mezních hodnot a shody se standardy. ' +
       'SMP100MC-200: VRM 180 V, IRM max 2 µA @VRM. VR 200 V, IR max 5 µA @VR. VBO max 250 V ' +
       '@IBO=800 mA; dynamický VBO max 255 V. IH min 150 mA. C typ 20 pF @VR=50 V / 45 pF @VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1361,6 +1428,7 @@ const DIODE_SPECS: PartSpec[] = [
       'záznam SMP100MC-140 pro plný popis principu funkce, mezních hodnot a shody se standardy. ' +
       'SMP100MC-230: VRM 207 V, IRM max 2 µA @VRM. VR 230 V, IR max 5 µA @VR. VBO max 285 V ' +
       '@IBO=800 mA; dynamický VBO max 295 V. IH min 150 mA. C typ 20 pF @VR=50 V / 40 pF @VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1380,6 +1448,7 @@ const DIODE_SPECS: PartSpec[] = [
       '⚠️ Datasheet dokládá funkční test tohoto konkrétního dílu (SMP100MC-270) v sérii ' +
       's pojistkou Cooper Bussmann TCP 1.25 A proti simulovanému blesku (2/10 µs, ±2,5 a 5 kV, ' +
       '500 A) i proti "power cross" (277 V/25 A) — Trisil i pojistka po testu funkční (GR-1089).',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1396,6 +1465,7 @@ const DIODE_SPECS: PartSpec[] = [
       'záznam SMP100MC-140 pro plný popis principu funkce, mezních hodnot a shody se standardy. ' +
       'SMP100MC-320: VRM 290 V, IRM max 2 µA @VRM. VR 320 V, IR max 5 µA @VR. VBO max 390 V ' +
       '@IBO=800 mA; dynamický VBO max 400 V. IH min 150 mA. C typ 15 pF @VR=50 V / 35 pF @VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1412,6 +1482,7 @@ const DIODE_SPECS: PartSpec[] = [
       'záznam SMP100MC-140 pro plný popis principu funkce, mezních hodnot a shody se standardy. ' +
       'SMP100MC-360: VRM 325 V, IRM max 2 µA @VRM. VR 360 V, IR max 5 µA @VR. VBO max 450 V ' +
       '@IBO=800 mA; dynamický VBO max 460 V. IH min 150 mA. C typ 15 pF @VR=50 V / 35 pF @VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1429,6 +1500,7 @@ const DIODE_SPECS: PartSpec[] = [
       'SMP100MC-400: VRM 360 V, IRM max 2 µA @VRM. VR 400 V, IR max 5 µA @VR. VBO max 530 V ' +
       '@IBO=800 mA; dynamický VBO max 540 V. IH min 150 mA. C typ 15 pF @VR=50 V / 30 pF @VR=2 V ' +
       '— nejvyšší napěťová třída v celé řadě SMP100MC (140–400 V).',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1463,6 +1535,7 @@ const DIODE_SPECS: PartSpec[] = [
       'pájecí teplota vývodů 260 °C/10 s. Tepelný odpor: RθJ-vývody 20 °C/W, RθJ-okolí 100 °C/W ' +
       '(na standardní DPS). Shoda se standardy: GR-1089 core, ITU-T-K20/K21, VDE0433/0878, ' +
       'IEC61000-4-5, FCC Part 68, UL60950/IEC950/CSA C22.2, UL1459, UL94 V0 (pryskyřice).',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1480,6 +1553,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-25: VRM 22 V, IRM max 2 µA @VRM. VR 25 V, IR max 5 µA @VR. VBO max ' +
       '35 V @IBO=800 mA; dynamický VBO max 40 V. IH min 150 mA. C typ 65 pF @VR=2 V (@50V ' +
       'neudáno).',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1497,6 +1571,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-35: VRM 32 V, IRM max 2 µA @VRM. VR 35 V, IR max 5 µA @VR. VBO max ' +
       '55 V @IBO=800 mA; dynamický VBO max 55 V. IH min 150 mA. C typ 55 pF @VR=2 V (@50V ' +
       'neudáno).',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1514,6 +1589,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-65: VRM 55 V, IRM max 2 µA @VRM. VR 65 V, IR max 5 µA @VR. VBO max ' +
       '85 V @IBO=800 mA; dynamický VBO max 85 V. IH min 150 mA. C typ 45 pF @VR=50 V / 90 pF ' +
       '@VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1531,6 +1607,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-90: VRM 81 V, IRM max 2 µA @VRM. VR 90 V, IR max 5 µA @VR. VBO max ' +
       '125 V @IBO=800 mA; dynamický VBO max 120 V. IH min 150 mA. C typ 40 pF @VR=50 V / 80 pF ' +
       '@VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1548,6 +1625,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-120: VRM 108 V, IRM max 2 µA @VRM. VR 120 V, IR max 5 µA @VR. VBO max ' +
       '160 V @IBO=800 mA; dynamický VBO max 155 V. IH min 150 mA. C typ 35 pF @VR=50 V / 75 pF ' +
       '@VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1567,6 +1645,7 @@ const DIODE_SPECS: PartSpec[] = [
       'díly, pouze o sdílenou napěťovou třídu napříč dvěma příbuznými produktovými řadami. ' +
       'SMP100LC-140: VRM 120 V, IRM max 2 µA @VRM. VR 140 V, IR max 5 µA @VR. VBO max 190 V ' +
       '@IBO=800 mA; dynamický VBO max 185 V. IH min 150 mA. C typ 30 pF @VR=50 V / 65 pF @VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1584,6 +1663,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-160: VRM 144 V, IRM max 2 µA @VRM. VR 160 V, IR max 5 µA @VR. VBO max ' +
       '200 V @IBO=800 mA; dynamický VBO max 205 V. IH min 150 mA. C typ 30 pF @VR=50 V / 65 pF ' +
       '@VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1601,6 +1681,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-200: VRM 180 V, IRM max 2 µA @VRM. VR 200 V, IR max 5 µA @VR. VBO max ' +
       '250 V @IBO=800 mA; dynamický VBO max 255 V. IH min 150 mA. C typ 30 pF @VR=50 V / 60 pF ' +
       '@VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1618,6 +1699,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-230: VRM 207 V, IRM max 2 µA @VRM. VR 230 V, IR max 5 µA @VR. VBO max ' +
       '285 V @IBO=800 mA; dynamický VBO max 295 V. IH min 150 mA. C typ 30 pF @VR=50 V / 60 pF ' +
       '@VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1635,6 +1717,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-270: VRM 243 V, IRM max 2 µA @VRM. VR 270 V, IR max 5 µA @VR. VBO max ' +
       '335 V @IBO=800 mA; dynamický VBO max 345 V. IH min 150 mA. C typ 30 pF @VR=50 V / 60 pF ' +
       '@VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1652,6 +1735,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-320: VRM 290 V, IRM max 2 µA @VRM. VR 320 V, IR max 5 µA @VR. VBO max ' +
       '390 V @IBO=800 mA; dynamický VBO max 400 V. IH min 150 mA. C typ 25 pF @VR=50 V / 50 pF ' +
       '@VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1669,6 +1753,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-360: VRM 325 V, IRM max 2 µA @VRM. VR 360 V, IR max 5 µA @VR. VBO max ' +
       '450 V @IBO=800 mA; dynamický VBO max 460 V. IH min 150 mA. C typ 25 pF @VR=50 V / 50 pF ' +
       '@VR=2 V.',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1686,6 +1771,7 @@ const DIODE_SPECS: PartSpec[] = [
       'standardy. SMP100LC-400: VRM 360 V, IRM max 2 µA @VRM. VR 400 V, IR max 5 µA @VR. VBO max ' +
       '530 V @IBO=800 mA; dynamický VBO max 540 V. IH min 150 mA. C typ 20 pF @VR=50 V / 45 pF ' +
       '@VR=2 V — nejvyšší napěťová třída v celé řadě SMP100LC (8–400 V).',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
@@ -1697,6 +1783,7 @@ const DIODE_SPECS: PartSpec[] = [
     value:
       'TRIPOLÁRNÍ TRISIL — 3fázová (TIP-RING, TIP-GND, RING-GND) přepěťová ochrana telefonní ' +
       'linky v jednom pouzdře, VRM 120 V, IPP 100 A (10/1000 µs)',
+    schematicImage: 'TLPxxM.jpg',
     notes:
       'STMicroelectronics "TLPxxM/G/G-1 — Tripolar Overvoltage Protection for Telecom Line" ' +
       '(dok. září 1998, ed. 3C) — ⚠️ zásadně odlišná topologie od ostatních TRISIL dílů v této ' +
@@ -1732,6 +1819,7 @@ const DIODE_SPECS: PartSpec[] = [
     value:
       'TRIPOLÁRNÍ TRISIL — 3fázová (TIP-RING, TIP-GND, RING-GND) přepěťová ochrana telefonní ' +
       'linky v jednom pouzdře, VRM 180 V, IPP 100 A (10/1000 µs)',
+    schematicImage: 'TLPxxM.jpg',
     notes:
       'STMicroelectronics "TLPxxM/G/G-1" (dok. září 1998, ed. 3C) — součást stejné řady 3 ' +
       'napěťových tříd jako TLP140 a TLP270 (samostatné záznamy) — viz záznam TLP140M/G/G-1 pro ' +
@@ -1750,6 +1838,7 @@ const DIODE_SPECS: PartSpec[] = [
     value:
       'TRIPOLÁRNÍ TRISIL — 3fázová (TIP-RING, TIP-GND, RING-GND) přepěťová ochrana telefonní ' +
       'linky v jednom pouzdře, VRM 230 V, IPP 100 A (10/1000 µs)',
+    schematicImage: 'TLPxxM.jpg',
     notes:
       'STMicroelectronics "TLPxxM/G/G-1" (dok. září 1998, ed. 3C) — součást stejné řady 3 ' +
       'napěťových tříd jako TLP140 a TLP200 (samostatné záznamy) — viz záznam TLP140M/G/G-1 pro ' +
@@ -1797,6 +1886,7 @@ const DIODE_SPECS: PartSpec[] = [
       'Zbytkové napětí po zásahu ochrany v testech dle CCITT K20: nepřesahuje +2,5 V/-60 V ' +
       '(bleskový test se sekundární LCP1511D ochranou) resp. do 270 V (indukční test bez ' +
       'sekundární ochrany).',
+    schematicImage: 'CLP200M.jpg',
     tags: 'dioda,přepěťová-ochrana,nadproudová-ochrana,telekom,powerso-10,clp200m,aktivní-ochrana',
   },
   {
@@ -1825,6 +1915,7 @@ const DIODE_SPECS: PartSpec[] = [
       '100 °C/W (na standardní DPS). Shoda se standardy: GR-1089 core, ITU-T-K20/K21, ' +
       'VDE0433/0878, IEC61000-4-5, FCC Part 68, UL1950/IEC950/CSA C22.2, UL1459, UL94 V0 ' +
       '(pryskyřice).',
+    schematicImage: 'SMP-0SCMC.jpg',
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,ethernet',
   },
   {
@@ -1855,6 +1946,7 @@ const DIODE_SPECS: PartSpec[] = [
       'proud) min 100 µA. IDRM (blokovací proud) max 10 µA @25 °C / 200 µA @125 °C. Mezní gate ' +
       'hodnoty: PGM 0,5 W, PG(AV) 0,1 W, IFGM 0,3 A, VRGM 6,0 V. Tepelný odpor RθJ-pouzdro 3,12 ' +
       '°C/W, RθJ-okolí 89 °C/W. TJ a Tstg -40 až +125 °C.',
+    schematicImage: 'SCD4C60S.jpg',
     tags: 'tyristor,scr,silicon-controlled-rectifier,semiwell,d-pak,to-252,řízený-spínač',
   },
   {
@@ -1885,6 +1977,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(laserová dioda) max 2 V, VR(PD) (monitorovací fotodioda) max 30 V. Provozní teplota -10 až ' +
       '+60 °C, skladovací -40 až +85 °C. Typické použití: čárové skenery, dálkoměry, zaměřovací ' +
       'laserové moduly, optické senzory.',
+    schematicImage: 'QL85H6S.jpg',
     tags: 'dioda,laser,laserová-dioda,algaas,to-18,monitorovací-fotodioda,apc,roithner,ql85h6s',
   },
   {
@@ -1913,6 +2006,7 @@ const DIODE_SPECS: PartSpec[] = [
       'typ. 5 µm. Závěrná napětí: laserová dioda max 2 V, monitorovací fotodioda max 30 V. ' +
       'Provozní teplota -10 až +60 °C, skladovací -40 až +85 °C. Určeno pro průmyslové optické ' +
       'moduly a senzorové aplikace.',
+    schematicImage: 'QL78I6S.jpg',
     tags: 'dioda,laser,laserová-dioda,algaas,to-18,monitorovací-fotodioda,apc,roithner,ql78i6s',
   },
   {
@@ -1944,6 +2038,7 @@ const DIODE_SPECS: PartSpec[] = [
       '0,5–1,5 mA) @Po=10mW. Astigmatismus max 10 µm. Optická vzdálenost max ±60 µm. Závěrná ' +
       'napětí: laserová dioda max 2 V, monitorovací fotodioda max 30 V. Provozní teplota -10 až ' +
       '+60 °C, skladovací -40 až +85 °C. MUSÍ být provozována v režimu APC.',
+    schematicImage: 'QL78F6S.jpg',
     tags: 'dioda,laser,laserová-dioda,algaas,to-18,monitorovací-fotodioda,apc,roithner,ql78f6s',
   },
   {
@@ -1977,6 +2072,7 @@ const DIODE_SPECS: PartSpec[] = [
       '5 µm. Optická vzdálenost max ±60 µm. Závěrná napětí: laserová dioda max 2 V, monitorovací ' +
       'fotodioda max 30 V. Provozní teplota -10 až +60 °C, skladovací -40 až +85 °C. MUSÍ být ' +
       'provozována v režimu APC.',
+    schematicImage: 'QL78J6S.jpg',
     tags: 'dioda,laser,laserová-dioda,algaas,to-18,monitorovací-fotodioda,apc,roithner,ql78j6s',
   },
   {
@@ -2010,6 +2106,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(rozsah 0,05–0,5 mA) @Po=40mW. Astigmatismus max 15 µm. Optická vzdálenost max ±60 µm. ' +
       'Závěrná napětí: laserová dioda max 2 V, monitorovací fotodioda max 30 V. Provozní teplota ' +
       '-10 až +60 °C, skladovací -40 až +85 °C. MUSÍ být provozována v režimu APC.',
+    schematicImage: 'QL85J6S-L.jpg',
     tags: 'dioda,laser,laserová-dioda,algaas,to-18,monitorovací-fotodioda,apc,roithner,ql85j6s',
   },
   {
@@ -2304,6 +2401,7 @@ const DIODE_SPECS: PartSpec[] = [
       '3,0 V @IF=10 mA. IR max 100 µA @VR=3 V. IV/seg min 2,3/typ. 3,8 mcd @IF=10 mA. λp typ. ' +
       '635 nm, Δλ typ. 40 nm. Pájecí teplota max 260 °C/3 s, ohyb vývodů max 5 mm od těla bez ' +
       'pnutí. RoHS.',
+    schematicImage: 'AND-8010-B.jpg',
     tags: 'dioda,led,displej,16segment,alfanumerický,and-optoelectronics,and-8010,červená,gaasp',
   },
   {
@@ -2323,6 +2421,7 @@ const DIODE_SPECS: PartSpec[] = [
       '2,1 V/max 3,0 V @IF=10 mA. IR max 100 µA @VR=5 V. IV/seg min 2,0/typ. 3,3 mcd @IF=10 mA. ' +
       'λp typ. 567 nm, Δλ typ. 30 nm (užší než 40 nm u červené). Ostatní mezní hodnoty (IF/IFP, ' +
       'teploty) shodné s AND-8010-B (red).',
+    schematicImage: 'AND-8010-B.jpg',
     tags: 'dioda,led,displej,16segment,alfanumerický,and-optoelectronics,and-8010,zelená,gap',
   },
   {
@@ -2352,6 +2451,7 @@ const DIODE_SPECS: PartSpec[] = [
       'napětí max 6,0 V @IR=100 µA. Tepelný odpor přechod-okolí ΘJA 160 °C/W, teplotní koeficient ' +
       'VF typ. -1,5 mV/°C. Doporučený kontrastní filtr: Panelgraphic Yellow 25 nebo Amber 23 ' +
       '(příp. Homalite 190-1720 nebo 100-1726).',
+    schematicImage: 'MV5x164.jpg',
     tags: 'dioda,led,bargraf,displej,žlutá,qt-optoelectronics,mv53164,dip-20',
   },
   {
@@ -2375,6 +2475,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(nižší než 26 Ω u žluté/červené). Kapacita typ. 40 pF. Teplotní koeficient VF typ. ' +
       '-1,4 mV/°C. Ostatní parametry (ΘJA, doba přepnutí, reverzní napětí) shodné s MV53164. ' +
       'Doporučený kontrastní filtr: Panelgraphic Green 48 (příp. Homalite 100-1440 Green).',
+    schematicImage: 'MV5x164.jpg',
     tags: 'dioda,led,bargraf,displej,zelená,vysoce-účinná,qt-optoelectronics,mv54164,dip-20',
   },
   {
@@ -2396,6 +2497,7 @@ const DIODE_SPECS: PartSpec[] = [
       'koeficient VF typ. -2,0 mV/°C (⚠️ nejvyšší teplotní drift v řadě). Ostatní parametry (ΘJA, ' +
       'doba přepnutí, reverzní napětí) shodné s MV53164/MV54164. Doporučený kontrastní filtr: ' +
       'Panelgraphic Red 60 (příp. Homalite 100-1605).',
+    schematicImage: 'MV5x164.jpg',
     tags: 'dioda,led,bargraf,displej,červená,vysoce-účinná,qt-optoelectronics,mv57164,dip-20',
   },
   {
@@ -2449,6 +2551,7 @@ const DIODE_SPECS: PartSpec[] = [
       '1,0 mcd. λp typ. 428 nm, λd (dominantní) typ. 466 nm, Δλ typ. 65 nm @IF=20 mA. Kategorizováno ' +
       '(binováno) dle svítivosti. Piny: 1=NC, 2=katoda D, 3=společná anoda, 4=katoda C, ' +
       '5=katoda DP, 6=katoda B, 7=katoda A, 8=společná anoda, 9=katoda F, 10=katoda G.',
+    schematicImage: 'ELS-512UBWA.jpg',
     tags: 'dioda,led,displej,7segment,modrá,gan,sic,everlight,els-512ubwa,jednomístný',
   },
   {
@@ -2478,6 +2581,7 @@ const DIODE_SPECS: PartSpec[] = [
       '200 mA. Ostatní varianty stejného TD-09 pouzdra (BT-M512RD až BT-M51DRD / BT-N512RD až ' +
       'BT-N51DRD) pokrývají zelenou (568 nm), žlutou (585 nm), oranžovou/hi-eff červenou (635 nm) ' +
       'a dvě varianty super červené GaAlAs (660 nm, IV až 7 mcd/seg).',
+    schematicImage: 'BT-M511RD.jpg',
     tags: 'dioda,led,displej,7segment,3místný,multiplex,yellow-stone,bt-m511rd,červená,gaasp,td-09',
   },
   {
@@ -2504,6 +2608,7 @@ const DIODE_SPECS: PartSpec[] = [
       '/ min 2,0-typ. 4,0 mcd @IF=10 mA. λp typ. 621 nm, λd (dominantní) typ. 615 nm, Δλ typ. ' +
       '18 nm @IF=20 mA — bílé segmenty na šedém čele pouzdra pro dobrý kontrast na jasném ' +
       'okolním světle, čitelnost do 7 m. Balení 13 ks/tuba, 54 tub/box.',
+    schematicImage: 'ELT-511USOWA.jpg',
     tags: 'dioda,led,displej,7segment,3místný,multiplex,everlight,elt-511usowa,oranžová,algainp',
   },
   {
@@ -2530,6 +2635,7 @@ const DIODE_SPECS: PartSpec[] = [
       '1,4-typ. 3,0 mcd @IF=10 mA. λp typ. 575 nm, λd (dominantní) typ. 573 nm, Δλ typ. 20 nm ' +
       '@IF=20 mA. Bílé segmenty na šedém čele pouzdra pro dobrý kontrast na jasném okolním ' +
       'světle. Určeno pro audio zařízení, přístrojové panely, digitální ukazatele.',
+    schematicImage: 'ELS-2326SYGWA.jpg',
     tags: 'dioda,led,displej,7segment,jednomístný,velký,žlutozelená,everlight,els-2326sygwa,algainp',
   },
   {
@@ -2560,6 +2666,7 @@ const DIODE_SPECS: PartSpec[] = [
       'αVF typ. -2,7 mV/°C, IR max 100 µA @VR=6 V, C typ. 85 pF @VR=0/1 MHz. Desetinná tečka: IV ' +
       'min 40/typ. 110 µcd, VF min 1,5/typ. 1,65/max 2 V, αVF typ. -1,4 mV/°C, IR max 100 µA ' +
       '@VR=3 V, C typ. 120 pF.',
+    schematicImage: 'TIL302.jpg',
     tags: 'dioda,led,displej,7segment,texas-instruments,til302,červená,vintage',
   },
   {
@@ -2581,6 +2688,7 @@ const DIODE_SPECS: PartSpec[] = [
       'desetinné tečky je na opačné (pravé) straně znaku oproti TIL302 (levá tečka). Fyzicky ' +
       'shodné pouzdro/rozměry jako TIL302, mechanicky zaměnitelné, ale vyžaduje odlišné řídicí ' +
       'zapojení kvůli jinému sdružení segmentových pinů.',
+    schematicImage: 'TIL303.jpg',
     tags: 'dioda,led,displej,7segment,texas-instruments,til303,červená,vintage',
   },
   {
@@ -2607,7 +2715,758 @@ const DIODE_SPECS: PartSpec[] = [
       'segment, 3 V/tečka, špičkový propustný proud 200 mA/segment (PRR≥60 Hz, duty≤10 %), ' +
       'provozní teplota 0 až +70 °C, skladovací -25 až +85 °C. Piny: 1=C+D, 7=D, 8=C, 9=DP, ' +
       '10=B, 11=A, 14=A+B+DP.',
+    schematicImage: 'TIL304.jpg',
     tags: 'dioda,led,displej,znaménkový,přetokový,texas-instruments,til304,červená,vintage',
+  },
+  {
+    name: 'TYN50W-1600T / TYN80W-1600T',
+    packageType: 'TO-247, 3 vývody (anoda/katoda/gate), planárně pasivované',
+    schematicImage: 'TYN50W-1600T.jpg',
+    value:
+      'Tyristor (SCR), vysokonapěťový 1600 V — TYN50W: IT(AV) 50 A, IT(RMS) 79 A; TYN80W: ' +
+      'IT(AV) 80 A, IT(RMS) 126 A; VDRM 1600 V, IGT max 80 mA, TJ(max) 150 °C',
+    notes:
+      'WeEn Semiconductors "Product Selection Guide" (PSG2020, vydáno červenec 2020, dok. č. ' +
+      '20200701), str. 12, "WeEn High Voltage 1600V SCRs — Planar Passivated" — ⚠️ SOUHRNNÝ ' +
+      'ZÁZNAM ZE VÝBĚROVÉHO KATALOGU (product selection guide), ne z plného datasheetu — ' +
+      'katalogový list uvádí jen klíčové parametry, nikoli kompletní elektrické křivky. Dvojice ' +
+      'nejvýkonnějších tyristorů z celé WeEn nabídky SCR (katalog dále uvádí desítky menších ' +
+      'typů 0,8–126 A/200–1600 V, zde neevidovány jednotlivě). Určeno pro UPS (uninterruptible ' +
+      'power supply), solid-state relé (SSR), nabíječky baterií, řízení AC/DC motorů, řízení ' +
+      'osvětlení a teploty — typicky pro omezení špičkového proudu při zapnutí napájení (inrush ' +
+      'current limiting), což umožňuje nahradit mechanické relé. ITSM (max. nárazový proud, ' +
+      '10ms): TYN50W 650 A, TYN80W 850 A. dIT/dt (kritická strmost nárůstu proudu) 150 A/µs ' +
+      '(oba typy). dVD/dt (kritická strmost nárůstu blokovacího napětí, @150°C): TYN50W ' +
+      '1500 V/µs, TYN80W 1000 V/µs. Vlastnosti: velmi vysoká blokovací schopnost napětí (do ' +
+      '1600 V), vysoká pracovní teplota přechodu (TJmax=150°C), vysoká odolnost proti proudovým ' +
+      'rázům, planárně pasivováno pro napěťovou odolnost a spolehlivost, vysoká odolnost vůči ' +
+      'teplotnímu cyklování, nízký úbytek napětí v propustném směru.',
+    tags: 'tyristor,scr,silicon-controlled-rectifier,ween,tyn50w,tyn80w,1600v,to-247,ups,ssr',
+  },
+  {
+    name: 'BTA330 (30A Hi-Com triak)',
+    schematicImage: 'BTA330.jpg',
+    packageType:
+      'TO220 (BTA330-800BT), TO220FP izolované (BTA330X-800BT), IITO220 vnitřně izolované ' +
+      '(BTA330Y-800BT/CT), D²PAK SMD (BTA330B-800BT/CT)',
+    value:
+      'Triak (TRIAC), 3Q Hi-Com technologie, 30 A, VDRM 800 V — BT (přepínací/standardní gate) ' +
+      'řada: IGT max 50 mA; CT řada: IGT max 35 mA; oba ITSM 270 A@20ms, TJ(max) 150 °C',
+    notes:
+      'WeEn Semiconductors "Product Selection Guide" (PSG2020, červenec 2020, dok. 20200701), ' +
+      'str. 13, "WeEn 30A Hi-Com™ Triacs" — ⚠️ SOUHRNNÝ ZÁZNAM ZE VÝBĚROVÉHO KATALOGU (viz ' +
+      'poznámka u "TYN50W-1600T / TYN80W-1600T" pro kontext) — vlajkový (nejvyšší proudový) ' +
+      'model z širší řady 3Q Hi-Com triaků BTAxxx v katalogu (0,8–45 A, zde neevidovány ' +
+      'jednotlivě, viz i BTA425/BTA440/BTA445 zmíněné jako příbuzné vysokoproudé typy). Určeno ' +
+      'pro topné regulace, výkonové řízení motorů, výkonové řízení AC (např. stmívače, ohřevné ' +
+      'prvky kávovarů — BTA316Y-800CT — a praček — BTA416Y-800C — dle aplikační části katalogu), ' +
+      'aplikace vystavené vysoké teplotě (TJmax=150°C). dIT/dt 100 A/µs (oba typy). Vnitřně ' +
+      'izolované pouzdro IITO220 poskytuje vysokou napěťovou izolaci (2500 V) a vyrovnání ' +
+      'tepelné disipace; D²PAK (SMD) umožňuje snadnou automatizovanou montáž. Vysoká komutační ' +
+      'schopnost s maximální odolností proti falešnému sepnutí, vysoký surge proud při nízkém ' +
+      'úbytku napětí v sepnutém stavu (VT), vysoká odolnost vůči teplotnímu cyklování, pouzdro ' +
+      'RoHS.',
+    tags: 'triak,triac,hi-com,ween,bta330,30a,800v,to220,d2pak,iito220',
+  },
+  {
+    name: 'CL05M6F',
+    packageType: 'SOD-123FL (SMD), 2 vývody (anoda/katoda), pásková balení 3000ks/7"',
+    schematicImage: 'CL05M6F.jpg',
+    value:
+      'Proudově omezující dioda (Current Limiting Diode / CLD, konstantní proudový zdroj), ' +
+      'IP(nom) 5,6 mA, VAK max 190 V, Ptot 0,7 W (1,2 W při větší chladicí plošce)',
+    notes:
+      'Diotec Semiconductor "CL05M6F — SMD Current Limiting Diodes" (dok. verze 2019-10-18, ' +
+      '"Preliminary/Vorläufig") — ⚠️ NOVÝ TYP součástky v této knihovně: proudově omezující ' +
+      'dioda (též "constant current diode/regulator diode") — dvouvývodová polovodičová ' +
+      'součástka, která (na rozdíl od klasické usměrňovací/Zenerovy/Schottky diody v této ' +
+      'knihovně) v propustném směru po dosažení prahového napětí VT udržuje téměř konstantní ' +
+      'proud IP nezávisle na přiloženém napětí (až do VAK) — funguje jako jednoduchý ' +
+      'dvouvývodový zdroj konstantního proudu bez potřeby aktivního obvodu. Typické použití: ' +
+      'konstantní proudové zdroje pro jednoduché senzorové obvody, malovýkonové LED driverpy a ' +
+      'nabíječky akumulátorů (viz aplikační schéma v datasheetu — můstkový usměrňovač + CLD jako ' +
+      'proudový zdroj pro sériové LED). Lze zapojit paralelně pro vyšší celkový proud, nebo ' +
+      'kompenzovat teplotní drift paralelním rezistorem (dle aplikačních poznámek datasheetu). ' +
+      'IPmin 4,5 mA / IPnom 5,6 mA / IPmax 6,7 mA @VT=20V (impulzně, 20ms). IP(DC) (typický ' +
+      'ustálený proud) 5,4 mA @VT=10V / 4,8 mA @VT=50V. Teplotní koeficient IP αIP=-15×10⁻⁴/°C ' +
+      '@VT=10V. Mezní hodnoty: Ptot 0,7 W (25mm² Cu plošky) / 1,2 W (50×50mm² Cu plošky), VAK ' +
+      '(max. pracovní napětí, impulzně 20ms) 190 V, TJ a Tstg -50 až +150 °C. Limitní napětí VL ' +
+      '(@IL=80%·IPmin) 2 V. Závěrné napětí VR (@IR=1mA) 0,5 V. Kapacita přechodu CT 5 pF @VR=0V. ' +
+      'Tepelný odpor přechod-okolí RthA 180 K/W (25mm² Cu plošky). Pouzdro UL94V-0, pájecí ' +
+      'podmínky 260°C/10s, MSL=1, hmotnost ~0,01 g. Shoda s RoHS, REACH, Conflict Minerals.',
+    tags: 'dioda,proudově-omezující,current-limiting-diode,constant-current,diotec,cl05m6f,sod-123fl,led-driver',
+  },
+  {
+    name: 'DSEI 2x 61-04C',
+    packageType:
+      'výkonový modul miniBLOC (ISOTOP kompatibilní, SOT-227B), 2 elektricky ZCELA NEZÁVISLÉ ' +
+      '(nepropojené) diody — každá se svými vlastními 2 vývody, dohromady 4 šroubové M4 ' +
+      'terminály (ověřeno ze schématu v datasheetu — žádné společné propojení vývodů mezi diodami, ' +
+      'na rozdíl od dřívější verze této poznámky, která mylně uváděla "společnou katodu"), ' +
+      'izolační napětí pouzdra 2500 V~, hmotnost 30 g, šroubovací montáž (moment 1,5 Nm)',
+    schematicImage: 'DSEI2X61.jpg',
+    value:
+      'Rychlá epitaxní dioda (FRED — Fast Recovery Epitaxial Diode), 2× v jednom pouzdře, VRRM ' +
+      '400 V, IFAVM 2×60 A, doba zotavení trr typ. 35 ns (velmi rychlá/měkká charakteristika)',
+    notes:
+      'IXYS "DSEI 2x 61 — Fast Recovery Epitaxial Diode (FRED)" (katalogový list, © 2000 IXYS). ' +
+      '⚠️ NOVÝ TYP součástky v této knihovně: první výkonový diodový MODUL (dvojice diod v ' +
+      'šroubovacím kovovém pouzdře pro montáž na chladič) — na rozdíl od THT/SMD diskrétních ' +
+      'diod v této knihovně jde o vysokoproudou/vysokorychlostní součástku pro výkonovou ' +
+      'elektroniku. Planárně pasivované čipy, velmi krátká doba zotavení a měkký (soft) ' +
+      'zotavovací charakter pro nízké napěťové špičky a nízký rušivý hluk při spínání. Použití: ' +
+      'antiparalelní dioda pro vysokofrekvenční spínací prvky (IGBT/MOSFET), anti-saturační ' +
+      'dioda, snubber dioda, zpětná (freewheeling) dioda v měničích a řízení motorů, ' +
+      'usměrňovače ve spínaných zdrojích (SMPS), indukční ohřev a tavení, UPS, ultrazvukové ' +
+      'čističky a svářečky. Nejnižší napěťová varianta dvojice DSEI 2x 61-04C/-06C (VRRM 400 V, ' +
+      'VRSM 440 V; viz sourozenecký záznam "DSEI 2x 61-06C" pro 600V variantu). IFRMS 100 A ' +
+      '(TVJ=TVJM). IFAVM 60 A/diodu (TC=70°C, obdélníkový průběh, d=0,5, zahrnuje ztráty ' +
+      'zpětného blokování při TVJM/VR=0,8·VRRM). IFRM 800 A (impulzně, tp<10µs). IFSM (rázový ' +
+      'proud, sinusová půlvlna): 550 A (10ms/50Hz) / 600 A (8,3ms/60Hz) @TVJ=45°C, nebo 480 A / ' +
+      '520 A @TVJ=150°C. I²t: 1510 A²s (10ms/50Hz) až 1120 A²s (8,3ms/60Hz, TVJ=150°C). VF ' +
+      '(@IF=60A) max 1,5V @TVJ=150°C / max 1,8V @TVJ=25°C. VT0 (pro výpočet ztrát) 1,13V, ' +
+      'dynamický odpor rT 4,7mΩ @TVJ=TVJM. Závěrný proud IR: typ 200µA @VR=VRRM/25°C, max 14mA ' +
+      '@VR=0,8·VRRM/125°C. Doba zotavení trr typ. 35ns/max 50ns @IF=1A/-di/dt=200A/µs/VR=30V/ ' +
+      '25°C. Špičkový zpětný proud IRM typ. 19A/max 21A @VR=350V/IF=60A/-diF/dt=480A/µs. Tepelný ' +
+      'odpor přechod-pouzdro RthJC 0,7 K/W, pouzdro-chladič RthCK 0,05 K/W. Ptot 180W @TC=25°C. ' +
+      'TVJ -40 až +150°C (TVJM 150°C), Tstg -40 až +150°C. Certifikace UL (E72873). Data dle ' +
+      'IEC 60747.',
+    tags: 'dioda,fred,fast-recovery,epitaxní,výkonový-modul,ixys,dsei-2x61,minibloc,sot-227,400v,duální',
+  },
+  {
+    name: 'DSEI 2x 61-06C',
+    packageType: 'shodné s DSEI 2x 61-04C — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'DSEI2X61.jpg',
+    value:
+      'Rychlá epitaxní dioda (FRED), 2× v jednom pouzdře, VRRM 600 V, IFAVM 2×60 A, doba ' +
+      'zotavení trr typ. 35 ns',
+    notes:
+      'IXYS "DSEI 2x 61" — součást dvojice DSEI 2x 61-04C/-06C, viz záznam "DSEI 2x 61-04C" v ' +
+      'této knihovně pro plné společné elektrické/mechanické specifikace. Vyšší napěťová ' +
+      'varianta: VRRM 600 V, VRSM 640 V (ostatní parametry — proudové zatížitelnosti, doba ' +
+      'zotavení, tepelné odpory — shodné s -04C variantou dle katalogového listu).',
+    tags: 'dioda,fred,fast-recovery,epitaxní,výkonový-modul,ixys,dsei-2x61,minibloc,sot-227,600v,duální',
+  },
+  {
+    name: 'LL4148',
+    packageType:
+      'SMD ~SOD-80C (Glass MiniMELF), válcová skleněná pouzdra, Ø1,45mm, délka 3,5±0,1mm, ' +
+      'pásková balení 2500ks/7", hmotnost ~0,04g',
+    schematicImage: 'LL4148.jpg',
+    value:
+      'Spínací (small signal) dioda, IFAV 150 mA, VRRM 100 V, VF<1,0V @IF=10mA, doba zotavení ' +
+      'trr<4ns',
+    notes:
+      'Diotec Semiconductor "LL4148, LL4150, LL4151, LL4448 — SMD Small Signal Switching ' +
+      'Diodes" (verze 2022-02-01). SMD (MiniMELF) ekvivalent THT diody 1N4148 (DO-35) již ' +
+      'evidované v této knihovně — dle výrobce elektricky totožná dioda, jen jiné pouzdro ' +
+      '(výrobce uvádí LL4148 = 1N4148 v DO-35, Q-MiniMELF = LS4148, Q-MicroMELF = MCL4148, ' +
+      'SOD-123F = 1N4148W, SOD-323F = 1N4148WS — celá rodina alternativních pouzder stejného ' +
+      'čipu). Typické použití: zpracování signálu, vysokorychlostní spínání. Dostupné i ' +
+      'varianty -Q (AEC-Q101 compliant) / -AQ (v procesu AEC-Q101 kvalifikace). Max. periodický ' +
+      'špičkový proud IFRM 500mA, nárazový proud IFSM 2000mA (tp=1µs), max. ztrátový výkon Ptot ' +
+      '500mW. Závěrný proud IR<25nA @VR=20V/25°C (<50µA @150°C), <5µA @VR=75V/25°C. Kapacita ' +
+      'přechodu CT typ. 4pF @VR=0V/1MHz. Tepelný odpor přechod-okolí RthA typ. 300K/W. TJ a ' +
+      'Tstg -50 až +175°C. Pájecí podmínky 260°C/10s, MSL=1. Shoda s RoHS (výjimka 7c), REACH, ' +
+      'Conflict Minerals. ⚠️ Druhý zdroj (second source): Vishay Semiconductors nabízí ' +
+      'elektricky/mechanicky shodný díl pod stejným označením "LL4148" (dok. 85557, rev. 2.1, ' +
+      '2020) — shodné pouzdro MiniMELF/SOD-80, VRRM 100V, IFSM 2A, IFRM 500mA, IF(AV) 150mA, ' +
+      'Ptot 500mW, RthJA 300K/W, Tstg -65 až +175°C; VF max 1,0V @IF=50mA (u Diotec verze ' +
+      'testováno @10mA); trr max 8ns @IR=1mA nebo max 4ns @iR=0,1×IR/VR=6V/RL=100Ω (podrobnější ' +
+      'dvě testovací podmínky než u Diotec). Objednací kódy Vishay: LL4148-GS08 (7", 2,5K), ' +
+      'LL4148-GS18 (13", 10K).',
+    tags: 'dioda,spínací,signálová,smd,minimelf,sod-80c,diotec,vishay,ll4148,1n4148-ekvivalent',
+  },
+  {
+    name: 'LL4150',
+    packageType: 'shodné s LL4148 (SOD-80C MiniMELF) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'LL4148.jpg',
+    value: 'Spínací dioda, IFAV 300 mA, VRRM 50 V, VF<1,2V @IF=100mA',
+    notes:
+      'Diotec "LL4148, LL4150, LL4151, LL4448" — součást rodiny, viz záznam "LL4148" v této ' +
+      'knihovně pro plné společné mechanické specifikace a kontext. Vyšší proudová (300mA) a ' +
+      'nižší napěťová (50V) varianta rodiny — IFRM 600mA, IFSM 4000mA, IR<100nA @20V/25°C ' +
+      '(<100µA @150°C).',
+    tags: 'dioda,spínací,signálová,smd,minimelf,sod-80c,diotec,ll4150',
+  },
+  {
+    name: 'LL4151',
+    packageType: 'shodné s LL4148 (SOD-80C MiniMELF) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'LL4148.jpg',
+    value: 'Spínací dioda, IFAV 200 mA, VRRM 75 V, VF<1,0V @IF=50mA',
+    notes:
+      'Diotec "LL4148, LL4150, LL4151, LL4448" — součást rodiny, viz záznam "LL4148" v této ' +
+      'knihovně pro plné společné mechanické specifikace a kontext. IFRM 500mA, IFSM 2000mA, ' +
+      'IR<50nA @20V/25°C (<50µA @150°C).',
+    tags: 'dioda,spínací,signálová,smd,minimelf,sod-80c,diotec,ll4151',
+  },
+  {
+    name: 'LL4448',
+    packageType: 'shodné s LL4148 (SOD-80C MiniMELF) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'LL4148.jpg',
+    value: 'Spínací dioda, IFAV 150 mA, VRRM 100 V, VF 0,62–0,72V @IF=5mA',
+    notes:
+      'Diotec "LL4148, LL4150, LL4151, LL4448" — součást rodiny, viz záznam "LL4148" v této ' +
+      'knihovně pro plné společné mechanické specifikace a kontext. SMD ekvivalent 1N4448 ' +
+      '(DO-35) — přesnější (těsnější) definice propustného napětí VF (0,62-0,72V @5mA) než ' +
+      'LL4148, jinak shodné mezní hodnoty (IFRM 500mA, IFSM 2000mA), IR<25nA @20V/25°C ' +
+      '(<50µA @150°C), <5µA @75V/25°C. ⚠️ Druhý zdroj: Vishay Semiconductors "LL4148, LL4448" ' +
+      '(dok. 85557, rev. 2.1, 2020) — shodné pouzdro/mezní hodnoty jako Diotec verze, VF ' +
+      'testováno navíc @100mA (max 1,0V, přesněji 0,93-1,0V), objednací kódy LL4448-GS08/-GS18.',
+    tags: 'dioda,spínací,signálová,smd,minimelf,sod-80c,diotec,vishay,ll4448,1n4448-ekvivalent',
+  },
+  {
+    name: 'CD4148W',
+    packageType:
+      'SMD čipové pouzdro 1206 (3,40×1,70mm), epoxidová pryskyřice UL94V-0, pájecí terminály ' +
+      'dle MIL-STD-202E metoda 208, hmotnost ~10mg, montáž v libovolné poloze',
+    schematicImage: 'CD4148W.jpg',
+    value:
+      'Spínací (switching) dioda, VRRM 100 V, IF 150 mA, IFSM 500 mA, VF max 1,0V, trr max 4ns',
+    notes:
+      'DC Components Co., Ltd. "CD4148W, CD4148WS, CD4148WT — Technical Specifications of ' +
+      'Surface Mount Switching Diode, 100V/0,3A". Třetí rodina SMD ekvivalentů 1N4148 v této ' +
+      'knihovně vedle Diotec LL4148 (viz jeho záznam) — na rozdíl od cylindrického MiniMELF ' +
+      'pouzdra LL4148 jde o PLOCHÉ OBDÉLNÍKOVÉ SMD ČIPOVÉ pouzdro (podobné SMD ' +
+      'rezistoru/kondenzátoru) ve třech standardních velikostech 1206/0805/0603 (viz ' +
+      'sourozenecké záznamy "CD4148WS"/"CD4148WT" pro menší velikosti). Tento záznam (CD4148W, ' +
+      'pouzdro 1206C) je nejvyšší proudová/tepelná třída rodiny. VR (max. trvalé závěrné ' +
+      'napětí) 75V, VRM (max. nepovtorné špičkové závěrné napětí) 100V. IF max 150mA @25°C ' +
+      '(single phase, half-wave, 60Hz, odporová/indukční zátěž — pro kapacitní zátěž derating ' +
+      '20%). IFSM (rázový proud, tp=1µs) 500mA. Ptot max 500mW @25°C. VF max 1,0V. IR max 25nA ' +
+      '@VR=20V / max 5,0µA @VR=75V. trr max 4,0ns (IF=IR=10mA, RL=100Ω, měřeno při IR=1mA). CJ ' +
+      'typ. 4,0pF @1MHz/VR=0. Tepelný odpor přechod-okolí RθJA 450K/W (pro pouzdro 1206C — ' +
+      'menší pouzdra mají vyšší RθJA 650K/W, viz sourozenecké záznamy). TJ a Tstg -65 až ' +
+      '+175°C.',
+    tags: 'dioda,spínací,signálová,smd,chip,1206,dc-components,cd4148w,1n4148-ekvivalent',
+  },
+  {
+    name: 'CD4148WS',
+    packageType:
+      'SMD čipové pouzdro 0805 (2,20×1,45mm), epoxidová pryskyřice UL94V-0, hmotnost ~6mg',
+    schematicImage: 'CD4148W.jpg',
+    value:
+      'Spínací dioda, VRRM 100 V, IF 150 mA, IFSM 500 mA, VF max 1,0V, trr max 4ns',
+    notes:
+      'DC Components "CD4148W, CD4148WS, CD4148WT" — součást rodiny, viz záznam "CD4148W" v ' +
+      'této knihovně pro plné společné elektrické specifikace a kontext. Menší pouzdro 0805C, ' +
+      'jinak elektricky shodné parametry jako CD4148W kromě tepelného odporu: RθJA 650K/W ' +
+      '(vyšší než u CD4148W kvůli menší ploše pouzdra).',
+    tags: 'dioda,spínací,signálová,smd,chip,0805,dc-components,cd4148ws,1n4148-ekvivalent',
+  },
+  {
+    name: 'CD4148WT',
+    packageType:
+      'SMD čipové pouzdro 0603 (1,65×0,90mm), epoxidová pryskyřice UL94V-0, hmotnost ~4mg',
+    schematicImage: 'CD4148W.jpg',
+    value:
+      'Spínací dioda, VRRM 100 V, IF 150 mA, IFSM 500 mA, VF max 1,0V, trr max 4ns',
+    notes:
+      'DC Components "CD4148W, CD4148WS, CD4148WT" — součást rodiny, viz záznam "CD4148W" v ' +
+      'této knihovně pro plné společné elektrické specifikace a kontext. Nejmenší pouzdro ' +
+      'rodiny 0603C, jinak elektricky shodné parametry jako CD4148W, RθJA 650K/W (shodné s ' +
+      'CD4148WS).',
+    tags: 'dioda,spínací,signálová,smd,chip,0603,dc-components,cd4148wt,1n4148-ekvivalent',
+  },
+  {
+    name: 'M1',
+    packageType:
+      'SMD ~SMA / ~DO-214AC, rozměry cca 5,3×2,7×2,2mm, pásková balení 7500ks/13", hmotnost ' +
+      '~0,07g',
+    schematicImage: 'M1.jpg',
+    value:
+      'Usměrňovací dioda se standardní dobou zotavení, VRRM 50 V, IFAV 1 A, VF<1,1V @IF=1A, ' +
+      'IFSM 27/30 A',
+    notes:
+      'Diotec Semiconductor "M1...M7 — Standard Recovery SMD Rectifier Diodes" (verze ' +
+      '2016-12-19). ⚠️ NOVÁ ŘADA v této knihovně: budget (levnější) verze řady S1A...S1M ' +
+      '(sama S1A-S1M v knihovně dosud neevidována) — stejné pouzdro SMA/DO-214AC jako běžné ' +
+      'SMD usměrňovací diody, ale se standardní (pomalejší, trr~1500ns) dobou zotavení místo ' +
+      'rychlé/ultra rychlé. Určeno pro síťové usměrnění 50/60Hz, napájecí zdroje, ochranu proti ' +
+      'přepólování. Nejnižší napěťová varianta řady M1-M7 (VRRM 50-1000V, viz sourozenecké ' +
+      'záznamy M2-M7 pro plné specifikace VRRM). VRSM (nárazové špičkové závěrné napětí) shodné ' +
+      's VRRM. Max. trvalý usměrněný proud IFAV 1A @TT=75°C (odporová zátěž, jednocestné ' +
+      'zapojení). Periodický špičkový propustný proud IFRM 5A @f>15Hz. Rázový proud IFSM 27A ' +
+      '(půlvlna 50Hz/10ms) / 30A (60Hz/8,3ms). Grenzlastintegral i²t (t<10ms) 3,6 A²s. VF<1,1V ' +
+      '@IF=1A/TJ=25°C. Závěrný proud IR<5µA @VR=VRRM/25°C (<50µA @100°C). Kapacita přechodu Cj ' +
+      'typ. 12pF @VR=4V. Doba zotavení trr typ. 1500ns (IF=0,5A→IR=1A→IR=0,25A) — výrazně delší ' +
+      'než u rychlých/ultra rychlých usměrňovacích diod v této knihovně. Tepelný odpor ' +
+      'přechod-okolí RthA<75K/W (25mm² Cu plošky), přechod-vývod RthT<40K/W. TJ a Tstg -50 až ' +
+      '+150°C. Pouzdro UL94V-0, pájecí podmínky 260°C/10s, MSL=1. Shoda s RoHS, REACH, ' +
+      'Conflict Minerals.',
+    tags: 'dioda,usměrňovací,standardní-zotavení,smd,sma,do-214ac,diotec,m1,50v,síťové-usměrnění',
+  },
+  {
+    name: 'M2',
+    packageType: 'shodné s M1 (SMA/DO-214AC) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'M1.jpg',
+    value: 'Usměrňovací dioda se standardní dobou zotavení, VRRM 100 V, IFAV 1 A',
+    notes:
+      'Diotec "M1...M7" — součást řady M1-M7, viz záznam "M1" v této knihovně pro plné ' +
+      'společné elektrické/mechanické specifikace. VRSM 100V.',
+    tags: 'dioda,usměrňovací,standardní-zotavení,smd,sma,do-214ac,diotec,m2,100v,síťové-usměrnění',
+  },
+  {
+    name: 'M3',
+    packageType: 'shodné s M1 (SMA/DO-214AC) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'M1.jpg',
+    value: 'Usměrňovací dioda se standardní dobou zotavení, VRRM 200 V, IFAV 1 A',
+    notes:
+      'Diotec "M1...M7" — součást řady M1-M7, viz záznam "M1" v této knihovně pro plné ' +
+      'společné elektrické/mechanické specifikace. VRSM 200V.',
+    tags: 'dioda,usměrňovací,standardní-zotavení,smd,sma,do-214ac,diotec,m3,200v,síťové-usměrnění',
+  },
+  {
+    name: 'M4',
+    packageType: 'shodné s M1 (SMA/DO-214AC) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'M1.jpg',
+    value: 'Usměrňovací dioda se standardní dobou zotavení, VRRM 400 V, IFAV 1 A',
+    notes:
+      'Diotec "M1...M7" — součást řady M1-M7, viz záznam "M1" v této knihovně pro plné ' +
+      'společné elektrické/mechanické specifikace. VRSM 400V.',
+    tags: 'dioda,usměrňovací,standardní-zotavení,smd,sma,do-214ac,diotec,m4,400v,síťové-usměrnění',
+  },
+  {
+    name: 'M5',
+    packageType: 'shodné s M1 (SMA/DO-214AC) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'M1.jpg',
+    value: 'Usměrňovací dioda se standardní dobou zotavení, VRRM 600 V, IFAV 1 A',
+    notes:
+      'Diotec "M1...M7" — součást řady M1-M7, viz záznam "M1" v této knihovně pro plné ' +
+      'společné elektrické/mechanické specifikace. VRSM 600V.',
+    tags: 'dioda,usměrňovací,standardní-zotavení,smd,sma,do-214ac,diotec,m5,600v,síťové-usměrnění',
+  },
+  {
+    name: 'M6',
+    packageType: 'shodné s M1 (SMA/DO-214AC) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'M1.jpg',
+    value: 'Usměrňovací dioda se standardní dobou zotavení, VRRM 800 V, IFAV 1 A',
+    notes:
+      'Diotec "M1...M7" — součást řady M1-M7, viz záznam "M1" v této knihovně pro plné ' +
+      'společné elektrické/mechanické specifikace. VRSM 800V.',
+    tags: 'dioda,usměrňovací,standardní-zotavení,smd,sma,do-214ac,diotec,m6,800v,síťové-usměrnění',
+  },
+  {
+    name: 'M7',
+    packageType: 'shodné s M1 (SMA/DO-214AC) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'M1.jpg',
+    value: 'Usměrňovací dioda se standardní dobou zotavení, VRRM 1000 V, IFAV 1 A',
+    notes:
+      'Diotec "M1...M7" — součást řady M1-M7, viz záznam "M1" v této knihovně pro plné ' +
+      'společné elektrické/mechanické specifikace. Nejvyšší napěťová varianta celé řady. ' +
+      'VRSM 1000V.',
+    tags: 'dioda,usměrňovací,standardní-zotavení,smd,sma,do-214ac,diotec,m7,1000v,síťové-usměrnění',
+  },
+  {
+    name: 'BAV99',
+    packageType:
+      'SMD SOT-23 (TO-236), 3 vývody: 1=katoda D1, 2=katoda D2, 3=společná anoda (ověřeno ze ' +
+      'schématu v datasheetu — pozor, dřívější verze této poznámky měla polaritu obráceně), ' +
+      'rozměry cca 2,9×1,3×1,1mm, pásková balení 3000ks/7", hmotnost ~0,01g',
+    schematicImage: 'BAV99.jpg',
+    value:
+      'Duální (2×) spínací SMD dioda se společnou anodou v jednom pouzdře, IFAV 215 mA/dioda, ' +
+      'VRRM 85 V, VF<855mV @IF=10mA, doba zotavení trr<4ns',
+    notes:
+      'Diotec Semiconductor "BAV99, BAV99L, BAV199 — SMD Small Signal Diodes" (verze ' +
+      '2025-11-18). ⚠️ NOVÝ TYP součástky v této knihovně: první DUÁLNÍ (2 diody v jednom ' +
+      'SOT-23 pouzdře) small-signal dioda — na rozdíl od jednotlivých THT/SMD spínacích diod ' +
+      '(1N4148, LL4148/LL4448 aj. v této knihovně) integruje 2 diody se společnou anodou (pin ' +
+      '3) v úsporném 3pinovém SOT-23 pouzdru — typicky pro logické hradlování/ochranu vstupů, ' +
+      'sériové/paralelní kombinace v jednom pouzdře úsporném na místo na DPS. Objednací ' +
+      'varianty: BAV99-C (commercial grade, VRRM 70V), BAV99/-Q/-AQ (industrial/automotive ' +
+      'grade, VRRM 85V, nejvyšší rychlost přepínání ze skupiny) — viz sourozenecké záznamy ' +
+      '"BAV99L" (100V verze) a "BAV199" (extrémně nízký svodový proud) pro odlišné varianty ve ' +
+      'stejném pouzdře/pinoutu. Max. ztrátový výkon Ptot 225mW (BAV99-C) / 350mW (BAV99/-Q/-AQ, ' +
+      'na 3mm² Cu plošky). Max. trvalý proud IFAV 215mA (zatížena jen jedna dioda) / 125mA ' +
+      '(zatíženy obě diody současně). Periodický špičkový proud IFRM 300mA. Nárazový proud ' +
+      'IFSM 0,5A (tp≤1s) / 1A (tp≤1ms) / 2A (tp≤1µs). VF (BAV99/-Q/-AQ, TJ=25°C): <715mV @1mA, ' +
+      '<855mV @10mA, <1,0V @50mA, <1,25V @150mA. Závěrný proud IR<30nA @VR=70V/25°C (<30µA ' +
+      '@150°C). Kapacita přechodu Cj<2pF @VR=0V/1MHz. Tepelný odpor přechod-okolí RthA 357K/W ' +
+      '(BAV99/-Q/-AQ, na 3mm² Cu plošky). TJ a Tstg -55 až +150°C. Pouzdro UL94V-0, pájecí ' +
+      'podmínky 260°C/10s, MSL=1. Shoda s RoHS (bez výjimky), REACH, Conflict Minerals, ' +
+      'bezolovnatá/bezhalogenová konstrukce.',
+    tags: 'dioda,spínací,signálová,duální,smd,sot-23,diotec,bav99,společná-anoda',
+  },
+  {
+    name: 'BAV99L',
+    packageType: 'shodné s BAV99 (SOT-23) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'BAV99.jpg',
+    value:
+      'Duální spínací SMD dioda se společnou anodou, IFAV 215 mA/dioda, VRRM 100 V, ' +
+      'VF<855mV @IF=10mA, trr<4ns',
+    notes:
+      'Diotec "BAV99, BAV99L, BAV199" — součást rodiny, viz záznam "BAV99" v této knihovně pro ' +
+      'plné společné mechanické specifikace a kontext. Vyšší napěťová varianta (VRRM 100V vs. ' +
+      '85V u BAV99), jinak elektricky shodná s BAV99/-Q/-AQ (stejné VF, trr, Ptot, RthA). Pouze ' +
+      've variantě -AQ (AEC-Q101 qualified).',
+    tags: 'dioda,spínací,signálová,duální,smd,sot-23,diotec,bav99l,společná-anoda,100v',
+  },
+  {
+    name: 'BAV199',
+    packageType: 'shodné s BAV99 (SOT-23) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'BAV99.jpg',
+    value:
+      'Duální spínací SMD dioda se společnou anodou, extrémně nízký svodový proud, IFAV 215 ' +
+      'mA/dioda, VRRM 85 V, VF<1,0V @IF=10mA, trr<3000ns',
+    notes:
+      'Diotec "BAV99, BAV99L, BAV199" — součást rodiny, viz záznam "BAV99" v této knihovně pro ' +
+      'plné společné mechanické specifikace a kontext. ⚠️ Na rozdíl od BAV99 (optimalizováno ' +
+      'na rychlost přepínání, trr<4ns) je BAV199 optimalizováno na EXTRÉMNĚ NÍZKÝ SVODOVÝ ' +
+      '(leakage) PROUD — IR<5nA @VR=75V/25°C (<80nA @150°C), řádově nižší než u BAV99/BAV99L ' +
+      '— za cenu výrazně pomalejší doby zotavení (trr<3000ns, cca 750× pomalejší než BAV99). ' +
+      'Vhodné pro aplikace citlivé na svodový proud (např. vzorkovací obvody, vysokoimpedanční ' +
+      'senzorové rozhraní), ne pro vysokorychlostní spínání. VF<900mV @1mA/<1,0V @10mA/<1,1V ' +
+      '@50mA/<1,25V @150mA. Kapacita přechodu Cj typ. 2pF. Pouze ve variantách -Q/-AQ.',
+    tags: 'dioda,spínací,signálová,duální,smd,sot-23,diotec,bav199,společná-anoda,nízký-svodový-proud',
+  },
+  {
+    name: 'SKKT 92 (SEMIPACK 1)',
+    schematicImage: 'SKKT92.jpg',
+    packageType:
+      'šroubovací výkonový modul SEMIPACK 1, keramická izolační destička (přenos tepla přes ' +
+      'destičku z oxidu hlinitého), tvrdé pájené spoje, rozměry 93×30×9mm (case A46), 3 ' +
+      'výkonové vývody se závitem M5 (piny 1/2/3), 4 gate/katoda signální vývody (piny 4-7), ' +
+      'UL recognized (file E63532)',
+    value:
+      'Duální tyristorový modul (2× SCR se společnou katodou), ITAV 95 A/tyristor, ITRMS 150 A ' +
+      '(max. trvalý), VRRM/VDRM 800–1800 V dle objednacího kódu, ITSM 2000 A (10ms/25°C)',
+    notes:
+      'SEMIKRON "SKKT 92, SKKT 92B, SKKH 92 — SEMIPACK 1 Thyristor/Diode Modules" (dok. verze ' +
+      '09-03-2004). ⚠️ NOVÝ TYP součástky v této knihovně: první VÝKONOVÝ TYRISTOROVÝ MODUL ' +
+      '(na rozdíl od diskrétních tyristorů SemiWell SCD4C60S a WeEn TYN50W/TYN80W-1600T v této ' +
+      'knihovně) — dvojice tyristorů (SCR) v jednom šroubovacím pouzdře pro montáž na chladič, ' +
+      'určeno pro průmyslové výkonové řízení (DC pohony obráběcích strojů, AC měkké rozběhy ' +
+      'motorů, teplotní regulace pecí/chemických procesů, profesionální stmívání osvětlení ve ' +
+      'studiích/divadlech). SKKT 92 má oba tyristory zapojené se SPOLEČNOU KATODOU (viz ' +
+      'sourozenecké záznamy "SKKT 92B" pro variantu se společnou anodou a "SKKH 92" pro ' +
+      'poloviční/smíšenou konfiguraci tyristor+dioda). Objednací kódy dle napěťové třídy: ' +
+      'SKKT92/08E (VRRM 800V/VRSM 900V), /12E (1200V/1300V), /14E (1400V/1500V), /16E (1600V/ ' +
+      '1700V), /18E (1800V/1900V). VT (propustné napětí) max 1,65V @IT=300A/25°C, VT(TO) max ' +
+      '0,9V @125°C, dynamický odpor rT max 2mΩ @125°C. Blokovací proud IDD/IRD max 20mA @125°C. ' +
+      'Doba zapnutí tgd 1µs, tgr 2µs. Kritická strmost (di/dt)cr max 150A/µs, (dv/dt)cr max ' +
+      '1000V/µs (obojí @125°C). Vypínací doba tq typ. 100µs @125°C. Přídržný proud IH typ. ' +
+      '150mA/max 250mA, rozběhový proud IL typ. 300mA/max 600mA (RG=33Ω, @25°C). Řídicí ' +
+      'elektroda: VGT min 3V, IGT min 150mA (DC, 25°C); VGD max 0,25V, IGD max 6mA (DC, 125°C). ' +
+      'Tepelný odpor přechod-pouzdro na tyristor: 0,28K/W (nepřetržitý provoz) / 0,3K/W ' +
+      '(sinusový 180°) / 0,32K/W (usměrněný 120°) — na modul poloviční hodnoty. Tepelný odpor ' +
+      'pouzdro-chladič 0,2K/W (na tyristor) / 0,1K/W (na modul). TVJ a TSTG -40 až +125°C. ' +
+      'Izolační napětí (50Hz, 1s/1min) 3600/3000V~. Utahovací moment na chladič 5Nm (±15%), na ' +
+      'terminály 3Nm (±15%). Hmotnost ~95g.',
+    tags: 'tyristor,scr,výkonový-modul,duální,semikron,semipack,skkt92,800v,1800v,šroubovací',
+  },
+  {
+    name: 'SKKT 92B (SEMIPACK 1)',
+    packageType: 'shodné s SKKT 92 (case A48) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'SKKT92.jpg',
+    value:
+      'Duální tyristorový modul (2× SCR se společnou anodou), ITAV 95 A/tyristor, ITRMS 150 A, ' +
+      'VRRM/VDRM 800–1800 V dle objednacího kódu',
+    notes:
+      'SEMIKRON "SKKT 92, SKKT 92B, SKKH 92" — součást rodiny, viz záznam "SKKT 92" v této ' +
+      'knihovně pro plné společné elektrické specifikace a kontext. Na rozdíl od SKKT 92 mají ' +
+      'oba tyristory SPOLEČNOU ANODU místo společné katody — vhodné pro jiná zapojení řízených ' +
+      'usměrňovačů/měničů (např. dvojice modulů SKKT92+SKKT92B pro plně řízený třífázový ' +
+      'můstek). Objednací kódy: SKKT92B08E až SKKT92B18E (stejná napěťová řada jako SKKT 92). ' +
+      'Case A48 (mírně odlišné mechanické provedení od A46 u SKKT 92).',
+    tags: 'tyristor,scr,výkonový-modul,duální,semikron,semipack,skkt92b,společná-anoda,800v,1800v,šroubovací',
+  },
+  {
+    name: 'SKKH 92 (SEMIPACK 1)',
+    packageType: 'shodné s SKKT 92 (case A47) — viz jeho záznam pro plné mechanické specifikace',
+    schematicImage: 'SKKT92.jpg',
+    value:
+      'Poloviční řízený modul (1× tyristor SCR + 1× dioda), ITAV 95 A, ITRMS 150 A, VRRM/VDRM ' +
+      '800–1800 V dle objednacího kódu',
+    notes:
+      'SEMIKRON "SKKT 92, SKKT 92B, SKKH 92" — součást rodiny, viz záznam "SKKT 92" v této ' +
+      'knihovně pro plné společné elektrické specifikace a kontext (tyristorová část ' +
+      'elektricky shodná). Na rozdíl od SKKT 92/92B (2× tyristor) obsahuje SKKH 92 SMÍŠENOU ' +
+      'KONFIGURACI — jeden tyristor a jednu výkonovou diodu v jednom pouzdře, typické pro ' +
+      'poloviditelně řízené (half-controlled) usměrňovací můstky s nižšími náklady na řízení ' +
+      'než plně tyristorové zapojení. Objednací kódy: SKKH92/08E až SKKH92/18E (stejná napěťová ' +
+      'řada). Case A47.',
+    tags: 'tyristor,scr,dioda,výkonový-modul,smíšený,semikron,semipack,skkh92,800v,1800v,šroubovací',
+  },
+];
+
+const BRIDGE_SPECS: PartSpec[] = [
+  {
+    name: 'ABS2',
+    packageType:
+      'SMD můstkové pouzdro "ABS", 4 vývody (~ / ~ / + / -), rozteč vývodů 4 mm (kvůli vyšším ' +
+      'vzdušným/povrchovým vzdálenostem), rozměry cca 6,2×5,0×1,4 mm, pásková balení ' +
+      '5000ks/13"',
+    schematicImage: 'ABS2.jpg',
+    value:
+      'Jednofázový můstkový usměrňovač (SMD), VRRM 200 V, IFAV 0,8/1 A, VF<0,95V @0,4A, IFSM ' +
+      '25 A (50Hz)/27 A (60Hz)',
+    notes:
+      'Diotec Semiconductor "ABS2...ABS10-16 — SMD Single Phase Bridge Rectifier" (dok. verze ' +
+      '2024-06-19). ⚠️ NOVÁ KATEGORIE v této knihovně (Můstek) — první usměrňovací můstek, ' +
+      'vyčleněn ze samostatných diod do vlastní kategorie, protože jde o integrované pouzdro ' +
+      'se 4 diodami zapojenými jako celý jednofázový usměrňovací můstek, ne o jednotlivou diodu. ' +
+      'Použití: síťové usměrnění 50/60Hz, napájecí zdroje. Nejnižší napěťová varianta řady ' +
+      'ABS2–ABS10-16 (VRRM 200–1600V, viz sourozenecké záznamy ABS4/6/8/10/10-16 pro plné ' +
+      'specifikace VRRM). Max. vstupní střídavé napětí VVRMS 140V. Max. trvalý výstupní proud ' +
+      'IFAV 0,8A (25mm² Cu plošky) / 1A (2500mm² Cu plošky) @TA=40°C. Periodický špičkový ' +
+      'propustný proud IFRM 5,4A @f>15Hz/TA=40°C. Rázový proud IFSM 25A (půlvlna 50Hz/10ms) / ' +
+      '27A (60Hz/8,3ms) — ⚠️ datasheet v záhlaví uvádí souhrnně "IFSM=27/30A" pro celou řadu, ' +
+      'zatímco podrobná tabulka pro tento konkrétní typ udává 25A/27A; použita přesnější ' +
+      'hodnota z tabulky. Grenzlastintegral i²t (t<10ms) 3,6 A²s. VF<0,95V @IF=0,4A / <1,1V ' +
+      '@IF=0,8A (Tj=25°C, platí na diodu). Závěrný proud IR<5µA @VR=VRRM. Doba zotavení trr ' +
+      'typ. 1500ns. Kapacita přechodu Cj 10pF @VR=4V. Tepelný odpor přechod-okolí RthA<80K/W ' +
+      '(25mm² plošky) / <62K/W (2500mm² Al substrát), přechod-pouzdro RthT<25K/W. TJ a Tstg -50 ' +
+      'až +150°C. Doporučený ochranný odpor Rt=14,8Ω, přípustný nabíjecí kondenzátor CL=338µF. ' +
+      'Pouzdro UL94V-0, pájecí podmínky 260°C/10s, MSL=1, hmotnost ~0,1g. Shoda s RoHS (výjimka ' +
+      '7a), REACH, Conflict Minerals, bez halogenu. K dispozici i varianty -Q (AEC-Q101 ' +
+      'compliant) / -AQ (AEC-Q101 qualified) pro automotive.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,diotec,abs2,200v,síťové-usměrnění',
+  },
+  {
+    name: 'ABS4',
+    packageType: 'shodné s ABS2 — viz poznámka u ABS2 pro plné mechanické specifikace',
+    schematicImage: 'ABS2.jpg',
+    value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 400 V, IFAV 0,8/1 A',
+    notes:
+      'Diotec Semiconductor "ABS2...ABS10-16" — součást řady ABS2–ABS10-16, viz záznam "ABS2" ' +
+      'v této knihovně pro plné společné elektrické/mechanické specifikace. Max. vstupní ' +
+      'střídavé napětí VVRMS 280V. Doporučený ochranný odpor Rt=22,2Ω, přípustný nabíjecí ' +
+      'kondenzátor CL=225µF.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,diotec,abs4,400v,síťové-usměrnění',
+  },
+  {
+    name: 'ABS6',
+    packageType: 'shodné s ABS2 — viz poznámka u ABS2 pro plné mechanické specifikace',
+    schematicImage: 'ABS2.jpg',
+    value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 600 V, IFAV 0,8/1 A',
+    notes:
+      'Diotec Semiconductor "ABS2...ABS10-16" — součást řady ABS2–ABS10-16, viz záznam "ABS2" ' +
+      'v této knihovně pro plné společné elektrické/mechanické specifikace. Max. vstupní ' +
+      'střídavé napětí VVRMS 420V. Doporučený ochranný odpor Rt=29,6Ω, přípustný nabíjecí ' +
+      'kondenzátor CL=169µF.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,diotec,abs6,600v,síťové-usměrnění',
+  },
+  {
+    name: 'ABS8',
+    packageType: 'shodné s ABS2 — viz poznámka u ABS2 pro plné mechanické specifikace',
+    schematicImage: 'ABS2.jpg',
+    value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 800 V, IFAV 0,8/1 A',
+    notes:
+      'Diotec Semiconductor "ABS2...ABS10-16" — součást řady ABS2–ABS10-16, viz záznam "ABS2" ' +
+      'v této knihovně pro plné společné elektrické/mechanické specifikace. Max. vstupní ' +
+      'střídavé napětí VVRMS 560V. Doporučený ochranný odpor Rt=37,0Ω, přípustný nabíjecí ' +
+      'kondenzátor CL=125µF.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,diotec,abs8,800v,síťové-usměrnění',
+  },
+  {
+    name: 'ABS10',
+    packageType: 'shodné s ABS2 — viz poznámka u ABS2 pro plné mechanické specifikace',
+    schematicImage: 'ABS2.jpg',
+    value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 1000 V, IFAV 0,8/1 A',
+    notes:
+      'Diotec Semiconductor "ABS2...ABS10-16" — součást řady ABS2–ABS10-16, viz záznam "ABS2" ' +
+      'v této knihovně pro plné společné elektrické/mechanické specifikace. Max. vstupní ' +
+      'střídavé napětí VVRMS 700V. Doporučený ochranný odpor Rt=64,0Ω, přípustný nabíjecí ' +
+      'kondenzátor CL=78µF — ⚠️ POZOR na záměnu se sourozeneckým typem "ABS10-16" (stejný ' +
+      'prefix ABS10, ale VRRM 1600V, ne 1000V, a odlišné Rt/CL hodnoty shodné s ABS2).',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,diotec,abs10,1000v,síťové-usměrnění',
+  },
+  {
+    name: 'ABS10-16',
+    packageType: 'shodné s ABS2 — viz poznámka u ABS2 pro plné mechanické specifikace',
+    schematicImage: 'ABS2.jpg',
+    value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 1600 V, IFAV 0,8/1 A',
+    notes:
+      'Diotec Semiconductor "ABS2...ABS10-16" — součást řady ABS2–ABS10-16, viz záznam "ABS2" ' +
+      'v této knihovně pro plné společné elektrické/mechanické specifikace. Nejvyšší napěťová ' +
+      'varianta celé řady. Max. vstupní střídavé napětí VVRMS 1120V. Doporučený ochranný odpor ' +
+      'Rt=14,8Ω, přípustný nabíjecí kondenzátor CL=338µF (shodné s ABS2, přestože VRRM je ' +
+      '8× vyšší — dáno vztahem Rt=VRRM/IFSM při stejném IFSM).',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,diotec,abs10-16,1600v,síťové-usměrnění',
+  },
+  {
+    name: 'S40',
+    packageType:
+      'SMD pouzdro TO-269AA "MiniDIL SLIM", 4 vývody (~ / ~ / + / -), nízký profil, rozměry cca ' +
+      '6,5×5,1×1,65 mm, pásková balení 5000ks/13"',
+    schematicImage: 'S40.jpg',
+    value:
+      'Jednofázový diodový můstkový usměrňovač (SMD), VRRM 80 V, IFAV 0,8 A, VF<0,95V @0,4A, ' +
+      'IFSM 40 A (50Hz)/44 A (60Hz)',
+    notes:
+      'Diotec Semiconductor "S40...S500 — SMD Single Phase Diode Bridge Rectifier" (dok. verze ' +
+      '2020-12-14) — druhá rodina usměrňovacích můstků v této kategorii, odlišná od ABS-série ' +
+      '(viz záznam "ABS2" v této knihovně) jiným SMD pouzdrem (TO-269AA MiniDIL SLIM vs. ABS) a ' +
+      'nižším napěťovým rozsahem (80-1000V vs. 200-1600V) při vyšším IFSM (40/44A vs. 25/27A). ' +
+      'UL rozpoznáno (UL Recognized, File E175067). Nejnižší napěťová varianta řady S40–S500 ' +
+      '(VRRM 80–1000V, viz sourozenecké záznamy S80/S125/S250/S380/S500 pro plné specifikace ' +
+      'VRRM). Značení na pouzdru: pruh (bar) označuje DC stranu (+/-), kód "B" + 2-3místný ' +
+      'výrobní kód. Max. vstupní střídavé napětí VVRMS 40V. Max. trvalý výstupní proud IFAV ' +
+      '0,8A @TA=50°C (25mm² Cu plošky). Periodický špičkový propustný proud IFRM 10A @f>15Hz/ ' +
+      'TA=50°C. Rázový proud IFSM 40A (půlvlna 50Hz/10ms) / 44A (60Hz/8,3ms). Grenzlastintegral ' +
+      'i²t (t<10ms) 8 A²s. VF<0,95V @IF=0,4A / <1,1V @IF=0,8A (Tj=25°C, platí na diodu). Závěrný ' +
+      'proud IR<5µA @VR=VRRM. Doba zotavení trr typ. 1500ns. Kapacita přechodu Cj 10pF @VR=4V. ' +
+      'Tepelný odpor přechod-okolí RthA 60K/W (typ., 25mm² plošky), přechod-vývod RthT 20K/W ' +
+      '(typ.). TJ a Tstg -50 až +150°C. Doporučený ochranný odpor Rt=2,0Ω, přípustný nabíjecí ' +
+      'kondenzátor CL=2500µF. Pouzdro UL94V-0, pájecí podmínky 260°C/10s, MSL=1, hmotnost ' +
+      '~0,1g. Shoda s RoHS (výjimka 7a), REACH, Conflict Minerals, bez halogenu.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,diotec,s40,to-269aa,minidil,80v,síťové-usměrnění',
+  },
+  {
+    name: 'S80',
+    packageType: 'shodné s S40 — viz poznámka u S40 pro plné mechanické specifikace',
+    schematicImage: 'S40.jpg',
+    value: 'Jednofázový diodový můstkový usměrňovač (SMD), VRRM 160 V, IFAV 0,8 A',
+    notes:
+      'Diotec Semiconductor "S40...S500" — součást řady S40–S500, viz záznam "S40" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Značení "C" + výrobní kód. ' +
+      'Max. vstupní střídavé napětí VVRMS 80V. Doporučený ochranný odpor Rt=4,0Ω, přípustný ' +
+      'nabíjecí kondenzátor CL=1250µF.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,diotec,s80,to-269aa,minidil,160v,síťové-usměrnění',
+  },
+  {
+    name: 'S125',
+    packageType: 'shodné s S40 — viz poznámka u S40 pro plné mechanické specifikace',
+    schematicImage: 'S40.jpg',
+    value: 'Jednofázový diodový můstkový usměrňovač (SMD), VRRM 250 V, IFAV 0,8 A',
+    notes:
+      'Diotec Semiconductor "S40...S500" — součást řady S40–S500, viz záznam "S40" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Značení "E" + výrobní kód. ' +
+      'Max. vstupní střídavé napětí VVRMS 125V. Doporučený ochranný odpor Rt=6,25Ω, přípustný ' +
+      'nabíjecí kondenzátor CL=800µF.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,diotec,s125,to-269aa,minidil,250v,síťové-usměrnění',
+  },
+  {
+    name: 'S250',
+    packageType: 'shodné s S40 — viz poznámka u S40 pro plné mechanické specifikace',
+    schematicImage: 'S40.jpg',
+    value: 'Jednofázový diodový můstkový usměrňovač (SMD), VRRM 600 V, IFAV 0,8 A',
+    notes:
+      'Diotec Semiconductor "S40...S500" — součást řady S40–S500, viz záznam "S40" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Značení "J" + výrobní kód. ' +
+      'Max. vstupní střídavé napětí VVRMS 250V. Doporučený ochranný odpor Rt=15,0Ω, přípustný ' +
+      'nabíjecí kondenzátor CL=333µF.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,diotec,s250,to-269aa,minidil,600v,síťové-usměrnění',
+  },
+  {
+    name: 'S380',
+    packageType: 'shodné s S40 — viz poznámka u S40 pro plné mechanické specifikace',
+    schematicImage: 'S40.jpg',
+    value: 'Jednofázový diodový můstkový usměrňovač (SMD), VRRM 800 V, IFAV 0,8 A',
+    notes:
+      'Diotec Semiconductor "S40...S500" — součást řady S40–S500, viz záznam "S40" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Značení "K" + výrobní kód. ' +
+      'Max. vstupní střídavé napětí VVRMS 380V. Doporučený ochranný odpor Rt=20,0Ω, přípustný ' +
+      'nabíjecí kondenzátor CL=250µF.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,diotec,s380,to-269aa,minidil,800v,síťové-usměrnění',
+  },
+  {
+    name: 'S500',
+    packageType: 'shodné s S40 — viz poznámka u S40 pro plné mechanické specifikace',
+    schematicImage: 'S40.jpg',
+    value: 'Jednofázový diodový můstkový usměrňovač (SMD), VRRM 1000 V, IFAV 0,8 A',
+    notes:
+      'Diotec Semiconductor "S40...S500" — součást řady S40–S500, viz záznam "S40" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Nejvyšší napěťová varianta ' +
+      'celé řady. Značení "M" + výrobní kód. Max. vstupní střídavé napětí VVRMS 500V. Doporučený ' +
+      'ochranný odpor Rt=25,0Ω, přípustný nabíjecí kondenzátor CL=200µF.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,diotec,s500,to-269aa,minidil,1000v,síťové-usměrnění',
+  },
+  {
+    name: 'DF005S',
+    packageType:
+      'SMD pouzdro SDIP 4L (4-Lead, 6,5mm šířka), rozměry cca 8,5×6,5×2,6 mm, pásková balení, ' +
+      'top mark shodný s názvem dílu',
+    schematicImage: 'DF005S.jpg',
+    value:
+      'Jednofázový můstkový usměrňovač (SMD), VRRM 50 V, IFAV 1,5 A, VF max 1,1V @1,5A, IFSM ' +
+      '50 A (8,3ms půlvlna)',
+    notes:
+      'Fairchild (ON Semiconductor) "DF005S - DF10S — Bridge Rectifiers" (dok. Rev. 1.5, květen ' +
+      '2015, © 1998 Fairchild Semiconductor). Třetí rodina usměrňovacích můstků v této ' +
+      'kategorii, odlišná od obou Diotec řad (ABS a S40-S500, viz záznamy "ABS2" a "S40" v této ' +
+      'knihovně) jiným SMD pouzdrem (SDIP 4L, nekonformní s žádným referenčním standardem dle ' +
+      'datasheetu) a vyšším trvalým proudem IFAV=1,5A. UL certifikováno (UL #E258596), pájení ' +
+      'kompatibilní s IR reflow i vlnovou pájkou, bezolovnaté (RoHS 2002/95/EU), "Green Molding ' +
+      'Compound" dle IEC61249. Nejnižší napěťová varianta řady DF005S–DF10S (VRRM 50–1000V, ' +
+      'viz sourozenecké záznamy DF01S/DF02S/DF04S/DF06S/DF08S/DF10S pro plné specifikace VRRM). ' +
+      'Max. RMS vstupní napětí VRMS 35V, DC závěrné napětí při jmenovitém IR VDC 50V. Max. ' +
+      'trvalý usměrněný proud IFAV 1,5A @TA=40°C (shodný pro celou řadu). Nadproudový ráz IFSM ' +
+      '50A (jednorázová půlvlna 8,3ms, shodné pro celou řadu). Grenzlastintegral i²t (t<8,35ms) ' +
+      '10 A²s. VF (na prvek) max 1,1V @IF=1,5A/25°C (typ. 0,94V dle "Features"). Závěrný proud ' +
+      'IR (na prvek, @VR jmenovité) max 5,0µA @TA=25°C / max 500µA @TA=125°C. Kapacita přechodu ' +
+      'CJ typ. 25pF @VR=4V/f=1MHz. Ztrátový výkon PD 3,1W. Tepelný odpor přechod-okolí RθJA: ' +
+      '62°C/W (jeden čip, max. land pattern 13×13mm) / 50°C/W (multi-die, max. pattern) / ' +
+      '105°C/W (multi-die, min. pattern 1,3×1,5mm). Tepelná charakteristika přechod-vývod ψJL ' +
+      '27°C/W. TJ a Tstg -55 až +150°C.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,fairchild,onsemi,df005s,sdip,50v,síťové-usměrnění',
+  },
+  {
+    name: 'DF01S',
+    packageType: 'shodné s DF005S — viz poznámka u DF005S pro plné mechanické specifikace',
+    schematicImage: 'DF005S.jpg',
+    value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 100 V, IFAV 1,5 A',
+    notes:
+      'Fairchild "DF005S - DF10S" — součást řady DF005S–DF10S, viz záznam "DF005S" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Max. RMS vstupní napětí ' +
+      'VRMS 70V, DC závěrné napětí VDC 100V.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,fairchild,onsemi,df01s,sdip,100v,síťové-usměrnění',
+  },
+  {
+    name: 'DF02S',
+    packageType: 'shodné s DF005S — viz poznámka u DF005S pro plné mechanické specifikace',
+    schematicImage: 'DF005S.jpg',
+    value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 200 V, IFAV 1,5 A',
+    notes:
+      'Fairchild "DF005S - DF10S" — součást řady DF005S–DF10S, viz záznam "DF005S" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Max. RMS vstupní napětí ' +
+      'VRMS 140V, DC závěrné napětí VDC 200V.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,fairchild,onsemi,df02s,sdip,200v,síťové-usměrnění',
+  },
+  {
+    name: 'DF04S',
+    packageType: 'shodné s DF005S — viz poznámka u DF005S pro plné mechanické specifikace',
+    schematicImage: 'DF005S.jpg',
+    value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 400 V, IFAV 1,5 A',
+    notes:
+      'Fairchild "DF005S - DF10S" — součást řady DF005S–DF10S, viz záznam "DF005S" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Max. RMS vstupní napětí ' +
+      'VRMS 280V, DC závěrné napětí VDC 400V.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,fairchild,onsemi,df04s,sdip,400v,síťové-usměrnění',
+  },
+  {
+    name: 'DF06S',
+    packageType: 'shodné s DF005S — viz poznámka u DF005S pro plné mechanické specifikace',
+    schematicImage: 'DF005S.jpg',
+    value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 600 V, IFAV 1,5 A',
+    notes:
+      'Fairchild "DF005S - DF10S" — součást řady DF005S–DF10S, viz záznam "DF005S" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Max. RMS vstupní napětí ' +
+      'VRMS 420V, DC závěrné napětí VDC 600V.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,fairchild,onsemi,df06s,sdip,600v,síťové-usměrnění',
+  },
+  {
+    name: 'DF08S',
+    packageType: 'shodné s DF005S — viz poznámka u DF005S pro plné mechanické specifikace',
+    schematicImage: 'DF005S.jpg',
+    value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 800 V, IFAV 1,5 A',
+    notes:
+      'Fairchild "DF005S - DF10S" — součást řady DF005S–DF10S, viz záznam "DF005S" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Max. RMS vstupní napětí ' +
+      'VRMS 560V, DC závěrné napětí VDC 800V.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,fairchild,onsemi,df08s,sdip,800v,síťové-usměrnění',
+  },
+  {
+    name: 'DF10S',
+    packageType: 'shodné s DF005S — viz poznámka u DF005S pro plné mechanické specifikace',
+    schematicImage: 'DF005S.jpg',
+    value: 'Jednofázový můstkový usměrňovač (SMD), VRRM 1000 V, IFAV 1,5 A',
+    notes:
+      'Fairchild "DF005S - DF10S" — součást řady DF005S–DF10S, viz záznam "DF005S" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Nejvyšší napěťová varianta ' +
+      'celé řady. Max. RMS vstupní napětí VRMS 700V, DC závěrné napětí VDC 1000V.',
+    tags: 'můstek,usměrňovací,bridge-rectifier,smd,fairchild,onsemi,df10s,sdip,1000v,síťové-usměrnění',
   },
 ];
 
@@ -2618,6 +3477,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'TO-92 — POZOR, pořadí vývodů závisí na výrobci (viz poznámka): ' +
       'Motorola/ON Semi a UTC/Unisonic (většina) = C-B-E, Philips/NXP (SOT54/SC-43A, výjimka) = E-B-C',
     value: 'NPN, VCEO 65 V, IC 100 mA, hFE 110–450 (@ IC=2 mA)',
+    schematicImage: 'BC546.jpg',
     notes:
       '⚠️ PINOUT SE LIŠÍ PODLE VÝROBCE — vždy ověř podle konkrétního kusu: ' +
       '• Motorola/ON Semi TO-92 (Case 29-04, styl 17) a UTC/Unisonic TO-92: 1=kolektor, 2=báze, 3=emitor (většinová konvence). ' +
@@ -2650,6 +3510,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     packageType:
       'TO-18 — vývody: 1=emitor, 2=báze, 3=kolektor (kolektor je spojen s kovovým pouzdrem/case!)',
     value: 'NPN, 40 V, 800 mA',
+    schematicImage: '2N2221A.jpg',
     notes:
       'Malovýkonový bipolární tranzistor. Pořadí vývodů (1=E, 2=B, 3=K) a spojení kolektoru s pouzdrem ' +
       'potvrzeno dle MIL-PRF-19500/255 (Microchip DS00005314A) pro celou rodinu 2N222x v TO-18 — ' +
@@ -2662,6 +3523,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'TO-18 (TO-206AA) — vývody: 1=emitor, 2=báze, 3=kolektor (kolektor spojen s pouzdrem); ' +
       'existují i SMD varianty UA (4 vývody)/UB/UBC (keramický leadless chip carrier)',
     value: 'NPN, VCEO 50 V (MIL spec), IC 800 mA, hFE 35–150 (@ IC=1 mA)',
+    schematicImage: '2N2221A.jpg',
     notes:
       'Radiačně odolný (radiation hardened) NPN spínací tranzistor kvalifikovaný dle MIL-PRF-19500/255 ' +
       '(vojenské/kosmické aplikace; třídy odolnosti JANTXV/JANS 3K až 1MEG rad Si). Menší sourozenec ' +
@@ -2684,6 +3546,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     packageType:
       'TO-18 — vývody: 1=emitor, 2=báze, 3=kolektor (kolektor je spojen s kovovým pouzdrem/case!)',
     value: 'NPN, VCEO 40–50 V (dle třídy/výrobce), VCBO 75 V, IC 600–800 mA',
+    schematicImage: '2N2221A.jpg',
     notes:
       'OPRAVA pořadí vývodů: dříve uvedeno chybně jako 1=kolektor,2=báze,3=emitor (převzato z odlišné ' +
       'konvence TO-92 Motorola). Dle MIL-PRF-19500/255 (Microchip DS00005314A) je pro TO-18 2N222x ' +
@@ -2700,6 +3563,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: 'P2N2222A',
     packageType: 'TO-92 (TO-226AA, Case 29-04, styl 17) — vývody: 1=kolektor, 2=báze, 3=emitor',
     value: 'NPN, VCEO 40 V, VCBO 75 V, IC(trvalý) 600 mA, hFE 100–300 (@ IC=150 mA)',
+    schematicImage: 'P2N2222A.jpg',
     notes:
       'Plastová TO-92 verze tranzistoru 2N2222A (elektricky stejná třída "A" jako kovový TO-18 ' +
       '2N2222A, ale nižší proudové/výkonové zatížení pouzdra). Datasheet Motorola P2N2222A/D. ' +
@@ -2723,6 +3587,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: '2N3904',
     packageType: 'TO-92, 3 vývody: 1=emitor, 2=báze, 3=kolektor (pohled zepředu na popsanou stranu)',
     value: 'NPN, VCEO 40 V, IC 200 mA, hFE 100–300 (@ IC=10 mA)',
+    schematicImage: '2N3904.jpg',
     notes:
       'Malovýkonový bipolární NPN tranzistor pro obecné spínací a zesilovací aplikace — komplementární ' +
       'k 2N3906. Datasheet GTM Corporation (jejich verze „G2N3904"), vydán 2003, revize 2005/06/24. ' +
@@ -2744,6 +3609,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     packageType:
       'SMD, miniaturní pouzdro (KEC "TSM", cca 2,9 × 1,6 × 1,0 mm) — vývody: 1=emitor, 2=báze, 3=kolektor',
     value: 'NPN, VCEO 30 V, IC 3 A (DC), hFE 200–560 (@ IC=500 mA)',
+    schematicImage: 'KTC3542T.jpg',
     notes:
       'SMD spínací/výkonový tranzistor pro relé, žárovky, motory a blesky (strobe aplikace) — ' +
       'datasheet KEC, 2001. PNP komplement: KTA1542T. ' +
@@ -2763,6 +3629,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: 'BC557',
     packageType: 'TO-92 — vývody: 1=kolektor, 2=báze, 3=emitor',
     value: 'PNP, VCEO 45 V, IC 100 mA, hFE 75–800 (@ IC=2 mA, tříděno A/B/C)',
+    schematicImage: 'BC557.jpg',
     notes:
       'PNP komplement k BC546/BC547 (řada BC556/557/558/559). Elektrické parametry ' +
       'dle datasheetu HSMC HBC557 (ekvivalent/druhý zdroj BC557), hodnoty v PNP konvenci ' +
@@ -2783,6 +3650,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     packageType:
       'TO-18 — vývody: 1=emitor, 2=báze, 3=kolektor (kolektor je spojen s kovovým pouzdrem/case!)',
     value: 'PNP, 40 V, 600 mA',
+    schematicImage: '2N2221A.jpg',
     notes:
       'Malovýkonový bipolární tranzistor. Pořadí vývodů (1=E, 2=B, 3=K) a spojení kolektoru s pouzdrem ' +
       'odvozeno z konvence TO-18 dle MIL-PRF-19500/255 pro rodinu 2N222x/2N29xx ve stejném pouzdře ' +
@@ -2810,12 +3678,14 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'CCBO=8 pF max @VCB=10 V. CEBO=30 pF max @VEB=2 V. ' +
       'Spínací časy (IC=150 mA, IB=15 mA, VCC=30 V): td=10 ns, tr=40 ns, ton=45 ns, ts=190 ns, ' +
       'tf=30 ns, toff=220 ns.',
+    schematicImage: 'MMBT2907A.jpg',
     tags: 'tranzistor,pnp,bipolární,sot-23,smd,zesilovací,spínací,mmbt2907a,2n2907a',
   },
   {
     name: '2N3906',
     packageType: 'TO-92, 3 vývody: 1=emitor, 2=báze, 3=kolektor (pohled zepředu na popsanou stranu)',
     value: 'PNP, VCEO -40 V, IC -200 mA, hFE 100–300 (@ IC=-10 mA)',
+    schematicImage: '2N3906.jpg',
     notes:
       'Malovýkonový bipolární PNP tranzistor pro obecné spínací a zesilovací aplikace — komplementární ' +
       'k 2N3904. Datasheet GTM Corporation (jejich verze „G2N3906"), vydán 2004, revize 2005/06/24. ' +
@@ -2838,6 +3708,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: '2N4401',
     packageType: 'TO-92, 3 vývody: 1=emitor, 2=báze, 3=kolektor (pohled zepředu na popsanou stranu)',
     value: 'NPN, VCEO 40 V, IC 600 mA, hFE 100–300 (@ IC=150 mA)',
+    schematicImage: '2N4401.jpg',
     notes:
       'Malovýkonový bipolární NPN tranzistor pro obecné spínací a zesilovací aplikace — komplementární ' +
       'k 2N4403, vyšší proudová zatížitelnost a vyšší hFE při vyšším proudu než u 2N3904. Datasheet ' +
@@ -2857,6 +3728,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: '2N5551',
     packageType: 'TO-92, 3 vývody: 1=emitor, 2=báze, 3=kolektor (pohled zepředu na popsanou stranu)',
     value: 'NPN, VCEO 160 V, VCBO 180 V, IC 600 mA, hFE 80–400 (@ IC=10 mA)',
+    schematicImage: '2N5551.jpg',
     notes:
       'Malovýkonový bipolární NPN tranzistor s vysokým průrazným napětím — komplementární k PNP typu ' +
       '2N5401. Datasheet GTM Corporation (jejich verze „G2N5551"), vydán 2004, revize 2004/11/29. ' +
@@ -2878,6 +3750,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'TO-220, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=kolektor ' +
       '(chladicí ploška pouzdra je elektricky spojená s kolektorem!)',
     value: 'NPN Darlington, VCEO(sus) 60 V (min), IC 5 A (trvale), hFE min 1000',
+    schematicImage: 'TIP120.jpg',
     notes:
       'Monolitický Darlington s integrovaným rezistorem báze-emitor a vestavěnou ochrannou ' +
       '(zpětnou) diodou mezi kolektorem a emitorem — vhodný pro přímé spínání induktivní zátěže ' +
@@ -2912,6 +3785,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     packageType:
       'SMD (TO-276AA „SMD05" nebo TO-276AB „SMD1", dle varianty) — Pad 1=báze, Pad 2=kolektor, Pad 3=emitor',
     value: 'PNP Darlington, VCEO 80 V, IC 8 A (trvale), hFE 750–18 000 (@ IC=4 A)',
+    schematicImage: '2N6299SMD.jpg',
     notes:
       'Výkonový PNP Darlington v SMD pouzdru, monolitická konstrukce s vestavěným rezistorem ' +
       'báze-emitor. NPN komplement: 2N6301SMD (shodné parametry, opačná polarita). Datasheet Semelab ' +
@@ -2933,6 +3807,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'TO-220AB, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=montážní ploška ' +
       '(elektricky spojená s kolektorem!)',
     value: 'NPN Darlington, VCEO 80 V, IC 10 A (trvale), hFE min 1000 (@ IC=5 A)',
+    schematicImage: 'D44E3.jpg',
     notes:
       'Velmi vysokozisková NPN Darlington výkonová "Silicon Power Pac" — driver, regulátor, budič relé/ ' +
       'solenoidu, audio výstup. Vyrobena epitaxním base procesem se 2 integrovanými rezistory a 1 diodou ' +
@@ -2962,9 +3837,44 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,npn,bipolární,darlington,to-220,d44e3,relé,pozor-chladič',
   },
   {
+    name: 'D44E1',
+    packageType:
+      'TO-220AB, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=montážní ploška ' +
+      '(elektricky spojená s kolektorem!)',
+    value: 'NPN Darlington, VCEO 40 V, IC 10 A (trvale), hFE min 1000 (@ IC=5 A)',
+    schematicImage: 'D44E3.jpg',
+    notes:
+      'Central Semiconductor/New Jersey Semi-Conductor "D44E1/D44E2/D44E3 — Silicon NPN ' +
+      'Darlington Power Transistors" — nejnižší napěťová třída rodiny (D44E1=40 V, viz záznam ' +
+      '"D44E3" v této knihovně pro plný popis principu, srovnání obou datasheetů a všechny ' +
+      'sdílené elektrické/mezní hodnoty, které jsou pro celou rodinu D44E1/E2/E3 shodné — liší se ' +
+      'jen jmenovité VCEO/VCES). D44E1: VCEO=VCES=40 V (oproti 60 V u D44E2, 80 V u D44E3), ' +
+      'ostatní parametry (IC=10 A, IB max=1 A, hFE min 1000 @IC=5 A/VCE=5 V, VCE(sat)/VBE(sat), ' +
+      'Ptot, RθJC/RθJA, spínací časy) shodné s D44E3 dle obou zdrojových datasheetů.',
+    tags: 'tranzistor,npn,bipolární,darlington,to-220,d44e1,relé,pozor-chladič',
+  },
+  {
+    name: 'D44E2',
+    packageType:
+      'TO-220AB, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=montážní ploška ' +
+      '(elektricky spojená s kolektorem!)',
+    value: 'NPN Darlington, VCEO 60 V, IC 10 A (trvale), hFE min 1000 (@ IC=5 A)',
+    schematicImage: 'D44E3.jpg',
+    notes:
+      'Central Semiconductor/New Jersey Semi-Conductor "D44E1/D44E2/D44E3 — Silicon NPN ' +
+      'Darlington Power Transistors" — prostřední napěťová třída rodiny (D44E2=60 V, mezi ' +
+      'D44E1=40 V a D44E3=80 V) — viz záznam "D44E3" v této knihovně pro plný popis principu, ' +
+      'srovnání obou datasheetů a všechny sdílené elektrické/mezní hodnoty, které jsou pro celou ' +
+      'rodinu D44E1/E2/E3 shodné — liší se jen jmenovité VCEO/VCES. D44E2: VCEO=VCES=60 V, ' +
+      'ostatní parametry (IC=10 A, IB max=1 A, hFE min 1000 @IC=5 A/VCE=5 V, VCE(sat)/VBE(sat), ' +
+      'Ptot, RθJC/RθJA, spínací časy) shodné s D44E3 dle obou zdrojových datasheetů.',
+    tags: 'tranzistor,npn,bipolární,darlington,to-220,d44e2,relé,pozor-chladič',
+  },
+  {
     name: 'BC517',
     packageType:
       'TO-92 — vývody: 1=kolektor, 2=báze, 3=emitor (3L, rovné nebo ohnuté vývody dle balení)',
+    schematicImage: 'BC517.jpg',
     value:
       'NPN Darlington, VCEO 30 V, IC 1,2 A (trvale, dle ON Semiconductor), hFE min 30 000 ' +
       '(@ IC=20 mA)',
@@ -2998,6 +3908,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'TO-220, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=kolektor ' +
       '(chladicí ploška pouzdra je elektricky spojená s kolektorem!)',
     value: 'NPN, VCEO(sus) 100 V (min), IC 6 A (trvale), hFE 15–75 (@ IC=3 A)',
+    schematicImage: 'TIP41C.jpg',
     notes:
       'Výkonový bipolární tranzistor, PNP komplement TIP42C. Datasheet MOSPEC pro rodinu ' +
       'TIP41/41A/41B/41C (NPN) a TIP42/42A/42B/42C (PNP) — TIP41C/42C má nejvyšší napěťovou třídu ' +
@@ -3013,9 +3924,69 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,npn,bipolární,výkonový,to-220,tip41c,pozor-chladič',
   },
   {
+    name: 'TIP41',
+    packageType:
+      'TO-220, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=kolektor ' +
+      '(chladicí ploška pouzdra je elektricky spojená s kolektorem!)',
+    value: 'NPN, VCEO(sus) 40 V (min), IC 6 A (trvale), hFE 15–75 (@ IC=3 A)',
+    schematicImage: 'TIP41C.jpg',
+    notes:
+      'Výkonový bipolární tranzistor, nejnižší napěťová třída rodiny TIP41/41A/41B/41C — viz ' +
+      'záznam "TIP41C" v této knihovně pro plný popis principu a všechny sdílené elektrické/ ' +
+      'mezní hodnoty (Datasheet MOSPEC). PNP komplement TIP42. Mezní hodnoty: VCEO=VCBO=40 V, ' +
+      'VEBO=5,0 V, IC(trvalý)=6 A, ICM=10 A, IB max=2 A, Ptot=65 W @TC=25 °C (odvod 0,52 W/°C), ' +
+      'TJ/Tstg=-65 až +150 °C. RθJC=1,92 °C/W. ICEO max 0,7 mA @VCE=30 V (nižší testovací napětí ' +
+      'než TIP41B/C kvůli nižší napěťové třídě). ICES max 0,4 mA @VCE=40 V/VEB=0. IEBO max ' +
+      '1,0 mA @VEB=5 V. hFE: min 30 @IC=0,3 A/VCE=4 V; min 15, max 75 @IC=3,0 A/VCE=4 V. VCE(sat) ' +
+      'max 1,5 V @IC=6,0 A/IB=600 mA. VBE(on) max 2,0 V @IC=6,0 A/VCE=4,0 V. fT min 3,0 MHz ' +
+      '@IC=500 mA/VCE=10 V/f=1 MHz. ⚠️ Chladicí ploška je na potenciálu kolektoru — použij ' +
+      'izolační podložku při montáži na sdílený chladič.',
+    tags: 'tranzistor,npn,bipolární,výkonový,to-220,tip41,pozor-chladič',
+  },
+  {
+    name: 'TIP41A',
+    packageType:
+      'TO-220, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=kolektor ' +
+      '(chladicí ploška pouzdra je elektricky spojená s kolektorem!)',
+    value: 'NPN, VCEO(sus) 60 V (min), IC 6 A (trvale), hFE 15–75 (@ IC=3 A)',
+    schematicImage: 'TIP41C.jpg',
+    notes:
+      'Výkonový bipolární tranzistor, prostřední napěťová třída rodiny TIP41/41A/41B/41C — viz ' +
+      'záznam "TIP41C" v této knihovně pro plný popis principu a všechny sdílené elektrické/ ' +
+      'mezní hodnoty (Datasheet MOSPEC). PNP komplement TIP42A. Mezní hodnoty: VCEO=VCBO=60 V, ' +
+      'VEBO=5,0 V, IC(trvalý)=6 A, ICM=10 A, IB max=2 A, Ptot=65 W @TC=25 °C (odvod 0,52 W/°C), ' +
+      'TJ/Tstg=-65 až +150 °C. RθJC=1,92 °C/W. ICEO max 0,7 mA @VCE=30 V. ICES max 0,4 mA ' +
+      '@VCE=60 V/VEB=0. IEBO max 1,0 mA @VEB=5 V. hFE: min 30 @IC=0,3 A/VCE=4 V; min 15, max 75 ' +
+      '@IC=3,0 A/VCE=4 V. VCE(sat) max 1,5 V @IC=6,0 A/IB=600 mA. VBE(on) max 2,0 V @IC=6,0 A/' +
+      'VCE=4,0 V. fT min 3,0 MHz @IC=500 mA/VCE=10 V/f=1 MHz. ⚠️ Chladicí ploška je na potenciálu ' +
+      'kolektoru — použij izolační podložku při montáži na sdílený chladič.',
+    tags: 'tranzistor,npn,bipolární,výkonový,to-220,tip41a,pozor-chladič',
+  },
+  {
+    name: 'TIP41B',
+    packageType:
+      'TO-220, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=kolektor ' +
+      '(chladicí ploška pouzdra je elektricky spojená s kolektorem!)',
+    value: 'NPN, VCEO(sus) 80 V (min), IC 6 A (trvale), hFE 15–75 (@ IC=3 A)',
+    schematicImage: 'TIP41C.jpg',
+    notes:
+      'Výkonový bipolární tranzistor, druhá nejvyšší napěťová třída rodiny TIP41/41A/41B/41C — ' +
+      'viz záznam "TIP41C" v této knihovně pro plný popis principu a všechny sdílené elektrické/ ' +
+      'mezní hodnoty (Datasheet MOSPEC). PNP komplement TIP42B. Mezní hodnoty: VCEO=VCBO=80 V, ' +
+      'VEBO=5,0 V, IC(trvalý)=6 A, ICM=10 A, IB max=2 A, Ptot=65 W @TC=25 °C (odvod 0,52 W/°C), ' +
+      'TJ/Tstg=-65 až +150 °C. RθJC=1,92 °C/W. ICEO max 0,7 mA @VCE=60 V (stejné testovací napětí ' +
+      'jako TIP41C). ICES max 0,4 mA @VCE=80 V/VEB=0. IEBO max 1,0 mA @VEB=5 V. hFE: min 30 ' +
+      '@IC=0,3 A/VCE=4 V; min 15, max 75 @IC=3,0 A/VCE=4 V. VCE(sat) max 1,5 V @IC=6,0 A/' +
+      'IB=600 mA. VBE(on) max 2,0 V @IC=6,0 A/VCE=4,0 V. fT min 3,0 MHz @IC=500 mA/VCE=10 V/' +
+      'f=1 MHz. ⚠️ Chladicí ploška je na potenciálu kolektoru — použij izolační podložku při ' +
+      'montáži na sdílený chladič.',
+    tags: 'tranzistor,npn,bipolární,výkonový,to-220,tip41b,pozor-chladič',
+  },
+  {
     name: 'TIP33C',
     packageType: 'TO-247 (3 vývody): 1=báze, 2=kolektor, 3=emitor',
     value: 'NPN, VCEO(sus) 100 V (min), IC 10 A (trvale), hFE 20–100 (@ IC=3 A)',
+    schematicImage: 'TIP33C.jpg',
     notes:
       'Výkonový bipolární tranzistor pro vysoké proudy, PNP komplement TIP34C. Datasheet MOSPEC pro ' +
       'rodinu TIP33/33A/33B/33C (NPN) a TIP34/34A/34B/34C (PNP) — TIP33C/34C má nejvyšší napěťovou ' +
@@ -3041,6 +4012,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'TO-220 (3 vývody): 1=báze, 2=kolektor, 3=emitor — POZOR, prostřední pin (kolektor) je ' +
       'přímo spojen s montážní/chladicí ploškou (na rozdíl od 4vývodových TIP41C/TIP120)',
     value: 'NPN, VCEO 100 V, VCBO 140 V, IC 1 A (trvale), hFE 15–75 (@ IC=1 A)',
+    schematicImage: 'TIP29C.jpg',
     notes:
       'Výkonový spínací/zesilovací tranzistor navržený pro komplementární použití s řadou TIP30 (PNP). ' +
       'Datasheet Power Innovations Ltd. (1997, staré TI označení). TIP29C má nejvyšší napěťovou třídu ' +
@@ -3064,6 +4036,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'TO-220 (3 vývody): 1=báze, 2=kolektor, 3=emitor — POZOR, prostřední pin (kolektor) je ' +
       'přímo spojen s montážní/chladicí ploškou (na rozdíl od 4vývodových TIP41C/TIP120)',
     value: 'NPN, VCEO 100 V, VCER 115 V, IC 6 A (trvale), hFE min 15 (@ IC=3 A)',
+    schematicImage: 'BD243C.jpg',
     notes:
       'Výkonový spínací/zesilovací tranzistor navržený pro komplementární použití s řadou BD244 (PNP). ' +
       'Datasheet Power Innovations Ltd. (1997, staré TI označení), stejná konstrukční řada jako TIP29/TIP30. ' +
@@ -3089,6 +4062,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'TO-247 (dříve i SOT-93/TO-218, od 6/2012 jen TO-247) — vývody: 1=báze, 2=kolektor, ' +
       '3=emitor, 4=kolektor (u TO-218/TO-247 stejné jako chladicí ploška)',
     value: 'NPN, VCEO 60 V, IC 15 A (trvale), hFE 20–70 (@ IC=4 A)',
+    schematicImage: 'TIP3055.jpg',
     notes:
       'Plastová/výkonová obdoba klasického 2N3055 (stejná elektrická rodina — datasheet ON ' +
       'Semiconductor odkazuje na charakteristické křivky 2N3055), PNP komplement TIP2955. ' +
@@ -3111,6 +4085,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: '2N3055',
     packageType: 'TO-3 — vývody: 1=báze, 2=emitor, 3=kolektor (kolektor je spojen s kovovým pouzdrem/case!)',
     value: 'NPN, VCEO 60 V, IC 15 A (trvale), hFE 20–70 (@ IC=4 A)',
+    schematicImage: '2N3055.jpg',
     notes:
       'Klasický výkonový tranzistor pro obecné zesilovací a spínací aplikace. Datasheet Multicomp Pro ' +
       '(2019), pouzdro TO-3. ' +
@@ -3144,6 +4119,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '@IC=150 mA/VCE=2 V, min 25 @IC=0,5 A/VCE=2 V (vše pulzně, 300 µs/1,5 % duty). Dostupné ' +
       'i gain-selected varianty BD135-16 (hFE 100–250 @150 mA, stejné jinak) — pokud je gain-bin ' +
       'kritický, je nutné objednat konkrétní suffix.',
+    schematicImage: 'BD13x-SOT32.jpg',
     tags: 'tranzistor,npn,bipolární,výkonový,sot-32,to-126,bd135,audio',
   },
   {
@@ -3162,10 +4138,90 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'IB=0,05 A. VBE max 1 V @IC=0,5 A/VCE=2 V. hFE: min 25 @IC=5 mA/VCE=2 V, min 40 max 250 ' +
       '@IC=150 mA/VCE=2 V, min 25 @IC=0,5 A/VCE=2 V (vše pulzně, 300 µs/1,5 % duty). Dostupné i ' +
       'gain-selected varianty BD139-10 (hFE 63–160 @150 mA) a BD139-16 (hFE 100–250 @150 mA).',
+    schematicImage: 'BD13x-SOT32.jpg',
     tags: 'tranzistor,npn,bipolární,výkonový,sot-32,to-126,bd139,audio',
   },
 
-  { name: 'TIP42C', packageType: 'TO-220', value: 'PNP, 100 V, 6 A', notes: 'Výkonový bipolární tranzistor', tags: 'tranzistor,pnp,výkonový' },
+  {
+    name: 'TIP42C',
+    packageType:
+      'TO-220, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=kolektor ' +
+      '(chladicí ploška pouzdra je elektricky spojená s kolektorem!)',
+    value: 'PNP, VCEO(sus) 100 V (min), IC 6 A (trvale), hFE 15–75 (@ IC=3 A)',
+    schematicImage: 'TIP41C.jpg',
+    notes:
+      'Výkonový bipolární tranzistor, NPN komplement TIP41C (samostatný záznam v této knihovně, ' +
+      'sdílí stejný Mospec datasheet pro rodinu TIP41/41A/41B/41C (NPN) a TIP42/42A/42B/42C ' +
+      '(PNP), veškeré elektrické parametry v tabulkách jsou pro NPN/PNP komplementy shodné). ' +
+      'TIP42C má nejvyšší napěťovou třídu rodiny (TIP42=40 V, TIP42A=60 V, TIP42B=80 V, ' +
+      'TIP42C=100 V). Mezní hodnoty: VCEO=VCBO=100 V, VEBO=5,0 V, IC(trvalý)=6 A, ICM ' +
+      '(špičkově)=10 A, IB max=2 A, Ptot=65 W @TC=25 °C (odvod 0,52 W/°C), TJ/Tstg=-65 až ' +
+      '+150 °C. RθJC=1,92 °C/W. ICEO max 0,7 mA @VCE=60 V. ICES max 0,4 mA @VCE=100 V/VEB=0. ' +
+      'IEBO max 1,0 mA @VEB=5 V. hFE: min 30 @IC=0,3 A/VCE=4 V; min 15, max 75 @IC=3,0 A/VCE=4 V. ' +
+      'VCE(sat) max 1,5 V @IC=6,0 A/IB=600 mA. VBE(on) max 2,0 V @IC=6,0 A/VCE=4,0 V. fT min ' +
+      '3,0 MHz @IC=500 mA/VCE=10 V/f=1 MHz. hfe (malý signál) min 20 @IC=500 mA/VCE=10 V/f=1 kHz. ' +
+      '⚠️ Chladicí ploška (pin 4 i kovový tab) je na potenciálu kolektoru — při montáži na ' +
+      'uzemněný nebo sdílený chladič použij izolační podložku, pokud kolektor není na zemním ' +
+      'potenciálu.',
+    tags: 'tranzistor,pnp,bipolární,výkonový,to-220,tip42c,pozor-chladič',
+  },
+  {
+    name: 'TIP42',
+    packageType:
+      'TO-220, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=kolektor ' +
+      '(chladicí ploška pouzdra je elektricky spojená s kolektorem!)',
+    value: 'PNP, VCEO(sus) 40 V (min), IC 6 A (trvale), hFE 15–75 (@ IC=3 A)',
+    schematicImage: 'TIP41C.jpg',
+    notes:
+      'Výkonový bipolární tranzistor, nejnižší napěťová třída rodiny TIP42/42A/42B/42C — viz ' +
+      'záznam "TIP42C" v této knihovně pro plný popis principu a všechny sdílené elektrické/ ' +
+      'mezní hodnoty (Datasheet MOSPEC). NPN komplement TIP41. Mezní hodnoty: VCEO=VCBO=40 V, ' +
+      'VEBO=5,0 V, IC(trvalý)=6 A, ICM=10 A, IB max=2 A, Ptot=65 W @TC=25 °C (odvod 0,52 W/°C), ' +
+      'TJ/Tstg=-65 až +150 °C. RθJC=1,92 °C/W. ICEO max 0,7 mA @VCE=30 V. ICES max 0,4 mA ' +
+      '@VCE=40 V/VEB=0. IEBO max 1,0 mA @VEB=5 V. hFE: min 30 @IC=0,3 A/VCE=4 V; min 15, max 75 ' +
+      '@IC=3,0 A/VCE=4 V. VCE(sat) max 1,5 V @IC=6,0 A/IB=600 mA. VBE(on) max 2,0 V @IC=6,0 A/' +
+      'VCE=4,0 V. fT min 3,0 MHz @IC=500 mA/VCE=10 V/f=1 MHz. ⚠️ Chladicí ploška je na potenciálu ' +
+      'kolektoru — použij izolační podložku při montáži na sdílený chladič.',
+    tags: 'tranzistor,pnp,bipolární,výkonový,to-220,tip42,pozor-chladič',
+  },
+  {
+    name: 'TIP42A',
+    packageType:
+      'TO-220, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=kolektor ' +
+      '(chladicí ploška pouzdra je elektricky spojená s kolektorem!)',
+    value: 'PNP, VCEO(sus) 60 V (min), IC 6 A (trvale), hFE 15–75 (@ IC=3 A)',
+    schematicImage: 'TIP41C.jpg',
+    notes:
+      'Výkonový bipolární tranzistor, prostřední napěťová třída rodiny TIP42/42A/42B/42C — viz ' +
+      'záznam "TIP42C" v této knihovně pro plný popis principu a všechny sdílené elektrické/ ' +
+      'mezní hodnoty (Datasheet MOSPEC). NPN komplement TIP41A. Mezní hodnoty: VCEO=VCBO=60 V, ' +
+      'VEBO=5,0 V, IC(trvalý)=6 A, ICM=10 A, IB max=2 A, Ptot=65 W @TC=25 °C (odvod 0,52 W/°C), ' +
+      'TJ/Tstg=-65 až +150 °C. RθJC=1,92 °C/W. ICEO max 0,7 mA @VCE=30 V. ICES max 0,4 mA ' +
+      '@VCE=60 V/VEB=0. IEBO max 1,0 mA @VEB=5 V. hFE: min 30 @IC=0,3 A/VCE=4 V; min 15, max 75 ' +
+      '@IC=3,0 A/VCE=4 V. VCE(sat) max 1,5 V @IC=6,0 A/IB=600 mA. VBE(on) max 2,0 V @IC=6,0 A/' +
+      'VCE=4,0 V. fT min 3,0 MHz @IC=500 mA/VCE=10 V/f=1 MHz. ⚠️ Chladicí ploška je na potenciálu ' +
+      'kolektoru — použij izolační podložku při montáži na sdílený chladič.',
+    tags: 'tranzistor,pnp,bipolární,výkonový,to-220,tip42a,pozor-chladič',
+  },
+  {
+    name: 'TIP42B',
+    packageType:
+      'TO-220, 4 vývody: 1=báze, 2=kolektor, 3=emitor, 4=kolektor ' +
+      '(chladicí ploška pouzdra je elektricky spojená s kolektorem!)',
+    value: 'PNP, VCEO(sus) 80 V (min), IC 6 A (trvale), hFE 15–75 (@ IC=3 A)',
+    schematicImage: 'TIP41C.jpg',
+    notes:
+      'Výkonový bipolární tranzistor, druhá nejvyšší napěťová třída rodiny TIP42/42A/42B/42C — ' +
+      'viz záznam "TIP42C" v této knihovně pro plný popis principu a všechny sdílené elektrické/ ' +
+      'mezní hodnoty (Datasheet MOSPEC). NPN komplement TIP41B. Mezní hodnoty: VCEO=VCBO=80 V, ' +
+      'VEBO=5,0 V, IC(trvalý)=6 A, ICM=10 A, IB max=2 A, Ptot=65 W @TC=25 °C (odvod 0,52 W/°C), ' +
+      'TJ/Tstg=-65 až +150 °C. RθJC=1,92 °C/W. ICEO max 0,7 mA @VCE=60 V. ICES max 0,4 mA ' +
+      '@VCE=80 V/VEB=0. IEBO max 1,0 mA @VEB=5 V. hFE: min 30 @IC=0,3 A/VCE=4 V; min 15, max 75 ' +
+      '@IC=3,0 A/VCE=4 V. VCE(sat) max 1,5 V @IC=6,0 A/IB=600 mA. VBE(on) max 2,0 V @IC=6,0 A/' +
+      'VCE=4,0 V. fT min 3,0 MHz @IC=500 mA/VCE=10 V/f=1 MHz. ⚠️ Chladicí ploška je na potenciálu ' +
+      'kolektoru — použij izolační podložku při montáži na sdílený chladič.',
+    tags: 'tranzistor,pnp,bipolární,výkonový,to-220,tip42b,pozor-chladič',
+  },
   {
     name: 'BD136',
     packageType: 'SOT-32 (=TO-126), vývody: 1=báze, 2=kolektor, 3=emitor',
@@ -3182,6 +4238,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'VCE=-2 V. hFE: min 25 @IC=-5 mA/VCE=-2 V, min 40 max 250 @IC=-150 mA/VCE=-2 V, min 25 ' +
       '@IC=-0,5 A/VCE=-2 V (vše pulzně, 300 µs/1,5 % duty). Dostupné i gain-selected varianta ' +
       'BD136-16 (hFE 100–250 @-150 mA).',
+    schematicImage: 'BD13x-SOT32.jpg',
     tags: 'tranzistor,pnp,bipolární,výkonový,sot-32,to-126,bd136,audio',
   },
   {
@@ -3200,6 +4257,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'VCE=-2 V. hFE: min 25 @IC=-5 mA/VCE=-2 V, min 40 max 250 @IC=-150 mA/VCE=-2 V, min 25 ' +
       '@IC=-0,5 A/VCE=-2 V (vše pulzně, 300 µs/1,5 % duty). Dostupné i gain-selected varianty ' +
       'BD140-10 (hFE 63–160 @-150 mA) a BD140-16 (hFE 100–250 @-150 mA).',
+    schematicImage: 'BD13x-SOT32.jpg',
     tags: 'tranzistor,pnp,bipolární,výkonový,sot-32,to-126,bd140,audio',
   },
 
@@ -3217,6 +4275,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'BVDSS min 600 V @VGS=0/ID=10 mA. IDSS max 1 µA @VDS=600 V/VGS=0. IGSS max ±100 nA ' +
       '@VGS=±20V/VDS=0. VGS(th) 3,0–4,0 V @VDS=VGS/ID=1 mA. RDS(on) max 0,38 Ω @VGS=10 V/ID=10 A. ' +
       'VSD (dioda těla) max 1,4 V @IS=20 A/VGS=0.',
+    schematicImage: 'H5N6001P.jpg',
     tags: 'tranzistor,mosfet,n-kanál,výkonový,to-3p,isc,inchange,h5n6001p,600v',
   },
 
@@ -3224,6 +4283,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: 'IRF540N',
     packageType:
       'TO-220AB — vývody: 1=gate, 2=drain, 3=source (chladicí ploška je spojena s drainem)',
+    schematicImage: 'IRF540N.jpg',
     value: 'N-MOSFET, VDSS 100 V, ID 33 A (@TC=25 °C), RDS(on) typ 0,033 Ω (max 0,040 Ω @VGS=10 V)',
     notes:
       'Výkonový spínací N-MOSFET s nízkým odporem v sepnutém stavu. Datasheet Intersil, 2000. ' +
@@ -3246,6 +4306,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   },
   {
     name: 'IRF540NS',
+    schematicImage: 'IRF540NS.jpg',
     packageType:
       'D2Pak (SMD) — POZOR, jiné pouzdro než TO-220 „IRF540N"! Vývody/pady: 1=gate, 2=drain, 3=source. ' +
       'Nízkoprofilová THT varianta stejné elektrické rodiny: IRF540NL v pouzdře TO-262.',
@@ -3270,7 +4331,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'trr typ 115, max 170 ns @IF=16 A. Qrr typ 505, max 760 nC @di/dt=100 A/µs.',
     tags: 'tranzistor,mosfet,n-kanál,smd,d2pak,irf540ns,irf540nl,spínací',
   },
-  { name: 'IRFZ44N', packageType: 'TO-220', value: 'N-MOSFET, 55 V, 49 A', notes: 'Výkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál' },
+  { name: 'IRFZ44N', packageType: 'TO-220', value: 'N-MOSFET, 55 V, 49 A', notes: 'Výkonový spínací MOSFET', schematicImage: 'IRLZ44N.jpg', tags: 'tranzistor,mosfet,n-kanál' },
   {
     name: 'IRLZ44',
     packageType: 'TO-220 — vývody: 1=gate, 2=drain, 3=source',
@@ -3294,12 +4355,14 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'úbytek oproti jiným MOSFETům). trr max 600 ns @IF=35 A/dIF/dt=100 A/µs. ' +
       '⚠️ Nezaměňovat s „IRLZ44N" (International Rectifier) — podobný název, ale novější/výkonnější díl ' +
       's jinými parametry, viz samostatná položka.',
+    schematicImage: 'IRLZ44N.jpg',
     tags: 'tranzistor,mosfet,n-kanál,to-220,irlz44,irlz40,logic-level,spínací',
   },
   {
     name: 'IRLZ44N',
     packageType: 'TO-220AB, 4 vývody: 1=gate, 2=drain, 3=source, 4=drain (chladicí ploška = drain)',
     value: 'N-MOSFET (logic level), VDSS 55 V, ID 47 A (@TC=25 °C), RDS(on) max 0,022 Ω (@VGS=10 V)',
+    schematicImage: 'IRLZ44N.jpg',
     notes:
       '⚠️ POZOR na záměnu tří podobně znějících dílů: „IRFZ44N" (běžný gate, potřebuje ~10 V pro plné ' +
       'sepnutí), „IRLZ44" (Samsung, logic level, 60 V/35 A, RDS(on) max 0,04 Ω) a tento „IRLZ44N" ' +
@@ -3328,6 +4391,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: 'IRF3205',
     packageType:
       'TO-220AB, 4 vývody: 1=gate, 2=drain, 3=source, 4=drain (chladicí ploška = drain)',
+    schematicImage: 'IRF3205.jpg',
     value: 'N-MOSFET, VDSS 55 V, ID 110 A (viz poznámka o reálném limitu), RDS(on) max 8,0 mΩ',
     notes:
       '⚠️ Hlavičková hodnota ID=110 A je dle datasheetu jen vypočtená hodnota na základě max. teploty ' +
@@ -3351,6 +4415,40 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,mosfet,n-kanál,to-220,irf3205,spínací,pozor-proud',
   },
   { name: '2N7000', packageType: 'TO-92', value: 'N-MOSFET, 60 V, 200 mA', notes: 'Malovýkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál' },
+  {
+    name: 'BSS138PS',
+    packageType:
+      'SMD plastové pouzdro SOT363 (SC-88), 6 vývodů, rozteč e1=1,3 mm — piny zkříženě: ' +
+      '1=S1, 2=G1, 3=D2, 4=S2, 5=G2, 6=D1 (dva nezávislé tranzistory, NE v jednoduchém pořadí ' +
+      '1-2-3=tranzistor1)',
+    value:
+      'Duální N-MOSFET (2× nezávislý tranzistor v jednom pouzdře), logic-level, VDS 60 V, ' +
+      'VGS ±20 V, ID 320 mA/tranzistor (@Tamb=25 °C), RDS(on) max 1,6 Ω (@VGS=10 V/ID=300 mA)',
+    notes:
+      'Nexperia "BSS138PS — 60 V, 320 mA dual N-channel Trench MOSFET" (dok. Rev.1, 2.11.2010) — ' +
+      '⚠️ NOVÝ TYP součástky v této knihovně: první DUÁLNÍ MOSFET (dvě nezávislé N-MOSFET struktury ' +
+      'v jednom pouzdře) — na rozdíl od jednotlivých MOSFETů jako 2N7000/IRFZ44N výše obsahuje ' +
+      'BSS138PS dva samostatné tranzistory s vlastním gate/drain/source, ale sdíleným pouzdrem ' +
+      'SOT363 (6 vývodů), což šetří místo na DPS. Elektricky příbuzný velmi rozšířenému jednoduchému ' +
+      'N-MOSFETu BSS138 (stejná Trench technologie/čip) — ten je oblíbený jako obousměrný I2C/' +
+      'logický level-shifter (5V↔3,3V); BSS138PS nabízí rovnou dva takové tranzistory pohromadě. ' +
+      'Logic-level kompatibilní (plně sepnutý i při VGS=5 V — RDS(on) max 2 Ω/typ 1 Ω @VGS=5V/' +
+      'ID=50mA), velmi rychlé spínání, AEC-Q101 kvalifikovaný pro automotive. ' +
+      'Mezní hodnoty na tranzistor: VDS max 60 V, VGS max ±20 V, ID max 320 mA (@Tamb=25 °C, ' +
+      'standardní footprint; 200 mA @100 °C), IDM (pulzní, 10 µs) max 1,2 A. ' +
+      'Ztrátový výkon: 280 mW/tranzistor (standardní footprint) až 320 mW (plocha pro drain 1 cm²), ' +
+      '420 mW na celé pouzdro (oba tranzistory). Tj max 150 °C, Tamb -55 až +150 °C. ' +
+      'VGS(th) (práh sepnutí) 0,9–1,5 V (typ 1,2 V) @ID=250 µA. ' +
+      'RDS(on) typ 0,9 Ω/max 1,6 Ω @VGS=10V/ID=300mA (typ 1 Ω/max 2 Ω @VGS=5V/ID=50mA). ' +
+      'IDSS (unikání) max 1 µA @VDS=60V/VGS=0V/Tj=25°C (max 10 µA @Tj=150°C). ' +
+      'Vlastní zpětná source-drain dioda: VSD typ 0,75 V (max 1,1 V) @IS=115 mA. ' +
+      'Aplikace dle výrobce: relé driver, vysokorychlostní line driver, low-side load switch, ' +
+      'obecné spínací obvody.',
+    schematicImage: 'BSS138PS.jpg',
+    tags:
+      'tranzistor,mosfet,n-kanál,duální,logic-level,nexperia,bss138ps,bss138,sot363,sc-88,' +
+      'trench,level-shifter',
+  },
 
   {
     name: 'IRF9540',
@@ -3359,12 +4457,14 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     notes:
       'Výkonový spínací MOSFET. Existuje i novější/mírně odlišný díl „IRF9540N" (5. generace HEXFET, ' +
       'ID=-23 A, RDS(on)=0,117 Ω) — viz samostatná položka, pokud máš konkrétně tuto verzi.',
+    schematicImage: 'IRF9540N.jpg',
     tags: 'tranzistor,mosfet,p-kanál',
   },
   {
     name: 'IRF9540N',
     packageType: 'TO-220AB, 4 vývody: 1=gate, 2=drain, 3=source, 4=drain (chladicí ploška = drain)',
     value: 'P-MOSFET, VDSS -100 V, ID -23 A (@TC=25 °C), RDS(on) max 0,117 Ω (@VGS=-10 V)',
+    schematicImage: 'IRF9540N.jpg',
     notes:
       '5. generace HEXFET od International Rectifier — odlišný/novější díl od generického „IRF9540" ' +
       '(ten má ID=-19 A). Hodnoty v datasheetu jsou v P-kanálové konvenci záporné, zde uvedeny stejně. ' +
@@ -3385,6 +4485,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   },
   {
     name: 'IRF9540NS',
+    schematicImage: 'IRF9540NS.jpg',
     packageType:
       'D2Pak (SMD, „IRF9540NS") nebo TO-262 (nízkoprofilová THT, „IRF9540NL") — POZOR, jiné pouzdro ' +
       'než TO-220 „IRF9540N"! Vývody/pady: 1=gate, 2=drain, 3=source (u TO-262 i pin 4=drain).',
@@ -3438,6 +4539,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '731nC @TC=175°C (výrazně horší zotavení za horka). Erec typ 51µJ @TC=175°C. ' +
       'Aplikace: palubní nabíječky (OBC), kompresory klimatizace, PTC topení, pohony motorů a ' +
       'další automotive napájecí/pomocné aplikace. Pb-free, RoHS.',
+    schematicImage: 'AFGB40T65SPD-BW.jpg',
     tags: 'tranzistor,igbt,field-stop-trench,onsemi,afgb40t65spd,d2pak,to-263,650v,automotive,aec-q101',
   },
   {
@@ -3445,6 +4547,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     packageType:
       'TO-220AB, 4 vývody: 1=gate, 2=drain, 3=source, 4=drain (chladicí ploška = drain)',
     value: 'P-MOSFET, VDSS -55 V, ID -74 A (@TC=25 °C), RDS(on) max 0,020 Ω (@VGS=-10 V)',
+    schematicImage: 'IRF4905.jpg',
     notes:
       'HEXFET Power MOSFET, International Rectifier (datasheet 8/25/97). ' +
       'Mezní hodnoty: VDSS=-55 V, VGS=±20 V, ID(trvalý)=-74 A @TC=25 °C (-52 A @TC=100 °C), ' +
@@ -3496,6 +4599,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'tf typ 110 ns. Ciss typ 5480 pF, Coss typ 1210 pF, Crss typ 280 pF (@VGS=0/VDS=25 V/f=1 MHz). ' +
       'Tělesová dioda: IS=174 A (trvale), ISM=680 A (pulzně), VSD max 1,3 V @IS=101 A/VGS=0, ' +
       'trr typ 88 ns (max 130 ns) @IF=101 A/di/dt=100 A/µs, Qrr typ 250 max 380 nC.',
+    schematicImage: 'IRFBA1405P.jpg',
     tags: 'tranzistor,mosfet,n-kanál,super-220,to-220,automotive,irfba1405p,spínací',
   },
   {
@@ -3503,6 +4607,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     packageType:
       'TO-92, 3 vývody: 1=source, 2=gate, 3=drain (pohled zepředu na popsanou stranu, značka „S G D")',
     value: 'N-MOSFET (logická úroveň, malý signál), VDSS 60 V, ID 200 mA, RDS(on) max 5,0 Ω @VGS=10 V',
+    schematicImage: 'G2N7000.jpg',
     notes:
       'Malý spínací N-MOSFET, GTM Corporation (datasheet vydán 2004, revize 2006/10/30). ' +
       'Určen pro spínací regulátory, měniče, budiče relé a solenoidů. Elektricky kompatibilní ' +
@@ -3526,6 +4631,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     packageType:
       'SOT-23 (SMD), 3 vývody: 1=gate, 2=source, 3=drain (pohled zepředu na popsanou stranu, značka „702")',
     value: 'N-MOSFET (SMD, malý signál), VDS 60 V, ID 500 mA, RDS(on) max 4,5 Ω @VGS=10 V',
+    schematicImage: 'G2N7002.jpg',
     notes:
       '⚠️ Jiný díl než „G2N7000" (TO-92, ID=200 mA) — jde o SMD ekvivalent, elektricky odpovídá ' +
       'běžnému 2N7002, ne 2N7000. GTM Corporation (datasheet vydán 2003, revize 2006/01/17), ' +
@@ -3557,6 +4663,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'VGS(off) 0,5–6,0 V @VDS=15 V/ID=10 nA. IDSS 1,0–5,0 mA @VDS=15 V. ' +
       'Crss max 3,0 pF, Ciss max 7,0 pF @VDS=15 V/VGS=0/f=1,0 MHz. ' +
       'gfs 1,0–5,0 mS (1,0K–5,0K µS) @VDS=15 V/VGS=0/f=1,0 kHz. gos max 50 µS @stejných podmínkách.',
+    schematicImage: '2N5457-59.jpg',
     tags: 'tranzistor,jfet,n-kanál,to-92,2n5457,zesilovací,spínací',
   },
   {
@@ -3573,6 +4680,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'VGS(off) 1,0–7,0 V @VDS=15 V/ID=10 nA. IDSS 2,0–9,0 mA @VDS=15 V. ' +
       'Crss max 3,0 pF, Ciss max 7,0 pF @VDS=15 V/VGS=0/f=1,0 MHz. ' +
       'gfs 1,5–5,5 mS (1,5K–5,5K µS) @VDS=15 V/VGS=0/f=1,0 kHz. gos max 50 µS @stejných podmínkách.',
+    schematicImage: '2N5457-59.jpg',
     tags: 'tranzistor,jfet,n-kanál,to-92,2n5458,zesilovací,spínací',
   },
   {
@@ -3589,11 +4697,13 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'VGS(off) 2,0–8,0 V @VDS=15 V/ID=10 nA. IDSS 4,0–16 mA @VDS=15 V. ' +
       'Crss max 3,0 pF, Ciss max 7,0 pF @VDS=15 V/VGS=0/f=1,0 MHz. ' +
       'gfs 2,0–6,0 mS (2,0K–6,0K µS) @VDS=15 V/VGS=0/f=1,0 kHz. gos max 50 µS @stejných podmínkách.',
+    schematicImage: '2N5457-59.jpg',
     tags: 'tranzistor,jfet,n-kanál,to-92,2n5459,zesilovací,spínací',
   },
   {
     name: '2N5484',
     packageType: 'TO-92, 3 vývody (pohled zepředu): 1=gate, 2=source, 3=drain (S/D vzájemně zaměnitelné)',
+    schematicImage: '2N5484.jpg',
     value: 'N-JFET (RF), VGS(off) -0,3 až -3,0 V, IDSS 1,0-5,0 mA (@ VDS=15 V)',
     notes:
       'Silikonový N-kanálový JFET pro RF zesilovače, určený primárně pro elektronické spínání ' +
@@ -3612,6 +4722,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   {
     name: '2N5485',
     packageType: 'TO-92, 3 vývody (pohled zepředu): 1=gate, 2=source, 3=drain (S/D vzájemně zaměnitelné)',
+    schematicImage: '2N5484.jpg',
     value: 'N-JFET (RF), VGS(off) -0,5 až -4,0 V, IDSS 4,0-10 mA (@ VDS=15 V)',
     notes:
       'Silikonový N-kanálový JFET pro RF zesilovače, určený primárně pro elektronické spínání ' +
@@ -3630,6 +4741,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   {
     name: '2N5486',
     packageType: 'TO-92, 3 vývody (pohled zepředu): 1=gate, 2=source, 3=drain (S/D vzájemně zaměnitelné)',
+    schematicImage: '2N5484.jpg',
     value: 'N-JFET (RF), VGS(off) -2,0 až -6,0 V, IDSS 8,0-20 mA (@ VDS=15 V)',
     notes:
       'Silikonový N-kanálový JFET pro RF zesilovače, určený primárně pro elektronické spínání ' +
@@ -3648,6 +4760,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   {
     name: 'MMBF5484',
     packageType: 'SOT-23 (SMD), G/S/D (S/D vzájemně zaměnitelné), značení na pouzdře: 6B',
+    schematicImage: '2N5484.jpg',
     value: 'N-JFET (RF), VGS(off) -0,3 až -3,0 V, IDSS 1,0-5,0 mA (@ VDS=15 V)',
     notes:
       'SMD verze 2N5484 (stejný křemíkový čip, stejný datasheet, jen SOT-23 pouzdro a nižší PD) — ' +
@@ -3662,6 +4775,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   {
     name: 'MMBF5485',
     packageType: 'SOT-23 (SMD), G/S/D (S/D vzájemně zaměnitelné), značení na pouzdře: 6M',
+    schematicImage: '2N5484.jpg',
     value: 'N-JFET (RF), VGS(off) -0,5 až -4,0 V, IDSS 4,0-10 mA (@ VDS=15 V)',
     notes:
       'SMD verze 2N5485 (stejný křemíkový čip, stejný datasheet, jen SOT-23 pouzdro a nižší PD) — ' +
@@ -3676,6 +4790,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   {
     name: 'MMBF5486',
     packageType: 'SOT-23 (SMD), G/S/D (S/D vzájemně zaměnitelné), značení na pouzdře: 6H',
+    schematicImage: '2N5484.jpg',
     value: 'N-JFET (RF), VGS(off) -2,0 až -6,0 V, IDSS 8,0-20 mA (@ VDS=15 V)',
     notes:
       'SMD verze 2N5486 (stejný křemíkový čip, stejný datasheet, jen SOT-23 pouzdro a nižší PD) — ' +
@@ -3692,6 +4807,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: 'BSR58LT1',
     packageType:
       'SOT-23 (SMD), 3 vývody: 1=drain, 2=source, 3=gate (case 318, style 10)',
+    schematicImage: 'BSR58LT1.jpg',
     value: 'N-JFET (depletion, chopper), VDG max -40 V, VGS(off) -0,8 až -4,0 V, IDSS 8–80 mA',
     notes:
       'JFET chopper tranzistor, ON Semiconductor (datasheet BSR58LT1/D, rev. 1, srpen 2005), ' +
@@ -3712,6 +4828,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     name: 'MMBFJ177LT1G',
     packageType:
       'SOT-23 (SMD), 3 vývody: 1=drain, 2=source, 3=gate (case 318-08, style 10)',
+    schematicImage: 'MMBFJ177LT1G.jpg',
     value: 'P-JFET (depletion, chopper), VDG max 25 V, VGS(off) 0,8–2,5 V, IDSS 1,5–20 mA',
     notes:
       '⚠️ P-kanálový JFET (na rozdíl od dosud zavedených N-kanálových JFETů 2N5457/BF245/BSR58LT1 ' +
@@ -3729,6 +4846,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   {
     name: 'J110',
     packageType: 'TO-92 (case 29, style 5), 3 vývody: 1=drain, 2=source, 3=gate',
+    schematicImage: 'J110.jpg',
     value: 'N-JFET (depletion, obecné použití), VGS -25 V, RDS(on) max 18 Ω, IDSS min 10 mA',
     notes:
       'JFET pro obecné použití (audio zesilovače, analogové spínače, choppery), ON Semiconductor ' +
@@ -3747,6 +4865,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   },
   {
     name: 'ACE8205A',
+    schematicImage: 'ACE8205A.jpg',
     packageType:
       'TSSOP-8 (SMD), dvojice N-MOSFETů se společným pouzdrem: piny 1/8=D1/D2 (společný drain), ' +
       '2,3=S1, 4=G1, 5=G2, 6,7=S2 — vhodné pro battery-protection zapojení se dvěma sériovými ' +
@@ -3788,6 +4907,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'IC=0,5 A. Spínací časy (VCC=125 V, IC=8 A, IB1=-IB2=1,6 A, RL=15,6 Ω): tON max 1,1 µs, ' +
       'tSTG (storage) max 3 µs, tF max 0,7 µs — relativně pomalé vypínání typické pro tuto ' +
       'kategorii vysokonapěťových bipolárních spínačů (na rozdíl od MOSFETů).',
+    schematicImage: 'KSE13009F.jpg',
     tags: 'tranzistor,npn,bipolární,vysokonapěťový,spínací,to-220,13009,smps',
   },
   {
@@ -3807,6 +4927,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '@IC=7,0 mA/VCE=10 V/f=100 MHz (velmi vysoký tranzitní kmitočet, typický pro VF aplikace ' +
       'jako FM/VKV přijímače, směšovače a oscilátory — nevhodné pro výkonové spínání). Cre ' +
       '(zpětná přenosová kapacita v zapojení SE) max 0,34 pF @VCB=10 V/IE=0/f=1,0 MHz.',
+    schematicImage: 'BF240.jpg',
     tags: 'tranzistor,npn,bipolární,rf,vf,vysokofrekvenční,to-92,bf240',
   },
   {
@@ -3869,11 +4990,13 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'tranzistoru BC807 v běžném SOT-23 pouzdře (ten v knihovně zatím není zpracován) — toto je ' +
       'duální varianta se dvěma nezávislými tranzistory v jednom SMD pouzdře, jiný počet pinů ' +
       'a jiný footprint.',
+    schematicImage: 'BC807U.jpg',
     tags: 'tranzistor,pnp,bipolární,duální,sot-363,sc-70-6,bc807,bc807u,smd,af',
   },
   {
     name: 'BC817-16LT1G',
     packageType: 'SOT-23 (SMD), 3 vývody: 1=báze, 2=emitor, 3=kolektor; značení na pouzdře "6A"',
+    schematicImage: 'BC817-16LT1G.jpg',
     value: 'NPN tranzistor, VCEO 45 V, IC 500 mA, hFE 100–250 @IC=100 mA',
     notes:
       'onsemi "BC817-16L, SBC817-16L, BC817-25L, SBC817-25L, BC817-40L, SBC817-40L — General ' +
@@ -3904,6 +5027,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'BC817-16LT1G pro plné společné specifikace (mezní hodnoty, pouzdro, spínací časy). Střední ' +
       'proudová (hFE) varianta. ⚠️ Automotive ekvivalent SBC817-25L (AEC-Q101) má shodné elektrické ' +
       'parametry.',
+    schematicImage: 'BC817-16LT1G.jpg',
     tags: 'tranzistor,npn,bipolární,sot-23,onsemi,bc817,bc817-25l,smd',
   },
   {
@@ -3915,6 +5039,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'BC817-16LT1G pro plné společné specifikace (mezní hodnoty, pouzdro, spínací časy). Nejvyšší ' +
       'proudová (hFE) varianta. ⚠️ Automotive ekvivalent SBC817-40L (AEC-Q101) má shodné elektrické ' +
       'parametry.',
+    schematicImage: 'BC817-16LT1G.jpg',
     tags: 'tranzistor,npn,bipolární,sot-23,onsemi,bc817,bc817-40l,smd',
   },
   {
@@ -3957,18 +5082,21 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '(nový parametr). Malosignálové h-parametry v zapojení SE @IC=2 mA/VCE=5 V/f=1 kHz (zcela ' +
       'nové, JCET je neuváděl): h11e typ 4,5 kΩ (vstupní impedance), h12e typ 2×10⁻⁴ (zpětný ' +
       'napěťový přenos), h21e min 330 (proudové zesílení), h22e typ 30 µS (výstupní admitance).',
+    schematicImage: 'BC856S.jpg',
     tags: 'tranzistor,pnp,bipolární,duální,sot-363,sc-70-6,bc856,bc856s,smd',
   },
   {
     name: '2SA1873',
     packageType:
       'SOT-353 (SC-88, 5 vývodů: 1, 2, 3 dole, 4, 5 nahoře) — dva PNP tranzistory v jednom ' +
-      'pouzdře; kvůli pouze 5 pinům (na rozdíl od 6pinového SOT-363 u BC807U/BC856S) je jeden ' +
-      'vývod pravděpodobně sdílený mezi oběma tranzistory — přesné přiřazení pinů ověř v diagramu ' +
-      'výrobce před pájením; značení na pouzdru "SY" (rank Y) nebo "SGR" (rank GR)',
+      'pouzdře se sdílenou (společnou) bází: 1=emitor T1, 2=báze T1+T2 (společná), 3=emitor T2, ' +
+      '4=kolektor T2, 5=kolektor T1 — potvrzeno dle schématu vývodů v datasheetu JCET (pin 2 je ' +
+      'na schématu vyznačen tečkou jako společný uzel obou bází); značení na pouzdru "SY" (rank Y) ' +
+      'nebo "SGR" (rank GR)',
     value:
-      'Duální PNP tranzistor (2× PNP v pouzdře), VCEO -50 V, IC -150 mA, hFE 120–400 ' +
+      'Duální PNP tranzistor (2× PNP v pouzdře, společná báze), VCEO -50 V, IC -150 mA, hFE 120–400 ' +
       '@IC=-2 mA (dle binu)',
+    schematicImage: '2SA1873.jpg',
     notes:
       'Jiangsu Changjiang Electronics Technology (JCET) 2SA1873 "Dual Transistor (PNP+PNP)" ' +
       '(dok. rev. D, březen 2016) — menší SOT-353 pouzdro (na rozdíl od 6pinového SOT-363 ' +
@@ -4015,6 +5143,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'V(BR)EBO min 7 V @IE=50 µA/IC=0. ICBO max 0,1 µA @VCB=60 V/IE=0. IEBO max 0,1 µA @VEB=7 V/' +
       'IC=0. hFE min 120 max 560 @VCE=6 V/IC=1 mA. VCE(sat) max 0,4 V @IC=50 mA/IB=5 mA. fT typ ' +
       '180 MHz @VCE=12 V/IC=2 mA/f=100 MHz. Cob 2,0–3,5 pF @VCB=12 V/IE=0/f=1 MHz.',
+    schematicImage: 'EMZ8.jpg',
     tags: 'tranzistor,pnp,npn,bipolární,duální,komplementární,sot-563,emz8,smd',
   },
   {
@@ -4041,16 +5170,18 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '100 MHz @VCE=-5 V/IC=-10 mA/f=100 MHz. Cob max 4,5 pF @VCB=-10 V/IE=0/f=1 MHz. Šumové ' +
       'číslo (NF) typ 10 dB @VCE=-5 V/IC=-0,2 mA/f=1 kHz/Rs=2 kΩ/BW=200 Hz — parametr uváděný jen ' +
       'u tohoto dílu z rodiny (relevantní pro malosignálové audio/mikrofonní předzesilovače).',
+    schematicImage: 'BC857BV.jpg',
     tags: 'tranzistor,pnp,bipolární,duální,sot-563,bc857,bc857bv,smd',
   },
   {
     name: 'BC857S',
     packageType:
-      'SOT-363 (SC-70-6), 6 vývodů (piny 1, 2, 3 dole, 4, 5, 6 nahoře), pravděpodobně shodný ' +
-      'pinout 1/4=E1/E2, 2/5=B1/B2, 3/6=C2/C1 jako u BC856S (stejný výrobce/pouzdro/kresba, ' +
-      'ověřeno u BC856S i originálním Siemens datasheetem) — dva nezávislé PNP tranzistory bez ' +
-      'vzájemného ovlivňování; značení na pouzdru "3C"',
+      'SOT-363 (SC-70-6), 6 vývodů (piny 1, 2, 3 dole, 4, 5, 6 nahoře): 1=emitor T1, 2=báze T1, ' +
+      '6=kolektor T1, 4=emitor T2, 5=báze T2, 3=kolektor T2 — potvrzeno dle schématu vývodů v ' +
+      'datasheetu JCET (dva zcela nezávislé PNP tranzistory, žádný sdílený pin, na rozdíl od ' +
+      '5pinového 2SA1873); značení na pouzdru "3C"',
     value: 'Duální PNP tranzistor (2× PNP v pouzdře), VCEO -45 V, IC -0,2 A, hFE 125–630 @IC=-2 mA (bin S)',
+    schematicImage: 'BC857S.jpg',
     notes:
       'Jiangsu Changjiang Electronics Technology (JCET) BC857S "Dual Transistor (PNP+PNP)" ' +
       '(dok. rev. E, březen 2016) — ⚠️ na rozdíl od BC857BV (samostatný záznam, menší SOT-563 ' +
@@ -4097,6 +5228,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '@VCB=-10 V/IE=0/f=1 MHz. Cib max 30 pF @VEB=-2 V/IC=0/f=1 MHz. Spínací časy: td max ' +
       '10 ns, tr max 40 ns (@VCC=-30 V/IC=-150 mA/IB1=-15 mA); ts max 225 ns, tf max 60 ns ' +
       '(@VCC=-6 V/IC=-150 mA/IB1=IB2=-15 mA).',
+    schematicImage: 'MMDT2907A.jpg',
     tags: 'tranzistor,pnp,bipolární,duální,sot-363,sc-70-6,mmdt2907a,2n2907,mmbt2907a,smd',
   },
   {
@@ -4122,6 +5254,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'fT typ 250 MHz @VCE=-20 V/IC=-10 mA/f=100 MHz. Cob max 4,5 pF @VCB=-5 V/IE=0/f=1 MHz. ' +
       'NF typ 4 dB @VCE=-5 V/IC=-0,1 mA/f=1 kHz/Rg=1 kΩ. Spínací časy (VCC=-3 V, IC=-10 mA, ' +
       'IB1=-IB2=-1 mA): td max 35 ns, tr max 35 ns (VBE=0,5 V), ts max 225 ns, tf max 75 ns.',
+    schematicImage: 'MMDT3906.jpg',
     tags: 'tranzistor,pnp,bipolární,duální,sot-363,sc-70-6,mmdt3906,2n3906,smd',
   },
   {
@@ -4148,6 +5281,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '@IC=-50 mA/IB=-5 mA. VBE(sat) max -1 V @IC=-10 mA/IB=-1 mA; max -1 V @IC=-50 mA/IB=-5 mA. ' +
       'fT min 100 MHz @VCE=-10 V/IC=-10 mA/f=100 MHz. Cob max 6 pF @VCB=-10 V/IE=0/f=1 MHz. ' +
       'NF max 8,0 dB @VCE=-5,0 V/IC=-200 µA/RS=10 Ω/f=1,0 kHz.',
+    schematicImage: 'MMDT5401.jpg',
     tags: 'tranzistor,pnp,bipolární,duální,sot-363,sc-70-6,mmdt5401,2n5401,vysokonapěťový,smd',
   },
   {
@@ -4173,6 +5307,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'λ=940 nm — binování dle citlivosti do 6 skupin (BIN A–F): A=0,20–0,60 mA, B=0,40–1,08 mA, ' +
       'C=0,72–1,56 mA, D=1,04–1,80 mA, E=1,20–2,40 mA, F=1,60 mA min (bez horní meze v datasheetu) ' +
       '— při objednávání/výběru dílu je nutno specifikovat požadovaný BIN.',
+    schematicImage: 'LTR-306.jpg',
     tags: 'tranzistor,fototranzistor,ir,detektor,npn,liteon,ltr-306,optoelektronika,side-looking',
   },
   {
@@ -4201,6 +5336,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'temný proud ICEO max 100 nA @VCE=10 V/Ee=0. Skladovací teplota -55 až +100 °C, pájecí ' +
       'teplota 260 °C/5 s (1,6 mm od těla). Při objednávání/výběru dílu nutno specifikovat ' +
       'požadovaný BIN.',
+    schematicImage: 'LTR-1650D.jpg',
     tags: 'tranzistor,fototranzistor,ir,detektor,npn,liteon,ltr-1650d,optoelektronika,top-view',
   },
   {
@@ -4232,6 +5368,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'podsvícení displejů). Bezolovnaté pájení. Určeno pro soumrakové spínače domácího osvětlení, ' +
       'stmívání podsvícení LCD monitorů/displejů, automatickou expozici (AE) fotoaparátů, ' +
       'náhradu CdS senzorů.',
+    schematicImage: 'PT23GP11.jpg',
     tags: 'tranzistor,fototranzistor,viditelné-světlo,daylight-sensor,npn,kodenshi,pt23gp11,cds-náhrada,optoelektronika',
   },
 ];
@@ -4268,6 +5405,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'Volitelné příslušenství: nerezová jímka (AISI 316L, závit R1/2 s M12 kabelovou průchodkou) ' +
       'pro instalaci standardní sondy do potrubí/nádrže — prodává se samostatně, není součástí ' +
       'této položky.',
+    schematicImage: 'Pt100.jpg',
     tags: 'rezistor,senzor,teploměr,rtd,pt100,platinový,baumer',
   },
   {
@@ -4292,6 +5430,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       '1200–1500 °C. Rt = odpor při dané teplotě (nulový výkon), R25 = jmenovitý odpor při 25 °C ' +
       '(nulový výkon, uváděn na součástce), Imax = max. trvalý proud @25 °C, δ = disipační ' +
       'konstanta (poměr změny ztrátového výkonu ku změně teploty okolí).',
+    schematicImage: 'NTC-Dxx.jpg',
     tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-5',
   },
   {
@@ -4309,6 +5448,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       '9–11 mW/°C, tepelná časová konstanta 27–28 s. Operační rozsah -55 až +200 °C. Použití: ' +
       'omezení nárazového proudu ve spínaných zdrojích/UPS/ballastech, ochrana filamentu CRT/' +
       'žárovek, obecná teplotní ochrana obvodů.',
+    schematicImage: 'NTC-Dxx.jpg',
     tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-7',
   },
   {
@@ -4326,6 +5466,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'celou řadou), tepelná časová konstanta 30–35 s. Operační rozsah -55 až +200 °C. Typické ' +
       'použití: omezovač nárazového proudu ve spínaných zdrojích (nejběžnější velikost pro tuto ' +
       'aplikaci v malých/středních spotřebičích).',
+    schematicImage: 'NTC-Dxx.jpg',
     tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-9',
   },
   {
@@ -4341,6 +5482,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'hodnoty: 2,5; 3; 4; 5; 6; 8; 10; 12; 16; 20; 22; 30; 33; 50; 60; 80; 120 Ω. Imax 5,0–1,2 A, ' +
       'disipační konstanta δ 13–16 mW/°C, tepelná časová konstanta 43–65 s. Operační rozsah -55 ' +
       'až +200 °C. Vhodné pro omezení nárazového proudu u výkonnějších spotřebičů než D-9.',
+    schematicImage: 'NTC-Dxx.jpg',
     tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-11',
   },
   {
@@ -4356,6 +5498,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'hodnoty: 1,3; 1,5; 2,5; 3; 4; 5; 6; 7; 8; 10; 12; 15; 16; 20; 30; 47; 120 Ω. Imax 7,0–1,2 A, ' +
       'disipační konstanta δ 13–17 mW/°C, tepelná časová konstanta 60–68 s. Operační rozsah -55 ' +
       'až +200 °C.',
+    schematicImage: 'NTC-Dxx.jpg',
     tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-13',
   },
   {
@@ -4372,6 +5515,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'disipační konstanta δ 18–22 mW/°C, tepelná časová konstanta 68–87 s. Operační rozsah -55 ' +
       'až +200 °C. Vyšší proudová zatížitelnost vhodná pro omezení nárazového proudu u výkonnějších ' +
       'zdrojů/spotřebičů.',
+    schematicImage: 'NTC-Dxx.jpg',
     tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-15',
   },
   {
@@ -4388,6 +5532,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'omezení nárazového proudu u vyšších výkonů (desítky až stovky W spínaných zdrojů). ' +
       'Imax 11,0–5,0 A, disipační konstanta δ 24–25 mW/°C, tepelná časová konstanta 87–105 s. ' +
       'Operační rozsah -55 až +200 °C.',
+    schematicImage: 'NTC-Dxx.jpg',
     tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-20',
   },
   {
@@ -4404,6 +5549,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'Imax 12,0–6,0 A, disipační konstanta δ 30–35 mW/°C, tepelná časová konstanta 120–126 s. ' +
       'Operační rozsah -55 až +200 °C. Určeno pro omezení nárazového proudu u výkonných spínaných ' +
       'zdrojů/UPS v řádu stovek wattů.',
+    schematicImage: 'NTC-Dxx.jpg',
     tags: 'rezistor,ntc,termistor,inrush,omezovač-proudu,leiditech,d-25',
   },
   {
@@ -4414,6 +5560,7 @@ const RESISTOR_SPECS: PartSpec[] = [
     value:
       'PTC termistor pro nadproudovou ochranu (samočinně zotavitelná "polyfuse"), RR 9 Ω ±20 %, ' +
       'ISmax 1,0 A @230 V AC',
+    schematicImage: 'B59081G1120A161.jpg',
     notes:
       'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications, ' +
       'Single SMDs" (dok. listopad 2009) — ⚠️ jiný typ termistoru než NTC řada D-5…D-25 v této ' +
@@ -4443,12 +5590,13 @@ const RESISTOR_SPECS: PartSpec[] = [
       'SMD "Gamma I" pouzdro, kupolovitý tvar Ø8±0,2 mm, výška 3,3 mm max., 2 ploché SMD ' +
       'kontakty, balení 16mm páska/cívka',
     value: 'PTC termistor pro nadproudovou ochranu, RR 10 Ω ±20 %, ISmax 1,0 A @230 V AC',
+    schematicImage: 'B59081G1120A161.jpg',
     notes:
       'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications" ' +
       '(dok. listopad 2009) — součást stejné řady 8 typů jako B59081/83/84/86/40/12-... (Gamma I: ' +
       'G1080/G1081/G1083/G1084/G1086; Gamma L: G1012/G1040, samostatné záznamy) — viz záznam ' +
       'B59081G1120A161 (typ G1081) pro plný popis principu funkce PTC a shody se standardy. Typ ' +
-      'G1085: RR 10 Ω ±20 %, R25,match max 0,5 Ω. IR max 180 mA @25 °C / 120 mA @70 °C. IS typ. ' +
+      'G1085: RR 10 Ω ±20 %, R25,match max 1,0 Ω. IR max 180 mA @25 °C / 120 mA @70 °C. IS typ. ' +
       '400 mA @25 °C. ISmax 1,0 A @230 V AC. Doba přepnutí typ. 3,9 s @ISmax/230 V AC, 3,9 s ' +
       '@1 A/230 V AC, 19,0 s @500 mA/230 V AC.',
     tags: 'rezistor,ptc,termistor,nadproudová-ochrana,polyfuse,telekom,epcos,tdk,gamma-i',
@@ -4459,13 +5607,14 @@ const RESISTOR_SPECS: PartSpec[] = [
       'SMD "Gamma I" pouzdro, kupolovitý tvar Ø8±0,2 mm, výška 3,3 mm max., 2 ploché SMD ' +
       'kontakty, balení 16mm páska/cívka',
     value: 'PTC termistor pro nadproudovou ochranu, RR 16 Ω ±20 %, ISmax 1,5 A @230 V AC',
+    schematicImage: 'B59081G1120A161.jpg',
     notes:
       'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications" ' +
       '(dok. listopad 2009) — součást stejné řady 8 typů jako B59081/85/84/86/40/12-... (Gamma I: ' +
       'G1080/G1081/G1084/G1085/G1086; Gamma L: G1012/G1040, samostatné záznamy) — viz záznam ' +
       'B59081G1120A161 (typ G1081) pro plný popis principu funkce PTC a shody se standardy. Typ ' +
       'G1083: RR 16 Ω ±20 %, R25,match max 0,5 Ω. IR max 150 mA @25 °C / 100 mA @70 °C. IS typ. ' +
-      '300 mA @25 °C. ISmax 1,5 A @230 V AC. Doba přepnutí typ. 2,5 s @ISmax/230 V AC, 2,4 s ' +
+      '300 mA @25 °C. ISmax 1,5 A @230 V AC. Doba přepnutí typ. 1,0 s @ISmax/230 V AC, 2,4 s ' +
       '@1 A/230 V AC, 11,0 s @500 mA/230 V AC.',
     tags: 'rezistor,ptc,termistor,nadproudová-ochrana,polyfuse,telekom,epcos,tdk,gamma-i',
   },
@@ -4475,6 +5624,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'SMD "Gamma I" pouzdro, kupolovitý tvar Ø8±0,2 mm, výška 3,3 mm max., 2 ploché SMD ' +
       'kontakty, balení 16mm páska/cívka',
     value: 'PTC termistor pro nadproudovou ochranu, RR 25 Ω ±20 %, ISmax 2,8 A @230 V AC',
+    schematicImage: 'B59081G1120A161.jpg',
     notes:
       'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications" ' +
       '(dok. listopad 2009) — součást stejné řady 8 typů jako B59081/83/84/85/86/40/12-... (Gamma ' +
@@ -4491,6 +5641,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'SMD "Gamma I" pouzdro, kupolovitý tvar Ø8±0,2 mm, výška 3,3 mm max., 2 ploché SMD ' +
       'kontakty, balení 16mm páska/cívka',
     value: 'PTC termistor pro nadproudovou ochranu, RR 29 Ω ±20 %, ISmax 2,8 A @230 V AC',
+    schematicImage: 'B59081G1120A161.jpg',
     notes:
       'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications" ' +
       '(dok. listopad 2009) — součást stejné řady 8 typů jako B59081/83/84/85/80/40/12-... (Gamma ' +
@@ -4507,6 +5658,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'SMD "Gamma I" pouzdro, kupolovitý tvar Ø8±0,2 mm, výška 3,3 mm max., 2 ploché SMD ' +
       'kontakty, balení 16mm páska/cívka — nejvyšší jmenovitý odpor v podřadě Gamma I',
     value: 'PTC termistor pro nadproudovou ochranu, RR 50 Ω ±15 %, ISmax 2,5 A @230 V AC',
+    schematicImage: 'B59081G1120A161.jpg',
     notes:
       'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications" ' +
       '(dok. listopad 2009) — součást stejné řady 8 typů jako B59081/83/85/86/80/40/12-... (Gamma ' +
@@ -4524,6 +5676,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'SMD "Gamma L" pouzdro, kupolovitý tvar Ø7±0,2 mm, výška 3,8 mm max., 2 ploché SMD ' +
       'kontakty (rozteč 11 mm mezi středy pájecích plošek), balení 24mm páska/cívka',
     value: 'PTC termistor pro nadproudovou ochranu, RR 25 Ω ±20 %, ISmax 4,0 A @230 V AC',
+    schematicImage: 'B59081G1120A161.jpg',
     notes:
       'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications" ' +
       '(dok. listopad 2009) — součást stejné řady 8 typů jako B59081/83/84/85/86/80/12-... (Gamma ' +
@@ -4543,6 +5696,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'SMD "Gamma L" pouzdro, kupolovitý tvar Ø7±0,2 mm, výška 3,8 mm max., 2 ploché SMD ' +
       'kontakty, balení 24mm páska/cívka — nejvyšší proudová třída v celé řadě',
     value: 'PTC termistor pro nadproudovou ochranu, RR 35 Ω +15/−20 %, ISmax 4,6 A @230 V AC',
+    schematicImage: 'B59081G1120A161.jpg',
     notes:
       'EPCOS/TDK "B590** — PTC thermistors for overcurrent protection in telecom applications" ' +
       '(dok. listopad 2009) — součást stejné řady 8 typů jako B59081/83/84/85/86/80/40 (Gamma I: ' +
@@ -4596,7 +5750,52 @@ const RESISTOR_SPECS: PartSpec[] = [
       'laditelných (trimmable) rezistorů se stejným prefixem "RT" i podobnými velikostními kódy ' +
       '(např. Susumu RT0603 = pouzdro 0201!) — viz samostatné záznamy Susumu RT0603/RT0510/' +
       'RT0816/RT1220, které s touto Yageo řadou nesouvisí.',
+    schematicImage: 'RT1206FRE073K01L.jpg',
     tags: 'rezistor,smd,1206,precision,tenkovrstvý,thin-film,yageo,phicomp,rt-series',
+  },
+  {
+    name: 'ROYALOHM Thick Film Chip Resistor',
+    packageType:
+      'SMD tlustovrstvý (thick film) čipový rezistor, standardní velikosti 0201(0603 metric)/' +
+      '0402(1005)/0603(1608)/0805(2012)/1206(3216)/1210(3225)/1812/2010(5025)/2512(6432) + ' +
+      'širokoterminálové varianty 0508/0612/1020/1218/1225; terminace Sn (vnější)/Ni bariéra ' +
+      '(střední)/Ag (vnitřní) na vysocečisté alumina keramice, bezolovnaté (RoHS), MSL1',
+    value:
+      'Obecná řada 5% (i 1/2%) tlustovrstvých SMD rezistorů, E-24/E-96, 0,1 Ω–10 MΩ (dle ' +
+      'velikosti), výkon 1/20 W (0201) až 1 W (2512), provozní teplota -55 až +155 °C',
+    notes:
+      'ROYALOHM (UNI-ROYAL Group) "Thick Film Chip Resistors" — katalogový datasheet celé řady ' +
+      '(www.royalohm.com). ⚠️ NOVÝ TYP v této knihovně: první OBECNÁ (generic-purpose) SMD ' +
+      'tlustovrstvá čipová řada — na rozdíl od precizní tenkovrstvé Yageo RT-series (viz záznam ' +
+      'výše) jde o běžné 5% (příp. 1/2%) rezistory pro obecné použití, a na rozdíl od THT E12 ' +
+      'řady (0,25 W, drátové vývody) v této knihovně jde o SMD čipové provedení v celé škále ' +
+      'standardních velikostí — pravděpodobně nejběžnější typ rezistoru v moderních DPS. ' +
+      'Objednací kód dekódován dle výrobce, např. "1206S4J0100T5E" = 1206 (velikost) S4 (výkon ' +
+      '1/4W-S) J (tolerance ±5%) 0100 (odporová hodnota, E-24: 1.–3. číslice=platné číslice, ' +
+      '4.=počet nul → 010×10⁰=10Ω) T (páska/cívka) 5 (5000 ks/cívka) E (bezolovnaté, RoHS). ' +
+      'U E-96 kódu (tolerance ±1%) mají 1.–3. číslice význam platných číslic přímo, 4. číslice ' +
+      'počet nul (písmena J/K/L nahrazují desetinnou čárku pro hodnoty <100: "012J"=1,2Ω, ' +
+      '"226K"=22,6Ω). Tolerance: D=±0,5%, F=±1%, G=±2%, J=±5%. ' +
+      '⚠️ Historie výkonových tříd (viz doprovodný dopis výrobce "Part No Explanation", ' +
+      'aktualizace 14.9.2022): do r. 2000 měl každý rozměr pouzdra jednu pevnou výkonovou třídu ' +
+      '(0402=1/16W, 0603=1/16W, 0805=1/10W, 1206=1/8W, 1210=1/4W, 2010=1/2W, 2512=1W); od r. 2000 ' +
+      'byly výkonové třídy navýšeny (0603→1/10W, 0805→1/8W, 1206→1/4W, 1210→1/2W, 2010→3/4W), ' +
+      'přičemž nové/vyšší výkonové značení nese příponu "-S" (resp. u 1210 "-SS") — starší i ' +
+      'novější díly jsou elektricky/výrobně TOTOŽNÉ (stejný čip, jen jiné objednací značení kvůli ' +
+      'historické kontinuitě se staršími zákaznickými schváleními), 0402 a 2512 zůstaly beze ' +
+      'změny výkonu. Aktuální (navýšené) výkonové třídy dle velikosti: 0201=1/20W, 0402=1/16W, ' +
+      '0603=1/10W-S/1/16W, 0805=1/8W-S/1/10W, 1206=1/4W-S/1/8W, 1210=1/2W-SS/1/3W-S/1/4W, ' +
+      '1812=1/2W/3/4W-S, 2010=3/4W-S/1/2W, 2512=1W. Max. pracovní napětí/proud dle velikosti: ' +
+      '0201 25V/0,5A, 0402 50V/1A, 0603 75V/1A, 0805 150V/2A, 1206 200V/2A, 1210 200V/2A, ' +
+      '1812 200V/2A, 2010 200V/2A, 2512 200V/2A (max. přetížitelné 2–10A dle velikosti). ' +
+      'Dielektrická pevnost 100–500V dle velikosti (0402 100V, 0603 300V, 0805+ 500V). Teplotní ' +
+      'koeficient (TCR): 0Ω1–0Ω99 ±800ppm/°C, 1Ω–10Ω ±400ppm/°C, 10,1Ω–100Ω ±200ppm/°C, >100Ω ' +
+      '±100ppm/°C (u 0201: >100Ω ±200ppm/°C). Izolační odpor min. 1000 MΩ. Nízkoodporová řada ' +
+      '(0,1–0,99Ω) dostupná pro velikosti 0402/0603/0805/1206/1210/2010/2512. Standard: E-96 ' +
+      '(0,5%/1%), E-24 (2%/5%). Jumper (0Ω propojka) dostupný pro všechny velikosti (<50 mΩ). ' +
+      'Vhodné pro vlnové i reflow pájení, standardní cívka 7" (4"/10"/13" na vyžádání).',
+    schematicImage: 'ROYALOHM-ThickFilm.jpg',
+    tags: 'rezistor,smd,tlustovrstvý,thick-film,chip,royalohm,uni-royal,e24,e96,obecný,katalog',
   },
   {
     name: 'Susumu RT0603',
@@ -4625,6 +5824,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'napětí 30 V. Balení 15 000 ks/cívka. RoHS, zcela bezolovnaté. Kód objednávky: RT<velikost>' +
       '<TCR kód>-<3místný EIA odporový kód>-<tolerance kód M>, např. RT0816P-102-M = 1 kΩ, ' +
       'TCR ±25 ppm/°C, tolerance ±20 %.',
+    schematicImage: 'Susumu-RT-series.jpg',
     tags: 'rezistor,smd,0201,trimovatelný,trimmable,laditelný,susumu,thin-film,rt-series',
   },
   {
@@ -4644,6 +5844,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       '100/270/1,5k Ω (dostupná i varianta s počáteční hodnotou 50 Ω), laditelné nahoru až na ' +
       'horní mez 820/2,1k/10k Ω. TCR ±25 ppm/°C (kód P). Tolerance ±20 % (kód M). Výkon 1/16 W, ' +
       'max. pracovní napětí 25 V, max. přetížitelné napětí 50 V. Balení 10 000 ks/cívka.',
+    schematicImage: 'Susumu-RT-series.jpg',
     tags: 'rezistor,smd,0402,trimovatelný,trimmable,laditelný,susumu,thin-film,rt-series',
   },
   {
@@ -4664,6 +5865,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       'hodnoty 100/330/1k/3,3k/10k Ω, laditelné nahoru na horní meze 2,7k/8,0k/8,8k/37k/40k Ω. ' +
       'TCR ±25 ppm/°C (kód P) nebo ±100 ppm/°C (kód R). Tolerance ±20 % (kód M). Výkon 1/16 W, ' +
       'max. pracovní napětí 75 V, max. přetížitelné napětí 150 V. Balení 5 000 ks/cívka.',
+    schematicImage: 'Susumu-RT-series.jpg',
     tags: 'rezistor,smd,0603,trimovatelný,trimmable,laditelný,susumu,thin-film,rt-series',
   },
   {
@@ -4686,6 +5888,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       '±50 ppm/°C (kód Q), ±25 ppm/°C (kód P) nebo ±100 ppm/°C (kód R) dle konkrétní hodnoty. ' +
       'Tolerance ±20 % (kód M). Výkon 1/10 W, max. pracovní napětí 100 V, max. přetížitelné ' +
       'napětí 200 V. Balení 5 000 ks/cívka.',
+    schematicImage: 'Susumu-RT-series.jpg',
     tags: 'rezistor,smd,0805,trimovatelný,trimmable,laditelný,susumu,thin-film,rt-series',
   },
   {
@@ -4718,6 +5921,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       '575: endurance test 1000 h @70 °C (±3,0 %), přetížení (±2,0 %), teplotní šok (±1,0 %), ' +
       'vlhkostní odolnost (±1,0 %), odolnost pájecímu teplu 10 s @260 °C (±2,0 %), pájitelnost ' +
       '95% pokrytí.',
+    schematicImage: 'TRA06E.jpg',
     tags: 'rezistor,rezistorová-síť,resistor-array,smd,tenkovrstvý,thin-film,vishay-dale,tra06e,izolovaný',
   },
   {
@@ -4750,6 +5954,7 @@ const RESISTOR_SPECS: PartSpec[] = [
       '+125 °C. Zařazeno do kategorie "Rezistor" jako pasivní síťová součástka, obdobně jako ' +
       'TRA06E v této knihovně. RoHS kompatibilní verze "W" (bezolovnaté zakončení) odolná pájení ' +
       'do 260°C.',
+    schematicImage: 'RC0801-100J100J.jpg',
     tags: 'rezistor,kondenzátor,rezistorová-síť,rc-network,sip,rcd-components,rc-series,kombinovaná-síť',
   },
   {
@@ -4982,6 +6187,7 @@ const CAPACITOR_PART_SPECS: PartSpec[] = [
       '(platí pro tento díl, 100 pF) je Q min. 1000. Zkušební napětí 250 % jmenovitého napětí ' +
       '(max. nabíjecí proud 50 mA) = 125 V pro tento 50V díl. Izolační odpor min. 10 000 MΩ ' +
       '(měřeno při jmenovitém napětí, 60 s). RoHS.',
+    schematicImage: 'CCNPO101J50V5B1.jpg',
     tags: 'kondenzátor,keramický,disk,meritek,np0,c0g,class1,cc-series',
   },
   {
@@ -5045,6 +6251,7 @@ const CAPACITOR_PART_SPECS: PartSpec[] = [
       'dipovaný (UL94V-0 samozhášivý), nízký svodový proud a impedance, vysoká odolnost proti ' +
       'vlhkosti/teplu, laserem značené tělo kondenzátoru. Zakončení "W" (bezolovnaté, std.) je ' +
       'RoHS kompatibilní a odolné pájení do 260°C.',
+    schematicImage: 'TRA10-103.jpg',
     tags: 'kondenzátor,tantalový,radiální,epoxidový,rcd-components,tr-series,tangold',
   },
   {
@@ -5072,6 +6279,7 @@ const CAPACITOR_PART_SPECS: PartSpec[] = [
       '0,001 @1000±100Hz. Zkušební napětí 1,75× jmenovité napětí (2-5s). Izolační odpor min ' +
       '50 kMΩ @20°C/100VDC. Provozní teplota -40 až +85 °C. Kruhový (o) symbol v patičce ' +
       'datasheetu indikuje UL/CSA schválení pro daný typ.',
+    schematicImage: 'HCPB-Series.jpg',
     tags: 'kondenzátor,fóliový,vysokonapěťový,okaya,hcpb-series,spínaný-zdroj,radiální',
   },
   {
@@ -5108,7 +6316,7 @@ const CAPACITOR_PART_SPECS: PartSpec[] = [
 
 function buildFromSpecs(
   specs: PartSpec[],
-  category: 'Dioda' | 'Tranzistor' | 'Rezistor' | 'Kondenzátor'
+  category: 'Dioda' | 'Můstek' | 'Tranzistor' | 'Rezistor' | 'Kondenzátor'
 ): ComponentInput[] {
   return specs.map((spec) => ({
     name: spec.name,
@@ -5119,10 +6327,14 @@ function buildFromSpecs(
     quantity: 0,
     location: null,
     datasheetUrl: null,
+    schematicImage: spec.schematicImage ?? null,
     notes: spec.notes,
     tags: spec.tags,
   }));
 }
+
+// Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
+export const SEED_LIBRARY_VERSION = 78;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
@@ -5130,6 +6342,7 @@ export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildCapacitorSeed(),
   ...buildFromSpecs(CAPACITOR_PART_SPECS, 'Kondenzátor'),
   ...buildFromSpecs(DIODE_SPECS, 'Dioda'),
+  ...buildFromSpecs(BRIDGE_SPECS, 'Můstek'),
   ...buildFromSpecs(TRANSISTOR_SPECS, 'Tranzistor'),
   ...buildIcSeed(),
   ...buildModuleSeed(),

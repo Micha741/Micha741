@@ -1,6 +1,6 @@
 import { type SQLiteDatabase } from 'expo-sqlite';
 import type { ComponentInput, ElectronicComponent } from '../types/component';
-import { SEED_COMPONENTS } from './seedComponents';
+import { SEED_COMPONENTS, SEED_LIBRARY_VERSION } from './seedComponents';
 
 export async function listComponents(
   db: SQLiteDatabase,
@@ -47,8 +47,8 @@ export async function createComponent(
   const now = new Date().toISOString();
   const result = await db.runAsync(
     `INSERT INTO components
-      (name, category, manufacturer, packageType, value, quantity, location, datasheetUrl, notes, tags, createdAt, updatedAt)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      (name, category, manufacturer, packageType, value, quantity, location, datasheetUrl, notes, tags, schematicImage, createdAt, updatedAt)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       input.name,
       input.category,
@@ -60,6 +60,7 @@ export async function createComponent(
       input.datasheetUrl,
       input.notes,
       input.tags,
+      input.schematicImage,
       now,
       now,
     ]
@@ -76,7 +77,7 @@ export async function updateComponent(
   await db.runAsync(
     `UPDATE components SET
       name = ?, category = ?, manufacturer = ?, packageType = ?, value = ?,
-      quantity = ?, location = ?, datasheetUrl = ?, notes = ?, tags = ?, updatedAt = ?
+      quantity = ?, location = ?, datasheetUrl = ?, notes = ?, tags = ?, schematicImage = ?, updatedAt = ?
      WHERE id = ?`,
     [
       input.name,
@@ -89,6 +90,7 @@ export async function updateComponent(
       input.datasheetUrl,
       input.notes,
       input.tags,
+      input.schematicImage,
       now,
       id,
     ]
@@ -100,19 +102,103 @@ export async function deleteComponent(db: SQLiteDatabase, id: number): Promise<v
 }
 
 const SEED_DONE_KEY = 'default_components_seeded';
+const LIBRARY_VERSION_KEY = 'seed_library_version';
 
-async function insertMissingSeedComponents(db: SQLiteDatabase): Promise<number> {
-  const existing = await db.getAllAsync<{ name: string }>('SELECT name FROM components');
-  const existingNames = new Set(existing.map((row) => row.name.toLowerCase()));
-  const missing = SEED_COMPONENTS.filter((c) => !existingNames.has(c.name.toLowerCase()));
+export async function getSyncedLibraryVersion(db: SQLiteDatabase): Promise<number> {
+  const row = await db.getFirstAsync<{ value: string }>(
+    'SELECT value FROM app_meta WHERE key = ?',
+    [LIBRARY_VERSION_KEY]
+  );
+  return row ? Number(row.value) : 0;
+}
+
+export function getCodeLibraryVersion(): number {
+  return SEED_LIBRARY_VERSION;
+}
+
+type ExistingSeedRow = {
+  id: number;
+  name: string;
+  category: string;
+  manufacturer: string | null;
+  packageType: string | null;
+  value: string | null;
+  notes: string | null;
+  tags: string | null;
+  datasheetUrl: string | null;
+  schematicImage: string | null;
+};
+
+export interface SyncSeedComponentsResult {
+  added: number;
+  updated: number;
+}
+
+export async function syncSeedComponents(
+  db: SQLiteDatabase,
+  options: { updateExisting: boolean } = { updateExisting: false }
+): Promise<SyncSeedComponentsResult> {
+  const existing = await db.getAllAsync<ExistingSeedRow>(
+    'SELECT id, name, category, manufacturer, packageType, value, notes, tags, datasheetUrl, schematicImage FROM components'
+  );
+  const existingByName = new Map(existing.map((row) => [row.name.toLowerCase(), row]));
+
+  let added = 0;
+  let updated = 0;
 
   await db.withTransactionAsync(async () => {
-    for (const component of missing) {
-      await createComponent(db, component);
+    for (const seed of SEED_COMPONENTS) {
+      const match = existingByName.get(seed.name.toLowerCase());
+
+      if (!match) {
+        await createComponent(db, seed);
+        added += 1;
+        continue;
+      }
+
+      if (!options.updateExisting) continue;
+
+      const changed =
+        match.category !== seed.category ||
+        (match.manufacturer ?? '') !== (seed.manufacturer ?? '') ||
+        (match.packageType ?? '') !== (seed.packageType ?? '') ||
+        (match.value ?? '') !== (seed.value ?? '') ||
+        (match.notes ?? '') !== (seed.notes ?? '') ||
+        (match.tags ?? '') !== (seed.tags ?? '') ||
+        (match.datasheetUrl ?? '') !== (seed.datasheetUrl ?? '') ||
+        (match.schematicImage ?? '') !== (seed.schematicImage ?? '');
+
+      if (!changed) continue;
+
+      const now = new Date().toISOString();
+      await db.runAsync(
+        `UPDATE components SET
+          category = ?, manufacturer = ?, packageType = ?, value = ?,
+          notes = ?, tags = ?, datasheetUrl = ?, schematicImage = ?, updatedAt = ?
+         WHERE id = ?`,
+        [
+          seed.category,
+          seed.manufacturer,
+          seed.packageType,
+          seed.value,
+          seed.notes,
+          seed.tags,
+          seed.datasheetUrl,
+          seed.schematicImage,
+          now,
+          match.id,
+        ]
+      );
+      updated += 1;
     }
   });
 
-  return missing.length;
+  await db.runAsync('INSERT OR REPLACE INTO app_meta (key, value) VALUES (?, ?)', [
+    LIBRARY_VERSION_KEY,
+    String(SEED_LIBRARY_VERSION),
+  ]);
+
+  return { added, updated };
 }
 
 export async function ensureDefaultComponentsSeededOnce(db: SQLiteDatabase): Promise<void> {
@@ -122,7 +208,7 @@ export async function ensureDefaultComponentsSeededOnce(db: SQLiteDatabase): Pro
   );
   if (flag) return;
 
-  await insertMissingSeedComponents(db);
+  await syncSeedComponents(db, { updateExisting: false });
   await db.runAsync('INSERT OR REPLACE INTO app_meta (key, value) VALUES (?, ?)', [
     SEED_DONE_KEY,
     '1',
@@ -130,5 +216,21 @@ export async function ensureDefaultComponentsSeededOnce(db: SQLiteDatabase): Pro
 }
 
 export async function importMissingDefaultComponents(db: SQLiteDatabase): Promise<number> {
-  return insertMissingSeedComponents(db);
+  const { added } = await syncSeedComponents(db, { updateExisting: false });
+  return added;
+}
+
+/**
+ * Spouští se při každém startu appky. Pokud kód appky nese novější verzi
+ * knihovny součástek než je uloženo v databázi, tiše doplní nové a
+ * aktualizuje změněné záznamy (nová/upravená schémata, poznámky…) — bez
+ * nutnosti ručně mačkat tlačítko "Knihovna". Uživatelovy vlastní úpravy
+ * (množství, umístění, vlastní záznamy) syncSeedComponents nepřepisuje.
+ */
+export async function autoSyncSeedComponentsIfNewer(
+  db: SQLiteDatabase
+): Promise<SyncSeedComponentsResult | null> {
+  const synced = await getSyncedLibraryVersion(db);
+  if (synced >= SEED_LIBRARY_VERSION) return null;
+  return syncSeedComponents(db, { updateExisting: true });
 }

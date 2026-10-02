@@ -6,6 +6,7 @@ interface CoilSpec {
   value: string;
   notes: string;
   tags: string;
+  schematicImage?: string;
 }
 
 const COIL_SPECS: CoilSpec[] = [
@@ -41,6 +42,7 @@ const COIL_SPECS: CoilSpec[] = [
       '(špičkově @40% duty cycle), OCL (open circuit inductance) měřena @15,75 kHz/0,1 VRMS. ' +
       'Izolační pevnost (hipot) min 500 VRMS mezi vinutími. Provozní kmitočet 50 kHz až 1 MHz ' +
       '(typické pro SMPS aplikace). Provozní teplota -40 až +85 °C. RoHS.',
+    schematicImage: 'P4100E5-series.jpg',
     tags: 'cívka,transformátor,proudový-transformátor,current-sense,smd,mps-industries,p4100e5,smps',
   },
   {
@@ -113,10 +115,382 @@ const COIL_SPECS: CoilSpec[] = [
     notes: 'SMD ferritová korálka pro potlačení VF rušení na napájecí/signálové lince.',
     tags: 'cívka,ferrit,emi,tlumivka,smd',
   },
+  {
+    name: 'AC1020',
+    packageType:
+      'THT toroidní proudový transformátor v plastovém pouzdru, 3 vývody (piny 1/2/3, pin 3 ' +
+      'jen mechanická podpora nebo pro provedení se středním odbočením), vnější Ø23,8×23,8 mm, ' +
+      'výška 11,12 mm, otvor pro primární vodič Ø9,5 mm, rozteč vývodů 15,24×7,62 mm',
+    value:
+      'Proudový transformátor (current transformer, CT) pro měření/snímání proudu 50/60 Hz, ' +
+      'jmenovitý primární proud 20 A (max. 60 A), převodní poměr 1000:1',
+    notes:
+      'Talema Group "AC1020 — 20 Amp Current Transformer" (datasheet, rev. 07/18). Druhý typ ' +
+      'proudového transformátoru v této knihovně vedle MPS Industries P4100E5 (viz jeho záznam) ' +
+      '— na rozdíl od P4100E5 (miniaturní SMD transformátor pro proudové snímání uvnitř SMPS, ' +
+      'jednozávitové primární vinutí v pouzdře) jde o větší toroidní THT konstrukci pro montáž ' +
+      'na vlastní jeden závit vodiče/přípojnice (průchozí otvor Ø9,5mm, primární vinutí NENÍ ' +
+      'součástí dílu — protahuje se jím měřený vodič, případně 1 závit izolovaného vodiče pro ' +
+      'nižší proudy) určenou pro síťové kmitočty 50/60Hz. Použití: snímání přetížení, detekce ' +
+      'zemního/reziduálního proudu, měření (metering), převod na analogový signál pro A/D ' +
+      'obvody. Primární proud 20A jmenovitě, max. 60A. Poměr napětí na 1 ampér při zátěži 100 Ω: ' +
+      '0,100 V/A @20A / 0,097 V/A @2A (mírná nelinearita při nízkém proudu). Odpor sekundárního ' +
+      'vinutí (DCR) 41,8 Ω @20°C. Dielektrická pevnost (hi-pot) 4 kVrms. Izolační odpor min ' +
+      '100 MΩ. Skladovací teplota -55 až +130°C. Pouzdro UL94V-0, shoda s RoHS a REACH. ' +
+      'Poznámka výrobce: zátěžový (burden) rezistor ani jednozávitové primární vinutí nejsou ' +
+      'součástí dodávky, pokud nejsou výslovně objednány — burden rezistor 100Ω/1/8W je uveden ' +
+      'jako referenční příklad (dává 2,0V výstup @20A). Pin 3 slouží pouze jako mechanická ' +
+      'podpora, případně pro provedení se středním odbočením vinutí.',
+    tags: 'cívka,transformátor,proudový-transformátor,current-transformer,talema,ac1020,toroid,thd,metering',
+  },
+  {
+    name: 'INDEL KK 60/EI 22-2/4 / 23-2/4 / 24-2/4',
+    packageType:
+      'THT síťový transformátor na jádru EI 60, zalitý epoxidovou pryskyřicí, 14 pinů (7+7, ' +
+      'rozteč vývodů p=5mm), 4 montážní otvory pro šroub Ø4,4mm, rozměry (a×b×c dle varianty) ' +
+      'cca 63,6×53,6×47,2–56,5 mm',
+    value:
+      'Síťový (izolační/napájecí) transformátor — mechanická/výkonová platforma na jádru EI60, ' +
+      'jmenovitý výkon 25 VA (jádro EI60/21) / 30 VA (EI60/25) / 35 VA (EI60/31), na zvláštní ' +
+      'objednávku až 30/35/45 VA',
+    notes:
+      'INDEL "Karta katalogowa KK 60/EI .... - 2/4 — Rozwiązanie mechaniczne transformatora na ' +
+      'kształtce EI 60 w obudowie zalanego żywicą" (polský/vícejazyčný katalogový list). ⚠️ TENTO ' +
+      'KONKRÉTNÍ LIST POPISUJE POUZE MECHANICKÉ ŘEŠENÍ (rozměry pouzdra, rozteč a typ vývodů, ' +
+      'hmotnost) a jmenovitý výkon v VA — NEOBSAHUJE elektrické parametry vinutí (počet závitů, ' +
+      'primární/sekundární napětí, proud) — ty by byly na samostatném elektrickém katalogovém ' +
+      'listu ke konkrétnímu objednacímu kódu (typické u výrobců transformátorů, kde se ' +
+      'mechanická "platforma" jádra/kostřičky a elektrické provedení vinutí uvádí odděleně). ' +
+      'Tři varianty lišící se pouze typem jádra EI60 a tím i výškou pouzdra a výkonem: KK 60/ ' +
+      'EI 22-2/4 (jádro EI60/21, 25VA, resp. 30VA na objednávku, výška c=47,2mm), KK 60/EI 23-2/4 ' +
+      '(jádro EI60/25, 30VA/35VA, c=51,5mm), KK 60/EI 24-2/4 (jádro EI60/31, 35VA/45VA, ' +
+      'c=56,5mm) — mechanicky a rozměrově jinak shodné (a=63,6mm, a1=41,8mm, b=53,6mm, ' +
+      'b1=35,8mm, d=72,5mm, d1=43,5mm, e=81,8mm, montážní otvor Ø4,4mm, rozteč vývodů p=5mm, ' +
+      'osová vzdálenost vývodů m=32,5mm). Typ vývodů (koncovky): LZ, G1, P, X (varianty ' +
+      'provedení pinů/pájecích ploch, blíže nespecifikováno v tomto listu). Hmotnost 0,6 kg ' +
+      '(EI22) / 0,7 kg (EI23) / 0,8 kg (EI24).',
+    schematicImage: 'INDEL-KK60-EI.jpg',
+    tags: 'cívka,transformátor,síťový-transformátor,ei60,indel,kk60,epoxidová-zalévačka,mechanická-platforma',
+  },
+  {
+    name: 'INDEL KK ..../TOR 01-1 (toroidní transformátor)',
+    packageType:
+      'toroidní transformátor pro montáž na desku/šasi centrálním šroubem (Elementy mocujące), ' +
+      'dvojice vývodů (piny) pro primární a sekundární vinutí, délka vývodů L=150mm (jednotná ' +
+      'pro celou řadu)',
+    value:
+      'Síťový (izolační/napájecí) toroidní transformátor — mechanická/výkonová platforma, ' +
+      'jmenovitý výkon 10–3000 VA dle konkrétního typu (24 standardních velikostí), na zvláštní ' +
+      'objednávku až 150 VA/H80×D350mm',
+    notes:
+      'INDEL "Karta katalogowa KK ..../TOR .... - 1 — Rozwiązanie mechaniczne transformatora na ' +
+      'rdzeniu toroidalnym" (polský/vícejazyčný katalogový list, soubor TST20-600.PDF). ⚠️ ' +
+      'STEJNÝ TYP LISTU jako "INDEL KK 60/EI ..." v této knihovně (viz jeho poznámka) — pouze ' +
+      'MECHANICKÉ ŘEŠENÍ (rozměry, hmotnost, průměr upevňovacího šroubu) a jmenovitý výkon v VA, ' +
+      'BEZ elektrických parametrů vinutí (počet závitů, napětí, proud) — ty na samostatném ' +
+      'elektrickém listu ke konkrétnímu objednacímu kódu. Na rozdíl od "KK 60/EI" (jádro EI60, ' +
+      'jen 3 výkonové varianty 25–45VA) jde o toroidní (prstencové) konstrukční řešení s ' +
+      'MNOHEM ŠIRŠÍM výkonovým rozsahem — 24 standardních velikostí od 10VA do 3000VA (typové ' +
+      'označení "<VA>/TOR 01-1", např. "100/TOR 01-1" = 100VA), rozměry rostou s výkonem: výška ' +
+      'H 28–105mm, průměr D 57–350mm, průměr upevňovacího otvoru d 4,2–8,5mm, hmotnost ' +
+      '0,3–30,0kg. Zvláštní varianta "450/TOR 05-1" (450VA) má odlišný poměr výšky/průměru ' +
+      '(H=58/D=152mm) než standardní "450/TOR 01-1" (H=65/D=137mm) při stejném výkonu — jiná ' +
+      'konstrukční řada jádra. Toroidní transformátory obecně nabízí nižší rozptylový tok a ' +
+      'menší hmotnost/objem při daném výkonu než EI-jádrové provedení, typicky s vyšší cenou. ' +
+      'Modely 1500VA a výše ("na specjalne zamówienie") dostupné jen na objednávku po ' +
+      'individuálním odsouhlasení.',
+    schematicImage: 'INDEL-TOR.jpg',
+    tags: 'cívka,transformátor,síťový-transformátor,toroidní,toroid,indel,tor01,mechanická-platforma',
+  },
+  {
+    name: 'Talema 55xxx Series (toroidní transformátor s dvojitým sekundárem)',
+    packageType:
+      'toroidní transformátor, dvě montážní provedení "S" (standardní) nebo "H" (zalitý střed s ' +
+      'průchozím otvorem pro centrální upevňovací šroub), vývody vodičové, rozměry (OD×HT) rostou ' +
+      's výkonem od 62×32mm (15VA) do 165×75mm (1000VA)',
+    value:
+      'Síťový toroidní transformátor s DVOJITÝM (symetrickým) sekundárním vinutím, primár ' +
+      '230V/50-60Hz, výkonová řada 15–1000VA, sekundární napětí 2×12 až 2×55V dle konkrétního ' +
+      'kódu, s tepelnou pojistkou ve vinutí',
+    schematicImage: 'Talema-55xxx.jpg',
+    notes:
+      'Talema Group "Toroidal Transformers with Dual Secondary Winding — 55xxx Series" ' +
+      '(datasheet, soubor 55000-Series.pdf). ⚠️ PARAMETRICKÁ ŘADA (desítky kombinací výkon× ' +
+      'sekundární napětí×mounting) — do knihovny přidána jako jeden souhrnný záznam pro celou ' +
+      'řadu "55xxx-P1S2", ne každá kombinace zvlášť (obdobně jako u Okaya HCP-S/Cornell ' +
+      'Dubilier SCD v této knihovně). Na rozdíl od INDEL KK.../TOR 01-1 (mechanická platforma ' +
+      'bez elektrických parametrů, viz jeho záznam) jde o PLNĚ SPECIFIKOVANOU elektrickou ' +
+      'součástku s uvedeným sekundárním napětím/proudem pro každý objednací kód. Objednací kód ' +
+      '"55 <kód výkonu/napětí> - P1S2" (P1S2 = 1 primární + 2 sekundární vinutí/symetrický ' +
+      'sekundár) — číslo v rozsahu 1xx = mounting "S", 3xx = stejná elektrická specifikace v ' +
+      'mountingu "H" (zalitý střed, průchozí otvor pro šroub). Výkonové třídy a typické rozměry/ ' +
+      'hmotnost: 15VA (62×32mm/0,31kg, 2×12–25V), 30VA (74×34mm/0,44kg, 2×12–25V), 50VA ' +
+      '(84×34mm/0,63kg, 2×12–25V a 2×55V), 80VA (95×36mm/0,87kg), 120VA (96×47mm/1,20kg), ' +
+      '160VA (110×46mm/1,50kg, přibývá 2×30V), 225VA (118×50mm/1,90kg), 300VA (118×60mm/ ' +
+      '2,40kg, jen vyšší napětí 2×25–55V), 500VA (140×62mm/3,50kg, 2×25–55V), 625VA (140×75mm/ ' +
+      '4,40kg, jen 2×40–55V), 800VA (165×65mm/5,30kg), 1000VA (165×75mm/6,40kg). Sekundární ' +
+      'proud a napětí naprázdno (Uo) uvedeny pro každou konkrétní kombinaci v datasheetu (např. ' +
+      '55 100-P1S2: 15VA, 2×12V, 0,625A, Uo 2×13,89V; 55 219-P1S2: 1000VA, 2×55V, 9,091A, Uo ' +
+      '2×57,65V). Každý díl má vestavěnou tepelnou pojistku ve vinutí (Fuse column, hodnota v A ' +
+      'dle výkonové třídy). Shoda s EN61558, EN60065, směrnicí 2014/35/EU (LVD), zkoušeno a ' +
+      'schváleno KEMA dle EN61558. Vyrobeno v provozu certifikovaném ISO 9001:2016, ISO ' +
+      '14001:2016, OHSAS 18001:2008. Shoda s RoHS a REACH.',
+    tags: 'cívka,transformátor,síťový-transformátor,toroidní,toroid,talema,55xxx,dvojitý-sekundár,dual-secondary,en61558',
+  },
+  {
+    name: 'H1102NL',
+    packageType:
+      'SMD modul (LAN magnetics), 16 vývodů (gull-wing, 0,89mm), pouzdro termosetový plast ' +
+      'UL94V-0, rozměry cca 12,7×9,4×5,97mm, rozteč vývodů 1,27mm, skladovací teplota -20 až ' +
+      '+125°C',
+    value:
+      'Ethernetový izolační modul (LAN magnetics) pro 10/100Base-T (single-port), 2× pulzní ' +
+      'transformátor 1:1 (TX + RX) v jednom pouzdře, izolační napětí 1500 VRMS, indukčnost ' +
+      '(OCL) min 350 µH',
+    notes:
+      'Pulse Electronics "H1102NL" (výkresová dokumentace PS-2005.001-F, TLA H1102NL-24, rev. ' +
+      'A, 31.7.2015). ⚠️ NOVÝ TYP součástky v této knihovně: první ethernetový izolační ' +
+      '(LAN magnetics) modul — samostatná dvojice vysokofrekvenčních pulzních transformátorů ' +
+      '(TX a RX kanál) navržená speciálně pro galvanické oddělení Ethernetového PHY od RJ45 ' +
+      'konektoru dle IEEE 802.3 — typický "chybějící díl" mezi Ethernet PHY čipem (např. WIZnet ' +
+      'W5500 v této knihovně, který vyžaduje externí 1:1/350µH transformátor dle svého ' +
+      'datasheetu) a RJ45 konektorem. Zapojení TX (piny 1/2/3=TD+/CT/TD-, výstup 14/15/16=TX-/ ' +
+      'CT/TX+) a RX (piny 6/7/8=RD+/CT/RD-, výstup 9/10/11=RX-/CT/RX+), obě strany 1:1. Meets ' +
+      'IEEE 802.3. Provozní teplota 0-70°C. Poměr závitů 1:1 ±2%. Vložný útlum (insertion loss) ' +
+      'max -1,1dB @100kHz-100MHz. Zpětný útlum (return loss, Zout=100Ω±15%): min -16dB @0,1-30 ' +
+      'MHz, min -10+20·log10(f/60MHz)dB @30-60MHz, min -10dB @60-80MHz. Indukčnost (OCL, ' +
+      'strana média, 0-70°C) min 350µH @100kHz/100mVRMS/8mA DC bias. Přeslech mezi sousedními ' +
+      'kanály min -35dB @1-30MHz, min -30dB @60-100MHz. Potlačení diferenciálního na ' +
+      'souhlasný mód min -42dB @30MHz, -37dB @60MHz, -30dB @100MHz. Stejnosměrný odpor (na ' +
+      'polovinu vinutí) max 0,65Ω, nesymetrie DC odporu (symetrie středního odbočení) max ' +
+      '±0,065Ω. Izolační napětí vstup-výstup min 1500 VRMS @60s. Pájecí podmínky: J-STD-002 ' +
+      '(pájitelnost @245°C reflow), J-STD-020 úroveň 1 (bez citlivosti na vlhkost), J-STD-075 ' +
+      'R7 (max 245°C přes reflow pájku). RoHS. Páskové balení na objednávku (přípona "T", ' +
+      'H1102NL → H1102NLT).',
+    schematicImage: 'H1102NL.jpg',
+    tags: 'cívka,transformátor,pulzní-transformátor,lan-magnetics,ethernet,izolační,pulse-electronics,h1102nl,smd,ieee-802.3',
+  },
+];
+
+const TORK_SPECS: CoilSpec[] = [
+  {
+    name: 'T-SB1.230A',
+    packageType:
+      'Cívka elektromagnetického ventilu s konektorem DIN 43650 typ A (PG9/PG11), krytí ' +
+      'IP65 (DIN 40050), hmotnost 0,15 kg; svorky konektoru: PE (zem), N, L',
+    value: '230 V AC, 15 VA, 50/60 Hz',
+    notes:
+      'TORK "Technická data cívky" (návod pro mechanickou a elektrickou instalaci) — náhradní ' +
+      'cívka (s konektorem) pro elektromagnetické (solenoidové) ventily řady TORK T-SB, ' +
+      '⚠️ NOVÝ TYP součástky v této knihovně: elektromagnetická cívka ventilu (fluidní/ ' +
+      'vodovodní/plynová armatura), ne cívka pro elektronický obvod jako ostatní záznamy v ' +
+      'kategorii "Cívka" — přidáno sem jako nejbližší odpovídající kategorie (elektromagnetický ' +
+      'aktuátor). Ventil samotný se standardně dodává i s cívkou a konektorem; cívka+konektor se ' +
+      'samostatně dodává jen jako náhradní díl. Součást dvojice sérií T-SB1 (jediné napětí 230 ' +
+      'VAC, tento záznam) a T-SB2 (24/12 VAC nebo VDC, viz sourozenecké záznamy T-SB2.24A/D a ' +
+      'T-SB2.12A/D) — datasheet společný. ' +
+      'Tolerance napětí ±10 %. Trvalé zatížení 100 %. Max. teplota okolí 50 °C. Tepelná třída ' +
+      'izolace cívky H (180 °C). Magnetická jednotka: měděné vinutí tvarované v termoplastu ' +
+      '(polyester s 30% laminátu), izolace cívky 30% vlákno Nylon 66. Konektor DIN 43650 (v ' +
+      'originále uvedeno jako "DIN 4365") typ A, závit PG9/PG11. ' +
+      'Instalace: cívka se nesmí připojit k napětí, dokud není osazena na ventil a přichycena ' +
+      'jistící maticí; nelze ji sejmout z ventilu před odpojením napětí (hrozí poškození); ' +
+      'konektor se k cívce připevňuje jen jediným možným způsobem a zajišťuje upevňovacím ' +
+      'šroubem; cívkou lze otáčet i po zapojení. ⚠️ Za provozu se cívka může zahřát na horký ' +
+      'povrch (vlivem teploty média nebo dlouhodobého připojení pod napětím).',
+    schematicImage: 'TORK-T-SB1.jpg',
+    tags: 'cívka,solenoidový-ventil,elektromagnetický-ventil,tork,t-sb,t-sb1,230vac,ip65',
+  },
+  {
+    name: 'T-SB2.24A',
+    packageType:
+      'Cívka elektromagnetického ventilu s konektorem DIN 43650 typ A (PG9/PG11), krytí ' +
+      'IP65 (DIN 40050), hmotnost 0,15 kg; svorky konektoru: PE (zem), 1, 2',
+    value: '24 V AC, 15 VA, 50/60 Hz',
+    notes:
+      'Součást řady TORK T-SB (viz poznámka u T-SB1.230A pro plné společné specifikace). ' +
+      'Série T-SB2, varianta 24 V AC.',
+    schematicImage: 'TORK-T-SB2.jpg',
+    tags: 'cívka,solenoidový-ventil,elektromagnetický-ventil,tork,t-sb,t-sb2,24vac,ip65',
+  },
+  {
+    name: 'T-SB2.24D',
+    packageType:
+      'Cívka elektromagnetického ventilu s konektorem DIN 43650 typ A (PG9/PG11), krytí ' +
+      'IP65 (DIN 40050), hmotnost 0,15 kg; svorky konektoru: PE (zem), 1, 2',
+    value: '24 V DC, 18 W',
+    notes:
+      'Součást řady TORK T-SB (viz poznámka u T-SB1.230A pro plné společné specifikace). ' +
+      'Série T-SB2, varianta 24 V DC.',
+    schematicImage: 'TORK-T-SB2.jpg',
+    tags: 'cívka,solenoidový-ventil,elektromagnetický-ventil,tork,t-sb,t-sb2,24vdc,ip65',
+  },
+  {
+    name: 'T-SB2.12A',
+    packageType:
+      'Cívka elektromagnetického ventilu s konektorem DIN 43650 typ A (PG9/PG11), krytí ' +
+      'IP65 (DIN 40050), hmotnost 0,15 kg; svorky konektoru: PE (zem), 1, 2',
+    value: '12 V AC, 15 VA, 50/60 Hz',
+    notes:
+      'Součást řady TORK T-SB (viz poznámka u T-SB1.230A pro plné společné specifikace). ' +
+      'Série T-SB2, varianta 12 V AC.',
+    schematicImage: 'TORK-T-SB2.jpg',
+    tags: 'cívka,solenoidový-ventil,elektromagnetický-ventil,tork,t-sb,t-sb2,12vac,ip65',
+  },
+  {
+    name: 'T-SB2.12D',
+    packageType:
+      'Cívka elektromagnetického ventilu s konektorem DIN 43650 typ A (PG9/PG11), krytí ' +
+      'IP65 (DIN 40050), hmotnost 0,15 kg; svorky konektoru: PE (zem), 1, 2',
+    value: '12 V DC, 18 W',
+    notes:
+      'Součást řady TORK T-SB (viz poznámka u T-SB1.230A pro plné společné specifikace). ' +
+      'Série T-SB2, varianta 12 V DC.',
+    schematicImage: 'TORK-T-SB2.jpg',
+    tags: 'cívka,solenoidový-ventil,elektromagnetický-ventil,tork,t-sb,t-sb2,12vdc,ip65',
+  },
+];
+
+const SCHAEFFLER_SPECS: CoilSpec[] = [
+  {
+    name: 'MF-INDUCTOR',
+    packageType:
+      'Flexibilní kabelová indukční cívka (ovíjí se kolem/do obrobku), kruhové bajonetové ' +
+      'konektory pro připojení ke generátoru; 3 výkonové třídy generátoru a víc rozměrových ' +
+      'variant v každé — viz tabulka v poznámce',
+    value:
+      '⚠️ NOVÝ TYP součástky v této knihovně — indukční ohřevová cívka pro průmyslové indukční ' +
+      'ohřívání feromagnetických obrobků (např. ohřev ložisek před montáží), 3,5/10-22/44 kW, ' +
+      'délky 5–40 m, max. teplota 180 °C nebo 300 °C dle provedení',
+    notes:
+      'Schaeffler "BA 86 — Flexibilní indukční cívky MF-INDUCTOR" (uživatelská příručka, rev. ' +
+      '09/2024) — ⚠️ jde o kabelovou indukční cívku pro profesionální indukční ohřívací zařízení ' +
+      '(generátor + cívka), ne o cívku pro elektronický obvod jako ostatní záznamy v kategorii ' +
+      '"Cívka" — přidáno sem jako nejbližší odpovídající kategorie (induktor). Generátor dodává ' +
+      'střídavé napětí do cívky, kolem/v obrobku vzniká střídavé elektromagnetické pole, ve ' +
+      'feromagnetickém obrobku indukuje vířivé proudy → obrobek se ohřívá (bez přímého kontaktu ' +
+      's topným tělesem). Cívka se buď ovíjí kolem obrobku, vkládá do otvoru obrobku, nebo se ' +
+      'používá jako plochá cívka na povrchu. Smí se provozovat jen se Schaeffler generátory ' +
+      'odpovídajícího výkonu, max. 2 přívodní kabely v řadě (celkem max 6 m). ' +
+      '⚠️ NEBEZPEČÍ: silné elektromagnetické pole — ohrožení života osob s kardiostimulátorem ' +
+      'nebo kovovým implantátem v blízkosti; riziko srdeční arytmie při dlouhodobém působení i ' +
+      'bez implantátu; horký povrch cívky i ohřívaného obrobku. ' +
+      'Objednací kód: MF-INDUCTOR-<výkon>-<délka>M-D<průměr kabelu>-<teplotní třída>C[-SLIM]. ' +
+      'Výkonové/rozměrové třídy (P=jmenovitý výkon generátoru, D=vnější průměr kabelu cívky, ' +
+      'dmin=min. průměr obrobku, Tmax=max. teplota obrobku, hmotnost dle délky): ' +
+      '3,5 kW/D12mm/dmin90mm/180°C (délky 5–10 m, 1,35–2,6 kg); ' +
+      '10–22 kW/D12mm/dmin75mm/180°C "SLIM" provedení, tmax provozu 10 min (délky 10–30 m, ' +
+      '3–11 kg); 10–22 kW/D15mm/dmin100mm/180°C, bez časového omezení provozu (délky 15–40 m, ' +
+      '7–20 kg); 10–22 kW/D20mm/dmin120mm/300°C, provedení odolávající vysokým teplotám (délky ' +
+      '10–30 m, 6–18 kg); 44 kW/D19mm/dmin140mm/180°C (délky 15–40 m, 16–36 kg); 44 kW/D28mm/ ' +
+      'dmin220mm/300°C (délky 15–30 m, 17–34 kg). Každá kombinace délka/průměr/teplota má vlastní ' +
+      'objednací číslo (např. MF-INDUCTOR-3.5KW-5M-D12-180C = obj. č. 300217072-0000-10) — celkem ' +
+      '28 kombinací v aktuální nabídce, konkrétní kus rozliš podle typového štítku na cívce. ' +
+      'Provozní podmínky: okolní teplota 0 až +40 °C, vlhkost 5–80 % (bez kondenzace), obrobek ' +
+      'musí stát na nehořlavém/žáruvzdorném a neferomagnetickém podkladu a mít pevné uzemnění. ' +
+      'Skladovací podmínky: -5 až +55 °C, 5–80 % vlhkosti (bez kondenzace), cívka musí být ' +
+      'vychladlá na pokojovou teplotu. Příslušenství: přívodní kabel MF-GENERATOR.CONNECT-22KW-3M ' +
+      '(pro 10-22kW generátory) nebo MF-GENERATOR.CONNECT-44KW-3M (pro 44kW), oba 3 m, s ' +
+      'jednopólovými bajonetovými konektory (pro generátor 3,5kW není přívodní kabel dostupný — ' +
+      'cívka se připojuje přímo); snímač teploty MF-GENERATOR.MPROBE-GREEN/RED (umísťuje se do ' +
+      'bezprostřední blízkosti závitů cívky, kde teplo vzniká nejdřív, protože cívka sama nemá ' +
+      'žádné vlastní monitorování teploty). Oprava: konektory lze vyměnit jen u modelů 22kW a ' +
+      '44kW; poškozenou vrchní silikonovou vrstvu u 180°C variant lze opravit samovulkanizační ' +
+      'silikonovou páskou; 300°C varianty se musí při poškození vyměnit celé (nebo zkrátit, je-li ' +
+      'poškození u jednoho z konců). CE (LVD 2014/35/EU, RoHS 2011/65/EU), EN 60204-1:2018.',
+    schematicImage: 'MF-INDUCTOR.jpg',
+    tags: 'cívka,induktor,indukční-ohřev,schaeffler,mf-inductor,ba86,generátor,ohřev-ložisek',
+  },
+];
+
+const SCHNEIDER_SPECS: CoilSpec[] = [
+  {
+    name: 'METSECTR30500U',
+    packageType:
+      'Flexibilní Rogowského cívka (rozevírací, průvlečný primár), vnitřní průměr smyčky ' +
+      '95,5 mm, přívodní kabel k cívce 2400 mm + výstupní vodiče (AWM STYLE 20167, 1000 V, ' +
+      '24 AWG); bílý vodič = X1, šipka na těle ukazuje směr k zátěži',
+    value:
+      'Rogowského proudový transducer, Ip 2000 A, výstup 58,3 mV/kA @50Hz (70 mV/kA @60Hz), ' +
+      'třída přesnosti 1-A1',
+    notes:
+      'Schneider Electric "CTRx Series — Rogowski Current Transducers" (instalační manuál ' +
+      'S2003/Z207424-0C, rev. 07-2025) — flexibilní rozevírací (split-core, "let-through ' +
+      'primary") proudová cívka generující na výstupu střídavé napětí úměrné primárnímu ' +
+      '(měřenému) proudu; navržena pro použití s měřicími přístroji Schneider EM35xxA, iEM35x5 ' +
+      'a EM42xx. Zesílená izolace mezi měřeným vodičem a výstupními vodiči. Nejmenší (95,5 mm) ' +
+      'model řady, jediný s nižším Ip=2000A — ostatní 3 modely řady (METSECTR46500U/60500U/ ' +
+      '90500U, viz sourozenecké záznamy) mají Ip=5000A a liší se jen vnitřním průměrem smyčky ' +
+      '(větší smyčka = větší měřený vodič/svazek). ' +
+      'Max. měřený proud 2 kA. Měřicí rozsah cívky 50–2000 A. Jmenovitý výstup 58,3 mV/kA @50Hz, ' +
+      '70 mV/kA @60Hz. Přesnost třída 1-A1 dle IEC 61869-10. Frekvence 50/60 Hz. Max. primární ' +
+      'napětí 600 V CAT IV (vstup do objektu). Provozní teplota -35 až +75°C (do 2 kA). ' +
+      'Skladovací teplota -40 až +90°C. Vlhkost 0–95 % bez kondenzace. Nadmořská výška do 2000 m. ' +
+      'Jen pro vnitřní použití, nevhodné pro vlhké prostředí. Stupeň znečištění 2. Schválení UL/ ' +
+      'CSA 61010-1, IEC/EN 61010-1, UL/CSA 2808, EN IEC 63000:2018. CE (RoHS). ' +
+      'Instalace: vypnout napájení → ověřit beznapěťový stav vhodným detektorem → připojit ' +
+      'výstupní vodiče do měřicího přístroje (bílý=X1) → uvolnit západku a otevřít cívku na ' +
+      'kloubu → obepnout měřený vodič (doporučeno umístit doprostřed smyčky) → uzamknout ' +
+      'otočením zajišťovacího kroužku ve směru hodinových ručiček → obnovit napájení. ⚠️ ' +
+      'Sekundární obvod (výstup) musí být vždy zkratován nebo připojen k zátěži — nikdy nesmí ' +
+      'zůstat naprázdno pod proudem v primáru. Nevhodné pro aplikace ochrany života/bezpečnosti ' +
+      'osob. Nesmí zabírat víc než 75 % průřezu vedení v zařízení, nesmí blokovat ventilaci ani ' +
+      'být v oblasti odvádění oblouku jističe. "Not suitable for Class 2 wiring methods".',
+    schematicImage: 'METSECTR-CTRx.jpg',
+    tags: 'cívka,rogowski,proudový-transformátor,proudový-senzor,schneider-electric,ctrx,metsectr30500u',
+  },
+  {
+    name: 'METSECTR46500U',
+    packageType:
+      'Flexibilní Rogowského cívka (rozevírací, průvlečný primár), vnitřní průměr smyčky ' +
+      '146,4 mm, přívodní kabel k cívce 2400 mm + výstupní vodiče (AWM STYLE 20167, 1000 V, ' +
+      '24 AWG)',
+    value:
+      'Rogowského proudový transducer, Ip 5000 A, výstup 58,3 mV/kA @50Hz (70 mV/kA @60Hz), ' +
+      'třída přesnosti 1-A1',
+    notes:
+      'Součást řady Schneider Electric CTRx (viz poznámka u METSECTR30500U pro plné společné ' +
+      'specifikace). Vnitřní průměr smyčky 146,4 mm, Ip=5000A, měřicí rozsah 50–5000 A. ' +
+      'Provozní teplota -35 až +60°C (v rozsahu 2–5 kA, jinak jako u ostatních modelů).',
+    schematicImage: 'METSECTR-CTRx.jpg',
+    tags: 'cívka,rogowski,proudový-transformátor,proudový-senzor,schneider-electric,ctrx,metsectr46500u',
+  },
+  {
+    name: 'METSECTR60500U',
+    packageType:
+      'Flexibilní Rogowského cívka (rozevírací, průvlečný primár), vnitřní průměr smyčky ' +
+      '191,0 mm, přívodní kabel k cívce 2400 mm + výstupní vodiče (AWM STYLE 20167, 1000 V, ' +
+      '24 AWG)',
+    value:
+      'Rogowského proudový transducer, Ip 5000 A, výstup 58,3 mV/kA @50Hz (70 mV/kA @60Hz), ' +
+      'třída přesnosti 1-A1',
+    notes:
+      'Součást řady Schneider Electric CTRx (viz poznámka u METSECTR30500U pro plné společné ' +
+      'specifikace). Vnitřní průměr smyčky 191,0 mm, Ip=5000A, měřicí rozsah 50–5000 A. ' +
+      'Provozní teplota -35 až +60°C (v rozsahu 2–5 kA, jinak jako u ostatních modelů).',
+    schematicImage: 'METSECTR-CTRx.jpg',
+    tags: 'cívka,rogowski,proudový-transformátor,proudový-senzor,schneider-electric,ctrx,metsectr60500u',
+  },
+  {
+    name: 'METSECTR90500U',
+    packageType:
+      'Flexibilní Rogowského cívka (rozevírací, průvlečný primár), vnitřní průměr smyčky ' +
+      '286,5 mm, přívodní kabel k cívce 2400 mm + výstupní vodiče (AWM STYLE 20167, 1000 V, ' +
+      '24 AWG)',
+    value:
+      'Rogowského proudový transducer, Ip 5000 A, výstup 58,3 mV/kA @50Hz (70 mV/kA @60Hz), ' +
+      'třída přesnosti 1-A1',
+    notes:
+      'Součást řady Schneider Electric CTRx (viz poznámka u METSECTR30500U pro plné společné ' +
+      'specifikace). Největší (286,5 mm) model řady, pro svazky vodičů většího průřezu. ' +
+      'Ip=5000A, měřicí rozsah 50–5000 A. Provozní teplota -35 až +60°C (v rozsahu 2–5 kA).',
+    schematicImage: 'METSECTR-CTRx.jpg',
+    tags: 'cívka,rogowski,proudový-transformátor,proudový-senzor,schneider-electric,ctrx,metsectr90500u',
+  },
 ];
 
 export function buildCoilSeed(): ComponentInput[] {
-  return COIL_SPECS.map((spec) => ({
+  return [...COIL_SPECS, ...TORK_SPECS, ...SCHAEFFLER_SPECS, ...SCHNEIDER_SPECS].map((spec) => ({
     name: spec.name,
     category: 'Cívka',
     manufacturer: null,
@@ -125,6 +499,7 @@ export function buildCoilSeed(): ComponentInput[] {
     quantity: 0,
     location: null,
     datasheetUrl: null,
+    schematicImage: spec.schematicImage ?? null,
     notes: spec.notes,
     tags: spec.tags,
   }));

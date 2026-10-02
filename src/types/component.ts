@@ -4,10 +4,12 @@ export type ComponentCategory =
   | 'Kondenzátor'
   | 'Cívka'
   | 'Dioda'
+  | 'Můstek'
   | 'Tranzistor'
   | 'Konektor'
   | 'Spínač/Relé'
   | 'Modul'
+  | 'LCD'
   | 'Ostatní';
 
 export const COMPONENT_CATEGORIES: ComponentCategory[] = [
@@ -16,10 +18,12 @@ export const COMPONENT_CATEGORIES: ComponentCategory[] = [
   'Kondenzátor',
   'Cívka',
   'Dioda',
+  'Můstek',
   'Tranzistor',
   'Konektor',
   'Spínač/Relé',
   'Modul',
+  'LCD',
   'Ostatní',
 ];
 
@@ -35,6 +39,8 @@ export interface ElectronicComponent {
   datasheetUrl: string | null;
   notes: string | null;
   tags: string | null;
+  /** Klíč do SCHEMATIC_IMAGES (src/assets/schematicImages.ts), např. "BSS138PS.png". */
+  schematicImage: string | null;
   createdAt: string;
   updatedAt: string;
 }

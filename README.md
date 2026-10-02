@@ -13,10 +13,11 @@ i návrh schémat obvodů a plošných spojů.
   - Vyhledávání podle názvu / tagu / výrobce / hodnoty
   - Filtrování podle kategorie
   - **Výchozí knihovna běžných součástek** — při prvním spuštění se automaticky nahraje
-    795 běžných součástek: 117 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
+    922 běžných součástek: 118 rezistorů (řada E12, 1 Ω – 8,2 MΩ; teplotní senzor Pt100; NTC
     termistory řady D-5 až D-25 pro omezení nárazového proudu; PTC termistory EPCOS/TDK
     B590** pro nadproudovou ochranu telekom linek; přesný tenkovrstvý SMD rezistor Yageo
-    RT1206; laserem in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220; tenkovrstvá
+    RT1206; obecná tlustovrstvá SMD čipová řada ROYALOHM (0201–2512, E-24/E-96); laserem
+    in-circuit laditelná řada Susumu RT0603/RT0510/RT0816/RT1220; tenkovrstvá
     izolovaná rezistorová síť Vishay Dale TRA06E; kombinovaná rezistorová/kapacitní síť RCD
     Components RC0801-100J100J; a otočné potenciometry a trimry (lineární/logaritmické, THT/SMD)),
     51 kondenzátorů (keramické,
@@ -25,7 +26,7 @@ i návrh schémat obvodů a plošných spojů.
     disková řada Illinois Capacitor GMR/GQR; NP0 disk Meritek CCNPO101J50V5B1; fóliová IGBT
     snubber řada Cornell Dubilier SCD; radiální tantalový kondenzátor RCD Components
     TRA10-103; vysokonapěťová 1250V fóliová řada Okaya HCPB; a širší vysokonapěťová fóliová řada
-    Okaya HCP-S (450-1250V)), 207 diod
+    Okaya HCP-S (450-1250V)), 232 diod
     (usměrňovací (včetně vysokonapěťové řady Diotec GP1120–GP1600, DO-41, 1200–6000V), spínací,
     Schottky (včetně extrémně malé 30V onsemi NSR01L30MX, pouzdro X3DFN2 0,62×0,32mm),
     Zenerovy (včetně SMD řady EIC SMZ25, SOD-123FL,
@@ -41,14 +42,30 @@ i návrh schémat obvodů a plošných spojů.
     ELS-2326SYGWA, obousměrné přepěťové ochrany TRISIL
     STMicroelectronics
     SMTPA62-320/SMP-0SCMC/SMP100MC/SMP100LC/SMP75, tripolární TLP140/200/270 a aktivní
-    přepěťová/nadproudová ochrana CLP200M, tyristor SemiWell SCD4C60S, laserové diody Roithner
-    LaserTechnik QL85H6S-A/B/C, QL78I6S-A/B/C, QL78F6S-A/B/C, QL78J6S-A/B/C a QL85J6S-A/B/C-L),
-    85 tranzistorů (bipolární NPN/PNP (včetně onsemi rodiny BC817-16L/25L/40L, SOT-23), Darlington, duální, komplementární páry, výkonové, VF,
-    MOSFET (včetně vysokonapěťového 600V/20A ISC H5N6001P, TO-3P), IGBT (onsemi AFGB40T65SPD-BW,
+    přepěťová/nadproudová ochrana CLP200M, tyristory SemiWell SCD4C60S a WeEn TYN50W/TYN80W-1600T
+    (1600V vysokonapěťové SCR), triak WeEn BTA330 (30A Hi-Com, TO220/D²PAK), laserové diody
+    Roithner LaserTechnik QL85H6S-A/B/C, QL78I6S-A/B/C, QL78F6S-A/B/C, QL78J6S-A/B/C a
+    QL85J6S-A/B/C-L, proudově omezující dioda Diotec CL05M6F (5,6mA, SOD-123FL), a výkonový
+    duální modul rychlých epitaxních diod IXYS DSEI 2x 61-04C/-06C (FRED, 2x60A, 400/600V,
+    trr=35ns, miniBLOC/SOT-227B); SMD MiniMELF spínací diody Diotec LL4148/LL4150/LL4151/
+    LL4448 (150-300mA, 50-100V, SOD-80C, elektrický ekvivalent 1N4148/1N4448 v DO-35); a SMD
+    čipové (chip) diody DC Components CD4148W/CD4148WS/CD4148WT (1206/0805/0603, 100V/150mA,
+    další ekvivalent 1N4148); a 7dílná řada SMD usměrňovacích diod se standardní dobou
+    zotavení Diotec M1-M7 (50-1000V, 1A, SMA/DO-214AC, budget verze řady S1A-S1M); a duální
+    (2 diody, společná katoda) SOT-23 diody Diotec BAV99/BAV99L (rychlé přepínání, trr<4ns,
+    85/100V) a BAV199 (extrémně nízký svodový proud, IR<5nA); a výkonové šroubovací
+    tyristorové moduly Semikron SEMIPACK 1 SKKT92 (2x SCR společná katoda), SKKT92B (2x SCR
+    společná anoda) a SKKH92 (SCR+dioda, poloviční řízení), 800-1800V, ITAV 95A)), 19 můstků
+    (SMD jednofázové usměrňovací můstky Diotec ABS2/ABS4/ABS6/ABS8/ABS10/ABS10-16, 200-1600V,
+    pouzdro ABS; Diotec S40/S80/S125/S250/S380/S500, 80-1000V, pouzdro TO-269AA MiniDIL SLIM;
+    a Fairchild/onsemi DF005S/DF01S/DF02S/DF04S/DF06S/DF08S/DF10S, 50-1000V/1,5A, pouzdro SDIP
+    4L),
+    86 tranzistorů (bipolární NPN/PNP (včetně onsemi rodiny BC817-16L/25L/40L, SOT-23), Darlington, duální, komplementární páry, výkonové, VF,
+    MOSFET (včetně vysokonapěťového 600V/20A ISC H5N6001P, TO-3P, a duálního logic-level Nexperia BSS138PS, SOT363), IGBT (onsemi AFGB40T65SPD-BW,
     650V/40A Field Stop Trench, D²PAK, copackovaná rychlá dioda), JFET (včetně RF JFET rodiny
     Fairchild 2N5484/5485/5486 a SMD MMBF5484/5485/5486, SOT-23), IR fototranzistory Lite-On
     LTR-306 a LTR-1650D, fototranzistor pro viditelné
-    světlo (náhrada CdS) Kodenshi PT23GP11), 140 integrovaných obvodů
+    světlo (náhrada CdS) Kodenshi PT23GP11), 170 integrovaných obvodů
     (časovače, komparátory, op-zesilovače, regulátory, logická hradla, čítače,
     Wi-Fi mikrokontroléry ESP32, ESP32-C3, ESP8285, ESP8684, Wi-Fi adaptér ESP8089, 8bit AVR
     mikrokontroléry ATmega640/1280/1281/2560/2561, rodina CAN mikrokontrolérů AT90CAN32/64/128
@@ -71,7 +88,26 @@ i návrh schémat obvodů a plošných spojů.
     ACS754xCB-150/ACS755xCB-050 (Hallův jev), reflexní optický senzor Honeywell
     HOA0709-011, optické PPG senzory OSRAM SFH 7051 (tepová frekvence), SFH7050
     (tepová frekvence + SpO2) a SFH7060 (5 emitorů, tepová frekvence + SpO2), a proudové
-    senzory CUI CSXX05B series aj.; izolovaný DC/DC měnič TRACO POWER TRA 1 Series; a plně
+    senzory CUI CSXX05B series aj.; izolovaný DC/DC měnič TRACO POWER TRA 1 Series; fototranzistorové
+    optočleny LITE-ON LTV-356T (CTR 50-600%, Viso 3750Vrms, mini-flat SMD), Everlight EL817
+    Series (CTR 50-600%, Viso 5000Vrms, DIP-4/SMD), Sharp PC817 Series (rank A-D, CTR 50-600%,
+    Viso 5000Vrms, DIP-4), dvoukanálová řada Vishay ILD205T/206T/207T/211T/213T/217T (2 optočleny
+    v pouzdře SOIC-8, BVCEO 70V, Viso 3000Vrms) a LITE-ON LTV-8X7 Series (LTV-817 1-kanálový
+    DIP-4, LTV-827 2-kanálový DIP-8, LTV-847 4-kanálový DIP-16, Viso 5000Vrms, VCEO 35V);
+    osmikanálové Darlingtonovy budiče ST ULN2801A/2802A/2803A/2804A (500mA/kanál, 50V, DIP-18,
+    liší se vstupním odporovým děličem pro různé logické rodiny); hardwarový TCP/IP Ethernet
+    kontrolér WIZnet W5500 (SPI, 32KB buffer, 8 hardwarových socketů, LQFP-48); napěťové
+    supervizory (reset obvody) TI TPS3809J25/L30/K33/I50 (prahy 2,25/2,64/2,93/4,55V, SOT-23-3,
+    pin-kompatibilní s MAX809); nízkopříkonový CMOS časovač ST TS555 (pinově kompatibilní s
+    NE555, 110µA typ., max. 2,7MHz); 16bitový nízkopříkonový MCU TI MSP430G2553 (16KB Flash,
+    512B RAM, ADC10, USCI UART/SPI/I2C, základ LaunchPad kitu); 32bitový Arm Cortex-M0+ MCU
+    TI MSPM0L1306 (64KB Flash, 4KB RAM, 12bit 1,68Msps ADC, 2x OPA, GPAMP, COMP, UART/I2C/SPI);
+    starší 16bitový MCU TI MSP430F149 (60KB Flash, 2KB RAM, ADC12, 2x USART, hardwarová
+    násobička, 48 I/O); nejmenší MSP430 MSP430F1121A (4KB Flash, 256B RAM, 14 I/O, jen
+    komparátor bez ADC, 20/24pinové pouzdro); z katalogu HOPERF Catalog 2020: RF vysílací/
+    přijímací IC řada CMOSTEK CMT2xxx (27-1020MHz, OOK/(G)FSK/MSK), tlakové senzory HOPERF
+    HPxxx/HP5xxx Series (300Pa-2000kPa, I2C/SPI) a levnější sesterské senzory vlhkosti/teploty
+    TH08, TH06 a teplotní senzor T06 (SOT23-5, bez vlhkosti) k již evidovanému TH10; a plně
     digitální Class-D zesilovače reproduktoru s DSP ROHM BM28720MUV (20W+20W) a BM28723MUV
     (17W+17W, output feedback, bez snubberu); a digitální barometrický tlakový senzor Bosch
     BMP280 (I2C/SPI); kombinovaný digitální senzor vlhkosti/tlaku/teploty Bosch BME280
@@ -85,7 +121,7 @@ i návrh schémat obvodů a plošných spojů.
     kombinovaný PFC + half-bridge řadič předřadníku zářivek International Rectifier IRS2580DSPbF
     ("COMBO8", 8pin SOIC); a napájecí spínač (load switch) se soft-startem onsemi NCP330MUTBG
     (RDS(on) 26mΩ, 3A, UDFN4)),
-    148 modulů
+    161 modulů
     (Wi-Fi/BLE: ESP32-C3-MINI-1, ESP32-C3-WROOM-02, Adafruit Feather
     HUZZAH ESP8266, ESP8684-MINI-1, ESP-12S; nízkonapěťové odpojovače baterie Alfatronix
     PowerTector PT10/PT20/PT40/PT60/PT100/PT200; LoRaWAN senzor LEO-S55 a brány USM-S67;
@@ -159,7 +195,24 @@ i návrh schémat obvodů a plošných spojů.
     zvukový segment Moflash LED-TLM-AUD-02 (bzučák, pulzní tón), fiber optic zesilovač Banner
     D10 Series, a 26dílná řada AC-DC napájecích zdrojových modulů Integrated Power Designs
     REL-110 (110W, 1-4 výstupy, open-frame/chassis, univerzální vstup 85-264VAC, medicínská
-    certifikace IEC 60601-1)), 5 konektorů/přepěťových
+    certifikace IEC 60601-1); a z katalogu HOPERF Catalog 2020: Sub-GHz RF moduly HOPERF
+    RFM/HM-TR Series (315-915MHz, TTL/RS485/RS232/SPI), LoRa/2,4GHz moduly HOPERF RFM9xW/
+    RFM75W Series (SPI, citlivost do -139dBm) a WiFi/BLE/LoRaWan moduly HOPERF HM-WF/HM-BT/
+    HM-LWNH Series (UART); a plným datasheetem zdokumentovaný FSK přijímací modul HOPERF
+    RFM01 (315/433/868/915MHz, citlivost -109dBm, SPI, standalone režim) a ASK/OOK přijímací
+    modul RFM210LCF-S1 (315/433,92MHz, citlivost -114dBm, COB); a THT SAW ASK vysílač Aurel
+    TX-SAW 434 L (433,92MHz, interně regulované napájení 1,8-12V, náhrada TX-SAW-433/s-Z); a
+    2,4GHz GFSK transceiver modul HOPERF RFM75/RFM75C (nRF24L01+ kompatibilní, 250K/1M/2Mbps,
+    SPI); a kompletní 4kanálový přijímač s rolling code dekodérem Aurel RX-4MHCS (433,92MHz
+    OOK, výstupy s otevřeným kolektorem do 100mA, paměť 10 ovladačů); a transparentní FSK
+    transceiver s UART rozhraním HOPERF HM-TRP Series (100mW, -117dBm, softwarová konfigurace
+    přes UART, 433/470/868/915MHz); a UWB lokalizační modul Decawave DWM1000 (IEEE 802.15.4-2011,
+    přesnost do 10cm, TDOA/two-way ranging, 3,5-6,5GHz); a LoRa/MCU modul Radiocontrolli
+    RC-WLE5-868 (integrovaný STM32WLE5JC — Arm Cortex-M4 + SX126x LoRa transceiver, 868MHz,
+    18,5dBm); a průmyslová varianta HOPERF HM-TRP-RS485 Series (shodný RF základ jako HM-TRP,
+    ale RS-485 rozhraní a panelová PCB s whip anténou); a registrově řízený SPI transceiver
+    modul HOPERF RFM22B/RFM23B (433/868/915MHz, -121dBm citlivost, 64B FIFO, teplotní senzor,
+    RFM22B do +20dBm/RFM23B do +13dBm)), 5 konektorů/přepěťových
     ochran (Ethernet/PoE
     bleskojistka ESP-100-POE; kolíková lišta Foxconn HB12201; pouzdra průmyslového konektoru
     HARTING Han-Modular ECO 09 14 001 0722 (kabel-kabel, bez PE, IP20) a 09 14 001 0321
@@ -171,12 +224,32 @@ i návrh schémat obvodů a plošných spojů.
     SMD IML-0662N000-T1 a IML-0660; dílenský rework modul pájecí stanice Weller WXair MODUL
     100-230V US/MX/J B; a křemenné krystaly (16/8/12 MHz HC-49/S, 32,768 kHz hodinkový) a
     keramické rezonátory (16/8 MHz))
-    a 11 cívek (proudový snímací transformátor MPS Industries
-    P4100E5 series, radiální a SMD výkonové tlumivky, a THT/SMD ferritové korálky) a 16
+    a 26 cívek (proudový snímací transformátor MPS Industries
+    P4100E5 series, toroidní síťový (50/60Hz) proudový transformátor Talema AC1020 (20A, poměr
+    1000:1), síťové (izolační) transformátory INDEL KK 60/EI 22-2/4 / 23-2/4 / 24-2/4 (jádro EI60,
+    25-45 VA, epoxidová zalévačka) a INDEL KK ..../TOR 01-1 (toroidní jádro, 10-3000 VA, 24
+    velikostí), toroidní síťový transformátor s dvojitým sekundárem Talema 55xxx Series
+    (15-1000VA, 2x12-2x55V, EN61558), ethernetový izolační modul (LAN magnetics) Pulse
+    Electronics H1102NL (10/100Base-T, 2x pulzní transformátor 1:1, Viso 1500Vrms, SMD),
+    radiální a SMD výkonové tlumivky, THT/SMD ferritové korálky, náhradní cívky
+    elektromagnetických ventilů TORK T-SB1/T-SB2 (230/24/12 V AC/DC, IP65), profesionální
+    flexibilní indukční ohřevová cívka Schaeffler MF-INDUCTOR (3,5-44 kW, 28 rozměrových
+    variant) a flexibilní Rogowského proudové cívky Schneider Electric CTRx (METSECTR30500U až
+    90500U, 2-5 kA, třída přesnosti 1-A1)) a 39
     spínačů/relé (tlačítkové mikrospínače, páčkové a posuvné přepínače, mikrospínač, DIP
     spínače, rotační enkodér EC11, otočný přepínač, výkonové elektromagnetické relé Tianbo
-    TRA1, a 4dílná rodina PCB výkonových relé Omron G5LE — SPDT/SPST-NO, flux/fully sealed,
-    10A/250VAC). Tlačítkem „Knihovna”
+    TRA1, 4dílná rodina PCB výkonových relé Omron G5LE — SPDT/SPST-NO, flux/fully sealed,
+    10A/250VAC; bezpečnostní koncové spínače Turck SI-LS100F a SI-LS42DSH (se zámkem, PL e/SIL 3
+    dle ISO 13849-1/IEC 61508); vakuový/tlakový spínač Festo VPEV-1/8-M12; bezkontaktní
+    jazýčkový (reed) spínač Erich Jäger 031828 dle ISO 11446; panelový klíčový přepínač
+    Schrack/Eaton M22-WS; 9dílný souhrn katalogové řady relé Schrack Technik — paticová PT/
+    RS5/MU/RMX, interfaceová RXT, výkonová PCB RT/RPS, set SNR a bezpečnostní relé s nuceně
+    vedenými kontakty SR2/SR4/SR6 dle EN 50205; polovodičová (solid-state) relé QLT Power SSR
+    10-40A (triakový výstup) a SSR 40-120A (duální SCR výstup), zero-voltage/random switching;
+    a 7dílný souhrn katalogové řady stykačů a motorových startérů Schneider Electric TeSys —
+    mini-stykače K, střední D (i kondenzátorové), výkonové F (do 800A), integrovaný elektronický
+    startér U, ultrakompaktní bezpečnostní startér H (SIL3/PLe), ruční startéry GV2/GV3/GV7 a
+    softstartér Altistart ATSU01). Tlačítkem „Knihovna”
     v horní liště lze kdykoli doplnit chybějící položky (např. po smazání), aniž
     by se duplikovaly už existující.
 

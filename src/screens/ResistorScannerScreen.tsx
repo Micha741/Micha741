@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   Image,
   Pressable,
   ScrollView,
@@ -20,6 +19,8 @@ import {
   type DecodedResistor,
   type ResistorBandColor,
 } from '../utils/resistorColorCode';
+import { useTheme, type ThemeColors } from '../theme/ThemeContext';
+import { useI18n } from '../i18n/I18nContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ResistorScanner'>;
 
@@ -40,6 +41,8 @@ type ScanState =
   | { phase: 'error'; message: string };
 
 export default function ResistorScannerScreen({ navigation }: Props) {
+  const { colors } = useTheme();
+  const { t } = useI18n();
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef<CameraView>(null);
   const [state, setState] = useState<ScanState>({ phase: 'camera' });
@@ -49,7 +52,7 @@ export default function ResistorScannerScreen({ navigation }: Props) {
     setState({ phase: 'processing' });
     try {
       const photo = await cameraRef.current.takePictureAsync({ quality: 1 });
-      if (!photo) throw new Error('Fotografii se nepodařilo pořídit.');
+      if (!photo) throw new Error(t('resistorScanner.photoFailed'));
 
       const cropRect = {
         originX: Math.round(GUIDE.xFrac * photo.width),
@@ -64,7 +67,7 @@ export default function ResistorScannerScreen({ navigation }: Props) {
       const rendered = await context.renderAsync();
       const saved = await rendered.saveAsync({ base64: true, compress: 1, format: SaveFormat.JPEG });
 
-      if (!saved.base64) throw new Error('Nepodařilo se získat obrazová data.');
+      if (!saved.base64) throw new Error(t('resistorScanner.noImageData'));
 
       const { bands } = scanResistorBandsFromJpegBase64(saved.base64);
       const decoded = bands.length >= 3 ? decodeBands(bands.map((b) => b.color)) : null;
@@ -73,7 +76,7 @@ export default function ResistorScannerScreen({ navigation }: Props) {
     } catch (err) {
       setState({
         phase: 'error',
-        message: err instanceof Error ? err.message : 'Rozpoznávání se nezdařilo.',
+        message: err instanceof Error ? err.message : t('resistorScanner.recognitionFailed'),
       });
     }
   };
@@ -97,16 +100,18 @@ export default function ResistorScannerScreen({ navigation }: Props) {
         category: 'Rezistor',
         value: d.formattedValue,
         tags: 'rezistor,sken',
-        notes: `Hodnota určena optickým skenem barevného kódu (${d.bandCount} pruhy)${
-          d.tolerancePercent !== null ? `, tolerance ±${d.tolerancePercent} %` : ''
-        }${d.tempCoPpm !== null ? `, teplotní součinitel ${d.tempCoPpm} ppm/K` : ''}.`,
+        notes: t('resistorScanner.scanNote', {
+          bandCount: d.bandCount,
+          tolerance: d.tolerancePercent !== null ? `, tolerance ±${d.tolerancePercent} %` : '',
+          tempCo: d.tempCoPpm !== null ? `, teplotní součinitel ${d.tempCoPpm} ppm/K` : '',
+        }),
       },
     });
   };
 
   if (!permission) {
     return (
-      <View style={styles.center}>
+      <View style={[styles.center, { backgroundColor: colors.background }]}>
         <ActivityIndicator size="large" />
       </View>
     );
@@ -114,12 +119,12 @@ export default function ResistorScannerScreen({ navigation }: Props) {
 
   if (!permission.granted) {
     return (
-      <View style={styles.center}>
-        <Text style={styles.permissionText}>
-          Pro sken barevného kódu rezistoru je potřeba přístup ke kameře.
+      <View style={[styles.center, { backgroundColor: colors.background }]}>
+        <Text style={[styles.permissionText, { color: colors.text }]}>
+          {t('resistorScanner.permission')}
         </Text>
-        <Pressable style={styles.primaryButton} onPress={requestPermission}>
-          <Text style={styles.primaryButtonText}>Povolit kameru</Text>
+        <Pressable style={[styles.primaryButton, { backgroundColor: colors.primary }]} onPress={requestPermission}>
+          <Text style={styles.primaryButtonText}>{t('resistorScanner.allowCamera')}</Text>
         </Pressable>
       </View>
     );
@@ -141,14 +146,12 @@ export default function ResistorScannerScreen({ navigation }: Props) {
               },
             ]}
           />
-          <Text style={styles.guideHint}>
-            Umísti tělo rezistoru vodorovně do rámečku, ať vyplní jeho šířku
-          </Text>
+          <Text style={styles.guideHint}>{t('resistorScanner.guideHint')}</Text>
         </View>
         {state.phase === 'processing' ? (
           <View style={styles.processingOverlay}>
             <ActivityIndicator size="large" color="#fff" />
-            <Text style={styles.processingText}>Rozpoznávám barevné pruhy…</Text>
+            <Text style={styles.processingText}>{t('resistorScanner.processing')}</Text>
           </View>
         ) : (
           <Pressable style={styles.shutter} onPress={handleCapture}>
@@ -161,10 +164,10 @@ export default function ResistorScannerScreen({ navigation }: Props) {
 
   if (state.phase === 'error') {
     return (
-      <View style={styles.center}>
-        <Text style={styles.permissionText}>{state.message}</Text>
-        <Pressable style={styles.primaryButton} onPress={handleRetake}>
-          <Text style={styles.primaryButtonText}>Zkusit znovu</Text>
+      <View style={[styles.center, { backgroundColor: colors.background }]}>
+        <Text style={[styles.permissionText, { color: colors.text }]}>{state.message}</Text>
+        <Pressable style={[styles.primaryButton, { backgroundColor: colors.primary }]} onPress={handleRetake}>
+          <Text style={styles.primaryButtonText}>{t('resistorScanner.tryAgain')}</Text>
         </Pressable>
       </View>
     );
@@ -172,24 +175,27 @@ export default function ResistorScannerScreen({ navigation }: Props) {
 
   // state.phase === 'result'
   return (
-    <ScrollView contentContainerStyle={styles.resultContainer}>
+    <ScrollView
+      style={{ backgroundColor: colors.background }}
+      contentContainerStyle={styles.resultContainer}
+    >
       <Image source={{ uri: state.stripUri }} style={styles.stripImage} resizeMode="stretch" />
 
       {state.bands.length === 0 && (
-        <Text style={styles.warning}>
-          Nepodařilo se rozpoznat žádné barevné pruhy. Zkus lepší osvětlení a rezistor blíž
-          kameře.
-        </Text>
+        <Text style={styles.warning}>{t('resistorScanner.noBandsFound')}</Text>
       )}
 
       {state.bands.length > 0 && (
         <>
-          <Text style={styles.sectionLabel}>Rozpoznané pruhy (klepnutím oprav)</Text>
+          <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>
+            {t('resistorScanner.detectedBands')}
+          </Text>
           <View style={styles.bandRow}>
             {state.bands.map((band, index) => (
               <BandSwatch
                 key={index}
                 band={band}
+                colors={colors}
                 onSelect={(colorId) => handleCorrectBand(index, colorId)}
               />
             ))}
@@ -198,29 +204,33 @@ export default function ResistorScannerScreen({ navigation }: Props) {
       )}
 
       {state.decoded ? (
-        <View style={styles.resultCard}>
-          <Text style={styles.resultValue}>{state.decoded.formattedValue}</Text>
-          <Text style={styles.resultDetail}>
+        <View style={[styles.resultCard, { backgroundColor: colors.surface }]}>
+          <Text style={[styles.resultValue, { color: colors.text }]}>
+            {state.decoded.formattedValue}
+          </Text>
+          <Text style={[styles.resultDetail, { color: colors.textSecondary }]}>
             {state.decoded.tolerancePercent !== null
               ? `tolerance ±${state.decoded.tolerancePercent} %`
-              : 'tolerance neznámá'}
+              : t('resistorScanner.toleranceUnknown')}
             {state.decoded.tempCoPpm !== null ? ` · ${state.decoded.tempCoPpm} ppm/K` : ''}
           </Text>
         </View>
       ) : state.bands.length > 0 ? (
-        <Text style={styles.warning}>
-          Počet nebo pořadí pruhů neodpovídá platné kombinaci (3-6 pruhů, číslicové pruhy nesmí
-          být zlaté/stříbrné). Oprav barvy výše nebo zkus fotku znovu.
-        </Text>
+        <Text style={styles.warning}>{t('resistorScanner.invalidCombination')}</Text>
       ) : null}
 
       <View style={styles.actionRow}>
-        <Pressable style={styles.secondaryButton} onPress={handleRetake}>
-          <Text style={styles.secondaryButtonText}>Vyfotit znovu</Text>
+        <Pressable
+          style={[styles.secondaryButton, { backgroundColor: colors.chipBackground }]}
+          onPress={handleRetake}
+        >
+          <Text style={[styles.secondaryButtonText, { color: colors.text }]}>
+            {t('resistorScanner.retake')}
+          </Text>
         </Pressable>
         {state.decoded && (
-          <Pressable style={styles.primaryButton} onPress={handleUseValue}>
-            <Text style={styles.primaryButtonText}>Použít → Nová součástka</Text>
+          <Pressable style={[styles.primaryButton, { backgroundColor: colors.primary }]} onPress={handleUseValue}>
+            <Text style={styles.primaryButtonText}>{t('resistorScanner.useValue')}</Text>
           </Pressable>
         )}
       </View>
@@ -230,9 +240,11 @@ export default function ResistorScannerScreen({ navigation }: Props) {
 
 function BandSwatch({
   band,
+  colors,
   onSelect,
 }: {
   band: DetectedBand;
+  colors: ThemeColors;
   onSelect: (colorId: string) => void;
 }) {
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -242,9 +254,9 @@ function BandSwatch({
         style={[styles.swatch, { backgroundColor: rgbToCss(band.color.rgb) }]}
         onPress={() => setPickerOpen((v) => !v)}
       />
-      <Text style={styles.swatchLabel}>{band.color.nameCz}</Text>
+      <Text style={[styles.swatchLabel, { color: colors.textSecondary }]}>{band.color.nameCz}</Text>
       {pickerOpen && (
-        <View style={styles.picker}>
+        <View style={[styles.picker, { backgroundColor: colors.card, borderColor: colors.border }]}>
           {RESISTOR_BAND_COLORS.map((c: ResistorBandColor) => (
             <Pressable
               key={c.id}
@@ -255,7 +267,7 @@ function BandSwatch({
               }}
             >
               <View style={[styles.pickerSwatch, { backgroundColor: rgbToCss(c.rgb) }]} />
-              <Text style={styles.pickerLabel}>{c.nameCz}</Text>
+              <Text style={[styles.pickerLabel, { color: colors.text }]}>{c.nameCz}</Text>
             </Pressable>
           ))}
         </View>
@@ -276,7 +288,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
-    backgroundColor: '#fff',
   },
   overlay: { ...StyleSheet.absoluteFill, alignItems: 'center' },
   guideBox: {
@@ -316,21 +327,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   shutterInner: { width: 56, height: 56, borderRadius: 28, backgroundColor: '#fff' },
-  permissionText: { textAlign: 'center', fontSize: 15, color: '#333', marginBottom: 16 },
+  permissionText: { textAlign: 'center', fontSize: 15, marginBottom: 16 },
   primaryButton: {
-    backgroundColor: '#2f6fed',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,
   },
   primaryButtonText: { color: '#fff', fontSize: 15, fontWeight: '700' },
   secondaryButton: {
-    backgroundColor: '#eee',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,
   },
-  secondaryButtonText: { color: '#333', fontSize: 15, fontWeight: '600' },
+  secondaryButtonText: { fontSize: 15, fontWeight: '600' },
   resultContainer: { padding: 16, alignItems: 'center', paddingBottom: 48 },
   stripImage: {
     width: '100%',
@@ -339,7 +348,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ddd',
     marginBottom: 16,
   },
-  sectionLabel: { fontSize: 13, color: '#666', marginBottom: 8 },
+  sectionLabel: { fontSize: 13, marginBottom: 8 },
   bandRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 12 },
   swatchWrap: { alignItems: 'center', width: 72 },
   swatch: {
@@ -349,15 +358,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
   },
-  swatchLabel: { fontSize: 11, color: '#444', marginTop: 4, textAlign: 'center' },
+  swatchLabel: { fontSize: 11, marginTop: 4, textAlign: 'center' },
   picker: {
     position: 'absolute',
     top: 48,
     zIndex: 10,
-    backgroundColor: '#fff',
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#ddd',
     paddingVertical: 4,
     width: 140,
     elevation: 6,
@@ -372,18 +379,17 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   pickerSwatch: { width: 18, height: 18, borderRadius: 4, marginRight: 8 },
-  pickerLabel: { fontSize: 13, color: '#333' },
+  pickerLabel: { fontSize: 13 },
   resultCard: {
     marginTop: 20,
     alignItems: 'center',
-    backgroundColor: '#f5f7ff',
     borderRadius: 12,
     paddingVertical: 16,
     paddingHorizontal: 24,
     width: '100%',
   },
-  resultValue: { fontSize: 32, fontWeight: '800', color: '#111' },
-  resultDetail: { fontSize: 14, color: '#555', marginTop: 4 },
+  resultValue: { fontSize: 32, fontWeight: '800' },
+  resultDetail: { fontSize: 14, marginTop: 4 },
   warning: { fontSize: 14, color: '#a33', textAlign: 'center', marginTop: 16 },
   actionRow: { flexDirection: 'row', gap: 12, marginTop: 24 },
 });

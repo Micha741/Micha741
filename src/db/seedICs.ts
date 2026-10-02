@@ -6,19 +6,46 @@ interface IcSpec {
   value: string;
   notes: string;
   tags: string;
+  schematicImage?: string;
 }
 
 const IC_SPECS: IcSpec[] = [
   // Časovače
   {
     name: 'NE555',
-    packageType: 'DIP-8 / SO-8',
-    value: 'Časovač (monostabilní/astabilní), 4,5–16 V, výstup až 200 mA',
+    packageType:
+      'DIP-8/SOIC-8/SO-8/TSSOP-8 (NE555, komerční teplotní rozsah 0 až 70°C), piny: 1=GND, ' +
+      '2=TRIG, 3=OUT, 4=RESET, 5=CONT, 6=THRES, 7=DISCH, 8=VCC (standardní pinout, shodný ' +
+      'napříč výrobci)',
+    value:
+      'Přesný časovač (monostabilní/astabilní), napájení 4,5–16 V, výstup (sink/source) do ' +
+      '±200 mA, teplotní koeficient časového intervalu 50 ppm/°C (monostabilní)/150 ppm/°C ' +
+      '(astabilní)',
     notes:
-      'Univerzální časovací obvod — generátor obdélníkových pulzů, PWM, zpoždění. ' +
-      'Zapojení DIP-8: 1=GND, 2=TRIG, 3=OUT, 4=RESET, 5=CTRL, 6=THR, 7=DISCH, 8=VCC ' +
-      '(standardní pinout, shodný napříč výrobci).',
-    tags: 'io,časovač,555,oscilátor,pwm',
+      'Texas Instruments "NA555, NE555, SA555, SE555 — xx555 Precision Timers" (dok. SLFS022K, ' +
+      'září 1973, revidováno březen 2026) — enriched z obecného placeholderu na plné ' +
+      'datasheetové specifikace. Univerzální přesný časovací obvod — v monostabilním režimu ' +
+      'generuje přesné zpoždění řízené jedním externím RC článkem, v astabilním režimu ' +
+      'oscilátor s kmitočtem a střídou nastavitelnými nezávisle dvěma rezistory a ' +
+      'kondenzátorem. Vnitřní komparátory: spouštěcí (trigger) úroveň ~1/3 VCC, prahová ' +
+      '(threshold) úroveň ~2/3 VCC (obě lze změnit přes pin CONT). RESET má přednost před ' +
+      'ostatními vstupy. Když je výstup nízký, DISCH poskytuje nízkoimpedanční cestu k GND pro ' +
+      'vybití časovacího kondenzátoru. Absolutní maximum: VCC max 18V, VI (CONT/RESET/THRES/ ' +
+      'TRIG) max VCC, IO max ±225mA, TJ max 150°C, Tstg -65 až +150°C. ESD odolnost HBM ±500V, ' +
+      'CDM ±1500V. Doporučené provozní podmínky: VCC 4,5-16V (NE555), IO max ±200mA, TA 0-70°C ' +
+      '(NE555, komerční verze — sourozenecké verze NA555: -40 až +105°C, SA555: -40 až +85°C, ' +
+      'SE555: -55 až +125°C, shodné elektricky, jen jiný teplotní rozsah a VCC max 18V u ' +
+      'SE555). THRES napěťová úroveň typ. 3,3V @VCC=5V / 10V @VCC=15V (~2/3 VCC). TRIG napěťová ' +
+      'úroveň typ. 1,67V @VCC=5V / 5V @VCC=15V (~1/3 VCC), TRIG proud typ. 0,5µA. RESET ' +
+      'napěťová úroveň typ. 0,7V. Výstup nízké úrovně (VOL) typ. 0,1V @IOL=10mA až 2V @IOL=100mA ' +
+      '(VCC=15V). Výstup vysoké úrovně (VOH) typ. 13,3V @IOH=-100mA/VCC=15V. Proudový odběr ICC ' +
+      'typ. 10mA (výstup nízko, bez zátěže, VCC=15V) / 3mA (VCC=5V). Doba náběhu/doběhu výstupu ' +
+      'tr/tf typ. 100ns/max 300ns @CL=15pF. Tepelný odpor přechod-okolí RθJA 125,4°C/W (SOIC-8) ' +
+      '/ 98,5°C/W (PDIP-8) / 124,5°C/W (SO-8) / 164,2°C/W (TSSOP-8). Typické zapojení: pulzní ' +
+      'tvarovací obvody, detektory chybějícího pulzu, PWM/PPM modulátory, sekvenční časovače, ' +
+      'generátory pulzů, kmitočtové děličky, průmyslové řízení.',
+    schematicImage: 'NE555.jpg',
+    tags: 'io,časovač,555,ne555,oscilátor,pwm,monostabilní,astabilní,ti',
   },
   {
     name: 'NE556',
@@ -27,23 +54,69 @@ const IC_SPECS: IcSpec[] = [
     notes: 'Dvě nezávislé jednotky NE555 v jednom pouzdře — dva časovače/oscilátory na čipu.',
     tags: 'io,časovač,555,oscilátor',
   },
+  {
+    name: 'TS555',
+    packageType: 'SO-8 (SO8 plastové mikropouzdro), piny shodné s NE555: 1=GND, 2=Trigger, ' +
+      '3=Output, 4=Reset, 5=Control Voltage, 6=Threshold, 7=Discharge, 8=VCC',
+    value:
+      'Nízkopříkonový CMOS přesný časovač (monostabilní/astabilní), napájení 2–16 V, klidový ' +
+      'proud typ. 110 µA @VCC=5V, max. astabilní kmitočet 2,7 MHz',
+    notes:
+      'STMicroelectronics "TS555 — Low-power single CMOS timer" (dok. DocID4077 Rev. 4, ' +
+      'červen 2015). Pinově a funkčně kompatibilní s bipolárním NE555 (viz jeho záznam v této ' +
+      'knihovně pro obecný kontext architektury 555 — trigger/threshold komparátory, RS ' +
+      'klopný obvod, výstupní budič, vybíjecí tranzistor DISCH), ale postavený v CMOS ' +
+      'technologii namísto bipolární — ⚠️ VÝRAZNĚ NIŽŠÍ SPOTŘEBA (ICC typ. 110µA @5V / 90µA ' +
+      '@3V, oproti ~3mA u bipolárního NE555) a VYŠŠÍ MAX. KMITOČET (2,7MHz astabilně, oproti ' +
+      '0,1MHz u NE555) — vhodné pro bateriové/nízkopříkonové aplikace a vysokorychlostní ' +
+      'časování/generování pulzů, kde by bipolární NE555 byl příliš proudově náročný nebo ' +
+      'pomalý. Redukované proudové špičky při přechodech výstupu umožňují menší dekapl ' +
+      'kondenzátory než u NE555. Vysoká vstupní impedance (10¹²Ω na Threshold/Trigger) ' +
+      'umožňuje použít menší časovací kondenzátory. Výstup kompatibilní s TTL, CMOS a logic ' +
+      'MOS. Absolutní maximum: VCC max 18V, IOUT max ±100mA, TJ max 150°C, Tstg -65 až +150°C, ' +
+      'RθJA 125°C/W, RθJC 40°C/W. ESD odolnost HBM 1500V, MM 200V, CDM 1000V. Doporučené ' +
+      'provozní podmínky: VCC 2-16V, IOUT sink 10mA/source 50mA, Toper -40 až +125°C (širší ' +
+      'rozsah než NE555). Elektrické char. @VCC=2V/25°C: ICC typ. 65µA/max 200µA, VCL (control ' +
+      'voltage) typ. 1,3V, VDIS (saturační napětí Discharge) typ. 0,05V/max 0,2V @Idis=1mA, ' +
+      'VOL typ. 0,1V/max 0,3V @Isink=1mA, VOH typ. 1,9V/min 1,5V @Isource=-0,3mA, VTRIG typ. ' +
+      '0,67V, ITRIG/ITH/IRESET typ. 10pA (extrémně nízké díky CMOS vstupům), VRESET typ. 1,1V. ' +
+      '@VCC=3V/25°C: ICC typ. 90µA/max 230µA, VCL typ. 2V, VOH typ. 2,9V/min 2,5V. Funkční ' +
+      'tabulka RS-FF shodná s klasickým 555 (Reset má přednost před Trigger/Threshold).',
+    schematicImage: 'TS555.jpg',
+    tags: 'io,časovač,555,ts555,cmos,st,nízkopříkonový,oscilátor,pwm,monostabilní,astabilní',
+  },
 
   // Operační zesilovače
   {
     name: 'LM358',
-    packageType: 'DIP-8 / SO-8',
-    value: 'Dvojitý OZ, jednoduché napájení 3–32 V (nebo ±1,5–16 V)',
+    packageType: 'DIP-8 / SO-8 / TSSOP-8 / VSSOP-8, piny: 1=OUT1, 2=IN1-, 3=IN1+, 4=V-/GND, ' +
+      '5=IN2+, 6=IN2-, 7=OUT2, 8=V+',
+    value: 'Dvojitý OZ, jednoduché napájení 3–32 V (nebo ±1,5–16 V), unity-gain bandwidth 1 MHz',
     notes:
-      'Obecný nízkopříkonový operační zesilovač, funguje i z jednoho napájecího napětí (bez záporné ' +
-      'větve) — vhodný pro senzorové obvody, komparátory, filtry. Zapojení DIP-8: 1=OUT1, 2=IN1-, ' +
-      '3=IN1+, 4=GND/V-, 5=IN2+, 6=IN2-, 7=OUT2, 8=VCC/V+.',
+      'Texas Instruments "LM158/LM258/LM358/LM2904 — Industry-Standard Dual Operational ' +
+      'Amplifiers" (dok. SLOS068V, červen 1976, revidováno září 2018). Obecný nízkopříkonový ' +
+      'operační zesilovač, funguje i z jednoho napájecího napětí (bez záporné větve), ' +
+      'souhlasné vstupní napětí zahrnuje zem — vhodný pro senzorové obvody, komparátory, ' +
+      'filtry. LM158/LM258/LM358 se liší jen teplotním rozsahem (LM158: -55 až +125°C, LM258: ' +
+      '-25 až +85°C, LM358: 0 až +70°C), novější "B" verze (LM358B) má nižší klidový proud ' +
+      '(typ. 300µA), nižší offset (max 3mV) a integrovaný RF/EMI filtr.',
+    schematicImage: 'LM358.jpg',
     tags: 'io,operační-zesilovač,lm358',
   },
   {
     name: 'LM324',
-    packageType: 'DIP-14 / SO-14',
-    value: 'Čtyřnásobný OZ, jednoduché napájení 3–32 V',
-    notes: 'Čtyři operační zesilovače v pouzdře, stejná rodina jako LM358 — obecné použití, nízká cena.',
+    packageType: 'DIP-14 / SO-14, piny: 1=OUT1, 2=IN1-, 3=IN1+, 4=V+, 5=IN2+, 6=IN2-, 7=OUT2, ' +
+      '8=OUT3, 9=IN3-, 10=IN3+, 11=GND, 12=IN4+, 13=IN4-, 14=OUT4',
+    value: 'Čtyřnásobný OZ, jednoduché napájení 3–32 V (nebo ±1,5–15 V), unity-gain bandwidth 1 MHz',
+    notes: 'Philips Semiconductors "LM124/224/324/324A/SA534/LM2902 — Low power quad op amps" ' +
+      '(product specification, 27.11.1995). Čtyři nezávislé, vysokozisková (100dB), interně ' +
+      'frekvenčně kompenzované operační zesilovače v jednom pouzdře — stejná rodina principu ' +
+      'jako LM358 (viz jeho záznam), jen 4 kanály místo 2. Souhlasné vstupní napětí zahrnuje ' +
+      'zem, výstup může sklopit až k zemi i při jednom napájecím napětí. Nízký klidový proud ' +
+      '(~1mW/OZ @+5V), nízký vstupní klidový proud 45nA (teplotně kompenzovaný). LM124/224/324 ' +
+      'se liší jen teplotním rozsahem (LM124: -55 až +125°C, LM224: -25 až +85°C, LM324: 0 až ' +
+      '+70°C).',
+    schematicImage: 'LM324.jpg',
     tags: 'io,operační-zesilovač,lm324',
   },
   {
@@ -69,11 +142,21 @@ const IC_SPECS: IcSpec[] = [
   },
   {
     name: 'LM741',
-    packageType: 'DIP-8',
-    value: 'Klasický OZ, ±5–18 V',
+    packageType: 'TO-99-8 / CDIP-8 / PDIP-8, piny (DIP): 1/5=OFFSET NULL, 2=IN-, 3=IN+, ' +
+      '4=V-, 6=OUTPUT, 7=V+, 8=NC',
+    value: 'Klasický OZ, obecný účel, ±5–18 V, vstupní ochrana proti přetížení',
     notes:
-      'Historicky nejznámější operační zesilovač, dnes už spíš pro výuku — nižší šířka pásma a vyšší ' +
-      'vstupní proud než modernější typy (LM358, TL071).',
+      'Texas Instruments "LM741 Operational Amplifier" (dok. SNOSC25D, květen 1998, ' +
+      'revidováno říjen 2015); schéma vnitřního zapojení (tranzistory Q1-Q22) převzato z ' +
+      'ekvivalentního National Semiconductor datasheetu "LM741" (DS009341, květen 1998) — oba ' +
+      'výrobci popisují elektricky identický díl. Historicky nejznámější operační zesilovač, ' +
+      'přímá záměna za 709C/LM201/MC1439/748 — dnes už spíš pro výuku, nižší šířka pásma a ' +
+      'vyšší vstupní proud než modernější typy (LM358, TL071). Ochrana proti přetížení na ' +
+      'vstupu i výstupu, žádný latch-up při překročení souhlasného rozsahu. LM741C je ' +
+      'elektricky shodný s LM741/LM741A, liší se jen zaručeným teplotním rozsahem (LM741C: 0 ' +
+      'až +70°C, LM741/A: -55 až +125°C). Piny 1 a 5 (offset null) slouží k vyvážení vstupního ' +
+      'offsetu externím trimrem (10kΩ potenciometr).',
+    schematicImage: 'LM741.jpg',
     tags: 'io,operační-zesilovač,lm741,ua741',
   },
 
@@ -114,6 +197,7 @@ const IC_SPECS: IcSpec[] = [
       '(enable, aktivní L), 14=BOUT, 15=GOUT, 16=ROUT. Doporučené blokování: 4,7µF tantalový + ' +
       '0,1µF keramický na VS-/VCC pin. Pb-free verze dostupná (ISL59837IAZ, ISL59837IAZ-T7 na ' +
       'pásce/cívce 7").',
+    schematicImage: 'ISL59837.jpg',
     tags: 'io,video,zesilovač,buffer,rgb,ypbpr,charge-pump,nábojová-pumpa,renesas,intersil,isl59837,qsop,ntsc',
   },
   {
@@ -157,6 +241,7 @@ const IC_SPECS: IcSpec[] = [
       '29=AGND, 15/32/37=DGND, 28=VAA, 30=VAAPIX, 16/36=VDD, 34=VDDDAC, 40=VDDPLL. Aplikace: ' +
       'bezpečnostní/CCTV kamery, síťové (IP) kamery s aktivním/pasivním overlay, 900MHz/2,4GHz ' +
       'bezdrátové kamery, "smart" kamery.',
+    schematicImage: 'MT9V135C12STC.jpg',
     tags: 'io,senzor,obrazový-senzor,kamera,cmos,soc,vga,ntsc,pal,lvds,ccir656,micron,mt9v135,clcc',
   },
 
@@ -228,6 +313,7 @@ const IC_SPECS: IcSpec[] = [
       'napětí typ 40 µV/Vo (10Hz-100kHz). Absolutní max.: Vin 30 V (pro Vo=5V/8V), TJ provozní ' +
       '0 až +150 °C, skladovací -65 až +150 °C. Doporučené blokovací kondenzátory: 0,33 µF na ' +
       'vstupu, 0,1 µF na výstupu (co nejblíže pouzdru).',
+    schematicImage: 'KA78LXXA.jpg',
     tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l05az,to-92,5v',
   },
   {
@@ -238,6 +324,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 9dílné TO-92 řady KA78LXXA (Fairchild) — viz poznámka u KA78L05AZ pro plné společné ' +
       'specifikace. Výstupní napětí 5,75–6,0–6,25 V. Ripple rejection typ 46 dB (min 40 dB) @120Hz ' +
       '(nižší než ostatní hodnoty řady dle datasheetu).',
+    schematicImage: 'KA78LXXA.jpg',
     tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l06az,to-92,6v',
   },
   {
@@ -248,6 +335,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 9dílné TO-92 řady KA78LXXA (Fairchild) — viz poznámka u KA78L05AZ pro plné společné ' +
       'specifikace. Výstupní napětí 7,7–8,0–8,3 V. Ripple rejection typ 70 dB (min 39 dB) @120Hz. ' +
       'Dostupná i v pouzdrech 8-SOP (KA78L08AD) a SOT-89 (KA78L08AM).',
+    schematicImage: 'KA78LXXA.jpg',
     tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l08az,to-92,8v',
   },
   {
@@ -257,6 +345,7 @@ const IC_SPECS: IcSpec[] = [
     notes:
       'Součást 9dílné TO-92 řady KA78LXXA (Fairchild) — viz poznámka u KA78L05AZ pro plné společné ' +
       'specifikace. Výstupní napětí 8,64–9,0–9,36 V. Ripple rejection typ 44 dB (min 38 dB) @120Hz.',
+    schematicImage: 'KA78LXXA.jpg',
     tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l09az,to-92,9v',
   },
   {
@@ -266,6 +355,7 @@ const IC_SPECS: IcSpec[] = [
     notes:
       'Součást 9dílné TO-92 řady KA78LXXA (Fairchild) — viz poznámka u KA78L05AZ pro plné společné ' +
       'specifikace. Výstupní napětí 9,6–10,0–10,4 V. Ripple rejection typ 43 dB (min 38 dB) @120Hz.',
+    schematicImage: 'KA78LXXA.jpg',
     tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l10az,to-92,10v',
   },
   {
@@ -277,6 +367,7 @@ const IC_SPECS: IcSpec[] = [
       'specifikace. Výstupní napětí 11,5–12,0–12,5 V. Ripple rejection typ 65 dB (min 37 dB) ' +
       '@120Hz. Abs. max Vin=35V (od 12V verze výše). Dostupná i v pouzdrech 8-SOP (KA78L12AD) a ' +
       'SOT-89 (KA78L12AM).',
+    schematicImage: 'KA78LXXA.jpg',
     tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l12az,to-92,12v',
   },
   {
@@ -287,6 +378,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 9dílné TO-92 řady KA78LXXA (Fairchild) — viz poznámka u KA78L05AZ pro plné společné ' +
       'specifikace. Výstupní napětí 14,4–15,0–15,6 V. Ripple rejection typ 60 dB (min 34 dB) ' +
       '@120Hz. Abs. max Vin=35V.',
+    schematicImage: 'KA78LXXA.jpg',
     tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l15az,to-92,15v',
   },
   {
@@ -297,6 +389,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 9dílné TO-92 řady KA78LXXA (Fairchild) — viz poznámka u KA78L05AZ pro plné společné ' +
       'specifikace. Výstupní napětí 17,3–18,0–18,7 V. Ripple rejection typ 48 dB (min 34 dB) ' +
       '@120Hz. Abs. max Vin=35V.',
+    schematicImage: 'KA78LXXA.jpg',
     tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l18az,to-92,18v',
   },
   {
@@ -309,6 +402,7 @@ const IC_SPECS: IcSpec[] = [
       '27-38V), load regulation typ 40 mV (max 200 mV, 1-100mA). Ripple rejection typ 45 dB (min ' +
       '34 dB) @120Hz. Klidový proud typ 2,2 mA (max 6,0 mA). Nejvyšší napěťová varianta řady — abs. ' +
       'max Vin=40 V (jediná v této hodnotě, ostatní verze 30 nebo 35 V).',
+    schematicImage: 'KA78LXXA.jpg',
     tags: 'io,regulátor,ldo,pevný,fairchild,ka78l,ka78l24az,to-92,24v',
   },
   {
@@ -331,6 +425,7 @@ const IC_SPECS: IcSpec[] = [
       'TO-220 (T suffix, case 221AB/221A) — vývody: 1=ADJ, 2=výstup (Vout), 3=vstup (Vin), ' +
       'chladicí ploška spojena s pinem 2 (Vout); dostupné i v D²PAK-3 (D2T suffix, case 936, ' +
       'stejný pinout a stejně spojená chladicí ploška)',
+    schematicImage: 'LM317.jpg',
     value:
       'Nastavitelný kladný lineární regulátor, výstup 1,2 až 37 V, výstupní proud přes 1,5 A, ' +
       'Vref 1,25 V typ.',
@@ -396,6 +491,7 @@ const IC_SPECS: IcSpec[] = [
       '5V→2,5V/3,3V regulace, nízkonapěťové mikrokontroléry, nabíječky baterií, post-regulátor za ' +
       'spínaným zdrojem. Typické zapojení vyžaduje Cin 10µF a Cout 10-22µF (elektrolytické/ ' +
       'tantalové) pro stabilitu.',
+    schematicImage: 'L1117-SOT223.jpg',
     tags: 'io,regulátor,ldo,nastavitelný,niko-sem,l1117,l1117l,sot-223',
   },
   {
@@ -406,6 +502,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — TO-252 verze nastavitelného (ADJ) ' +
       'modelu, elektricky shodná s L1117L (SOT-223). Viz poznámka u L1117L pro plné společné ' +
       'specifikace. θJA (TO-252) = 70 °C/W.',
+    schematicImage: 'L1117-TO252.jpg',
     tags: 'io,regulátor,ldo,nastavitelný,niko-sem,l1117,l1117d,to-252',
   },
   {
@@ -416,6 +513,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — pevná 2,5V verze v SOT-223. Viz ' +
       'poznámka u L1117L pro plné společné specifikace. Výstupní napětí 2,45–2,55 V (@Vin=5V, ' +
       'Iout=10mA).',
+    schematicImage: 'L1117-SOT223.jpg',
     tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117l-2.5,sot-223,2.5v',
   },
   {
@@ -427,6 +525,7 @@ const IC_SPECS: IcSpec[] = [
       'určená mj. pro aktivní SCSI terminátory (18-27 linek). Viz poznámka u L1117L pro plné ' +
       'společné specifikace. Výstupní napětí 2,793–2,907 V (@Vin=5V, Iout=10mA), max Vin pro tuto ' +
       'variantu jen 8V (ne 15V jako ostatní).',
+    schematicImage: 'L1117-SOT223.jpg',
     tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117l-2.85,sot-223,scsi',
   },
   {
@@ -437,6 +536,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — pevná 3,3V verze v SOT-223, časté ' +
       'napájení pro FPGA/mikrokontroléry z 5V. Viz poznámka u L1117L pro plné společné specifikace. ' +
       'Výstupní napětí 3,234–3,367 V (@Vin=5V, Iout=10mA).',
+    schematicImage: 'L1117-SOT223.jpg',
     tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117l-3.3,sot-223,3.3v',
   },
   {
@@ -447,6 +547,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — TO-252 verze pevné 3,3V varianty, ' +
       'elektricky shodná s L1117L-3.3. Viz poznámka u L1117L pro plné společné specifikace. θJA ' +
       '(TO-252) = 70 °C/W.',
+    schematicImage: 'L1117-TO252.jpg',
     tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117d-3.3,to-252,3.3v',
   },
   {
@@ -457,6 +558,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — pevná 5V verze v SOT-223. Viz ' +
       'poznámka u L1117L pro plné společné specifikace. Výstupní napětí 4,90–5,10 V (@Vin=8V, ' +
       'Iout=10mA), vyžaduje Vin>6,5V.',
+    schematicImage: 'L1117-SOT223.jpg',
     tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117l-5,sot-223,5v',
   },
   {
@@ -467,6 +569,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — TO-252 verze pevné 5V varianty, ' +
       'elektricky shodná s L1117L-5. Viz poznámka u L1117L pro plné společné specifikace. θJA ' +
       '(TO-252) = 70 °C/W.',
+    schematicImage: 'L1117-TO252.jpg',
     tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117d-5,to-252,5v',
   },
   {
@@ -477,6 +580,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — TO-220 verze nastavitelného (ADJ) ' +
       'modelu, elektricky shodná s L1117L (SOT-223). Viz poznámka u L1117L pro plné společné ' +
       'specifikace. θJA (TO-220) = 50 °C/W (nejnižší z celé řady).',
+    schematicImage: 'L1117-TO220.jpg',
     tags: 'io,regulátor,ldo,nastavitelný,niko-sem,l1117,l1117t,to-220',
   },
   {
@@ -486,6 +590,7 @@ const IC_SPECS: IcSpec[] = [
     notes:
       'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — TO-220 verze pevné 3,3V varianty. ' +
       'Viz poznámka u L1117L pro plné společné specifikace. θJA (TO-220) = 50 °C/W.',
+    schematicImage: 'L1117-TO220.jpg',
     tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117t-3.3,to-220,3.3v',
   },
   {
@@ -495,6 +600,7 @@ const IC_SPECS: IcSpec[] = [
     notes:
       'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — TO-220 verze pevné 5V varianty. ' +
       'Viz poznámka u L1117L pro plné společné specifikace. θJA (TO-220) = 50 °C/W.',
+    schematicImage: 'L1117-TO220.jpg',
     tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117t-5,to-220,5v',
   },
   {
@@ -505,6 +611,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást 12dílné rodiny L1117 (NIKO-SEM LDO regulátor) — TO-263 (D²PAK, SMD) verze pevné 5V ' +
       'varianty, jediná v pouzdru pro povrchovou montáž s výkonovou tabulí. Viz poznámka u L1117L ' +
       'pro plné společné specifikace. θJA (TO-263) = 60 °C/W.',
+    schematicImage: 'L1117-TO263.jpg',
     tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117s-5,to-263,d2pak,5v,smd',
   },
 
@@ -515,6 +622,7 @@ const IC_SPECS: IcSpec[] = [
     value:
       'Kompletní napájecí řešení pro DDR2/DDR3/DDR3L/LPDDR3 paměti: synchronní buck řadič ' +
       '(VDDQ) + 2A sink/source sledovací LDO (VTT) + pufferovaná reference (VTTREF)',
+    schematicImage: 'TPS51716.jpg',
     notes:
       'Texas Instruments "TPS51716 — Complete DDR2, DDR3, DDR3L, and LPDDR3 Memory Power ' +
       'Solution" (dok. SLUSB94, říjen 2012). Integruje synchronní buck regulátor (D-CAP2™ mód, ' +
@@ -548,6 +656,7 @@ const IC_SPECS: IcSpec[] = [
   {
     name: 'NCP330MUTBG',
     packageType: 'UDFN4 (1,2×1,6 mm, rozteč 0,5 mm), exponovaná ploška PAD1',
+    schematicImage: 'NCP330MUTBG.jpg',
     value:
       'Napájecí spínač (load switch) s pozvolným náběhem (soft-start), N-MOSFET RDS(on) 26 mΩ ' +
       'typ., DC proud až 3 A, VIN 1,8–5,5 V',
@@ -608,6 +717,7 @@ const IC_SPECS: IcSpec[] = [
       '(balast) zářivkových trubic — blokové schéma: EMI filtr → usměrňovač → Boost PFC → ' +
       'rezonanční výstupní obvod (half-bridge) → lampa, s řídicím IC poskytujícím PFC control, ' +
       'UVLO, Resonant control a zpracování Lamp Fault signálu.',
+    schematicImage: 'IRS2580DSPbF.jpg',
     tags: 'io,řadič,ballast,pfc,half-bridge,předřadník,zářivka,international-rectifier,ir,irs2580,soic',
   },
 
@@ -683,12 +793,39 @@ const IC_SPECS: IcSpec[] = [
   // Posuvné registry
   {
     name: '74HC595',
-    packageType: 'DIP-16',
-    value: '8bitový sériově vstupní/paralelně výstupní posuvný registr, 2–6 V',
+    packageType:
+      'DIP-16/SOIC-16/SSOP-16/TSSOP-16 (SN74HC595, komerční teplotní rozsah -40 až +85°C) nebo ' +
+      'CDIP-16/LCCC-20 (SN54HC595, vojenský rozsah -55 až +125°C), piny: 1-7=QB-QH, 8=GND, ' +
+      '9=QH\' (sériový výstup pro kaskádování), 10=SRCLR (aktivní v L, přímý reset posuvného ' +
+      'registru), 11=SRCLK (hodiny posuvného registru), 12=RCLK (hodiny paměťového registru/ ' +
+      'latch), 13=OE (aktivní v L, povolení výstupů), 14=SER (sériový vstup), 15=QA, 16=VCC',
+    value:
+      '8bitový sériově vstupní/paralelně výstupní posuvný registr s výstupním registrem se ' +
+      '3-stavovými výstupy, napájení 2–6 V, IOH/IOL do ±6mA @5V (do 15 LSTTL zátěží)',
     notes:
-      'Velmi časté řešení pro rozšíření počtu výstupů mikrokontroléru přes 3 piny (data, clock, latch) ' +
-      '— lze řetězit více kusů za sebou. Typicky se používá k ovládání LED, displejů apod.',
-    tags: 'io,logika,74hc595,posuvný-registr,led',
+      'Texas Instruments "SN54HC595, SN74HC595 — SNx4HC595 8-Bit Shift Registers With 3-State ' +
+      'Output Registers" (dok. SCLS041J, prosinec 1982, revidováno říjen 2021) — enriched z ' +
+      'obecného placeholderu na plné datasheetové specifikace. Velmi časté řešení pro rozšíření ' +
+      'počtu výstupů mikrokontroléru přes 3 piny (SER/data, SRCLK/clock, RCLK/latch) — obsahuje ' +
+      'DVA nezávislé registry: 8bitový posuvný registr (plněný na SRCLK, s přímým vstupem SRCLR ' +
+      'pro reset) a 8bitový D-typ paměťový (storage/latch) registr s odděleným hodinovým ' +
+      'vstupem RCLK, jehož 3-stavové výstupy se ovládají signálem OE — díky oddělení posuvu od ' +
+      'zápisu na výstup lze plnit registr, aniž by se měnil aktuální stav výstupů, a teprve ' +
+      'jedním impulzem RCLK "překlopit" nový obsah na výstupy najednou. Sériový výstup QH\' ' +
+      '(pin 9) umožňuje řetězení (kaskádování) libovolného počtu kusů za sebou — typicky pro ' +
+      'ovládání LED, displejů, relé apod. Absolutní maximum: VCC -0,5 až 7V, vstupní/výstupní ' +
+      'svorkovací proud ±20mA, trvalý výstupní proud ±35mA/pin (±70mA přes VCC/GND celkem), TJ ' +
+      'max 150°C. ESD odolnost HBM 2000V/CDM 1000V. Doporučené provozní podmínky: VCC 2-6V, ' +
+      'VIH min 1,5V@2V/3,15V@4,5V/4,2V@6V, VIL max 0,5V@2V/1,35V@4,5V/1,8V@6V. Výstupní napětí ' +
+      '(SN74HC595, TA=25°C): VOH min 4,4V@4,5V/IOH=-4mA nebo 5,8V@6V/IOH=-5,2mA (na výstupu QA ' +
+      'proti ostatním o 2mA nižší zátěž kvůli sdílenému výstupnímu tranzistoru); VOL max ' +
+      '0,4V@4,5V/IOL=4mA nebo 0,33V@6V/IOL=5,2mA. Vstupní proud II max ±1000nA @VCC=6V ' +
+      '(SN74HC595, TA=25°C). Proudový odběr ICC max 80µA @VCC=6V/VI=VCC nebo 0/IO=0. Vstupní ' +
+      'kapacita CI max 10pF. Kmitočet hodin fclock: SN74HC595 min 25MHz @4,5V / 29MHz @6V / ' +
+      '5MHz @2V. Tepelný odpor přechod-okolí RθJA: 73°C/W (SOIC-16) / 108°C/W (TSSOP-16) / ' +
+      '67°C/W (PDIP-16) dle konkrétního pouzdra. Provozní teplota SN74HC595: -40 až +85°C.',
+    schematicImage: '74HC595.jpg',
+    tags: 'io,logika,74hc595,posuvný-registr,shift-register,3-state,latch,led,ti',
   },
   {
     name: '74HC165',
@@ -727,10 +864,74 @@ const IC_SPECS: IcSpec[] = [
   },
   {
     name: 'ULN2803',
-    packageType: 'DIP-18',
-    value: '8× Darlingtonův budič, 500 mA/kanál, do 50 V',
-    notes: 'Osmikanálová verze ULN2003, jinak stejné vlastnosti a použití.',
-    tags: 'io,budič,uln2803,relé,motor',
+    packageType:
+      'DIP-18, 18 vývodů: 1-8=IN1-8, 9=GND, 10=společné zpětné (flyback) diody, 11-18=OUT8-1 ' +
+      '(pořadí výstupů zrcadlově obráceno vůči vstupům pro snadnější návrh DPS)',
+    value:
+      '8× Darlingtonův budič se společnými emitory, kolektorový proud 500 mA trvale/600 mA ' +
+      'špičkově na kanál, výstupní napětí do 50 V, vstupní odpor 2,7 kΩ (verze pro 5V TTL/CMOS)',
+    schematicImage: 'ULN2803.jpg',
+    notes:
+      'STMicroelectronics "ULN2801A, ULN2802A, ULN2803A, ULN2804A — Eight Darlington array" ' +
+      '(dok. DocID1536 Rev. 3, listopad 2012) — konkrétně varianta ULN2803A (vstupní odpor ' +
+      '2,7kΩ, optimalizováno pro 5V TTL/CMOS logiku). Osm Darlingtonových tranzistorů se ' +
+      'společnými emitory a vestavěnými zpětnými (flyback/suppression) diodami se společnou ' +
+      'katodou (pin 10) — pro spínání induktivních zátěží (relé, solenoidy) přímo z logického ' +
+      'výstupu bez nutnosti vnější ochranné diody. Výstupy lze paralelizovat pro vyšší proudovou ' +
+      'kapacitu. Součást rodiny ULN2801A/2802A/2803A/2804A lišící se jen vstupním odporovým ' +
+      'děličem pro různé logické rodiny (viz sourozenecké záznamy "ULN2801A"/"ULN2802A"/ ' +
+      '"ULN2804A" v této knihovně) — jinak elektricky i mechanicky shodné. IC(max) 500mA (trvale) ' +
+      '/600mA (špičkově), IB(max) 25mA, VO(max) 50V, Ptot 1W/pár (2,25W celé pouzdro), hFE min ' +
+      '1000 @VCE=2V/IC=350mA. VCE(sat): 0,9-1,1V @IC=100mA, 1,1-1,3V @IC=200mA, 1,3-1,6V ' +
+      '@IC=350mA. Vstupní proud II(ON) 0,93-1,35mA @VI=3,85V. Vstupní kapacita CI 15-25pF. Doba ' +
+      'zapnutí/vypnutí tPLH/tPHL 0,25-1µs. Výstupní svodový proud ICEX max 50µA @VCE=50V/70°C. ' +
+      'Napětí flyback diody VF typ. 1,7V/max 2V @IF=350mA. Tepelný odpor přechod-okolí RthJA ' +
+      '55°C/W. Provozní teplota -20 až +85°C, skladovací -55 až +150°C.',
+    tags: 'io,budič,uln2803,uln2803a,darlington-array,st,relé,motor,dip-18',
+  },
+  {
+    name: 'ULN2801A',
+    packageType: 'shodné s ULN2803 (DIP-18) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      '8× Darlingtonův budič se společnými emitory, kolektorový proud 500 mA trvale na kanál, ' +
+      'výstupní napětí do 50 V, obecná verze pro PMOS/CMOS s vestavěným omezovacím rezistorem',
+    schematicImage: 'ULN2803.jpg',
+    notes:
+      'STMicroelectronics "ULN2801A/2802A/2803A/2804A" — součást rodiny, viz záznam "ULN2803" ' +
+      'v této knihovně pro plné společné elektrické/mechanické specifikace. Obecná (general ' +
+      'purpose) varianta s odporovým vstupním děličem 7,2kΩ/3kΩ bez sériového omezovacího ' +
+      'rezistoru navíc (na rozdíl od ostatních variant řady) — vhodná pro PMOS-CMOS logiku s ' +
+      'vlastním omezením proudu na vstupu.',
+    tags: 'io,budič,uln2801,uln2801a,darlington-array,st,relé,motor,dip-18',
+  },
+  {
+    name: 'ULN2802A',
+    packageType: 'shodné s ULN2803 (DIP-18) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      '8× Darlingtonův budič se společnými emitory, kolektorový proud 500 mA trvale na kanál, ' +
+      'výstupní napětí do 50 V, vstupní odpor 10,5 kΩ se Zenerovou diodou pro 14-25V PMOS',
+    schematicImage: 'ULN2803.jpg',
+    notes:
+      'STMicroelectronics "ULN2801A/2802A/2803A/2804A" — součást rodiny, viz záznam "ULN2803" ' +
+      'v této knihovně pro plné společné elektrické/mechanické specifikace. Varianta s ' +
+      'omezovacím rezistorem 10,5kΩ a Zenerovou diodou na vstupu, určená pro vyšší logická ' +
+      'napětí 14-25V PMOS. Max. vstupní napětí VI 30V (na rozdíl od ULN2801A). Doc. tento ' +
+      'konkrétní soubor (ULN2802A.pdf) je datasheet pro celou rodinu ULN2801A-2804A.',
+    tags: 'io,budič,uln2802,uln2802a,darlington-array,st,relé,motor,dip-18,pmos',
+  },
+  {
+    name: 'ULN2804A',
+    packageType: 'shodné s ULN2803 (DIP-18) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      '8× Darlingtonův budič se společnými emitory, kolektorový proud 500 mA trvale na kanál, ' +
+      'výstupní napětí do 50 V, vstupní odpor 10,5 kΩ pro 6-15V CMOS/PMOS',
+    schematicImage: 'ULN2803.jpg',
+    notes:
+      'STMicroelectronics "ULN2801A/2802A/2803A/2804A" — součást rodiny, viz záznam "ULN2803" ' +
+      'v této knihovně pro plné společné elektrické/mechanické specifikace. Varianta s ' +
+      'omezovacím rezistorem 10,5kΩ (bez Zenerovy diody, na rozdíl od ULN2802A), určená pro ' +
+      'nižší logická napětí 6-15V CMOS/PMOS. Max. vstupní napětí VI 30V.',
+    tags: 'io,budič,uln2804,uln2804a,darlington-array,st,relé,motor,dip-18,cmos',
   },
   {
     name: 'L293D',
@@ -806,6 +1007,7 @@ const IC_SPECS: IcSpec[] = [
       'CIN max 6 pF, COUT max 8 pF. Spolehlivost: 100 000 cyklů mazání/zápisu (typicky), 20 let ' +
       'retence dat, ochrana proti latch-up do 100 mA v rozsahu -1 V až VCC+1 V. RoHS/bezolovnaté ' +
       'provedení (Pb-free, "G" suffix).',
+    schematicImage: 'MX25L6406E.jpg',
     tags: 'io,paměť,flash,spi,serial-flash,mx25l6406e,macronix,64mbit',
   },
   {
@@ -836,6 +1038,7 @@ const IC_SPECS: IcSpec[] = [
       'mazání čipu max 20 mA, klidový (standby) max 25 µA, deep power-down max 10 µA. Vstupní/' +
       'výstupní kapacita CIN max 6 pF, COUT max 8 pF. Spolehlivost: min. 100 000 cyklů mazání/' +
       'zápisu, 20 let retence dat. RoHS/bezolovnaté a bezhalogenové provedení.',
+    schematicImage: 'MX25L1026E.jpg',
     tags: 'io,paměť,flash,spi,serial-flash,mx25l1026e,macronix,1mbit',
   },
 
@@ -878,6 +1081,7 @@ const IC_SPECS: IcSpec[] = [
       'VCC+0,5 V, zkratový výstupní proud max 200 mA. Provozní: Industrial grade -40 až +85 °C, ' +
       'VCC 2,7–3,6 V. Latch-up ochrana do 100 mA v rozsahu -1 V až 1,5×VCC. Spolehlivost: typ. ' +
       '100 000 cyklů mazání/zápisu, 20 let retence dat. RoHS/bezhalogenové provedení.',
+    schematicImage: 'MX29GL320ET-B.jpg',
     tags: 'io,paměť,flash,paralelní,parallel-flash,mx29gl320e,macronix,32mbit,top-boot',
   },
   {
@@ -897,6 +1101,7 @@ const IC_SPECS: IcSpec[] = [
       'chrání dolní dva sektory. Všechny ostatní parametry (organizace paměti, buffery, ' +
       'bezpečnostní sektor, ochrana sektorů, elektrické charakteristiky, mezní hodnoty) shodné ' +
       's MX29GL320ET — viz jeho záznam pro plný popis.',
+    schematicImage: 'MX29GL320ET-B.jpg',
     tags: 'io,paměť,flash,paralelní,parallel-flash,mx29gl320e,macronix,32mbit,bottom-boot',
   },
   {
@@ -920,6 +1125,7 @@ const IC_SPECS: IcSpec[] = [
       '8 bit / 2 097 152 × 16 bit, 16B/8slovní page read buffer, 32B/16slovní write buffer, ' +
       'extra 128slovní bezpečnostní sektor, CFI podpora, RY/BY#, RESET#, doba přístupu 70 ns, ' +
       'Industrial -40 až +85 °C, 100 000 cyklů, 20 let retence.',
+    schematicImage: 'MX29GL320EH-L.jpg',
     tags: 'io,paměť,flash,paralelní,parallel-flash,mx29gl320e,macronix,32mbit,uniform',
   },
   {
@@ -937,6 +1143,7 @@ const IC_SPECS: IcSpec[] = [
       'architekturu jako EH (64× 64KB), ale WP#/ACC=Vil chrání NEJNIŽŠÍ adresní sektor (na rozdíl ' +
       'od EH, kde chrání nejvyšší). Všechny ostatní parametry shodné s MX29GL320ET/EH — viz jejich ' +
       'záznamy pro plný popis.',
+    schematicImage: 'MX29GL320EH-L.jpg',
     tags: 'io,paměť,flash,paralelní,parallel-flash,mx29gl320e,macronix,32mbit,uniform',
   },
 
@@ -981,6 +1188,7 @@ const IC_SPECS: IcSpec[] = [
       '(V0.6 uváděl GPIO8, GPIO9, GPIO10) — určují boot mód (SPI boot / download boot); ' +
       'kombinace GPIO8=0 a GPIO9=0 je neplatná. Je nutné na ně dbát při návrhu DPS ' +
       '(viz aplikační poznámky výrobce a Technical Reference Manual).',
+    schematicImage: 'ESP32-C3.jpg',
     tags: 'io,mikrokontrolér,soc,esp32,esp32-c3,wifi,bluetooth,ble,risc-v,qfn32',
   },
   {
@@ -1021,6 +1229,7 @@ const IC_SPECS: IcSpec[] = [
       '802.11g MCS7/+14 dBm typ. 180 mA, RX 802.11b/g/n typ. 95–100 mA; BT/BLE TX @0 dBm typ. 130 mA, ' +
       'RX typ. 95–100 mA. Spolehlivost: ESD HBM ±1500 V / CDM ±500 V (JEDEC), MSL3. Strapping piny: ' +
       'MTDI, GPIO0, GPIO2, MTDO, GPIO5 (určují boot mód, napětí VDD_SDIO a další nastavení při resetu).',
+    schematicImage: 'ESP32.jpg',
     tags: 'io,mikrokontrolér,soc,esp32,wifi,bluetooth,ble,xtensa,qfn48',
   },
   {
@@ -1056,6 +1265,7 @@ const IC_SPECS: IcSpec[] = [
       'typ. 80 mA. Krystal: 24–52 MHz, zátěžová kapacita max 32 pF. Strapping/boot piny: GPIO2, ' +
       'GPIO0 a MTDO volí boot mód a SDIO mód; piny SDIO_CMD/SDIO_CLK/SDIO_DATA_0/SDIO_DATA_1 jsou ' +
       'interně vyhrazeny pro připojení vestavěné flash a nedoporučuje se je použít jinak.',
+    schematicImage: 'ESP8285.jpg',
     tags: 'io,mikrokontrolér,soc,esp8285,esp8266,wifi,tensilica,qfn32',
   },
   {
@@ -1090,6 +1300,7 @@ const IC_SPECS: IcSpec[] = [
       'teplota -40 až 125 °C, skladovací -40 až 150 °C. Digitální IO piny mají obousměrnou tri-state ' +
       'strukturu s volitelnou funkcí "hold" (udržení posledního stavu při vypnutí napájení) a ' +
       'ochranu proti přepětí/ESD (snap-back obvod, ~6 V spouštěcí napětí).',
+    schematicImage: 'ESP8089.jpg',
     tags: 'io,wifi,adaptér,sdio,esp8089,qfn32',
   },
   {
@@ -1131,6 +1342,7 @@ const IC_SPECS: IcSpec[] = [
       'RX 802.11b/g/n špička 65 mA; BLE TX @20 dBm špička 320 mA, RX špička 62 mA. Spolehlivost: ' +
       'ESD HBM ±2000 V / CDM ±1000 V, HTOL/HTSL/LTSL/TCT/uHAST dle JEDEC — přísnější ESD hodnoty ' +
       'než starší ESP32-C3 (tam jen orientační údaje v revizích datasheetu).',
+    schematicImage: 'ESP8684.jpg',
     tags: 'io,mikrokontrolér,soc,esp8684,esp32-c2,wifi,bluetooth,ble,risc-v,qfn24',
   },
 
@@ -1161,6 +1373,7 @@ const IC_SPECS: IcSpec[] = [
       '@4,5–5,5 V; verze "V" (nízkonapěťová, např. ATmega640V) 0–4 MHz @1,8–5,5 V nebo 0–8 MHz ' +
       '@2,7–5,5 V. Spotřeba (typ.): aktivní režim @1 MHz/1,8 V cca 510 µA, power-down @1,8 V cca ' +
       '0,1 µA. Provozní teplota -40 až 85 °C (průmyslový rozsah). RoHS/bezolovnaté provedení.',
+    schematicImage: 'ATmega640-1280-2560.jpg',
     tags: 'io,mikrokontrolér,avr,atmega,atmega640,8bit',
   },
   {
@@ -1174,6 +1387,7 @@ const IC_SPECS: IcSpec[] = [
       '4 USART, 16 ADC kanálů) — použit např. v deskách Arduino Mega. Architektura, periferie, ' +
       'JTAG, napájecí rozsahy a spotřeba shodné s ATmega640 (viz jeho záznam pro plný popis). ' +
       '4 KB EEPROM, 8 KB SRAM, do 64 KB volitelné externí paměti.',
+    schematicImage: 'ATmega640-1280-2560.jpg',
     tags: 'io,mikrokontrolér,avr,atmega,atmega1280,8bit,arduino-mega',
   },
   {
@@ -1189,6 +1403,7 @@ const IC_SPECS: IcSpec[] = [
       'jsou dostupné jen ve 100pinové verzi (ATmega1280/2560), ne zde. Architektura, JTAG, ' +
       'napájecí rozsahy a spotřeba shodné s ATmega640 (viz jeho záznam pro plný popis). ' +
       '4 KB EEPROM, 8 KB SRAM.',
+    schematicImage: 'ATmega1281-2561.jpg',
     tags: 'io,mikrokontrolér,avr,atmega,atmega1281,8bit',
   },
   {
@@ -1202,6 +1417,7 @@ const IC_SPECS: IcSpec[] = [
       '— nejpoužívanější člen rodiny, osazuje např. desky Arduino Mega 2560. Architektura, ' +
       'periferie, JTAG, napájecí rozsahy a spotřeba shodné s ATmega640 (viz jeho záznam pro plný ' +
       'popis). 4 KB EEPROM, 8 KB SRAM, do 64 KB volitelné externí paměti.',
+    schematicImage: 'ATmega640-1280-2560.jpg',
     tags: 'io,mikrokontrolér,avr,atmega,atmega2560,8bit,arduino-mega',
   },
   {
@@ -1216,6 +1432,7 @@ const IC_SPECS: IcSpec[] = [
       '(ne 12), 2 USART (ne 4), 8kanálový ADC (ne 16) — porty H/J/K/L, DAC a časovače T/C4, T/C5 ' +
       'nejsou dostupné. Architektura, JTAG, napájecí rozsahy a spotřeba shodné s ATmega640 (viz ' +
       'jeho záznam pro plný popis). 4 KB EEPROM, 8 KB SRAM.',
+    schematicImage: 'ATmega1281-2561.jpg',
     tags: 'io,mikrokontrolér,avr,atmega,atmega2561,8bit',
   },
   {
@@ -1273,6 +1490,7 @@ const IC_SPECS: IcSpec[] = [
       'Součást produktové řady AT90CAN32/64/128 (AVR jádro) a T89C51CC01/02, AT89C51CC03 (8051 ' +
       'jádro, samostatné záznamy) — všech 6 typů sdílí kompatibilní CAN periferii a jsou ' +
       'doporučeny s párovým CAN transceiverem ATA6660.',
+    schematicImage: 'AT90CAN128-64-TQFP.jpg',
     tags: 'io,mikrokontrolér,avr,at90can128,can,8bit,tqfp64,qfn64',
   },
   {
@@ -1304,6 +1522,7 @@ const IC_SPECS: IcSpec[] = [
       '"Green"/RoHS varianty (přípona "U", např. AT90CAN32-16AU/16MU). Starší AVR čipy tohoto ' +
       'typu bývají postupně nahrazovány novějšími řadami (např. ATmega32/64/128M1 s CAN) — ověř ' +
       'aktuální dostupnost u výrobce.',
+    schematicImage: 'AT90CAN128-64-TQFP.jpg',
     tags: 'io,mikrokontrolér,avr,at90can32,can,8bit,tqfp64,qfn64',
   },
   {
@@ -1332,6 +1551,7 @@ const IC_SPECS: IcSpec[] = [
       'produkty nejsou určeny pro automotive aplikace; u konkrétního nakupovaného kusu ověř ' +
       'aktuální stav u výrobce. Dostupné i bezolovnaté "Green"/RoHS varianty (přípona "U", ' +
       'např. AT90CAN64-16AU/16MU).',
+    schematicImage: 'AT90CAN128-64-TQFP.jpg',
     tags: 'io,mikrokontrolér,avr,at90can64,can,8bit,tqfp64,qfn64',
   },
 
@@ -1439,6 +1659,7 @@ const IC_SPECS: IcSpec[] = [
       'max 25 pF. Časování 1-Wire sběrnice (nutné dodržet v aplikaci): reset pulz min. 480 µs, ' +
       'time slot 60–120 µs, zotavovací doba min. 1 µs mezi bity; při parazitním napájení může ' +
       'tRSTL > 960 µs vyvolat power-on reset.',
+    schematicImage: 'DS18B20.jpg',
     tags: 'io,senzor,teploměr,ds18b20,1-wire,dallas,maxim',
   },
   {
@@ -1479,6 +1700,7 @@ const IC_SPECS: IcSpec[] = [
       'do EEPROM) typ. 1 mA (max 1,5 mA @VDD=5V). Drift ±0,2 °C (1000hodinový zátěžový test ' +
       '@125 °C/VDD=5,5 V). Vstupní/výstupní kapacita DQ max 25 pF. Časování 1-Wire sběrnice: ' +
       'reset pulz min. 480 µs, time slot 60–120 µs, zotavovací doba min. 1 µs mezi bity.',
+    schematicImage: 'DS1822.jpg',
     tags: 'io,senzor,teploměr,ds1822,1-wire,dallas,maxim,econo',
   },
   {
@@ -1506,6 +1728,7 @@ const IC_SPECS: IcSpec[] = [
       'variantu N externí pull-up na DOUT, pro variantu C není potřeba nic). Nízkonapěťový ' +
       'provoz VDD 2,7–5,5 V. K dispozici byla vývojová sada TC625EV (evaluační kit pro TC625 ' +
       'a TC12 — není součástka, nedošlo k jejímu přidání do knihovny).',
+    schematicImage: 'TC625.jpg',
     tags: 'io,senzor,teploměr,tc625,1-wire,telcom,pwm',
   },
   {
@@ -1541,6 +1764,7 @@ const IC_SPECS: IcSpec[] = [
       'filtrační kondenzátor 100 nF mezi VDD a GND. Proudový odběr: měření 0,5–2,5 mA, průměr ' +
       '0,2–1 mA, klidový (standby) 100–150 µA. Pájecí teplota max 260 °C, kontakt max 10 s. ' +
       'Skladování 10–40 °C, <60 %RH. Nedoporučeno pro bezpečnostní/nouzové aplikace.',
+    schematicImage: 'DHT11.jpg',
     tags: 'io,senzor,vlhkoměr,teploměr,dht11,jednovodičový',
   },
   {
@@ -1577,6 +1801,7 @@ const IC_SPECS: IcSpec[] = [
       'Příkazy (přes status registr/command bity): Measure Temperature (00011), Measure RH ' +
       '(00101), Read/Write Status Register (00111/00110), Soft reset (11110, min. 11 ms čekání ' +
       'před dalším příkazem). Volitelný CRC-8 kontrolní součet.',
+    schematicImage: 'SHT7x.jpg',
     tags: 'io,senzor,vlhkoměr,teploměr,sht71,sht7x,sensirion,2vodičové',
   },
   {
@@ -1594,6 +1819,7 @@ const IC_SPECS: IcSpec[] = [
       'spotřeby a příkazů), liší se pouze binováním přesnosti: SHT75 typ. ±1,8 %RH (vs. ±3,0 %RH ' +
       'u SHT71) a typ. ±0,3 °C (vs. ±0,4 °C u SHT71). Vyšší cena oproti SHT71 za lepší garantovanou ' +
       'přesnost ze stejné výrobní linky (třídění dle kalibrace).',
+    schematicImage: 'SHT7x.jpg',
     tags: 'io,senzor,vlhkoměr,teploměr,sht75,sht7x,sensirion,2vodičové',
   },
   {
@@ -1634,6 +1860,7 @@ const IC_SPECS: IcSpec[] = [
       'UL60730-1A/-2-9/-2-13, CAN/CSA E60730. 5letá záruka na výrobek, kalibrační záruka přesnosti ' +
       'vlhkosti 2 roky za standardních podmínek (agresivní plyny jako chlor/ozon/čpavek nebo ' +
       'extrémní vlhkost/teplo mohou vlhkoměrný člen degradovat mimo záruku).',
+    schematicImage: '22DTH-51M.jpg',
     tags: 'io,senzor,vlhkoměr,teploměr,duct,hvac,belimo,analogový,0-10v',
   },
   {
@@ -1681,6 +1908,7 @@ const IC_SPECS: IcSpec[] = [
       'i hardwarový reset, čtecí stavový registr a unikátní 32bit výrobní sériové číslo (příkaz ' +
       '0x3682) pro individuální identifikaci kusu. Všechny příkazy a data chráněny CRC kontrolním ' +
       'součtem. RoHS (bez Pb/Cd/Hg), kvalifikace dle JEDEC JESD47.',
+    schematicImage: 'SHT85.jpg',
     tags: 'io,senzor,vlhkoměr,teploměr,sht85,sht3x,sensirion,i2c',
   },
   {
@@ -1715,8 +1943,53 @@ const IC_SPECS: IcSpec[] = [
       'postupně vrátí do kalibrovaného stavu. Mezní hodnoty: VDD -0,3 až 6 V, napětí na pinech ' +
       '-0,3 až VDD+0,3 V, vstupní proud ±100 mA, provozní teplota -40 až +125 °C, skladovací -40 ' +
       'až +150 °C, ESD HBM 4 kV/CDM 750 V. Max. rychlost změny napájecího napětí 20 V/ms (rychlejší ' +
-      'změny mohou vést k nechtěnému resetu).',
+      'změny mohou vést k nechtěnému resetu). Součást produktové řady HOPERF "Humiture Sensor" ' +
+      '(dle katalogu HOPERFCatalog2020.pdf) — levnější sesterské typy se stejným DFN6 pouzdrem: ' +
+      'TH08 (přesnost ±0,3°C/±2%RH) a TH06 (±0,5°C/±5%RH), a teplotní (bez vlhkosti) varianta ' +
+      'T06 v pouzdře SOT23-5 (viz jejich samostatné záznamy v této knihovně pro katalogové ' +
+      'souhrnné parametry).',
+    schematicImage: 'TH10.jpg',
     tags: 'io,senzor,vlhkoměr,teploměr,th10,hoperf,i2c',
+  },
+  {
+    name: 'TH08',
+    packageType: 'SMD DFN6 (shodné pouzdro jako TH10)',
+    value:
+      'Digitální I2C senzor vlhkosti a teploty, přesnost ±0,3 °C / ±2 %RH, VDD 1,9–3,6 V',
+    notes:
+      'HOPERF "TH08" — dle katalogu "HOPERF Catalog 2020" (HOPERFCatalog2020.pdf, str. 5, ' +
+      'tabulka "Humiture Sensor") — ⚠️ SOUHRNNÝ KATALOGOVÝ ZÁZNAM (jen tabulková data ze ' +
+      'selection guide, ne plný datasheet — na rozdíl od TH10, který má vlastní kompletní ' +
+      'datasheet, viz jeho záznam v této knihovně). Levnější/méně přesná sesterská varianta ' +
+      'TH10 se stejným pouzdrem DFN6 a I2C rozhraním. Teplotní rozsah -40 až +125°C, vlhkostní ' +
+      'rozsah 0-100%RH, klidový (sleep) proud typ. 0,06µA, rozměry 10,8×9,1×1,8mm.',
+    tags: 'io,senzor,vlhkoměr,teploměr,th08,hoperf,i2c',
+  },
+  {
+    name: 'TH06',
+    packageType: 'SMD DFN6 (shodné pouzdro jako TH10)',
+    value:
+      'Digitální I2C senzor vlhkosti a teploty, přesnost ±0,5 °C / ±5 %RH, VDD 1,9–3,6 V',
+    notes:
+      'HOPERF "TH06" — dle katalogu "HOPERF Catalog 2020" (HOPERFCatalog2020.pdf, str. 5) — ⚠️ ' +
+      'SOUHRNNÝ KATALOGOVÝ ZÁZNAM (viz poznámka u "TH08"). Nejlevnější/nejméně přesná varianta ' +
+      'řady TH10/TH08/TH06, jinak mechanicky a rozhraním shodná (DFN6, I2C). Teplotní rozsah ' +
+      '-40 až +125°C, vlhkostní rozsah 0-100%RH, klidový proud typ. 0,05µA, rozměry ' +
+      '10,8×9,1×1,8mm.',
+    tags: 'io,senzor,vlhkoměr,teploměr,th06,hoperf,i2c',
+  },
+  {
+    name: 'T06',
+    packageType: 'SMD SOT23-5',
+    value: 'Digitální I2C senzor teploty (BEZ vlhkosti), přesnost ±0,3 °C, VDD 1,7–5,5 V',
+    notes:
+      'HOPERF "T06" — dle katalogu "HOPERF Catalog 2020" (HOPERFCatalog2020.pdf, str. 5) — ⚠️ ' +
+      'SOUHRNNÝ KATALOGOVÝ ZÁZNAM (viz poznámka u "TH08"). Na rozdíl od TH10/TH08/TH06 (senzory ' +
+      'vlhkosti I teploty) měří T06 POUZE teplotu — v katalogu uveden jako "Humiture Sensor" ' +
+      'skupina, ale bez humidity range/resolution (tabulka N/A), v menším a levnějším pouzdře ' +
+      'SOT23-5 (namísto DFN6). Teplotní rozsah -40 až +125°C, klidový proud typ. 0,05µA, I2C ' +
+      'rozhraní.',
+    tags: 'io,senzor,teploměr,t06,hoperf,i2c,sot23-5',
   },
   {
     name: 'IRA-S410ST03',
@@ -1746,6 +2019,7 @@ const IC_SPECS: IcSpec[] = [
       'zorného pole se typicky kombinuje s externí Fresnelovou čočkou — viz související záznam ' +
       'Murata IML-0638 v kategorii Ostatní (čočka pro příbuznou "IRA-E" řadu se stejným ' +
       'mechanickým TO-5 pouzdrem).',
+    schematicImage: 'IRA-S-TO5.jpg',
     tags: 'io,senzor,pir,pyroelektrický,pohybový,murata,ira-s410st03,jfet',
   },
   {
@@ -1774,6 +2048,7 @@ const IC_SPECS: IcSpec[] = [
       'impedanční přizpůsobení) shodný s IRA-S410ST03 — viz tam pro obecný popis. Pro rozšíření/ ' +
       'tvarování zorného pole se typicky kombinuje s externí Fresnelovou čočkou — viz související ' +
       'záznamy Murata IML-0637 a IML-0638 v kategorii Ostatní.',
+    schematicImage: 'IRA-S-TO5.jpg',
     tags: 'io,senzor,pir,pyroelektrický,pohybový,murata,ira-s230st01,jfet',
   },
   {
@@ -1803,6 +2078,7 @@ const IC_SPECS: IcSpec[] = [
       'viz tam pro obecný popis. Pro rozšíření/tvarování zorného pole se typicky kombinuje s ' +
       'externí Fresnelovou čočkou — viz související záznamy Murata IML-0637 a IML-0638 v kategorii ' +
       'Ostatní.',
+    schematicImage: 'IRA-S-TO5.jpg',
     tags: 'io,senzor,pir,pyroelektrický,pohybový,murata,ira-s510st01,jfet,kvadrátní',
   },
   {
@@ -1831,6 +2107,7 @@ const IC_SPECS: IcSpec[] = [
       'trvání 0,5 ms). Frekvenční charakteristika má výraznou rezonanční špičku okolo 20 kHz (viz ' +
       'graf v datasheetu) — mimo tuto oblast prakticky rovný výstup v rozsahu cca 1 Hz–10 kHz. ' +
       'Určeno pro spotřební elektroniku (detekce pádu/nárazu, ochrana disků, alarmy apod.).',
+    schematicImage: 'PKGS-00LDP1-R.jpg',
     tags: 'io,senzor,piezoelektrický,rázový,vibrační,náboj,murata,pkgs,shock-sensor',
   },
   {
@@ -1859,6 +2136,7 @@ const IC_SPECS: IcSpec[] = [
       'PKGS-00LDP1-R kvůli automotive nasazení). Izolační odpor min. 10 000 MΩ. Nelinearita typ. ' +
       '1 %. Rázová odolnost 3000 G (doba trvání 0,3 ms). Frekvenční charakteristika s výraznou ' +
       'rezonanční špičkou okolo 37 kHz, mimo tuto oblast plochý výstup v pásmu cca 1 Hz–10 kHz.',
+    schematicImage: 'PKGS-45TAV-R.jpg',
     tags: 'io,senzor,piezoelektrický,rázový,vibrační,napěťový,murata,pkgs,shock-sensor,automotive,tpms,aec-q200',
   },
   {
@@ -1887,6 +2165,7 @@ const IC_SPECS: IcSpec[] = [
       'PKGS-00LDP1-R). Výstupem je elektrický náboj úměrný zrychlení/rázu, pro použitelný napěťový ' +
       'signál vyžaduje externí nábojový zesilovač (charge amplifier) — viz záznam PKGS-00LDP1-R pro ' +
       'obecné vysvětlení principu. Určeno pro spotřební elektroniku.',
+    schematicImage: 'PKGS-25WXP1-R.jpg',
     tags: 'io,senzor,piezoelektrický,rázový,vibrační,náboj,murata,pkgs,shock-sensor',
   },
   {
@@ -1921,6 +2200,7 @@ const IC_SPECS: IcSpec[] = [
       'teplota -40 až +85 °C. Určeno primárně pro detekci nárazu/rázu a ochranu proti zápisu u ' +
       'HDD nebo optických pickup mechanismů, případně pro feedforward kompenzaci setrvačných sil ' +
       'u téhož typu mechanismů.',
+    schematicImage: 'BD3852MUZ-Z.jpg',
     tags: 'io,zesilovač,nábojový-zesilovač,rázový-senzor,shock-sensor,notch-filtr,rohm,bd3852muz,vqfn',
   },
   {
@@ -1957,6 +2237,7 @@ const IC_SPECS: IcSpec[] = [
       '(MEMS) — nutná opatrná manipulace. Typické aplikace: GPS navigace, rozpoznávání a ' +
       'logování nárazů, herní/VR ovladače, detekce pohybu, úsporné řízení spotřeby přenosných ' +
       'zařízení, monitorování/kompenzace vibrací, detekce volného pádu, 6D orientace.',
+    schematicImage: 'LSM330DL.jpg',
     tags: 'io,senzor,akcelerometr,gyroskop,imu,mems,6osý,i2c,spi,st,lsm330dl',
   },
   {
@@ -1969,6 +2250,7 @@ const IC_SPECS: IcSpec[] = [
       'Jednoosý vibrační křemenný (piezoelektrický) gyroskop (senzor úhlové rychlosti), ' +
       'analogový ratiometrický výstup, rozsah ±60°/s, citlivost 25 mV/(°/s) typ., napájení ' +
       '5,0 V ±0,25 V',
+    schematicImage: 'XV-8000CB.jpg',
     notes:
       'Epson Toyocom "XV-8000CB — Ultra Miniature Size Gyro Sensor (for Car Navigation System)" — ' +
       'jednoosý (yaw rate) analogový gyroskop založený na vibrujícím křemenném rezonátoru ' +
@@ -2014,6 +2296,7 @@ const IC_SPECS: IcSpec[] = [
       'napětí VB 12 V. Provozní teplota -40 až +120 °C, skladovací -65 až +120 °C. Určeno pro ' +
       'bezkontaktní měření stejnosměrného i střídavého proudu v průmyslových a energetických ' +
       'aplikacích (proudové senzory, ochrany, měřicí přístroje).',
+    schematicImage: 'ZMC10.jpg',
     tags: 'io,senzor,proud,magnetorezistivní,proudový-senzor,galvanické-oddělení,zmc10,dil-14',
   },
   {
@@ -2048,6 +2331,7 @@ const IC_SPECS: IcSpec[] = [
       '+85 °C, max. teplota přechodu 165 °C, max. skladovací teplota 170 °C. UL rozpoznáno. ' +
       'Doporučen externí blokovací kondenzátor 0,1 µF na Vcc. Určeno pro řízení motorů, detekci/ ' +
       'management zátěže, spínané zdroje, nadproudovou ochranu, elektrická vozidla.',
+    schematicImage: 'ACS752SCA-050.jpg',
     tags: 'io,senzor,proud,hallův-jev,proudový-senzor,galvanické-oddělení,allegro,acs752,izolovaný',
   },
   {
@@ -2061,6 +2345,7 @@ const IC_SPECS: IcSpec[] = [
       'Hallův lineární izolovaný senzor proudu (chopper-stabilizovaný BiCMOS Hall IC), obousměrný ' +
       '±50 A, citlivost 40 mV/A typ., napájení 5,0 V, izolační napětí 3 kVRMS, dostupný v ' +
       'průmyslové (S, -20 až +85 °C) i automotive (L, -40 až +150 °C) teplotní verzi',
+    schematicImage: 'ACS754xCB-050.jpg',
     notes:
       'Allegro MicroSystems "ACS754xCB-050" katalogový datasheet (ACS754050-DS, Rev. 3) — sourozenec ' +
       'ACS752SCA-050 v této knihovně v rámci téže výrobcem deklarované rodiny "ACS75x" (shodná ' +
@@ -2099,6 +2384,7 @@ const IC_SPECS: IcSpec[] = [
       'Hallův lineární izolovaný senzor proudu (chopper-stabilizovaný BiCMOS Hall IC), obousměrný ' +
       '±150 A, citlivost 13,3 mV/A typ., napájení 5,0 V, izolační napětí 3 kVRMS, dostupný v ' +
       'průmyslové (S, -20 až +85 °C) i automotive (K, -40 až +125 °C) teplotní verzi',
+    schematicImage: 'ACS754xCB-150.jpg',
     notes:
       'Allegro MicroSystems "ACS754xCB-150" katalogový datasheet (ACS754150-DS, Rev. 4) — ⚠️ ' +
       'vyšší-proudová varianta ACS754xCB-050 v této knihovně (samostatný záznam): stejné ' +
@@ -2135,6 +2421,7 @@ const IC_SPECS: IcSpec[] = [
       'Hallův lineární izolovaný senzor proudu (chopper-stabilizovaný BiCMOS Hall IC), ' +
       'JEDNOSMĚRNÝ (unipolární) 0–50 A, citlivost 60 mV/A typ., klidové výstupní napětí 0,6 V, ' +
       'napájení 5,0 V, izolační napětí 3 kVRMS',
+    schematicImage: 'ACS755xCB-050.jpg',
     notes:
       'Allegro MicroSystems "ACS755xCB-050" katalogový datasheet (ACS755050-DS, Rev. 2, 2005) — ' +
       'další sourozenec ACS752SCA-050/ACS754xCB-050/ACS754xCB-150 v této knihovně v rámci téže ' +
@@ -2193,6 +2480,7 @@ const IC_SPECS: IcSpec[] = [
       'teplotou klesá lineárně na cca 60 % @75°C), skladovací -30 až +90 °C. Bezpečnostní ' +
       'certifikace UL 508, hořlavost UL94V-0. Doporučen externí blokovací kondenzátor 1 µF mezi ' +
       'piny 4 (GND) a 1 (+5V) pro potlačení šumu.',
+    schematicImage: 'CSXX05B.jpg',
     tags: 'io,senzor,proud,hallův-jev,proudový-senzor,galvanické-oddělení,cui,csxx05b,open-loop,izolovaný,sip',
   },
   {
@@ -2230,6 +2518,7 @@ const IC_SPECS: IcSpec[] = [
       '(typ. 15 µs), typické pro darlingtonové zapojení (vyšší zesílení na úkor rychlosti). ' +
       'Provozní/skladovací teplota -40 až +85 °C. Optimální detekční vzdálenost od odrazné plochy ' +
       'cca 0,15" (3,8 mm) dle grafu závislosti kolektorového proudu na vzdálenosti.',
+    schematicImage: 'HOA0709-011.jpg',
     tags: 'io,senzor,reflexní,optický,photodarlington,ired,honeywell,hoa0709,proximity',
   },
   {
@@ -2264,6 +2553,7 @@ const IC_SPECS: IcSpec[] = [
       '@Ee=0,1mW/cm²/535nm/VR=5V, temný proud typ. 1 nA (max 5 nA) @VR=5V, kapacita typ. 5 pF ' +
       '@VR=5V/1MHz, VR max 16 V. Provozní/skladovací teplota -40 až +85 °C. ESD odolnost 2 kV ' +
       '(HBM).',
+    schematicImage: 'SFH7051.jpg',
     tags: 'io,senzor,ppg,biomon,tepová-frekvence,fotodioda,zelená-led,osram,sfh7051,wearable,optický',
   },
   {
@@ -2300,6 +2590,7 @@ const IC_SPECS: IcSpec[] = [
       'Provozní/skladovací teplota -40 až +85 °C. ESD odolnost 2 kV (HBM). Určeno pro nositelnou ' +
       'elektroniku (chytré hodinky, fitness náramky) a mobilní zařízení s funkcí měření tepové ' +
       'frekvence a saturace kyslíku v krvi.',
+    schematicImage: 'SFH7050.jpg',
     tags: 'io,senzor,ppg,spo2,pulzní-oxymetrie,biomon,tepová-frekvence,fotodioda,osram,sfh7050,wearable,optický',
   },
   {
@@ -2334,6 +2625,7 @@ const IC_SPECS: IcSpec[] = [
       'skladovací teplota -40 až +85 °C. ESD odolnost 2 kV (HBM). Určeno pro nositelnou ' +
       'elektroniku (chytré hodinky, fitness náramky) a mobilní zařízení s nejvyššími nároky na ' +
       'přesnost měření tepové frekvence a SpO2.',
+    schematicImage: 'SFH7060.jpg',
     tags: 'io,senzor,ppg,spo2,pulzní-oxymetrie,biomon,tepová-frekvence,fotodioda,osram,sfh7060,wearable,optický',
   },
   {
@@ -2344,6 +2636,7 @@ const IC_SPECS: IcSpec[] = [
     value:
       'Miniaturní fotoakustický CO2 senzor s integrovaným senzorem vlhkosti/teploty (SHT4x), I2C ' +
       'rozhraní (adr. 0x62), rozsah 0–40 000 ppm, přesnost ±(50 ppm + 5 %) v 400–2000 ppm, VDD 2,4–5,5 V',
+    schematicImage: 'SCD4x.jpg',
     notes:
       'Sensirion "SCD4x — Breaking the size barrier in CO2 sensing" (verze 1.1, duben 2021) — ' +
       'nejmenší CO2 senzorový modul Sensirion, založený na patentované fotoakustické senzorové ' +
@@ -2376,6 +2669,7 @@ const IC_SPECS: IcSpec[] = [
     value:
       'Miniaturní fotoakustický CO2 senzor, vyšší přesnostní třída s podporou single-shot měření ' +
       '— rozsah 400–5000 ppm, přesnost ±(40 ppm + 5 %), jinak elektricky shodný se SCD40',
+    schematicImage: 'SCD4x.jpg',
     notes:
       'Sensirion "SCD4x" (verze 1.1, duben 2021) — vyšší přesnostní varianta ve stejné rodině ' +
       'jako SCD40 (samostatný záznam, viz tam pro plný popis fotoakustické PASens® technologie, ' +
@@ -2402,6 +2696,7 @@ const IC_SPECS: IcSpec[] = [
     value:
       'USB-I2C most (single-chip USB to I2C interface), USB 2.0 Full Speed, I2C do 3,4 MHz ' +
       '(High Speed mode), VCC 2,97–5,5 V',
+    schematicImage: 'FT200XD.jpg',
     notes:
       'FTDI (Future Technology Devices International) FT200XD "USB I2C Slave IC Datasheet" ' +
       'v1.3 (dok. FT_000628). Jednočipové řešení USB↔I2C bez nutnosti psát USB firmware — celý ' +
@@ -2458,6 +2753,7 @@ const IC_SPECS: IcSpec[] = [
       '(v režimu SHDN) / 60 µA (jiný způsob vypnutí, dle poznámky výrobce). Teplotní rozsah ' +
       '-40 až +85 °C (EIBZ/EIVZ) nebo -40 až +125 °C (EFBZ/EFVZ). Použití: telekomunikační ' +
       'zařízení, řízení motorů/enkodéry, PLC, průmyslové/procesní sítě.',
+    schematicImage: 'ISL32173E-273E.jpg',
     tags: 'io,rs485,rs422,přijímač,receiver,isl32173e,transceiver,soic,tssop',
   },
   {
@@ -2475,6 +2771,7 @@ const IC_SPECS: IcSpec[] = [
       'elektricky shodné s ISL32173E. ⚠️ Dle datasheetu (2016) je tento díl "No longer available" ' +
       '— výrobcem doporučená náhrada je ISL32173E (s jiným typem enable pinů, EN/EN̄ místo EN12/' +
       'EN34 — nutná úprava zapojení).',
+    schematicImage: 'ISL32175E-275E.jpg',
     tags: 'io,rs485,rs422,přijímač,receiver,isl32175e,transceiver,soic,tssop,nedostupné',
   },
   {
@@ -2494,6 +2791,7 @@ const IC_SPECS: IcSpec[] = [
       'VOH/VOL a prahy vstupů se řídí VL, ne VCC. Rychlost 80 Mbps, max. tPLH/tPHL 16 ns, part-to-' +
       'part skew 8 ns. Odběr: 15 mA max (plné zatížení), 8,5 mA (poloviční), 2,5 mA (SHDN via ' +
       'SHDNEN). Nutno napájet VCC dříve než VL (pokud odděleně).',
+    schematicImage: 'ISL32177E-277E.jpg',
     tags: 'io,rs485,rs422,přijímač,receiver,isl32177e,transceiver,qfn,shdn',
   },
   {
@@ -2510,6 +2808,7 @@ const IC_SPECS: IcSpec[] = [
       'výrazně nižší odběr: 5,5 mA max (aktivní, plné zatížení) oproti 15 mA u 80Mbps verze. ' +
       'tPLH/tPHL max 55 ns, part-to-part skew max 20 ns (vyšší než u 80Mbps verze — nižší nároky ' +
       'na přesné párování kanálů při pomalejších datových tocích).',
+    schematicImage: 'ISL32173E-273E.jpg',
     tags: 'io,rs485,rs422,přijímač,receiver,isl32273e,transceiver,soic,tssop,nízký-odběr',
   },
   {
@@ -2524,6 +2823,7 @@ const IC_SPECS: IcSpec[] = [
       'vlastností rodiny. ISL32275E: nízkopříkonová (20 Mbps) obdoba ISL32175E — stejné ' +
       '16vývodové pouzdro a párové enable piny EN12/EN34 (na rozdíl od ISL32273E se společným ' +
       'EN/EN̄), odběr max 5,5 mA (plné zatížení) / 3,5 mA (poloviční zatížení přes EN12/EN34).',
+    schematicImage: 'ISL32175E-275E.jpg',
     tags: 'io,rs485,rs422,přijímač,receiver,isl32275e,transceiver,soic,tssop,nízký-odběr',
   },
   {
@@ -2540,6 +2840,7 @@ const IC_SPECS: IcSpec[] = [
       'napěťové systémy, ale nižší max. datový tok (20 Mbps) výměnou za nižší odběr: max 5,5 mA ' +
       '(plné zatížení) / 3,5 mA (poloviční) / 1,2 mA (SHDN via SHDNEN), oproti 15/8,5/2,5 mA ' +
       'u 80Mbps verze ISL32177E.',
+    schematicImage: 'ISL32177E-277E.jpg',
     tags: 'io,rs485,rs422,přijímač,receiver,isl32277e,transceiver,qfn,shdn,nízký-odběr',
   },
 
@@ -2571,6 +2872,7 @@ const IC_SPECS: IcSpec[] = [
       'bufferu (jen 4kanálové napájení TFT budičů) — viz samostatné záznamy MAX25221 (s VCOM ' +
       'bufferem a NTC teplotní kompenzací) a MAX25221B (s VCOM bufferem a odlišným chováním EN ' +
       'pinu při zapnutí) pro rozdíly v rámci rodiny.',
+    schematicImage: 'MAX25220.jpg',
     tags: 'io,napájecí-obvod,tft-lcd,automotive,max25220,boost,i2c,aec-q100',
   },
   {
@@ -2591,6 +2893,7 @@ const IC_SPECS: IcSpec[] = [
       'flickeru LCD napříč provozní teplotou). Dostupný i v 32 TQFN-EP i 32 SWTQFN-EP (side-' +
       'wettable, pro AOI kontrolu pájených spojů) pouzdru — SWTQFN varianta byla v době ' +
       'vydání datasheetu označena jako "future product".',
+    schematicImage: 'MAX25221-B.jpg',
     tags: 'io,napájecí-obvod,tft-lcd,automotive,max25221,vcom,boost,i2c,aec-q100,ntc',
   },
   {
@@ -2608,6 +2911,7 @@ const IC_SPECS: IcSpec[] = [
       'výrobce) — určeno pro aplikace vyžadující odlišné řízení zapínání oproti standardnímu ' +
       'I2C/stand-alone sekvenování MAX25221. Dostupný pouze v 32 TQFN-EP pouzdru (bez SWTQFN ' +
       'varianty).',
+    schematicImage: 'MAX25221-B.jpg',
     tags: 'io,napájecí-obvod,tft-lcd,automotive,max25221b,vcom,boost,i2c,aec-q100',
   },
   {
@@ -2635,6 +2939,7 @@ const IC_SPECS: IcSpec[] = [
       'výstup (open-drain). IN 2,65–5,5 V (ATEC vyžaduje 4,5–5,5 V), interní V18 LDO 1,8 V @50 mA. ' +
       'Varianty: ATEA (420 kHz, AVDD/HVINP do 10,5 V), ATEB (2,1 MHz, do 10,5 V), ATEC (2,1 MHz, ' +
       'do 12 V, vyšší min. IN 4,5 V). Dostupný v TQFN-EP i SWTQFN-EP (side-wettable) pouzdru.',
+    schematicImage: 'MAX25520.jpg',
     tags: 'io,napájecí-obvod,tft-lcd,automotive,max25520,boost,invertor,aec-q100',
   },
   {
@@ -2665,6 +2970,7 @@ const IC_SPECS: IcSpec[] = [
       '4,5–20 V. Ochrany: UVLO (7,6–8,0 V na PVIN), tepelné vypnutí při 150 °C (reset při 100 °C), ' +
       'programovatelný soft-start (SS/SSB/DLY1/DLY2 piny) pro řízené sekvenování všech výstupů. ' +
       'Dostupný jako ISL97652IRZ (48 Ld 7×7 QFN, i v -T/-TK verzích pro pásmo/cívku).',
+    schematicImage: 'ISL97652.jpg',
     tags: 'io,napájecí-obvod,lcd-tv,vcom,boost,buck,nábojová-pumpa,isl97652,intersil,qfn',
   },
   {
@@ -2695,6 +3001,7 @@ const IC_SPECS: IcSpec[] = [
       'externí ochranný FET. Bandgap reference VREF s bypass kondenzátorem. Vstup VDD 3–5,5 V, ' +
       'klidový proud 1,7 mA (aktivní)/750 µA (disabled). Dostupný jako ISL78010ANZ (32 Ld 5×5 ' +
       'TQFP), i s evaluačním kitem ISL78010EVAL1Z.',
+    schematicImage: 'ISL78010.jpg',
     tags: 'io,napájecí-obvod,tft-lcd,automotive,ldo,boost,isl78010,renesas,intersil,tqfp',
   },
   {
@@ -2721,6 +3028,7 @@ const IC_SPECS: IcSpec[] = [
       'a časované zpožděné poruchové zablokování (fault latch) na všech výstupech, tepelné ' +
       'vypnutí. VIN 2,5–5,5 V, aktivní enable pin (EN) se 4µA pull-down. Dostupný jako ' +
       'EC9223NNQ1R.',
+    schematicImage: 'EC9223.jpg',
     tags: 'io,napájecí-obvod,tft-lcd,vcom,boost,nábojová-pumpa,ec9223,e-cmos,wqfn',
   },
   {
@@ -2751,6 +3059,7 @@ const IC_SPECS: IcSpec[] = [
       'kóduje UVLO práh, přepěťový a nadproudový limit a variantu balení (např. ' +
       'XC9516A21AZR-G = UVLO 1,87 V, OVP 21 V, OCP 1,3 A, QFN-20, 1000 ks/cívka, bezhalogenová ' +
       '"-G" verze). RoHS/Pb-free.',
+    schematicImage: 'XC9516.jpg',
     tags: 'io,napájecí-obvod,tft-lcd,boost,nábojová-pumpa,xc9516,torex,qfn',
   },
   {
@@ -2781,6 +3090,7 @@ const IC_SPECS: IcSpec[] = [
       'VDD 3,8 V, VCSEL proud 15 mA, ESD (HBM) 2000 V (200 V na LEDA pinu kvůli VCSEL). Provozní ' +
       'teplota -30 až +70 °C. Aplikace: detekce přiblížení objektu, touch panel control v mobilních/' +
       'přenosných zařízeních. RoHS a bez halogenu.',
+    schematicImage: 'LTR-706PS-01.jpg',
     tags: 'io,senzor,proximity,i2c,vcsel,liteon,ltr-706ps-01,optický,chipled',
   },
   {
@@ -2812,6 +3122,7 @@ const IC_SPECS: IcSpec[] = [
       '400 kbit/s. Aplikace: automatické řízení jasu podsvícení displeje (mobilní telefony, ' +
       'notebooky, monitory, TV, navigace, digitální fotorámečky, palubní desky). RoHS a bez ' +
       'halogenu.',
+    schematicImage: 'LTR-329ALS-01.jpg',
     tags: 'io,senzor,als,okolní-osvětlení,i2c,liteon,ltr-329als-01,optický,chipled',
   },
   {
@@ -2823,6 +3134,7 @@ const IC_SPECS: IcSpec[] = [
       'Polovodičový (SnO2) plynový senzor ozónu (O3), odporový typ, detekční rozsah 10 ppb–2 ppm ' +
       'O3, napájení senzoru Vc 5 V AC/DC, topné napětí Vh 6 V AC/DC, topný odpor 31 Ω, spotřeba ' +
       'topení < 1100 mW',
+    schematicImage: 'MQ-131.jpg',
     notes:
       'Hanwei Electronics "MQ-131 Gas Sensor — Technical Data" — ⚠️ NOVÁ TŘÍDA senzoru v této ' +
       'knihovně: první polovodičový (metal-oxidový) plynový senzor, dosud žádný podobný typ ' +
@@ -2878,6 +3190,7 @@ const IC_SPECS: IcSpec[] = [
       'vlhkost max 95 % nekondenzující. Provoz do nadmořské výšky 5000 m. MTBF >2 000 000 h (dle ' +
       'MIL-HDBK-217F @25°C). Pájecí teplota max 260°C/10s. Certifikace: CB scheme (IEC 60950-1), ' +
       'UL 60950-1, CSA 60950-1-07. RoHS 2011/65/EU, REACH.',
+    schematicImage: 'TRA-1-Series.jpg',
     tags: 'io,dc-dc,měnič,izolovaný,napájecí-obvod,tracopower,tra1,sip,1w',
   },
   {
@@ -2908,6 +3221,7 @@ const IC_SPECS: IcSpec[] = [
       '80 dB, výstupní šum typ 80 µVrms (A-vážený). PWM vzorkovací kmitočet 256/352,8/384 kHz dle ' +
       'fs=32/44,1/48 kHz. Aplikace: ploché TV (LCD/OLED), domácí audio, desktop PC, zábavní ' +
       'zařízení, elektronické hudební nástroje.',
+    schematicImage: 'BM28720MUV.jpg',
     tags: 'io,zesilovač,audio,class-d,dsp,digitální,rohm,bm28720muv,reproduktor,i2s,vqfn',
   },
   {
@@ -2940,6 +3254,7 @@ const IC_SPECS: IcSpec[] = [
       'Doporučený napájecí rozsah 10–24 V. Zařazeno do kategorie "IO", stejně jako BM28720MUV v ' +
       'této knihovně. Aplikace: TV (LCD/OLED), domácí audio, desktop PC, zábavní zařízení, ' +
       'elektronické hudební nástroje.',
+    schematicImage: 'BM28723MUV.jpg',
     tags: 'io,zesilovač,audio,class-d,dsp,digitální,rohm,bm28723muv,reproduktor,i2s,vqfn',
   },
   {
@@ -2973,6 +3288,7 @@ const IC_SPECS: IcSpec[] = [
       'dead-reckoning), detekce podlaží ve výtahu, outdoor navigace, předpověď počasí, indikace ' +
       'vertikální rychlosti (výstup/sestup). Cílová zařízení: mobilní telefony, tablety, GPS ' +
       'zařízení, domácí meteostanice, letecké hračky, hodinky.',
+    schematicImage: 'BMP280.jpg',
     tags: 'io,senzor,tlak,barometrický,i2c,spi,mems,piezorezistivní,bosch,bmp280,lga',
   },
   {
@@ -3012,6 +3328,7 @@ const IC_SPECS: IcSpec[] = [
       '(detekce patra), předpověď počasí, indikace vertikální rychlosti. Cílová zařízení: mobilní ' +
       'telefony, tablety, GPS zařízení, navigační systémy, herní ovladače, kamery, domácí ' +
       'meteostanice, letecké hračky, hodinky.',
+    schematicImage: 'BME280.jpg',
     tags: 'io,senzor,vlhkost,tlak,teplota,barometrický,i2c,spi,mems,bosch,bme280,lga',
   },
   {
@@ -3043,7 +3360,619 @@ const IC_SPECS: IcSpec[] = [
       'grafu nad určitou teplotou), skladovací -55 až +125 °C, vlhkost 95 % RH. MTBF @25°C ' +
       '915×10³ hodin, @85°C 170×10³ hodin (dle MIL-HDBK 217F). Zařazeno do kategorie "IO", stejně ' +
       'jako TRA 1 Series v této knihovně. Pouzdro UL94V-0.',
+    schematicImage: 'REZ-Series.jpg',
     tags: 'io,dc-dc,měnič,izolovaný,neregulovaný,napájecí-obvod,recom,econoline,rez-series,sip7,2w',
+  },
+
+  // Optočleny
+  {
+    name: 'LTV-356T',
+    packageType:
+      'SMD mini-flat pouzdro (4 vývody typu gull-wing), rozměry cca 5,3×3,85×2,0 mm, rozteč ' +
+      'vývodů 2,54 mm, taping 12mm/3000ks na cívce (varianta -TP nebo bez přípony), MSL1',
+    value:
+      'Optočlen (fototranzistorový optočlen) s galvanickým oddělením, proudový přenosový ' +
+      'poměr CTR 50–600 % @IF=5mA/VCE=5V dle rankové třídy, izolační napětí Viso 3750 Vrms, ' +
+      'VCEO 80 V',
+    notes:
+      'LITE-ON Optoelectronics "LTV-356T series — Photocoupler" (dok. DS70-2001-010, rev. R, ' +
+      'účinnost 23.3.2024). ⚠️ NOVÁ SUB-KATEGORIE v "IO": první optočlen (photocoupler) v této ' +
+      'knihovně — dvojice IR LED (vstup) + fototranzistor (výstup) v jednom pouzdře, poskytující ' +
+      'galvanické oddělení mezi vstupním a výstupním obvodem (na rozdíl od "tripolárních" ' +
+      'TLP140/200/270 v této knihovně, což jsou navzdory podobnému názvu Toshiba TLP série ' +
+      'TRISIL přepěťové ochrany, ne optočleny). Zapojení pinů: 1=Anoda, 2=Katoda, 3=Emitor, ' +
+      '4=Kolektor. Vstup (LED): VF typ. 1,2V/max 1,4V @IF=20mA, IF max 50mA (trvale), IFP max ' +
+      '1A (impulzně 100µs/100Hz), VR max 6V, IR max 10µA @VR=4V, CT max 250pF, výkonová ztráta ' +
+      'P max 70mW. Výstup (fototranzistor): VCEO 80V, VECO 6V, IC max 50mA, PC max 150mW, ' +
+      'ICEO max 100nA @VCE=20V/IF=0. CTR (proudový přenosový poměr, IC/IF×100%) 50–600% ' +
+      '@IF=5mA/VCE=5V — dostupné rankové třídy A (80-160%), B (130-260%), C (200-400%), D ' +
+      '(300-600%), nebo neroztříděné (50-600%). VCE(sat) max 0,2V @IF=20mA/IC=1mA. Izolační ' +
+      'odpor Riso 5×10¹⁰–1×10¹¹ Ω @DC500V/40-60% RH. Plovoucí kapacita Cf typ. 0,6pF/max 1pF ' +
+      '@f=1MHz. Doba odezvy: náběh tr typ. 4µs/max 18µs, doběh tf typ. 3µs/max 18µs @VCC=5V/ ' +
+      'IC=2mA/RL=100Ω. Celkový ztrátový výkon Ptot 170mW. Izolační napětí Viso 3750Vrms (AC, ' +
+      '1 min, měřeno mezi zkratovanou anodou/katodou a zkratovaným kolektorem/emitorem). ' +
+      'Provozní teplota -55 až +110°C, skladovací -55 až +150°C, pájecí teplota 260°C. ' +
+      'Certifikace: UL1577, VDE DIN EN60747-5-5 (VDE 0884-5), CSA CA5A, CQC GB4943.1-2022/ ' +
+      'GB8898-2011, FIMKO/DEMKO/SEMKO/NEMKO. ESD odolnost HBM 8000V/MM2000V/CDM2000V. RoHS, ' +
+      'MSL1, k dispozici i bezhalogenová varianta.',
+    schematicImage: 'LTV-356T.jpg',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,liteon,ltv-356t,mini-flat,smd',
+  },
+  {
+    name: 'EL817 Series',
+    packageType:
+      'standardní THT DIP-4 (6,5×4,58mm, rozteč 2,54mm), volitelně varianta "M" (širší rozteč ' +
+      'vývodů 0,4"/10,16mm) nebo SMD lead-formy S/S1 (povrchová montáž, standardní/nízkoprofilová) ' +
+      '/S2 (gull-wing), páskování TA/TB/TU/TD, volitelný železný nebo měděný rámeček vývodů',
+    value:
+      'Optočlen (fototranzistorový optočlen) s galvanickým oddělením, proudový přenosový poměr ' +
+      'CTR 50–600 % @IF=5mA/VCE=5V dle rankové třídy, izolační napětí Viso 5000 Vrms, VCEO 35 V',
+    schematicImage: 'EL817.jpg',
+    notes:
+      'Everlight Electronics "EL817 Series — 4 Pin DIP Phototransistor Photocoupler" (dok. ' +
+      'DPC-0000046, rev. 10, vydáno 21.4.2010/aktualizováno 2010-05-29). Druhý optočlen v této ' +
+      'knihovně vedle LITE-ON LTV-356T (viz jeho záznam pro obecný kontext optočlenů) — na ' +
+      'rozdíl od LTV-356T (výhradně SMD mini-flat pouzdro, Viso 3750Vrms, VCEO 80V) jde o klasický ' +
+      'THT DIP-4 optočlen (s volitelnými SMD variantami leadformu) s vyšší izolační pevností ' +
+      '(5000Vrms) a vyšší kreepage/clearance vzdáleností (>7,62mm), ale nižším VCEO (35V). ' +
+      'Zapojení pinů shodné s LTV-356T: 1=Anoda, 2=Katoda, 3=Emitor, 4=Kolektor. Objednací kód ' +
+      'EL817(X)(Y)(Z)-FV: X=leadform (S/S1/S2/M/prázdné), Y=CTR ranková třída (A/B/C/D/X/Y/ ' +
+      'prázdné), Z=páskování (TA/TB/TU/TD/prázdné), F=materiál rámečku vývodů (F=železo, ' +
+      'prázdné=měď), V=volitelná VDE certifikace. Rankové třídy CTR (@IF=5mA/VCE=5V): základní ' +
+      'EL817 (50–600%), A (80–160%), B (130–260%), C (200–400%), D (300–600%), X (100–200%), Y ' +
+      '(150–300%). Vstup (LED): VF typ. 1,2V/max 1,4V @IF=20mA, IF max 60mA (trvale), IFP max 1A ' +
+      '(impulzně 1µs), VR max 6V, IR max 10µA @VR=4V, Cin max 250pF @1kHz, PD max 100mW ' +
+      '(derating 2,9mW/°C nad 100°C). Výstup (fototranzistor): VCEO 35V, VECO 6V, IC max 50mA, ' +
+      'PC max 150mW (derating 5,8mW/°C nad 100°C), ICEO max 100nA @VCE=20V/IF=0. VCE(sat) typ. ' +
+      '0,1V/max 0,2V @IF=20mA/IC=1mA. Izolační odpor RIO min 5×10¹⁰Ω @VIO=500VDC/40-60%RH. ' +
+      'Plovoucí kapacita CIO typ. 0,6pF/max 1,0pF @VIO=0/f=1MHz. Mezní kmitočet fc typ. 80kHz ' +
+      '(-3dB) @VCE=5V/IC=2mA/RL=100Ω. Doba náběhu tr typ. 4µs/max 18µs, doba doběhu tf typ. ' +
+      '3µs/max 18µs (shodné podmínky jako LTV-356T). Celkový ztrátový výkon PTOT max 200mW. ' +
+      'Provozní teplota -55 až +110°C, skladovací -55 až +125°C, pájecí teplota 260°C/10s. ' +
+      'Certifikace: UL (E214129), VDE (132249), SEMKO (716108), NEMKO (P08209467), DEMKO ' +
+      '(314683), FIMKO (FI 224433), CSA (1143601). Pb-free, RoHS.',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,everlight,el817,dip-4,tht',
+  },
+  {
+    name: 'PC817 Series',
+    packageType:
+      'THT DIP-4, epoxidová pryskyřice, rozměry 6,5×4,60mm, rozteč vývodů 2,54mm, vývody z ' +
+      'měděné slitiny, povrchová úprava dle obchodního označení — SnBi povlak (1-4% Bi, ' +
+      'business dealing name "...NSZ1B") nebo čistý cín (business dealing name "...CSZ9F"), ' +
+      'hmotnost ~0,23g',
+    value:
+      'Optočlen (fototranzistorový optočlen) s galvanickým oddělením, kolektorový proud IC ' +
+      '2,5–30 mA @IF=5mA/VCE=5V dle rankové třídy (rank A 4,0–8,0 mA, rank B 6,5–13 mA aj. — ' +
+      'viz poznámka), izolační napětí Viso 5000 Vrms, VCEO 80 V',
+    notes:
+      'Sharp Corporation "Specifications — Photocoupler, Model No. PC817" — dvě verze téhož ' +
+      'datasheetu evidované v této knihovně: business dealing name "PC817X1NSZ1B" (rank A, ' +
+      'spec. ED-16P010, vydáno 7.10.2016, tovární označení "K" = Kyushu Denshi Japonsko, SnBi ' +
+      'povlak vývodů) a "PC817X2CSZ9F" (rank B, spec. ED-14P010, vydáno 24.9.2014, tovární ' +
+      'označení "W" = Lite-ON OPTO Technology Changzhou Čína, čistý cín na vývodech) — obě mají ' +
+      'shodnou elektro-optickou charakteristiku, liší se jen konkrétním rankem/suffixem, ' +
+      'výrobním závodem a povrchovou úpravou vývodů. Třetí optočlen v této knihovně vedle ' +
+      'LITE-ON LTV-356T a Everlight EL817 (viz jejich záznamy) — patrně nejrozšířenější a ' +
+      'nejčastěji citovaný obecný optočlen na trhu (mnoho jiných výrobců nabízí přímé "PC817" ' +
+      'ekvivalenty/klony). Zapojení pinů shodné s ostatními optočleny v knihovně: 1=Anoda, ' +
+      '2=Katoda, 3=Emitor, 4=Kolektor. Základní řada "PC817" zahrnuje širokou škálu rankových ' +
+      'tříd dle tabulky obchodních označení (přípona "NSZ1B" nebo "CSZ9F" dle výše): PC817XN.. ' +
+      '(bez/s libovolným rankem, Ic 2,5-30mA), PC817X1..=A (4,0-8,0mA), X2=B (6,5-13mA), X3=C ' +
+      '(10-20mA), X4=D (15-30mA), X5=A nebo B (4,0-13mA), X6=B nebo C (6,5-20mA), X7=C nebo D ' +
+      '(10-30mA), X8=A, B nebo C (4,0-20mA), X9=B, C nebo D (6,5-30mA), X0=A, B, C nebo D ' +
+      '(4,0-30mA) — testováno @IF=5mA/VCE=5V/Ta=25°C. Vstup (LED): VF typ. 1,2V/max 1,4V @IF=20mA, VFM (impulzní) max ' +
+      '3,0V @IFM=0,5A, IF max 50mA (trvale), IFM max 1A (impulzně, šířka ≤100µs, duty ≤0,001), ' +
+      'VR max 6V, IR max 10µA @VR=4V, Ct max 250pF @V=0/f=1kHz, P max 70mW. Výstup ' +
+      '(fototranzistor): VCEO 80V, VECO 6V, IC max 50mA, PC max 150mW, ICEO (dark current) max ' +
+      '100nA @VCE=50V/IF=0, BVCEO min 80V @IC=0,1mA/IF=0, BVECO min 6V @IE=10µA/IF=0. VCE(sat) ' +
+      'typ. 0,1V/max 0,2V @IF=20mA/IC=1mA. Izolační odpor RISO 5×10¹⁰–10¹¹ Ω @DC500V/40-60%RH. ' +
+      'Plovoucí kapacita Cf typ. 0,6pF/max 1,0pF @V=0/f=1MHz. Mezní kmitočet fc typ. 80kHz ' +
+      '(-3dB) @VCE=5V/IC=2mA/RL=100Ω. Doba náběhu tr typ. 4µs/max 18µs, doba doběhu tf typ. ' +
+      '3µs/max 18µs. Celkový ztrátový výkon Ptot max 200mW. Provozní teplota -30 až +100°C ' +
+      '(užší rozsah než LTV-356T/EL817, jejichž Topr sahá do -55°C), skladovací -55 až +125°C, ' +
+      'pájecí teplota 270°C/10s. Schváleno UL (E64380, "under preparation" v tomto dok.), CSA ' +
+      '("under preparation"). Shoda s RoHS (2011/65/EU), bez ODS látek a bromovaných retardérů ' +
+      'hoření (PBB/PBDE). Datum kódu na pouzdru: 3místný kód (rok+týden výroby).',
+    schematicImage: 'PC817-Series.jpg',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,sharp,pc817,dip-4,tht',
+  },
+  {
+    name: 'ILD205T',
+    packageType:
+      'SMD SOIC-8A, rozteč vývodů 1,27mm (0,05"), páskové balení (jediná dostupná varianta ' +
+      'balení), Pb-free (e3)',
+    value:
+      'DVOUKANÁLOVÝ optočlen (2× fototranzistorový optočlen v jednom pouzdře) s galvanickým ' +
+      'oddělením, CTR 40–80 % @IF=10mA/VCE=5V, izolační napětí Viso 3000 Vrms, BVCEO 70 V',
+    schematicImage: 'ILD205T.jpg',
+    notes:
+      'Vishay Semiconductors "ILD205T/206T/207T/211T/213T/217T — Optocoupler, Phototransistor ' +
+      'Output, Dual Channel, SOIC-8 package" (dok. č. 83647, rev. 1.4, 26.10.2004). ⚠️ NOVÁ ' +
+      'SUB-KATEGORIE mezi optočleny v této knihovně: první DVOUKANÁLOVÝ optočlen (2 nezávislé ' +
+      'LED+fototranzistor páry v jediném SOIC-8 pouzdře) — na rozdíl od jednokanálových LTV-356T/ ' +
+      'EL817/PC817 (viz jejich záznamy) umožňuje galvanicky oddělit dva signály najednou v ' +
+      'kompaktním SMD pouzdře bez průchozích otvorů, vhodné pro aplikace s vysokou hustotou ' +
+      'osazení. Vyšší BVCEO (70V) oproti běžnému průmyslovému standardu 30V dává vyšší ' +
+      'bezpečnostní rezervu. Zapojení pinů: 1=Anoda(ch1), 2=Katoda(ch1), 3=Anoda(ch2), ' +
+      '4=Katoda(ch2), 5=Emitor(ch2), 6=Kolektor(ch2), 7=Emitor(ch1), 8=Kolektor(ch1). Nejnižší ' +
+      'CTR varianta řady (viz sourozenecké záznamy ILD206T/207T/211T/213T/217T pro plné ' +
+      'specifikace CTR). Vstup (na kanál): VR max 6,0V, špičkový impulzní proud 1,0A ' +
+      '(1,0µs/300pps), trvalý propustný proud 30mA, Pdiss 50mW (derating 0,66mW/°C nad 25°C), ' +
+      'VF typ. 1,2V/max 1,55V @IF=10mA, IR max 100µA @VR=6V, CO typ. 25pF @VR=0. Výstup (na ' +
+      'kanál): BVCEO 70V, BVECO 7,0V, Pdiss 125mW (derating 1,67mW/°C nad 25°C), ICEO typ. ' +
+      '5,0nA/max 50nA @VCE=10V/IF=0, CCE typ. 10pF @VCE=0. Coupler: celkový výkon pouzdra Ptot ' +
+      '300mW (2 LED + 2 detektory, derating 4,0mW/°C nad 25°C), VCE(sat) max 0,4V @IF=10mA/ ' +
+      'IC=2,5mA, CIO typ. 0,5pF, izolační odpor RIO typ. 100 GΩ, izolační zkušební napětí VISO ' +
+      '3000Vrms (t=1s). CTRDC @VCE=5V/IF=10mA: min 40/max 80%; @VCE=5V/IF=1mA: min 13/typ. ' +
+      '30%. Doba zapnutí ton typ. 5,0µs, doba vypnutí toff typ. 4,0µs (@IC=2mA/RL=100Ω/VCC=5V). ' +
+      'Provozní teplota -55 až +100°C, skladovací -55 až +150°C, pájecí teplota 260°C/10s. ' +
+      'Certifikace UL1577 (File E52744, System Code Y). RoHS 2002/95/EC, WEEE 2002/96/EC, bez ' +
+      'ODS látek (potvrzeno prohlášením výrobce).',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,dvoukanálový,vishay,ild205t,soic-8,smd',
+  },
+  {
+    name: 'ILD206T',
+    packageType: 'shodné s ILD205T — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      'DVOUKANÁLOVÝ optočlen, CTR 63–125 % @IF=10mA/VCE=5V, izolační napětí Viso 3000 Vrms, ' +
+      'BVCEO 70 V',
+    schematicImage: 'ILD205T.jpg',
+    notes:
+      'Vishay "ILD205T/206T/207T/211T/213T/217T" — součást řady, viz záznam "ILD205T" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. CTRDC @VCE=5V/IF=10mA: ' +
+      'min 63/max 125%; @VCE=5V/IF=1mA: min 22/typ. 45%.',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,dvoukanálový,vishay,ild206t,soic-8,smd',
+  },
+  {
+    name: 'ILD207T',
+    packageType: 'shodné s ILD205T — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      'DVOUKANÁLOVÝ optočlen, CTR 100–200 % @IF=10mA/VCE=5V, izolační napětí Viso 3000 Vrms, ' +
+      'BVCEO 70 V',
+    schematicImage: 'ILD205T.jpg',
+    notes:
+      'Vishay "ILD205T/206T/207T/211T/213T/217T" — součást řady, viz záznam "ILD205T" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. Nejvyšší CTR varianta s ' +
+      'definovaným rozsahem (X-, XXX- a Y- varianty mají jen jednostranně ohraničené minimum). ' +
+      'CTRDC @VCE=5V/IF=10mA: min 100/max 200%; @VCE=5V/IF=1mA: min 34/typ. 70%.',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,dvoukanálový,vishay,ild207t,soic-8,smd',
+  },
+  {
+    name: 'ILD211T',
+    packageType: 'shodné s ILD205T — viz jeho záznam pro plné mechanické specifikace',
+    value: 'DVOUKANÁLOVÝ optočlen, CTR > 20 % @IF=10mA/VCE=5V, izolační napětí Viso 3000 Vrms, ' +
+      'BVCEO 70 V',
+    schematicImage: 'ILD205T.jpg',
+    notes:
+      'Vishay "ILD205T/206T/207T/211T/213T/217T" — součást řady, viz záznam "ILD205T" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. ⚠️ Datasheet uvádí pro ' +
+      'tento typ pouze jednostranně ohraničené minimum CTR (bez max. hodnoty) — CTRDC ' +
+      '@VCE=5V/IF=10mA: min 20% (max. neudáno).',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,dvoukanálový,vishay,ild211t,soic-8,smd',
+  },
+  {
+    name: 'ILD213T',
+    packageType: 'shodné s ILD205T — viz jeho záznam pro plné mechanické specifikace',
+    value: 'DVOUKANÁLOVÝ optočlen, CTR > 100 % @IF=10mA/VCE=5V, izolační napětí Viso 3000 Vrms, ' +
+      'BVCEO 70 V',
+    schematicImage: 'ILD205T.jpg',
+    notes:
+      'Vishay "ILD205T/206T/207T/211T/213T/217T" — součást řady, viz záznam "ILD205T" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. ⚠️ Datasheet uvádí pro ' +
+      'tento typ pouze jednostranně ohraničené minimum CTR (bez max. hodnoty) — CTRDC ' +
+      '@VCE=5V/IF=10mA: min 100% (max. neudáno).',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,dvoukanálový,vishay,ild213t,soic-8,smd',
+  },
+  {
+    name: 'ILD217T',
+    packageType: 'shodné s ILD205T — viz jeho záznam pro plné mechanické specifikace',
+    value: 'DVOUKANÁLOVÝ optočlen, CTR > 100 % @IF=1mA/VCE=5V, izolační napětí Viso 3000 Vrms, ' +
+      'BVCEO 70 V',
+    schematicImage: 'ILD205T.jpg',
+    notes:
+      'Vishay "ILD205T/206T/207T/211T/213T/217T" — součást řady, viz záznam "ILD205T" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace. ⚠️ POZOR: na rozdíl od ' +
+      'ostatních členů řady je CTR pro ILD217T testován a specifikován při NIŽŠÍM budicím ' +
+      'proudu IF=1mA (ne 10mA) — CTRDC @VCE=5V/IF=1mA: min 100/typ. 120% (hodnota @IF=10mA v ' +
+      'datasheetu neuvedena).',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,dvoukanálový,vishay,ild217t,soic-8,smd',
+  },
+  {
+    name: 'LTV-817 (LTV-8X7 Series, 1-kanálový)',
+    packageType:
+      'THT DIP-4 (standardní rozteč 2,54mm), varianta "M" (širší rozteč vývodů 0,4"/10,16mm) ' +
+      'nebo SMD "S" (povrchová montáž), tape&reel varianty -TA/-TA1/-TP u "S" provedení',
+    value:
+      'Optočlen (fototranzistorový optočlen) s galvanickým oddělením, CTR 50–600 % @IF=5mA/ ' +
+      'VCE=5V dle rankové třídy, izolační napětí Viso 5000 Vrms, VCEO 35 V',
+    notes:
+      'LITE-ON Optoelectronics "LTV-8X7 Series — Photocoupler" (dok. DS-70-96-0016, rev. U, ' +
+      'účinnost 3.12.2024). Čtvrtý optočlen v této knihovně vedle LTV-356T, EL817, PC817 a ' +
+      'dvoukanálové řady Vishay ILD205T (viz jejich záznamy) — 1-kanálová (jediný LED+ ' +
+      'fototranzistor pár) základní varianta řady "8X7", elektricky téměř totožná s Everlight ' +
+      'EL817 (stejné VCEO=35V, Viso=5000Vrms) — pravděpodobně přímý konkurenční ekvivalent. Na ' +
+      'rozdíl od EL817/PC817 nabízí LTV-8X7 řada navíc VÍCEKANÁLOVÉ varianty ve stejné rodině ' +
+      '(LTV-827 = 2-kanálový DIP-8, LTV-847 = 4-kanálový DIP-16, viz jejich záznamy), sdílející ' +
+      'shodné elektrické parametry jednoho kanálu. Zapojení pinů shodné s ostatními jedno' +
+      'kanálovými optočleny v knihovně: 1=Anoda, 2=Katoda, 3=Emitor, 4=Kolektor. Rankové třídy ' +
+      'CTR (@IF=5mA/VCE=5V/Ta=25°C): L (50-100%), A (80-160%), B (130-260%), C (200-400%), D ' +
+      '(300-600%), bez binu (50-600%). Vstup (LED): VF typ. 1,2V/max 1,4V @IF=20mA, IF max ' +
+      '50mA, IFP max 1A (impulzně 100µs/100Hz), VR max 6V, IR max 10µA @VR=4V, Ct max 250pF ' +
+      '@1kHz, P max 70mW. Výstup (fototranzistor): VCEO 35V, VECO 6V, IC max 50mA, PC max ' +
+      '150mW, ICEO max 100nA @VCE=20V/IF=0. VCE(sat) typ. 0,1V/max 0,2V @IF=20mA/IC=1mA. ' +
+      'Izolační odpor RISO 5×10¹⁰–10¹¹ Ω @DC500V/40-60%RH. Plovoucí kapacita Cf typ. 0,6pF/max ' +
+      '1,0pF @V=0/f=1MHz. Mezní kmitočet fc typ. 80kHz (-3dB) @VCE=5V/IC=2mA/RL=100Ω. Doba ' +
+      'náběhu tr typ. 4µs/max 18µs, doba doběhu tf typ. 3µs/max 18µs. Celkový ztrátový výkon ' +
+      'Ptot max 200mW. Provozní teplota LTV-817 -55 až +110°C (širší než LTV-827/847, které ' +
+      'mají -40 až +105°C), skladovací -55 až +125°C, pájecí teplota 260°C/10s. Certifikace ' +
+      'UL1577, VDE DIN EN60747-5-5 (VDE 0884-5), CSA CA5A, CQC GB4943.1-2022, Nordic Safety ' +
+      '(FIMKO/NEMKO/SEMKO/DEMKO), BSI. RoHS, MSL1, halogenová volná varianta k dispozici.',
+    schematicImage: 'LTV-817.jpg',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,liteon,ltv-817,dip-4,tht,1-kanálový',
+  },
+  {
+    name: 'LTV-827 (LTV-8X7 Series, 2-kanálový)',
+    packageType:
+      'THT DIP-8 (standardní rozteč 2,54mm), varianta "M" (širší rozteč vývodů) nebo SMD "S" ' +
+      '(povrchová montáž), tape&reel varianty -TA/-TA1 u "S" provedení',
+    value:
+      'DVOUKANÁLOVÝ optočlen (2× fototranzistorový optočlen v jednom pouzdře) s galvanickým ' +
+      'oddělením, CTR 50–600 % @IF=5mA/VCE=5V dle rankové třídy (na kanál), izolační napětí ' +
+      'Viso 5000 Vrms, VCEO 35 V',
+    notes:
+      'LITE-ON "LTV-8X7 Series" — součást řady, viz záznam "LTV-817" v této knihovně pro plné ' +
+      'společné elektrické parametry jednoho kanálu. Druhý dvoukanálový optočlen v této ' +
+      'knihovně vedle Vishay ILD205T (viz jeho záznam) — na rozdíl od ILD205T (SOIC-8 SMD, ' +
+      'VCEO=70V, Viso=3000Vrms) jde o klasické THT DIP-8 pouzdro (i SMD "S" varianta) s nižším ' +
+      'VCEO (35V) a vyšší izolací (5000Vrms). Zapojení pinů: 1=Anoda(ch1), 2=Katoda(ch1), ' +
+      '3=Anoda(ch2), 4=Katoda(ch2), 5=Emitor(ch2), 6=Kolektor(ch2), 7=Emitor(ch1), ' +
+      '8=Kolektor(ch1) — shodné s Vishay ILD205T. Rankové třídy CTR (na kanál, @IF=5mA/VCE=5V): ' +
+      'bez binu (50-600%), A (80-160%), B (130-260%), C (200-400%), D (300-600%), BC ' +
+      '(130-400%), CD (200-600%). ⚠️ Provozní teplota LTV-827 užší než LTV-817: -40 až +105°C.',
+    schematicImage: 'LTV-827.jpg',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,dvoukanálový,liteon,ltv-827,dip-8,tht',
+  },
+  {
+    name: 'LTV-847 (LTV-8X7 Series, 4-kanálový)',
+    packageType:
+      'THT DIP-16 (standardní rozteč 2,54mm), varianta "M" (širší rozteč vývodů) nebo SMD "S" ' +
+      '(povrchová montáž)',
+    value:
+      'ČTYŘKANÁLOVÝ optočlen (4× fototranzistorový optočlen v jednom pouzdře) s galvanickým ' +
+      'oddělením, CTR 50–600 % @IF=5mA/VCE=5V dle rankové třídy (na kanál), izolační napětí ' +
+      'Viso 5000 Vrms, VCEO 35 V',
+    notes:
+      'LITE-ON "LTV-8X7 Series" — součást řady, viz záznam "LTV-817" v této knihovně pro plné ' +
+      'společné elektrické parametry jednoho kanálu. ⚠️ NOVÁ SUB-KATEGORIE mezi optočleny v ' +
+      'této knihovně: první ČTYŘKANÁLOVÝ optočlen (4 nezávislé LED+fototranzistor páry v ' +
+      'jediném DIP-16 pouzdře) — nejvyšší hustota integrace optočlenů v této knihovně, vhodné ' +
+      'pro paralelní galvanické oddělení sběrnice/více signálů (např. datová sběrnice, více ' +
+      'diskrétních signálů). Zapojení pinů: 1,2=Anoda/Katoda(ch1), 3,4=Anoda/Katoda(ch2), ' +
+      '5,6=Anoda/Katoda(ch3), 7,8=Anoda/Katoda(ch4), 9,10=Emitor/Kolektor(ch4), 11,12=Emitor/ ' +
+      'Kolektor(ch3), 13,14=Emitor/Kolektor(ch2), 15,16=Emitor/Kolektor(ch1) (přesné pořadí ' +
+      'anoda/katoda a emitor/kolektor viz vnitřní schéma v datasheetu). Rankové třídy CTR (na ' +
+      'kanál, @IF=5mA/VCE=5V): bez binu (50-600%), BC (130-400%), CD (200-600%) — užší nabídka ' +
+      'ranků než LTV-817/827 (bez samostatných A/B/C/D tříd). ⚠️ Provozní teplota shodná s ' +
+      'LTV-827: -40 až +105°C (užší než LTV-817).',
+    schematicImage: 'LTV-847.jpg',
+    tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,čtyřkanálový,liteon,ltv-847,dip-16,tht',
+  },
+
+  // Ethernet kontroléry
+  {
+    name: 'W5500',
+    packageType:
+      'SMD LQFP-48 (7×7mm, rozteč 0,5mm), vyžaduje externí 25MHz krystal (piny XI/CLKIN, XO), ' +
+      'externí referenční rezistor 12,4kΩ/1% (pin EXRES1), externí referenční kondenzátor ' +
+      '4,7µF (pin TOCAP), síťový (LAN) transformátor 1:1/350µH mezi PHY a RJ45 konektorem',
+    value:
+      'Plně hardwarový (hardwired) TCP/IP embedded Ethernet kontrolér s integrovaným 10/100 ' +
+      'Ethernet MAC+PHY, SPI rozhraní (SPI mód 0/3), 32KB interní TX/RX paměť, 8 nezávislých ' +
+      'hardwarových socketů',
+    notes:
+      'WIZnet "W5500 Datasheet Version 1.0" (srpen 2013). ⚠️ NOVÝ TYP součástky v této ' +
+      'knihovně: první hardwarový TCP/IP síťový kontrolér — na rozdíl od Wi-Fi ' +
+      'mikrokontrolérů ESP32/ESP8285/ESP8684 v této knihovně (které běží vlastní firmware/ ' +
+      'RTOS a implementují síťový zásobník softwarově) jde o čistě HARDWAROVOU implementaci ' +
+      'celého TCP/IP zásobníku (TCP, UDP, ICMP, IPv4, ARP, IGMP v1/v2, PPPoE) v křemíku — ' +
+      'hostitelský mikrokontrolér komunikuje jen přes jednoduché SPI registrové rozhraní a ' +
+      'socket API, bez nutnosti vlastní implementace síťového zásobníku. Nepodporuje IP ' +
+      'fragmentaci. Podporuje Wake-on-LAN přes UDP a power-down mód pro úsporu energie. LED ' +
+      'výstupy: Full/Half duplex, Link, Speed, Active. SPI podporuje teoretickou rychlost až ' +
+      '80MHz, garantovaná (testovaná/změřená) rychlost 33,3MHz. Napájení 3,3V (VDD/AVDD, ' +
+      '2,97-3,63V) s 5V tolerantními I/O vstupy. Interní 1,2V regulátor (pin 1V2O). Absolutní ' +
+      'maximum: VDD -0,5 až 4,6V, VIN -0,5 až 6V, VOUT -0,5 až 4,6V, IIN ±5mA, Top -40 až ' +
+      '+85°C, Tstg -65 až +150°C. ESD: HBM 2000V (třída 2), MM 200V (třída B), CDM 500V ' +
+      '(třída III). Odběr proudu: normální provoz typ. 132mA, power-down mód typ. 13mA, ' +
+      '100M link typ. 128mA, 10M link typ. 75mA, un-link (auto-negotiation) typ. 65mA. Reset ' +
+      'cyklus TRC min 500µs, doba do PLL lock TPL max 1ms. Doba probuzení napěťového ' +
+      'regulátoru 10µs. Krystal: 25MHz, tolerance ±30ppm, stínová kapacita max 7pF, zátěžová ' +
+      'kapacita 18pF, stárnutí max ±3ppm/rok. SPI časování: SCK vysoký/nízký čas min 6ns, SCSn ' +
+      'vysoký čas min 30ns, setup/hold časy 3-5ns. Nepodporuje auto-MDIX — nutné rozlišovat ' +
+      'přímý/křížený kabel dle připojeného zařízení. Cílové aplikace: síťové zásuvné moduly, ' +
+      'sériové/paralelní/USB-na-Ethernet převodníky, bezpečnostní systémy (DVR, IP kamery), ' +
+      'průmyslová a budovní automatizace, zdravotnická monitorovací zařízení, vestavěné ' +
+      'servery.',
+    schematicImage: 'W5500.jpg',
+    tags: 'io,ethernet,tcp-ip,síťový-kontrolér,wiznet,w5500,spi,lqfp-48,hardwired',
+  },
+
+  // Napěťové supervizory (reset obvody)
+  {
+    name: 'TPS3809J25',
+    packageType: '3-pinové SOT-23 (DBV), rozměry 2,90×1,60mm, piny: 1=GND, 2=RESET, 3=VDD',
+    value:
+      'Napěťový supervizor (reset obvod), fixní záporně čítaný práh VIT- = 2,25 V (typ.), ' +
+      'push-pull výstup RESET (aktivní v L), klidový proud typ. 9µA',
+    notes:
+      'Texas Instruments "TPS3809J25, TPS3809L30, TPS3809K33, TPS3809I50 — TPS3809x 3-Pin ' +
+      'Supply Voltage Supervisors" (dok. SLVS228D, srpen 1999, revidováno prosinec 2020). ⚠️ ' +
+      'NOVÝ TYP součástky v této knihovně: první napěťový supervizor/obvod pro sledování ' +
+      'napájení a generování resetu — jednoduchý 3pinový obvod (bez externích součástek) pro ' +
+      'inicializaci a časovou supervizi systému, typicky u DSP/procesorových systémů — hlídá ' +
+      'napájecí napětí VDD a drží výstup RESET aktivní (nízko), dokud VDD nepřekročí prahové ' +
+      'napětí VIT, poté ještě po interním zpožďovacím časovači (typ. 200ms) teprve uvolní ' +
+      'RESET do neaktivního stavu (vysoko) — zajišťuje spolehlivý reset systému po zapnutí i ' +
+      'při krátkých poklesech napájení (brownout). Pin-kompatibilní s MAX809. Novější ' +
+      'alternativa se stejnými piny/funkcemi/elektrickými parametry: TLV809E. Součást rodiny ' +
+      'TPS3809 lišící se jen prahovým napětím VIT (viz sourozenecké záznamy "TPS3809L30"/ ' +
+      '"TPS3809K33"/"TPS3809I50" pro ostatní prahy) — objednací kód TPS380<funkce><práh><pouzdro>' +
+      '<balení>, např. TPS3809J25DBVR = funkce 9 (tento typ), práh J (2,25V), pouzdro DBV ' +
+      '(SOT-23), balení R (cívka). Během power-on je RESET aktivní, dokud VDD nepřekročí 1,1V, ' +
+      'pak obvod sleduje práh VIT. Absolutní maximum: VDD max 6,5V (ne déle než 1000h ' +
+      'nepřetržitě), ostatní piny -0,3 až 6,5V, IOL max 5mA, IOH max -5mA, vstupní/výstupní ' +
+      'svorkovací proud ±20mA, Top -40 až +85°C, Tstg -65 až +150°C. Doporučené provozní ' +
+      'podmínky: VDD 2-6V, proud RESET sink při startu max 50µA. Ztrátový výkon (DBV pouzdro) ' +
+      '437mW @TA<25°C, derating 3,5mW/°C, 280mW @70°C, 227mW @85°C. VOH min VDD-0,2V @IOH=-500µA/ ' +
+      'VDD=2,5-6V (nebo VDD-0,4V @IOH=-2 až -4mA). VOL max 0,3V @IOL=500µA (nebo max 0,4V ' +
+      '@IOL=2-4mA). Napětí "power-up reset" (nejnižší napájecí napětí, při kterém je RESET ' +
+      'ještě aktivní) max 0,2V @VDD≥1,1V/IOL=50µA. Prahová hystereze Vhys 30mV (typ., pro tento ' +
+      'typ J25). Klidový proud IDD typ. 9µA @VDD=2V / typ. 20µA @VDD=6V. Vstupní kapacita CI ' +
+      'typ. 5pF. Šířka pulzu tw min 10µs. Doba zpoždění td (od VDD≥VIT+0,2V do uvolnění RESET) ' +
+      'min 120ms/typ. 200ms/max 280ms. Doba šíření tPHL (VDD do RESET, sestupná hrana) typ. ' +
+      '10µs. Doporučen bypass keramický kondenzátor 0,1µF na VDD pro stabilitu prahového ' +
+      'napětí.',
+    schematicImage: 'TPS3809.jpg',
+    tags: 'io,supervizor,reset,napěťový-supervizor,voltage-supervisor,ti,tps3809,tps3809j25,sot-23,2.25v',
+  },
+  {
+    name: 'TPS3809L30',
+    packageType: 'shodné s TPS3809J25 (SOT-23-3) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      'Napěťový supervizor (reset obvod), fixní záporně čítaný práh VIT- = 2,64 V (typ.), ' +
+      'push-pull výstup RESET (aktivní v L)',
+    notes:
+      'TI "TPS3809x" — součást rodiny TPS3809, viz záznam "TPS3809J25" v této knihovně pro ' +
+      'plné společné elektrické/mechanické specifikace. Prahové napětí VIT- 2,58-2,7V (min-max), ' +
+      'hystereze Vhys 35mV (typ.). Objednací kód TPS3809L30DBVR (funkce 9, práh L=2,64V).',
+    schematicImage: 'TPS3809.jpg',
+    tags: 'io,supervizor,reset,napěťový-supervizor,voltage-supervisor,ti,tps3809,tps3809l30,sot-23,2.64v',
+  },
+  {
+    name: 'TPS3809K33',
+    packageType: 'shodné s TPS3809J25 (SOT-23-3) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      'Napěťový supervizor (reset obvod), fixní záporně čítaný práh VIT- = 2,93 V (typ.), ' +
+      'push-pull výstup RESET (aktivní v L)',
+    notes:
+      'TI "TPS3809x" — součást rodiny TPS3809, viz záznam "TPS3809J25" v této knihovně pro ' +
+      'plné společné elektrické/mechanické specifikace. Prahové napětí VIT- 2,87-2,99V (min-max), ' +
+      'hystereze Vhys 40mV (typ.). Objednací kód TPS3809K33DBVR (funkce 9, práh K=2,93V). Podle ' +
+      'aplikačního schématu v datasheetu typicky použit se supervizí 3,3V sběrnice (např. TI ' +
+      'TMS320LC54x DSP).',
+    schematicImage: 'TPS3809.jpg',
+    tags: 'io,supervizor,reset,napěťový-supervizor,voltage-supervisor,ti,tps3809,tps3809k33,sot-23,2.93v',
+  },
+  {
+    name: 'TPS3809I50',
+    packageType: 'shodné s TPS3809J25 (SOT-23-3) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      'Napěťový supervizor (reset obvod), fixní záporně čítaný práh VIT- = 4,55 V (typ.), ' +
+      'push-pull výstup RESET (aktivní v L)',
+    notes:
+      'TI "TPS3809x" — součást rodiny TPS3809, viz záznam "TPS3809J25" v této knihovně pro ' +
+      'plné společné elektrické/mechanické specifikace. Nejvyšší prahová varianta celé řady ' +
+      '(určeno pro supervizi 5V sběrnice). Prahové napětí VIT- 4,45-4,65V (min-max), hystereze ' +
+      'Vhys 60mV (typ.). Objednací kód TPS3809I50DBVR (funkce 9, práh I=4,55V).',
+    schematicImage: 'TPS3809.jpg',
+    tags: 'io,supervizor,reset,napěťový-supervizor,voltage-supervisor,ti,tps3809,tps3809i50,sot-23,4.55v',
+  },
+  {
+    name: 'MSP430G2553',
+    packageType:
+      '20-PDIP/20-TSSOP (16 I/O), 28-TSSOP (24 I/O) nebo 32-QFN (24 I/O), napájení DVCC 1,8-3,6V, ' +
+      'Spy-Bi-Wire (2vodičové JTAG) rozhraní pro programování/ladění',
+    value:
+      '16bitový RISC mikrokontrolér (MSP430 rodina), 16KB Flash / 512B RAM, 16MHz CPU (62,5ns ' +
+      'instrukční cyklus), aktivní odběr typ. 230µA @1MHz/2,2V, standby 0,5µA, off (RAM ' +
+      'retence) 0,1µA',
+    notes:
+      'Texas Instruments "MSP430G2x53, MSP430G2x13 — Mixed Signal Microcontroller" (dok. ' +
+      'SLAS735J, duben 2011, revidováno květen 2013) — nejvýbavenější člen rodiny MSP430G2x53 ' +
+      '(16KB Flash/512B RAM, součást širší tabulky "Available Options" zahrnující G2553/2453/ ' +
+      '2353/2253/2153 s klesající pamětí 16-1KB a sesterskou rodinu G2x13 bez ADC10). 16bitová ' +
+      'RISC architektura s 16 registry (4 vyhrazené: PC/SP/SR/CG, 12 obecných), 51 instrukcí, ' +
+      '7 adresovacích módů, výkon 1 instrukce/cyklus u registr-registr operací. Periferie: ' +
+      '2× Timer_A3 (3 capture/compare registry), 8kanálový 10bitový 200ksps ADC (interní ' +
+      'reference, sample&hold, autoscan), 8kanálový analogový komparátor (Comp_A+, i pro ' +
+      'kapacitní dotykové senzory — až 24 kapacitních I/O pinů), USCI (Universal Serial ' +
+      'Communication Interface) s UART (auto baudrate/LIN), IrDA kodér/dekodér, synchronní SPI ' +
+      'a I2C, watchdog timer/interval timer, brownout detektor. Hodinový systém: interní ' +
+      'kalibrovaný DCO (digitally controlled oscillator) do 16MHz ve 4 kalibrovaných ' +
+      'frekvencích, interní nízkopříkonový LF oscilátor, externí 32kHz krystal nebo externí ' +
+      'digitální hodinový zdroj — probuzení z low-power módu do aktivního režimu za <1µs. ' +
+      'Šest operačních režimů: aktivní (AM, všechny hodiny běží) a pět úsporných LPM0-LPM4 ' +
+      '(postupně vypínají CPU, MCLK/SMCLK, DCO, ACLK a krystalový oscilátor). Palubní sériové ' +
+      'programování bez nutnosti externího programovacího napětí, programovatelná ochrana kódu ' +
+      '(security fuse), on-chip emulační logika (2 breakpointy) přes Spy-Bi-Wire. Vektor ' +
+      'přerušení 0FFC0h-0FFFFh, 16bitová adresa handleru, priorita 0(nejnižší)-31(reset, ' +
+      'nejvyšší). ADC10 dostupný pouze na G2x53 devices (chybí na sesterské G2x13 řadě). ' +
+      'Typické aplikace: nízkonákladové senzorové systémy (např. základ populárního TI ' +
+      'LaunchPad vývojového kitu MSP-EXP430G2).',
+    schematicImage: 'MSP430G2553.jpg',
+    tags: 'io,mikrokontrolér,mcu,msp430,msp430g2553,ti,risc,16bit,nízkopříkonový,launchpad,adc,usci',
+  },
+  {
+    name: 'MSPM0L1306',
+    packageType:
+      '32-VQFN (RHB, 5×5mm), napájení VDD 1,62-3,6V, rozšířený teplotní rozsah -40 až +125°C, ' +
+      '2vodičové SWD (Serial Wire Debug) rozhraní',
+    value:
+      '32bitový mikrokontrolér Arm Cortex-M0+ (MSPM0 rodina), 64KB Flash / 4KB SRAM, do 32MHz, ' +
+      '12bitový 1,68Msps ADC (až 10 kanálů), režim RUN 71µA/MHz, STANDBY 1,0µA, SHUTDOWN 61nA',
+    notes:
+      'Texas Instruments "MSPM0L1346, MSPM0L1345, MSPM0L1344, MSPM0L1343, MSPM0L1306, ' +
+      'MSPM0L1305, MSPM0L1304, MSPM0L1303 — MSPM0L130x Mixed-Signal Microcontrollers" (dok. ' +
+      'SLASEX0D, říjen 2022, revidováno leden 2024) — nejvýbavenější člen podskupiny MSPM0L130x ' +
+      '(64KB Flash/4KB SRAM, 10 ADC kanálů, 28 GPIO). ⚠️ NOVÁ MCU ARCHITEKTURA v této knihovně ' +
+      'vedle MSP430G2553 (viz jeho záznam) — na rozdíl od proprietární 16bitové RISC ' +
+      'architektury MSP430 jde o standardní 32bitové jádro Arm Cortex-M0+ s NVIC, novější a ' +
+      'výkonnější řada MCU od TI. Analogové periferie: 12bitový 1,68Msps ADC (konfigurovatelná ' +
+      'interní reference 1,4V/2,5V), dva zero-drift zero-crossover chopper operační zesilovače ' +
+      '(OPA, drift 0,5µV/°C, vstupní klidový proud 6pA, programovatelné zesílení 1-32×), jeden ' +
+      'obecný zesilovač (GPAMP), jeden vysokorychlostní komparátor (COMP, 32ns zpoždění, 8bitový ' +
+      'referenční DAC, nízkopříkonový mód <1µA), integrovaný teplotní senzor. Digitální ' +
+      'periferie: 3kanálový DMA řadič, 3kanálový systém událostí (event fabric) pro ' +
+      'propojení periferií bez zásahu CPU, čtyři 16bitové obecné časovače (každý 2 capture/ ' +
+      'compare registry, celkem 8 PWM kanálů, podpora nízkopříkonového provozu ve STANDBY), ' +
+      'okénkový watchdog (WWDT), CRC-16/32 akcelerátor. Komunikace: 2× UART (podpora LIN, IrDA, ' +
+      'DALI, Smart Card, Manchester, nízkopříkonový provoz ve STANDBY), 2× I2C (jeden FM+ do ' +
+      '1Mbit/s, oba SMBus/PMBus, probuzení ze STOP), 1× SPI do 16Mbit/s. Hodinový systém: ' +
+      'interní 4-32MHz oscilátor (SYSOSC, přesnost ±1,2%), interní 32kHz nízkopříkonový ' +
+      'oscilátor (LFOSC, ±3%) — bez nutnosti externího krystalu. Nízkopříkonové režimy: RUN ' +
+      '71µA/MHz (CoreMark), STOP 151µA @4MHz / 44µA @32kHz, STANDBY 1,0µA (16bitový časovač na ' +
+      '32kHz běží, SRAM/registry zachovány, probuzení za 3,2µs), SHUTDOWN 61nA (s možností ' +
+      'probuzení přes I/O). Až 28 GPIO, 2 piny s 5V tolerancí a open-drain výstupem s fail-safe ' +
+      'ochranou. Součást širší rodiny MSPM0L13x3-x6 lišící se pamětí (8-64KB Flash, 2-4KB RAM) ' +
+      'a počtem GPIO/ADC kanálů dle pouzdra (16-32 pinů). Vývojová podpora: LP-MSPM0L1306 ' +
+      'LaunchPad kit, MSP Software Development Kit (SDK), Code Composer Studio IDE.',
+    schematicImage: 'MSPM0L1306.jpg',
+    tags: 'io,mikrokontrolér,mcu,mspm0,mspm0l1306,ti,arm,cortex-m0+,32bit,nízkopříkonový,launchpad,adc,opa',
+  },
+  {
+    name: 'MSP430F149',
+    packageType:
+      '64-pin LQFP (PM), TQFP (PAG) nebo VQFN (RTD), rozměry cca 10×10mm (LQFP/TQFP), napájení ' +
+      'DVCC/AVCC 1,8-3,6V, 4vodičové JTAG (TMS/TCK/TDI-TCLK/TDO-TDI) pro programování/ladění, ' +
+      'bez externího programovacího napětí, programovatelná ochrana kódu (security fuse)',
+    value:
+      '16bitový RISC mikrokontrolér (MSP430F14x rodina), 60KB+256B Flash / 2KB RAM, 16bit ADC12 ' +
+      '(8 kanálů, interní reference, autoscan), 2× USART, hardwarová násobička, 48 I/O',
+    notes:
+      'Texas Instruments "MSP430F14x, MSP430F14x1, MSP430F13x Mixed-Signal Microcontrollers" ' +
+      '(dok. SLAS272H, červenec 2000, revidováno květen 2018) — MSP430F149 je nejvýbavenější ' +
+      'člen rodiny MSP430F14x. Starší/klasická generace MSP430 (rok 2000) vedle MSP430G2553 a ' +
+      'MSPM0L1306 v této knihovně (viz jejich záznamy) — na rozdíl od G2553 (USCI, ADC10, bez ' +
+      'hardwarové násobičky) nabízí F149 přesnější 12bitový ADC12 (namísto 10bitového ADC10), ' +
+      'DVĚ nezávislé USART jednotky (namísto jedné USCI), integrovanou hardwarovou násobičku ' +
+      '(MPY/MPYS/MAC/MACS registry pro rychlé násobení/MAC operace bez zatížení CPU) a dvakrát ' +
+      'více paměti (60KB Flash/2KB RAM vs. 16KB/512B) — typický "vyšší" MSP430 pro náročnější ' +
+      'aplikace metrologie/monitoringu, zatímco G2553/MSPM0L1306 cílí na levné/kompaktní ' +
+      'aplikace. Periferie: Timer_A3 (3 capture/compare registry), Timer_B7 (7 capture/compare/ ' +
+      'shadow registrů — bohatší než Timer_A), on-chip komparátor (Comparator_A), watchdog ' +
+      'timer (15/16bit). 12bitový ADC12: 8 kanálů, vzorkovač/hold, autoscan funkce, vestavěná ' +
+      'reference, konverze <10µs. USART0/USART1: funkce jako asynchronní UART nebo synchronní ' +
+      'SPI rozhraní. Hodinový systém: interní DCO s probuzením z low-power módu do aktivního ' +
+      'režimu za <6µs, externí XT2 krystalový oscilátor (navíc k standardnímu LFXT1/32kHz), ' +
+      'ACLK/SMCLK/MCLK odvozené hodiny. Nízkopříkonové režimy: aktivní 280µA @1MHz/2,2V, ' +
+      'standby 1,6µA, off (RAM retence) 0,1µA — pět softwarově volitelných úsporných režimů ' +
+      '(LPM0-LPM4, shodná koncepce jako u MSP430G2553). 16bitová RISC architektura, 125ns ' +
+      'instrukční cyklus, 16 registrů (4 vyhrazené + 12 obecných), stejná instrukční sada/ ' +
+      'adresovací módy jako MSP430G2553. Rodina zahrnuje MSP430F149/F1491 (60KB/2KB), F148/ ' +
+      'F1481 (48KB/2KB), F147/F1471 (32KB/1KB), F135 (16KB/512B), F133 (8KB/256B) — všechny se ' +
+      '48 I/O, 8kanálovým ADC12 a shodným 64pinovým pouzdrem. Aplikace: senzorové systémy, ' +
+      'průmyslové řízení, ruční měřicí přístroje.',
+    schematicImage: 'MSP430F149.jpg',
+    tags: 'io,mikrokontrolér,mcu,msp430,msp430f149,ti,risc,16bit,nízkopříkonový,adc12,usart,hardwarová-násobička',
+  },
+  {
+    name: 'MSP430F1121A',
+    packageType:
+      '20-pin SOWB (DW), 20-pin TSSOP (PW), 20-pin TVSOP (DGV) nebo 24-pin QFN (RGE), napájení ' +
+      'VCC 1,8-3,6V, JTAG (test/emulace) přes piny TDO-TDI/TDI-TCLK/TMS/TCK sdílené s Port 1',
+    value:
+      '16bitový RISC mikrokontrolér (MSP430F11x1A rodina), 4KB Flash / 256B RAM, 14 I/O, ' +
+      'Timer_A3, on-chip komparátor (bez vestavěného ADC), aktivní odběr typ. 160µA @1MHz/2,2V',
+    notes:
+      'Texas Instruments "MSP430C11x1, MSP430F11x1A — Mixed Signal Microcontroller" (dok. ' +
+      'SLAS241I, září 1999, revidováno prosinec 2008) — MSP430F1121A je nejvýbavenější Flash ' +
+      'člen rodiny MSP430F11x1A. Nejmenší/nejjednodušší MSP430 v této knihovně vedle G2553/ ' +
+      'F149/MSPM0L1306 (viz jejich záznamy) — na rozdíl od nich NEMÁ vestavěný analogově- ' +
+      'digitální převodník (ADC10/ADC12) — obsahuje pouze analogový komparátor (Comparator_A) ' +
+      'umožňující tzv. "slope A/D" konverzi (jednosměrný/sklonový převod) přes externí RC ' +
+      'obvod a rezistivní senzor přímo na I/O pinu, vhodné pro jednoduché RF senzorové ' +
+      'front-endy a nízkonákladové aplikace, kde plnohodnotný ADC není potřeba. Výrazně méně ' +
+      'I/O (14, oproti 24 u G2553 nebo 48 u F149) a menší pouzdro (20/24 pinů). Rodina zahrnuje ' +
+      'i variantu s maskovanou ROM pamětí místo Flash (MSP430C1101/C1111/C1121 — levnější pro ' +
+      'velkosériovou výrobu bez potřeby přeprogramování) a dvě menší Flash varianty F1101A ' +
+      '(1KB Flash/128B RAM) a F1111A (2KB Flash/128B RAM), F1121A (4KB Flash/256B RAM) je ' +
+      'největší. Periferie: jediný Timer_A3 (3 capture/compare registry), Comparator_A, ' +
+      'watchdog timer (15/16bit). Hodinový systém: interní DCO (různé interní rezistory nebo ' +
+      'jeden externí rezistor pro nastavení kmitočtu), 32kHz krystal, vysokofrekvenční ' +
+      'krystal, rezonátor, nebo externí hodinový zdroj — probuzení ze standby do aktivního ' +
+      'režimu za <6µs. Nízkopříkonové režimy: aktivní 160µA @1MHz/2,2V, standby 0,7µA, off ' +
+      '(RAM retence) 0,1µA — pět softwarově volitelných úsporných režimů LPM0-LPM4 (shodná ' +
+      'koncepce jako u ostatních MSP430 v této knihovně). 16bitová RISC architektura, 125ns ' +
+      'instrukční cyklus, 16 registrů, 51 instrukcí, 7 adresovacích módů (shodné jako u ' +
+      'MSP430G2553/F149). Palubní sériové programování bez externího programovacího napětí, ' +
+      'programovatelná ochrana kódu (security fuse). Aplikace: jednoduché senzorové systémy, ' +
+      'samostatné RF senzorové front-endy.',
+    schematicImage: 'MSP430F1121A.jpg',
+    tags: 'io,mikrokontrolér,mcu,msp430,msp430f1121a,ti,risc,16bit,nízkopříkonový,komparátor,malé-pouzdro',
+  },
+
+  // RF vysílače/přijímače
+  {
+    name: 'CMOSTEK CMT2xxx Series (RF IC)',
+    packageType:
+      'SMD, dle konkrétního typu SOT23-6/QFN16/QFN40/QFN48/TSSOP28/SOP8/SOP14, rozměry ' +
+      '3×3mm až 9,7×6,4mm',
+    value:
+      'RF vysílač/přijímač/transceiver IC (OOK/(G)FSK/MSK modulace), frekvenční rozsah ' +
+      '27–1020 MHz dle typu, výstupní výkon do 20 dBm, citlivost do -126 dBm',
+    notes:
+      'CMOSTEK (distribuováno přes HOPERF) "Selection Guide of CMT Series — NextGenRF™" (dle ' +
+      'katalogu HOPERF Catalog 2020, HOPERFCatalog2020.pdf, str. 2). ⚠️ SOUHRNNÝ KATALOGOVÝ ' +
+      'ZÁZNAM — 70stránkový katalog obsahuje jen výběrovou tabulku (frekvence/modulace/ ' +
+      'citlivost/výkon/pouzdro) bez podrobných elektrických parametrů, zde evidováno jako ' +
+      'reprezentativní shrnutí celé řady holých RF IC čipů (bez PCB antény/štítu, na rozdíl od ' +
+      'RF/LoRa modulů HOPERF v této knihovně — viz kategorie Modul). Zahrnuje TX (vysílač), RX ' +
+      '(přijímač) a TRX/SoC (transceiver s integrovaným 8051 nebo Cortex-M0+ jádrem) varianty: ' +
+      'např. CMT2300A (TRX, QFN16, 3×1 wire SPI), CMT2380F16/F32 (TRX+SoC s 8051/Cortex-M0+), ' +
+      'CMT2119A/B (TX, SOT23-6/QFN16), CMT2110A (TX, 1-wire), CMT2189C (TX+SoC, PIC-like MCU), ' +
+      'CMT2150L/2157B/2156A/2159A (TX s enkodérem a klávesnicí/energy harvesting), CMT2219A/B ' +
+      '(RX, QFN16), CMT2218B (RX, direct mode), CMT2210LB/LH/217LB/217B (standalone RX s Dout ' +
+      'výstupem), CMT2280F2/2281F2 (RX+SoC s PIC-like MCU), CMT2163A/2168A (TX+SoC s 8051, LF ' +
+      'wakeup). Deklarované výhody výrobce: plně softwarově konfigurovatelné parametry (bez ' +
+      'nutnosti přeprogramování), 100% shoda s CE/FCC, pin-kompatibilní náhrady napříč řadou, ' +
+      'vestavěné EEPROM (volitelně).',
+    schematicImage: 'CMOSTEK-CMT2xxx-Series.jpg',
+    tags: 'io,rf,vysílač,přijímač,transceiver,cmostek,cmt,hoperf,sub-ghz,ook,fsk',
+  },
+  {
+    name: 'HOPERF HPxxx / HP5xxx Series (tlakový senzor)',
+    packageType:
+      'SMD DFN6/DFN8/LGA8/SOP6-DIP6 dle typu, u vodotěsné varianty WP10 kovové pouzdro se ' +
+      'závitem G1/4"',
+    value:
+      'Kapacitní/piezorezistivní senzor tlaku, rozsah 300 Pa až 2000 kPa dle typu, digitální ' +
+      'I2C (nebo I2C/SPI) rozhraní, VDD 1,7–5,5 V',
+    notes:
+      'HOPERF "Pressure Sensor" produktová řada — dle katalogu "HOPERF Catalog 2020" ' +
+      '(HOPERFCatalog2020.pdf, str. 5). ⚠️ SOUHRNNÝ KATALOGOVÝ ZÁZNAM (viz poznámka u "CMOSTEK ' +
+      'CMT2xxx Series" pro kontext katalogu) — série pokrývá desítky tlakových senzorů pro ' +
+      'různé aplikace: barometrické/výškoměrné senzory nízkého rozsahu HP100 (150/700/2000kPa, ' +
+      'analogový MV výstup, SOP6/DIP6), přesné diferenciální senzory HP303S/F/B (300-1200hPa, ' +
+      'přesnost 0,2-0,5hPa, LGA8, I2C/SPI, vhodné pro výškoměry/dronové autopiloty), voděodolné ' +
+      'typy HP206C/F/203B/N/W (s membránou pro přímý kontakt s kapalinou, DFN6/8), vysoký ' +
+      'rozsah HP209-002G (2000-200000kPa/1%FSO), a nová generace HP5804/5834/5806 (30kPa- ' +
+      '2000kPa, přesnost až 0,01kPa, DFN6, nižší spotřeba: sleep proud <0,1-0,5µA). ' +
+      'Průmyslová vodotěsná verze WP10 (0-2000kPa) v kovovém pouzdře se závitem G1/4" pro ' +
+      'přímou instalaci do potrubí/nádrže. Typické aplikace: měření nadmořské výšky/relativní ' +
+      'výšky, předpověď počasí, detekce pádu/potápění, lokalizace GPS+tlak, měření tlaku ' +
+      'uhelného/výfukového plynu.',
+    schematicImage: 'HOPERF-HPxxx-HP5xxx-Series.jpg',
+    tags: 'io,senzor,tlakový,tlakoměr,barometr,hoperf,i2c,spi,vodotěsný',
   },
 ];
 
@@ -3057,6 +3986,7 @@ export function buildIcSeed(): ComponentInput[] {
     quantity: 0,
     location: null,
     datasheetUrl: null,
+    schematicImage: spec.schematicImage ?? null,
     notes: spec.notes,
     tags: spec.tags,
   }));
