@@ -44,4 +44,23 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
       PRAGMA user_version = 2;
     `);
   }
+
+  if (currentVersion < 3) {
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS circuit_projects (
+        id INTEGER PRIMARY KEY NOT NULL,
+        name TEXT NOT NULL,
+        description TEXT,
+        image TEXT,
+        partsJson TEXT NOT NULL,
+        notes TEXT,
+        createdAt TEXT NOT NULL,
+        updatedAt TEXT NOT NULL
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_circuit_projects_name ON circuit_projects (name);
+
+      PRAGMA user_version = 3;
+    `);
+  }
 }
