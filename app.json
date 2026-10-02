@@ -1,7 +1,8 @@
 {
   "expo": {
     "name": "CircuitKit",
-    "slug": "circuitkit",
+    "slug": "circuitkit-",
+    "owner": "micha741",
     "version": "1.5.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -38,14 +39,14 @@
       "policy": "fingerprint"
     },
     "updates": {
-      "url": "https://u.expo.dev/7c6c6519-2b05-459c-83b7-91a93d55ce54",
+      "url": "https://u.expo.dev/21e2e3ea-51de-4e40-99f0-5543a38b180a",
       "requestHeaders": {
         "expo-channel-name": "production"
       }
     },
     "extra": {
       "eas": {
-        "projectId": "7c6c6519-2b05-459c-83b7-91a93d55ce54"
+        "projectId": "21e2e3ea-51de-4e40-99f0-5543a38b180a"
       }
     }
   }
