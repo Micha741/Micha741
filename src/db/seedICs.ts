@@ -806,6 +806,21 @@ const IC_SPECS: IcSpec[] = [
     schematicImage: 'CD4060B.jpg',
     tags: 'io,logika,cd4060,cd4060b,čítač,oscilátor,dělič,cmos,4060',
   },
+  {
+    name: 'CD40106B',
+    packageType: 'DIP-14/SOIC-14/TSSOP-14 (14 vývodů)',
+    value: '6× Schmittův invertor (hex Schmitt-trigger inverter), 3–18 V (CMOS)',
+    notes:
+      'Texas Instruments "CD40106B CMOS Hex Schmitt-Trigger Inverters" (dok. SCHS097F, 1998, rev. ' +
+      'březen 2017). Šest nezávislých invertorů se Schmittovou hysterezí na vstupu (typ. 0,9 V při ' +
+      'VDD=5 V, 2,3 V při 10 V, 3,5 V při 15 V) — vhodné pro tvarování pomalých/zašuměných hran, RC ' +
+      'oscilátory, monostabilní i astabilní multivibrátory. Piny: 1=A, 2=G=/A, 3=B, 4=H=/B, 5=C, ' +
+      '6=I=/C, 7=VSS, 8=J=/D, 9=D, 10=K=/E, 11=E, 12=L=/F, 13=F, 14=VDD. Elektricky stejná funkce ' +
+      'jako starší řada CD4069UB, ale s garantovanou hysterezí na všech vstupech. V této appce ' +
+      'použito jako oscilátor a budič piezoměniče v projektu „Elektronická ultrazvuková píšťalka“.',
+    schematicImage: 'CD40106B.jpg',
+    tags: 'io,logika,cd40106,cd40106b,invertor,schmitt,hystereze,cmos,oscilátor,40106',
+  },
 
   // Posuvné registry
   {
