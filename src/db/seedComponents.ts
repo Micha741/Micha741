@@ -4103,6 +4103,24 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,npn,bipolární,výkonový,to-220,bd243c,pozor-chladič',
   },
   {
+    name: 'KU612',
+    packageType: 'T32 (Tesla pouzdro, odpovídá přibližně TO-39/podobné kovové pouzdro)',
+    value: '⚠️ NPN spínací tranzistor, UCBO 120 V, UCEO 80 V, IC 3 A (viz poznámka ke kvalitě skenu)',
+    notes:
+      'Tesla Elektronické součástky, katalogová tabulka "Výkonové spínací tranzistory N-P-N" ' +
+      '(str. 208, stejná stránka obsahuje i řadu KD366/367 a pár tranzistorů KC510 — uživatel ji ' +
+      'dodal pod názvem „KD366.PDF“, protože na stránce hledal KD601, ten na ní ale není). ' +
+      '⚠️ Tabulka je z naskenovaného katalogu a některé sloupce (zejména PTOT a zkušební proudy ' +
+      'u h21E/−IE) jsou kvůli kvalitě skenu nejisté — jistá a čitelná jsou: UCBO=120 V, UCEO=80 V, ' +
+      'IC=3 A, UEBO=3 V, ϑj=155 °C, ICBO max=0,05 mA (při UCB=50 V), h21E min 90 (poměřováno při ' +
+      'dvou proudech, zisk klesá ≥20 u vyššího z nich), fT min cca 15–30 MHz, UBE(sat) max cca 1 V, ' +
+      'pouzdro T32. Sourozenec KU611 má stejné parametry kromě UCBO=60 V. Před použitím v kritické ' +
+      'aplikaci doporučeno ověřit přesné mezní hodnoty (zejména Ptot) z jiného zdroje. V této appce ' +
+      'použito jako Q2 (odpojitelný spínačem SW1 pro přepnutí rozsahu) v projektu „Omezovač proudu“ ' +
+      '— POZOR: KD601 (Q1 ve stejném zapojení) v tomto zdroji chybí, stále je potřeba jeho datasheet.',
+    tags: 'tranzistor,npn,bipolární,spínací,tesla,ku612,ku611,t32,nejisté-hodnoty',
+  },
+  {
     name: 'TIP3055',
     packageType:
       'TO-247 (dříve i SOT-93/TO-218, od 6/2012 jen TO-247) — vývody: 1=báze, 2=kolektor, ' +
@@ -6436,7 +6454,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 91;
+export const SEED_LIBRARY_VERSION = 92;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
