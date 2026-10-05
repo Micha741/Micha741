@@ -2185,6 +2185,34 @@ const DIODE_SPECS: PartSpec[] = [
     tags: 'dioda,led,displej,flat-display,rohm,ld-201,zelená',
   },
   {
+    name: 'HD-A304RDA',
+    packageType:
+      '14pin THT jednociferný 7segmentový displej, výška číslic 7,62 mm (0,3″), piny: 1=A, 13=B, ' +
+      '10=C, 8=D, 7=E, 2=F, 11=G, 9=RDP (desetinná tečka), 3,14=společná anoda, 4/5/12=nezapojeno, ' +
+      '6=nezapojeno',
+    schematicImage: 'HD-A304RDA.jpg',
+    value: '7segmentový LED displej, červený, společná anoda, VF typ. 1,9 V/max 2,5 V @IF=10 mA',
+    notes:
+      '⚠️ Přímý datasheet k označení "HD-A304RDA" (jak je potištěn na schématu v časopisu ' +
+      'Praktická elektronika A Radio 11/2024, projekt „Malý aktuátor z RC serva“) se nepodařilo ' +
+      'dohledat. Záznam vychází ze dvou datasheetů stejné rodiny displejů (0,3″, 1 číslice, piny ' +
+      'A=1/B=13/C=10/D=8/E=7/F=2/G=11/RDP=9, společná anoda na 3+14) od Bright LED Electronics ' +
+      'Corp.: "BS-A304RD" (klasické THT pouzdro, vývody dolů) a "BS-A304RD-A" (stejné elektrické ' +
+      'parametry i přiřazení pinů, jen jiná orientace vývodů/pouzdra — pravděpodobně pravoúhlá ' +
+      'montáž na DPS). Piny i elektrické parametry jsou mezi oběma Bright LED variantami ' +
+      'totožné, liší se jen mechanicky (rozměry pouzdra/orientace vývodů v datasheetu). ' +
+      'Design "A304RD" (0,3″ jedna číslice, 14 pinů, tohle rozložení segmentů) je u levných ' +
+      'sedmisegmentových displejů napříč výrobci prakticky sjednocený, takže HD-A304RDA (jiná ' +
+      'značka) je s velmi vysokou pravděpodobností elektricky i pinově shodný — ale bez ' +
+      'oficiálního datasheetu výrobce HD to nelze stoprocentně potvrdit, zvlášť u mechanických ' +
+      'rozměrů. Mezní hodnoty (dle Bright LED, na segment): Pd=80 mW, IF=30 mA, IFP=150 mA ' +
+      '(duty 1/10, 1 kHz), VR=5 V, Topr=-40 až +80 °C, Tstg=-40 až +85 °C. VF typ. 1,9 V/max ' +
+      '2,5 V @IF=10 mA. IV typ. 3,0 mcd @IF=10 mA. IR max 100 µA @VR=5 V. λp typ. 640 nm, λd ' +
+      '626–636 nm. V této appce použito jako stavový/programovací displej projektu „Malý ' +
+      'aktuátor z RC serva“ (PE 11/2024), buzený přímo z portu mikrokontroléru AT89C2051.',
+    tags: 'dioda,led,displej,7segment,sedmisegmentový,hd-a304rda,bs-a304rd,bright-led,červený',
+  },
+  {
     name: 'LD-001VR',
     packageType:
       'THT plochý ("flat") DVOUčipový displej, plocha emise 4,5×9,5 mm (větší než jednočipový ' +
@@ -6357,7 +6385,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 82;
+export const SEED_LIBRARY_VERSION = 83;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
