@@ -4137,6 +4137,26 @@ const IC_SPECS: IcSpec[] = [
     schematicImage: 'HOPERF-HPxxx-HP5xxx-Series.jpg',
     tags: 'io,senzor,tlakový,tlakoměr,barometr,hoperf,i2c,spi,vodotěsný',
   },
+
+  // Proudové zdroje
+  {
+    name: 'LM334Z',
+    packageType: 'TO-92 (3 vývody, pohled zespodu): 1=ADJ, 2=V+, 3=V-',
+    value: '3vývodový nastavitelný proudový zdroj, 1–40 V, programovatelný 1 µA–10 mA',
+    notes:
+      'SGS-Thomson (dnes STMicroelectronics) "LM134-LM234-LM334 — Three Terminal Adjustable ' +
+      'Current Sources" (dok. z října 1997). Nastavitelný proudový zdroj řízený jediným externím ' +
+      'rezistorem (Iset = 67,7 mV/Rset při 25 °C), bez potřeby dalších součástek; rozsah proudu ' +
+      '10000:1, přesnost ±3 %. Napětí na vývodu ADJ je přímo úměrné absolutní teplotě (cca ' +
+      '0,33 %/°C) — lze využít jako teplotní čidlo nebo kompenzovat přidáním rezistoru a diody. ' +
+      'LM134/LM234/LM334 se liší jen garantovaným teplotním rozsahem (LM134: -55 až +125 °C, ' +
+      'LM234: -25 až +100 °C, LM334: 0 až +70 °C) — LM334Z je plastové pouzdro TO-92 (Z = package ' +
+      'code). V této appce použito jako U1, základ nastavitelného proudového zdroje v projektu ' +
+      '„Omezovač proudu“ — proud z LM334 dále zesilují tranzistory Q1/Q2 podle jejich zesilovacího ' +
+      'činitele β.',
+    schematicImage: 'LM334Z.jpg',
+    tags: 'io,proudový-zdroj,lm334,lm334z,lm134,lm234,nastavitelný',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
