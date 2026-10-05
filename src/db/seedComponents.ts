@@ -4864,6 +4864,29 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,jfet,n-kanál,depletion,to-92,j110,chopper,zesilovací,spínací',
   },
   {
+    name: 'J310',
+    packageType: 'TO-92 (case 29-04, style 5), 3 vývody: 1=drain, 2=source, 3=gate',
+    schematicImage: 'J310.jpg',
+    value: 'N-JFET VHF/UHF zesilovač (depletion), VDS/VGS 25 V, IDSS 24–60 mA, VGS(off) -2,0 až -6,5 V',
+    notes:
+      'JFET pro VHF/UHF zesilovače a aktivní antény (vysokofrekvenční common-gate/common-source ' +
+      'stupně), Motorola/ON Semiconductor "J308 J309 J310 — JFET VHF/UHF Amplifiers, N-Channel — ' +
+      'Depletion" (datasheet J308/D, 1997), Motorola Preferred Device. Součást trojice J308/J309/J310 ' +
+      've společném datasheetu, liší se jen třídou IDSS/VGS(off) — J310 má nejvyšší IDSS z trojice. ' +
+      'Mezní hodnoty: VDS=25 V, VGS=25 V, IGF=10 mA, Ptot=350 mW @TA=25 °C (odvod 2,8 mW/°C), ' +
+      'TJ=-65 až +125 °C, Tstg=-65 až +150 °C. ' +
+      'V(BR)GSS min -25 V @IG=-1,0 µA/VDS=0. IGSS max -1,0 nA @VGS=-15 V/VDS=0/TA=25 °C (max -1,0 µA ' +
+      '@TA=125 °C). VGS(off) -2,0 až -6,5 V @VDS=10 V/ID=1,0 nA. ' +
+      'IDSS (zero-gate-voltage drain current) 24–60 mA @VDS=10 V/VGS=0. VGS(f) max 1,0 V @VDS=0/IG=1,0 mA. ' +
+      'Vysokofrekvenční parametry @VDS=10 V/ID=10 mA/f=100 MHz: Re(yfs) typ 12 mmhos, Re(yis) typ ' +
+      '0,5 mmhos, Re(yos) typ 0,25 mmhos, Gpg (common-gate power gain) typ 16 dB. ' +
+      'gfs (f=1 kHz) 8000–18000 µmhos. Cgd typ 1,8 pF (max 2,5 pF), Cgs typ 4,3 pF (max 5,0 pF) ' +
+      '@VDS=0/VGS=-10 V/f=1 MHz. Noise Figure typ 1,5 dB @VDS=10 V/ID=10 mA/f=450 MHz. ' +
+      'Použito v aktivní KV anténě s preselekcí (PE 11/2024) jako emitorový sledovač/buffer za ' +
+      'preselekčním LC obvodem.',
+    tags: 'tranzistor,jfet,n-kanál,depletion,to-92,j310,vf,vhf,uhf,anténa,buffer',
+  },
+  {
     name: 'ACE8205A',
     schematicImage: 'ACE8205A.jpg',
     packageType:
@@ -6334,7 +6357,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 80;
+export const SEED_LIBRARY_VERSION = 81;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
