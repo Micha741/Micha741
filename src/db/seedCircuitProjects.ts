@@ -1,6 +1,6 @@
 import type { CircuitProjectInput } from '../types/circuit';
 
-export const CIRCUIT_LIBRARY_VERSION = 2;
+export const CIRCUIT_LIBRARY_VERSION = 3;
 
 /**
  * Přesný počet kusů u drobných pasivních součástek (rezistory) je odhad podle
@@ -60,7 +60,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     ],
   },
   {
-    name: 'Elektronická ultrazvuková píšťalka',
+    name: 'Elektronická ultrazvuková vrbovka',
     description:
       'Generátor ultrazvukového signálu 21 kHz pro odpuzování zvířat. Oscilátor je tvořen invertory hradla CD40106 (IO1A/B/C s hysterezí), zbylé tři invertory (IO1D/E/F) spolu se dvěma dvojicemi doplňkových tranzistorů (BD135/BD136) tvoří můstkový výkonový zesilovač buzící piezoměnič SP1.',
     image: 'ultrazvukova-pistalka.jpg',
