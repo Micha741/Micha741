@@ -4631,6 +4631,39 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,mosfet,n-kanál,super-220,to-220,automotive,irfba1405p,spínací',
   },
   {
+    name: 'IRF630',
+    packageType:
+      'SOT78/TO-220AB (IRF630, THT), 3 vývody + tab: 1=gate, 2=drain, 3=source, tab=drain ' +
+      '(u varianty IRF630S v pouzdře SOT404/D²PAK SMD není pin 2 vyveden, drain jen přes tab)',
+    value: 'N-MOSFET TrenchMOS, VDSS 200 V, ID 9 A (@Tmb=25 °C), RDS(on) max 400 mΩ',
+    notes:
+      'Philips Semiconductors (později NXP) "N-channel TrenchMOS transistor — IRF630, IRF630S" ' +
+      '(Product specification, Rev 1.100, srpen 1999). Výkonový spínací N-MOSFET s technologií ' +
+      '"Trench" (nízký RDS(on), rychlé spínání, nízký tepelný odpor), určený pro spínané zdroje, ' +
+      'DC/DC měniče a řízení motorů. IRF630 = pouzdro SOT78 (TO220AB, THT), IRF630S = SOT404 ' +
+      '(D²PAK, SMD) — elektricky shodné, liší se jen pouzdrem a tím, že u SMD varianty není pin 2 ' +
+      '(drain) vyveden samostatně, drain je dostupný jen přes chladicí tab. ' +
+      'Mezní hodnoty: VDSS=200 V, VDGR=200 V (RGS=20 kΩ), VGS=±20 V, ID(trvalý)=9 A @Tmb=25 °C ' +
+      '(6,3 A @Tmb=100 °C), IDM (pulzně)=36 A, Ptot=88 W @Tmb=25 °C, TJ/Tstg=-55 až +175 °C. ' +
+      'Lavinová energie EAS max 250 mJ (IAS=5 A, tp=380 µs), IAS (špičkový nerepetitivní lavinový ' +
+      'proud) max 9 A. RthJ-mb max 1,7 K/W, RthJ-a typ 60 K/W (SOT78, volný vzduch)/50 K/W (SOT404, ' +
+      'min. footprint na DPS). ' +
+      'V(BR)DSS min 200 V @ID=0,25 mA (min 178 V @TJ=-55 °C). VGS(th) 2,0–4,0 V @ID=1 mA (min 1 V ' +
+      '@TJ=175 °C, max 6 V @TJ=-55 °C). RDS(on) typ 300 max 400 mΩ @VGS=10 V/ID=5,4 A (max 1,12 Ω ' +
+      '@TJ=175 °C). gfs min 3,8 typ 9 S @VDS=25 V/ID=5,4 A. ' +
+      'IGSS max 100 nA @VGS=±20 V. IDSS max 10 µA @VDS=200 V/VGS=0 (max 250 µA @VDS=160 V/TJ=175 °C). ' +
+      'Qg(tot) max 39 nC @ID=5,9 A, Qgs typ 6,3 nC, Qgd typ 21 nC. ' +
+      'Spínání (VDD=100 V, RD=10 Ω, VGS=10 V, RG=5,6 Ω, rezistivní zátěž): td(on) typ 8 ns, tr typ ' +
+      '19 ns, td(off) typ 25 ns, tf typ 15 ns. Ciss typ 959 pF, Coss typ 93 pF, Crss typ 54 pF ' +
+      '(@VGS=0/VDS=25 V/f=1 MHz). Vnitřní indukčnosti: Ld (tab-čip) typ 3,5 nH, Ld (vývod-čip, jen ' +
+      'SOT78) typ 4,5 nH, Ls typ 7,5 nH. ' +
+      'V této appce použito jako T3 projektu „PWM regulátor" (PE 11/2024) — výkonový spínací prvek ' +
+      'tranzistorového PWM regulátoru otáček stejnosměrného motoru (5–48 V, do 1,5 A), spínaný ' +
+      'astabilním multivibrátorem T1/T2; magazínová alternativa IRFZ48.',
+    schematicImage: 'IRF630.jpg',
+    tags: 'tranzistor,mosfet,n-kanál,to-220,trenchmos,irf630,irf630s,philips,nxp,spínací,pwm',
+  },
+  {
     name: 'G2N7000',
     packageType:
       'TO-92, 3 vývody: 1=source, 2=gate, 3=drain (pohled zepředu na popsanou stranu, značka „S G D")',
@@ -6385,7 +6418,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 85;
+export const SEED_LIBRARY_VERSION = 86;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
