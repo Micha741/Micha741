@@ -4251,6 +4251,29 @@ const IC_SPECS: IcSpec[] = [
     schematicImage: 'ST485.jpg',
     tags: 'io,rozhraní,rs485,rs422,transceiver,st485a,st485ab,st485,modbus,vysokorychlostní',
   },
+  {
+    name: 'ST75C176',
+    packageType:
+      'DIP-8 nebo SO-8, stejný pinout jako ST485: 1=RO, 2=/RE, 3=DE, 4=DI, 5=GND, 6=A, 7=B, 8=VCC',
+    value: 'Nízkopříkonový RS-485/RS-422 transceiver (1 driver + 1 receiver), BiCMOS, VCC 5 V, ' +
+      'až 32 transceiverů na sběrnici',
+    notes:
+      'STMicroelectronics "ST75C176 — Low power RS-485/RS-422 transceiver" (rev. 3, květen 2006). ' +
+      'Uživatel se ptal, jestli nejde jen o jiné označení stejného čipu jako ST485 — není, je to ' +
+      'samostatný katalogový typ (odvozený od průmyslového standardu "75176", tedy stejná rodina ' +
+      'jako SN75176/MAX485 zmíněná u ST485), ale elektricky je mu velmi blízký: shodný pinout, ' +
+      'shodné VOD1/VOD2, VIH/VIL, vstupní hystereze (70 mV typ.), common-mode rozsah -7 až +12 V, ' +
+      'propagační zpoždění 30 ns/skew 5 ns, klidový odběr typ. 300 µA (zde navíc rozepsáno tabulkou ' +
+      'ICC: 400/900 µA max při VRE=0 V, 300/500 µA max při VDE=0 V) a shodné absolutní meze. ' +
+      'Skutečné rozdíly oproti ST485: nižší udaná zatížitelnost sběrnice (max. 32 transceiverů, ' +
+      'ST485 udává 64), explicitně uvedená BiCMOS technologie a specifikace zkratového proudu ' +
+      'budiče IOSD1 (35–250 mA @VO=-7 až 12V, u ST485 na prvních stránkách neuvedena). Pinově i ' +
+      'funkčně zaměnitelný se ST485 — pravdivostní tabulky driveru i receiveru jsou identické. ' +
+      'V databázi veden jako samostatný typ, protože jde o jiný objednací kód, ne jen jinou ' +
+      'variantu balení/teploty.',
+    schematicImage: 'ST485.jpg',
+    tags: 'io,rozhraní,rs485,rs422,transceiver,st75c176,75176,sn75176,st485,modbus',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
