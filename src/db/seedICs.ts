@@ -789,6 +789,23 @@ const IC_SPECS: IcSpec[] = [
     notes: 'CMOS obdoba 74HC74 se širším rozsahem napájení — vhodné i pro obvody napájené nižším/vyšším napětím.',
     tags: 'io,logika,cd4013,klopný-obvod',
   },
+  {
+    name: 'CD4060B',
+    packageType: 'DIP-16/SOIC-16 (16 vývodů)',
+    value: '14stupňový binární čítač/dělič s vestavěným oscilátorem, 3–18 V (CMOS)',
+    notes:
+      'Texas Instruments/Harris "CD4060B Types — CMOS 14-Stage Ripple-Carry Binary Counter/Divider ' +
+      'and Oscillator" (dok. SCHS049). Na čipu je kompletní RC nebo krystalový oscilátor (stačí ' +
+      'zvenčí připojit RC článek nebo krystal mezi piny φI/φO/φO) a za ním 14 kaskádovaných ' +
+      'binárních děličů /2 — vyvedeno je jen 10 z nich (Q4 až Q14, přeskakuje Q11), takže kmitočet ' +
+      'na výstupu je vždy desítkovou mocninou dvou nižší než kmitočet oscilátoru. Vstup RESET (pin ' +
+      '12) v log. 1 vynuluje čítač i zastaví oscilátor; vstup pulzní linky φI má Schmittovu hysterezi, ' +
+      'takže snáší libovolně pomalou náběžnou/sestupnou hranu. Typické použití: časovací a zpožďovací ' +
+      'obvody, kmitočtové děličky, řídicí čítače (v této appce použito jako zdroj blikacích kmitočtů ' +
+      'projektu „Vánoční stromeček s 4060“).',
+    schematicImage: 'CD4060B.jpg',
+    tags: 'io,logika,cd4060,cd4060b,čítač,oscilátor,dělič,cmos,4060',
+  },
 
   // Posuvné registry
   {
