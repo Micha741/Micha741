@@ -3842,6 +3842,33 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,mikrokontrolér,mcu,8051,mcs-51,at89c2051,atmel,flash,8bit,uart,komparátor',
   },
   {
+    name: '24C32',
+    packageType:
+      '8pin PDIP/SOIC, piny: 1=A0, 2=A1, 3=A2 (konfigurovatelné adresy čipu), 4=VSS (GND), ' +
+      '5=SDA (datový vstup/výstup), 6=SCL (hodinový vstup), 7=NC (nezapojeno), 8=VCC (4,5-5,5 V)',
+    value:
+      '32K bitová (4K × 8) sériová I²C EEPROM, 100/400 kHz, 8bajtové stránkování, ' +
+      '10 000 000 (High Endurance blok) / 1 000 000 (zbytek pole) cyklů zápis/mazání',
+    notes:
+      'Microchip "24C32 — 32K 5.0V I2C Smart Serial EEPROM" (dok. DS21061H). Pozor: výrobcem ' +
+      'označeno jako Obsolete Device, doporučená náhrada je 24LC32A nebo 24LC65 (pinově i ' +
+      'funkčně kompatibilní, pouze nižší napájecí napětí). Pouzdro 4K×8 (32 Kbit) sériová ' +
+      'EEPROM s industry-standardním dvouvodičovým I²C rozhraním (100 kHz i 400 kHz režim), ' +
+      'napájení 4,5-5,5 V. Vlastní časování zápisového cyklu (včetně auto-erase), typická doba ' +
+      'zápisu ~2 ms. Vstupní cache 1 stránka × 8 řádků (64 B) pro rychlé stránkové zápisy — ' +
+      '8bajtové stránky nebo bajtový režim. Pevný 4Kbitový blok s ultra-vysokou výdrží ' +
+      '(10 000 000 E/W cyklů) pro často se měnící data, zbytek pole garantuje 1 000 000 E/W ' +
+      'cyklů. Datová výdrž >200 let. Schmitt-trigger filtrované vstupy pro potlačení šumu, ' +
+      'řízený náběh výstupu proti zákmitům na zemi (ground bounce), ESD ochrana >4000 V. Piny ' +
+      'A0-A2 umožňují až 8 čipů na jedné sběrnici (celkem až 256 Kbit adresního prostoru). ' +
+      'Adresování zařízení: 4bitový kontrolní kód 1010 + 3 bity výběru zařízení (A2,A1,A0) + ' +
+      'R/W bit. Teplotní rozsahy: komerční 0-70 °C, průmyslový -40 až +85 °C. V této appce ' +
+      'použito jako komponenta I2 projektu „Malý aktuátor z RC serva“ (PE 11/2024) — ukládá ' +
+      'naprogramované časové hodnoty serva, řízeno jednotkou AT89C2051.',
+    schematicImage: '24C32.jpg',
+    tags: 'io,paměť,eeprom,i2c,24c32,microchip,sériová-paměť,serial-eeprom,obsolete,24lc32a',
+  },
+  {
     name: 'MSP430G2553',
     packageType:
       '20-PDIP/20-TSSOP (16 I/O), 28-TSSOP (24 I/O) nebo 32-QFN (24 I/O), napájení DVCC 1,8-3,6V, ' +
