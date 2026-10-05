@@ -3869,6 +3869,44 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,paměť,eeprom,i2c,24c32,microchip,sériová-paměť,serial-eeprom,obsolete,24lc32a',
   },
   {
+    name: 'A4988',
+    packageType:
+      '⚠️ Pinout níže odpovídá holému čipu Allegro A4988 v pouzdře 28-QFN (5×5 mm, s exponovaným ' +
+      'chladicím padem), piny: 1=OUT2B, 2=ENABLE, 3,18=GND, 4=CP1, 5=CP2, 6=VCP, 7,20,25=NC, ' +
+      '8=VREG, 9=MS1, 10=MS2, 11=MS3, 12=RESET, 13=ROSC, 14=SLEEP, 15=VDD, 16=STEP, 17=REF, ' +
+      '19=DIR, 21=OUT1B, 22=VBB1, 23=SENSE1, 24=OUT1A, 26=OUT2A, 27=SENSE2, 28=VBB2. V appce ' +
+      'použito jako „modul POLOLU A4988“ — prodávaná nosná destička (carrier board) s tímto ' +
+      'čipem, která má vlastní zjednodušený 16pinový rozchod do dvou řad DIP rastru (typicky ' +
+      'VMOT, GND, 2B, 2A, 1A, 1B, VDD, GND, RESET, SLEEP, STEP, DIR, MS1, MS2, MS3, ENABLE) — ' +
+      'ten se liší od číslování holého QFN čipu výše a není v tomto datasheetu (čistě IC) popsán.',
+    value:
+      'DMOS mikrokrokový driver bipolárních krokových motorů s translátorem a nadproudovou ' +
+      'ochranou, VBB 8–35 V, výstup až ±2 A, kroky plný/1:2/1:4/1:8/1:16',
+    notes:
+      'Allegro MicroSystems "A4988 — DMOS Microstepping Driver with Translator and Overcurrent ' +
+      'Protection" (dok. 4988-DS, Rev. 8, 5. 4. 2022). ⚠️ Dodaný datasheet popisuje samotný ' +
+      'budicí obvod Allegro A4988 v pouzdře 28-QFN, nikoli přímo prodávanou destičku „POLOLU ' +
+      'A4988 Stepper Motor Driver Carrier“ — ta má vlastní regulátor/kondenzátory osazené na ' +
+      'desce a zjednodušený pinout na dvou řadách pinů po 0,1″. Elektrické parametry čipu (viz ' +
+      'níže) pro modul platí, pinout ne. Kompletní driver pro bipolární krokové motory s ' +
+      'integrovaným translátorem — stačí jeden pulz na STEP a motor se posune o jeden mikrokrok, ' +
+      'bez nutnosti fázových tabulek v řídicím MCU. Pracuje v režimech plný/half/čtvrtinový/ ' +
+      'osminový/šestnáctinový krok (nastaveno piny MS1-MS3, viz tabulka rozlišení). Napájení ' +
+      'zátěže (motoru) VBB 8–35 V, výstupní proud do ±2 A na fázi (RDS(on) typ. 320 mΩ). Logické ' +
+      'napájení VDD 3–5,5 V. Pevná doba vypnutí (fixed off-time) PWM regulace proudu s ' +
+      'automatickou volbou mixed/slow decay režimu. Proud fáze nastaven snímacími rezistory ' +
+      'RS1/RS2, referenčním napětím VREF a výstupem DAC (VREF 0–4 V, chybovost trip-level ±5 % ' +
+      'typ. při VREF=2V/70,71 % ITripMax). Nadproudová ochrana (zkrat na zem, zkrat zátěže) s ' +
+      'prahem min. 2,1 A, tepelná ochrana (vypnutí při 165 °C, hystereze 15 °C), podpěťová ' +
+      'ochrana (UVLO) VDD<2,8 V typ. Vstup RESET nastaví translátor do výchozí Home pozice a ' +
+      'vypne výstupy, ENABLE (aktivní v L) povoluje/zakazuje výstupní budiče. Interní nábojová ' +
+      'pumpa (CP1/CP2/VCP) generuje budicí napětí pro horní MOSFETy. V této appce použito jako ' +
+      'komponenty IO1 a IO2 shieldu „Shield POLOLU pro Arduino UNO“ (PE 11/2024, str. 31–32) — ' +
+      'dva moduly pro řízení dvou bipolárních krokových motorů z Arduina UNO.',
+    schematicImage: 'A4988.jpg',
+    tags: 'io,driver,budič,krokový-motor,stepper,a4988,allegro,pololu,translátor,mikrokrokování,dmos',
+  },
+  {
     name: 'MSP430G2553',
     packageType:
       '20-PDIP/20-TSSOP (16 I/O), 28-TSSOP (24 I/O) nebo 32-QFN (24 I/O), napájení DVCC 1,8-3,6V, ' +
