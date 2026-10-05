@@ -4563,6 +4563,29 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,mosfet,n-kanál,sot-23,smd,2n7002,2n7002l,logic-level,spínací,modbus',
   },
   {
+    name: 'BS170',
+    packageType: 'TO-92, 3 vývody (pohled zepředu na popsanou stranu): 1=D (drain), 2=G (gate), ' +
+      '3=S (source)',
+    value: 'N-MOSFET, VDSS 60 V, ID 500 mA, RDS(on) max 5 Ω (@VGS=10 V/ID=200 mA)',
+    schematicImage: 'BS170.jpg',
+    notes:
+      'Shantou Huashan Electronic Devices "HBS170 — N-Channel Enhancement Mode Field Effect ' +
+      'Transistor" — výrobcova náhrada klasického BS170 (stejný vzor jako HBAT54/Hi-Sincerity ' +
+      'nebo BZX85C12/Vishay u dřívějších součástek — "H" prefix a jinak identické označení ' +
+      'u čínských výrobců běžných katalogových typů). ⚠️ Obvod v appce uvádí jako alternativu ' +
+      'BS108 NEBO BS170 — toto je konkrétně BS170 (vyšší proud/nižší napětí varianta rodiny; ' +
+      'BS108 má jiné mezní hodnoty, typicky VDSS 200 V/ID 120 mA, a v databázi zatím chybí jeho ' +
+      'vlastní datasheet). Malovýkonový spínací N-MOSFET, TO-92. Mezní hodnoty: VDSS 60 V, VDGR ' +
+      '60 V (RGS≤1 MΩ), VGSS ±20 V, ID(trvalý) 500 mA, Ptot 0,83 W, TJ/Tstg -55 až +150 °C. ' +
+      'BVDSS min 60 V @VGS=0 V/ID=100 µA. IDSS max 0,5 µA @VDS=25 V/VGS=0 V. IGSSF max 10 nA ' +
+      '@VGS=15 V/VDS=0 V. VGS(th) 0,8–3,0 V @VDS=VGS/ID=1 mA. RDS(on) max 5 Ω @VGS=10 V/' +
+      'ID=200 mA. gFS typ 320 mS @VDS=10 V/ID=200 mA. Ciss max 40 pF, Coss max 30 pF, Crss ' +
+      'max 10 pF (@VDS=10 V/VGS=0 V/f=1 MHz). ton max 10 ns, toff max 10 ns (@VDD=25 V/ID=200 mA/' +
+      'VGS=10 V/RGEN=25 Ω). V této appce vhodné jako T1, T2 v projektu „Solární lampička s ' +
+      'Li-ion akumulátorem (THT)" (alternativa k BS108).',
+    tags: 'tranzistor,mosfet,n-kanál,to-92,bs170,hbs170,spínací,solární',
+  },
+  {
     name: 'FDS9926',
     packageType:
       'SO-8, 2 nezávislé N-MOSFETy — piny (ověřeno ze schématu v datasheetu): 1=S2 (source Q2), ' +
@@ -6572,7 +6595,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 105;
+export const SEED_LIBRARY_VERSION = 106;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
