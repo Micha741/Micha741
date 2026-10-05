@@ -3810,6 +3810,38 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,supervizor,reset,napěťový-supervizor,voltage-supervisor,ti,tps3809,tps3809i50,sot-23,4.55v',
   },
   {
+    name: 'AT89C2051',
+    packageType:
+      '20-PDIP/20-SOIC, napájení VCC 2,7-6V, piny: 1=RST/VPP, 2=P3.0(RXD), 3=P3.1(TXD), ' +
+      '4=XTAL2, 5=XTAL1, 6=P3.2(INT0), 7=P3.3(INT1), 8=P3.4(T0), 9=P3.5(T1), 10=GND, ' +
+      '11=P3.7, 12=P1.0(AIN0), 13=P1.1(AIN1), 14-19=P1.2-P1.7, 20=VCC',
+    value:
+      '8bitový mikrokontrolér (jádro MCS-51), 2 KB Flash / 128 B RAM, 15 I/O, 0-24 MHz, ' +
+      'dva 16bitové čítače/časovače, UART, on-chip analogový komparátor',
+    notes:
+      'Atmel "AT89C2051 — 8-bit Microcontroller with 2K Bytes Flash" (dok. 0368G-MICRO-6/05). ' +
+      'Nízkonákladový nástupce starších masek-ROM verzí (AT89C51 rodina) s přeprogramovatelnou ' +
+      'Flash pamětí (1000 cyklů zápis/mazání), plně kompatibilní s instrukční sadou průmyslového ' +
+      'standardu MCS-51 (Intel 8051). Statická CMOS architektura pracuje od 0 Hz do 24 MHz, ' +
+      'takže umožňuje i úsporné hodinování. Periferie: 128 B interní RAM, 15 programovatelných ' +
+      'I/O linek (port P1 celých 8 bitů, port P3 7 bitů — P3.6 je napevno zapojen jako vstup ' +
+      'z výstupu interního komparátoru a není dostupný jako běžný I/O), dva 16bitové čítače/ ' +
+      'časovače, plně duplexní sériový port (UART), pětivektorová dvouúrovňová přerušovací ' +
+      'soustava, on-chip přesný analogový komparátor (vstupy AIN0/AIN1 sdílené s P1.0/P1.1), ' +
+      'přímé buzení LED na výstupech portů (sink 20 mA). Dva programovatelné bity zámku ' +
+      '(lock bits) chrání obsah Flash proti vyčtení/přeprogramování. Dva softwarové úsporné ' +
+      'režimy: Idle (zastaví CPU, periferie běží dál) a Power-down (zachová obsah RAM, zastaví ' +
+      'oscilátor — probuzení jen hardwarovým resetem). XTAL1/XTAL2 pro krystal nebo keramický ' +
+      'rezonátor (C1=C2 30 pF±10 pF pro krystal, 40 pF±10 pF pro keramický rezonátor), nebo lze ' +
+      'přivést externí hodinový signál přímo na XTAL1 (XTAL2 nezapojen). Programování Flash ' +
+      'přes port P1 (data) a P3.2-P3.7 (řídicí signály) při VPP=11,5-12,5 V na pinu RST/VPP. ' +
+      'V této appce použito jako řídicí jednotka projektu „Malý aktuátor z RC serva“ (PE 11/2024) ' +
+      '— generuje PWM impulz pro servo, ovládá sedmisegmentový displej přes budič HD-A304RDA a ' +
+      'ukládá naprogramované časy do externí EEPROM 24C32.',
+    schematicImage: 'AT89C2051.jpg',
+    tags: 'io,mikrokontrolér,mcu,8051,mcs-51,at89c2051,atmel,flash,8bit,uart,komparátor',
+  },
+  {
     name: 'MSP430G2553',
     packageType:
       '20-PDIP/20-TSSOP (16 I/O), 28-TSSOP (24 I/O) nebo 32-QFN (24 I/O), napájení DVCC 1,8-3,6V, ' +
