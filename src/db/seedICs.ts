@@ -821,6 +821,20 @@ const IC_SPECS: IcSpec[] = [
     schematicImage: 'CD40106B.jpg',
     tags: 'io,logika,cd40106,cd40106b,invertor,schmitt,hystereze,cmos,oscilátor,40106',
   },
+  {
+    name: 'CD4011B',
+    packageType: 'DIP-14/SOIC-14/TSSOP-14 (14 vývodů)',
+    value: '4× 2vstupové NAND hradlo (quad 2-input NAND gate), 3–18 V (CMOS)',
+    notes:
+      'Texas Instruments/Harris "CD4011B, CD4012B, CD4023B Types — CMOS NAND Gates" (dok. SCHS021D, ' +
+      'revidováno září 2003). CD4011B obsahuje čtyři nezávislá 2vstupová NAND hradla se symetrickými ' +
+      'bufferovanými vstupy/výstupy. Piny: 1=A, 2=B, 3=J(=/(A·B)), 4=K(=/(C·D)), 5=C, 6=D, 7=VSS, ' +
+      '8=E, 9=F, 10=L(=/(E·F)), 11=M(=/(G·H)), 12=G, 13=H, 14=VDD. Propagační zpoždění typ. 60 ns ' +
+      'při CL=50 pF, VDD=10 V. V této appce použito jako hradlová logika pro přepínání bílých/' +
+      'červených LED v projektu „Výstražná světla na přejezdu“ (IO2, všechna 4 hradla využita).',
+    schematicImage: 'CD4011B.jpg',
+    tags: 'io,logika,cd4011,cd4011b,nand,hradlo,cmos,4011',
+  },
 
   // Posuvné registry
   {
