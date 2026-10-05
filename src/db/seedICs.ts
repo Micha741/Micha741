@@ -4241,9 +4241,15 @@ const IC_SPECS: IcSpec[] = [
       '-0,3 až 7 V, napětí na výstupu budiče/vstupu přijímače -7,5 až +12,5 V. Dostupný jen v ' +
       'komerčním (0–70 °C) a průmyslovém (-40–85 °C) rozsahu (na rozdíl od ST485, který má i ' +
       'automobilovou -55–125 °C variantu). Pinově kompatibilní se ST485 — lze tedy fyzicky ' +
-      'zaměnit, ale je nutné počítat s vyšší spotřebou.',
+      'zaměnit, ale je nutné počítat s vyšší spotřebou. ' +
+      'Varianta ST485AB: uživatel poslal i samostatný datasheet "ST485AB" (rev. 3, srpen 2007) ' +
+      'k porovnání — elektricky i pinově zcela shodný s tímto záznamem (stejné ISUPPLY, VOD1/VOD2, ' +
+      'IOSD, absolutní meze i pravdivostní tabulky), jen omezený na průmyslový teplotní rozsah ' +
+      '-40 až 85 °C (objednací kódy ST485ABN/ST485ABDR — ty jsou ostatně uvedené už v tabulce ' +
+      'objednacích kódů ST485A výše). Jde tedy o stejný čip, ne o další variantu — samostatný ' +
+      'záznam pro ST485AB proto není potřeba.',
     schematicImage: 'ST485.jpg',
-    tags: 'io,rozhraní,rs485,rs422,transceiver,st485a,st485,modbus,vysokorychlostní',
+    tags: 'io,rozhraní,rs485,rs422,transceiver,st485a,st485ab,st485,modbus,vysokorychlostní',
   },
 ];
 
