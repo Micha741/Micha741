@@ -397,6 +397,24 @@ const DIODE_SPECS: PartSpec[] = [
   { name: 'BZX55C18', packageType: 'DO-35', value: '18 V / 0,5 W', notes: 'Zenerova dioda', tags: 'dioda,zener' },
   { name: 'BZX55C22', packageType: 'DO-35', value: '22 V / 0,5 W', notes: 'Zenerova dioda', tags: 'dioda,zener' },
 
+  {
+    name: 'BZX85C12',
+    packageType: 'DO-41 (DO-204AL)',
+    value: '11,4–12,7 V (nom. 12 V) / 1,3 W — výkonová Zenerova dioda',
+    notes:
+      'Vishay Semiconductors "BZX85 — Zener Diodes" (dok. 85607, rev. 2.9, 17.9.2025). Křemíková ' +
+      'planární výkonová Zenerova dioda, jmenovité napětí podle normy E24, testovací proud IZT=20mA, ' +
+      'dynamický odpor ZZ < 9Ω, teplotní koeficient 0,045 až 0,08 %/°C. Výkonově vydatnější varianta ' +
+      'v pouzdru DO-41 oproti běžnější řadě BZX55 (DO-35, 0,5 W) — PTOT=1300mW (při délce vývodů 4mm ' +
+      'od pouzdra), proto vhodnější tam, kde Zenerova dioda vede trvaleji vyšší proud (např. v ' +
+      'zdroji referenčního napětí napájeném přímo ze sítě). POZOR: časopis uvádí označení ' +
+      '„BZX85V012“ — v aktuálním katalogu Vishay (tento datasheet) má řada jen písmeno „C“ ' +
+      '(BZX85C12), značení „V“ se v tomto dokumentu nevyskytuje, pravděpodobně starší/jiné ' +
+      'značení tolerance u původního výrobce dílu použitého v časopisu; elektricky jde o shodnou ' +
+      '12V/1,3W Zenerovu diodu v DO-41.',
+    tags: 'dioda,zener,bzx85,bzx85c12,bzx85v012,do-41,12v',
+  },
+
   { name: 'SMZ253A', packageType: 'SOD-123FL (SMD)', value: '3,0 V / 1,3 W', notes: 'Zenerova dioda SMD, tolerance ±5 %, značení na pouzdře: 6A. (EIC, řada SMZ25, PD=1,3 W, VF max 1,2 V @IF=200 mA, TJ/Tstg -55 až +150 °C, datasheet rev. 01, 2009-01-12)', tags: 'dioda,zener,smd,sod-123fl,smz25' },
   { name: 'SMZ253D', packageType: 'SOD-123FL (SMD)', value: '3,3 V / 1,3 W', notes: 'Zenerova dioda SMD, tolerance ±5 %, značení na pouzdře: 6B. Součást řady SMZ25 (EIC) — viz poznámka u SMZ253A pro plné mezní hodnoty.', tags: 'dioda,zener,smd,sod-123fl,smz25' },
   { name: 'SMZ253G', packageType: 'SOD-123FL (SMD)', value: '3,6 V / 1,3 W', notes: 'Zenerova dioda SMD, tolerance ±5 %, značení na pouzdře: 6C. Součást řady SMZ25 (EIC) — viz poznámka u SMZ253A pro plné mezní hodnoty.', tags: 'dioda,zener,smd,sod-123fl,smz25' },
@@ -6418,7 +6436,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 89;
+export const SEED_LIBRARY_VERSION = 90;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
