@@ -3728,6 +3728,26 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,pnp,bipolární,sot-23,smd,zesilovací,spínací,mmbt2907a,2n2907a',
   },
   {
+    name: 'FMBTA06',
+    packageType:
+      'SOT-23 (SMD), 3 vývody: 1=emitor, 2=báze, 3=kolektor (dle schématické značky v datasheetu)',
+    value: 'NPN, VCEO 80 V, VCBO 80 V, IC 500 mA, hFE min 50',
+    schematicImage: 'FMBTA06.jpg',
+    notes:
+      'FOI Semiconductor, "NPN Silicon Transistor / Amplifier Transistor" datasheet. ' +
+      'Mezní hodnoty: VCBO=80 V, VCEO=80 V, VEBO=4 V, IC=500 mA, Ptot=250 mW @Ta=25 °C, ' +
+      'Tj max=150 °C, Tstg=-55 až +150 °C. ' +
+      'ICBO max 100 nA @VCB=80 V. ICEO max 100 nA @VCE=60 V. ' +
+      'VCE(sat) max 0,25 V @IC=100 mA/IB=10 mA. VBE(on) max 1,2 V @IC=100 mA/VCE=1 V. ' +
+      'hFE1 min 50 @IC=10 mA/VCE=1 V. hFE2 min 50 @IC=100 mA/VCE=1 V. ' +
+      'fT min 100 MHz @IC=10 mA/VCE=2 V/f=100 MHz. ' +
+      'Nebyl na seznamu chybějících součástek pro žádný konkrétní projekt — přidán jen jako ' +
+      'samostatný katalogový záznam na základě nahraného datasheetu. Není pravděpodobnou náhradou ' +
+      'za chybějící Tesla KD601 (ten je PNP výkonový tranzistor v jiném pouzdře, FMBTA06 je malý ' +
+      'NPN zesilovací/spínací tranzistor v SOT-23) — KD601 zůstává v databázi chybějící.',
+    tags: 'tranzistor,npn,bipolární,sot-23,smd,zesilovací,spínací,fmbta06',
+  },
+  {
     name: '2N3906',
     packageType: 'TO-92, 3 vývody: 1=emitor, 2=báze, 3=kolektor (pohled zepředu na popsanou stranu)',
     value: 'PNP, VCEO -40 V, IC -200 mA, hFE 100–300 (@ IC=-10 mA)',
@@ -6451,7 +6471,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 93;
+export const SEED_LIBRARY_VERSION = 94;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
