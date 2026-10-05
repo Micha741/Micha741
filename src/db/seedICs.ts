@@ -4338,6 +4338,43 @@ const IC_SPECS: IcSpec[] = [
     schematicImage: 'TP4056.jpg',
     tags: 'io,nabíječka,li-ion,li-pol,tp4056,solární,lineární,cc-cv',
   },
+  {
+    name: 'BQ24040',
+    packageType:
+      '10pin WSON (DSQ, 2×2 mm, se spodní chladicí ploškou), piny: 1=IN (napájení), 2=ISET ' +
+      '(nastavení nabíjecího proudu), 3=VSS (zem), 4=PRE-TERM (nastavení prahu předbíjení/' +
+      'ukončení), 5=/PG (power good, open-drain, aktivní L), 6=NC (nezapojovat), 7=ISET2 ' +
+      '(volba limitu vstupního proudu USB 100/500 mA), 8=/CHG (indikace nabíjení, open-drain, ' +
+      'aktivní L), 9=TS (vstup NTC čidla teploty baterie), 10=OUT (výstup na baterii/systémovou ' +
+      'zátěž)',
+    value: 'Lineární nabíječka 1článkových Li-ion/Li-pol akumulátorů s automatickým startem, ' +
+      'VIN 4,45–6,45 V (abs. max 30 V), max. 1 A (programovatelné), VFLOAT 4,2 V (±1 %)',
+    notes:
+      'Texas Instruments "BQ24040, BQ24041, BQ24045 — 1A, Single-Input, Single Cell Li-Ion and ' +
+      'Li-Pol Battery Charger With Auto Start" (dok. SLUS941H, září 2009, rev. únor 2021). ' +
+      'Uživatel se ptal, jestli jde o totéž jako TP4056 (přidán do databáze dříve pro stejný ' +
+      'obvod) — funkčně ano (obojí lineární CC/CV nabíječka pro 1 článek Li-ion/Li-pol, podobné ' +
+      'parametry nabíjecího proudu/napětí), ale NENÍ to zaměnitelná/pin-kompatibilní náhrada: ' +
+      'jiné pouzdro (10pin WSON 2×2 mm vs. TP4056 8pin ESOP/EMSOP), jiný pinout i jiný počet ' +
+      'funkčních pinů, výrazně vyšší vstupní napětí (abs. max 30 V vs. 8 V u TP4056, s input ' +
+      'overvoltage protection pro nechráněné adaptéry), odlišné stavové výstupy (/CHG + /PG vs. ' +
+      '/CHRG + /STDBY u TP4056), přepínatelný limit vstupního proudu pro USB (100/500 mA přes ' +
+      'ISET2), podpora JEITA teplotního profilu (poloviční proud za studena, 4,06 V za tepla) a ' +
+      'autostart funkce bez nutnosti CE pinu (na rozdíl od TP4056, kde CE musí být aktivně H). ' +
+      'Rodina BQ2404x: BQ24040 (VFLOAT 4,2 V, programovatelné PRE-TERM, TS/JEITA), BQ24041 ' +
+      '(jiný pinout — ASI/ASO/BAT_EN místo PRE-TERM/TS, bez terminace), BQ24045 (VFLOAT 4,35 V ' +
+      'pro vysokonapěťovou chemii, jinak jako BQ24040) — tento datasheet od uživatele pokrývá ' +
+      'všechny tři, zde veden konkrétně jako BQ24040 (výchozí/nejběžnější varianta). Mezní ' +
+      'hodnoty: IN max 30 V, OUT max 7 V, ostatní řídicí piny max 7 V, vstupní proud max 1,25 A, ' +
+      'výstupní proud max 1,25 A, CHG sink proud max 15 mA, TJ -40 až 150 °C, Tstg -65 až 150 °C. ' +
+      'Doporučený provoz: VIN 4,45–6,45 V (omezeno DPM/OVP), IIN/IOUT max 1 A, RISET 0,540–10,8 kΩ ' +
+      '(programuje nabíjecí proud), RTS 1,66–258 kΩ (10k NTC rozsah). ESD: ±3000 V HBM, ±1500 V ' +
+      'CDM. Použitelný jako funkční alternativa k TP4056 jen po přepracování DPS (jiné pouzdro/' +
+      'piny) — v této appce zatím nepoužito v žádném konkrétním projektu, uveden pro referenci k ' +
+      'TP4056.',
+    schematicImage: 'BQ24040.jpg',
+    tags: 'io,nabíječka,li-ion,li-pol,bq24040,bq24041,bq24045,texas-instruments,lineární,cc-cv',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
