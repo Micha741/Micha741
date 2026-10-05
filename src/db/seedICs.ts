@@ -4189,6 +4189,35 @@ const IC_SPECS: IcSpec[] = [
     schematicImage: 'LM334Z.jpg',
     tags: 'io,proudový-zdroj,lm334,lm334z,lm134,lm234,nastavitelný',
   },
+
+  // Komunikační rozhraní
+  {
+    name: 'ST485',
+    packageType:
+      'DIP-8 nebo SO-8, 8 vývodů: 1=RO (výstup přijímače), 2=/RE (povolení přijímače, aktivní L), ' +
+      '3=DE (povolení vysílače, aktivní H), 4=DI (vstup vysílače), 5=GND, 6=A (neinvertující ' +
+      'vstup/výstup), 7=B (invertující vstup/výstup), 8=VCC',
+    value: 'Nízkopříkonový RS-485/RS-422 transceiver (1 driver + 1 receiver), VCC 5 V, až 64 ' +
+      'transceiverů na sběrnici',
+    notes:
+      'STMicroelectronics "ST485 — Low power RS-485/RS-422 transceiver" (rev. 12, březen 2006). ' +
+      'Jeden budič (driver) a jeden přijímač (receiver) pro poloduplexní komunikaci po sdílené ' +
+      'diferenciální sběrnici. Klidový odběr typ. 300 µA. Vstupní common-mode rozsah -7 V až +12 V. ' +
+      'Budič udržuje vysokou impedanci ve 3-stavu i při vypnutém napájení. Vstupní hystereze ' +
+      'typ. 70 mV. Rychlost: propagační zpoždění 30 ns, skew 5 ns. Proudové omezení a tepelná ' +
+      'ochrana budiče proti přetížení. Až 64 transceiverů na jedné sběrnici. Pravdivostní tabulka ' +
+      'budiče: DE=H,DI=H → A=H/B=L; DE=H,DI=L → A=L/B=H; DE=L → A,B ve vysoké impedanci. ' +
+      'Pravdivostní tabulka přijímače: /RE=L,DE=L: A-B≥+0,2 V → RO=H; A-B≤-0,2 V → RO=L; vstupy ' +
+      'rozpojené → RO=H (interní pull-up); /RE=H → RO ve vysoké impedanci. Absolutní meze: ' +
+      'VCC max 7 V, napětí na řídicích vstupech (/RE, DE) -0,5 až VCC+0,5 V, napětí na výstupu ' +
+      'budiče (A, B) ±14 V, napětí na vstupu přijímače (A, B) ±14 V. Dostupný ve třech teplotních ' +
+      'rozsazích (komerční 0–70 °C, průmyslový -40–85 °C, automobilový -55–125 °C). Výrobcem ' +
+      'kompatibilní náhrada za standardní SN75176/MAX485/MAX1487 rodinu (stejný pinout). ' +
+      'V této appce použito jako budič RS485 sběrnice v projektu „Univerzální deska rozhraní pro ' +
+      'sběrnici MODBUS RTU" — komunikace s mikrokontrolérem ATmega8A (IC1) přes DI/RO/DE/RE.',
+    schematicImage: 'ST485.jpg',
+    tags: 'io,rozhraní,rs485,rs422,transceiver,st485,modbus',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
