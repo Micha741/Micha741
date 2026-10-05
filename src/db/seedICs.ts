@@ -4375,6 +4375,41 @@ const IC_SPECS: IcSpec[] = [
     schematicImage: 'BQ24040.jpg',
     tags: 'io,nabíječka,li-ion,li-pol,bq24040,bq24041,bq24045,texas-instruments,lineární,cc-cv',
   },
+  {
+    name: 'LM2575',
+    packageType:
+      '16pin PDIP, piny: 1,2,4,6,8,10,11,14,15=NC (nezapojeno, lze připojit na zem pro lepší ' +
+      'chlazení), 3=OUTPUT (spínaný výstup), 5,12,13=GND, 7=FEEDBACK (zpětnovazební vstup), ' +
+      '9=/ON/OFF (aktivní L = zapnuto), 16=VIN (napájení)',
+    value: 'Spínaný snižující (step-down/buck) měnič, nastavitelný 1,23–37 V, 1 A, 52 kHz, ' +
+      'VIN 4,75–40 V',
+    notes:
+      '⚠️ Texas Instruments "LM2575 — 1-A Simple Step-Down Switching Voltage Regulator" ' +
+      '(dok. SLVS569F, leden 2005, rev. srpen 2015) — toto je NASTAVITELNÁ (adjustable) verze ' +
+      '(LM2575N, 16pin PDIP, pin 7=FEEDBACK pro externí odporový dělič nastavující VOUT), NE ' +
+      'přímo "LM2575-5" (fixní 5V verze), kterou obvod v appce vyžaduje — datasheet sám uvádí, ' +
+      '"For the Full Offering of Voltages (Including Fixed-Output Options)... See TL2575 Data ' +
+      'Sheet SLVS638", tedy fixní verze má samostatný dokument, který nebyl dodán. Čip je ale ' +
+      'stejná rodina/stejné jádro — fixní verze (LM2575-3.3/-5.0/-12/-15 aj.) má jen jinak ' +
+      'trimovaný interní odporový dělič na stejném pinoutu/pouzdře, takže tento datasheet pokrývá ' +
+      'většinu společných elektrických parametrů (switch, oscilátor, proudové omezení, teplotní ' +
+      'ochrana) shodně pro obě varianty — liší se jen přesné VOUT tolerance uvedené pro fixní ' +
+      'verze. Prakticky lze ADJ verzi nahradit externím děličem R1/R2 nastaveným na 5 V (FEEDBACK ' +
+      '= 1,23 V reference) místo přímého -5 dílu. Funkce: integrovaný spínač schopný dodat 1 A, ' +
+      'pevná frekvence 52 kHz (typ.), vnitřní kompenzace, cyklus-po-cyklu proudové omezení, ' +
+      'tepelná ochrana (shutdown), manuální vypnutí přes /ON/OFF pin, TTL-kompatibilní. Mezní ' +
+      'hodnoty: VIN -0,3 až 42 V, napětí na /ON/OFF -0,3 až VIN, výstupní napětí vůči GND (steady' +
+      '-state) max -1 V, TJ max 150 °C, Tstg -65 až 150 °C. Doporučený provoz: VIN 4,75–40 V, ' +
+      'TJ -40 až 125 °C. RθJA 67 °C/W, RθJC(top) 51 °C/W (16pin PDIP). Elektrické charakteristiky ' +
+      '(ILOAD=200 mA, VIN=12 V): účinnost typ 77 % @ILOAD=1A, fOSC typ 52 kHz (42–63 kHz, full ' +
+      'range), VSAT (saturační napětí spínače) typ 0,9 V (max 1,2 V) @IOUT=1A, max. střída 93–98 %, ' +
+      'ICL (špičkový proud) typ 2,8 A (min 1,7 A, max 3,6 A), IQ (klidový odběr) typ 5 mA, ISTBY ' +
+      '(vypnuto přes /ON/OFF) typ 50 µA. ESD: ±2000 V HBM, ±1000 V CDM. V této appce potřeba ' +
+      'jako IO1 (fixní 5V verze) ve spínaném zdroji 12/5 V s indikací podpětí — viz i MAA741 ve ' +
+      'stejném obvodu.',
+    schematicImage: 'LM2575.jpg',
+    tags: 'io,měnič,step-down,buck,lm2575,lm2575n,lm2575-5,texas-instruments,napájecí-zdroj',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
