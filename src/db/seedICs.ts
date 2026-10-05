@@ -159,6 +159,26 @@ const IC_SPECS: IcSpec[] = [
     schematicImage: 'LM741.jpg',
     tags: 'io,operační-zesilovač,lm741,ua741',
   },
+  {
+    name: 'TS924IN',
+    packageType: 'SO-14 / TSSOP-14, piny: 1=Output1, 2=Inverting input1, 3=Non-inverting input1, ' +
+      '4=VCC+, 5=Non-inverting input2, 6=Inverting input2, 7=Output2, 8=Output3, 9=Inverting ' +
+      'input3, 10=Non-inverting input3, 11=VCC-, 12=Non-inverting input4, 13=Inverting input4, ' +
+      '14=Output4',
+    value: 'Čtyřnásobný rail-to-rail BiCMOS OZ, 2,7–12 V, výstupní proud 80 mA',
+    notes:
+      'STMicroelectronics "TS924, TS924A — Rail-to-rail output current quad operational ' +
+      'amplifier" (DocID5065 Rev 11, červen 2014). Rail-to-rail vstup i výstup, nízký šum ' +
+      '(9 nV/√Hz), nízké zkreslení, vysoký výstupní proud (80 mA, zvládne zátěž 32 Ω) — určeno ' +
+      'pro nízkonapěťové audio aplikace napájené z baterie (sluchátkové zesilovače, budiče ' +
+      'piezo reproduktorů, zvukové karty). Šířka pásma 4 MHz, slew rate 1,3 V/µs, stabilní i při ' +
+      'kapacitní zátěži do 500 pF. TS924A má nižší max. vstupní offset (900 µV) než základní ' +
+      'TS924. V této appce použito jako IO1 (oddělovací + invertující zesilovací stupeň) v ' +
+      'projektu „Stereofonní zesilovač se ziskem -20 až +20 dB“ — všechny 4 OZ jednoho čipu ' +
+      '(IO1A–D) využity, dvojice IO1C+IO1A pro levý kanál, IO1B+IO1D pro pravý kanál.',
+    schematicImage: 'TS924IN.jpg',
+    tags: 'io,operační-zesilovač,ts924,ts924in,ts924a,rail-to-rail,audio',
+  },
 
   // Video obvody
   {
