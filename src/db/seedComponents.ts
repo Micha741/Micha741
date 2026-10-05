@@ -3167,6 +3167,49 @@ const DIODE_SPECS: PartSpec[] = [
     tags: 'dioda,spínací,signálová,duální,smd,sot-23,diotec,bav199,společná-anoda,nízký-svodový-proud',
   },
   {
+    name: 'BAT54A',
+    packageType:
+      'SMD SOT-23, 3 vývody: 1=anoda D1, 2=anoda D2, 3=společná katoda (viz diagram v datasheetu, ' +
+      'style „Pin 1=Anode, 2=Cathode, 3=Common Connection" — u HBAT54A jsou piny 1 a 2 obě anody)',
+    schematicImage: 'BAT54.jpg',
+    value: 'Duální Schottkyho dioda se společnou katodou, VRRM 30 V, IF 200 mA, VF max 320 mV @1 mA',
+    notes:
+      'Hi-Sincerity Microelectronics "HBAT54, HBAT54A, HBAT54C, HBAT54S" (dok. HE6854, rev. ' +
+      '2002.10.24) — výrobcova náhrada rodiny BAT54 (podobně jako BZX85C12/Vishay u předchozí ' +
+      'součástky). Jeden datasheet pokrývá 4 varianty ve stejném SOT-23 pouzdru lišící se jen ' +
+      'vnitřním zapojením dvou Schottkyho diod: HBAT54 (1 samostatná dioda), HBAT54A (společná ' +
+      'anoda — BAT54A), HBAT54C (společná katoda), HBAT54S (sériově spojené — BAT54S). ⚠️ POZOR, ' +
+      'u HBAT54A je i přes název "common anode" ve skutečném diagramu common-cathode zapojení ' +
+      '(piny 1,2=anody, pin3=katoda) — ověřeno přímo z obrázku na str. 3 datasheetu, ne jen z ' +
+      'textového popisu. Nízké prahové napětí, rychlé přepínání, PN guard ring proti ESD. ' +
+      'Mezní hodnoty: Tstg -65 až +125 °C, TJ max 125 °C, Ptot 230 mW @Ta=25 °C, VRRM 30 V, ' +
+      'IF(trvalý) 200 mA, IFRM (periodický špičkový) 300 mA, IFSM (nárazový, tp<1s) 600 mA. ' +
+      'VF: max 240 mV @0,1 mA, max 320 mV @1 mA, max 400 mV @10 mA, max 500 mV @30 mA, max ' +
+      '1000 mV @100 mA. IR max 2,0 µA @VR=25 V. CT max 10 pF @VR=1 V/f=1 MHz. trr max 5 ns ' +
+      '@IF=IR=10 mA. V této appce použito jako D1 v projektu „Univerzální deska rozhraní pro ' +
+      'sběrnici MODBUS RTU" (viz i BAT54S/D2 ve stejném obvodu).',
+    tags: 'dioda,schottky,duální,smd,sot-23,bat54,bat54a,hbat54a,společná-katoda,modbus',
+  },
+  {
+    name: 'BAT54S',
+    packageType:
+      'SMD SOT-23, 3 vývody: 1=anoda D1, 2=katoda D2, 3=katoda D1/anoda D2 (sériové zapojení ' +
+      'A1→K1=A2→K2, prostřední uzel nevyveden — viz diagram v datasheetu)',
+    schematicImage: 'BAT54.jpg',
+    value: 'Dvě Schottkyho diody zapojené sériově v jednom SOT-23 pouzdře, VRRM 30 V, IF 200 mA',
+    notes:
+      'Hi-Sincerity Microelectronics "HBAT54, HBAT54A, HBAT54C, HBAT54S" (dok. HE6854, rev. ' +
+      '2002.10.24) — stejný datasheet/rodina jako záznam "BAT54A" výše, viz tam pro plné ' +
+      'elektrické parametry a kontext (jsou společné pro všechny 4 varianty HBAT54/A/C/S). ' +
+      'HBAT54S (series): dvě diody spojené sériově uvnitř pouzdra (anoda prvního článku na pinu ' +
+      '1, katoda druhého na pinu 2, jejich společný vnitřní uzel není vyveden) — typicky pro ' +
+      'zdvojené usměrnění/ochranu nebo vytvoření děliče napětí s nižším úbytkem než klasická ' +
+      'křemíková dioda. Mezní hodnoty a VF/IR/CT/trr parametry shodné s BAT54A (viz jeho ' +
+      'záznam). V této appce použito jako D2 v projektu „Univerzální deska rozhraní pro ' +
+      'sběrnici MODBUS RTU" (společně s BAT54A/D1).',
+    tags: 'dioda,schottky,duální,smd,sot-23,bat54,bat54s,hbat54s,sériové-zapojení,modbus',
+  },
+  {
     name: 'SKKT 92 (SEMIPACK 1)',
     schematicImage: 'SKKT92.jpg',
     packageType:
@@ -6494,7 +6537,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 100;
+export const SEED_LIBRARY_VERSION = 101;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
