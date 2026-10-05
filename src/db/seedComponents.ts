@@ -4564,26 +4564,27 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   },
   {
     name: 'BS170',
-    packageType: 'TO-92, 3 vývody (pohled zepředu na popsanou stranu): 1=D (drain), 2=G (gate), ' +
-      '3=S (source)',
-    value: 'N-MOSFET, VDSS 60 V, ID 500 mA, RDS(on) max 5 Ω (@VGS=10 V/ID=200 mA)',
+    packageType: 'TO-92 (TO-226), CASE 29, STYLE 30, 3 vývody (pohled zepředu na popsanou ' +
+      'stranu): 1=D (drain), 2=G (gate), 3=S (source)',
+    value: 'N-MOSFET, VDSS 60 V, ID 500 mA, RDS(on) max 5,0 Ω (@VGS=10 V/ID=200 mA)',
     schematicImage: 'BS170.jpg',
     notes:
-      'Shantou Huashan Electronic Devices "HBS170 — N-Channel Enhancement Mode Field Effect ' +
-      'Transistor" — výrobcova náhrada klasického BS170 (stejný vzor jako HBAT54/Hi-Sincerity ' +
-      'nebo BZX85C12/Vishay u dřívějších součástek — "H" prefix a jinak identické označení ' +
-      'u čínských výrobců běžných katalogových typů). ⚠️ Obvod v appce uvádí jako alternativu ' +
-      'BS108 NEBO BS170 — toto je konkrétně BS170 (vyšší proud/nižší napětí varianta rodiny; ' +
-      'BS108 má jiné mezní hodnoty, typicky VDSS 200 V/ID 120 mA, a v databázi zatím chybí jeho ' +
-      'vlastní datasheet). Malovýkonový spínací N-MOSFET, TO-92. Mezní hodnoty: VDSS 60 V, VDGR ' +
-      '60 V (RGS≤1 MΩ), VGSS ±20 V, ID(trvalý) 500 mA, Ptot 0,83 W, TJ/Tstg -55 až +150 °C. ' +
-      'BVDSS min 60 V @VGS=0 V/ID=100 µA. IDSS max 0,5 µA @VDS=25 V/VGS=0 V. IGSSF max 10 nA ' +
-      '@VGS=15 V/VDS=0 V. VGS(th) 0,8–3,0 V @VDS=VGS/ID=1 mA. RDS(on) max 5 Ω @VGS=10 V/' +
-      'ID=200 mA. gFS typ 320 mS @VDS=10 V/ID=200 mA. Ciss max 40 pF, Coss max 30 pF, Crss ' +
-      'max 10 pF (@VDS=10 V/VGS=0 V/f=1 MHz). ton max 10 ns, toff max 10 ns (@VDD=25 V/ID=200 mA/' +
-      'VGS=10 V/RGEN=25 Ω). V této appce vhodné jako T1, T2 v projektu „Solární lampička s ' +
-      'Li-ion akumulátorem (THT)" (alternativa k BS108).',
-    tags: 'tranzistor,mosfet,n-kanál,to-92,bs170,hbs170,spínací,solární',
+      'Primárně ON Semiconductor "BS170 — Small Signal MOSFET, 500 mA, 60 Volts" (dok. BS170/D, ' +
+      'rev. 7, listopad 2017) — oficiální/originální datasheet, poslaný uživatelem jako doplnění ' +
+      'k dříve přidanému klonu "HBS170" od Shantou Huashan (čínský výrobce, stejné označení s ' +
+      '"H" prefixem, srov. HBAT54/Hi-Sincerity). ⚠️ Obvod v appce uvádí jako alternativu BS108 ' +
+      'NEBO BS170 — toto je konkrétně BS170 (BS108 má jiné mezní hodnoty, typicky VDSS 200 V/' +
+      'ID 120 mA, a v databázi zatím chybí jeho vlastní datasheet). Malovýkonový spínací ' +
+      'N-MOSFET. Mezní hodnoty (ON Semi): VDS 60 V, VGS ±20 V (nerepetitivní špičkově ±40 V), ' +
+      'ID 0,5 A, Ptot @TA=25 °C 350 mW (⚠️ klon HBS170 uváděl vyšší 0,83 W — u originálu věřit ' +
+      'nižší, konzervativnější hodnotě), TJ/Tstg -55 až +150 °C. V(BR)DSS min 60 V (typ. 90 V) ' +
+      '@VGS=0 V/ID=100 µA. IGSS max 10 nA @VGS=15 V/VDS=0 V. VGS(th) 0,8–3,0 V (typ. 2,0 V) ' +
+      '@VDS=VGS/ID=1 mA. rDS(on) typ 1,8 Ω, max 5,0 Ω @VGS=10 V/ID=200 mA. ID(off) max 0,5 µA ' +
+      '@VDS=25 V/VGS=0 V. gFS typ 200 mmhos @VDS=10 V/ID=250 mA. Ciss max 60 pF @VDS=10 V/' +
+      'VGS=0 V/f=1 MHz. ton typ 4,0 ns (max 10 ns), toff typ 4,0 ns (max 10 ns) @ID=0,2 A. ' +
+      'Pouzdro Pb-free. V této appce vhodné jako T1, T2 v projektu „Solární lampička s Li-ion ' +
+      'akumulátorem (THT)" (alternativa k BS108).',
+    tags: 'tranzistor,mosfet,n-kanál,to-92,bs170,hbs170,on-semiconductor,spínací,solární',
   },
   {
     name: 'FDS9926',
@@ -6595,7 +6596,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 106;
+export const SEED_LIBRARY_VERSION = 107;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
