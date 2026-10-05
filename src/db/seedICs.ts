@@ -1502,6 +1502,38 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,mikrokontrolér,avr,atmega,atmega2561,8bit',
   },
   {
+    name: 'ATmega8A',
+    packageType:
+      '28pin PDIP, 32pin TQFP nebo 32pad QFN/MLF — v PDIP verzi 23 programovatelných GPIO ' +
+      '(porty B 0–7, C 0–6, D 0–7), 6kanálový 10bit ADC (PC0–PC5); TQFP/QFN verze má navíc ' +
+      'ADC6/ADC7 (8kanálový ADC)',
+    value:
+      '8bit AVR mikrokontrolér, 8 KB flash, 512 B EEPROM, 1 KB SRAM, do 16 MIPS @16 MHz, ' +
+      'VCC 2,7–5,5 V',
+    notes:
+      'Atmel/Microchip "ATmega8A [DATASHEET]" (dok. 8159E-AVR-02/2013). 8bit AVR RISC architektura ' +
+      '(130 instrukcí, většina v 1 cyklu, 32×8 obecných pracovních registrů), do 16 MIPS @16 MHz. ' +
+      'Paměť: 8 KB In-System programovatelná flash (10 000 cyklů zápis/mazání), volitelná Boot ' +
+      'Loader sekce s nezávislými zámkovými bity a True Read-While-Write, 512 B EEPROM (100 000 ' +
+      'cyklů, data retention 20 let @85 °C / 100 let @25 °C), 1 KB interní SRAM. Periferie: 2× ' +
+      '8bit časovač/čítač (samostatný prescaler), 1× 16bit časovač/čítač (compare + capture ' +
+      'mód), RTC s odděleným oscilátorem, 3 PWM kanály, 6kanálový (PDIP) / 8kanálový (TQFP/QFN) ' +
+      '10bit ADC, bajtově orientované TWI (I2C kompatibilní) rozhraní, programovatelný USART, ' +
+      'master/slave SPI, programovatelný watchdog s vlastním oscilátorem, on-chip analogový ' +
+      'komparátor. Zabezpečení: Power-on Reset, programovatelná Brown-out detekce, interní ' +
+      'kalibrovaný RC oscilátor, externí i interní zdroje přerušení, 5 režimů spánku (Idle, ADC ' +
+      'Noise Reduction, Power-save, Power-down, Standby). Absolutní meze: provozní teplota -55 ' +
+      'až +125 °C, skladovací -65 až +150 °C, napětí na libovolném pinu kromě RESET -0,5 V až ' +
+      'VCC+0,5 V, na RESETu -0,5 až +13 V, max. provozní napětí 6 V, DC proud na I/O pinu 40 mA, ' +
+      'DC proud VCC/GND pinů 200 mA. Spotřeba (typ.): aktivní @4 MHz/3 V 6 mA, aktivní @8 MHz/5 V ' +
+      '15 mA, idle @4 MHz/3 V 3 mA, power-down (WDT zapnut) @3 V 35 µA, power-down (WDT vypnut) ' +
+      '@3 V 6 µA. Provozní rozsah teploty -40 až 105 °C (TA pro DC charakteristiky). ' +
+      'V této appce použito jako IC1 (hlavní mikrokontrolér) v projektu „Univerzální deska ' +
+      'rozhraní pro sběrnici MODBUS RTU" — komunikace po RS485 zajištěna budičem ST485 (ten v ' +
+      'databázi stále chybí).',
+    tags: 'io,mikrokontrolér,avr,atmega,atmega8a,atmega8,8bit,modbus',
+  },
+  {
     name: 'AT90CAN128',
     packageType:
       '64pin TQFP (balení "A2 64", gull-wing) nebo 64pin QFN (balení "Z64-2", exponovaná ' +
