@@ -4497,6 +4497,29 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   },
   { name: '2N7000', packageType: 'TO-92', value: 'N-MOSFET, 60 V, 200 mA', notes: 'Malovýkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál' },
   {
+    name: '2N7002',
+    packageType: 'SOT-23 (3 vývody): 1=G (gate), 2=S (source), 3=D (drain)',
+    value: 'N-MOSFET (logic level), VDS 6 V, ID 1,4 A (@TA=25 °C), RDS(on) max 3 Ω (@VGS=5 V)',
+    schematicImage: '2N7002.jpg',
+    notes:
+      'Texas Instruments "2N7002L — 6V N-channel MOSFET" (dok. SLVSJE8A, prosinec 2025, rev. ' +
+      'únor 2026) — uživatel poslal konkrétně variantu "L" (nízký RDS(on), nízké gate threshold, ' +
+      'nízká vstupní kapacita); generické označení 2N7002 vyrábí víc výrobců (ON Semi, Nexperia, ' +
+      'Diodes Inc. aj.) s mírně odlišnými parametry, zde uvedeny hodnoty z TI datasheetu. ' +
+      'Mezní hodnoty: VDS max 6 V, VGS max ±7 V, ID max 1,4 A (TA=25 °C) / 437 mA (TA=85 °C), ' +
+      'IDM (pulzní, 1 s) max 1,43 A, TJ/Tstg -65 až +150 °C, ESD (gate-source/gate-drain) 2000 V. ' +
+      'V(BR)DSS min 9,7 V (typ. 11,7 V) @ID=1 µA. IDSS max 2,5 nA @VDS=6 V/TJ=25 °C (0,26 µA ' +
+      '@125 °C). IGSS max 384 nA @VDS=0 V/VGS=7 V. VGS(th) 0,4–0,95 V (typ. 0,7 V) @VDS=VGS/' +
+      'ID=250 µA — logic-level MOSFET, spíná už z 3,3 V/5 V logiky. RDS(on) max 3 Ω @VGS=5 V/' +
+      'ID=64 mA (4,5 Ω @VGS=3,3 V). gFS (transkonduktance) typ 181 mS. Kapacity @f=1 MHz/VDS=6 V: ' +
+      'CISS max 5 pF, COSS max 8,5 pF, CRSS max 5,5 pF. Spínací časy (VGS=5 V, VDD=6 V, RG=25 Ω, ' +
+      'RD=2,49 kΩ): td(on) max 1,4 ns, tr max 1,1 ns, td(off) max 7,0 ns, tf max 55 ns — velmi ' +
+      'rychlé spínání. VSD (dioda source-drain) max 0,97 V @IS=20 mA/TJ=25 °C. ' +
+      'V této appce použito jako Q2, Q3 v projektu „Univerzální deska rozhraní pro sběrnici ' +
+      'MODBUS RTU".',
+    tags: 'tranzistor,mosfet,n-kanál,sot-23,smd,2n7002,2n7002l,logic-level,spínací,modbus',
+  },
+  {
     name: 'BSS138PS',
     packageType:
       'SMD plastové pouzdro SOT363 (SC-88), 6 vývodů, rozteč e1=1,3 mm — piny zkříženě: ' +
@@ -6471,7 +6494,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 99;
+export const SEED_LIBRARY_VERSION = 100;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
