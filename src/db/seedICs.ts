@@ -4274,6 +4274,37 @@ const IC_SPECS: IcSpec[] = [
     schematicImage: 'ST485.jpg',
     tags: 'io,rozhraní,rs485,rs422,transceiver,st75c176,75176,sn75176,st485,modbus',
   },
+
+  // Solární LED budiče
+  {
+    name: 'YX8018',
+    packageType:
+      'TO-94 (4pin, podobné TO-92, ale se 4 vývody v řadě), piny: 1=LX (spínaný výstup k cívce/' +
+      'LED), 2=GND, 3=CE (záporný pól solárního článku / povolení nabíjení, EN), 4=VDD (kladný ' +
+      'pól solárního článku)',
+    value: 'Joule-thief step-up měnič pro solární LED svítidla, účinnost 80–90 %, 1× externí ' +
+      'cívka, vstup 1,25–2,5 V (1–2 NiMH/NiCd články)',
+    notes:
+      '⚠️ Čínský IC bez oficiálního výrobcem vydaného anglického/českého datasheetu s plnými ' +
+      'elektrickými parametry — dostupný jen jako neoficiální, amatérsky přeložený dokument ' +
+      '("Japanese PDF to English PDF by Jonovid 2016"), uživatel poslal přesně tento. Obsahuje ' +
+      'pouze pinout, zapojovací schémata a tabulku doporučených indukčností, ŽÁDNÉ Absolute ' +
+      'Maximum Ratings ani elektrické charakteristiky (VIN rozsah, proudová spotřeba, účinnost ' +
+      'měniče jako číslo apod.) — hodnoty v poli "value" výše jsou jen z textového popisu ' +
+      '(marketingová čísla), ne z měřené tabulky. Princip: step-up (boost) měnič typu "joule ' +
+      'thief" pro napájení 1 LED (bílá/modrá/zelená) nebo více LED ze solárního článku a NiMH/' +
+      'NiCd akumulátoru (1× 1,25 V nebo 2× sériově 2,5 V) — ve dne přes CE/VDD dobíjí akumulátor ' +
+      'ze solárního článku, v noci (CE neosvětleno) rozepne a rozsvítí LED přes cívku na pinu LX. ' +
+      'Doporučené indukčnosti cívky dle požadovaného proudu LED (@1,25 V): 560 µH→3,0 mA, ' +
+      '220 µH→7,0 mA, 150 µH→10 mA, 82 µH→15 mA, 68 µH→21 mA, 47 µH (pouzdro 0410, 2× LED)→30 mA. ' +
+      'Volitelně lze přidat fotorezistor (CDS) mezi CE a GND pro soft-start/detekci soumraku ' +
+      '(Figure 1-1) nebo zapojit bez něj (Figure 1-2, CE přímo na solární článek). Varianta ' +
+      '"YX8019" (zmíněná v úvodním textu dokumentu) přidává mechanický vypínač do série se ' +
+      'solárním článkem — jinak stejné zapojení/pinout. V této appce použito jako IC1 v ' +
+      'projektu „Solární lampička se superkondenzátorem".',
+    schematicImage: 'YX8018.jpg',
+    tags: 'io,měnič,boost,solární,led,joule-thief,yx8018,yx8019,zahradní-lampička',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
