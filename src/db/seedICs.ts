@@ -4305,6 +4305,39 @@ const IC_SPECS: IcSpec[] = [
     schematicImage: 'YX8018.jpg',
     tags: 'io,měnič,boost,solární,led,joule-thief,yx8018,yx8019,zahradní-lampička',
   },
+  {
+    name: 'TP4056',
+    packageType:
+      '8pin ESOP/EMSOP (se spodní chladicí ploškou), piny: 1=TEMP (vstup pro NTC čidlo teploty ' +
+      'baterie), 2=PROG (nastavení nabíjecího proudu rezistorem + monitor proudu), 3=GND, ' +
+      '4=VCC (vstup napájení), 5=BAT (výstup na baterii), 6=/STDBY (indikace dokončeného ' +
+      'nabíjení, open-drain, aktivní L), 7=/CHRG (indikace probíhajícího nabíjení, open-drain, ' +
+      'aktivní L), 8=CE (povolení čipu, aktivní H)',
+    value: 'Lineární nabíječka 1článkových Li-ion/Li-pol akumulátorů, CC/CV, VCC 4–8 V, max. ' +
+      '1000 mA (programovatelné), VFLOAT 4,2 V (±1 %)',
+    notes:
+      'Nanjing Top Power ASIC Corp. "TP4056 — 1A线性锂离子电池充电器 / 1A Linear Li-ion Battery ' +
+      'Charger" (čínský datasheet). Kompletní lineární CC/CV nabíječka pro 1 článek Li-ion s ' +
+      'interním PMOSFET (žádná externí blokovací dioda ani snímací rezistor potřeba), tepelnou ' +
+      'regulací proudu při vysoké zátěži/teplotě, nabíjecím proudem nastavitelným jedním ' +
+      'rezistorem (RPROG) na pinu PROG dle vzorce IBAT=(VPROG/RPROG)×1200, automatickým ' +
+      'ukončením při poklesu proudu na 1/10 nastaveného (C/10), monitorem teploty baterie přes ' +
+      'NTC na pinu TEMP (nabíjení pozastaveno mimo 45–80 % VCC), podpěťovou pojistkou (UVLO), ' +
+      'automatickým dobíjením a dvěma stavovými výstupy /CHRG a /STDBY pro LED indikaci. ' +
+      'Mezní hodnoty: VCC -0,3 až 8 V, PROG -0,3 až VCC+0,3 V, BAT -0,3 až 7 V, /CHRG a /STDBY ' +
+      'a TEMP a CE -0,3 až 10 V, proud na BAT 1200 mA, proud na PROG 1200 µA, max. teplota čipu ' +
+      '145 °C, pracovní teplota -40 až 85 °C. Elektrické charakteristiky (VCC=5 V, TA=25 °C): ' +
+      'ICC (nabíjecí mód, RPROG=1,2 kΩ) typ. 150 µA, VFLOAT 4,158–4,242 V (typ. 4,2 V), IBAT ' +
+      '(RPROG=1,2 kΩ) 950–1050 mA (typ. 1000 mA), ITRIKL (předbíjecí proud, VBAT<VTRIKL) typ. ' +
+      '130 mA, VTRIKL (práh pro předbíjení) typ. 2,9 V, VUV (podpěťová pojistka VCC) typ. 3,7 V, ' +
+      'ITERM (C/10 práh ukončení, RPROG=1,2 kΩ) typ. 130 mA, RON (odpor výkonového FETu) typ. ' +
+      '650 mΩ, tSS (soft-start) typ. 20 µs, pohotovostní odběr (STDBY) typ. 55 µA, odběr ve ' +
+      'vypnutém stavu (CE=L) typ. 55 µA. V této appce použito jako IC1 v projektu „Solární ' +
+      'lampička s Li-ion akumulátorem (SMD)" — omezuje nabíjecí proud na 130 mA a napětí na ' +
+      '4,2 V (viz i FDS9926 ve stejném obvodu).',
+    schematicImage: 'TP4056.jpg',
+    tags: 'io,nabíječka,li-ion,li-pol,tp4056,solární,lineární,cc-cv',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
