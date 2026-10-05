@@ -4105,20 +4105,17 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   {
     name: 'KU612',
     packageType: 'T32 (Tesla pouzdro, odpovídá přibližně TO-39/podobné kovové pouzdro)',
-    value: '⚠️ NPN spínací tranzistor, UCBO 120 V, UCEO 80 V, IC 3 A (viz poznámka ke kvalitě skenu)',
+    value: 'NPN spínací tranzistor, UCBO 120 V, UCEO 80 V, IC 3 A, Ptot 10 W (při ϑc≤45 °C)',
     notes:
-      'Tesla Elektronické součástky, katalogová tabulka "Výkonové spínací tranzistory N-P-N" ' +
-      '(str. 208, stejná stránka obsahuje i řadu KD366/367 a pár tranzistorů KC510 — uživatel ji ' +
-      'dodal pod názvem „KD366.PDF“, protože na stránce hledal KD601, ten na ní ale není). ' +
-      '⚠️ Tabulka je z naskenovaného katalogu a některé sloupce (zejména PTOT a zkušební proudy ' +
-      'u h21E/−IE) jsou kvůli kvalitě skenu nejisté — jistá a čitelná jsou: UCBO=120 V, UCEO=80 V, ' +
-      'IC=3 A, UEBO=3 V, ϑj=155 °C, ICBO max=0,05 mA (při UCB=50 V), h21E min 90 (poměřováno při ' +
-      'dvou proudech, zisk klesá ≥20 u vyššího z nich), fT min cca 15–30 MHz, UBE(sat) max cca 1 V, ' +
-      'pouzdro T32. Sourozenec KU611 má stejné parametry kromě UCBO=60 V. Před použitím v kritické ' +
-      'aplikaci doporučeno ověřit přesné mezní hodnoty (zejména Ptot) z jiného zdroje. V této appce ' +
-      'použito jako Q2 (odpojitelný spínačem SW1 pro přepnutí rozsahu) v projektu „Omezovač proudu“ ' +
-      '— POZOR: KD601 (Q1 ve stejném zapojení) v tomto zdroji chybí, stále je potřeba jeho datasheet.',
-    tags: 'tranzistor,npn,bipolární,spínací,tesla,ku612,ku611,t32,nejisté-hodnoty',
+      'Tesla "Power Switching Transistors N-P-N / Leistungs-Schalttransistoren N-P-N" — tabulka s ' +
+      'typy KU601, KU602, KU605–608, KU611, KU612 (čistý sken, DataSheet4U.com). Hodnoty pro KU612: ' +
+      'UCBO=120 V, UCEO=80 V, IC=3 A, UEBO=3 V, Ptot=10 W (podmínka ϑc≤45 °C), ϑj max=155 °C, ' +
+      'ICBO max=0,05 mA při UCB=50 V, h21E ≥20 při UCE=6 V/IC=1 A a při UCE=12 V/IC=0,5 A, ' +
+      'fT ≥15 MHz (měřeno na f=30 MHz), UBE(sat)=1,0 V (při UCB=6 V/−IE=0,2 A), UCE(sat) max=1 V ' +
+      '(při IC=1 A/IB=0,1 A), pouzdro T32. Sourozenec KU611 má stejné parametry kromě UCBO=60 V. ' +
+      'V této appce použito jako Q2 (odpojitelný spínačem SW1 pro přepnutí rozsahu) v projektu ' +
+      '„Omezovač proudu“ — POZOR: KD601 (Q1 ve stejném zapojení) v databázi stále chybí.',
+    tags: 'tranzistor,npn,bipolární,spínací,tesla,ku612,ku611,t32',
   },
   {
     name: 'TIP3055',
@@ -6454,7 +6451,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 92;
+export const SEED_LIBRARY_VERSION = 93;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
