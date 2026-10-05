@@ -1,6 +1,6 @@
 import type { CircuitProjectInput } from '../types/circuit';
 
-export const CIRCUIT_LIBRARY_VERSION = 1;
+export const CIRCUIT_LIBRARY_VERSION = 2;
 
 /**
  * Přesný počet kusů u drobných pasivních součástek (rezistory) je odhad podle
@@ -32,6 +32,19 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
       { label: 'Tlačítko (push button)', match: 'tlačítko', quantity: 1 },
       { label: 'Napájecí konektor DC 5V', match: 'DC konektor', quantity: 1 },
       { label: 'Napájecí konektor DC 5/12V', match: 'DC konektor', quantity: 1 },
+    ],
+  },
+  {
+    name: 'DS18B20 teploměr s Arduinem (1-Wire)',
+    description:
+      'Digitální teploměr DS18B20 (voděodolná sonda s 3žilovým kabelem: červený VCC, černý GND, žlutý DATA) připojený na Arduino Uno. Datový vodič jde na digitální pin 2 a je nutný pull-up rezistor 4,7 kΩ mezi DATA a VCC (5V), jinak 1-Wire sběrnice nefunguje spolehlivě.',
+    image: 'DS18B20-arduino-wiring.jpg',
+    notes:
+      'Zdroj: datasheet "eses vodotěsný teploměr pro jednodeskové počítače" (DS18B20 sonda). Čtení přes knihovny OneWire + DallasTemperature, ONE_WIRE_BUS = pin 2. Rezistor 4,7 kΩ je nutný pull-up na datové lince, ne volitelný doplněk.',
+    parts: [
+      { label: 'Teplotní čidlo DS18B20 (voděodolná sonda)', match: 'DS18B20', quantity: 1 },
+      { label: 'Arduino Uno', match: 'Arduino Uno', quantity: 1 },
+      { label: 'Rezistor 4,7 kΩ (pull-up na DATA)', match: '4.7k', quantity: 1 },
     ],
   },
 ];
