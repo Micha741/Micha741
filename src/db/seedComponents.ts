@@ -4563,6 +4563,41 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,mosfet,n-kanál,sot-23,smd,2n7002,2n7002l,logic-level,spínací,modbus',
   },
   {
+    name: 'FDS9926',
+    packageType:
+      'SO-8, 2 nezávislé N-MOSFETy — piny (ověřeno ze schématu v datasheetu): 1=S2 (source Q2), ' +
+      '2=G2 (gate Q2), 3=S1 (source Q1), 4=G1 (gate Q1), 5=D1, 6=D1 (drain Q1, piny 5+6 ' +
+      'spojené pro nižší odpor), 7=D2, 8=D2 (drain Q2, piny 7+8 spojené) — drainy obou ' +
+      'tranzistorů NEJSOU společné (na rozdíl od typického "common drain" duálního MOSFETu), ' +
+      'každý tranzistor má vlastní pár drain pinů',
+    value: 'Duální N-MOSFET (2× nezávislý tranzistor v jednom SO-8 pouzdře), 2,5V logic-level, ' +
+      'VDSS 20 V, ID 6,5 A, RDS(on) max 0,030 Ω (@VGS=4,5 V) / max 0,043 Ω (@VGS=2,5 V)',
+    notes:
+      'Fairchild Semiconductor "FDS9926A — Dual N-Channel 2.5V Specified PowerTrench MOSFET" ' +
+      '(leden 2000, preliminary, Rev C). ⚠️ Uživatel poslal konkrétně variantu "A" (FDS9926A); ' +
+      'obvod v této appce požaduje "FDS9926" (bez A) — podle běžné praxe výrobce je přípona "A" ' +
+      'u této rodiny jen rozšíření/upřesnění specifikace o garantovaný RDS(on) i při nízkém ' +
+      'VGS=2,5 V (odtud "2.5V Specified" v názvu), zatímco základní FDS9926 bývá specifikován ' +
+      'jen pro VGS=4,5 V — pinout, pouzdro SO-8 a základní topologie (2× nezávislý N-MOSFET) ' +
+      'jsou stejné, FDS9926A je tedy prakticky drop-in náhrada (často i lepší parametr při ' +
+      'nízkém VGS). Datasheet samotného "FDS9926" (bez A) nebyl k dispozici pro přímé srovnání ' +
+      'čísel. Vhodné pro napájecí/bateriové přepínání (battery protection, load switch) — PowerTrench ' +
+      'proces, optimalizováno pro VGS 2,5–10 V. Mezní hodnoty: VDSS 20 V, VGSS ±10 V, ID ' +
+      '(trvalý) 6,5 A / (pulzní) 20 A, PD (dual operace) 2 W / (single operace, dle upevnění ' +
+      'desky) 0,9–1,6 W, TJ/Tstg -55 až +150 °C. RθJA 78 °C/W, RθJC 40 °C/W. BVDSS min 20 V ' +
+      '@VGS=0 V/ID=250 µA. IDSS max 1 µA @VDS=16 V/VGS=0 V. VGS(th) 0,5–1,5 V (typ. 1 V) ' +
+      '@VDS=VGS/ID=250 µA. RDS(on): max 0,030 Ω @VGS=4,5 V/ID=6,5 A, max 0,043 Ω @VGS=2,5 V/' +
+      'ID=5,4 A, max 0,050 Ω @VGS=4,5 V/ID=6,5 A/TJ=125 °C. ID(on) min 15 A @VGS=4,5 V/VDS=5 V. ' +
+      'gFS typ 11 S @VDS=5 V/ID=3 A. Ciss typ 700 pF, Coss typ 175 pF, Crss typ 85 pF (@VDS=10 V/' +
+      'f=1 MHz). Celkový náboj hradla Qg typ 7 nC @VDS=10 V/ID=3A/VGS=4,5 V. Spínací časy ' +
+      '(VDD=10 V/ID=1 A/RGEN=6 Ω): td(on) typ 8 ns, tr typ 10 ns, td(off) typ 18 ns, tf typ 5 ns. ' +
+      'Dioda source-drain: IS max 1,3 A, VSD typ 0,65 V (max 1,2 V) @IS=1,3 A/VGS=0 V. V této ' +
+      'appce použito jako Q1 v projektu „Solární lampička s Li-ion akumulátorem (SMD)" — podle ' +
+      'napětí ze solárního článku přepíná LED za tmy (viz i TP4056 ve stejném obvodu).',
+    schematicImage: 'FDS9926.jpg',
+    tags: 'tranzistor,mosfet,n-kanál,duální,so-8,fds9926,fds9926a,powertrench,logic-level,solární',
+  },
+  {
     name: 'BSS138PS',
     packageType:
       'SMD plastové pouzdro SOT363 (SC-88), 6 vývodů, rozteč e1=1,3 mm — piny zkříženě: ' +
@@ -6537,7 +6572,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 104;
+export const SEED_LIBRARY_VERSION = 105;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
