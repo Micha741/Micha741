@@ -4218,6 +4218,33 @@ const IC_SPECS: IcSpec[] = [
     schematicImage: 'ST485.jpg',
     tags: 'io,rozhraní,rs485,rs422,transceiver,st485,modbus',
   },
+  {
+    name: 'ST485A',
+    packageType:
+      'DIP-8 nebo SO-8, stejný pinout jako ST485: 1=RO, 2=/RE, 3=DE, 4=DI, 5=GND, 6=A, 7=B, 8=VCC',
+    value: 'Vysokorychlostní nízkopříkonový RS-485/RS-422 transceiver (1 driver + 1 receiver), ' +
+      '>30 Mbps, VCC 4,75–5,25 V',
+    notes:
+      'STMicroelectronics "ST485A — Very high speed low power RS-485/RS-422 transceiver" ' +
+      '(rev. 2, březen 2006). Uživatel poslal tento datasheet k porovnání s obyčejným ST485, ' +
+      'protože se podle něj má lišit — skutečně jde o odlišnou (rychlejší) variantu, ne jen jiné ' +
+      'balení/teplotní rozsah, proto samostatný záznam. Rozdíly oproti ST485: datová rychlost ' +
+      '>30 Mbps (ST485 výrazně pomalejší, prop. zpoždění jen 30 ns bez udané max. rychlosti ' +
+      'v Mbps), ±4 kV ESD ochrana (u ST485 neuvedeno), latch-up odolnost do 500 mA (u ST485 ' +
+      'neuvedeno), napájecí proud ISUPPLY max 5 mA (typ. 2,3–2,6 mA) — výrazně vyšší než ' +
+      'typ. 300 µA u ST485 (daň za vyšší rychlost), přesnější napájecí rozsah VCC=4,75–5,25 V ' +
+      '(ST485 jen "5 V"). RE=H a DE=L současně přepne ST485A do úsporného shutdown režimu — u ' +
+      'ST485 tato kombinace není v pravdivostní tabulce zmíněná jako zvláštní režim. Pinout, ' +
+      'vstupní common-mode rozsah (-7 až +12 V), vstupní hystereze (70 mV typ.) a základní ' +
+      'funkce (1 driver + 1 receiver, poloduplex) jsou shodné se ST485 — viz jeho záznam pro ' +
+      'plné pravdivostní tabulky. Absolutní meze: VCC max 7 V, napětí na řídicích vstupech ' +
+      '-0,3 až 7 V, napětí na výstupu budiče/vstupu přijímače -7,5 až +12,5 V. Dostupný jen v ' +
+      'komerčním (0–70 °C) a průmyslovém (-40–85 °C) rozsahu (na rozdíl od ST485, který má i ' +
+      'automobilovou -55–125 °C variantu). Pinově kompatibilní se ST485 — lze tedy fyzicky ' +
+      'zaměnit, ale je nutné počítat s vyšší spotřebou.',
+    schematicImage: 'ST485.jpg',
+    tags: 'io,rozhraní,rs485,rs422,transceiver,st485a,st485,modbus,vysokorychlostní',
+  },
 ];
 
 export function buildIcSeed(): ComponentInput[] {
