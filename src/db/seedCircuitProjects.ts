@@ -1,6 +1,6 @@
 import type { CircuitProjectInput } from '../types/circuit';
 
-export const CIRCUIT_LIBRARY_VERSION = 4;
+export const CIRCUIT_LIBRARY_VERSION = 5;
 
 /**
  * Přesný počet kusů u drobných pasivních součástek (rezistory) je odhad podle
@@ -328,14 +328,14 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
       'Jednoduchý laboratorní omezovač proudu (proudový zdroj/ochrana) s rozsahem nastavitelného proudu cca 0,2 až 600 mA (rozsah 1) nebo 4 mA až 6 A limitovaných výkonovým přetížením (rozsah 2). Zdroj proudu LM334Z řízený potenciometrem RV2 je zesilován proudovým zesilovacím činitelem tranzistorů Q1 a Q2.',
     image: 'omezovac-proudu.jpg',
     notes:
-      'Zdroj: Praktická elektronika A Radio 07/2023, str. 15, rubrika Jednoduchá zapojení (Ivan Stupka). Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Minimální úbytek napětí asi 2,3 V, maximální přípustné napětí 24 V.',
+      'Zdroj: Praktická elektronika A Radio 07/2023, str. 15, rubrika Jednoduchá zapojení (Ivan Stupka). Obrázek je vlastní překreslení (ne sken časopisu) — topologie ověřena uživatelem přímo proti originálu: kolektor Q1 je napevno na výstupu J1, SW1 (KNX-1-D1, 250V/3A) odpojuje jen Q2 (přepnutí rozsahu 1↔2), Q2 emitor → báze Q1 (Darlington). Minimální úbytek napětí asi 2,3 V, maximální přípustné napětí 24 V.',
     parts: [
       { label: 'U1 — LM334Z (nastavitelný proudový zdroj)', match: 'LM334', quantity: 1 },
       { label: 'Q1 — tranzistor KD601', match: 'KD601', quantity: 1 },
       { label: 'Q2 — tranzistor KU612 (rozsah 2, odpojitelný SW1)', match: 'KU612', quantity: 1 },
       { label: 'R1 — rezistor 10 Ω', match: '10R', quantity: 1 },
       { label: 'RV2 — potenciometr 100 kΩ/G (logaritmický)', match: '100k', quantity: 1 },
-      { label: 'SW1 — spínač (odpojení Q2, přepnutí rozsahu)', match: 'spínač', quantity: 1 },
+      { label: 'SW1 — spínač KNX-1-D1, 250V/3A (odpojení Q2, přepnutí rozsahu)', match: 'spínač', quantity: 1 },
     ],
   },
   {
