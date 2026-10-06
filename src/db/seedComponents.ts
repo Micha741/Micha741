@@ -2185,6 +2185,34 @@ const DIODE_SPECS: PartSpec[] = [
     tags: 'dioda,led,displej,flat-display,rohm,ld-201,zelená',
   },
   {
+    name: 'HD-A304RDA',
+    packageType:
+      '14pin THT jednociferný 7segmentový displej, výška číslic 7,62 mm (0,3″), piny: 1=A, 13=B, ' +
+      '10=C, 8=D, 7=E, 2=F, 11=G, 9=RDP (desetinná tečka), 3,14=společná anoda, 4/5/12=nezapojeno, ' +
+      '6=nezapojeno',
+    schematicImage: 'HD-A304RDA.jpg',
+    value: '7segmentový LED displej, červený, společná anoda, VF typ. 1,9 V/max 2,5 V @IF=10 mA',
+    notes:
+      '⚠️ Přímý datasheet k označení "HD-A304RDA" (jak je potištěn na schématu v časopisu ' +
+      'Praktická elektronika A Radio 11/2024, projekt „Malý aktuátor z RC serva“) se nepodařilo ' +
+      'dohledat. Záznam vychází ze dvou datasheetů stejné rodiny displejů (0,3″, 1 číslice, piny ' +
+      'A=1/B=13/C=10/D=8/E=7/F=2/G=11/RDP=9, společná anoda na 3+14) od Bright LED Electronics ' +
+      'Corp.: "BS-A304RD" (klasické THT pouzdro, vývody dolů) a "BS-A304RD-A" (stejné elektrické ' +
+      'parametry i přiřazení pinů, jen jiná orientace vývodů/pouzdra — pravděpodobně pravoúhlá ' +
+      'montáž na DPS). Piny i elektrické parametry jsou mezi oběma Bright LED variantami ' +
+      'totožné, liší se jen mechanicky (rozměry pouzdra/orientace vývodů v datasheetu). ' +
+      'Design "A304RD" (0,3″ jedna číslice, 14 pinů, tohle rozložení segmentů) je u levných ' +
+      'sedmisegmentových displejů napříč výrobci prakticky sjednocený, takže HD-A304RDA (jiná ' +
+      'značka) je s velmi vysokou pravděpodobností elektricky i pinově shodný — ale bez ' +
+      'oficiálního datasheetu výrobce HD to nelze stoprocentně potvrdit, zvlášť u mechanických ' +
+      'rozměrů. Mezní hodnoty (dle Bright LED, na segment): Pd=80 mW, IF=30 mA, IFP=150 mA ' +
+      '(duty 1/10, 1 kHz), VR=5 V, Topr=-40 až +80 °C, Tstg=-40 až +85 °C. VF typ. 1,9 V/max ' +
+      '2,5 V @IF=10 mA. IV typ. 3,0 mcd @IF=10 mA. IR max 100 µA @VR=5 V. λp typ. 640 nm, λd ' +
+      '626–636 nm. V této appce použito jako stavový/programovací displej projektu „Malý ' +
+      'aktuátor z RC serva“ (PE 11/2024), buzený přímo z portu mikrokontroléru AT89C2051.',
+    tags: 'dioda,led,displej,7segment,sedmisegmentový,hd-a304rda,bs-a304rd,bright-led,červený',
+  },
+  {
     name: 'LD-001VR',
     packageType:
       'THT plochý ("flat") DVOUčipový displej, plocha emise 4,5×9,5 mm (větší než jednočipový ' +
@@ -4603,6 +4631,39 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,mosfet,n-kanál,super-220,to-220,automotive,irfba1405p,spínací',
   },
   {
+    name: 'IRF630',
+    packageType:
+      'SOT78/TO-220AB (IRF630, THT), 3 vývody + tab: 1=gate, 2=drain, 3=source, tab=drain ' +
+      '(u varianty IRF630S v pouzdře SOT404/D²PAK SMD není pin 2 vyveden, drain jen přes tab)',
+    value: 'N-MOSFET TrenchMOS, VDSS 200 V, ID 9 A (@Tmb=25 °C), RDS(on) max 400 mΩ',
+    notes:
+      'Philips Semiconductors (později NXP) "N-channel TrenchMOS transistor — IRF630, IRF630S" ' +
+      '(Product specification, Rev 1.100, srpen 1999). Výkonový spínací N-MOSFET s technologií ' +
+      '"Trench" (nízký RDS(on), rychlé spínání, nízký tepelný odpor), určený pro spínané zdroje, ' +
+      'DC/DC měniče a řízení motorů. IRF630 = pouzdro SOT78 (TO220AB, THT), IRF630S = SOT404 ' +
+      '(D²PAK, SMD) — elektricky shodné, liší se jen pouzdrem a tím, že u SMD varianty není pin 2 ' +
+      '(drain) vyveden samostatně, drain je dostupný jen přes chladicí tab. ' +
+      'Mezní hodnoty: VDSS=200 V, VDGR=200 V (RGS=20 kΩ), VGS=±20 V, ID(trvalý)=9 A @Tmb=25 °C ' +
+      '(6,3 A @Tmb=100 °C), IDM (pulzně)=36 A, Ptot=88 W @Tmb=25 °C, TJ/Tstg=-55 až +175 °C. ' +
+      'Lavinová energie EAS max 250 mJ (IAS=5 A, tp=380 µs), IAS (špičkový nerepetitivní lavinový ' +
+      'proud) max 9 A. RthJ-mb max 1,7 K/W, RthJ-a typ 60 K/W (SOT78, volný vzduch)/50 K/W (SOT404, ' +
+      'min. footprint na DPS). ' +
+      'V(BR)DSS min 200 V @ID=0,25 mA (min 178 V @TJ=-55 °C). VGS(th) 2,0–4,0 V @ID=1 mA (min 1 V ' +
+      '@TJ=175 °C, max 6 V @TJ=-55 °C). RDS(on) typ 300 max 400 mΩ @VGS=10 V/ID=5,4 A (max 1,12 Ω ' +
+      '@TJ=175 °C). gfs min 3,8 typ 9 S @VDS=25 V/ID=5,4 A. ' +
+      'IGSS max 100 nA @VGS=±20 V. IDSS max 10 µA @VDS=200 V/VGS=0 (max 250 µA @VDS=160 V/TJ=175 °C). ' +
+      'Qg(tot) max 39 nC @ID=5,9 A, Qgs typ 6,3 nC, Qgd typ 21 nC. ' +
+      'Spínání (VDD=100 V, RD=10 Ω, VGS=10 V, RG=5,6 Ω, rezistivní zátěž): td(on) typ 8 ns, tr typ ' +
+      '19 ns, td(off) typ 25 ns, tf typ 15 ns. Ciss typ 959 pF, Coss typ 93 pF, Crss typ 54 pF ' +
+      '(@VGS=0/VDS=25 V/f=1 MHz). Vnitřní indukčnosti: Ld (tab-čip) typ 3,5 nH, Ld (vývod-čip, jen ' +
+      'SOT78) typ 4,5 nH, Ls typ 7,5 nH. ' +
+      'V této appce použito jako T3 projektu „PWM regulátor" (PE 11/2024) — výkonový spínací prvek ' +
+      'tranzistorového PWM regulátoru otáček stejnosměrného motoru (5–48 V, do 1,5 A), spínaný ' +
+      'astabilním multivibrátorem T1/T2; magazínová alternativa IRFZ48.',
+    schematicImage: 'IRF630.jpg',
+    tags: 'tranzistor,mosfet,n-kanál,to-220,trenchmos,irf630,irf630s,philips,nxp,spínací,pwm',
+  },
+  {
     name: 'G2N7000',
     packageType:
       'TO-92, 3 vývody: 1=source, 2=gate, 3=drain (pohled zepředu na popsanou stranu, značka „S G D")',
@@ -4862,6 +4923,29 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '@VGS=-10 V/f=1 MHz. ' +
       'Rychlé spínání (typ.): td(on)+tr=8,0 ns. Nízký šum (typ.): en=6,0 nV/√Hz @10 Hz.',
     tags: 'tranzistor,jfet,n-kanál,depletion,to-92,j110,chopper,zesilovací,spínací',
+  },
+  {
+    name: 'J310',
+    packageType: 'TO-92 (case 29-04, style 5), 3 vývody: 1=drain, 2=source, 3=gate',
+    schematicImage: 'J310.jpg',
+    value: 'N-JFET VHF/UHF zesilovač (depletion), VDS/VGS 25 V, IDSS 24–60 mA, VGS(off) -2,0 až -6,5 V',
+    notes:
+      'JFET pro VHF/UHF zesilovače a aktivní antény (vysokofrekvenční common-gate/common-source ' +
+      'stupně), Motorola/ON Semiconductor "J308 J309 J310 — JFET VHF/UHF Amplifiers, N-Channel — ' +
+      'Depletion" (datasheet J308/D, 1997), Motorola Preferred Device. Součást trojice J308/J309/J310 ' +
+      've společném datasheetu, liší se jen třídou IDSS/VGS(off) — J310 má nejvyšší IDSS z trojice. ' +
+      'Mezní hodnoty: VDS=25 V, VGS=25 V, IGF=10 mA, Ptot=350 mW @TA=25 °C (odvod 2,8 mW/°C), ' +
+      'TJ=-65 až +125 °C, Tstg=-65 až +150 °C. ' +
+      'V(BR)GSS min -25 V @IG=-1,0 µA/VDS=0. IGSS max -1,0 nA @VGS=-15 V/VDS=0/TA=25 °C (max -1,0 µA ' +
+      '@TA=125 °C). VGS(off) -2,0 až -6,5 V @VDS=10 V/ID=1,0 nA. ' +
+      'IDSS (zero-gate-voltage drain current) 24–60 mA @VDS=10 V/VGS=0. VGS(f) max 1,0 V @VDS=0/IG=1,0 mA. ' +
+      'Vysokofrekvenční parametry @VDS=10 V/ID=10 mA/f=100 MHz: Re(yfs) typ 12 mmhos, Re(yis) typ ' +
+      '0,5 mmhos, Re(yos) typ 0,25 mmhos, Gpg (common-gate power gain) typ 16 dB. ' +
+      'gfs (f=1 kHz) 8000–18000 µmhos. Cgd typ 1,8 pF (max 2,5 pF), Cgs typ 4,3 pF (max 5,0 pF) ' +
+      '@VDS=0/VGS=-10 V/f=1 MHz. Noise Figure typ 1,5 dB @VDS=10 V/ID=10 mA/f=450 MHz. ' +
+      'Použito v aktivní KV anténě s preselekcí (PE 11/2024) jako emitorový sledovač/buffer za ' +
+      'preselekčním LC obvodem.',
+    tags: 'tranzistor,jfet,n-kanál,depletion,to-92,j310,vf,vhf,uhf,anténa,buffer',
   },
   {
     name: 'ACE8205A',
@@ -6334,7 +6418,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 78;
+export const SEED_LIBRARY_VERSION = 87;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),

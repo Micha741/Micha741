@@ -789,6 +789,38 @@ const IC_SPECS: IcSpec[] = [
     notes: 'CMOS obdoba 74HC74 se širším rozsahem napájení — vhodné i pro obvody napájené nižším/vyšším napětím.',
     tags: 'io,logika,cd4013,klopný-obvod',
   },
+  {
+    name: 'CD4060B',
+    packageType: 'DIP-16/SOIC-16 (16 vývodů)',
+    value: '14stupňový binární čítač/dělič s vestavěným oscilátorem, 3–18 V (CMOS)',
+    notes:
+      'Texas Instruments/Harris "CD4060B Types — CMOS 14-Stage Ripple-Carry Binary Counter/Divider ' +
+      'and Oscillator" (dok. SCHS049). Na čipu je kompletní RC nebo krystalový oscilátor (stačí ' +
+      'zvenčí připojit RC článek nebo krystal mezi piny φI/φO/φO) a za ním 14 kaskádovaných ' +
+      'binárních děličů /2 — vyvedeno je jen 10 z nich (Q4 až Q14, přeskakuje Q11), takže kmitočet ' +
+      'na výstupu je vždy desítkovou mocninou dvou nižší než kmitočet oscilátoru. Vstup RESET (pin ' +
+      '12) v log. 1 vynuluje čítač i zastaví oscilátor; vstup pulzní linky φI má Schmittovu hysterezi, ' +
+      'takže snáší libovolně pomalou náběžnou/sestupnou hranu. Typické použití: časovací a zpožďovací ' +
+      'obvody, kmitočtové děličky, řídicí čítače (v této appce použito jako zdroj blikacích kmitočtů ' +
+      'projektu „Vánoční stromeček s 4060“).',
+    schematicImage: 'CD4060B.jpg',
+    tags: 'io,logika,cd4060,cd4060b,čítač,oscilátor,dělič,cmos,4060',
+  },
+  {
+    name: 'CD40106B',
+    packageType: 'DIP-14/SOIC-14/TSSOP-14 (14 vývodů)',
+    value: '6× Schmittův invertor (hex Schmitt-trigger inverter), 3–18 V (CMOS)',
+    notes:
+      'Texas Instruments "CD40106B CMOS Hex Schmitt-Trigger Inverters" (dok. SCHS097F, 1998, rev. ' +
+      'březen 2017). Šest nezávislých invertorů se Schmittovou hysterezí na vstupu (typ. 0,9 V při ' +
+      'VDD=5 V, 2,3 V při 10 V, 3,5 V při 15 V) — vhodné pro tvarování pomalých/zašuměných hran, RC ' +
+      'oscilátory, monostabilní i astabilní multivibrátory. Piny: 1=A, 2=G=/A, 3=B, 4=H=/B, 5=C, ' +
+      '6=I=/C, 7=VSS, 8=J=/D, 9=D, 10=K=/E, 11=E, 12=L=/F, 13=F, 14=VDD. Elektricky stejná funkce ' +
+      'jako starší řada CD4069UB, ale s garantovanou hysterezí na všech vstupech. V této appce ' +
+      'použito jako oscilátor a budič piezoměniče v projektu „Elektronická ultrazvuková píšťalka“.',
+    schematicImage: 'CD40106B.jpg',
+    tags: 'io,logika,cd40106,cd40106b,invertor,schmitt,hystereze,cmos,oscilátor,40106',
+  },
 
   // Posuvné registry
   {
@@ -3776,6 +3808,103 @@ const IC_SPECS: IcSpec[] = [
       'Vhys 60mV (typ.). Objednací kód TPS3809I50DBVR (funkce 9, práh I=4,55V).',
     schematicImage: 'TPS3809.jpg',
     tags: 'io,supervizor,reset,napěťový-supervizor,voltage-supervisor,ti,tps3809,tps3809i50,sot-23,4.55v',
+  },
+  {
+    name: 'AT89C2051',
+    packageType:
+      '20-PDIP/20-SOIC, napájení VCC 2,7-6V, piny: 1=RST/VPP, 2=P3.0(RXD), 3=P3.1(TXD), ' +
+      '4=XTAL2, 5=XTAL1, 6=P3.2(INT0), 7=P3.3(INT1), 8=P3.4(T0), 9=P3.5(T1), 10=GND, ' +
+      '11=P3.7, 12=P1.0(AIN0), 13=P1.1(AIN1), 14-19=P1.2-P1.7, 20=VCC',
+    value:
+      '8bitový mikrokontrolér (jádro MCS-51), 2 KB Flash / 128 B RAM, 15 I/O, 0-24 MHz, ' +
+      'dva 16bitové čítače/časovače, UART, on-chip analogový komparátor',
+    notes:
+      'Atmel "AT89C2051 — 8-bit Microcontroller with 2K Bytes Flash" (dok. 0368G-MICRO-6/05). ' +
+      'Nízkonákladový nástupce starších masek-ROM verzí (AT89C51 rodina) s přeprogramovatelnou ' +
+      'Flash pamětí (1000 cyklů zápis/mazání), plně kompatibilní s instrukční sadou průmyslového ' +
+      'standardu MCS-51 (Intel 8051). Statická CMOS architektura pracuje od 0 Hz do 24 MHz, ' +
+      'takže umožňuje i úsporné hodinování. Periferie: 128 B interní RAM, 15 programovatelných ' +
+      'I/O linek (port P1 celých 8 bitů, port P3 7 bitů — P3.6 je napevno zapojen jako vstup ' +
+      'z výstupu interního komparátoru a není dostupný jako běžný I/O), dva 16bitové čítače/ ' +
+      'časovače, plně duplexní sériový port (UART), pětivektorová dvouúrovňová přerušovací ' +
+      'soustava, on-chip přesný analogový komparátor (vstupy AIN0/AIN1 sdílené s P1.0/P1.1), ' +
+      'přímé buzení LED na výstupech portů (sink 20 mA). Dva programovatelné bity zámku ' +
+      '(lock bits) chrání obsah Flash proti vyčtení/přeprogramování. Dva softwarové úsporné ' +
+      'režimy: Idle (zastaví CPU, periferie běží dál) a Power-down (zachová obsah RAM, zastaví ' +
+      'oscilátor — probuzení jen hardwarovým resetem). XTAL1/XTAL2 pro krystal nebo keramický ' +
+      'rezonátor (C1=C2 30 pF±10 pF pro krystal, 40 pF±10 pF pro keramický rezonátor), nebo lze ' +
+      'přivést externí hodinový signál přímo na XTAL1 (XTAL2 nezapojen). Programování Flash ' +
+      'přes port P1 (data) a P3.2-P3.7 (řídicí signály) při VPP=11,5-12,5 V na pinu RST/VPP. ' +
+      'V této appce použito jako řídicí jednotka projektu „Malý aktuátor z RC serva“ (PE 11/2024) ' +
+      '— generuje PWM impulz pro servo, ovládá sedmisegmentový displej přes budič HD-A304RDA a ' +
+      'ukládá naprogramované časy do externí EEPROM 24C32.',
+    schematicImage: 'AT89C2051.jpg',
+    tags: 'io,mikrokontrolér,mcu,8051,mcs-51,at89c2051,atmel,flash,8bit,uart,komparátor',
+  },
+  {
+    name: '24C32',
+    packageType:
+      '8pin PDIP/SOIC, piny: 1=A0, 2=A1, 3=A2 (konfigurovatelné adresy čipu), 4=VSS (GND), ' +
+      '5=SDA (datový vstup/výstup), 6=SCL (hodinový vstup), 7=NC (nezapojeno), 8=VCC (4,5-5,5 V)',
+    value:
+      '32K bitová (4K × 8) sériová I²C EEPROM, 100/400 kHz, 8bajtové stránkování, ' +
+      '10 000 000 (High Endurance blok) / 1 000 000 (zbytek pole) cyklů zápis/mazání',
+    notes:
+      'Microchip "24C32 — 32K 5.0V I2C Smart Serial EEPROM" (dok. DS21061H). Pozor: výrobcem ' +
+      'označeno jako Obsolete Device, doporučená náhrada je 24LC32A nebo 24LC65 (pinově i ' +
+      'funkčně kompatibilní, pouze nižší napájecí napětí). Pouzdro 4K×8 (32 Kbit) sériová ' +
+      'EEPROM s industry-standardním dvouvodičovým I²C rozhraním (100 kHz i 400 kHz režim), ' +
+      'napájení 4,5-5,5 V. Vlastní časování zápisového cyklu (včetně auto-erase), typická doba ' +
+      'zápisu ~2 ms. Vstupní cache 1 stránka × 8 řádků (64 B) pro rychlé stránkové zápisy — ' +
+      '8bajtové stránky nebo bajtový režim. Pevný 4Kbitový blok s ultra-vysokou výdrží ' +
+      '(10 000 000 E/W cyklů) pro často se měnící data, zbytek pole garantuje 1 000 000 E/W ' +
+      'cyklů. Datová výdrž >200 let. Schmitt-trigger filtrované vstupy pro potlačení šumu, ' +
+      'řízený náběh výstupu proti zákmitům na zemi (ground bounce), ESD ochrana >4000 V. Piny ' +
+      'A0-A2 umožňují až 8 čipů na jedné sběrnici (celkem až 256 Kbit adresního prostoru). ' +
+      'Adresování zařízení: 4bitový kontrolní kód 1010 + 3 bity výběru zařízení (A2,A1,A0) + ' +
+      'R/W bit. Teplotní rozsahy: komerční 0-70 °C, průmyslový -40 až +85 °C. V této appce ' +
+      'použito jako komponenta I2 projektu „Malý aktuátor z RC serva“ (PE 11/2024) — ukládá ' +
+      'naprogramované časové hodnoty serva, řízeno jednotkou AT89C2051.',
+    schematicImage: '24C32.jpg',
+    tags: 'io,paměť,eeprom,i2c,24c32,microchip,sériová-paměť,serial-eeprom,obsolete,24lc32a',
+  },
+  {
+    name: 'A4988',
+    packageType:
+      '⚠️ Pinout níže odpovídá holému čipu Allegro A4988 v pouzdře 28-QFN (5×5 mm, s exponovaným ' +
+      'chladicím padem), piny: 1=OUT2B, 2=ENABLE, 3,18=GND, 4=CP1, 5=CP2, 6=VCP, 7,20,25=NC, ' +
+      '8=VREG, 9=MS1, 10=MS2, 11=MS3, 12=RESET, 13=ROSC, 14=SLEEP, 15=VDD, 16=STEP, 17=REF, ' +
+      '19=DIR, 21=OUT1B, 22=VBB1, 23=SENSE1, 24=OUT1A, 26=OUT2A, 27=SENSE2, 28=VBB2. V appce ' +
+      'použito jako „modul POLOLU A4988“ — prodávaná nosná destička (carrier board) s tímto ' +
+      'čipem, která má vlastní zjednodušený 16pinový rozchod do dvou řad DIP rastru (typicky ' +
+      'VMOT, GND, 2B, 2A, 1A, 1B, VDD, GND, RESET, SLEEP, STEP, DIR, MS1, MS2, MS3, ENABLE) — ' +
+      'ten se liší od číslování holého QFN čipu výše a není v tomto datasheetu (čistě IC) popsán.',
+    value:
+      'DMOS mikrokrokový driver bipolárních krokových motorů s translátorem a nadproudovou ' +
+      'ochranou, VBB 8–35 V, výstup až ±2 A, kroky plný/1:2/1:4/1:8/1:16',
+    notes:
+      'Allegro MicroSystems "A4988 — DMOS Microstepping Driver with Translator and Overcurrent ' +
+      'Protection" (dok. 4988-DS, Rev. 8, 5. 4. 2022). ⚠️ Dodaný datasheet popisuje samotný ' +
+      'budicí obvod Allegro A4988 v pouzdře 28-QFN, nikoli přímo prodávanou destičku „POLOLU ' +
+      'A4988 Stepper Motor Driver Carrier“ — ta má vlastní regulátor/kondenzátory osazené na ' +
+      'desce a zjednodušený pinout na dvou řadách pinů po 0,1″. Elektrické parametry čipu (viz ' +
+      'níže) pro modul platí, pinout ne. Kompletní driver pro bipolární krokové motory s ' +
+      'integrovaným translátorem — stačí jeden pulz na STEP a motor se posune o jeden mikrokrok, ' +
+      'bez nutnosti fázových tabulek v řídicím MCU. Pracuje v režimech plný/half/čtvrtinový/ ' +
+      'osminový/šestnáctinový krok (nastaveno piny MS1-MS3, viz tabulka rozlišení). Napájení ' +
+      'zátěže (motoru) VBB 8–35 V, výstupní proud do ±2 A na fázi (RDS(on) typ. 320 mΩ). Logické ' +
+      'napájení VDD 3–5,5 V. Pevná doba vypnutí (fixed off-time) PWM regulace proudu s ' +
+      'automatickou volbou mixed/slow decay režimu. Proud fáze nastaven snímacími rezistory ' +
+      'RS1/RS2, referenčním napětím VREF a výstupem DAC (VREF 0–4 V, chybovost trip-level ±5 % ' +
+      'typ. při VREF=2V/70,71 % ITripMax). Nadproudová ochrana (zkrat na zem, zkrat zátěže) s ' +
+      'prahem min. 2,1 A, tepelná ochrana (vypnutí při 165 °C, hystereze 15 °C), podpěťová ' +
+      'ochrana (UVLO) VDD<2,8 V typ. Vstup RESET nastaví translátor do výchozí Home pozice a ' +
+      'vypne výstupy, ENABLE (aktivní v L) povoluje/zakazuje výstupní budiče. Interní nábojová ' +
+      'pumpa (CP1/CP2/VCP) generuje budicí napětí pro horní MOSFETy. V této appce použito jako ' +
+      'komponenty IO1 a IO2 shieldu „Shield POLOLU pro Arduino UNO“ (PE 11/2024, str. 31–32) — ' +
+      'dva moduly pro řízení dvou bipolárních krokových motorů z Arduina UNO.',
+    schematicImage: 'A4988.jpg',
+    tags: 'io,driver,budič,krokový-motor,stepper,a4988,allegro,pololu,translátor,mikrokrokování,dmos',
   },
   {
     name: 'MSP430G2553',

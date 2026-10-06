@@ -4865,6 +4865,38 @@ const MODULE_SPECS: ModuleSpec[] = [
       'senzorové sítě, zdravotní monitory, RFID čtečky.',
     tags: 'modul,rf,transceiver,ism,fsk,gfsk,ook,spi,hoperf,rfm22b,rfm23b,433mhz,868mhz,915mhz,qfn',
   },
+  {
+    name: 'JDY-33TTL',
+    packageType:
+      '26pinový SMD modul s vestavěnou PCB anténou, UART piny: 1=TXD, 2=RXD, 3=CTS, 4=RTS, ' +
+      '5-11,18,21,22,23,25,26=GPIO1-13, 12=VCC, 13=GND, 16=ALED, 17=STAT, 15=EN, 7=EXC, ' +
+      '14,20=NULL (nezapojeno) — pro běžné použití stačí propojit jen VCC, GND, RXD a TXD',
+    value:
+      'Duální Bluetooth 3.0 SPP + BLE 4.2 sériový transparentní modul, UART, 2,4 GHz, dosah ' +
+      '~30 m, napájení 1,8-3,6 V (dop. 3,3 V), proud 6,5 mA (spánek <10 µA)',
+    notes:
+      'JDY (Shenzhen Jiadaye) "JDY-33 Bluetooth Module Manual — Dual-mode Bluetooth Serial ' +
+      'Port Transparent Transmission Module" (dok. V1.6, 2019-06-15, doporučená/nejstabilnější ' +
+      'verze dle výrobce). Duální Bluetooth 3.0 SPP + BLE 4.2 modul pro transparentní sériový ' +
+      'přenos dat mezi UART zařízením (MCU) a PC/Android/iOS přes Bluetooth, komunikuje jak ' +
+      'klasickým SPP (např. s Windows/Android terminálem), tak BLE (iOS i Android), umí i ' +
+      'master-slave komunikaci s modulem JDY-18. Pracuje jako slave zařízení. Vestavěná PCB ' +
+      'anténa, 2,4 GHz pásmo, GFSK modulace, vysílací výkon max 6 dBm, citlivost přijímače ' +
+      '-96 dBm, dosah do ~30 m. Rozměry modulu 26,7×13×1,7 mm. Pracovní napětí 1,8-3,6 V ' +
+      '(doporučeno 3,3 V), pracovní teplota -40 až +80 °C, teplota SMT pájení <260 °C. ' +
+      'Pracovní proud 6,5 mA, proud v hlubokém spánku <10 µA (probuzení sestupnou hranou na ' +
+      'pinu EN nebo odesláním dat po sériové lince, doporučeno příkazem AT+VERSION\\r\\n). ' +
+      'Max. propustnost SPP 16 kB/s (Android/Windows, bez ztráty paketů při nepřetržitém ' +
+      'přenosu), BLE 4 kB/s (Android/iOS, podporuje nepřetržitý přenos do 38400 Bd — při ' +
+      'vyšší rychlosti je nutné vkládat prodlevy). Konfigurace přes AT příkazy (změna názvu ' +
+      'zařízení, baudrate atd.), odpojení příkazem AT+DISC\\r\\n, uspání AT+SLEEP\\r\\n. ' +
+      'V této appce použito jako bezdrátový sériový terminál pro ovládání vozítka v projektu ' +
+      '„Vozítko s Mecanum Omni koly" (PE 11/2024) — příkazy z tabletu/telefonu přes Bluetooth ' +
+      'přijímá Arduino UNO přes RXD/TXD a řídí jimi přes 74HC595 a dva shieldy L293D čtyři ' +
+      'DC motory s Mecanum koly.',
+    schematicImage: 'JDY-33TTL.jpg',
+    tags: 'modul,bluetooth,ble,spp,ttl,uart,jdy-33,jdy-33ttl,bezdrátový,sériový-terminál',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
