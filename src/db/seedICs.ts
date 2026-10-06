@@ -159,6 +159,26 @@ const IC_SPECS: IcSpec[] = [
     schematicImage: 'LM741.jpg',
     tags: 'io,operační-zesilovač,lm741,ua741',
   },
+  {
+    name: 'TS924IN',
+    packageType: 'SO-14 / TSSOP-14, piny: 1=Output1, 2=Inverting input1, 3=Non-inverting input1, ' +
+      '4=VCC+, 5=Non-inverting input2, 6=Inverting input2, 7=Output2, 8=Output3, 9=Inverting ' +
+      'input3, 10=Non-inverting input3, 11=VCC-, 12=Non-inverting input4, 13=Inverting input4, ' +
+      '14=Output4',
+    value: 'Čtyřnásobný rail-to-rail BiCMOS OZ, 2,7–12 V, výstupní proud 80 mA',
+    notes:
+      'STMicroelectronics "TS924, TS924A — Rail-to-rail output current quad operational ' +
+      'amplifier" (DocID5065 Rev 11, červen 2014). Rail-to-rail vstup i výstup, nízký šum ' +
+      '(9 nV/√Hz), nízké zkreslení, vysoký výstupní proud (80 mA, zvládne zátěž 32 Ω) — určeno ' +
+      'pro nízkonapěťové audio aplikace napájené z baterie (sluchátkové zesilovače, budiče ' +
+      'piezo reproduktorů, zvukové karty). Šířka pásma 4 MHz, slew rate 1,3 V/µs, stabilní i při ' +
+      'kapacitní zátěži do 500 pF. TS924A má nižší max. vstupní offset (900 µV) než základní ' +
+      'TS924. V této appce použito jako IO1 (oddělovací + invertující zesilovací stupeň) v ' +
+      'projektu „Stereofonní zesilovač se ziskem -20 až +20 dB“ — všechny 4 OZ jednoho čipu ' +
+      '(IO1A–D) využity, dvojice IO1C+IO1A pro levý kanál, IO1B+IO1D pro pravý kanál.',
+    schematicImage: 'TS924IN.jpg',
+    tags: 'io,operační-zesilovač,ts924,ts924in,ts924a,rail-to-rail,audio',
+  },
 
   // Video obvody
   {
@@ -821,6 +841,20 @@ const IC_SPECS: IcSpec[] = [
     schematicImage: 'CD40106B.jpg',
     tags: 'io,logika,cd40106,cd40106b,invertor,schmitt,hystereze,cmos,oscilátor,40106',
   },
+  {
+    name: 'CD4011B',
+    packageType: 'DIP-14/SOIC-14/TSSOP-14 (14 vývodů)',
+    value: '4× 2vstupové NAND hradlo (quad 2-input NAND gate), 3–18 V (CMOS)',
+    notes:
+      'Texas Instruments/Harris "CD4011B, CD4012B, CD4023B Types — CMOS NAND Gates" (dok. SCHS021D, ' +
+      'revidováno září 2003). CD4011B obsahuje čtyři nezávislá 2vstupová NAND hradla se symetrickými ' +
+      'bufferovanými vstupy/výstupy. Piny: 1=A, 2=B, 3=J(=/(A·B)), 4=K(=/(C·D)), 5=C, 6=D, 7=VSS, ' +
+      '8=E, 9=F, 10=L(=/(E·F)), 11=M(=/(G·H)), 12=G, 13=H, 14=VDD. Propagační zpoždění typ. 60 ns ' +
+      'při CL=50 pF, VDD=10 V. V této appce použito jako hradlová logika pro přepínání bílých/' +
+      'červených LED v projektu „Výstražná světla na přejezdu“ (IO2, všechna 4 hradla využita).',
+    schematicImage: 'CD4011B.jpg',
+    tags: 'io,logika,cd4011,cd4011b,nand,hradlo,cmos,4011',
+  },
 
   // Posuvné registry
   {
@@ -1466,6 +1500,38 @@ const IC_SPECS: IcSpec[] = [
       'jeho záznam pro plný popis). 4 KB EEPROM, 8 KB SRAM.',
     schematicImage: 'ATmega1281-2561.jpg',
     tags: 'io,mikrokontrolér,avr,atmega,atmega2561,8bit',
+  },
+  {
+    name: 'ATmega8A',
+    packageType:
+      '28pin PDIP, 32pin TQFP nebo 32pad QFN/MLF — v PDIP verzi 23 programovatelných GPIO ' +
+      '(porty B 0–7, C 0–6, D 0–7), 6kanálový 10bit ADC (PC0–PC5); TQFP/QFN verze má navíc ' +
+      'ADC6/ADC7 (8kanálový ADC)',
+    value:
+      '8bit AVR mikrokontrolér, 8 KB flash, 512 B EEPROM, 1 KB SRAM, do 16 MIPS @16 MHz, ' +
+      'VCC 2,7–5,5 V',
+    notes:
+      'Atmel/Microchip "ATmega8A [DATASHEET]" (dok. 8159E-AVR-02/2013). 8bit AVR RISC architektura ' +
+      '(130 instrukcí, většina v 1 cyklu, 32×8 obecných pracovních registrů), do 16 MIPS @16 MHz. ' +
+      'Paměť: 8 KB In-System programovatelná flash (10 000 cyklů zápis/mazání), volitelná Boot ' +
+      'Loader sekce s nezávislými zámkovými bity a True Read-While-Write, 512 B EEPROM (100 000 ' +
+      'cyklů, data retention 20 let @85 °C / 100 let @25 °C), 1 KB interní SRAM. Periferie: 2× ' +
+      '8bit časovač/čítač (samostatný prescaler), 1× 16bit časovač/čítač (compare + capture ' +
+      'mód), RTC s odděleným oscilátorem, 3 PWM kanály, 6kanálový (PDIP) / 8kanálový (TQFP/QFN) ' +
+      '10bit ADC, bajtově orientované TWI (I2C kompatibilní) rozhraní, programovatelný USART, ' +
+      'master/slave SPI, programovatelný watchdog s vlastním oscilátorem, on-chip analogový ' +
+      'komparátor. Zabezpečení: Power-on Reset, programovatelná Brown-out detekce, interní ' +
+      'kalibrovaný RC oscilátor, externí i interní zdroje přerušení, 5 režimů spánku (Idle, ADC ' +
+      'Noise Reduction, Power-save, Power-down, Standby). Absolutní meze: provozní teplota -55 ' +
+      'až +125 °C, skladovací -65 až +150 °C, napětí na libovolném pinu kromě RESET -0,5 V až ' +
+      'VCC+0,5 V, na RESETu -0,5 až +13 V, max. provozní napětí 6 V, DC proud na I/O pinu 40 mA, ' +
+      'DC proud VCC/GND pinů 200 mA. Spotřeba (typ.): aktivní @4 MHz/3 V 6 mA, aktivní @8 MHz/5 V ' +
+      '15 mA, idle @4 MHz/3 V 3 mA, power-down (WDT zapnut) @3 V 35 µA, power-down (WDT vypnut) ' +
+      '@3 V 6 µA. Provozní rozsah teploty -40 až 105 °C (TA pro DC charakteristiky). ' +
+      'V této appce použito jako IC1 (hlavní mikrokontrolér) v projektu „Univerzální deska ' +
+      'rozhraní pro sběrnici MODBUS RTU" — komunikace po RS485 zajištěna budičem ST485 (ten v ' +
+      'databázi stále chybí).',
+    tags: 'io,mikrokontrolér,avr,atmega,atmega8a,atmega8,8bit,modbus',
   },
   {
     name: 'AT90CAN128',
@@ -4102,6 +4168,247 @@ const IC_SPECS: IcSpec[] = [
       'uhelného/výfukového plynu.',
     schematicImage: 'HOPERF-HPxxx-HP5xxx-Series.jpg',
     tags: 'io,senzor,tlakový,tlakoměr,barometr,hoperf,i2c,spi,vodotěsný',
+  },
+
+  // Proudové zdroje
+  {
+    name: 'LM334Z',
+    packageType: 'TO-92 (3 vývody, pohled zespodu): 1=ADJ, 2=V+, 3=V-',
+    value: '3vývodový nastavitelný proudový zdroj, 1–40 V, programovatelný 1 µA–10 mA',
+    notes:
+      'SGS-Thomson (dnes STMicroelectronics) "LM134-LM234-LM334 — Three Terminal Adjustable ' +
+      'Current Sources" (dok. z října 1997). Nastavitelný proudový zdroj řízený jediným externím ' +
+      'rezistorem (Iset = 67,7 mV/Rset při 25 °C), bez potřeby dalších součástek; rozsah proudu ' +
+      '10000:1, přesnost ±3 %. Napětí na vývodu ADJ je přímo úměrné absolutní teplotě (cca ' +
+      '0,33 %/°C) — lze využít jako teplotní čidlo nebo kompenzovat přidáním rezistoru a diody. ' +
+      'LM134/LM234/LM334 se liší jen garantovaným teplotním rozsahem (LM134: -55 až +125 °C, ' +
+      'LM234: -25 až +100 °C, LM334: 0 až +70 °C) — LM334Z je plastové pouzdro TO-92 (Z = package ' +
+      'code). V této appce použito jako U1, základ nastavitelného proudového zdroje v projektu ' +
+      '„Omezovač proudu“ — proud z LM334 dále zesilují tranzistory Q1/Q2 podle jejich zesilovacího ' +
+      'činitele β.',
+    schematicImage: 'LM334Z.jpg',
+    tags: 'io,proudový-zdroj,lm334,lm334z,lm134,lm234,nastavitelný',
+  },
+
+  // Komunikační rozhraní
+  {
+    name: 'ST485',
+    packageType:
+      'DIP-8 nebo SO-8, 8 vývodů: 1=RO (výstup přijímače), 2=/RE (povolení přijímače, aktivní L), ' +
+      '3=DE (povolení vysílače, aktivní H), 4=DI (vstup vysílače), 5=GND, 6=A (neinvertující ' +
+      'vstup/výstup), 7=B (invertující vstup/výstup), 8=VCC',
+    value: 'Nízkopříkonový RS-485/RS-422 transceiver (1 driver + 1 receiver), VCC 5 V, až 64 ' +
+      'transceiverů na sběrnici',
+    notes:
+      'STMicroelectronics "ST485 — Low power RS-485/RS-422 transceiver" (rev. 12, březen 2006). ' +
+      'Jeden budič (driver) a jeden přijímač (receiver) pro poloduplexní komunikaci po sdílené ' +
+      'diferenciální sběrnici. Klidový odběr typ. 300 µA. Vstupní common-mode rozsah -7 V až +12 V. ' +
+      'Budič udržuje vysokou impedanci ve 3-stavu i při vypnutém napájení. Vstupní hystereze ' +
+      'typ. 70 mV. Rychlost: propagační zpoždění 30 ns, skew 5 ns. Proudové omezení a tepelná ' +
+      'ochrana budiče proti přetížení. Až 64 transceiverů na jedné sběrnici. Pravdivostní tabulka ' +
+      'budiče: DE=H,DI=H → A=H/B=L; DE=H,DI=L → A=L/B=H; DE=L → A,B ve vysoké impedanci. ' +
+      'Pravdivostní tabulka přijímače: /RE=L,DE=L: A-B≥+0,2 V → RO=H; A-B≤-0,2 V → RO=L; vstupy ' +
+      'rozpojené → RO=H (interní pull-up); /RE=H → RO ve vysoké impedanci. Absolutní meze: ' +
+      'VCC max 7 V, napětí na řídicích vstupech (/RE, DE) -0,5 až VCC+0,5 V, napětí na výstupu ' +
+      'budiče (A, B) ±14 V, napětí na vstupu přijímače (A, B) ±14 V. Dostupný ve třech teplotních ' +
+      'rozsazích (komerční 0–70 °C, průmyslový -40–85 °C, automobilový -55–125 °C). Výrobcem ' +
+      'kompatibilní náhrada za standardní SN75176/MAX485/MAX1487 rodinu (stejný pinout). ' +
+      'V této appce použito jako budič RS485 sběrnice v projektu „Univerzální deska rozhraní pro ' +
+      'sběrnici MODBUS RTU" — komunikace s mikrokontrolérem ATmega8A (IC1) přes DI/RO/DE/RE.',
+    schematicImage: 'ST485.jpg',
+    tags: 'io,rozhraní,rs485,rs422,transceiver,st485,modbus',
+  },
+  {
+    name: 'ST485A',
+    packageType:
+      'DIP-8 nebo SO-8, stejný pinout jako ST485: 1=RO, 2=/RE, 3=DE, 4=DI, 5=GND, 6=A, 7=B, 8=VCC',
+    value: 'Vysokorychlostní nízkopříkonový RS-485/RS-422 transceiver (1 driver + 1 receiver), ' +
+      '>30 Mbps, VCC 4,75–5,25 V',
+    notes:
+      'STMicroelectronics "ST485A — Very high speed low power RS-485/RS-422 transceiver" ' +
+      '(rev. 2, březen 2006). Uživatel poslal tento datasheet k porovnání s obyčejným ST485, ' +
+      'protože se podle něj má lišit — skutečně jde o odlišnou (rychlejší) variantu, ne jen jiné ' +
+      'balení/teplotní rozsah, proto samostatný záznam. Rozdíly oproti ST485: datová rychlost ' +
+      '>30 Mbps (ST485 výrazně pomalejší, prop. zpoždění jen 30 ns bez udané max. rychlosti ' +
+      'v Mbps), ±4 kV ESD ochrana (u ST485 neuvedeno), latch-up odolnost do 500 mA (u ST485 ' +
+      'neuvedeno), napájecí proud ISUPPLY max 5 mA (typ. 2,3–2,6 mA) — výrazně vyšší než ' +
+      'typ. 300 µA u ST485 (daň za vyšší rychlost), přesnější napájecí rozsah VCC=4,75–5,25 V ' +
+      '(ST485 jen "5 V"). RE=H a DE=L současně přepne ST485A do úsporného shutdown režimu — u ' +
+      'ST485 tato kombinace není v pravdivostní tabulce zmíněná jako zvláštní režim. Pinout, ' +
+      'vstupní common-mode rozsah (-7 až +12 V), vstupní hystereze (70 mV typ.) a základní ' +
+      'funkce (1 driver + 1 receiver, poloduplex) jsou shodné se ST485 — viz jeho záznam pro ' +
+      'plné pravdivostní tabulky. Absolutní meze: VCC max 7 V, napětí na řídicích vstupech ' +
+      '-0,3 až 7 V, napětí na výstupu budiče/vstupu přijímače -7,5 až +12,5 V. Dostupný jen v ' +
+      'komerčním (0–70 °C) a průmyslovém (-40–85 °C) rozsahu (na rozdíl od ST485, který má i ' +
+      'automobilovou -55–125 °C variantu). Pinově kompatibilní se ST485 — lze tedy fyzicky ' +
+      'zaměnit, ale je nutné počítat s vyšší spotřebou. ' +
+      'Varianta ST485AB: uživatel poslal i samostatný datasheet "ST485AB" (rev. 3, srpen 2007) ' +
+      'k porovnání — elektricky i pinově zcela shodný s tímto záznamem (stejné ISUPPLY, VOD1/VOD2, ' +
+      'IOSD, absolutní meze i pravdivostní tabulky), jen omezený na průmyslový teplotní rozsah ' +
+      '-40 až 85 °C (objednací kódy ST485ABN/ST485ABDR — ty jsou ostatně uvedené už v tabulce ' +
+      'objednacích kódů ST485A výše). Jde tedy o stejný čip, ne o další variantu — samostatný ' +
+      'záznam pro ST485AB proto není potřeba.',
+    schematicImage: 'ST485.jpg',
+    tags: 'io,rozhraní,rs485,rs422,transceiver,st485a,st485ab,st485,modbus,vysokorychlostní',
+  },
+  {
+    name: 'ST75C176',
+    packageType:
+      'DIP-8 nebo SO-8, stejný pinout jako ST485: 1=RO, 2=/RE, 3=DE, 4=DI, 5=GND, 6=A, 7=B, 8=VCC',
+    value: 'Nízkopříkonový RS-485/RS-422 transceiver (1 driver + 1 receiver), BiCMOS, VCC 5 V, ' +
+      'až 32 transceiverů na sběrnici',
+    notes:
+      'STMicroelectronics "ST75C176 — Low power RS-485/RS-422 transceiver" (rev. 3, květen 2006). ' +
+      'Uživatel se ptal, jestli nejde jen o jiné označení stejného čipu jako ST485 — není, je to ' +
+      'samostatný katalogový typ (odvozený od průmyslového standardu "75176", tedy stejná rodina ' +
+      'jako SN75176/MAX485 zmíněná u ST485), ale elektricky je mu velmi blízký: shodný pinout, ' +
+      'shodné VOD1/VOD2, VIH/VIL, vstupní hystereze (70 mV typ.), common-mode rozsah -7 až +12 V, ' +
+      'propagační zpoždění 30 ns/skew 5 ns, klidový odběr typ. 300 µA (zde navíc rozepsáno tabulkou ' +
+      'ICC: 400/900 µA max při VRE=0 V, 300/500 µA max při VDE=0 V) a shodné absolutní meze. ' +
+      'Skutečné rozdíly oproti ST485: nižší udaná zatížitelnost sběrnice (max. 32 transceiverů, ' +
+      'ST485 udává 64), explicitně uvedená BiCMOS technologie a specifikace zkratového proudu ' +
+      'budiče IOSD1 (35–250 mA @VO=-7 až 12V, u ST485 na prvních stránkách neuvedena). Pinově i ' +
+      'funkčně zaměnitelný se ST485 — pravdivostní tabulky driveru i receiveru jsou identické. ' +
+      'V databázi veden jako samostatný typ, protože jde o jiný objednací kód, ne jen jinou ' +
+      'variantu balení/teploty.',
+    schematicImage: 'ST485.jpg',
+    tags: 'io,rozhraní,rs485,rs422,transceiver,st75c176,75176,sn75176,st485,modbus',
+  },
+
+  // Solární LED budiče
+  {
+    name: 'YX8018',
+    packageType:
+      'TO-94 (4pin, podobné TO-92, ale se 4 vývody v řadě), piny: 1=LX (spínaný výstup k cívce/' +
+      'LED), 2=GND, 3=CE (záporný pól solárního článku / povolení nabíjení, EN), 4=VDD (kladný ' +
+      'pól solárního článku)',
+    value: 'Joule-thief step-up měnič pro solární LED svítidla, účinnost 80–90 %, 1× externí ' +
+      'cívka, vstup 1,25–2,5 V (1–2 NiMH/NiCd články)',
+    notes:
+      '⚠️ Čínský IC bez oficiálního výrobcem vydaného anglického/českého datasheetu s plnými ' +
+      'elektrickými parametry — dostupný jen jako neoficiální, amatérsky přeložený dokument ' +
+      '("Japanese PDF to English PDF by Jonovid 2016"), uživatel poslal přesně tento. Obsahuje ' +
+      'pouze pinout, zapojovací schémata a tabulku doporučených indukčností, ŽÁDNÉ Absolute ' +
+      'Maximum Ratings ani elektrické charakteristiky (VIN rozsah, proudová spotřeba, účinnost ' +
+      'měniče jako číslo apod.) — hodnoty v poli "value" výše jsou jen z textového popisu ' +
+      '(marketingová čísla), ne z měřené tabulky. Princip: step-up (boost) měnič typu "joule ' +
+      'thief" pro napájení 1 LED (bílá/modrá/zelená) nebo více LED ze solárního článku a NiMH/' +
+      'NiCd akumulátoru (1× 1,25 V nebo 2× sériově 2,5 V) — ve dne přes CE/VDD dobíjí akumulátor ' +
+      'ze solárního článku, v noci (CE neosvětleno) rozepne a rozsvítí LED přes cívku na pinu LX. ' +
+      'Doporučené indukčnosti cívky dle požadovaného proudu LED (@1,25 V): 560 µH→3,0 mA, ' +
+      '220 µH→7,0 mA, 150 µH→10 mA, 82 µH→15 mA, 68 µH→21 mA, 47 µH (pouzdro 0410, 2× LED)→30 mA. ' +
+      'Volitelně lze přidat fotorezistor (CDS) mezi CE a GND pro soft-start/detekci soumraku ' +
+      '(Figure 1-1) nebo zapojit bez něj (Figure 1-2, CE přímo na solární článek). Varianta ' +
+      '"YX8019" (zmíněná v úvodním textu dokumentu) přidává mechanický vypínač do série se ' +
+      'solárním článkem — jinak stejné zapojení/pinout. V této appce použito jako IC1 v ' +
+      'projektu „Solární lampička se superkondenzátorem".',
+    schematicImage: 'YX8018.jpg',
+    tags: 'io,měnič,boost,solární,led,joule-thief,yx8018,yx8019,zahradní-lampička',
+  },
+  {
+    name: 'TP4056',
+    packageType:
+      '8pin ESOP/EMSOP (se spodní chladicí ploškou), piny: 1=TEMP (vstup pro NTC čidlo teploty ' +
+      'baterie), 2=PROG (nastavení nabíjecího proudu rezistorem + monitor proudu), 3=GND, ' +
+      '4=VCC (vstup napájení), 5=BAT (výstup na baterii), 6=/STDBY (indikace dokončeného ' +
+      'nabíjení, open-drain, aktivní L), 7=/CHRG (indikace probíhajícího nabíjení, open-drain, ' +
+      'aktivní L), 8=CE (povolení čipu, aktivní H)',
+    value: 'Lineární nabíječka 1článkových Li-ion/Li-pol akumulátorů, CC/CV, VCC 4–8 V, max. ' +
+      '1000 mA (programovatelné), VFLOAT 4,2 V (±1 %)',
+    notes:
+      'Nanjing Top Power ASIC Corp. "TP4056 — 1A线性锂离子电池充电器 / 1A Linear Li-ion Battery ' +
+      'Charger" (čínský datasheet). Kompletní lineární CC/CV nabíječka pro 1 článek Li-ion s ' +
+      'interním PMOSFET (žádná externí blokovací dioda ani snímací rezistor potřeba), tepelnou ' +
+      'regulací proudu při vysoké zátěži/teplotě, nabíjecím proudem nastavitelným jedním ' +
+      'rezistorem (RPROG) na pinu PROG dle vzorce IBAT=(VPROG/RPROG)×1200, automatickým ' +
+      'ukončením při poklesu proudu na 1/10 nastaveného (C/10), monitorem teploty baterie přes ' +
+      'NTC na pinu TEMP (nabíjení pozastaveno mimo 45–80 % VCC), podpěťovou pojistkou (UVLO), ' +
+      'automatickým dobíjením a dvěma stavovými výstupy /CHRG a /STDBY pro LED indikaci. ' +
+      'Mezní hodnoty: VCC -0,3 až 8 V, PROG -0,3 až VCC+0,3 V, BAT -0,3 až 7 V, /CHRG a /STDBY ' +
+      'a TEMP a CE -0,3 až 10 V, proud na BAT 1200 mA, proud na PROG 1200 µA, max. teplota čipu ' +
+      '145 °C, pracovní teplota -40 až 85 °C. Elektrické charakteristiky (VCC=5 V, TA=25 °C): ' +
+      'ICC (nabíjecí mód, RPROG=1,2 kΩ) typ. 150 µA, VFLOAT 4,158–4,242 V (typ. 4,2 V), IBAT ' +
+      '(RPROG=1,2 kΩ) 950–1050 mA (typ. 1000 mA), ITRIKL (předbíjecí proud, VBAT<VTRIKL) typ. ' +
+      '130 mA, VTRIKL (práh pro předbíjení) typ. 2,9 V, VUV (podpěťová pojistka VCC) typ. 3,7 V, ' +
+      'ITERM (C/10 práh ukončení, RPROG=1,2 kΩ) typ. 130 mA, RON (odpor výkonového FETu) typ. ' +
+      '650 mΩ, tSS (soft-start) typ. 20 µs, pohotovostní odběr (STDBY) typ. 55 µA, odběr ve ' +
+      'vypnutém stavu (CE=L) typ. 55 µA. V této appce použito jako IC1 v projektu „Solární ' +
+      'lampička s Li-ion akumulátorem (SMD)" — omezuje nabíjecí proud na 130 mA a napětí na ' +
+      '4,2 V (viz i FDS9926 ve stejném obvodu).',
+    schematicImage: 'TP4056.jpg',
+    tags: 'io,nabíječka,li-ion,li-pol,tp4056,solární,lineární,cc-cv',
+  },
+  {
+    name: 'BQ24040',
+    packageType:
+      '10pin WSON (DSQ, 2×2 mm, se spodní chladicí ploškou), piny: 1=IN (napájení), 2=ISET ' +
+      '(nastavení nabíjecího proudu), 3=VSS (zem), 4=PRE-TERM (nastavení prahu předbíjení/' +
+      'ukončení), 5=/PG (power good, open-drain, aktivní L), 6=NC (nezapojovat), 7=ISET2 ' +
+      '(volba limitu vstupního proudu USB 100/500 mA), 8=/CHG (indikace nabíjení, open-drain, ' +
+      'aktivní L), 9=TS (vstup NTC čidla teploty baterie), 10=OUT (výstup na baterii/systémovou ' +
+      'zátěž)',
+    value: 'Lineární nabíječka 1článkových Li-ion/Li-pol akumulátorů s automatickým startem, ' +
+      'VIN 4,45–6,45 V (abs. max 30 V), max. 1 A (programovatelné), VFLOAT 4,2 V (±1 %)',
+    notes:
+      'Texas Instruments "BQ24040, BQ24041, BQ24045 — 1A, Single-Input, Single Cell Li-Ion and ' +
+      'Li-Pol Battery Charger With Auto Start" (dok. SLUS941H, září 2009, rev. únor 2021). ' +
+      'Uživatel se ptal, jestli jde o totéž jako TP4056 (přidán do databáze dříve pro stejný ' +
+      'obvod) — funkčně ano (obojí lineární CC/CV nabíječka pro 1 článek Li-ion/Li-pol, podobné ' +
+      'parametry nabíjecího proudu/napětí), ale NENÍ to zaměnitelná/pin-kompatibilní náhrada: ' +
+      'jiné pouzdro (10pin WSON 2×2 mm vs. TP4056 8pin ESOP/EMSOP), jiný pinout i jiný počet ' +
+      'funkčních pinů, výrazně vyšší vstupní napětí (abs. max 30 V vs. 8 V u TP4056, s input ' +
+      'overvoltage protection pro nechráněné adaptéry), odlišné stavové výstupy (/CHG + /PG vs. ' +
+      '/CHRG + /STDBY u TP4056), přepínatelný limit vstupního proudu pro USB (100/500 mA přes ' +
+      'ISET2), podpora JEITA teplotního profilu (poloviční proud za studena, 4,06 V za tepla) a ' +
+      'autostart funkce bez nutnosti CE pinu (na rozdíl od TP4056, kde CE musí být aktivně H). ' +
+      'Rodina BQ2404x: BQ24040 (VFLOAT 4,2 V, programovatelné PRE-TERM, TS/JEITA), BQ24041 ' +
+      '(jiný pinout — ASI/ASO/BAT_EN místo PRE-TERM/TS, bez terminace), BQ24045 (VFLOAT 4,35 V ' +
+      'pro vysokonapěťovou chemii, jinak jako BQ24040) — tento datasheet od uživatele pokrývá ' +
+      'všechny tři, zde veden konkrétně jako BQ24040 (výchozí/nejběžnější varianta). Mezní ' +
+      'hodnoty: IN max 30 V, OUT max 7 V, ostatní řídicí piny max 7 V, vstupní proud max 1,25 A, ' +
+      'výstupní proud max 1,25 A, CHG sink proud max 15 mA, TJ -40 až 150 °C, Tstg -65 až 150 °C. ' +
+      'Doporučený provoz: VIN 4,45–6,45 V (omezeno DPM/OVP), IIN/IOUT max 1 A, RISET 0,540–10,8 kΩ ' +
+      '(programuje nabíjecí proud), RTS 1,66–258 kΩ (10k NTC rozsah). ESD: ±3000 V HBM, ±1500 V ' +
+      'CDM. Použitelný jako funkční alternativa k TP4056 jen po přepracování DPS (jiné pouzdro/' +
+      'piny) — v této appce zatím nepoužito v žádném konkrétním projektu, uveden pro referenci k ' +
+      'TP4056.',
+    schematicImage: 'BQ24040.jpg',
+    tags: 'io,nabíječka,li-ion,li-pol,bq24040,bq24041,bq24045,texas-instruments,lineární,cc-cv',
+  },
+  {
+    name: 'LM2575',
+    packageType:
+      '16pin PDIP, piny: 1,2,4,6,8,10,11,14,15=NC (nezapojeno, lze připojit na zem pro lepší ' +
+      'chlazení), 3=OUTPUT (spínaný výstup), 5,12,13=GND, 7=FEEDBACK (zpětnovazební vstup), ' +
+      '9=/ON/OFF (aktivní L = zapnuto), 16=VIN (napájení)',
+    value: 'Spínaný snižující (step-down/buck) měnič, nastavitelný 1,23–37 V, 1 A, 52 kHz, ' +
+      'VIN 4,75–40 V',
+    notes:
+      '⚠️ Texas Instruments "LM2575 — 1-A Simple Step-Down Switching Voltage Regulator" ' +
+      '(dok. SLVS569F, leden 2005, rev. srpen 2015) — toto je NASTAVITELNÁ (adjustable) verze ' +
+      '(LM2575N, 16pin PDIP, pin 7=FEEDBACK pro externí odporový dělič nastavující VOUT), NE ' +
+      'přímo "LM2575-5" (fixní 5V verze), kterou obvod v appce vyžaduje — datasheet sám uvádí, ' +
+      '"For the Full Offering of Voltages (Including Fixed-Output Options)... See TL2575 Data ' +
+      'Sheet SLVS638", tedy fixní verze má samostatný dokument, který nebyl dodán. Čip je ale ' +
+      'stejná rodina/stejné jádro — fixní verze (LM2575-3.3/-5.0/-12/-15 aj.) má jen jinak ' +
+      'trimovaný interní odporový dělič na stejném pinoutu/pouzdře, takže tento datasheet pokrývá ' +
+      'většinu společných elektrických parametrů (switch, oscilátor, proudové omezení, teplotní ' +
+      'ochrana) shodně pro obě varianty — liší se jen přesné VOUT tolerance uvedené pro fixní ' +
+      'verze. Prakticky lze ADJ verzi nahradit externím děličem R1/R2 nastaveným na 5 V (FEEDBACK ' +
+      '= 1,23 V reference) místo přímého -5 dílu. Funkce: integrovaný spínač schopný dodat 1 A, ' +
+      'pevná frekvence 52 kHz (typ.), vnitřní kompenzace, cyklus-po-cyklu proudové omezení, ' +
+      'tepelná ochrana (shutdown), manuální vypnutí přes /ON/OFF pin, TTL-kompatibilní. Mezní ' +
+      'hodnoty: VIN -0,3 až 42 V, napětí na /ON/OFF -0,3 až VIN, výstupní napětí vůči GND (steady' +
+      '-state) max -1 V, TJ max 150 °C, Tstg -65 až 150 °C. Doporučený provoz: VIN 4,75–40 V, ' +
+      'TJ -40 až 125 °C. RθJA 67 °C/W, RθJC(top) 51 °C/W (16pin PDIP). Elektrické charakteristiky ' +
+      '(ILOAD=200 mA, VIN=12 V): účinnost typ 77 % @ILOAD=1A, fOSC typ 52 kHz (42–63 kHz, full ' +
+      'range), VSAT (saturační napětí spínače) typ 0,9 V (max 1,2 V) @IOUT=1A, max. střída 93–98 %, ' +
+      'ICL (špičkový proud) typ 2,8 A (min 1,7 A, max 3,6 A), IQ (klidový odběr) typ 5 mA, ISTBY ' +
+      '(vypnuto přes /ON/OFF) typ 50 µA. ESD: ±2000 V HBM, ±1000 V CDM. V této appce potřeba ' +
+      'jako IO1 (fixní 5V verze) ve spínaném zdroji 12/5 V s indikací podpětí — viz i MAA741 ve ' +
+      'stejném obvodu.',
+    schematicImage: 'LM2575.jpg',
+    tags: 'io,měnič,step-down,buck,lm2575,lm2575n,lm2575-5,texas-instruments,napájecí-zdroj',
   },
 ];
 

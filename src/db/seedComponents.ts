@@ -397,6 +397,24 @@ const DIODE_SPECS: PartSpec[] = [
   { name: 'BZX55C18', packageType: 'DO-35', value: '18 V / 0,5 W', notes: 'Zenerova dioda', tags: 'dioda,zener' },
   { name: 'BZX55C22', packageType: 'DO-35', value: '22 V / 0,5 W', notes: 'Zenerova dioda', tags: 'dioda,zener' },
 
+  {
+    name: 'BZX85C12',
+    packageType: 'DO-41 (DO-204AL)',
+    value: '11,4–12,7 V (nom. 12 V) / 1,3 W — výkonová Zenerova dioda',
+    notes:
+      'Vishay Semiconductors "BZX85 — Zener Diodes" (dok. 85607, rev. 2.9, 17.9.2025). Křemíková ' +
+      'planární výkonová Zenerova dioda, jmenovité napětí podle normy E24, testovací proud IZT=20mA, ' +
+      'dynamický odpor ZZ < 9Ω, teplotní koeficient 0,045 až 0,08 %/°C. Výkonově vydatnější varianta ' +
+      'v pouzdru DO-41 oproti běžnější řadě BZX55 (DO-35, 0,5 W) — PTOT=1300mW (při délce vývodů 4mm ' +
+      'od pouzdra), proto vhodnější tam, kde Zenerova dioda vede trvaleji vyšší proud (např. v ' +
+      'zdroji referenčního napětí napájeném přímo ze sítě). POZOR: časopis uvádí označení ' +
+      '„BZX85V012“ — v aktuálním katalogu Vishay (tento datasheet) má řada jen písmeno „C“ ' +
+      '(BZX85C12), značení „V“ se v tomto dokumentu nevyskytuje, pravděpodobně starší/jiné ' +
+      'značení tolerance u původního výrobce dílu použitého v časopisu; elektricky jde o shodnou ' +
+      '12V/1,3W Zenerovu diodu v DO-41.',
+    tags: 'dioda,zener,bzx85,bzx85c12,bzx85v012,do-41,12v',
+  },
+
   { name: 'SMZ253A', packageType: 'SOD-123FL (SMD)', value: '3,0 V / 1,3 W', notes: 'Zenerova dioda SMD, tolerance ±5 %, značení na pouzdře: 6A. (EIC, řada SMZ25, PD=1,3 W, VF max 1,2 V @IF=200 mA, TJ/Tstg -55 až +150 °C, datasheet rev. 01, 2009-01-12)', tags: 'dioda,zener,smd,sod-123fl,smz25' },
   { name: 'SMZ253D', packageType: 'SOD-123FL (SMD)', value: '3,3 V / 1,3 W', notes: 'Zenerova dioda SMD, tolerance ±5 %, značení na pouzdře: 6B. Součást řady SMZ25 (EIC) — viz poznámka u SMZ253A pro plné mezní hodnoty.', tags: 'dioda,zener,smd,sod-123fl,smz25' },
   { name: 'SMZ253G', packageType: 'SOD-123FL (SMD)', value: '3,6 V / 1,3 W', notes: 'Zenerova dioda SMD, tolerance ±5 %, značení na pouzdře: 6C. Součást řady SMZ25 (EIC) — viz poznámka u SMZ253A pro plné mezní hodnoty.', tags: 'dioda,zener,smd,sod-123fl,smz25' },
@@ -3149,6 +3167,49 @@ const DIODE_SPECS: PartSpec[] = [
     tags: 'dioda,spínací,signálová,duální,smd,sot-23,diotec,bav199,společná-anoda,nízký-svodový-proud',
   },
   {
+    name: 'BAT54A',
+    packageType:
+      'SMD SOT-23, 3 vývody: 1=anoda D1, 2=anoda D2, 3=společná katoda (viz diagram v datasheetu, ' +
+      'style „Pin 1=Anode, 2=Cathode, 3=Common Connection" — u HBAT54A jsou piny 1 a 2 obě anody)',
+    schematicImage: 'BAT54.jpg',
+    value: 'Duální Schottkyho dioda se společnou katodou, VRRM 30 V, IF 200 mA, VF max 320 mV @1 mA',
+    notes:
+      'Hi-Sincerity Microelectronics "HBAT54, HBAT54A, HBAT54C, HBAT54S" (dok. HE6854, rev. ' +
+      '2002.10.24) — výrobcova náhrada rodiny BAT54 (podobně jako BZX85C12/Vishay u předchozí ' +
+      'součástky). Jeden datasheet pokrývá 4 varianty ve stejném SOT-23 pouzdru lišící se jen ' +
+      'vnitřním zapojením dvou Schottkyho diod: HBAT54 (1 samostatná dioda), HBAT54A (společná ' +
+      'anoda — BAT54A), HBAT54C (společná katoda), HBAT54S (sériově spojené — BAT54S). ⚠️ POZOR, ' +
+      'u HBAT54A je i přes název "common anode" ve skutečném diagramu common-cathode zapojení ' +
+      '(piny 1,2=anody, pin3=katoda) — ověřeno přímo z obrázku na str. 3 datasheetu, ne jen z ' +
+      'textového popisu. Nízké prahové napětí, rychlé přepínání, PN guard ring proti ESD. ' +
+      'Mezní hodnoty: Tstg -65 až +125 °C, TJ max 125 °C, Ptot 230 mW @Ta=25 °C, VRRM 30 V, ' +
+      'IF(trvalý) 200 mA, IFRM (periodický špičkový) 300 mA, IFSM (nárazový, tp<1s) 600 mA. ' +
+      'VF: max 240 mV @0,1 mA, max 320 mV @1 mA, max 400 mV @10 mA, max 500 mV @30 mA, max ' +
+      '1000 mV @100 mA. IR max 2,0 µA @VR=25 V. CT max 10 pF @VR=1 V/f=1 MHz. trr max 5 ns ' +
+      '@IF=IR=10 mA. V této appce použito jako D1 v projektu „Univerzální deska rozhraní pro ' +
+      'sběrnici MODBUS RTU" (viz i BAT54S/D2 ve stejném obvodu).',
+    tags: 'dioda,schottky,duální,smd,sot-23,bat54,bat54a,hbat54a,společná-katoda,modbus',
+  },
+  {
+    name: 'BAT54S',
+    packageType:
+      'SMD SOT-23, 3 vývody: 1=anoda D1, 2=katoda D2, 3=katoda D1/anoda D2 (sériové zapojení ' +
+      'A1→K1=A2→K2, prostřední uzel nevyveden — viz diagram v datasheetu)',
+    schematicImage: 'BAT54.jpg',
+    value: 'Dvě Schottkyho diody zapojené sériově v jednom SOT-23 pouzdře, VRRM 30 V, IF 200 mA',
+    notes:
+      'Hi-Sincerity Microelectronics "HBAT54, HBAT54A, HBAT54C, HBAT54S" (dok. HE6854, rev. ' +
+      '2002.10.24) — stejný datasheet/rodina jako záznam "BAT54A" výše, viz tam pro plné ' +
+      'elektrické parametry a kontext (jsou společné pro všechny 4 varianty HBAT54/A/C/S). ' +
+      'HBAT54S (series): dvě diody spojené sériově uvnitř pouzdra (anoda prvního článku na pinu ' +
+      '1, katoda druhého na pinu 2, jejich společný vnitřní uzel není vyveden) — typicky pro ' +
+      'zdvojené usměrnění/ochranu nebo vytvoření děliče napětí s nižším úbytkem než klasická ' +
+      'křemíková dioda. Mezní hodnoty a VF/IR/CT/trr parametry shodné s BAT54A (viz jeho ' +
+      'záznam). V této appce použito jako D2 v projektu „Univerzální deska rozhraní pro ' +
+      'sběrnici MODBUS RTU" (společně s BAT54A/D1).',
+    tags: 'dioda,schottky,duální,smd,sot-23,bat54,bat54s,hbat54s,sériové-zapojení,modbus',
+  },
+  {
     name: 'SKKT 92 (SEMIPACK 1)',
     schematicImage: 'SKKT92.jpg',
     packageType:
@@ -3710,6 +3771,26 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,pnp,bipolární,sot-23,smd,zesilovací,spínací,mmbt2907a,2n2907a',
   },
   {
+    name: 'FMBTA06',
+    packageType:
+      'SOT-23 (SMD), 3 vývody: 1=emitor, 2=báze, 3=kolektor (dle schématické značky v datasheetu)',
+    value: 'NPN, VCEO 80 V, VCBO 80 V, IC 500 mA, hFE min 50',
+    schematicImage: 'FMBTA06.jpg',
+    notes:
+      'FOI Semiconductor, "NPN Silicon Transistor / Amplifier Transistor" datasheet. ' +
+      'Mezní hodnoty: VCBO=80 V, VCEO=80 V, VEBO=4 V, IC=500 mA, Ptot=250 mW @Ta=25 °C, ' +
+      'Tj max=150 °C, Tstg=-55 až +150 °C. ' +
+      'ICBO max 100 nA @VCB=80 V. ICEO max 100 nA @VCE=60 V. ' +
+      'VCE(sat) max 0,25 V @IC=100 mA/IB=10 mA. VBE(on) max 1,2 V @IC=100 mA/VCE=1 V. ' +
+      'hFE1 min 50 @IC=10 mA/VCE=1 V. hFE2 min 50 @IC=100 mA/VCE=1 V. ' +
+      'fT min 100 MHz @IC=10 mA/VCE=2 V/f=100 MHz. ' +
+      'Nebyl na seznamu chybějících součástek pro žádný konkrétní projekt — přidán jen jako ' +
+      'samostatný katalogový záznam na základě nahraného datasheetu. Není pravděpodobnou náhradou ' +
+      'za chybějící Tesla KD601 (ten je PNP výkonový tranzistor v jiném pouzdře, FMBTA06 je malý ' +
+      'NPN zesilovací/spínací tranzistor v SOT-23) — KD601 zůstává v databázi chybějící.',
+    tags: 'tranzistor,npn,bipolární,sot-23,smd,zesilovací,spínací,fmbta06',
+  },
+  {
     name: '2N3906',
     packageType: 'TO-92, 3 vývody: 1=emitor, 2=báze, 3=kolektor (pohled zepředu na popsanou stranu)',
     value: 'PNP, VCEO -40 V, IC -200 mA, hFE 100–300 (@ IC=-10 mA)',
@@ -4085,6 +4166,21 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,npn,bipolární,výkonový,to-220,bd243c,pozor-chladič',
   },
   {
+    name: 'KU612',
+    packageType: 'T32 (Tesla pouzdro, odpovídá přibližně TO-39/podobné kovové pouzdro)',
+    value: 'NPN spínací tranzistor, UCBO 120 V, UCEO 80 V, IC 3 A, Ptot 10 W (při ϑc≤45 °C)',
+    notes:
+      'Tesla "Power Switching Transistors N-P-N / Leistungs-Schalttransistoren N-P-N" — tabulka s ' +
+      'typy KU601, KU602, KU605–608, KU611, KU612 (čistý sken, DataSheet4U.com). Hodnoty pro KU612: ' +
+      'UCBO=120 V, UCEO=80 V, IC=3 A, UEBO=3 V, Ptot=10 W (podmínka ϑc≤45 °C), ϑj max=155 °C, ' +
+      'ICBO max=0,05 mA při UCB=50 V, h21E ≥20 při UCE=6 V/IC=1 A a při UCE=12 V/IC=0,5 A, ' +
+      'fT ≥15 MHz (měřeno na f=30 MHz), UBE(sat)=1,0 V (při UCB=6 V/−IE=0,2 A), UCE(sat) max=1 V ' +
+      '(při IC=1 A/IB=0,1 A), pouzdro T32. Sourozenec KU611 má stejné parametry kromě UCBO=60 V. ' +
+      'V této appce použito jako Q2 (odpojitelný spínačem SW1 pro přepnutí rozsahu) v projektu ' +
+      '„Omezovač proudu“ — POZOR: KD601 (Q1 ve stejném zapojení) v databázi stále chybí.',
+    tags: 'tranzistor,npn,bipolární,spínací,tesla,ku612,ku611,t32',
+  },
+  {
     name: 'TIP3055',
     packageType:
       'TO-247 (dříve i SOT-93/TO-218, od 6/2012 jen TO-247) — vývody: 1=báze, 2=kolektor, ' +
@@ -4443,6 +4539,88 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,mosfet,n-kanál,to-220,irf3205,spínací,pozor-proud',
   },
   { name: '2N7000', packageType: 'TO-92', value: 'N-MOSFET, 60 V, 200 mA', notes: 'Malovýkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál' },
+  {
+    name: '2N7002',
+    packageType: 'SOT-23 (3 vývody): 1=G (gate), 2=S (source), 3=D (drain)',
+    value: 'N-MOSFET (logic level), VDS 6 V, ID 1,4 A (@TA=25 °C), RDS(on) max 3 Ω (@VGS=5 V)',
+    schematicImage: '2N7002.jpg',
+    notes:
+      'Texas Instruments "2N7002L — 6V N-channel MOSFET" (dok. SLVSJE8A, prosinec 2025, rev. ' +
+      'únor 2026) — uživatel poslal konkrétně variantu "L" (nízký RDS(on), nízké gate threshold, ' +
+      'nízká vstupní kapacita); generické označení 2N7002 vyrábí víc výrobců (ON Semi, Nexperia, ' +
+      'Diodes Inc. aj.) s mírně odlišnými parametry, zde uvedeny hodnoty z TI datasheetu. ' +
+      'Mezní hodnoty: VDS max 6 V, VGS max ±7 V, ID max 1,4 A (TA=25 °C) / 437 mA (TA=85 °C), ' +
+      'IDM (pulzní, 1 s) max 1,43 A, TJ/Tstg -65 až +150 °C, ESD (gate-source/gate-drain) 2000 V. ' +
+      'V(BR)DSS min 9,7 V (typ. 11,7 V) @ID=1 µA. IDSS max 2,5 nA @VDS=6 V/TJ=25 °C (0,26 µA ' +
+      '@125 °C). IGSS max 384 nA @VDS=0 V/VGS=7 V. VGS(th) 0,4–0,95 V (typ. 0,7 V) @VDS=VGS/' +
+      'ID=250 µA — logic-level MOSFET, spíná už z 3,3 V/5 V logiky. RDS(on) max 3 Ω @VGS=5 V/' +
+      'ID=64 mA (4,5 Ω @VGS=3,3 V). gFS (transkonduktance) typ 181 mS. Kapacity @f=1 MHz/VDS=6 V: ' +
+      'CISS max 5 pF, COSS max 8,5 pF, CRSS max 5,5 pF. Spínací časy (VGS=5 V, VDD=6 V, RG=25 Ω, ' +
+      'RD=2,49 kΩ): td(on) max 1,4 ns, tr max 1,1 ns, td(off) max 7,0 ns, tf max 55 ns — velmi ' +
+      'rychlé spínání. VSD (dioda source-drain) max 0,97 V @IS=20 mA/TJ=25 °C. ' +
+      'V této appce použito jako Q2, Q3 v projektu „Univerzální deska rozhraní pro sběrnici ' +
+      'MODBUS RTU".',
+    tags: 'tranzistor,mosfet,n-kanál,sot-23,smd,2n7002,2n7002l,logic-level,spínací,modbus',
+  },
+  {
+    name: 'BS170',
+    packageType: 'TO-92 (TO-226), CASE 29, STYLE 30, 3 vývody (pohled zepředu na popsanou ' +
+      'stranu): 1=D (drain), 2=G (gate), 3=S (source)',
+    value: 'N-MOSFET, VDSS 60 V, ID 500 mA, RDS(on) max 5,0 Ω (@VGS=10 V/ID=200 mA)',
+    schematicImage: 'BS170.jpg',
+    notes:
+      'Primárně ON Semiconductor "BS170 — Small Signal MOSFET, 500 mA, 60 Volts" (dok. BS170/D, ' +
+      'rev. 7, listopad 2017) — oficiální/originální datasheet, poslaný uživatelem jako doplnění ' +
+      'k dříve přidanému klonu "HBS170" od Shantou Huashan (čínský výrobce, stejné označení s ' +
+      '"H" prefixem, srov. HBAT54/Hi-Sincerity). ⚠️ Obvod v appce uvádí jako alternativu BS108 ' +
+      'NEBO BS170 — toto je konkrétně BS170 (BS108 má jiné mezní hodnoty, typicky VDSS 200 V/' +
+      'ID 120 mA, a v databázi zatím chybí jeho vlastní datasheet). Malovýkonový spínací ' +
+      'N-MOSFET. Mezní hodnoty (ON Semi): VDS 60 V, VGS ±20 V (nerepetitivní špičkově ±40 V), ' +
+      'ID 0,5 A, Ptot @TA=25 °C 350 mW (⚠️ klon HBS170 uváděl vyšší 0,83 W — u originálu věřit ' +
+      'nižší, konzervativnější hodnotě), TJ/Tstg -55 až +150 °C. V(BR)DSS min 60 V (typ. 90 V) ' +
+      '@VGS=0 V/ID=100 µA. IGSS max 10 nA @VGS=15 V/VDS=0 V. VGS(th) 0,8–3,0 V (typ. 2,0 V) ' +
+      '@VDS=VGS/ID=1 mA. rDS(on) typ 1,8 Ω, max 5,0 Ω @VGS=10 V/ID=200 mA. ID(off) max 0,5 µA ' +
+      '@VDS=25 V/VGS=0 V. gFS typ 200 mmhos @VDS=10 V/ID=250 mA. Ciss max 60 pF @VDS=10 V/' +
+      'VGS=0 V/f=1 MHz. ton typ 4,0 ns (max 10 ns), toff typ 4,0 ns (max 10 ns) @ID=0,2 A. ' +
+      'Pouzdro Pb-free. V této appce vhodné jako T1, T2 v projektu „Solární lampička s Li-ion ' +
+      'akumulátorem (THT)" (alternativa k BS108).',
+    tags: 'tranzistor,mosfet,n-kanál,to-92,bs170,hbs170,on-semiconductor,spínací,solární',
+  },
+  {
+    name: 'FDS9926',
+    packageType:
+      'SO-8, 2 nezávislé N-MOSFETy — piny (ověřeno ze schématu v datasheetu): 1=S2 (source Q2), ' +
+      '2=G2 (gate Q2), 3=S1 (source Q1), 4=G1 (gate Q1), 5=D1, 6=D1 (drain Q1, piny 5+6 ' +
+      'spojené pro nižší odpor), 7=D2, 8=D2 (drain Q2, piny 7+8 spojené) — drainy obou ' +
+      'tranzistorů NEJSOU společné (na rozdíl od typického "common drain" duálního MOSFETu), ' +
+      'každý tranzistor má vlastní pár drain pinů',
+    value: 'Duální N-MOSFET (2× nezávislý tranzistor v jednom SO-8 pouzdře), 2,5V logic-level, ' +
+      'VDSS 20 V, ID 6,5 A, RDS(on) max 0,030 Ω (@VGS=4,5 V) / max 0,043 Ω (@VGS=2,5 V)',
+    notes:
+      'Fairchild Semiconductor "FDS9926A — Dual N-Channel 2.5V Specified PowerTrench MOSFET" ' +
+      '(leden 2000, preliminary, Rev C). ⚠️ Uživatel poslal konkrétně variantu "A" (FDS9926A); ' +
+      'obvod v této appce požaduje "FDS9926" (bez A) — podle běžné praxe výrobce je přípona "A" ' +
+      'u této rodiny jen rozšíření/upřesnění specifikace o garantovaný RDS(on) i při nízkém ' +
+      'VGS=2,5 V (odtud "2.5V Specified" v názvu), zatímco základní FDS9926 bývá specifikován ' +
+      'jen pro VGS=4,5 V — pinout, pouzdro SO-8 a základní topologie (2× nezávislý N-MOSFET) ' +
+      'jsou stejné, FDS9926A je tedy prakticky drop-in náhrada (často i lepší parametr při ' +
+      'nízkém VGS). Datasheet samotného "FDS9926" (bez A) nebyl k dispozici pro přímé srovnání ' +
+      'čísel. Vhodné pro napájecí/bateriové přepínání (battery protection, load switch) — PowerTrench ' +
+      'proces, optimalizováno pro VGS 2,5–10 V. Mezní hodnoty: VDSS 20 V, VGSS ±10 V, ID ' +
+      '(trvalý) 6,5 A / (pulzní) 20 A, PD (dual operace) 2 W / (single operace, dle upevnění ' +
+      'desky) 0,9–1,6 W, TJ/Tstg -55 až +150 °C. RθJA 78 °C/W, RθJC 40 °C/W. BVDSS min 20 V ' +
+      '@VGS=0 V/ID=250 µA. IDSS max 1 µA @VDS=16 V/VGS=0 V. VGS(th) 0,5–1,5 V (typ. 1 V) ' +
+      '@VDS=VGS/ID=250 µA. RDS(on): max 0,030 Ω @VGS=4,5 V/ID=6,5 A, max 0,043 Ω @VGS=2,5 V/' +
+      'ID=5,4 A, max 0,050 Ω @VGS=4,5 V/ID=6,5 A/TJ=125 °C. ID(on) min 15 A @VGS=4,5 V/VDS=5 V. ' +
+      'gFS typ 11 S @VDS=5 V/ID=3 A. Ciss typ 700 pF, Coss typ 175 pF, Crss typ 85 pF (@VDS=10 V/' +
+      'f=1 MHz). Celkový náboj hradla Qg typ 7 nC @VDS=10 V/ID=3A/VGS=4,5 V. Spínací časy ' +
+      '(VDD=10 V/ID=1 A/RGEN=6 Ω): td(on) typ 8 ns, tr typ 10 ns, td(off) typ 18 ns, tf typ 5 ns. ' +
+      'Dioda source-drain: IS max 1,3 A, VSD typ 0,65 V (max 1,2 V) @IS=1,3 A/VGS=0 V. V této ' +
+      'appce použito jako Q1 v projektu „Solární lampička s Li-ion akumulátorem (SMD)" — podle ' +
+      'napětí ze solárního článku přepíná LED za tmy (viz i TP4056 ve stejném obvodu).',
+    schematicImage: 'FDS9926.jpg',
+    tags: 'tranzistor,mosfet,n-kanál,duální,so-8,fds9926,fds9926a,powertrench,logic-level,solární',
+  },
   {
     name: 'BSS138PS',
     packageType:
@@ -6418,7 +6596,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 87;
+export const SEED_LIBRARY_VERSION = 108;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
