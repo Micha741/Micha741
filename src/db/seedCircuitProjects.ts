@@ -214,4 +214,17 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
       { label: 'Li-Ion článek (2× do série, 8,4 V/3000 mAh)', match: 'Li-Ion', quantity: 2 },
     ],
   },
+  {
+    name: 'DS18B20 teploměr s Arduinem (1-Wire)',
+    description:
+      'Digitální teploměr DS18B20 (voděodolná sonda s 3žilovým kabelem: červený VCC, černý GND, žlutý DATA) připojený na Arduino Uno. Datový vodič jde na digitální pin 2 a je nutný pull-up rezistor 4,7 kΩ mezi DATA a VCC (5V), jinak 1-Wire sběrnice nefunguje spolehlivě.',
+    image: 'DS18B20-arduino-wiring.jpg',
+    notes:
+      'Zdroj: datasheet "eses vodotěsný teploměr pro jednodeskové počítače" (DS18B20 sonda). Čtení přes knihovny OneWire + DallasTemperature, ONE_WIRE_BUS = pin 2. Rezistor 4,7 kΩ je nutný pull-up na datové lince, ne volitelný doplněk.',
+    parts: [
+      { label: 'Teplotní čidlo DS18B20 (voděodolná sonda)', match: 'DS18B20', quantity: 1 },
+      { label: 'Arduino Uno', match: 'Arduino Uno', quantity: 1 },
+      { label: 'Rezistor 4,7 kΩ (pull-up na DATA)', match: '4.7k', quantity: 1 },
+    ],
+  },
 ];
