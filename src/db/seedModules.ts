@@ -4897,6 +4897,30 @@ const MODULE_SPECS: ModuleSpec[] = [
     schematicImage: 'JDY-33TTL.jpg',
     tags: 'modul,bluetooth,ble,spp,ttl,uart,jdy-33,jdy-33ttl,bezdrátový,sériový-terminál',
   },
+  {
+    name: 'NY-D01 (M302)',
+    packageType:
+      'Hotová deska s odporovým bodovacím časovačem — TO-220 výkonová součástka (triak) na ' +
+      'desce, 2 šroubovací svorkovnice (síťové 230 V + výstup k transformátoru), 2 potenciometry ' +
+      '(čas/výkon), konektor pro oddělený 2místný 7segmentový displej na plochém kabelu',
+    value:
+      'Modul NY-D01 40A pro bodové svařování — napájení řídicí elektroniky 6–12 VAC, spínaný ' +
+      'výstup 230 VAC/40 A (triak), nastavitelný impuls cca 20–1000 ms, výkon 30–99 %',
+    notes:
+      'HADEX spol. s r.o. (Ostrava), EU Prohlášení o shodě pro výrobek "M302 - Modul NY-D01 40A ' +
+      'pro bodové svařování, napájení 230VAC" (doloženo uživatelem, podepsáno Ing. Tomáš Lukasík, ' +
+      '18.11.2022) — potvrzuje typ M302, napájecí napětí řídicí desky 6–12 VAC, shodu se směrnicemi ' +
+      'NV č. 90/2016 (nízké napětí, 2014/35/EU) a NV č. 481/2012 (RoHS, 2011/65/EU). Prohlášení o ' +
+      'shodě samo neuvádí podrobné elektrické mezní hodnoty (přesné VDRM triaku, pinout, přesný ' +
+      'rozsah časovače) — jen název výrobku, výrobce a směrnice; pro plný datasheet by bylo potřeba ' +
+      'samostatný technický list od HADEX. Hotová deska obsahuje triak BTA41-800B (viz jeho vlastní ' +
+      'poznámka u obecné řady BTA41x/800 — konkrétní BTA41-800B zatím nemá samostatný datasheetem ' +
+      'podložený záznam) a budicí/časovací obvod, ovládá se pedálem/tlačítkem přes oddělený displej ' +
+      'na plochém kabelu (zobrazuje nastavený čas a výkon). V této appce použito jako hlavní spínací ' +
+      'prvek v projektu „Bodovací svářečka z mikrovlnné trouby" (PE 07/2023) — POZOR, zapojení je ' +
+      'přímo na síťovém napětí 230 V.',
+    tags: 'modul,ny-d01,m302,hadex,bodovací-svářečka,triak,bta41-800b,230v,pozor-síť',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
