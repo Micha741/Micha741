@@ -1,6 +1,6 @@
 import type { CircuitProjectInput } from '../types/circuit';
 
-export const CIRCUIT_LIBRARY_VERSION = 3;
+export const CIRCUIT_LIBRARY_VERSION = 4;
 
 /**
  * Přesný počet kusů u drobných pasivních součástek (rezistory) je odhad podle
@@ -355,6 +355,28 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
       { label: 'Rezistor 100 kΩ (dělič pro fotorezistor)', match: '100k', quantity: 1 },
       { label: 'Napájecí adaptér 5 V', match: 'napájecí adaptér', quantity: 1 },
       { label: 'Svorkovnice přístrojová 12pólová lámací', match: 'svorkovnice', quantity: 1 },
+    ],
+  },
+  {
+    name: 'Automatická dvířka kurníku (ESP32, bakalářská práce)',
+    description:
+      'Samostatný návrh elektronicky i softwarově podstatně sofistikovanějších automatických dvířek kurníku oproti jednoduchému zapojení výše — procesorový modul ESP32-S3-WROOM-1U (Wi-Fi/Bluetooth LE, konektivita MQTT/Home Assistant) řídí stejnosměrný motor s převodovkou přes integrovaný H-můstkový budič (PWM regulace rychlosti i směru), polohu dvířek snímá dvoukanálový optický enkodér (dvojice závor TCST1103) doplněný softwarovým dvojitým regulátorem (P pro polohu, PI pro rychlost) a proudovým snímáním zátěže motoru (detekce překážky/dorazu). Deska dále obsahuje fotorezistor pro úroveň denního světla, NTC teplotní čidlo, dvoubarevnou LED, tlačítko a rozhraní RS485/ModBus RTU i dva rezervní vstupy na konektoru RJ45.',
+    image: 'ovladani-dvirek-kurniku-esp32.jpg',
+    notes:
+      'Zdroj: Pavel Kejík, "Automatický systém pro domácí chov slepic" (bakalářská práce, FIT VUT v Brně, vedoucí Ing. Vojtěch Mrázek, Ph.D., Brno 2024), kapitola 6 (Periferie dvířka) a příloha A (schéma desky). ⚠️ Jde o zcela odlišný návrh od zapojení „Ovládání dvířek kurníku pro domácí zvířata" z PE 07/2023 (Arduino Mega 2560 + mikrospínače + relé modul, bez konektivity) — přidáno jako samostatný projekt, ne jako náhrada. Obrázek je blokové schéma desky elektroniky dvířek (obr. 6.4 práce), podrobné schéma zapojení (plný seznam součástek vč. referenčních označení) je v příloze A práce. Práce je veřejně dostupná kvalifikační práce VUT, nejde o časopisecký scan — otázka práv k publikaci obrázku v appce je tedy odlišná od PE scanů, ale přesto je vhodné ji ověřit před zveřejněním.',
+    parts: [
+      { label: 'IC1 — ESP32-S3-WROOM-1U (modul MCU, Wi-Fi/BLE)', match: 'ESP32-S3', quantity: 1 },
+      { label: 'IC2 — L6201PS (H-můstkový budič DC motoru)', match: 'L6201', quantity: 1 },
+      { label: 'Motor DFRobot DC 12 V 40 ot./min se šnekovou převodovkou 1:150', match: 'motor DFRobot', quantity: 1 },
+      { label: 'Optická závora TCST1103 (kanály enkodéru polohy)', match: 'TCST1103', quantity: 2 },
+      { label: 'Relé (odpojení napájení motoru při poruše)', match: 'relé modul', quantity: 1 },
+      { label: 'Fotorezistor (úroveň denního světla)', match: 'fotorezistor', quantity: 1 },
+      { label: 'NTC termistor (snímání teploty)', match: 'NTC', quantity: 1 },
+      { label: 'Dvoubarevná LED (indikace stavu)', match: 'LED dvoubarevná', quantity: 1 },
+      { label: 'Tranzistor BC846 (ovládání TCST1103/výstup)', match: 'BC846', quantity: 1 },
+      { label: 'Dioda 1N4148WT (nejmenší SMD pouzdro rodiny 1N4148)', match: '4148', quantity: 1 },
+      { label: 'Konektor RJ45 (rozšiřující I/O, RS485)', match: 'RJ45', quantity: 1 },
+      { label: 'Napájecí zdroj 12 V DC (konektor JACK 2,5 mm)', match: 'napájecí adaptér', quantity: 1 },
     ],
   },
   {

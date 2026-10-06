@@ -20,6 +20,7 @@ export const CIRCUIT_IMAGES: Record<string, ImageSourcePropType> = {
   'detektor-prechodu-nulou.jpg': require('../../assets/circuits/detektor-prechodu-nulou.jpg'),
   'omezovac-proudu.jpg': require('../../assets/circuits/omezovac-proudu.jpg'),
   'ovladani-dvirek-kurniku.jpg': require('../../assets/circuits/ovladani-dvirek-kurniku.jpg'),
+  'ovladani-dvirek-kurniku-esp32.jpg': require('../../assets/circuits/ovladani-dvirek-kurniku-esp32.jpg'),
   'modbus-rtu-deska.jpg': require('../../assets/circuits/modbus-rtu-deska.jpg'),
   'solarni-lampicka-superkondenzator.jpg': require('../../assets/circuits/solarni-lampicka-superkondenzator.jpg'),
   'solarni-lampicka-akumulator-smd.jpg': require('../../assets/circuits/solarni-lampicka-akumulator-smd.jpg'),
