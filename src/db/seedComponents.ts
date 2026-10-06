@@ -3785,9 +3785,9 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'hFE1 min 50 @IC=10 mA/VCE=1 V. hFE2 min 50 @IC=100 mA/VCE=1 V. ' +
       'fT min 100 MHz @IC=10 mA/VCE=2 V/f=100 MHz. ' +
       'Nebyl na seznamu chybějících součástek pro žádný konkrétní projekt — přidán jen jako ' +
-      'samostatný katalogový záznam na základě nahraného datasheetu. Není pravděpodobnou náhradou ' +
-      'za chybějící Tesla KD601 (ten je PNP výkonový tranzistor v jiném pouzdře, FMBTA06 je malý ' +
-      'NPN zesilovací/spínací tranzistor v SOT-23) — KD601 zůstává v databázi chybějící.',
+      'samostatný katalogový záznam na základě nahraného datasheetu. Není náhradou za Tesla KD601 ' +
+      '(ten je výkonový tranzistor 24V/10A/35W v jiném pouzdře, FMBTA06 je malý NPN zesilovací/' +
+      'spínací tranzistor 500mA v SOT-23) — KD601 je od té doby v databázi vlastním záznamem.',
     tags: 'tranzistor,npn,bipolární,sot-23,smd,zesilovací,spínací,fmbta06',
   },
   {
@@ -4177,8 +4177,23 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'fT ≥15 MHz (měřeno na f=30 MHz), UBE(sat)=1,0 V (při UCB=6 V/−IE=0,2 A), UCE(sat) max=1 V ' +
       '(při IC=1 A/IB=0,1 A), pouzdro T32. Sourozenec KU611 má stejné parametry kromě UCBO=60 V. ' +
       'V této appce použito jako Q2 (odpojitelný spínačem SW1 pro přepnutí rozsahu) v projektu ' +
-      '„Omezovač proudu“ — POZOR: KD601 (Q1 ve stejném zapojení) v databázi stále chybí.',
+      '„Omezovač proudu“, společně s KD601 (Q1 ve stejném zapojení).',
     tags: 'tranzistor,npn,bipolární,spínací,tesla,ku612,ku611,t32',
+  },
+  {
+    name: 'KD601',
+    packageType:
+      'Neznámé/neověřené pouzdro — pravděpodobně kovové (stejná rodina Tesla jako KU612/T32, ale ' +
+      'nepotvrzeno konkrétním datasheetem)',
+    value: 'NPN výkonový tranzistor, 24 V, 10 A, 35 W',
+    notes:
+      'Hodnoty (NPN, 24 V, 10 A, 35 W) potvrzeny přímo uživatelem, ne z nahraného datasheetu — ' +
+      'pokud se podaří sehnat oficiální Tesla datasheet, doplnit přesné VCBO/VCEO/VEBO, hFE a pinout. ' +
+      '⚠️ Oprava: dřívější poznámka u FMBTA06 v této appce mylně tvrdila, že KD601 je PNP — podle ' +
+      'uživatele i podle schématu v Praktická elektronika A Radio 07/2023 (oba tranzistory Q1/Q2 ' +
+      'nakreslené se stejnou orientací šipky) je KD601 NPN, stejně jako KU612. V této appce použito ' +
+      'jako Q1 v projektu „Omezovač proudu“ (hlavní průchozí tranzistor, báze řízená emitorem Q2).',
+    tags: 'tranzistor,npn,bipolární,výkonový,tesla,kd601',
   },
   {
     name: 'TIP3055',
@@ -6596,7 +6611,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 108;
+export const SEED_LIBRARY_VERSION = 109;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
