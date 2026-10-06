@@ -4,4 +4,4 @@ jobs:
   publish_update:
     type: update
     params:
-      channel: production
+      channel: preview
