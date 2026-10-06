@@ -28,4 +28,13 @@ export const CIRCUIT_IMAGES: Record<string, ImageSourcePropType> = {
   'solarni-lampicka-akumulator-tht.jpg': require('../../assets/circuits/solarni-lampicka-akumulator-tht.jpg'),
   'spinany-zdroj-12-5v.jpg': require('../../assets/circuits/spinany-zdroj-12-5v.jpg'),
   'bodovaci-svarecka.jpg': require('../../assets/circuits/bodovaci-svarecka.jpg'),
+  'elektronicky-kanarek.jpg': require('../../assets/circuits/elektronicky-kanarek.jpg'),
+  'odpuzovac-krtku-1.jpg': require('../../assets/circuits/odpuzovac-krtku-1.jpg'),
+  'odpuzovac-krtku-2.jpg': require('../../assets/circuits/odpuzovac-krtku-2.jpg'),
+  'kmitoctova-vyhybka-vhf-uhf-v1.jpg': require('../../assets/circuits/kmitoctova-vyhybka-vhf-uhf-v1.jpg'),
+  'kmitoctova-vyhybka-vhf-uhf-v2.jpg': require('../../assets/circuits/kmitoctova-vyhybka-vhf-uhf-v2.jpg'),
+  'dc-ampermetr-fluxgate.jpg': require('../../assets/circuits/dc-ampermetr-fluxgate.jpg'),
+  'domaci-interkom.jpg': require('../../assets/circuits/domaci-interkom.jpg'),
+  'palivove-cerpadlo-softstart.jpg': require('../../assets/circuits/palivove-cerpadlo-softstart.jpg'),
+  'menic-modrozelena-led.jpg': require('../../assets/circuits/menic-modrozelena-led.jpg'),
 };
