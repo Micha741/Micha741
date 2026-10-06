@@ -1,6 +1,6 @@
 import type { CircuitProjectInput } from '../types/circuit';
 
-export const CIRCUIT_LIBRARY_VERSION = 5;
+export const CIRCUIT_LIBRARY_VERSION = 6;
 
 /**
  * Přesný počet kusů u drobných pasivních součástek (rezistory) je odhad podle
@@ -519,6 +519,208 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
       { label: 'Teplotní čidlo DS18B20 (voděodolná sonda)', match: 'DS18B20', quantity: 1 },
       { label: 'Arduino Uno', match: 'Arduino Uno', quantity: 1 },
       { label: 'Rezistor 4,7 kΩ (pull-up na DATA)', match: '4.7k', quantity: 1 },
+    ],
+  },
+
+  // Projekty níže (elektronický kanárek … měnič pro modrozelenou LED) jsou
+  // zpracované podle časopisu Praktická elektronika A Radio 01/2025. Obrázky
+  // schémat jsou oříznuté scany z tohoto časopisu — ověřit licenční práva
+  // k jejich použití, než se zobrazí uživatelům appky mimo osobní použití.
+  {
+    name: 'Elektronický kanárek',
+    description:
+      'Zvuková hříčka napodobující zpěv kanárka. Vydává trvale vysoký tón (3,5–3,9 kHz), jehož výška se periodicky moduluje hvizdy, takže zvuk připomíná ptačí zpěv. Postaveno na čtyřech multivibrátorech s LM324 a výkonovém zesilovači s tranzistorem pro reproduktor 8 Ω.',
+    image: 'elektronicky-kanarek.jpg',
+    notes:
+      'Zdroj: Praktická elektronika A Radio 01/2025, str. 3–4, rubrika Jednoduchá zapojení (Ing. Miloš Munzar), převzato z Rádiótechnika (HU), 03/2019. Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Napájení 9 V (baterie 6F22), proud kolísá mezi 60 a 85 mA. Multivibrátor IO1C generuje signál vysokého tónu (3,5/3,9 kHz dle stavu T1), IO1A/IO1B/IO1D modulují periodu a šířku hvizdů. Trimr P1 nastavuje zvukový efekt dle vkusu.',
+    parts: [
+      { label: 'IO1 — operační zesilovač LM324 (4× OZ)', match: 'LM324', quantity: 1 },
+      { label: 'T1 — tranzistor BC548', match: 'BC548', quantity: 1 },
+      { label: 'T2 — tranzistor BC328', match: 'BC328', quantity: 1 },
+      { label: 'SP1 — reproduktor 8 Ω', match: 'reproduktor', quantity: 1 },
+      { label: 'B1 — baterie 9 V (6F22)', match: '9V baterie', quantity: 1 },
+      { label: 'R1, R8 — rezistor 68 kΩ', match: '68k', quantity: 2 },
+      { label: 'R2, R4, R9, R20 — rezistor 33 kΩ', match: '33k', quantity: 4 },
+      { label: 'R3, R11, R18 — rezistor 100 kΩ', match: '100k', quantity: 3 },
+      { label: 'R6 — rezistor 15 kΩ', match: '15k', quantity: 1 },
+      { label: 'R7, R10 — rezistor 33 kΩ', match: '33k', quantity: 2 },
+      { label: 'R12, R14 — rezistor 8,2 kΩ', match: '8.2k', quantity: 2 },
+      { label: 'R15 — rezistor 1 MΩ', match: '1M', quantity: 1 },
+      { label: 'R16, R17 — rezistor 82 kΩ', match: '82k', quantity: 2 },
+      { label: 'R19 — rezistor 470 kΩ', match: '470k', quantity: 1 },
+      { label: 'R21 — rezistor 33 Ω', match: '33R', quantity: 1 },
+      { label: 'P1 — trimr 50 kΩ', match: '50k trimr', quantity: 1 },
+      { label: 'C1, C6 — elektrolytický kondenzátor 100 µF/16 V', match: '100µF', quantity: 2 },
+      { label: 'C2 — elektrolytický kondenzátor 470 µF/16 V', match: '470µF', quantity: 1 },
+      { label: 'C3 — elektrolytický kondenzátor 10 µF/16 V', match: '10µF', quantity: 1 },
+      { label: 'C4 — kondenzátor 330 pF', match: '330p', quantity: 1 },
+      { label: 'C5 — kondenzátor 2,2 nF', match: '2.2n', quantity: 1 },
+    ],
+  },
+  {
+    name: 'Odpuzovač krtků 1 (vibrace z mobilního vibrátoru)',
+    description:
+      'Zahradní odpuzovač krtků — plastová trubka zatlačená do půdy, uvnitř s vibračním motorkem z mobilního telefonu. Elektronika nepravidelně (pseudonáhodně) spíná vibrátor na 9 s s periodou 170 s, díky dvěma multivibrátorům CMOS 4093.',
+    image: 'odpuzovac-krtku-1.jpg',
+    notes:
+      'Zdroj: Praktická elektronika A Radio 01/2025, str. 5, rubrika Jednoduchá zapojení, převzato z Radio (RU), 8/2012. Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Napájení 4,5 V (3× sériově alkalické AA/AAA). Autor původního pramene upozorňuje, že účinnost odpuzovačů krtků tímto principem není zaručená. Existuje i varianta „Odpuzovač krtků 2" se dvěma vibrátory (samostatný projekt).',
+    parts: [
+      { label: 'IO1 — CMOS hradlo 4093 (4× 2-vstupý NAND se Schmittovým vstupem)', match: '4093', quantity: 1 },
+      { label: 'T1 — tranzistor 2N7000 (N-MOSFET)', match: '2N7000', quantity: 1 },
+      { label: 'D1 — dioda 1N4007', match: '1N4007', quantity: 1 },
+      { label: 'MOT1 — vibrační motorek z mobilního telefonu', match: 'vibrační motorek', quantity: 1 },
+      { label: 'B1 — baterie 4,5 V (3× AA/AAA)', match: 'baterie AA', quantity: 1 },
+      { label: 'R1, R2, R3, R4 — rezistor 1 MΩ', match: '1M', quantity: 4 },
+      { label: 'C1 — elektrolytický kondenzátor 220 µF/10 V', match: '220µF', quantity: 1 },
+      { label: 'C2 — elektrolytický kondenzátor 47 µF/10 V', match: '47µF', quantity: 1 },
+      { label: 'C3 — elektrolytický kondenzátor 10 µF/10 V', match: '10µF', quantity: 1 },
+      { label: 'C4 — elektrolytický kondenzátor 1 µF/10 V', match: '1µF', quantity: 1 },
+      { label: 'C5 — elektrolytický kondenzátor 220 µF/10 V', match: '220µF', quantity: 1 },
+    ],
+  },
+  {
+    name: 'Odpuzovač krtků 2 (dva vibrátory)',
+    description:
+      'Varianta odpuzovače krtků se dvěma vibračními motorky (MOT1, MOT2) spínanými ve dvou různých, nezávislých periodách (170 s a 350 s), takže se v zemi vytváří pseudonáhodné rázy, rušivější než jediný pravidelný vibrátor.',
+    image: 'odpuzovac-krtku-2.jpg',
+    notes:
+      'Zdroj: Praktická elektronika A Radio 01/2025, str. 6, rubrika Jednoduchá zapojení, převzato z Radio (RU), 8/2012 — druhá varianta z téhož článku jako „Odpuzovač krtků 1". Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Napájení 4,5 V. MOT2 je zavěšen na tenké šňůrce u dna trubky a při rozvibrování naráží do stěny.',
+    parts: [
+      { label: 'IO1 — CMOS hradlo 4093 (4× 2-vstupý NAND se Schmittovým vstupem)', match: '4093', quantity: 1 },
+      { label: 'T1, T2 — tranzistor 2N2222', match: '2N2222', quantity: 2 },
+      { label: 'D1, D2 — dioda 1N4007', match: '1N4007', quantity: 2 },
+      { label: 'MOT1, MOT2 — vibrační motorek z mobilního telefonu', match: 'vibrační motorek', quantity: 2 },
+      { label: 'B1 — baterie 4,5 V', match: 'baterie AA', quantity: 1 },
+      { label: 'R1, R2, R3, R4 — rezistor 1 MΩ', match: '1M', quantity: 4 },
+      { label: 'R5, R6 — rezistor 1 kΩ', match: '1k', quantity: 2 },
+      { label: 'C1 — elektrolytický kondenzátor 220 µF/10 V', match: '220µF', quantity: 1 },
+      { label: 'C2 — elektrolytický kondenzátor 47 µF/10 V', match: '47µF', quantity: 1 },
+      { label: 'C3 — elektrolytický kondenzátor 10 µF/10 V', match: '10µF', quantity: 1 },
+      { label: 'C4 — elektrolytický kondenzátor 1 µF/10 V', match: '1µF', quantity: 1 },
+      { label: 'C5 — elektrolytický kondenzátor 220 µF/10 V', match: '220µF', quantity: 1 },
+    ],
+  },
+  {
+    name: 'Kmitočtová výhybka VHF/UHF — verze 1',
+    description:
+      'Pasivní kmitočtová výhybka (diplexer) pro slučování/rozdělování VF signálů z rozhlasového pásma VHF (FM, 87,5–108 MHz) a televizního pásma UHF (650–950 MHz), impedance 75 Ω. Pásmová propust VHF je tvořena dvěma paralelními LC rezonančními obvody, horní propust UHF kapacitně vázanými kondenzátory.',
+    image: 'kmitoctova-vyhybka-vhf-uhf-v1.jpg',
+    notes:
+      'Zdroj: Praktická elektronika A Radio 01/2025, str. 6–7, rubrika Jednoduchá zapojení, převzato z Rádiótechnika (HU), 02/2019. Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Cívky jsou autorem ručně vinuté (samonosné): L1 a L3 mají vnitřní průměr 4 mm, 9 závitů; L2 a L3 (pozn. zřejmě L2) mají vnitřní průměr 4 mm, 5 závitů; L4 má vnitřní průměr 3 mm, 3 závity — vše lakovaný měděný drát 0,5 mm. Kondenzátory keramické NP0. Deska s jednostrannými spoji 40×50 mm. Existuje i verze 2 s rozšířeným UHF pásmem (samostatný projekt).',
+    parts: [
+      { label: 'K1 — konektor VHF vstup (souosý)', match: 'konektor', quantity: 1 },
+      { label: 'K2 — konektor UHF vstup (souosý)', match: 'konektor', quantity: 1 },
+      { label: 'K3 — konektor VHF+UHF výstup (souosý)', match: 'konektor', quantity: 1 },
+      { label: 'L1 — vlastní vinutá cívka, Ø 4 mm, 9 závitů', match: 'cívka', quantity: 1 },
+      { label: 'L2, L3 — vlastní vinutá cívka, Ø 4 mm, 5 závitů', match: 'cívka', quantity: 2 },
+      { label: 'L4 — vlastní vinutá cívka, Ø 3 mm, 3 závity', match: 'cívka', quantity: 1 },
+      { label: 'C1 — kondenzátor 6,8 pF NP0', match: '6.8p', quantity: 1 },
+      { label: 'C2 — kondenzátor 39 pF NP0', match: '39p', quantity: 1 },
+      { label: 'C3 — kondenzátor 12 pF NP0', match: '12p', quantity: 1 },
+      { label: 'C4 — kondenzátor 12 pF NP0', match: '12p', quantity: 1 },
+      { label: 'C5, C6 — kondenzátor 2,2 pF NP0', match: '2.2p', quantity: 2 },
+    ],
+  },
+  {
+    name: 'Kmitočtová výhybka VHF/UHF — verze 2',
+    description:
+      'Druhá varianta kmitočtové výhybky VHF/UHF se shodnou pásmovou propustí VHF jako verze 1, ale s horní propustí UHF rozšířenou do vyššího pásma (650–950 MHz místo 440–1000 MHz u verze 1) pomocí tří paralelních LC rezonančních obvodů místo jednoho.',
+    image: 'kmitoctova-vyhybka-vhf-uhf-v2.jpg',
+    notes:
+      'Zdroj: Praktická elektronika A Radio 01/2025, str. 7, rubrika Jednoduchá zapojení, převzato z Rádiótechnika (HU), 02/2019 — druhá varianta z téhož článku jako „Kmitočtová výhybka VHF/UHF — verze 1". Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. L4 až L6 mají vnitřní průměr 2 mm, 2 závity (ostatní cívky stejné jako verze 1). Autor upozorňuje, že cívky jsou špatně reprodukovatelné a doporučuje kmitočtové charakteristiky po stavbě zkontrolovat a případně doladit hodnoty součástek.',
+    parts: [
+      { label: 'K1 — konektor VHF vstup (souosý)', match: 'konektor', quantity: 1 },
+      { label: 'K2 — konektor UHF vstup (souosý)', match: 'konektor', quantity: 1 },
+      { label: 'K3 — konektor VHF+UHF výstup (souosý)', match: 'konektor', quantity: 1 },
+      { label: 'L1 — vlastní vinutá cívka, Ø 4 mm, 9 závitů', match: 'cívka', quantity: 1 },
+      { label: 'L2, L3 — vlastní vinutá cívka, Ø 4 mm, 5 závitů', match: 'cívka', quantity: 2 },
+      { label: 'L4, L5, L6 — vlastní vinutá cívka, Ø 2 mm, 2 závity', match: 'cívka', quantity: 3 },
+      { label: 'C1 — kondenzátor 6,8 pF NP0', match: '6.8p', quantity: 1 },
+      { label: 'C2 — kondenzátor 39 pF NP0', match: '39p', quantity: 1 },
+      { label: 'C3 — kondenzátor 12 pF NP0', match: '12p', quantity: 1 },
+      { label: 'C4 — kondenzátor 12 pF NP0', match: '12p', quantity: 1 },
+      { label: 'C5 — kondenzátor 3 pF NP0', match: '3p', quantity: 1 },
+      { label: 'C6, C8, C10 — kondenzátor 2,2 pF NP0', match: '2.2p', quantity: 3 },
+      { label: 'C7, C9 — kondenzátor 1 pF NP0', match: '1p', quantity: 2 },
+      { label: 'C11 — kondenzátor 3 pF NP0', match: '3p', quantity: 1 },
+    ],
+  },
+  {
+    name: 'Jednoduchý DC ampérmetr ±100 A na principu fluxgate',
+    description:
+      'Bezkontaktní (klešťový) ampérmetr pro měření velkých stejnosměrných proudů (±100 A) na principu fluxgate — na rozdíl od plnohodnotného fluxgate snímače jde o jednodušší kompenzační zapojení bez zpětnovazební kompenzace, vyhodnocuje se jen velikost druhé harmonické budicího signálu. Vodič s měřeným DC proudem se provléká středovým otvorem snímače Tr2.',
+    image: 'dc-ampermetr-fluxgate.jpg',
+    notes:
+      'Zdroj: Praktická elektronika A Radio 01/2025, str. 14–17, rubrika Konstrukce (Ing. Josef Jansa, Josef Jansa DiS.) — dvoudílný článek, pokračování v příštím čísle. Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. ⚠️ V článku nejsou u IO1–IO3 (operační zesilovače) ani u IO4/IO5 (lineární regulátory napájecího zdroje) uvedeny konkrétní typy součástek — ve schématu jsou jen jako obecné bloky, bez označení výrobce/katalogového čísla. Tr1 je sekundární vinutí malého síťového transformátoru (budicí signál 50 Hz), Tr2 je vlastní proudový snímač fluxgate (1500 závitů budicí vinutí, 500 závitů snímací vinutí, středový otvor Ø 13 mm pro měřený vodič) — autor jej musí navinout sám, není to hotová součástka. Trimr P1 nastavuje převodní poměr 10 A/V, trimr P2 nulové výstupní napětí. Deska s plošnými spoji na obr. 4 a 6 (v časopise), rozměr desky ampérmetru 245×65 mm.',
+    parts: [
+      { label: 'Tr1 — malý síťový transformátor (sekundární vinutí jako budicí zdroj 50 Hz)', match: 'transformátor', quantity: 1 },
+      { label: 'Tr2 — proudový snímač fluxgate, vlastní výroba (1500 záv. budicí + 500 záv. snímací)', match: 'proudový snímač', quantity: 1 },
+      { label: 'IO1, IO2, IO3 — operační zesilovače (typ v článku neuveden)', match: 'operační zesilovač', quantity: 3 },
+      { label: 'IO4, IO5 — lineární napěťové regulátory napájecího zdroje (typ v článku neuveden)', match: 'regulátor', quantity: 2 },
+      { label: 'D2, D3 — usměrňovací dioda (špičkový usměrňovač)', match: 'dioda', quantity: 2 },
+      { label: 'P1, P2 — trimr (převodní poměr, nulování)', match: 'trimr', quantity: 2 },
+      { label: 'R0 — předřadný rezistor budicího proudu', match: 'rezistor', quantity: 1 },
+      { label: 'S1, S2 — svorkovnice', match: 'svorkovnice', quantity: 2 },
+    ],
+  },
+  {
+    name: 'Domácí interkom',
+    description:
+      'Vítěz Konkurzu Praktické elektroniky 2024 — malá telefonní ústředna s tónovou volbou pro až 6 analogových telefonů, bez procesoru (čistě TTL logika). Přijímač DTMF volby MT8870D dekóduje volenou číslici, logika z čítačů/klopných obvodů řídí prozvánění volaného účastníka (6× RJ45, relé, optočleny PC817, tranzistory BC547C).',
+    image: 'domaci-interkom.jpg',
+    notes:
+      'Zdroj: Praktická elektronika A Radio 01/2025, str. 27–29, rubrika Konstrukce — vítěz Konkurzu 2024, 1. místo (Jiří Štěrba, jiristerba@seznam.cz). Vícedílný seriál, pokračování příště. Schéma je oříznuté ze scanu časopisu (pouze horní/hlavní část obr. 3 — spodní okraj mimo záběr) — ověřit práva k publikaci obrázku v appce. Napájení telefonů 24 V DC, řídicí logiky 5 V DC (schéma zdroje, obr. 5, L7824 + L7805 z usměrněných 2× 24 VAC toroidního transformátoru — viz komponenty 7824/7805). Přijímač DTMF MT8870D má jako jediná součástka v obvodu vlastní krystal 3,579545 MHz. Propojení telefonů do zařízení přes RJ45↔RJ11 redukci (obr. 4). POZOR — zapojení je na reálném telefonním vedení 24 V, ne na síťovém napětí.',
+    parts: [
+      { label: 'U1 — přijímač DTMF volby MT8870D', match: 'MT8870', quantity: 1 },
+      { label: 'IO1 — časovač 555', match: '555', quantity: 1 },
+      { label: 'IO2, IO3 — čítač CD4040BE / CD4044BE', match: 'CD404', quantity: 2 },
+      { label: 'IO6, IO7 — dekodér SN74LS138N', match: '74LS138', quantity: 2 },
+      { label: 'IO5 — klopný obvod KD74LS14 (Schmittův invertor)', match: '74LS14', quantity: 1 },
+      { label: 'T1–T6 — tranzistor BC547C', match: 'BC547', quantity: 6 },
+      { label: 'U1–U6 — optočlen PC817', match: 'PC817', quantity: 6 },
+      { label: 'RE1–RE6 — relé M4-5HAW / M4-5H', match: 'relé', quantity: 6 },
+      { label: 'KO1–KO6 — konektor RJ45 (telefonní linky)', match: 'RJ45', quantity: 6 },
+      { label: 'X1 — krystal 3,579545 MHz', match: '3.579545', quantity: 1 },
+      { label: 'U1 (zdroj) — regulátor 7824', match: '7824', quantity: 1 },
+      { label: 'U2 (zdroj) — regulátor 7805', match: '7805', quantity: 1 },
+      { label: 'D1–D4 (zdroj) — dioda 1N4007 (můstkový usměrňovač)', match: '1N4007', quantity: 4 },
+      { label: 'Toroidní transformátor 2× 24 VAC', match: 'transformátor', quantity: 1 },
+      { label: 'D5 — LED 3 mm zelená (indikace napájení)', match: 'LED', quantity: 1 },
+    ],
+  },
+  {
+    name: 'Nízkoúbytkové palivové čerpadlo se soft-startem (DIY náhrada AC pumpy)',
+    description:
+      'Jedna ze tří praktických úprav z článku „Tři v jednom" — nahrazení kontaktové AC palivové pumpy ve veteránu tichým nízkotlakým DC čerpadlem (z novějších modelů Škoda), řízeným induktivním snímačem hladiny v plovákové komoře karburátoru přes modul DC/DC měniče (LM2596) s přidaným soft-startovacím kondenzátorem Cn, aby se omezilo opotřebení čerpadla při častém spouštění.',
+    image: 'palivove-cerpadlo-softstart.jpg',
+    notes:
+      'Zdroj: Praktická elektronika A Radio 01/2025, str. 33–35, rubrika „Tři v jednom — tři nápady v jednom článku" (Ivan Dendis). Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. ⚠️ Schéma v časopise popisuje modul jako „LM2569 DC-DC" (zřejmě tisková chyba), zatímco fotografie modulu a text článku jednotně uvádí „LM2596 DC-DC HW-411" — v appce uvedeno jako LM2596. Induktivní snímač (BN/BK/BU vývody) detekuje zaplavení plovákové komory, KC507 je fototranzistor/spínací prvek v časovacím obvodu doběhu čerpadla (kondenzátor 20 µF na bázi přes 10 kΩ, doba doběhu 2–3 s). Snímač je napájen přes nízkovýkonový 10Ω rezistor jako pojistku. Autor stejného článku popisuje i další dva nápady (kontaktní rozdělovač nahrazený bezkontaktním u Škoda Spartak/Felicia/Octavia a nízkonapěťový DC soft-start modul LM2596 bez čerpadla) — bez vlastního schématu, zde nezahrnuto.',
+    parts: [
+      { label: 'Modul DC-DC měniče LM2596 (HW-411)', match: 'LM2596', quantity: 1 },
+      { label: 'Induktivní snímač hladiny paliva', match: 'induktivní snímač', quantity: 1 },
+      { label: 'T — fototranzistor/spínač KC507', match: 'KC507', quantity: 1 },
+      { label: 'D1, D2 — dioda (ochranná)', match: 'dioda', quantity: 2 },
+      { label: 'LED — kontrolka zaplavení komory na palubní desce', match: 'LED', quantity: 1 },
+      { label: 'Cn — kondenzátor soft-start (přidaný na výstup modulu)', match: 'kondenzátor', quantity: 1 },
+      { label: 'Nízkotlaké DC palivové čerpadlo (např. ze Škoda)', match: 'čerpadlo', quantity: 1 },
+      { label: 'R — rezistor 10 Ω (pojistka pro napájení snímače)', match: '10R', quantity: 1 },
+    ],
+  },
+  {
+    name: 'Měnič pro modrozelenou LED (RETRO)',
+    description:
+      'Jednoduchý DC/DC měnič napájený jediným suchým článkem 1,5 V, zvedající napětí na cca 3,3–3,6 V potřebných pro modrozelenou LED s velkou svítivostí (S-LED) jako příruční světlo — oscilátor s transformátorkem na feritovém hrníčkovém jádru a jedním spínacím tranzistorem.',
+    image: 'menic-modrozelena-led.jpg',
+    notes:
+      'Zdroj: Praktická elektronika A Radio 01/2025, str. 41, rubrika RETRO — „O čem jsme psali před lety…", přetisk článku Zdeňka Hájka z Praktická elektronika A Radio 1/2000 (před 25 lety). Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Oscilátorová cívka vinutá na hrníčkovém jádru 3B7, Ø 14 mm, AL=100 nH/z², lakovaný měděný drát Ø 0,1 mm: primární (budicí) vinutí 20 závitů, sekundární 60 závitů. Kmitočet oscilátoru cca 10 kHz. Použitá LED HLMP-CE23 (505 nm, modrozelená, 20 mA, 30°). Odběr při 1,2 V je 34 mA, při 1,5 V 53 mA. Měnič s LED i článkem vestavěn do malého pouzdra (např. klíčenky).',
+    parts: [
+      { label: 'D1 (S-LED) — LED HLMP-CE23 (modrozelená, 505 nm, 20 mA)', match: 'HLMP-CE23', quantity: 1 },
+      { label: 'TR1 — tranzistor BC337', match: 'BC337', quantity: 1 },
+      { label: 'C1 — kondenzátor 680 nF', match: '680n', quantity: 1 },
+      { label: 'C2 — kondenzátor 470 nF', match: '470n', quantity: 1 },
+      { label: 'R1 — rezistor 680 Ω', match: '680', quantity: 1 },
+      { label: 'Oscilátorová cívka — hrníčkové jádro 3B7, Ø14mm, 20+60 závitů', match: 'cívka', quantity: 1 },
+      { label: 'Napájecí článek 1,5 V', match: 'baterie', quantity: 1 },
     ],
   },
 ];

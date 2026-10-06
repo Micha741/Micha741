@@ -315,6 +315,17 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,regulátor,7815,napájení',
   },
   {
+    name: '7824',
+    packageType: 'TO-220 — vývody: 1=vstup (IN), 2=GND, 3=výstup (OUT)',
+    value: 'Lineární regulátor +24 V / 1 A',
+    notes:
+      'Pevný kladný lineární regulátor řady 78xx, stejné zapojení jako 7805 — potřebuje vstupní ' +
+      'napětí o 2–3 V vyšší než výstup. V této appce použito jako U1 (24V napájení hovorových ' +
+      'linek) v projektu „Domácí interkom" (Praktická elektronika A Radio 01/2025) spolu s ' +
+      '7805 pro 5V logiku.',
+    tags: 'io,regulátor,7824,napájení',
+  },
+  {
     name: 'KA78L05AZ',
     packageType: 'TO-92, 3 vývody: 1=výstup (OUT), 2=GND, 3=vstup (IN)',
     value: 'Pevný LDO lineární regulátor +5 V / max. 100 mA, tolerance ±5 %',
@@ -776,6 +787,21 @@ const IC_SPECS: IcSpec[] = [
     value: 'Čtyři 2-vstupá hradla XOR, 2–6 V',
     notes: 'Základní logická rodina 74HC — hradlo XOR se často používá pro paritu, sčítačky, komparátory bitů.',
     tags: 'io,logika,74hc86,xor',
+  },
+  {
+    name: '4093',
+    packageType: 'DIP-14 (CD4093BE/HEF4093/74HC4093), piny shodné s 74HC00: 1=1A, 2=1B, 3=1Y, ' +
+      '4=2A, 5=2B, 6=2Y, 7=GND, 8=3Y, 9=3A, 10=3B, 11=4Y, 12=4A, 13=4B, 14=VDD',
+    value: 'Čtyři 2-vstupá hradla NAND se Schmittovým klopným vstupem, 3–18 V (CD4093, 4000 ' +
+      'série CMOS) / 2–6 V (74HC4093)',
+    notes:
+      'Obecně známý CMOS obvod (rodina 4000/4000B), ne z konkrétního nahraného datasheetu. Díky ' +
+      'Schmittově hysterezi na vstupech se hradlo chová i jako tvarovač/komparátor pomalu se ' +
+      'měnícího signálu, proto se často používá jako jednoduchý RC oscilátor/multivibrátor bez ' +
+      'dalších aktivních součástek. V této appce použito jako IO1 (astabilní a monostabilní ' +
+      'multivibrátory) v obou variantách projektu „Dva odpuzovače krtků" (Praktická elektronika ' +
+      'A Radio 01/2025).',
+    tags: 'io,logika,cmos,4093,cd4093,hef4093,74hc4093,nand,schmitt,multivibrátor',
   },
 
   // Klopné obvody a čítače
@@ -4188,6 +4214,28 @@ const IC_SPECS: IcSpec[] = [
       'činitele β.',
     schematicImage: 'LM334Z.jpg',
     tags: 'io,proudový-zdroj,lm334,lm334z,lm134,lm234,nastavitelný',
+  },
+
+  // DTMF / telefonie
+  {
+    name: 'MT8870D',
+    packageType: 'DIP-18/SOIC-18, piny: 1=IN+, 2=IN-, 3=GS (zisk zesilovače), 4=VRef, 5=/INH ' +
+      '(inhibice rozpoznávání *,#,A-D), 6=PD (power-down), 7=OSC1, 8=OSC2 (3,579545 MHz krystal), ' +
+      '9=VSS, 10=TOE (třístavový výstup povolen), 11–14=Q1–Q4 (4bitový výstup rozpoznaného tónu), ' +
+      '15=StD (platnost dat, Delayed Steering), 16=ESt (Early Steering), 17=St/GT (steering vstup/' +
+      'časovač), 18=VDD',
+    value: 'DTMF přijímač/dekodér s krystalovým oscilátorem 3,579545 MHz, napájení 5 V, ' +
+      'binární 4bitový výstup 16 kombinací tónů',
+    notes:
+      'Obecně známý standardní DTMF dekodér (rodina MT8870/MT8870D od Zarlink/Mitel, i druhotní ' +
+      'výrobci jako CM8870, KT8870) — hodnoty z obecně dostupných katalogových údajů, ne z ' +
+      'konkrétního nahraného datasheetu. Filtruje a dekóduje standardní DTMF volbu (dvoutónová ' +
+      'volba, tabulka 1209/1336/1477/1633 Hz × 697/770/852/941 Hz) na 4bitový binární kód na ' +
+      'výstupech Q1–Q4, s pinem StD signalizujícím platnost rozpoznaného a stabilního tónu. ' +
+      'V této appce použito jako hlavní přijímač tónové volby v projektu „Domácí interkom" ' +
+      '(Praktická elektronika A Radio 01/2025, vítěz Konkurzu 2024) — dekóduje volbu z ' +
+      'analogových telefonů připojených přes RJ45/RJ11 a řídí logiku ústředny.',
+    tags: 'io,dtmf,telefonie,mt8870,mt8870d,dekodér,volba',
   },
 
   // Komunikační rozhraní

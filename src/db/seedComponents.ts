@@ -3595,6 +3595,30 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   { name: 'BC548', packageType: 'TO-92', value: 'NPN, 30 V, 100 mA', notes: 'Malovýkonový bipolární tranzistor', tags: 'tranzistor,npn,bipolární' },
   { name: 'BC549', packageType: 'TO-92', value: 'NPN, 30 V, 100 mA', notes: 'Malovýkonový bipolární tranzistor, nízký šum', tags: 'tranzistor,npn,bipolární' },
   {
+    name: 'BC328',
+    packageType: 'TO-92',
+    value: 'PNP, 25 V (BC328-25) / 45 V (BC328-40), 800 mA, 625 mW',
+    notes:
+      'Obecně známý malovýkonový/středněvýkonový PNP komplement k řadě BC337/BC338 (stejné ' +
+      'pouzdro a přibližně zrcadlové parametry) — běžný spínací/zesilovací tranzistor, hodnoty ' +
+      'z obecně dostupných katalogových údajů, ne z konkrétního nahraného datasheetu. V této ' +
+      'appce použito jako T2 (výstupní budič reproduktoru) v projektu „Elektronický kanárek" ' +
+      '(Praktická elektronika A Radio 01/2025).',
+    tags: 'tranzistor,pnp,bipolární,bc328',
+  },
+  {
+    name: 'BC337',
+    packageType: 'TO-92',
+    value: 'NPN, 45 V (BC337-40), 800 mA, 625 mW',
+    notes:
+      'Obecně známý malovýkonový/středněvýkonový NPN tranzistor, komplement k BC328 — hodnoty ' +
+      'z obecně dostupných katalogových údajů, ne z konkrétního nahraného datasheetu. V této ' +
+      'appce použito jako spínací/oscilátorový tranzistor T1 v retro konstrukci „Měnič pro ' +
+      'modrozelenou LED" (Praktická elektronika A Radio 01/2025, rubrika RETRO — přetisk ' +
+      'článku z roku 2000).',
+    tags: 'tranzistor,npn,bipolární,bc337',
+  },
+  {
     name: '2N2222',
     packageType:
       'TO-18 — vývody: 1=emitor, 2=báze, 3=kolektor (kolektor je spojen s kovovým pouzdrem/case!)',
@@ -6611,7 +6635,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 110;
+export const SEED_LIBRARY_VERSION = 111;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
