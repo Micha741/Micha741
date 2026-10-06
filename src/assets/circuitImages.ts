@@ -5,6 +5,7 @@ import type { ImageSourcePropType } from 'react-native';
 // nejde mapu generovat dynamicky — při přidání nového obrázku je potřeba sem
 // přidat řádek ručně.
 export const CIRCUIT_IMAGES: Record<string, ImageSourcePropType> = {
+  'DS18B20-arduino-wiring.jpg': require('../../assets/circuits/DS18B20-arduino-wiring.jpg'),
   'vanocni-stromecek-4060.jpg': require('../../assets/circuits/vanocni-stromecek-4060.jpg'),
   'ultrazvukova-pistalka.jpg': require('../../assets/circuits/ultrazvukova-pistalka.jpg'),
   'univerzalni-reproskrin.jpg': require('../../assets/circuits/univerzalni-reproskrin.jpg'),

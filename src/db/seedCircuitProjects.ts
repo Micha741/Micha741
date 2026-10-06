@@ -60,7 +60,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     ],
   },
   {
-    name: 'Elektronická ultrazvuková píšťalka',
+    name: 'Elektronická ultrazvuková vrbovka',
     description:
       'Generátor ultrazvukového signálu 21 kHz pro odpuzování zvířat. Oscilátor je tvořen invertory hradla CD40106 (IO1A/B/C s hysterezí), zbylé tři invertory (IO1D/E/F) spolu se dvěma dvojicemi doplňkových tranzistorů (BD135/BD136) tvoří můstkový výkonový zesilovač buzící piezoměnič SP1.',
     image: 'ultrazvukova-pistalka.jpg',
@@ -506,6 +506,19 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
       { label: 'M — ventilátor pro chlazení MOT (spínaný přes vypínač Vv)', match: 'ventilátor', quantity: 1 },
       { label: 'Tl — tlačítko (pedál) pro spuštění svaření', match: 'tlačítko', quantity: 1 },
       { label: 'Bodovací hroty — měděný drát Ø 16 mm²', match: 'měděný drát', quantity: 2 },
+    ],
+  },
+  {
+    name: 'DS18B20 teploměr s Arduinem (1-Wire)',
+    description:
+      'Digitální teploměr DS18B20 (voděodolná sonda s 3žilovým kabelem: červený VCC, černý GND, žlutý DATA) připojený na Arduino Uno. Datový vodič jde na digitální pin 2 a je nutný pull-up rezistor 4,7 kΩ mezi DATA a VCC (5V), jinak 1-Wire sběrnice nefunguje spolehlivě.',
+    image: 'DS18B20-arduino-wiring.jpg',
+    notes:
+      'Zdroj: datasheet "eses vodotěsný teploměr pro jednodeskové počítače" (DS18B20 sonda). Čtení přes knihovny OneWire + DallasTemperature, ONE_WIRE_BUS = pin 2. Rezistor 4,7 kΩ je nutný pull-up na datové lince, ne volitelný doplněk.',
+    parts: [
+      { label: 'Teplotní čidlo DS18B20 (voděodolná sonda)', match: 'DS18B20', quantity: 1 },
+      { label: 'Arduino Uno', match: 'Arduino Uno', quantity: 1 },
+      { label: 'Rezistor 4,7 kΩ (pull-up na DATA)', match: '4.7k', quantity: 1 },
     ],
   },
 ];
