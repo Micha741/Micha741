@@ -1,6 +1,6 @@
 import type { CircuitProjectInput } from '../types/circuit';
 
-export const CIRCUIT_LIBRARY_VERSION = 7;
+export const CIRCUIT_LIBRARY_VERSION = 8;
 
 /**
  * Přesný počet kusů u drobných pasivních součástek (rezistory) je odhad podle
@@ -20,6 +20,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Arduino Nano ovládá 4 relé přes optočleny PC817, spínané buď přes Bluetooth modul HC-05, nebo IR dálkovým ovladačem (přijímač 1738/TSOP1738). Přepínání mezi BT a IR režimem přes tlačítko.',
     image: null,
+    pcbImage: null,
     notes:
       'Zdroj: TechStudyCell / easyelectronicsproject.com — přidáno podle referenčního schématu, bez naskenovaného obrázku (ten appka zatím neobsahuje, lze doplnit nahráním souboru).',
     parts: [
@@ -46,6 +47,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Jednoduchý blikač šesti LED (D1–D6) napodobující animaci vánočního stromečku. CMOS čítač/oscilátor 4060 generuje jediným RC článkem (R1, R2, C1) vnitřní kmitočet a z jeho binárních výstupů Q4–Q14 se odebírají postupně dělené, vzájemně odlišné blikací kmitočty pro jednotlivé LED.',
     image: 'vanocni-stromecek-4060.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 11/2024, str. 6, rubrika Jednoduchá zapojení. Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce.',
     parts: [
@@ -64,6 +66,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Generátor ultrazvukového signálu 21 kHz pro odpuzování zvířat. Oscilátor je tvořen invertory hradla CD40106 (IO1A/B/C s hysterezí), zbylé tři invertory (IO1D/E/F) spolu se dvěma dvojicemi doplňkových tranzistorů (BD135/BD136) tvoří můstkový výkonový zesilovač buzící piezoměnič SP1.',
     image: 'ultrazvukova-pistalka.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 11/2024, str. 8, rubrika Jednoduchá zapojení, převzato z Rádiótechnika (HU) 02/2018. Piezoreproduktor SP1 musí být speciální vysokotónový typ schopný vyzařovat ultrazvuk (běžné piezoměniče nevhodné). Schéma je oříznuté ze scanu časopisu, navíc samo převzaté z maďarského časopisu — ověřit práva k publikaci obrázku v appce.',
     parts: [
@@ -84,6 +87,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Testovací reproskříň pro NF zesilovače do 10 W s přepínatelnou vstupní impedancí (4, 8, 16, 16–116, 1k, ∞ Ω) přes dva synchronní přepínače S1A/S1B. Dva reproduktory SP1/SP2 jsou chráněny rychlými tavnými pojistkami F1/F2, signál je dostupný i na výstupním konektoru K5 (BNC) pro osciloskop nebo milivoltmetr.',
     image: 'univerzalni-reproskrin.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 11/2024, str. 8, rubrika Jednoduchá zapojení. Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce.',
     parts: [
@@ -102,6 +106,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Aktivní KV anténa s osmipolohovým přepínačem S1 volícím jeden ze sedmi pásmových LC obvodů (L1–L7/R1–R7, 0,05 MHz až 35 MHz) a širokopásmovou polohu bez preselekce. Zvolený signál jde na emitorový sledovač s tranzistorem JFET J310 (T1).',
     image: 'kv-aktivni-antena-preselekce.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 11/2024, str. 9, rubrika Jednoduchá zapojení, převzato z Rádiótechnika (HU) 12/2017. Schéma je oříznuté ze scanu časopisu, navíc samo převzaté z maďarského časopisu — ověřit práva k publikaci obrázku v appce.',
     parts: [
@@ -125,6 +130,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Malý tranzistorový spínač s hranovou reakcí na vstupní signál (RC derivační článek R1/C1 + R3) — tranzistor T1 ovládá výstupní tranzistor T2 tak, že výstup se krátce sepne při každé náběžné i sestupné hraně vstupního signálu.',
     image: 'dvojcinny-spinac.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 11/2024, str. 10, rubrika Jednoduchá zapojení, převzato z Radioelektronik (PL) 5/2007. Schéma je oříznuté ze scanu časopisu, navíc samo převzaté z polského časopisu — ověřit práva k publikaci obrázku v appce.',
     parts: [
@@ -142,6 +148,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Autonomní jednotka pro uvolnění drahé videokamery připevněné k padáku (např. u akrobacie s dronem/paraglidingem). Mikrokontrolér AT89C2051 po aktivaci (vytažení pojistné struny spínače S4) vyčká naprogramovaný čas a spustí analogové servo SG90, které uvolní západku. Parametry se nastavují a ukládají do paměti EEPROM 24C32, stav zobrazuje sedmisegmentový displej buzený budičem HD-A304RDA.',
     image: 'maly-aktuator-rc-serva.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 11/2024, str. 14–15, rubrika Konstrukce (Ing. Jaroslav Romler). Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce.',
     parts: [
@@ -163,6 +170,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Transistorový PWM regulátor otáček stejnosměrného motoru (5 až 48 V, do 1,5 A) bez použití integrovaného obvodu — astabilní multivibrátor (T1, T2) nastavitelný trimrem P1 spíná výkonový N-MOSFET IRF630 (T3) v propustném režimu.',
     image: 'pwm-regulator.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 11/2024, str. 16–17, rubrika Konstrukce (Ing. Vladimír Krátký). Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce.',
     parts: [
@@ -184,6 +192,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Shield se dvěma moduly POLOLU A4998 pro řízení dvou bipolárních krokových motorů (do 2 A, napájení 8–35 V) z Arduina UNO, s mikrokrokováním (1, 1/2, 1/4, 1/8, 1/16) nastavitelným propojkami MS1–MS3. Shield je kompatibilní s PICAXE.',
     image: 'shield-pololu-arduino-uno.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 11/2024, str. 31–32, rubrika Konstrukce (Ing. Vladimír Krátký). Draft zapojení DS18B20 (PR #9) již obsahuje samostatnou kartu modulu POLOLU A4988 jako součástky — zde jde o kompletní shield se dvěma moduly. Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce.',
     parts: [
@@ -203,6 +212,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Čtyřkolové vozítko s Mecanum Omni koly (80 mm) umožňujícími pohyb do všech směrů i otáčení na místě. Arduino UNO řídí přes posuvný registr 74HC595 a dva motorové driver shieldy L293D čtyři DC motory; ovládání probíhá bezdrátově z tabletu/telefonu přes Bluetooth modul JDY-33TTL (sériový terminál).',
     image: 'vozitko-mecanum-omni-kola.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 11/2024, str. 33–38, rubrika Konstrukce (Vlastimil Vágner), přihlášeno do Konkurzu 2024. Obrázek je nákres osazení driver shieldu (obr. 5), ne klasické elektrické schéma — časopis u tohoto projektu kompletní schéma zapojení neuvádí. Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce.',
     parts: [
@@ -226,6 +236,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Blikač dvou červených a dvou bílých LED pro označení železničního přejezdu u modelové kolejiště. CMOS oscilátor/čítač 4060 generuje taktovací signál, hradla 4011 podle polohy spínače S1 (poloha LEDW/LEDR) přepínají, zda blikají bílé nebo červené LED, s periodou cca 1 s.',
     image: 'vystrazna-svetla-prejezdu.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 07/2023, str. 9–10, rubrika Jednoduchá zapojení pro volný čas. Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce.',
     parts: [
@@ -252,6 +263,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Stereofonní zesilovač NF signálu s plynule nastavitelným ziskem od -20 do +20 dB jedním potenciometrem (dvojitým, pro oba kanály). V každém kanálu je oddělovací stupeň s nulovým výstupním odporem (OZ TS924IN zapojený se zesílením 1) a za ním invertující stupeň s regulovatelným ziskem.',
     image: 'stereo-zesilovac-20db.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 07/2023, str. 11, rubrika Jednoduchá zapojení (převzato z Elektor (D) 11/2002). Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Uveden jen levý kanál (IO1C, IO1A) — pravý kanál (IO1B, IO1D) je zapojen shodně, se společným potenciometrem P1B na stejné hřídeli s P1A.',
     parts: [
@@ -278,6 +290,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Doplněk k NF zesilovači s nastavitelným ziskem — stereofonní indikátor přebuzení s dvěma okénkovými komparátory (LM339), které rozsvítí červenou LED, když efektivní hodnota NF signálu na vstupu překročí nastavenou úroveň (šířku okénka nastavuje trimr P1).',
     image: 'stereo-indikator-prebuzeni.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 07/2023, str. 12, rubrika Jednoduchá zapojení (převzato z Elektor (D) 11/2002). Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Uveden jen levý kanál — pravý kanál (IO1D, IO1C) je zapojen shodně.',
     parts: [
@@ -303,6 +316,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Detektor pro řídicí systémy, poskytující informaci o průchodu síťového napětí (230 V/50 Hz) nulou — galvanicky oddělenou krátkodobým sepnutím výstupního optočlenu PC817. Síťové napětí je usměrněno můstkem D1–D4, kladné půlvlny spínají tranzistor T1, derivační článek T2–T4/C1 generuje úzký impuls kolem průchodu nulou.',
     image: 'detektor-prechodu-nulou.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 07/2023, str. 13, rubrika Jednoduchá zapojení (převzato z Rádiótechnika (HU) 2/2009). Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. POZOR: zapojení je přímo na síťovém napětí 230 V — nebezpečí úrazu elektrickým proudem.',
     parts: [
@@ -327,6 +341,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Jednoduchý laboratorní omezovač proudu (proudový zdroj/ochrana) s rozsahem nastavitelného proudu cca 0,2 až 600 mA (rozsah 1) nebo 4 mA až 6 A limitovaných výkonovým přetížením (rozsah 2). Zdroj proudu LM334Z řízený potenciometrem RV2 je zesilován proudovým zesilovacím činitelem tranzistorů Q1 a Q2.',
     image: 'omezovac-proudu.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 07/2023, str. 15, rubrika Jednoduchá zapojení (Ivan Stupka). Obrázek je vlastní překreslení (ne sken časopisu) — topologie ověřena uživatelem přímo proti originálu: kolektor Q1 je napevno na výstupu J1, SW1 (KNX-1-D1, 250V/3A) odpojuje jen Q2 (přepnutí rozsahu 1↔2), Q2 emitor → báze Q1 (Darlington). Minimální úbytek napětí asi 2,3 V, maximální přípustné napětí 24 V.',
     parts: [
@@ -343,6 +358,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Arduino (Mega 2560) automaticky ovládá motor s převodovkou, který přes lanko zvedá a spouští dvířka kurníku — za tmy dvířka zavře, za světla otevře. Snímání provádí fotorezistor GL5539, polohu dvířek hlídají dva mikrospínače (horní/dolní poloha); motor spíná dvoukanálový relé modul.',
     image: 'ovladani-dvirek-kurniku.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 07/2023, str. 16–18, rubrika Arduino (Jaroslav Romler). Obrázek je zapojení ovladače dvířek (obr. 4/5) — ne klasické elektrické schéma. Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce.',
     parts: [
@@ -362,6 +378,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Samostatný návrh elektronicky i softwarově podstatně sofistikovanějších automatických dvířek kurníku oproti jednoduchému zapojení výše — procesorový modul ESP32-S3-WROOM-1U (Wi-Fi/Bluetooth LE, konektivita MQTT/Home Assistant) řídí stejnosměrný motor s převodovkou přes integrovaný H-můstkový budič (PWM regulace rychlosti i směru), polohu dvířek snímá dvoukanálový optický enkodér (dvojice závor TCST1103) doplněný softwarovým dvojitým regulátorem (P pro polohu, PI pro rychlost) a proudovým snímáním zátěže motoru (detekce překážky/dorazu). Deska dále obsahuje fotorezistor pro úroveň denního světla, NTC teplotní čidlo, dvoubarevnou LED, tlačítko a rozhraní RS485/ModBus RTU i dva rezervní vstupy na konektoru RJ45.',
     image: 'ovladani-dvirek-kurniku-esp32.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Pavel Kejík, "Automatický systém pro domácí chov slepic" (bakalářská práce, FIT VUT v Brně, vedoucí Ing. Vojtěch Mrázek, Ph.D., Brno 2024), kapitola 6 (Periferie dvířka) a příloha A (schéma desky). ⚠️ Jde o zcela odlišný návrh od zapojení „Ovládání dvířek kurníku pro domácí zvířata" z PE 07/2023 (Arduino Mega 2560 + mikrospínače + relé modul, bez konektivity) — přidáno jako samostatný projekt, ne jako náhrada. Obrázek je blokové schéma desky elektroniky dvířek (obr. 6.4 práce), podrobné schéma zapojení (plný seznam součástek vč. referenčních označení) je v příloze A práce. Práce je veřejně dostupná kvalifikační práce VUT, nejde o časopisecký scan — otázka práv k publikaci obrázku v appce je tedy odlišná od PE scanů, ale přesto je vhodné ji ověřit před zveřejněním.',
     parts: [
@@ -384,6 +401,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Univerzální měřicí/řídicí modul s komunikací po průmyslové sběrnici RS485 protokolem MODBUS RTU — 4 analogové vstupy, 2 digitální vstupy (galvanicky oddělené optočleny) a 2 relé výstupy (24 V/10 A). Srdcem je mikrokontrolér ATmega8A, komunikaci po RS485 zajišťuje budič ST485; více modulů lze řadit za sebou na jednom kabelu Ethernet CAT5 (napájení 20–26 V i sběrnice společně).',
     image: 'modbus-rtu-deska.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 07/2023, str. 19–21, rubrika Mikrokontroléry (Jan Chlístovský, OK1BAF). Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Program (zdrojový kód i HEX) je staženém na webu časopisu, kompilace vyžaduje placenou licenci E-Lab Pascal.',
     parts: [
@@ -412,6 +430,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Nejjednodušší varianta solární zahradní lampičky — superkondenzátor (50–120 F) nahrazuje akumulátor, nabíjí se přímo ze solárního článku 2 V přes integrovaný měnič YX8018, který za tmy rozsvítí LED. Bez akumulátoru odpadá jeho údržba a vybíjecí cykly, svítí ale jen několik hodin (u 120 F cca 9 hodin).',
     image: 'solarni-lampicka-superkondenzator.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 07/2023, str. 22–27, rubrika Konstrukce (Jaroslav Belza). Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. 3D modely pouzdra (STL) jsou ke stažení na webu časopisu.',
     parts: [
@@ -428,6 +447,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Výkonnější varianta solární zahradní lampičky s Li-ion/Li-pol akumulátorem (≥300 mAh) místo kondenzátoru — nabíjecí obvod TP4056 omezuje nabíjecí proud na 130 mA a napětí na 4,2 V. Dvojice MOSFETů (duální pouzdro FDS9926) podle napětí ze solárního článku spíná LED za tmy.',
     image: 'solarni-lampicka-akumulator-smd.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 07/2023, str. 24–27, rubrika Konstrukce (Jaroslav Belza), SMD osazení. Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Alternativa s vývodovými (THT) součástkami viz samostatný projekt.',
     parts: [
@@ -448,6 +468,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Alternativní zapojení solární lampičky s Li-ion/Li-pol akumulátorem pomocí vývodových (THT) součástek — nabíjecí obvod na principu omezení napětí s TL431 (dobíjí akumulátor, dokud napětí na solárním článku převyšuje napětí akumulátoru) a dvojice tranzistorů BS108 spínajících LED za tmy.',
     image: 'solarni-lampicka-akumulator-tht.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 07/2023, str. 24–27, rubrika Konstrukce (Jaroslav Belza), THT osazení. Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce.',
     parts: [
@@ -470,6 +491,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Malý spínaný zdroj s výstupním napětím 5 V a maximálním proudem 0,5 A pro napájení přístrojů z baterie nebo akumulátoru (vstup 8–15 V). Obvod LM2575-5 pracuje s konstantním kmitočtem 52 kHz a téměř neruší okolí. Komparátor s OZ MAA741 signalizuje nastavitelným prahem (7,6–9,1 V) rozsvícením LED pokles napětí baterie.',
     image: 'spinany-zdroj-12-5v.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 07/2023, str. 33–36, rubrika Konstrukce (Ing. Jan Šedivý). Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Modul byl původně navržen pro napájení tuneru bezdrátového ozvučení (odběr cca 220 mA při 5 V).',
     parts: [
@@ -497,6 +519,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Domácí bodovací svářečka (pro bodové svařování Li-ion akumulátorových pásků apod.) postavená z transformátoru staré mikrovlnné trouby (MOT). Spínací deska NY-D01 s triakem BTA41-800B přes pedál spouští krátký, nastavitelný impuls (20–1000 ms, výkon 30–99 %) do sekundárního vinutí přetočeného MOT.',
     image: 'bodovaci-svarecka.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 07/2023, str. 40–42, rubrika Konstrukce — Zápisky mladého elektronika (Antonín Čapek, 15 let). Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. UPOZORNĚNÍ redakce: konstrukce nemá vyřešenou ochranu neživých částí před nebezpečným dotykovým napětím (viz poznámka redakce v článku) — jde o nebezpečné síťové zapojení, stavět jen se zkušenostmi s prací pod napětím 230 V.',
     parts: [
@@ -513,6 +536,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Digitální teploměr DS18B20 (voděodolná sonda s 3žilovým kabelem: červený VCC, černý GND, žlutý DATA) připojený na Arduino Uno. Datový vodič jde na digitální pin 2 a je nutný pull-up rezistor 4,7 kΩ mezi DATA a VCC (5V), jinak 1-Wire sběrnice nefunguje spolehlivě.',
     image: 'DS18B20-arduino-wiring.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: datasheet "eses vodotěsný teploměr pro jednodeskové počítače" (DS18B20 sonda). Čtení přes knihovny OneWire + DallasTemperature, ONE_WIRE_BUS = pin 2. Rezistor 4,7 kΩ je nutný pull-up na datové lince, ne volitelný doplněk.',
     parts: [
@@ -531,6 +555,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Zvuková hříčka napodobující zpěv kanárka. Vydává trvale vysoký tón (3,5–3,9 kHz), jehož výška se periodicky moduluje hvizdy, takže zvuk připomíná ptačí zpěv. Postaveno na čtyřech multivibrátorech s LM324 a výkonovém zesilovači s tranzistorem pro reproduktor 8 Ω.',
     image: 'elektronicky-kanarek.jpg',
+    pcbImage: 'elektronicky-kanarek-pcb.jpg',
     notes:
       'Zdroj: Praktická elektronika A Radio 01/2025, str. 3–4, rubrika Jednoduchá zapojení (Ing. Miloš Munzar), převzato z Rádiótechnika (HU), 03/2019. Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Napájení 9 V (baterie 6F22), proud kolísá mezi 60 a 85 mA. Multivibrátor IO1C generuje signál vysokého tónu (3,5/3,9 kHz dle stavu T1), IO1A/IO1B/IO1D modulují periodu a šířku hvizdů. Trimr P1 nastavuje zvukový efekt dle vkusu.',
     parts: [
@@ -562,6 +587,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Zahradní odpuzovač krtků — plastová trubka zatlačená do půdy, uvnitř s vibračním motorkem z mobilního telefonu. Elektronika nepravidelně (pseudonáhodně) spíná vibrátor na 9 s s periodou 170 s, díky dvěma multivibrátorům CMOS 4093.',
     image: 'odpuzovac-krtku-1.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 01/2025, str. 5, rubrika Jednoduchá zapojení, převzato z Radio (RU), 8/2012. Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Napájení 4,5 V (3× sériově alkalické AA/AAA). Autor původního pramene upozorňuje, že účinnost odpuzovačů krtků tímto principem není zaručená. Existuje i varianta „Odpuzovač krtků 2" se dvěma vibrátory (samostatný projekt).',
     parts: [
@@ -583,6 +609,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Varianta odpuzovače krtků se dvěma vibračními motorky (MOT1, MOT2) spínanými ve dvou různých, nezávislých periodách (170 s a 350 s), takže se v zemi vytváří pseudonáhodné rázy, rušivější než jediný pravidelný vibrátor.',
     image: 'odpuzovac-krtku-2.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 01/2025, str. 6, rubrika Jednoduchá zapojení, převzato z Radio (RU), 8/2012 — druhá varianta z téhož článku jako „Odpuzovač krtků 1". Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Napájení 4,5 V. MOT2 je zavěšen na tenké šňůrce u dna trubky a při rozvibrování naráží do stěny.',
     parts: [
@@ -605,6 +632,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Pasivní kmitočtová výhybka (diplexer) pro slučování/rozdělování VF signálů z rozhlasového pásma VHF (FM, 87,5–108 MHz) a televizního pásma UHF (650–950 MHz), impedance 75 Ω. Pásmová propust VHF je tvořena dvěma paralelními LC rezonančními obvody, horní propust UHF kapacitně vázanými kondenzátory.',
     image: 'kmitoctova-vyhybka-vhf-uhf-v1.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 01/2025, str. 6–7, rubrika Jednoduchá zapojení, převzato z Rádiótechnika (HU), 02/2019. Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Cívky jsou autorem ručně vinuté (samonosné): L1 a L3 mají vnitřní průměr 4 mm, 9 závitů; L2 a L3 (pozn. zřejmě L2) mají vnitřní průměr 4 mm, 5 závitů; L4 má vnitřní průměr 3 mm, 3 závity — vše lakovaný měděný drát 0,5 mm. Kondenzátory keramické NP0. Deska s jednostrannými spoji 40×50 mm. Existuje i verze 2 s rozšířeným UHF pásmem (samostatný projekt).',
     parts: [
@@ -626,6 +654,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Druhá varianta kmitočtové výhybky VHF/UHF se shodnou pásmovou propustí VHF jako verze 1, ale s horní propustí UHF rozšířenou do vyššího pásma (650–950 MHz místo 440–1000 MHz u verze 1) pomocí tří paralelních LC rezonančních obvodů místo jednoho.',
     image: 'kmitoctova-vyhybka-vhf-uhf-v2.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 01/2025, str. 7, rubrika Jednoduchá zapojení, převzato z Rádiótechnika (HU), 02/2019 — druhá varianta z téhož článku jako „Kmitočtová výhybka VHF/UHF — verze 1". Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. L4 až L6 mají vnitřní průměr 2 mm, 2 závity (ostatní cívky stejné jako verze 1). Autor upozorňuje, že cívky jsou špatně reprodukovatelné a doporučuje kmitočtové charakteristiky po stavbě zkontrolovat a případně doladit hodnoty součástek.',
     parts: [
@@ -650,6 +679,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Bezkontaktní (klešťový) ampérmetr pro měření velkých stejnosměrných proudů (±100 A) na principu fluxgate — na rozdíl od plnohodnotného fluxgate snímače jde o jednodušší kompenzační zapojení bez zpětnovazební kompenzace, vyhodnocuje se jen velikost druhé harmonické budicího signálu. Vodič s měřeným DC proudem se provléká středovým otvorem snímače Tr2.',
     image: 'dc-ampermetr-fluxgate.jpg',
+    pcbImage: 'dc-ampermetr-fluxgate-pcb.jpg',
     notes:
       'Zdroj: Praktická elektronika A Radio 01/2025, str. 14–17, rubrika Konstrukce (Ing. Josef Jansa, Josef Jansa DiS.) — dvoudílný článek, pokračování v příštím čísle. Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. ⚠️ V článku nejsou u IO1–IO3 (operační zesilovače) ani u IO4/IO5 (lineární regulátory napájecího zdroje) uvedeny konkrétní typy součástek — ve schématu jsou jen jako obecné bloky, bez označení výrobce/katalogového čísla. Tr1 je sekundární vinutí malého síťového transformátoru (budicí signál 50 Hz), Tr2 je vlastní proudový snímač fluxgate (1500 závitů budicí vinutí, 500 závitů snímací vinutí, středový otvor Ø 13 mm pro měřený vodič) — autor jej musí navinout sám, není to hotová součástka. Trimr P1 nastavuje převodní poměr 10 A/V, trimr P2 nulové výstupní napětí. Deska s plošnými spoji na obr. 4 a 6 (v časopise), rozměr desky ampérmetru 245×65 mm.',
     parts: [
@@ -668,6 +698,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Vítěz Konkurzu Praktické elektroniky 2024 — malá telefonní ústředna s tónovou volbou pro až 6 analogových telefonů, bez procesoru (čistě TTL logika). Přijímač DTMF volby MT8870D dekóduje volenou číslici, logika z čítačů/klopných obvodů řídí prozvánění volaného účastníka (6× RJ45, relé, optočleny PC817, tranzistory BC547C).',
     image: 'domaci-interkom.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 01/2025, str. 27–29, rubrika Konstrukce — vítěz Konkurzu 2024, 1. místo (Jiří Štěrba, jiristerba@seznam.cz). Vícedílný seriál, pokračování příště. Schéma je oříznuté ze scanu časopisu (pouze horní/hlavní část obr. 3 — spodní okraj mimo záběr) — ověřit práva k publikaci obrázku v appce. Napájení telefonů 24 V DC, řídicí logiky 5 V DC (schéma zdroje, obr. 5, L7824 + L7805 z usměrněných 2× 24 VAC toroidního transformátoru — viz komponenty 7824/7805). Přijímač DTMF MT8870D má jako jediná součástka v obvodu vlastní krystal 3,579545 MHz. Propojení telefonů do zařízení přes RJ45↔RJ11 redukci (obr. 4). POZOR — zapojení je na reálném telefonním vedení 24 V, ne na síťovém napětí.',
     parts: [
@@ -693,6 +724,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Jedna ze tří praktických úprav z článku „Tři v jednom" — nahrazení kontaktové AC palivové pumpy ve veteránu tichým nízkotlakým DC čerpadlem (z novějších modelů Škoda), řízeným induktivním snímačem hladiny v plovákové komoře karburátoru přes modul DC/DC měniče (LM2596) s přidaným soft-startovacím kondenzátorem Cn, aby se omezilo opotřebení čerpadla při častém spouštění.',
     image: 'palivove-cerpadlo-softstart.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 01/2025, str. 33–35, rubrika „Tři v jednom — tři nápady v jednom článku" (Ivan Dendis). Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. ⚠️ Schéma v časopise popisuje modul jako „LM2569 DC-DC" (zřejmě tisková chyba), zatímco fotografie modulu a text článku jednotně uvádí „LM2596 DC-DC HW-411" — v appce uvedeno jako LM2596. Induktivní snímač (BN/BK/BU vývody) detekuje zaplavení plovákové komory, KC507 je fototranzistor/spínací prvek v časovacím obvodu doběhu čerpadla (kondenzátor 20 µF na bázi přes 10 kΩ, doba doběhu 2–3 s). Snímač je napájen přes nízkovýkonový 10Ω rezistor jako pojistku. Autor stejného článku popisuje i další dva nápady (kontaktní rozdělovač nahrazený bezkontaktním u Škoda Spartak/Felicia/Octavia a nízkonapěťový DC soft-start modul LM2596 bez čerpadla) — bez vlastního schématu, zde nezahrnuto.',
     parts: [
@@ -711,6 +743,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     description:
       'Jednoduchý DC/DC měnič napájený jediným suchým článkem 1,5 V, zvedající napětí na cca 3,3–3,6 V potřebných pro modrozelenou LED s velkou svítivostí (S-LED) jako příruční světlo — oscilátor s transformátorkem na feritovém hrníčkovém jádru a jedním spínacím tranzistorem.',
     image: 'menic-modrozelena-led.jpg',
+    pcbImage: null,
     notes:
       'Zdroj: Praktická elektronika A Radio 01/2025, str. 41, rubrika RETRO — „O čem jsme psali před lety…", přetisk článku Zdeňka Hájka z Praktická elektronika A Radio 1/2000 (před 25 lety). Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Oscilátorová cívka vinutá na hrníčkovém jádru 3B7, Ø 14 mm, AL=100 nH/z², lakovaný měděný drát Ø 0,1 mm: primární (budicí) vinutí 20 závitů, sekundární 60 závitů. Kmitočet oscilátoru cca 10 kHz. Použitá LED HLMP-CE23 (505 nm, modrozelená, 20 mA, 30°). Odběr při 1,2 V je 34 mA, při 1,5 V 53 mA. Měnič s LED i článkem vestavěn do malého pouzdra (např. klíčenky).',
     parts: [

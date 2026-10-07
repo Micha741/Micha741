@@ -37,4 +37,6 @@ export const CIRCUIT_IMAGES: Record<string, ImageSourcePropType> = {
   'domaci-interkom.jpg': require('../../assets/circuits/domaci-interkom.jpg'),
   'palivove-cerpadlo-softstart.jpg': require('../../assets/circuits/palivove-cerpadlo-softstart.jpg'),
   'menic-modrozelena-led.jpg': require('../../assets/circuits/menic-modrozelena-led.jpg'),
+  'elektronicky-kanarek-pcb.jpg': require('../../assets/circuits/elektronicky-kanarek-pcb.jpg'),
+  'dc-ampermetr-fluxgate-pcb.jpg': require('../../assets/circuits/dc-ampermetr-fluxgate-pcb.jpg'),
 };
