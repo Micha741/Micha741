@@ -456,6 +456,33 @@ const MISC_SPECS: MiscSpec[] = [
     tags: 'anténa,antenna,efhw,end-fed,vícepásmová,multiband,kv,hf,drátová,unun,transformátor,1:49,1:64,radioamatér',
   },
   {
+    name: 'Tenzometrické čidlo (obecné, odporový můstek)',
+    packageType: 'Kovová/plastová nosná destička s nalepenými tenzometry (strain gauge), 4 vývody (Wheatstoneův můstek: VDD, GND, IN+, IN-)',
+    value: 'Resistivní tenzometrický senzor síly/hmotnosti, výstupní signál v řádu mV/V (vyžaduje 24bitový diferenciální A/D převodník, např. HX711)',
+    notes:
+        'Obecné tenzometrické čidlo (load cell) — malý výstupní signál typický pro tuto kategorii, ' +
+        'proto se prakticky vždy používá se specializovaným 24bitovým sigma-delta A/D převodníkem ' +
+        's diferenciálním vstupem (viz samostatný záznam „24bitový A/D převodník..."). V této appce ' +
+        'použito jako dvojice čidel (12L, 12P, zapojená sériově pro sečtení signálu) pro vážení ' +
+        'nádobky v projektu „Automatické krmítko kurníku (ESP32-C3, bakalářská práce)" — Pavel ' +
+        'Kejík, FIT VUT v Brně, 2024.',
+    tags: 'tenzometr,tenzometrické-čidlo,load-cell,strain-gauge,vážení,senzor,hmotnost',
+  },
+  {
+    name: '24bitový A/D převodník pro tenzometry (obecný, diferenciální, typ HX711)',
+    packageType: 'SMD/DIP IC, piny vdd/gnd + diferenciální vstup (in+, in-) + sériové rozhraní (PDCLK, PDO)',
+    value: '24bitový sigma-delta A/D převodník s nastavitelným zesílením, určený pro přímé snímání tenzometrických (Wheatstoneův můstek) čidel',
+    notes:
+        'Obecná kategorie — typický zástupce je HX711 (bez samostatného datasheetem podloženého ' +
+        'záznamu v této appce). Kvůli velmi malému výstupnímu napětí tenzometrů (mV/V řádu) ' +
+        'potřebuje diferenciální vstup s vysokým ziskem, na rozdíl od běžných ADC vestavěných v ' +
+        'mikrokontrolérech. V této appce použito jako „A/D C 24bit" v blokovém schématu elektroniky ' +
+        'projektu „Automatické krmítko kurníku (ESP32-C3, bakalářská práce)" — Pavel Kejík, FIT VUT ' +
+        'v Brně, 2024 — konkrétní typ IC práce blíže nespecifikuje.',
+    category: 'IO',
+    tags: 'io,ad-převodník,adc,24bit,diferenciální,tenzometr,load-cell,hx711,sigma-delta',
+  },
+  {
     name: 'Induktivní snímač (obecný, bezkontaktní)',
     packageType: 'Válcový nebo kvádrový snímač, 2–3 vývody',
     value: 'Bezkontaktní detekce kovových předmětů, spínaný výstup',

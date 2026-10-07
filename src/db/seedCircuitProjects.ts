@@ -1,6 +1,6 @@
 import type { CircuitProjectInput } from '../types/circuit';
 
-export const CIRCUIT_LIBRARY_VERSION = 10;
+export const CIRCUIT_LIBRARY_VERSION = 11;
 
 /**
  * Přesný počet kusů u drobných pasivních součástek (rezistory) je odhad podle
@@ -394,6 +394,27 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
       { label: 'Dioda 1N4148WT (nejmenší SMD pouzdro rodiny 1N4148)', match: '4148', quantity: 1 },
       { label: 'Konektor RJ45 (rozšiřující I/O, RS485)', match: 'RJ45', quantity: 1 },
       { label: 'Napájecí zdroj 12 V DC (konektor JACK 2,5 mm)', match: 'napájecí adaptér', quantity: 1 },
+    ],
+  },
+  {
+    name: 'Automatické krmítko kurníku (ESP32-C3, bakalářská práce)',
+    description:
+      'Příslušenství k projektu „Automatická dvířka kurníku (ESP32, bakalářská práce)" — samostatně napájené (Li-ion akumulátor + solární dobíjení) automatické krmítko komunikující s dvířky přes ESP-NOW. Modul ESP32-C3-MINI-1 řídí přes H-můstkový budič dvojici stejnosměrných motorků s převodovkou, které mechanismem ozubených segmentů naklápějí násypku a nádobku krmítka (otevírání/zavírání, oddělené koncové spínače pro obě krajní polohy). Hmotnost krmiva v nádobce měří dvojice tenzometrických čidel zapojených sériově přes 24bitový diferenciální A/D převodník — podle poklesu hmotnosti pod nastavenou mez krmítko automaticky dosype krmivo, čas otevírání/zavírání se navíc odvozuje od východu/západu slunce (čas přebírá z dvířek). Napájení: Li-ion akumulátor 18650 3,7 V/3200 mAh nabíjený integrovaným obvodem buď z malého fotovoltaického panelu, nebo přes USB-C; procesor tráví většinu času v deep sleep (střední proud ~140–250 µA dle periody probuzení).',
+    image: 'krmitko-esp32.jpg',
+    pcbImage: 'krmitko-esp32-elektroinstalace.jpg',
+    notes:
+      'Zdroj: Pavel Kejík, "Automatický systém pro domácí chov slepic" (bakalářská práce, FIT VUT v Brně, vedoucí Ing. Vojtěch Mrázek, Ph.D., Brno 2024), kapitola 7 (Periferie krmítko) a příloha B (schéma). ⚠️ Mnohem náročnější na výrobu než běžné projekty v této appce — nejde o jednoduché zapojení na nepájivém poli/univerzální DPS, ale o kompletní vestavěný systém: vlastní oboustrannou DPS (návrh v KiCadu, výroba např. přes JLCPCB), firmware v C++ (Arduino framework + ESP-IDF, FreeRTOS) a mechanickou konstrukci 3D tištěnou kombinací FDM a SLA dílů (násypka, nádobka, ozubené segmenty, kryty). Hlavní obrázek je blokové schéma elektroniky (obr. 7.6 práce, přehled propojení bloků, ne plné schéma se součástkami) — doplňkový obrázek (pcbImage) je schéma elektrické instalace z přílohy B.2 (obr. B.2, propojení motorů, koncových spínačů, tenzometrů a solárního panelu s deskou krmítka). Plné schéma desky plošných spojů se všemi součástkami a referenčními označeními je v příloze B.1 (obr. B.1) — samo o sobě velmi husté (export z KiCadu), zde pro nečitelnost nezahrnuto; viz práce. Práce je veřejně dostupná kvalifikační práce VUT, nejde o časopisecký scan — otázka práv k publikaci obrázků v appce je tedy odlišná od PE scanů, ale přesto je vhodné ji ověřit před zveřejněním. Konkrétní typ A/D převodníku pro tenzometry a nabíjecího obvodu práce blíže nespecifikuje (jen blokově "A/D C 24bit" a "Charger") — v seznamu součástek proto vedeny jako obecné položky, ne jako konkrétní IC.',
+    parts: [
+      { label: 'IC1 — ESP32-C3-MINI-1 (modul MCU, Wi-Fi/BLE)', match: 'ESP32-C3-MINI-1', quantity: 1 },
+      { label: 'Motorek 3-9V s převodovkou, typ Micro 300 (pohon násypky + nádobky)', match: 'DC motor s převodovkou', quantity: 2 },
+      { label: 'Tenzometrické čidlo (vážení nádobky, sériově zapojená dvojice)', match: 'Tenzometrické čidlo', quantity: 2 },
+      { label: 'A/D C 24bit — 24bitový diferenciální A/D převodník pro tenzometry', match: '24bitový A/D převodník', quantity: 1 },
+      { label: 'H-bridge motor driver — budič s dvojicí nezávislých H-můstků', match: 'H-bridge motor driver', quantity: 1 },
+      { label: 'Limit sw open, Limit sw close — koncové spínače krajních poloh', match: 'mikrospínač', quantity: 2 },
+      { label: 'FV panel — fotovoltaický panel (dobíjení akumulátoru)', match: 'solární článek', quantity: 1 },
+      { label: 'Akumulátor Li-ion 18650, 3,7 V/3200 mAh', match: 'Akumulátor Li-ion', quantity: 1 },
+      { label: 'BT1, BT2 — tlačítka (manuální otevření/zavření, párování)', match: 'tlačítko', quantity: 2 },
+      { label: 'LED R — LED (indikace stavu)', match: 'LED', quantity: 1 },
     ],
   },
   {
