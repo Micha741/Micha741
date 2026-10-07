@@ -132,7 +132,11 @@ export default function ComponentDetailScreen({ route, navigation }: Props) {
       {item.datasheetUrl ? (
         <Pressable
           style={[styles.field, { borderBottomColor: colors.border }]}
-          onPress={() => Linking.openURL(item.datasheetUrl!)}
+          onPress={() => {
+            Linking.openURL(item.datasheetUrl!).catch(() => {
+              Alert.alert(t('detail.datasheet'), t('detail.datasheetOpenFailed'));
+            });
+          }}
         >
           <Text style={[styles.fieldLabel, { color: colors.textSecondary }]}>
             {t('detail.datasheet')}
