@@ -7,12 +7,15 @@ interface IcSpec {
   notes: string;
   tags: string;
   schematicImage?: string;
+  /** Odkaz na datasheet/oficiální produktovou stránku, pokud byl dohledán. */
+  datasheetUrl?: string;
 }
 
 const IC_SPECS: IcSpec[] = [
   // Časovače
   {
     name: 'NE555',
+    datasheetUrl: 'https://www.ti.com/lit/ds/symlink/ne555.pdf',
     packageType:
       'DIP-8/SOIC-8/SO-8/TSSOP-8 (NE555, komerční teplotní rozsah 0 až 70°C), piny: 1=GND, ' +
       '2=TRIG, 3=OUT, 4=RESET, 5=CONT, 6=THRES, 7=DISCH, 8=VCC (standardní pinout, shodný ' +
@@ -116,6 +119,7 @@ const IC_SPECS: IcSpec[] = [
   },
   {
     name: 'LM324',
+    datasheetUrl: 'https://www.ti.com/product/LM324',
     packageType: 'DIP-14 / SO-14, piny: 1=OUT1, 2=IN1-, 3=IN1+, 4=V+, 5=IN2+, 6=IN2-, 7=OUT2, ' +
       '8=OUT3, 9=IN3-, 10=IN3+, 11=GND, 12=IN4+, 13=IN4-, 14=OUT4',
     value: 'Čtyřnásobný OZ, jednoduché napájení 3–32 V (nebo ±1,5–15 V), unity-gain bandwidth 1 MHz',
@@ -297,6 +301,7 @@ const IC_SPECS: IcSpec[] = [
   // Lineární napěťové regulátory
   {
     name: '7805',
+    datasheetUrl: 'https://www.alldatasheet.com/datasheet-pdf/pdf/534603/STMICROELECTRONICS/L7805.html',
     packageType: 'TO-220 — vývody: 1=vstup (IN), 2=GND, 3=výstup (OUT)',
     value: 'Lineární regulátor +5 V / 1 A',
     notes:
@@ -327,6 +332,7 @@ const IC_SPECS: IcSpec[] = [
   },
   {
     name: '7824',
+    datasheetUrl: 'https://www.alldatasheet.com/datasheet-pdf/pdf/22632/STMICROELECTRONICS/L7824.html',
     packageType: 'TO-220 — vývody: 1=vstup (IN), 2=GND, 3=výstup (OUT)',
     value: 'Lineární regulátor +24 V / 1 A',
     notes:
@@ -801,6 +807,7 @@ const IC_SPECS: IcSpec[] = [
   },
   {
     name: '4093',
+    datasheetUrl: 'https://www.ti.com/product/CD4093B',
     packageType: 'DIP-14 (CD4093BE/HEF4093/74HC4093), piny shodné s 74HC00: 1=1A, 2=1B, 3=1Y, ' +
       '4=2A, 5=2B, 6=2Y, 7=GND, 8=3Y, 9=3A, 10=3B, 11=4Y, 12=4A, 13=4B, 14=VDD',
     value: 'Čtyři 2-vstupá hradla NAND se Schmittovým klopným vstupem, 3–18 V (CD4093, 4000 ' +
@@ -816,6 +823,7 @@ const IC_SPECS: IcSpec[] = [
   },
   {
     name: 'SN74LS14N',
+    datasheetUrl: 'https://www.ti.com/product/SN74LS14',
     packageType: 'DIP-14',
     value: 'Šest invertorů se Schmittovým vstupem (hex Schmitt-trigger inverter), TTL (LS), 4,75–5,25 V',
     notes:
@@ -904,6 +912,7 @@ const IC_SPECS: IcSpec[] = [
   },
   {
     name: 'CD4040BE',
+    datasheetUrl: 'https://www.ti.com/product/CD4040B',
     packageType: 'DIP-16',
     value: '12stupňový binární čítač/dělič (ripple counter), 3–18 V (CMOS)',
     notes:
@@ -916,6 +925,7 @@ const IC_SPECS: IcSpec[] = [
   },
   {
     name: 'CD4044BE',
+    datasheetUrl: 'https://www.ti.com/lit/ds/symlink/cd4044b.pdf',
     packageType: 'DIP-16',
     value: 'Čtyři 3-stavové NOR klopné obvody (quad 3-state R/S latch), 3–18 V (CMOS)',
     notes:
@@ -989,6 +999,7 @@ const IC_SPECS: IcSpec[] = [
   },
   {
     name: 'SN74LS138N',
+    datasheetUrl: 'https://www.ti.com/lit/ds/symlink/sn74ls138.pdf',
     packageType: 'DIP-16',
     value: '3 na 8 linkový dekodér/demultiplexer, TTL (LS), 4,75–5,25 V',
     notes:
@@ -1001,6 +1012,7 @@ const IC_SPECS: IcSpec[] = [
   // Budiče (drivery)
   {
     name: 'L6201PS',
+    datasheetUrl: 'https://www.st.com/en/motor-drivers/l6201.html',
     packageType: 'Multiwatt-11 nebo PowerSO-20 (dle varianty)',
     value: 'H-můstkový budič DC motoru, až 2,8 A, napájení do 48 V, vestavěná ochrana proti zkratu/přehřátí',
     notes:
@@ -1808,6 +1820,7 @@ const IC_SPECS: IcSpec[] = [
   // Senzory
   {
     name: 'DS18B20',
+    datasheetUrl: 'https://www.analog.com/en/products/ds18b20.html',
     packageType:
       'TO-92 (3 vývody: 1=GND, 2=DQ, 3=VDD, model DS18B20), 8pin SO 150 mil (model DS18B20Z: ' +
       '3=VDD, 4=DQ, 5=GND, ostatní NC) nebo 8pin µSOP (model DS18B20U: 1=DQ, 4=GND, 8=VDD, ' +
@@ -3848,6 +3861,7 @@ const IC_SPECS: IcSpec[] = [
   },
   {
     name: 'TSOP1738',
+    datasheetUrl: 'https://html.alldatasheet.com/html-pdf/26589/VISHAY/TSOP1738/182/1/TSOP1738.html',
     packageType: 'THT, 3 vývody (GND, VS, OUT), IR filtr v pouzdře',
     value: 'IR přijímací modul, 38 kHz nosný kmitočet, demodulovaný digitální výstup',
     notes: 'Standardní infračervený přijímač pro dálkové ovládání — obecně dostupné parametry, ne z konkrétního nahraného datasheetu.',
@@ -3865,6 +3879,7 @@ const IC_SPECS: IcSpec[] = [
   },
   {
     name: 'TCST1103',
+    datasheetUrl: 'https://www.vishay.com/en/product/83764/',
     packageType: 'THT, štěrbinový (slotted) optický spínač, drážka cca 3 mm',
     value: 'Optický přerušovač (IR LED + fototranzistor), detekce clony v drážce',
     notes:
@@ -4291,6 +4306,7 @@ const IC_SPECS: IcSpec[] = [
   // Proudové zdroje
   {
     name: 'LM334Z',
+    datasheetUrl: 'https://www.ti.com/product/LM334',
     packageType: 'TO-92 (3 vývody, pohled zespodu): 1=ADJ, 2=V+, 3=V-',
     value: '3vývodový nastavitelný proudový zdroj, 1–40 V, programovatelný 1 µA–10 mA',
     notes:
@@ -4311,6 +4327,7 @@ const IC_SPECS: IcSpec[] = [
   // DTMF / telefonie
   {
     name: 'MT8870D',
+    datasheetUrl: 'https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/7180/MT8870.pdf',
     packageType: 'DIP-18/SOIC-18, piny: 1=IN+, 2=IN-, 3=GS (zisk zesilovače), 4=VRef, 5=/INH ' +
       '(inhibice rozpoznávání *,#,A-D), 6=PD (power-down), 7=OSC1, 8=OSC2 (3,579545 MHz krystal), ' +
       '9=VSS, 10=TOE (třístavový výstup povolen), 11–14=Q1–Q4 (4bitový výstup rozpoznaného tónu), ' +
@@ -4561,7 +4578,7 @@ export function buildIcSeed(): ComponentInput[] {
     value: spec.value,
     quantity: 0,
     location: null,
-    datasheetUrl: null,
+    datasheetUrl: spec.datasheetUrl ?? null,
     schematicImage: spec.schematicImage ?? null,
     notes: spec.notes,
     tags: spec.tags,

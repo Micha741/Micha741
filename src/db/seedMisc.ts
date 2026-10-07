@@ -8,6 +8,8 @@ interface MiscSpec {
   tags: string;
   schematicImage?: string;
   category?: ComponentCategory;
+  /** Odkaz na datasheet/oficiální produktovou stránku, pokud byl dohledán. */
+  datasheetUrl?: string;
 }
 
 const MISC_SPECS: MiscSpec[] = [
@@ -415,6 +417,7 @@ const MISC_SPECS: MiscSpec[] = [
   },
   {
     name: 'GL5539',
+    datasheetUrl: 'https://www.lcsc.com/product-detail/Photoresistors_Senba-Sensing-Tech-GL5539_C125630.html',
     packageType: 'THT, 2 vývody, kulatá čočka Ø5 mm',
     value: 'Fotorezistor (LDR, CdS), odpor ve tmě ~1 MΩ, na světle ~10–20 kΩ (dle osvětlení)',
     notes: 'Obecně dostupné katalogové hodnoty, ne z konkrétního nahraného datasheetu — standardní malý fotorezistor řady GL55xx.',
@@ -459,7 +462,7 @@ export function buildMiscSeed(): ComponentInput[] {
     value: spec.value,
     quantity: 0,
     location: null,
-    datasheetUrl: null,
+    datasheetUrl: spec.datasheetUrl ?? null,
     schematicImage: spec.schematicImage ?? null,
     notes: spec.notes,
     tags: spec.tags,
