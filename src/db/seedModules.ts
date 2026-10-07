@@ -4921,6 +4921,62 @@ const MODULE_SPECS: ModuleSpec[] = [
       'přímo na síťovém napětí 230 V.',
     tags: 'modul,ny-d01,m302,hadex,bodovací-svářečka,triak,bta41-800b,230v,pozor-síť',
   },
+  {
+    name: 'Arduino Uno',
+    packageType: 'Deska 68,6 × 53,4 mm, USB-B, napájecí jack, hlavičky pinů 2,54 mm',
+    value: 'ATmega328P, 16 MHz, 14× digitální I/O (6× PWM), 6× analogový vstup, napájení 7–12 V (jack) nebo 5 V (USB)',
+    notes: 'Standardní Arduino vývojová deska — obecně známé parametry, ne z konkrétního nahraného datasheetu.',
+    tags: 'modul,arduino,arduino-uno,atmega328p,vývojová-deska',
+  },
+  {
+    name: 'Arduino Nano',
+    packageType: 'Deska 45 × 18 mm, Mini-USB nebo USB-C (dle revize), hlavičky pinů 2,54 mm (bez patice)',
+    value: 'ATmega328P, 16 MHz, 14× digitální I/O (6× PWM), 8× analogový vstup, napájení 7–12 V nebo 5 V (USB)',
+    notes: 'Kompaktní varianta Arduino Uno pro nepájivé pole/menší konstrukce — obecně známé parametry, ne z konkrétního nahraného datasheetu.',
+    tags: 'modul,arduino,arduino-nano,atmega328p,vývojová-deska',
+  },
+  {
+    name: 'Arduino Mega 2560',
+    packageType: 'Deska 101,5 × 53,4 mm, USB-B, napájecí jack, hlavičky pinů 2,54 mm',
+    value: 'ATmega2560, 16 MHz, 54× digitální I/O (15× PWM), 16× analogový vstup, napájení 7–12 V (jack) nebo 5 V (USB)',
+    notes: 'Výkonnější Arduino deska s více I/O pinů a pamětí — obecně známé parametry, ne z konkrétního nahraného datasheetu.',
+    tags: 'modul,arduino,arduino-mega,atmega2560,vývojová-deska',
+  },
+  {
+    name: 'HC-05',
+    packageType: 'SMD modul na nosné destičce, 6 pinů (VCC, GND, TXD, RXD, STATE, EN/KEY)',
+    value: 'Bluetooth 2.0 (Classic) sériový modul (UART), master/slave, napájení 3,3–6 V',
+    notes: 'Oblíbený levný Bluetooth-sériový převodník pro Arduino projekty — obecně známé parametry, ne z konkrétního nahraného datasheetu.',
+    tags: 'modul,bluetooth,hc-05,uart,sériový',
+  },
+  {
+    name: 'SG90 (mikroservo)',
+    packageType: 'Plastové tělo cca 23×12×29 mm, 3vodičový konektor (napájení/GND/PWM)',
+    value: 'Analogové mikroservo, rozsah cca 180°, napájení 4,8–6 V, řízení PWM 50 Hz',
+    notes: 'Standardní levné hobby mikroservo — obecně známé parametry, ne z konkrétního nahraného datasheetu.',
+    tags: 'modul,servo,sg90,mikroservo,pwm',
+  },
+  {
+    name: 'LM2596 DC-DC modul (HW-411)',
+    packageType: 'Hotová deska s potenciometrem, cívkou a konektory IN/OUT',
+    value: 'Step-down (buck) DC-DC měnič, vstup 4–35/40 V, výstup nastavitelný 1,25–30/37 V, až 3 A',
+    notes:
+      'Běžně prodávaný čínský modul s IO LM2596 — obecně známé parametry, ne z konkrétního ' +
+      'nahraného datasheetu. V této appce použito v projektu „Nízkoúbytkové palivové čerpadlo se ' +
+      'soft-startem" (Praktická elektronika A Radio 01/2025) — pozor, schéma v časopise u tohoto ' +
+      'modulu uvádí popisek „LM2569" (zřejmě tisková chyba), fotografie a text článku ale jasně ' +
+      'ukazují potisk „LM2596 DC-DC HW-411".',
+    tags: 'modul,dc-dc,měnič,step-down,buck,lm2596,hw-411',
+  },
+  {
+    name: 'ESP32-S3-WROOM-1U',
+    packageType: 'SMD modul s U.FL konektorem pro externí anténu, 56 pinů (castellated)',
+    value: 'Wi-Fi + BLE 5 modul, Xtensa LX7 dual-core, až 512 KB SRAM, flash/PSRAM dle varianty, VDD 3,0–3,6 V',
+    notes:
+      '"U" varianta modulu ESP32-S3-WROOM-1 s konektorem pro externí anténu (místo integrované PCB ' +
+      'antény) — obecně známé parametry, ne z konkrétního nahraného datasheetu.',
+    tags: 'modul,esp32,esp32-s3,wifi,ble,wroom',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {

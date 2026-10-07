@@ -53,7 +53,7 @@ interface CapacitorSpec {
 }
 
 const CAPACITOR_SPECS: CapacitorSpec[] = [
-  ...['10 pF', '22 pF', '47 pF', '100 pF', '220 pF', '470 pF', '1 nF', '2.2 nF', '4.7 nF', '10 nF', '22 nF', '47 nF', '100 nF', '220 nF', '470 nF'].map(
+  ...['2.2 pF', '6.8 pF', '10 pF', '12 pF', '22 pF', '39 pF', '47 pF', '100 pF', '220 pF', '270 pF', '330 pF', '390 pF', '470 pF', '1 nF', '2.2 nF', '4.7 nF', '10 nF', '22 nF', '33 nF', '47 nF', '68 nF', '100 nF', '220 nF', '470 nF', '680 nF'].map(
     (value): CapacitorSpec => ({
       value,
       type: 'keramický',
@@ -61,7 +61,7 @@ const CAPACITOR_SPECS: CapacitorSpec[] = [
       notes: 'Keramický kondenzátor, obecné použití, 50 V',
     })
   ),
-  ...['1 µF', '2.2 µF', '4.7 µF', '10 µF', '22 µF', '47 µF', '100 µF', '220 µF', '470 µF', '1000 µF', '2200 µF', '4700 µF'].map(
+  ...['1 µF', '2.2 µF', '4.7 µF', '10 µF', '22 µF', '47 µF', '100 µF', '220 µF', '470 µF', '1000 µF', '1500 µF', '2200 µF', '4700 µF'].map(
     (value): CapacitorSpec => ({
       value,
       type: 'elektrolytický',
@@ -235,6 +235,17 @@ const DIODE_SPECS: PartSpec[] = [
   },
 
   { name: '1N4148', packageType: 'DO-35', value: '150 mA / 100 V', notes: 'Spínací (signálová) dioda', tags: 'dioda,spínací,signálová' },
+  {
+    name: 'KA206',
+    packageType: 'DO-35',
+    value: 'Spínací (signálová) dioda, malý výkon',
+    notes:
+      'Starší tesla/československé označení malé spínací diody — v projektu, kde se objevuje, je ' +
+      'výslovně uvedena jako zaměnitelná s KA261, 1N4148 nebo KA501. Obecně dostupné hodnoty, ne z ' +
+      'konkrétního nahraného datasheetu. V této appce použito jako D2 v projektu „Spínaný napájecí ' +
+      'zdroj 12/5 V s indikací podpětí".',
+    tags: 'dioda,spínací,signálová,ka206,tesla',
+  },
   { name: '1N914', packageType: 'DO-35', value: '100 mA / 100 V', notes: 'Spínací (signálová) dioda', tags: 'dioda,spínací,signálová' },
 
   { name: '1N5817', packageType: 'DO-41', value: '1 A / 20 V', notes: 'Schottky dioda', tags: 'dioda,schottky' },
@@ -396,6 +407,7 @@ const DIODE_SPECS: PartSpec[] = [
   { name: 'BZX55C15', packageType: 'DO-35', value: '15 V / 0,5 W', notes: 'Zenerova dioda', tags: 'dioda,zener' },
   { name: 'BZX55C18', packageType: 'DO-35', value: '18 V / 0,5 W', notes: 'Zenerova dioda', tags: 'dioda,zener' },
   { name: 'BZX55C22', packageType: 'DO-35', value: '22 V / 0,5 W', notes: 'Zenerova dioda', tags: 'dioda,zener' },
+  { name: 'BZX55C27', packageType: 'DO-35', value: '27 V / 0,5 W', notes: 'Zenerova dioda', tags: 'dioda,zener' },
 
   {
     name: 'BZX85C12',
@@ -470,6 +482,18 @@ const DIODE_SPECS: PartSpec[] = [
   { name: 'LED 5mm infra (IR)', packageType: '5 mm THT', value: '~1,2 V / 20 mA', notes: 'Infračervená LED', tags: 'dioda,led,infra' },
   { name: 'LED 3mm červená', packageType: '3 mm THT', value: '~2,0 V / 20 mA', notes: 'Standardní LED', tags: 'dioda,led,červená' },
   { name: 'LED 3mm zelená', packageType: '3 mm THT', value: '~2,2 V / 20 mA', notes: 'Standardní LED', tags: 'dioda,led,zelená' },
+  { name: 'LED dvoubarevná (bicolor)', packageType: '5 mm THT, 3 vývody (společná katoda/anoda)', value: '~2,0/2,2 V / 20 mA (červená/zelená)', notes: 'Dvoubarevná LED se dvěma čipy ve společném pouzdře, přepínání barvy podle polarity nebo samostatných vývodů.', tags: 'dioda,led,dvoubarevná,bicolor' },
+  { name: 'LED SMD (obecná)', packageType: 'SMD 0805/1206', value: '~2,0 V / 20 mA (dle barvy)', notes: 'Obecná SMD LED, přesné parametry (Vf, barva) dle konkrétního typu.', tags: 'dioda,led,smd' },
+  {
+    name: 'HLMP-CE23',
+    packageType: '5 mm THT, difuzní čočka',
+    value: 'Modrozelená LED (505 nm), 20 mA, vyzařovací úhel 30°',
+    notes:
+      'Obecně známé katalogové označení (Agilent/Avago/Broadcom řada HLMP-CE2x) — hodnoty z obecně ' +
+      'dostupných údajů, ne z konkrétního nahraného datasheetu. V této appce použito jako S-LED ' +
+      'v retro konstrukci „Měnič pro modrozelenou LED" (Praktická elektronika A Radio 01/2025).',
+    tags: 'dioda,led,hlmp-ce23,modrozelená',
+  },
 
   {
     name: 'LXML-PF01',
@@ -4626,6 +4650,27 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,mosfet,n-kanál,to-92,bs170,hbs170,on-semiconductor,spínací,solární',
   },
   {
+    name: 'BS108',
+    packageType: 'TO-92, 3 vývody: 1=D (drain), 2=G (gate), 3=S (source)',
+    value: 'N-MOSFET, VDSS 200 V, ID 120 mA',
+    notes:
+      'Obecně dostupné katalogové hodnoty, ne z konkrétního nahraného datasheetu — vlastní záznam ' +
+      'doplňující dříve přidaný BS170 (obvod v appce uváděl oba typy jako zaměnitelné alternativy, ' +
+      'ale mají odlišné mezní hodnoty: BS108 vyšší napětí/nižší proud, BS170 naopak). V této appce ' +
+      'použito jako T1, T2 v projektu „Solární lampička s Li-ion akumulátorem (THT)".',
+    tags: 'tranzistor,mosfet,n-kanál,to-92,bs108,spínací,solární',
+  },
+  {
+    name: 'BC846',
+    packageType: 'SOT-23, 3 vývody',
+    value: 'NPN, 65 V, 100 mA (SMD varianta rodiny BC846/847/848)',
+    notes:
+      'Obecně známý SMD tranzistor (SOT-23 obdoba BC546/547 řady), ne z konkrétního nahraného ' +
+      'datasheetu. V této appce použito pro ovládání TCST1103/výstup v projektu „Automatická ' +
+      'dvířka kurníku (ESP32, bakalářská práce)".',
+    tags: 'tranzistor,npn,bipolární,smd,sot-23,bc846',
+  },
+  {
     name: 'FDS9926',
     packageType:
       'SO-8, 2 nezávislé N-MOSFETy — piny (ověřeno ze schématu v datasheetu): 1=S2 (source Q2), ' +
@@ -6315,6 +6360,27 @@ const RESISTOR_SPECS: PartSpec[] = [
     tags: 'rezistor,trimr,trimovací',
   },
   {
+    name: '7.5 kΩ',
+    packageType: 'THT, drátové vývody',
+    value: '7,5 kΩ',
+    notes: 'Mimo řadu E12 — hodnota přímo ze schématu v originálním zdroji, ne vlastní odhad.',
+    tags: 'rezistor',
+  },
+  {
+    name: 'Trimr 4,7 kΩ',
+    packageType: 'THT, ležatý nebo stojatý, rozteč 5 mm (typ 3296 nebo obdobný)',
+    value: '4,7 kΩ',
+    notes: 'Podstavný trimovací potenciometr pro nastavení na DPS.',
+    tags: 'rezistor,trimr,trimovací',
+  },
+  {
+    name: 'Trimr 50 kΩ',
+    packageType: 'THT, ležatý nebo stojatý, rozteč 5 mm (typ 3296 nebo obdobný)',
+    value: '50 kΩ',
+    notes: 'Podstavný trimovací potenciometr pro nastavení na DPS.',
+    tags: 'rezistor,trimr,trimovací',
+  },
+  {
     name: 'Trimr SMD 10 kΩ',
     packageType: 'SMD, 3 piny, cca 4×4 mm (typ 3314/TC33X)',
     value: '10 kΩ',
@@ -6635,7 +6701,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 111;
+export const SEED_LIBRARY_VERSION = 112;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),

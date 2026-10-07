@@ -88,6 +88,17 @@ const IC_SPECS: IcSpec[] = [
 
   // Operační zesilovače
   {
+    name: 'MAA741',
+    packageType: 'DIP-8, piny shodné s µA741: 1=offset null, 2=IN-, 3=IN+, 4=V-, 5=offset null, 6=OUT, 7=V+, 8=NC',
+    value: 'Jeden obecný OZ, ±5–18 V (typicky ±15 V)',
+    notes:
+      'Starší tesla/československý ekvivalent řady µA741 (obecně známý typ, ne z konkrétního ' +
+      'nahraného datasheetu) — jednoduchý, interně kompenzovaný operační zesilovač, pinově ' +
+      'kompatibilní s µA741/LM741. V této appce použito jako IO2 v projektu „Spínaný napájecí ' +
+      'zdroj 12/5 V s indikací podpětí".',
+    tags: 'io,operační-zesilovač,maa741,741,tesla',
+  },
+  {
     name: 'LM358',
     packageType: 'DIP-8 / SO-8 / TSSOP-8 / VSSOP-8, piny: 1=OUT1, 2=IN1-, 3=IN1+, 4=V-/GND, ' +
       '5=IN2+, 6=IN2-, 7=OUT2, 8=V+',
@@ -803,6 +814,16 @@ const IC_SPECS: IcSpec[] = [
       'A Radio 01/2025).',
     tags: 'io,logika,cmos,4093,cd4093,hef4093,74hc4093,nand,schmitt,multivibrátor',
   },
+  {
+    name: 'SN74LS14N',
+    packageType: 'DIP-14',
+    value: 'Šest invertorů se Schmittovým vstupem (hex Schmitt-trigger inverter), TTL (LS), 4,75–5,25 V',
+    notes:
+      'Obecně známý TTL obvod (rodina 74LS), ne z konkrétního nahraného datasheetu — LS varianta ' +
+      '74HC14. V této appce použito jako IO5 (KD74LS14) v projektu „Domácí interkom" (Praktická ' +
+      'elektronika A Radio 01/2025).',
+    tags: 'io,logika,74ls14,sn74ls14n,invertor,schmitt,ttl',
+  },
 
   // Klopné obvody a čítače
   {
@@ -881,6 +902,30 @@ const IC_SPECS: IcSpec[] = [
     schematicImage: 'CD4011B.jpg',
     tags: 'io,logika,cd4011,cd4011b,nand,hradlo,cmos,4011',
   },
+  {
+    name: 'CD4040BE',
+    packageType: 'DIP-16',
+    value: '12stupňový binární čítač/dělič (ripple counter), 3–18 V (CMOS)',
+    notes:
+      'Obecně známý CMOS obvod (rodina 4000/4000B), ne z konkrétního nahraného datasheetu. Dvanáct ' +
+      'kaskádovaných binárních děličů /2 s hodinovým vstupem a resetem, všech 12 stupňů vyvedeno ' +
+      '(na rozdíl od CD4060B, který má vestavěný oscilátor a jen 10 z 14 stupňů vyvedených). V ' +
+      'této appce použito jako IO2 (čítač prozvánění) v projektu „Domácí interkom" (Praktická ' +
+      'elektronika A Radio 01/2025).',
+    tags: 'io,logika,cmos,cd4040,cd4040be,čítač,dělič,4040',
+  },
+  {
+    name: 'CD4044BE',
+    packageType: 'DIP-16',
+    value: 'Čtyři 3-stavové NOR klopné obvody (quad 3-state R/S latch), 3–18 V (CMOS)',
+    notes:
+      'Obecně známý CMOS obvod (rodina 4000/4000B), ne z konkrétního nahraného datasheetu. Čtyři ' +
+      'nezávislé klopné obvody typu R/S se společným povolením výstupu (enable) pro každou dvojici ' +
+      '— často používaný jako jednoduchá paměť/signalizace stavu v logických automatech. V této ' +
+      'appce použito jako IO3 (RS klopný obvod pro řízení prozvánění) v projektu „Domácí interkom" ' +
+      '(Praktická elektronika A Radio 01/2025).',
+    tags: 'io,logika,cmos,cd4044,cd4044be,klopný-obvod,rs-latch,4044',
+  },
 
   // Posuvné registry
   {
@@ -942,8 +987,28 @@ const IC_SPECS: IcSpec[] = [
     notes: 'Přepíná jeden společný vývod mezi 8 kanály podle 3bitové adresy — funguje i pro analogové signály.',
     tags: 'io,logika,cd4051,multiplexer,analogový',
   },
+  {
+    name: 'SN74LS138N',
+    packageType: 'DIP-16',
+    value: '3 na 8 linkový dekodér/demultiplexer, TTL (LS), 4,75–5,25 V',
+    notes:
+      'Obecně známý TTL obvod (rodina 74LS), ne z konkrétního nahraného datasheetu — LS varianta ' +
+      '74HC138. V této appce použito jako IO6, IO7 v projektu „Domácí interkom" (Praktická ' +
+      'elektronika A Radio 01/2025).',
+    tags: 'io,logika,74ls138,sn74ls138n,dekodér,ttl',
+  },
 
   // Budiče (drivery)
+  {
+    name: 'L6201PS',
+    packageType: 'Multiwatt-11 nebo PowerSO-20 (dle varianty)',
+    value: 'H-můstkový budič DC motoru, až 2,8 A, napájení do 48 V, vestavěná ochrana proti zkratu/přehřátí',
+    notes:
+      'Obecně známý výkonový H-můstkový IO rodiny STMicroelectronics L620x — obecně dostupné ' +
+      'parametry, ne z konkrétního nahraného datasheetu. V této appce použito jako IC2 (budič DC ' +
+      'motoru) v projektu „Automatická dvířka kurníku (ESP32, bakalářská práce)".',
+    tags: 'io,budič,h-můstek,motor,dc-motor,l6201,l6201ps',
+  },
   {
     name: 'ULN2003',
     packageType: 'DIP-16',
@@ -3780,6 +3845,33 @@ const IC_SPECS: IcSpec[] = [
       'LTV-827: -40 až +105°C (užší než LTV-817).',
     schematicImage: 'LTV-847.jpg',
     tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,čtyřkanálový,liteon,ltv-847,dip-16,tht',
+  },
+  {
+    name: 'TSOP1738',
+    packageType: 'THT, 3 vývody (GND, VS, OUT), IR filtr v pouzdře',
+    value: 'IR přijímací modul, 38 kHz nosný kmitočet, demodulovaný digitální výstup',
+    notes: 'Standardní infračervený přijímač pro dálkové ovládání — obecně dostupné parametry, ne z konkrétního nahraného datasheetu.',
+    tags: 'io,senzor,ir,infra,přijímač,dálkové-ovládání,tsop1738,38khz',
+  },
+  {
+    name: 'KC507',
+    packageType: 'TO-92 (3 vývody) nebo podobné malé pouzdro',
+    value: 'NPN fototranzistor (světlocitlivý spínací prvek)',
+    notes:
+      'Obecně dostupné parametry, ne z konkrétního nahraného datasheetu. V této appce použito jako ' +
+      'spínací/časovací prvek v projektu „Nízkoúbytkové palivové čerpadlo se soft-startem" ' +
+      '(Praktická elektronika A Radio 01/2025).',
+    tags: 'io,fototranzistor,senzor,optický,kc507',
+  },
+  {
+    name: 'TCST1103',
+    packageType: 'THT, štěrbinový (slotted) optický spínač, drážka cca 3 mm',
+    value: 'Optický přerušovač (IR LED + fototranzistor), detekce clony v drážce',
+    notes:
+      'Obecně dostupné parametry, ne z konkrétního nahraného datasheetu. V této appce použito jako ' +
+      'optická závora (kanály enkodéru polohy) v projektu „Automatická dvířka kurníku (ESP32, ' +
+      'bakalářská práce)".',
+    tags: 'io,optočlen,optický-přerušovač,slotted,tcst1103,enkodér',
   },
 
   // Ethernet kontroléry

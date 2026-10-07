@@ -60,6 +60,13 @@ const COIL_SPECS: CoilSpec[] = [
     tags: 'cívka,tlumivka,induktor,tht',
   },
   {
+    name: 'Radiální tlumivka 330 µH',
+    packageType: 'THT, radiální, barevný kód',
+    value: '330 µH',
+    notes: 'Obecná radiální (barelová) tlumivka pro obecné použití, ověř proudovou zatížitelnost u konkrétního kusu.',
+    tags: 'cívka,tlumivka,induktor,tht',
+  },
+  {
     name: 'Radiální tlumivka 1 mH',
     packageType: 'THT, radiální, barevný kód',
     value: '1 mH',
