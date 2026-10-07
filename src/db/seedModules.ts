@@ -4933,7 +4933,17 @@ const MODULE_SPECS: ModuleSpec[] = [
     datasheetUrl: 'https://store.arduino.cc/products/arduino-uno-rev3',
     packageType: 'Deska 68,6 × 53,4 mm, USB-B, napájecí jack, hlavičky pinů 2,54 mm',
     value: 'ATmega328P, 16 MHz, 14× digitální I/O (6× PWM), 6× analogový vstup, napájení 7–12 V (jack) nebo 5 V (USB)',
-    notes: 'Standardní Arduino vývojová deska — obecně známé parametry, ne z konkrétního nahraného datasheetu.',
+    notes:
+      'Arduino LLC/Arduino S.r.l., oficiální specifikace desky "Arduino Uno Rev3" (docs.arduino.cc, ' +
+      'souhrnná tabulka "Tech Specs", číslo desky A000066). Mikrokontrolér ATmega328P (Microchip), ' +
+      'takt 16 MHz, provozní napětí logiky 5 V, doporučený vstup napájení 7–12 V (mezní rozsah 6–20 V) ' +
+      'přes DC jack nebo 5 V přes USB-B. 14 digitálních I/O pinů (6 z nich PWM: D3, D5, D6, D9, D10, ' +
+      'D11), 6 analogových vstupů (A0–A5, 10bitový ADC). Paměť: 32 kB flash (z toho 0,5 kB zabírá ' +
+      'bootloader), 2 kB SRAM, 1 kB EEPROM. Maximální proud na jeden I/O pin 20 mA (celkem přes ' +
+      'všechny piny max. 200 mA), na 3,3V pin max. 50 mA. USB-sériový převod zajišťuje samostatný ' +
+      'mikrokontrolér ATmega16U2 (u revize R3 nahradil starší ATmega8U2) — hlavní čip tedy neřeší USB ' +
+      'sám. Rozměry desky 68,6 × 53,4 mm. Uložená URL (store.arduino.cc) je jen prodejní stránka, ' +
+      'reálné technické parametry jsou z oficiální dokumentace docs.arduino.cc.',
     tags: 'modul,arduino,arduino-uno,atmega328p,vývojová-deska',
   },
   {
@@ -4941,7 +4951,15 @@ const MODULE_SPECS: ModuleSpec[] = [
     datasheetUrl: 'https://docs.arduino.cc/hardware/nano/',
     packageType: 'Deska 45 × 18 mm, Mini-USB nebo USB-C (dle revize), hlavičky pinů 2,54 mm (bez patice)',
     value: 'ATmega328P, 16 MHz, 14× digitální I/O (6× PWM), 8× analogový vstup, napájení 7–12 V nebo 5 V (USB)',
-    notes: 'Kompaktní varianta Arduino Uno pro nepájivé pole/menší konstrukce — obecně známé parametry, ne z konkrétního nahraného datasheetu.',
+    notes:
+      'Arduino LLC/Arduino S.r.l., oficiální specifikace desky "Arduino Nano" (docs.arduino.cc, ' +
+      'sekce "Tech Specs"). Mikrokontrolér ATmega328P, takt 16 MHz, provozní napětí logiky 5 V, ' +
+      'doporučený vstup přes VIN 7–12 V. 14 digitálních I/O pinů (6 PWM: D3, D5, D6, D9, D10, D11), ' +
+      '8 analogových vstupů A0–A7 (A6/A7 jsou pouze analogové, bez digitální funkce). Paměť: 32 kB ' +
+      'flash (2 kB zabírá bootloader — starší/větší bootloader než u Uno), 2 kB SRAM, 1 kB EEPROM. ' +
+      'Konektor podle revize Mini-USB-B (starší) nebo USB-C (Nano Every/novější), USB-sériový ' +
+      'převodník se dle výrobce desky liší (FTDI FT232RL u originálu, časté čínské klony s CH340). ' +
+      'Rozměry desky přibližně 45 × 18 mm, hmotnost cca 7 g.',
     tags: 'modul,arduino,arduino-nano,atmega328p,vývojová-deska',
   },
   {
@@ -4949,7 +4967,16 @@ const MODULE_SPECS: ModuleSpec[] = [
     datasheetUrl: 'https://store.arduino.cc/products/arduino-mega-2560-rev3',
     packageType: 'Deska 101,5 × 53,4 mm, USB-B, napájecí jack, hlavičky pinů 2,54 mm',
     value: 'ATmega2560, 16 MHz, 54× digitální I/O (15× PWM), 16× analogový vstup, napájení 7–12 V (jack) nebo 5 V (USB)',
-    notes: 'Výkonnější Arduino deska s více I/O pinů a pamětí — obecně známé parametry, ne z konkrétního nahraného datasheetu.',
+    notes:
+      'Arduino LLC/Arduino S.r.l., oficiální specifikace desky "Arduino Mega 2560 Rev3" (docs.' +
+      'arduino.cc, sekce "Tech Specs", č. desky A000067). Mikrokontrolér ATmega2560, takt 16 MHz, ' +
+      'provozní napětí logiky 5 V, doporučený vstup 7–12 V (mezní rozsah 6–20 V) přes DC jack nebo ' +
+      '5 V přes USB-B. 54 digitálních I/O pinů (15 z nich s PWM), 16 analogových vstupů (10bitový ' +
+      'ADC). Paměť: 256 kB flash (8 kB zabírá bootloader), 8 kB SRAM, 4 kB EEPROM — výrazně více než ' +
+      'u Uno/Nano. Maximální proud na I/O pin 20 mA (40 mA špičkově), na 3,3V pin 50 mA. ' +
+      'USB-sériový převod zajišťuje ATmega16U2. Rozměry desky 101,5 × 53,4 mm. Uložená URL ' +
+      '(store.arduino.cc) je prodejní stránka, reálné parametry pocházejí z oficiální dokumentace ' +
+      'docs.arduino.cc.',
     tags: 'modul,arduino,arduino-mega,atmega2560,vývojová-deska',
   },
   {
@@ -4957,7 +4984,18 @@ const MODULE_SPECS: ModuleSpec[] = [
     datasheetUrl: 'https://electronicwings.com/sensors-modules/bluetooth-module-hc-05-',
     packageType: 'SMD modul na nosné destičce, 6 pinů (VCC, GND, TXD, RXD, STATE, EN/KEY)',
     value: 'Bluetooth 2.0 (Classic) sériový modul (UART), master/slave, napájení 3,3–6 V',
-    notes: 'Oblíbený levný Bluetooth-sériový převodník pro Arduino projekty — obecně známé parametry, ne z konkrétního nahraného datasheetu.',
+    notes:
+      'ElectronicWings.com, "Bluetooth Module HC-05 Pinout, AT Commands & Arduino Programming" ' +
+      '(referenční článek s pinoutem a AT příkazy pro modul s čipsetem CSR BC417). Napájení VCC ' +
+      '3,3–5 V (modul má na desce vlastní regulátor 5 V → 3,3 V pro samotný BC417 čip), logická ' +
+      'úroveň TXD/RXD je 3,3 V — při připojení k 5V mikrokontroléru je nutné posunout úroveň TX ' +
+      'směrem do modulu (RX z modulu lze číst přímo). Výchozí přenosová rychlost 9 600 Bd v ' +
+      'datovém (komunikačním) režimu, 38 400 Bd v AT (příkazovém) režimu; rychlost lze změnit ' +
+      'příkazem AT+UART. Pin KEY/EN držený v H při startu přepne modul do AT režimu (jinak běží v ' +
+      'datovém režimu). Piny: VCC, GND, TXD, RXD, STATE (propojen s on-board LED, slouží jako ' +
+      'indikace stavu připojení) a EN/KEY. Bluetooth 2.0+EDR, 2,4 GHz, podporuje master i slave roli ' +
+      '(na rozdíl od HC-06, který je jen slave) — role i jméno/heslo se nastavují přes AT příkazy ' +
+      '(AT+ROLE, AT+NAME, AT+PSWD). Dosah udáván řádově do 10 m (třída 2).',
     tags: 'modul,bluetooth,hc-05,uart,sériový',
   },
   {
@@ -4965,7 +5003,16 @@ const MODULE_SPECS: ModuleSpec[] = [
     datasheetUrl: 'https://www.mouser.com/datasheet/2/1398/Soldered_101246-3507941.pdf',
     packageType: 'Plastové tělo cca 23×12×29 mm, 3vodičový konektor (napájení/GND/PWM)',
     value: 'Analogové mikroservo, rozsah cca 180°, napájení 4,8–6 V, řízení PWM 50 Hz',
-    notes: 'Standardní levné hobby mikroservo — obecně známé parametry, ne z konkrétního nahraného datasheetu.',
+    notes:
+      'Soldered Electronics, "101246 — Micro servo motor 9g SG90" (datasheet publikovaný přes ' +
+      'Mouser, dokument č. 3507941). Napájecí napětí 5 V (SG90 obecně bývá udáváno v rozsahu ' +
+      '4,8–6 V), rychlost otáčení cca 60° za 0,1 s naprázdno. Dokument u hmotnosti uvádí ' +
+      'nekonzistentní údaje (na jedné straně 9 g, na jiné straně téhož dokumentu 14 g) — běžně ' +
+      'prodávané SG90 váží kolem 9 g. Rozměry těla cca 23 × 12 × 29 mm (jiné kopie téhož SG90 ' +
+      'datasheetu uvádějí 22,2 × 11,8 × 31 mm). Analogové řízení PWM, perioda signálu cca 20 ms, ' +
+      'šířka pulzu přibližně 500–2 400 µs (střed/0° cca 1,5 ms), mrtvé pásmo (dead band) cca 10 µs. ' +
+      'Brzdný (stall) moment u SG90 běžně udáván kolem 1,8 kgf·cm, rozsah otáčení cca 180°, pracovní ' +
+      'teplota 0–55 °C. 3vodičový konektor (napájení/GND/signál).',
     tags: 'modul,servo,sg90,mikroservo,pwm',
   },
   {
@@ -4974,11 +5021,21 @@ const MODULE_SPECS: ModuleSpec[] = [
     packageType: 'Hotová deska s potenciometrem, cívkou a konektory IN/OUT',
     value: 'Step-down (buck) DC-DC měnič, vstup 4–35/40 V, výstup nastavitelný 1,25–30/37 V, až 3 A',
     notes:
-      'Běžně prodávaný čínský modul s IO LM2596 — obecně známé parametry, ne z konkrétního ' +
-      'nahraného datasheetu. V této appce použito v projektu „Nízkoúbytkové palivové čerpadlo se ' +
-      'soft-startem" (Praktická elektronika A Radio 01/2025) — pozor, schéma v časopise u tohoto ' +
-      'modulu uvádí popisek „LM2569" (zřejmě tisková chyba), fotografie a text článku ale jasně ' +
-      'ukazují potisk „LM2596 DC-DC HW-411".',
+      'Texas Instruments, "LM2596 SIMPLE SWITCHER Power Converter 150-kHz 3-A Step-Down Voltage ' +
+      'Regulator" (datasheet SNVS124, aktuální revize G, 03/2023). Samotný IO LM2596: spínací ' +
+      'frekvence pevně 150 kHz, vstupní napětí do 40 V (absolutní maximum 45 V), výstupní proud až ' +
+      '3 A, u ADJ verze nastavitelný výstup 1,2–37 V (přesnost reference ±4 %, zpětnovazební napětí ' +
+      'typ. 1,23 V), existují i pevné verze (3,3/5/12 V). Obsahuje tepelnou ochranu a omezení proudu, ' +
+      'TTL kompatibilní ON/OFF pin, klidový odběr cca 80 µA ve vypnutém stavu. Pouzdra TO-220/TO-263. ' +
+      'Čínský hotový modul s potiskem "LM2596 DC-DC HW-411" (konkrétní datasheet k tomuto přesnému ' +
+      'levnému modulu výrobce nepublikuje, specifikace odpovídají běžně prodávaným klonům): vstup ' +
+      'cca 3–40 V, výstup nastavitelný potenciometrem v rozsahu cca 1,25–35 V (jen snižující, výstup ' +
+      'musí být o cca 1,5 V nižší než vstup), trvalý proud se u levných modulů doporučuje omezit na ' +
+      'cca 2–2,5 A (plných 3 A jen krátkodobě/s chlazením), bez ochrany proti přepólování napájení. ' +
+      'Rozměry desky cca 43 × 21 × 14 mm. V této appce použito v projektu „Nízkoúbytkové palivové ' +
+      'čerpadlo se soft-startem" (Praktická elektronika A Radio 01/2025) — pozor, schéma v časopise u ' +
+      'tohoto modulu uvádí popisek „LM2569" (zřejmě tisková chyba), fotografie a text článku ale ' +
+      'jasně ukazují potisk „LM2596 DC-DC HW-411".',
     tags: 'modul,dc-dc,měnič,step-down,buck,lm2596,hw-411',
   },
   {
@@ -4987,8 +5044,18 @@ const MODULE_SPECS: ModuleSpec[] = [
     packageType: 'SMD modul s U.FL konektorem pro externí anténu, 56 pinů (castellated)',
     value: 'Wi-Fi + BLE 5 modul, Xtensa LX7 dual-core, až 512 KB SRAM, flash/PSRAM dle varianty, VDD 3,0–3,6 V',
     notes:
-      '"U" varianta modulu ESP32-S3-WROOM-1 s konektorem pro externí anténu (místo integrované PCB ' +
-      'antény) — obecně známé parametry, ne z konkrétního nahraného datasheetu.',
+      'Espressif Systems, "ESP32-S3-WROOM-1 & ESP32-S3-WROOM-1U Datasheet" (aktuální revize 1.7, ' +
+      'documentation.espressif.com / espressif.com). Jádro ESP32-S3: dvoujádrový Xtensa LX7, 2,4GHz ' +
+      'Wi-Fi 802.11 b/g/n a Bluetooth 5 (LE), 512 kB interní SRAM, 384 kB ROM, 16 kB RTC SRAM. Modul ' +
+      'se dodává s externí flash a PSRAM podle objednacího kódu NxRy (x = flash v MB, y = PSRAM v ' +
+      'MB), např. varianty N4R2, N8R8 nebo N16R8 — tedy flash do 16 MB, PSRAM do 8 MB. Vysílací ' +
+      'výkon udáván do 20,5 dBm, citlivost přijímače do −103,5 dBm. Napájecí napětí VDD 3,0–3,6 V, ' +
+      'pracovní teplota −40 až +85 °C. "U" varianta (WROOM-1U) má oproti základní WROOM-1 místo ' +
+      'integrované PCB antény konektor pro externí anténu typu U.FL/IPEX (anténa není součástí ' +
+      'modulu). Rozměry modulu WROOM-1U cca 18,0 × 19,2 × 3,2 mm (dle srovnávací tabulky v ' +
+      'datasheetu) — menší půdorys než WROOM-1 s PCB anténou, protože odpadá plocha pro anténu. SMD ' +
+      'modul s pájecími ploškami (castellated) po obvodu, přesný počet a přiřazení pinů viz sekce ' +
+      '"Pin Definitions" datasheetu.',
     tags: 'modul,esp32,esp32-s3,wifi,ble,wroom',
   },
 ];

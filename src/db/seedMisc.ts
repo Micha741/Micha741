@@ -420,7 +420,17 @@ const MISC_SPECS: MiscSpec[] = [
     datasheetUrl: 'https://www.lcsc.com/product-detail/Photoresistors_Senba-Sensing-Tech-GL5539_C125630.html',
     packageType: 'THT, 2 vývody, kulatá čočka Ø5 mm',
     value: 'Fotorezistor (LDR, CdS), odpor ve tmě ~1 MΩ, na světle ~10–20 kΩ (dle osvětlení)',
-    notes: 'Obecně dostupné katalogové hodnoty, ne z konkrétního nahraného datasheetu — standardní malý fotorezistor řady GL55xx.',
+    notes:
+      'Senba Sensing Tech, "GL55 Series Photoresistor" (katalogový datasheet řady GL55, souhrnná ' +
+      'tabulka parametrů). Pro GL5539: maximální napětí 150 V, maximální ztrátový výkon 100 mW, ' +
+      'pracovní teplota −30 až +70 °C, spektrální citlivost s vrcholem (peak) na 540 nm (odpovídá ' +
+      'zelenému světlu, blízko citlivosti lidského oka). Světelný odpor měřený při osvětlení 10 lx ' +
+      '(standardní zdroj A, po 2 h kondicionování 400–600 lx) bývá u GL5539 udáván v rozsahu cca ' +
+      '30–90 kΩ (vybíraný/binovaný subtyp GL5539A pak užší 60–80 kΩ), gama (sklon odporu mezi 100 a ' +
+      '10 lx) cca 0,7, doba odezvy (nárůst/pokles) cca 30 ms. Odpor ve tmě (měřen 10 s po zhasnutí ' +
+      '10lx osvětlení) se mezi prodejci/kopiemi datasheetu liší (uváděno 1–10 MΩ) — hodnotu ve tmě ' +
+      'proto brát jako řádově jednotky MΩ a ověřit u konkrétního dodaného kusu. Pouzdro THT, Ø5 mm, ' +
+      '2 drátové vývody.',
     tags: 'fotorezistor,ldr,gl5539,senzor,světlo',
   },
   {
