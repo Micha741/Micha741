@@ -4920,7 +4920,12 @@ const MODULE_SPECS: ModuleSpec[] = [
       'podložený záznam) a budicí/časovací obvod, ovládá se pedálem/tlačítkem přes oddělený displej ' +
       'na plochém kabelu (zobrazuje nastavený čas a výkon). V této appce použito jako hlavní spínací ' +
       'prvek v projektu „Bodovací svářečka z mikrovlnné trouby" (PE 07/2023) — POZOR, zapojení je ' +
-      'přímo na síťovém napětí 230 V.',
+      'přímo na síťovém napětí 230 V. Schéma zapojení (dohledané uživatelem, ne z magazínu PE) ' +
+      'ukazuje typickou kompletní sestavu: svařovací transformátor (sekundár → bodovací hroty), ' +
+      'samostatný malý pomocný transformátor 230 V → 6–12 VAC pro napájení řídicí desky NY-D01, ' +
+      'nožní pedál spouštějící impuls a oddělený 2místný displej zobrazující nastavený ' +
+      'čas/výkon — doplňuje HADEX prohlášení o shodě, které pinout/zapojení neobsahuje.',
+    schematicImage: 'NY-D01.jpg',
     tags: 'modul,ny-d01,m302,hadex,bodovací-svářečka,triak,bta41-800b,230v,pozor-síť',
   },
   {
