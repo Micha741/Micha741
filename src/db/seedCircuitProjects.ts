@@ -1,6 +1,6 @@
 import type { CircuitProjectInput } from '../types/circuit';
 
-export const CIRCUIT_LIBRARY_VERSION = 9;
+export const CIRCUIT_LIBRARY_VERSION = 10;
 
 /**
  * Přesný počet kusů u drobných pasivních součástek (rezistory) je odhad podle
@@ -110,7 +110,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     notes:
       'Zdroj: Praktická elektronika A Radio 11/2024, str. 9, rubrika Jednoduchá zapojení, převzato z Rádiótechnika (HU) 12/2017. Schéma je oříznuté ze scanu časopisu, navíc samo převzaté z maďarského časopisu — ověřit práva k publikaci obrázku v appce.',
     parts: [
-      { label: 'ANT1 — teleskopická anténa', match: 'anténa', quantity: 1 },
+      { label: 'ANT1 — teleskopická anténa', match: 'teleskopická anténa', quantity: 1 },
       { label: 'T1 — tranzistor J310 (JFET, N-kanál)', match: 'J310', quantity: 1 },
       { label: 'C1 — kondenzátor 390 pF', match: '390 pF', quantity: 1 },
       { label: 'S1 — přepínač kmitočtového rozsahu, 8 poloh', match: 'přepínač', quantity: 1 },
