@@ -4933,7 +4933,7 @@ const MODULE_SPECS: ModuleSpec[] = [
   },
   {
     name: 'Arduino Nano',
-    datasheetUrl: 'https://docs.arduino.cc/resources/datasheets/A000005-datasheet.pdf',
+    datasheetUrl: 'https://docs.arduino.cc/hardware/nano/',
     packageType: 'Deska 45 × 18 mm, Mini-USB nebo USB-C (dle revize), hlavičky pinů 2,54 mm (bez patice)',
     value: 'ATmega328P, 16 MHz, 14× digitální I/O (6× PWM), 8× analogový vstup, napájení 7–12 V nebo 5 V (USB)',
     notes: 'Kompaktní varianta Arduino Uno pro nepájivé pole/menší konstrukce — obecně známé parametry, ne z konkrétního nahraného datasheetu.',
@@ -4949,7 +4949,7 @@ const MODULE_SPECS: ModuleSpec[] = [
   },
   {
     name: 'HC-05',
-    datasheetUrl: 'https://www.radiolocman.com/datasheet/pdf.html?di=185839',
+    datasheetUrl: 'https://electronicwings.com/sensors-modules/bluetooth-module-hc-05-',
     packageType: 'SMD modul na nosné destičce, 6 pinů (VCC, GND, TXD, RXD, STATE, EN/KEY)',
     value: 'Bluetooth 2.0 (Classic) sériový modul (UART), master/slave, napájení 3,3–6 V',
     notes: 'Oblíbený levný Bluetooth-sériový převodník pro Arduino projekty — obecně známé parametry, ne z konkrétního nahraného datasheetu.',
