@@ -63,4 +63,11 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
       PRAGMA user_version = 3;
     `);
   }
+
+  if (currentVersion < 4) {
+    await db.execAsync(`
+      ALTER TABLE circuit_projects ADD COLUMN pcbImage TEXT;
+      PRAGMA user_version = 4;
+    `);
+  }
 }

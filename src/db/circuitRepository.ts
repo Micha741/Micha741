@@ -37,6 +37,7 @@ type CircuitProjectRow = {
   name: string;
   description: string | null;
   image: string | null;
+  pcbImage: string | null;
   partsJson: string;
   notes: string | null;
   createdAt: string;
@@ -49,6 +50,7 @@ function rowToProject(row: CircuitProjectRow): CircuitProject {
     name: row.name,
     description: row.description,
     image: row.image,
+    pcbImage: row.pcbImage,
     notes: row.notes,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
@@ -93,12 +95,13 @@ export async function getCircuitProject(
 async function createCircuitProject(db: SQLiteDatabase, input: CircuitProjectInput): Promise<number> {
   const now = new Date().toISOString();
   const result = await db.runAsync(
-    `INSERT INTO circuit_projects (name, description, image, partsJson, notes, createdAt, updatedAt)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO circuit_projects (name, description, image, pcbImage, partsJson, notes, createdAt, updatedAt)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       input.name,
       input.description,
       input.image,
+      input.pcbImage,
       JSON.stringify(input.parts),
       input.notes,
       now,
@@ -144,9 +147,9 @@ export async function syncSeedCircuitProjects(
 
       const now = new Date().toISOString();
       await db.runAsync(
-        `UPDATE circuit_projects SET description = ?, image = ?, partsJson = ?, notes = ?, updatedAt = ?
+        `UPDATE circuit_projects SET description = ?, image = ?, pcbImage = ?, partsJson = ?, notes = ?, updatedAt = ?
          WHERE id = ?`,
-        [seed.description, seed.image, JSON.stringify(seed.parts), seed.notes, now, existingId]
+        [seed.description, seed.image, seed.pcbImage, JSON.stringify(seed.parts), seed.notes, now, existingId]
       );
       updated += 1;
     }

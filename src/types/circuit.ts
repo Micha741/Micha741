@@ -11,6 +11,8 @@ export interface CircuitProject {
   description: string | null;
   /** Klíč do CIRCUIT_IMAGES (src/assets/circuitImages.ts). */
   image: string | null;
+  /** Klíč do CIRCUIT_IMAGES — deska s plošnými spoji, pokud ji zdroj nabízel. */
+  pcbImage: string | null;
   parts: CircuitProjectPart[];
   notes: string | null;
   createdAt: string;
