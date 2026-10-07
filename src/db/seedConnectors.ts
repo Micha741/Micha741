@@ -163,6 +163,34 @@ const CONNECTOR_SPECS: ConnectorSpec[] = [
     schematicImage: 'BM28-Series.jpg',
     tags: 'konektor,board-to-board,board-to-fpc,smd,hirose,bm28,0,35mm,výkonový-kontakt,usb3-1',
   },
+  {
+    name: 'Konektor BNC (panelový)',
+    packageType: 'THT/panelový, 50 Ω nebo 75 Ω dle typu',
+    value: 'Souosý VF konektor BNC, bajonetový uzávěr',
+    notes: 'Obecný panelový BNC konektor — časté použití: osciloskopy, VF měřicí přístroje, anténní rozvody.',
+    tags: 'konektor,bnc,souosý,vf,panelový',
+  },
+  {
+    name: 'Konektor CINCH (RCA)',
+    packageType: 'THT/panelový',
+    value: 'Audio/video konektor CINCH (RCA)',
+    notes: 'Obecný CINCH (RCA) konektor pro audio/video propojení.',
+    tags: 'konektor,cinch,rca,audio,video',
+  },
+  {
+    name: 'Šroubovací svorkovnice (obecná)',
+    packageType: 'THT, rozteč 5 mm (běžná řada), N pólů dle potřeby',
+    value: 'Šroubovací svorkovnice do DPS',
+    notes: 'Obecná šroubovací (nebo lámací) svorkovnice pro připojení vodičů k desce plošných spojů — počet pólů dle konkrétní konstrukce.',
+    tags: 'konektor,svorkovnice,šroubovací',
+  },
+  {
+    name: 'Napájecí konektor DC JACK',
+    packageType: 'THT/panelový, souosý (2,1/2,5 mm obvyklé)',
+    value: 'Souosý napájecí konektor DC (barrel jack)',
+    notes: 'Obecný souosý napájecí konektor pro adaptéry 5–12 V, nejčastější průměr pinu 2,1 nebo 2,5 mm.',
+    tags: 'konektor,dc,jack,napájecí,souosý',
+  },
 ];
 
 export function buildConnectorSeed(): ComponentInput[] {
