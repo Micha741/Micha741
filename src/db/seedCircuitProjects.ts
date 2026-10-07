@@ -1,6 +1,6 @@
 import type { CircuitProjectInput } from '../types/circuit';
 
-export const CIRCUIT_LIBRARY_VERSION = 8;
+export const CIRCUIT_LIBRARY_VERSION = 9;
 
 /**
  * Přesný počet kusů u drobných pasivních součástek (rezistory) je odhad podle
@@ -91,7 +91,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
     notes:
       'Zdroj: Praktická elektronika A Radio 11/2024, str. 8, rubrika Jednoduchá zapojení. Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce.',
     parts: [
-      { label: 'SP1, SP2 — reproduktor 8 Ω', match: 'reproduktor', quantity: 2 },
+      { label: 'SP1, SP2 — reproduktor 8 Ω', match: 'Reproduktor 8 Ω', quantity: 2 },
       { label: 'S1 (S1A/S1B) — přepínač impedance, 6 poloh', match: 'přepínač', quantity: 1 },
       { label: 'P1 — potenciometr 100 Ω/5 W', match: '100', quantity: 1 },
       { label: 'R1 — rezistor 1 kΩ/1 W', match: '1k', quantity: 1 },
@@ -562,7 +562,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
       { label: 'IO1 — operační zesilovač LM324 (4× OZ)', match: 'LM324', quantity: 1 },
       { label: 'T1 — tranzistor BC548', match: 'BC548', quantity: 1 },
       { label: 'T2 — tranzistor BC328', match: 'BC328', quantity: 1 },
-      { label: 'SP1 — reproduktor 8 Ω', match: 'reproduktor', quantity: 1 },
+      { label: 'SP1 — reproduktor 8 Ω', match: 'Reproduktor 8 Ω', quantity: 1 },
       { label: 'B1 — baterie 9 V (6F22)', match: 'Baterie 9V', quantity: 1 },
       { label: 'R1, R8 — rezistor 68 kΩ', match: '68 kΩ', quantity: 2 },
       { label: 'R2, R4, R9, R20 — rezistor 33 kΩ', match: '33 kΩ', quantity: 4 },
