@@ -436,6 +436,26 @@ const MISC_SPECS: MiscSpec[] = [
     tags: 'reproduktor,speaker,8ohm,audio',
   },
   {
+    name: 'Vícepásmová End Fed anténa EFHW (1:49/1:64)',
+    packageType:
+      'Jednostranně napájená (end-fed) drátová KV anténa s impedančním transformátorem (unun) ' +
+      'v plastové krabičce na jednom konci a vodičem 2,5 mm² na druhém; na obou koncích upevnění ' +
+      'nekovovými (ne ocelovými) lany, instalace jako inverted-V nebo horizontální/diagonální drát',
+    value:
+      'Varianta 40 m (JYR4010-150W): délka vodiče cca 20 m, transformátor 1:64, pásma 10/15/20/40 m. ' +
+      'Varianta 80 m (JYR8010-150W): délka vodiče cca 40,7 m, transformátor 1:49, pásma 10–80 m. ' +
+      'Výkon obě varianty: SSB <150 W, CW ~100–120 W, FT8 ~80–100 W',
+    notes:
+      'Vícesměrová (všesměrová) jednopásmově napájená KV anténa pro radioamatérský provoz — díky ' +
+      'jednostrannému napájení rychlá a jednoduchá instalace bez nutnosti řešit směrovost. ' +
+      'Instalační požadavky dle výrobce: po celé délce anténa vyžaduje min. 3 m odstup od ' +
+      'nekovových překážek (zdi, stromy, listí) a min. 5 m od kovových předmětů (el. vedení, okna, ' +
+      'kovové zábradlí) pro zachování parametrů; lana vydrží cca 5 let, kontrola doporučena každých ' +
+      '6 měsíců. Hodnoty přepsány z produktové stránky prodejce (ne z PDF datasheetu výrobce), proto ' +
+      'bez datasheetUrl — ověřit přesné parametry u konkrétního kusu, pokud je to kritické.',
+    tags: 'anténa,antenna,efhw,end-fed,vícepásmová,multiband,kv,hf,drátová,unun,transformátor,1:49,1:64,radioamatér',
+  },
+  {
     name: 'Induktivní snímač (obecný, bezkontaktní)',
     packageType: 'Válcový nebo kvádrový snímač, 2–3 vývody',
     value: 'Bezkontaktní detekce kovových předmětů, spínaný výstup',
