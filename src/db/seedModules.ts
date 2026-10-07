@@ -4925,7 +4925,7 @@ const MODULE_SPECS: ModuleSpec[] = [
   },
   {
     name: 'Arduino Uno',
-    datasheetUrl: 'https://docs.arduino.cc/resources/datasheets/A000066-datasheet.pdf',
+    datasheetUrl: 'https://store.arduino.cc/products/arduino-uno-rev3',
     packageType: 'Deska 68,6 × 53,4 mm, USB-B, napájecí jack, hlavičky pinů 2,54 mm',
     value: 'ATmega328P, 16 MHz, 14× digitální I/O (6× PWM), 6× analogový vstup, napájení 7–12 V (jack) nebo 5 V (USB)',
     notes: 'Standardní Arduino vývojová deska — obecně známé parametry, ne z konkrétního nahraného datasheetu.',
@@ -4941,7 +4941,7 @@ const MODULE_SPECS: ModuleSpec[] = [
   },
   {
     name: 'Arduino Mega 2560',
-    datasheetUrl: 'https://docs.arduino.cc/resources/datasheets/A000067-datasheet.pdf',
+    datasheetUrl: 'https://store.arduino.cc/products/arduino-mega-2560-rev3',
     packageType: 'Deska 101,5 × 53,4 mm, USB-B, napájecí jack, hlavičky pinů 2,54 mm',
     value: 'ATmega2560, 16 MHz, 54× digitální I/O (15× PWM), 16× analogový vstup, napájení 7–12 V (jack) nebo 5 V (USB)',
     notes: 'Výkonnější Arduino deska s více I/O pinů a pamětí — obecně známé parametry, ne z konkrétního nahraného datasheetu.',

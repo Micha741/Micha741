@@ -424,6 +424,18 @@ const MISC_SPECS: MiscSpec[] = [
     tags: 'fotorezistor,ldr,gl5539,senzor,světlo',
   },
   {
+    name: 'Reproduktor 8 Ω (malý, obecný)',
+    packageType: 'Kulatý mylarový/papírový reproduktor, Ø 4–5 cm, 2 vývody',
+    value: 'Impedance 8 Ω, výkon cca 0,5–1 W (max. do 2 W), citlivost cca 85 dB/1W/1m, kmitočtový rozsah cca 300 Hz–10 kHz',
+    notes:
+      'Obecný malý reproduktor, jaký se běžně používá v hračkách, poplašných zařízeních a hobby ' +
+      'konstrukcích (ne auto-audio/HiFi reproduktor s velkým výkonem a basovou odezvou) — hodnoty ' +
+      'jsou typické/orientační pro tuto kategorii, ne z konkrétního datasheetu jednoho výrobku. ' +
+      'V této appce použito jako SP1 v projektu „Elektronický kanárek" (Praktická elektronika A ' +
+      'Radio 01/2025) a SP1/SP2 v projektu „Univerzální reproskříň".',
+    tags: 'reproduktor,speaker,8ohm,audio',
+  },
+  {
     name: 'Induktivní snímač (obecný, bezkontaktní)',
     packageType: 'Válcový nebo kvádrový snímač, 2–3 vývody',
     value: 'Bezkontaktní detekce kovových předmětů, spínaný výstup',
