@@ -111,6 +111,8 @@ interface PartSpec {
   tags: string;
   /** Klíč do SCHEMATIC_IMAGES (src/assets/schematicImages.ts), pokud pro díl existuje schéma. */
   schematicImage?: string;
+  /** Odkaz na datasheet/oficiální produktovou stránku, pokud byl dohledán. */
+  datasheetUrl?: string;
 }
 
 const DIODE_SPECS: PartSpec[] = [
@@ -486,6 +488,7 @@ const DIODE_SPECS: PartSpec[] = [
   { name: 'LED SMD (obecná)', packageType: 'SMD 0805/1206', value: '~2,0 V / 20 mA (dle barvy)', notes: 'Obecná SMD LED, přesné parametry (Vf, barva) dle konkrétního typu.', tags: 'dioda,led,smd' },
   {
     name: 'HLMP-CE23',
+    datasheetUrl: 'https://html.alldatasheet.com/html-pdf/859378/HP/HLMP-CE23/154/5/HLMP-CE23.html',
     packageType: '5 mm THT, difuzní čočka',
     value: 'Modrozelená LED (505 nm), 20 mA, vyzařovací úhel 30°',
     notes:
@@ -3616,10 +3619,11 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,npn,bipolární,to-92,zesilovací,bc546,pozor-pinout',
   },
   { name: 'BC547', packageType: 'TO-92', value: 'NPN, 45 V, 100 mA', notes: 'Malovýkonový bipolární tranzistor', tags: 'tranzistor,npn,bipolární' },
-  { name: 'BC548', packageType: 'TO-92', value: 'NPN, 30 V, 100 mA', notes: 'Malovýkonový bipolární tranzistor', tags: 'tranzistor,npn,bipolární' },
+  { name: 'BC548', packageType: 'TO-92', value: 'NPN, 30 V, 100 mA', notes: 'Malovýkonový bipolární tranzistor', tags: 'tranzistor,npn,bipolární', datasheetUrl: 'https://www.onsemi.com/download/data-sheet/pdf/bc546-d.pdf' },
   { name: 'BC549', packageType: 'TO-92', value: 'NPN, 30 V, 100 mA', notes: 'Malovýkonový bipolární tranzistor, nízký šum', tags: 'tranzistor,npn,bipolární' },
   {
     name: 'BC328',
+    datasheetUrl: 'https://www.onsemi.com/pdf/datasheet/bc327-d.pdf',
     packageType: 'TO-92',
     value: 'PNP, 25 V (BC328-25) / 45 V (BC328-40), 800 mA, 625 mW',
     notes:
@@ -3632,6 +3636,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   },
   {
     name: 'BC337',
+    datasheetUrl: 'https://www.onsemi.com/download/data-sheet/pdf/bc337-d.pdf',
     packageType: 'TO-92',
     value: 'NPN, 45 V (BC337-40), 800 mA, 625 mW',
     notes:
@@ -3644,6 +3649,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   },
   {
     name: '2N2222',
+    datasheetUrl: 'https://www.onsemi.com/pdf/datasheet/p2n2222a-d.pdf',
     packageType:
       'TO-18 — vývody: 1=emitor, 2=báze, 3=kolektor (kolektor je spojen s kovovým pouzdrem/case!)',
     value: 'NPN, 40 V, 800 mA',
@@ -4601,7 +4607,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'trr typ 69, max 104 ns @IF=62 A/di/dt=100 A/µs. Qrr typ 143, max 215 nC.',
     tags: 'tranzistor,mosfet,n-kanál,to-220,irf3205,spínací,pozor-proud',
   },
-  { name: '2N7000', packageType: 'TO-92', value: 'N-MOSFET, 60 V, 200 mA', notes: 'Malovýkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál' },
+  { name: '2N7000', packageType: 'TO-92', value: 'N-MOSFET, 60 V, 200 mA', notes: 'Malovýkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál', datasheetUrl: 'https://www.onsemi.com/download/data-sheet/pdf/2n7000-d.pdf' },
   {
     name: '2N7002',
     packageType: 'SOT-23 (3 vývody): 1=G (gate), 2=S (source), 3=D (drain)',
@@ -4651,6 +4657,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   },
   {
     name: 'BS108',
+    datasheetUrl: 'https://www.onsemi.com/pdf/datasheet/bs108-d.pdf',
     packageType: 'TO-92, 3 vývody: 1=D (drain), 2=G (gate), 3=S (source)',
     value: 'N-MOSFET, VDSS 200 V, ID 120 mA',
     notes:
@@ -4662,6 +4669,7 @@ const TRANSISTOR_SPECS: PartSpec[] = [
   },
   {
     name: 'BC846',
+    datasheetUrl: 'https://assets.nexperia.com/documents/data_sheet/BC846_SER.pdf',
     packageType: 'SOT-23, 3 vývody',
     value: 'NPN, 65 V, 100 mA (SMD varianta rodiny BC846/847/848)',
     notes:
@@ -6693,7 +6701,7 @@ function buildFromSpecs(
     value: spec.value,
     quantity: 0,
     location: null,
-    datasheetUrl: null,
+    datasheetUrl: spec.datasheetUrl ?? null,
     schematicImage: spec.schematicImage ?? null,
     notes: spec.notes,
     tags: spec.tags,
@@ -6701,7 +6709,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 112;
+export const SEED_LIBRARY_VERSION = 113;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),

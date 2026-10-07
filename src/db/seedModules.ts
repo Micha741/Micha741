@@ -7,6 +7,8 @@ interface ModuleSpec {
   notes: string;
   tags: string;
   schematicImage?: string;
+  /** Odkaz na datasheet/oficiální produktovou stránku, pokud byl dohledán. */
+  datasheetUrl?: string;
 }
 
 const MODULE_SPECS: ModuleSpec[] = [
@@ -4923,6 +4925,7 @@ const MODULE_SPECS: ModuleSpec[] = [
   },
   {
     name: 'Arduino Uno',
+    datasheetUrl: 'https://docs.arduino.cc/resources/datasheets/A000066-datasheet.pdf',
     packageType: 'Deska 68,6 × 53,4 mm, USB-B, napájecí jack, hlavičky pinů 2,54 mm',
     value: 'ATmega328P, 16 MHz, 14× digitální I/O (6× PWM), 6× analogový vstup, napájení 7–12 V (jack) nebo 5 V (USB)',
     notes: 'Standardní Arduino vývojová deska — obecně známé parametry, ne z konkrétního nahraného datasheetu.',
@@ -4930,6 +4933,7 @@ const MODULE_SPECS: ModuleSpec[] = [
   },
   {
     name: 'Arduino Nano',
+    datasheetUrl: 'https://docs.arduino.cc/resources/datasheets/A000005-datasheet.pdf',
     packageType: 'Deska 45 × 18 mm, Mini-USB nebo USB-C (dle revize), hlavičky pinů 2,54 mm (bez patice)',
     value: 'ATmega328P, 16 MHz, 14× digitální I/O (6× PWM), 8× analogový vstup, napájení 7–12 V nebo 5 V (USB)',
     notes: 'Kompaktní varianta Arduino Uno pro nepájivé pole/menší konstrukce — obecně známé parametry, ne z konkrétního nahraného datasheetu.',
@@ -4937,6 +4941,7 @@ const MODULE_SPECS: ModuleSpec[] = [
   },
   {
     name: 'Arduino Mega 2560',
+    datasheetUrl: 'https://docs.arduino.cc/resources/datasheets/A000067-datasheet.pdf',
     packageType: 'Deska 101,5 × 53,4 mm, USB-B, napájecí jack, hlavičky pinů 2,54 mm',
     value: 'ATmega2560, 16 MHz, 54× digitální I/O (15× PWM), 16× analogový vstup, napájení 7–12 V (jack) nebo 5 V (USB)',
     notes: 'Výkonnější Arduino deska s více I/O pinů a pamětí — obecně známé parametry, ne z konkrétního nahraného datasheetu.',
@@ -4944,6 +4949,7 @@ const MODULE_SPECS: ModuleSpec[] = [
   },
   {
     name: 'HC-05',
+    datasheetUrl: 'https://www.radiolocman.com/datasheet/pdf.html?di=185839',
     packageType: 'SMD modul na nosné destičce, 6 pinů (VCC, GND, TXD, RXD, STATE, EN/KEY)',
     value: 'Bluetooth 2.0 (Classic) sériový modul (UART), master/slave, napájení 3,3–6 V',
     notes: 'Oblíbený levný Bluetooth-sériový převodník pro Arduino projekty — obecně známé parametry, ne z konkrétního nahraného datasheetu.',
@@ -4951,6 +4957,7 @@ const MODULE_SPECS: ModuleSpec[] = [
   },
   {
     name: 'SG90 (mikroservo)',
+    datasheetUrl: 'https://www.mouser.com/datasheet/2/1398/Soldered_101246-3507941.pdf',
     packageType: 'Plastové tělo cca 23×12×29 mm, 3vodičový konektor (napájení/GND/PWM)',
     value: 'Analogové mikroservo, rozsah cca 180°, napájení 4,8–6 V, řízení PWM 50 Hz',
     notes: 'Standardní levné hobby mikroservo — obecně známé parametry, ne z konkrétního nahraného datasheetu.',
@@ -4958,6 +4965,7 @@ const MODULE_SPECS: ModuleSpec[] = [
   },
   {
     name: 'LM2596 DC-DC modul (HW-411)',
+    datasheetUrl: 'https://www.ti.com/product/LM2596',
     packageType: 'Hotová deska s potenciometrem, cívkou a konektory IN/OUT',
     value: 'Step-down (buck) DC-DC měnič, vstup 4–35/40 V, výstup nastavitelný 1,25–30/37 V, až 3 A',
     notes:
@@ -4970,6 +4978,7 @@ const MODULE_SPECS: ModuleSpec[] = [
   },
   {
     name: 'ESP32-S3-WROOM-1U',
+    datasheetUrl: 'https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf',
     packageType: 'SMD modul s U.FL konektorem pro externí anténu, 56 pinů (castellated)',
     value: 'Wi-Fi + BLE 5 modul, Xtensa LX7 dual-core, až 512 KB SRAM, flash/PSRAM dle varianty, VDD 3,0–3,6 V',
     notes:
@@ -4988,7 +4997,7 @@ export function buildModuleSeed(): ComponentInput[] {
     value: spec.value,
     quantity: 0,
     location: null,
-    datasheetUrl: null,
+    datasheetUrl: spec.datasheetUrl ?? null,
     schematicImage: spec.schematicImage ?? null,
     notes: spec.notes,
     tags: spec.tags,
