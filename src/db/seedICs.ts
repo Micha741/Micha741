@@ -305,8 +305,16 @@ const IC_SPECS: IcSpec[] = [
     packageType: 'TO-220 — vývody: 1=vstup (IN), 2=GND, 3=výstup (OUT)',
     value: 'Lineární regulátor +5 V / 1 A',
     notes:
-      'Pevný kladný lineární regulátor řady 78xx. Potřebuje vstupní napětí alespoň o 2–3 V vyšší než ' +
-      'výstup (úbytek/dropout) a keramické/elektrolytické blokovací kondenzátory na vstupu i výstupu.',
+      'STMicroelectronics "L78xx Series — Positive Voltage Regulators" (DocID2143, aktuální rev. 31). ' +
+      'Pevný kladný lineární regulátor řady L78xx v pouzdře TO-220 (3 vývody IN/GND/OUT). L7805: výstup ' +
+      '5 V, tolerance ±4 % (standardní C grade) resp. ±2 % (AC grade), max. výstupní proud 1,5 A ' +
+      '(garantováno 1 A při vhodném chlazení). Úbytek (dropout) napětí typ./max. 2 V — vstup musí být ' +
+      'min. o 2–3 V vyšší než výstup. Klidový proud (Iq) dle varianty 4,3–8 mA (ABV/ACV/CV). Vnitřní ' +
+      'proudové omezení (zkrat výstupu) typ. 2,2 A, tepelná ochrana (thermal shutdown) a ochrana SOA ' +
+      '(safe operating area) integrované na čipu — výrobce řadu označuje za prakticky nezničitelnou při ' +
+      'běžném použití. Doporučené blokovací kondenzátory 0,33 µF na vstupu a 0,1 µF na výstupu. Provozní ' +
+      'rozsah přechodové teploty dle varianty: 0 až 125 °C (L78xxC/AC), -40 až 125 °C (L78xxAB), -55 až ' +
+      '150 °C (vojenský L78xx).',
     tags: 'io,regulátor,7805,napájení',
   },
   {
@@ -336,10 +344,13 @@ const IC_SPECS: IcSpec[] = [
     packageType: 'TO-220 — vývody: 1=vstup (IN), 2=GND, 3=výstup (OUT)',
     value: 'Lineární regulátor +24 V / 1 A',
     notes:
-      'Pevný kladný lineární regulátor řady 78xx, stejné zapojení jako 7805 — potřebuje vstupní ' +
-      'napětí o 2–3 V vyšší než výstup. V této appce použito jako U1 (24V napájení hovorových ' +
-      'linek) v projektu „Domácí interkom" (Praktická elektronika A Radio 01/2025) spolu s ' +
-      '7805 pro 5V logiku.',
+      'STMicroelectronics "L78xx Series — Positive Voltage Regulators" (DocID2143, aktuální rev. 31), ' +
+      'stejný dokument jako pro 7805. Pevný kladný lineární regulátor TO-220, zde varianta L7824 (výstup ' +
+      '24 V, tolerance ±4 % C grade / ±2 % AC grade), max. výstupní proud 1,5 A (garantováno 1 A s ' +
+      'chlazením), dropout napětí typ./max. 2 V — vstup musí být min. o 2–3 V vyšší než výstup (tedy ' +
+      '≥26–27 V). Vnitřní proudové omezení, tepelná ochrana (thermal shutdown) a SOA ochrana integrované ' +
+      'na čipu. V této appce použito jako U1 (24V napájení hovorových linek) v projektu „Domácí interkom" ' +
+      '(Praktická elektronika A Radio 01/2025) spolu s 7805 pro 5V logiku.',
     tags: 'io,regulátor,7824,napájení',
   },
   {
@@ -813,12 +824,15 @@ const IC_SPECS: IcSpec[] = [
     value: 'Čtyři 2-vstupá hradla NAND se Schmittovým klopným vstupem, 3–18 V (CD4093, 4000 ' +
       'série CMOS) / 2–6 V (74HC4093)',
     notes:
-      'Obecně známý CMOS obvod (rodina 4000/4000B), ne z konkrétního nahraného datasheetu. Díky ' +
-      'Schmittově hysterezi na vstupech se hradlo chová i jako tvarovač/komparátor pomalu se ' +
-      'měnícího signálu, proto se často používá jako jednoduchý RC oscilátor/multivibrátor bez ' +
-      'dalších aktivních součástek. V této appce použito jako IO1 (astabilní a monostabilní ' +
-      'multivibrátory) v obou variantách projektu „Dva odpuzovače krtků" (Praktická elektronika ' +
-      'A Radio 01/2025).',
+      'Texas Instruments (původně RCA/Harris) "CD4093B Types — CMOS Quad 2-Input NAND Schmitt Triggers" ' +
+      '(dok. SCHS115D, revidováno září 2003). Čtyři nezávislá 2vstupová NAND hradla se Schmittovou ' +
+      'hysterezí na obou vstupech (typická hystereze v řádu desetin až jednotek V, roste s VDD — přesné ' +
+      'min/typ/max dle napájení viz tabulka Electrical Characteristics v datasheetu). Napájení 3–18 V ' +
+      '(šířeji než 74HC4093: 2–6 V), pinout shodný s 74HC00/CD4011B (viz packageType). Díky Schmittově ' +
+      'hysterezi na vstupech se hradlo chová i jako tvarovač/komparátor pomalu se měnícího signálu, proto ' +
+      'se často používá jako jednoduchý RC oscilátor/multivibrátor bez dalších aktivních součástek. V ' +
+      'této appce použito jako IO1 (astabilní a monostabilní multivibrátory) v obou variantách projektu ' +
+      '„Dva odpuzovače krtků" (Praktická elektronika A Radio 01/2025).',
     tags: 'io,logika,cmos,4093,cd4093,hef4093,74hc4093,nand,schmitt,multivibrátor',
   },
   {
@@ -827,8 +841,14 @@ const IC_SPECS: IcSpec[] = [
     packageType: 'DIP-14',
     value: 'Šest invertorů se Schmittovým vstupem (hex Schmitt-trigger inverter), TTL (LS), 4,75–5,25 V',
     notes:
-      'Obecně známý TTL obvod (rodina 74LS), ne z konkrétního nahraného datasheetu — LS varianta ' +
-      '74HC14. V této appce použito jako IO5 (KD74LS14) v projektu „Domácí interkom" (Praktická ' +
+      'Texas Instruments "SNx414, SNx4LS14 — Hex Schmitt-Trigger Inverters" (aktuální rev. C, ' +
+      '30. 11. 2016). Šest nezávislých invertorů se Schmittovou hysterezí na vstupu, TTL (LS) rodina. ' +
+      'Prahové napětí VT+ (horní) min. 1,4 V / typ. 1,6 V / max. 1,9 V, VT- (dolní) min. 0,5 V / typ. ' +
+      '0,8 V / max. 1,0 V (@VCC=5 V), hystereze VT+−VT- min. 0,4 V / typ. 0,8 V — přímo z TI tabulky ' +
+      'Electrical Characteristics. Propagační zpoždění (dle shodných kopií datasheetu stejné LS14 ' +
+      'rodiny) typ./max. cca 22 ns (tPLH i tPHL, @VCC=5 V, CL=15 pF, RL=2 kΩ). Napájení 4,75–5,25 V. ' +
+      'Pozor na záměnu s CMOS 74HC14 — elektricky odlišné prahy a rychlost, i když logická funkce je ' +
+      'stejná. V této appce použito jako IO5 (KD74LS14) v projektu „Domácí interkom" (Praktická ' +
       'elektronika A Radio 01/2025).',
     tags: 'io,logika,74ls14,sn74ls14n,invertor,schmitt,ttl',
   },
@@ -916,24 +936,33 @@ const IC_SPECS: IcSpec[] = [
     packageType: 'DIP-16',
     value: '12stupňový binární čítač/dělič (ripple counter), 3–18 V (CMOS)',
     notes:
-      'Obecně známý CMOS obvod (rodina 4000/4000B), ne z konkrétního nahraného datasheetu. Dvanáct ' +
-      'kaskádovaných binárních děličů /2 s hodinovým vstupem a resetem, všech 12 stupňů vyvedeno ' +
-      '(na rozdíl od CD4060B, který má vestavěný oscilátor a jen 10 z 14 stupňů vyvedených). V ' +
-      'této appce použito jako IO2 (čítač prozvánění) v projektu „Domácí interkom" (Praktická ' +
-      'elektronika A Radio 01/2025).',
+      'Texas Instruments/Harris "CD4020B, CD4024B, CD4040B Types — CMOS Ripple-Carry Binary Counter/ ' +
+      'Dividers" (dok. SCHS030D, revidováno prosinec 2003). CD4040B je 12stupňový asynchronní ' +
+      '(ripple-carry) binární dělič/čítač se VŠEMI 12 stupni vyvedenými na piny (na rozdíl od příbuzného ' +
+      'CD4060B, který má vestavěný oscilátor, ale jen 10 z 14 stupňů vyvedených). Piny (DIP-16): ' +
+      '1=Q12, 2=Q6, 3=Q5, 4=Q7, 5=Q4, 6=Q3, 7=Q2, 8=VSS, 9=Q1, 10=CLOCK, 11=RESET, 12=Q9, 13=Q8, ' +
+      '14=Q10, 15=Q11, 16=VDD. Čítá na sestupnou hranu hodinového signálu, RESET je aktivní v log. 1 a ' +
+      'nuluje všechny stupně. Napájení 3–18 V (CMOS 4000B série). Propagační zpoždění (CLK→Q1) v řádu ' +
+      'nižších stovek ns (přesné podmínky dle tabulky Switching Characteristics v datasheetu). V této ' +
+      'appce použito jako IO2 (čítač prozvánění) v projektu „Domácí interkom" (Praktická elektronika A ' +
+      'Radio 01/2025).',
     tags: 'io,logika,cmos,cd4040,cd4040be,čítač,dělič,4040',
   },
   {
     name: 'CD4044BE',
     datasheetUrl: 'https://www.ti.com/lit/ds/symlink/cd4044b.pdf',
     packageType: 'DIP-16',
-    value: 'Čtyři 3-stavové NOR klopné obvody (quad 3-state R/S latch), 3–18 V (CMOS)',
+    value: 'Čtyři 3-stavové NAND klopné obvody (quad 3-state R/S latch), 3–18 V (CMOS)',
     notes:
-      'Obecně známý CMOS obvod (rodina 4000/4000B), ne z konkrétního nahraného datasheetu. Čtyři ' +
-      'nezávislé klopné obvody typu R/S se společným povolením výstupu (enable) pro každou dvojici ' +
-      '— často používaný jako jednoduchá paměť/signalizace stavu v logických automatech. V této ' +
-      'appce použito jako IO3 (RS klopný obvod pro řízení prozvánění) v projektu „Domácí interkom" ' +
-      '(Praktická elektronika A Radio 01/2025).',
+      'Texas Instruments/Harris "CD4043B, CD4044B Types — CMOS Quad NAND/NOR R/S Latches with 3-State ' +
+      'Outputs" (dok. SCHS041D, revidováno říjen 2003) — CD4043B je NOR varianta, CD4044B (tento díl) ' +
+      'je NAND varianta se stejným pouzdrem, ale prohozeným pinoutem vstupů/výstupů latch 1/2. Čtyři ' +
+      'nezávislé R/S klopné obvody (každý s vlastním vstupem SET a RESET, oba aktivní v log. 0 — NAND ' +
+      'topologie) a společným 3-stavovým výstupním enable (ENABLE=1 zpřístupní výstupy Q1–Q4, =0 je ' +
+      'uvede do vysokoimpedančního stavu pro sdílení sběrnice). Piny (DIP-16): 1=Q4, 2=NC, 3=S1, 4=R1, ' +
+      '5=ENABLE, 6=R2, 7=S2, 8=VSS, 9=Q2, 10=Q3, 11=S3, 12=R3, 13=Q1, 14=R4, 15=S4, 16=VDD. Napájení ' +
+      '3–18 V (CMOS 4000B série). V této appce použito jako IO3 (RS klopný obvod pro řízení prozvánění) ' +
+      'v projektu „Domácí interkom" (Praktická elektronika A Radio 01/2025).',
     tags: 'io,logika,cmos,cd4044,cd4044be,klopný-obvod,rs-latch,4044',
   },
 
@@ -1003,9 +1032,16 @@ const IC_SPECS: IcSpec[] = [
     packageType: 'DIP-16',
     value: '3 na 8 linkový dekodér/demultiplexer, TTL (LS), 4,75–5,25 V',
     notes:
-      'Obecně známý TTL obvod (rodina 74LS), ne z konkrétního nahraného datasheetu — LS varianta ' +
-      '74HC138. V této appce použito jako IO6, IO7 v projektu „Domácí interkom" (Praktická ' +
-      'elektronika A Radio 01/2025).',
+      'Texas Instruments "SN54LS138, SN74LS138 — Decoders/Demultiplexers" (TTL/LS rodina). Dekodér 3 ' +
+      'binárně vážené vstupy (A0–A2) → 8 vzájemně se vylučujících výstupů aktivních v log. 0 (O0–O7), ' +
+      'tři povolovací vstupy — dva aktivní v log. 0 (E1, E2) a jeden aktivní v log. 1 (E3); všechny ' +
+      'výstupy jsou v log. 1, pokud nejsou současně E1=E2=0 a E3=1. Piny (DIP-16): 1–3=A0–A2, 4=/E1, ' +
+      '5=/E2, 6=E3, 7=/O7, 8=GND, 9–15=/O6…/O0, 16=VCC. Propagační zpoždění (vstup→výstup) výrobci ' +
+      'udáváno v řádu desítek ns (typicky 20–40 ns dle testovacích podmínek, přesné min/typ/max viz ' +
+      'tabulka Switching Characteristics v datasheetu). Napájení 4,75–5,25 V (komerční SN74LS138, 0 až ' +
+      '70 °C; vojenský SN54LS138 -55 až 125 °C). Nevyužité povolovací vstupy lze využít jako datový ' +
+      'vstup demultiplexeru se zbylými enable piny jako strobe. V této appce použito jako IO6, IO7 v ' +
+      'projektu „Domácí interkom" (Praktická elektronika A Radio 01/2025).',
     tags: 'io,logika,74ls138,sn74ls138n,dekodér,ttl',
   },
 
@@ -1016,9 +1052,20 @@ const IC_SPECS: IcSpec[] = [
     packageType: 'Multiwatt-11 nebo PowerSO-20 (dle varianty)',
     value: 'H-můstkový budič DC motoru, až 2,8 A, napájení do 48 V, vestavěná ochrana proti zkratu/přehřátí',
     notes:
-      'Obecně známý výkonový H-můstkový IO rodiny STMicroelectronics L620x — obecně dostupné ' +
-      'parametry, ne z konkrétního nahraného datasheetu. V této appce použito jako IC2 (budič DC ' +
-      'motoru) v projektu „Automatická dvířka kurníku (ESP32, bakalářská práce)".',
+      'STMicroelectronics "L6201 / L6202 / L6203 — DMOS Full Bridge Driver" datasheet. Rodina ' +
+      'výkonových H-můstkových budičů s DMOS výstupními tranzistory — L6201PS je PowerSO-20 (SO20) ' +
+      'verze se stejnými elektrickými parametry jako L6203 (na rozdíl od "holého" L6201 v pouzdře ' +
+      'Multiwatt-11, který je proudově slabší). Napájecí napětí (VS) do 42 V provozně, absolutní ' +
+      'maximum 52 V; bootstrap napětí abs. max 60 V. Celkový (RMS) výstupní proud až 4 A (L6201PS/ ' +
+      'L6203) oproti 1 A u "holého" L6201 a 1,5 A u L6202; špičkový (peak) proud až 5 A. Odpor ' +
+      'sepnutého tranzistoru (RDS(on)) typ. 0,3 Ω, max. 0,55 Ω. Logické vstupy IN1/IN2/ENABLE snesou ' +
+      '-0,3 až +7 V (VIH≥2 V, VIL≤0,8 V), klidový odběr max. 15 mA. Vestavěná ochrana: tepelné vypnutí ' +
+      '(thermal shutdown) při 150 °C, ochranný "dead time" cca 100 ns mezi sepnutím horní/dolní větve ' +
+      '(prevence zkratového průstřelu), pin SENSE pro měření/omezení proudu motoru externím rezistorem. ' +
+      'Max. spínací kmitočet (PWM) do 100 kHz. ⚠️ Nezaměňovat s L6203 (stejné elektrické parametry, ale ' +
+      'jiné pouzdro Multiwatt-15) ani s "holým" L6201 (nižší proudová třída, pouzdro Multiwatt-11) — ' +
+      'tyto tři díly sdílí jeden společný datasheet. V této appce použito jako IC2 (budič DC motoru) v ' +
+      'projektu „Automatická dvířka kurníku (ESP32, bakalářská práce)".',
     tags: 'io,budič,h-můstek,motor,dc-motor,l6201,l6201ps',
   },
   {
@@ -3864,7 +3911,18 @@ const IC_SPECS: IcSpec[] = [
     datasheetUrl: 'https://html.alldatasheet.com/html-pdf/26589/VISHAY/TSOP1738/182/1/TSOP1738.html',
     packageType: 'THT, 3 vývody (GND, VS, OUT), IR filtr v pouzdře',
     value: 'IR přijímací modul, 38 kHz nosný kmitočet, demodulovaný digitální výstup',
-    notes: 'Standardní infračervený přijímač pro dálkové ovládání — obecně dostupné parametry, ne z konkrétního nahraného datasheetu.',
+    notes:
+      'Vishay "TSOP17.. — IR Receiver Modules for Remote Control Systems" (datasheet pokrývá celou ' +
+      'rodinu TSOP1730–TSOP1756, díl TSOP1738 je verze pro nosný kmitočet 38 kHz). Integrovaný IR ' +
+      'fotodetektor + předzesilovač + AGC + pásmová propust + demodulátor v jednom pouzdře s IR ' +
+      'filtrem. Výstup aktivní v log. 0, přímo kompatibilní s TTL/CMOS (lze připojit přímo na vstup ' +
+      'mikrokontroléru). Timing požadavky na vysílaný signál: burst (paket nosné) musí mít alespoň ' +
+      '10 period nosné; po burstu délky 10–70 period musí následovat mezera (gap) alespoň 14 period; ' +
+      'bursty delší než 1,8 ms vyžadují odpovídající mezeru alespoň stejné délky kdekoliv v datovém ' +
+      'toku; modul zvládá souvisle přijímat až 1400 krátkých burstů za sekundu. Napájecí napětí (pin ' +
+      'VS) a výstup (pin OUT) mají abs. max rozsah -0,3 až 6,0 V. ⚠️ Pořadí vývodů (GND/VS/OUT) se v ' +
+      'dostupných kopiích datasheetu lišilo — packageType zde uvádí pořadí GND/VS/OUT, ale ověřit ' +
+      'přesné pořadí na konkrétním výkresu pouzdra v aktuálním Vishay datasheetu před návrhem desky.',
     tags: 'io,senzor,ir,infra,přijímač,dálkové-ovládání,tsop1738,38khz',
   },
   {
@@ -3883,9 +3941,16 @@ const IC_SPECS: IcSpec[] = [
     packageType: 'THT, štěrbinový (slotted) optický spínač, drážka cca 3 mm',
     value: 'Optický přerušovač (IR LED + fototranzistor), detekce clony v drážce',
     notes:
-      'Obecně dostupné parametry, ne z konkrétního nahraného datasheetu. V této appce použito jako ' +
-      'optická závora (kanály enkodéru polohy) v projektu „Automatická dvířka kurníku (ESP32, ' +
-      'bakalářská práce)".',
+      'Vishay "TCST1100, TCST1103, TCST1202, TCST1300 — Transmissive Sensors with Phototransistor ' +
+      'Output" datasheet. Štěrbinový (slotted/transmissive) optický spínač: IR LED (950 nm) a ' +
+      'fototranzistor naproti sobě přes štěrbinu šířky 3,1 mm, apertura (šířka clony detekované ' +
+      'drážkou) 1 mm, tělo pouzdra 11,9 × 6,3 × 10,8 mm s filtrem blokujícím viditelné světlo. V rámci ' +
+      'rodiny TCST110x/1202/1300 se liší výstupním proudem: TCST1103 má typ. výstupní (kolektorový) ' +
+      'proud 4 mA (oproti 2 mA u TCST1202 a 0,5 mA u TCST1300 při stejném testovacím budicím proudu ' +
+      'LED) — CTR (proudový přenosový poměr) typ. 20 %. Mezní hodnoty: VCEO max. 70 V, zpětné napětí ' +
+      'LED max. 6 V, proud LED (IF) max. 60 mA, ztrátový výkon max. 250 mW, provozní teplota -55 až ' +
+      '+85 °C. V této appce použito jako optická závora (kanály enkodéru polohy) v projektu ' +
+      '„Automatická dvířka kurníku (ESP32, bakalářská práce)".',
     tags: 'io,optočlen,optický-přerušovač,slotted,tcst1103,enkodér',
   },
 
@@ -4336,14 +4401,24 @@ const IC_SPECS: IcSpec[] = [
     value: 'DTMF přijímač/dekodér s krystalovým oscilátorem 3,579545 MHz, napájení 5 V, ' +
       'binární 4bitový výstup 16 kombinací tónů',
     notes:
-      'Obecně známý standardní DTMF dekodér (rodina MT8870/MT8870D od Zarlink/Mitel, i druhotní ' +
-      'výrobci jako CM8870, KT8870) — hodnoty z obecně dostupných katalogových údajů, ne z ' +
-      'konkrétního nahraného datasheetu. Filtruje a dekóduje standardní DTMF volbu (dvoutónová ' +
-      'volba, tabulka 1209/1336/1477/1633 Hz × 697/770/852/941 Hz) na 4bitový binární kód na ' +
-      'výstupech Q1–Q4, s pinem StD signalizujícím platnost rozpoznaného a stabilního tónu. ' +
-      'V této appce použito jako hlavní přijímač tónové volby v projektu „Domácí interkom" ' +
-      '(Praktická elektronika A Radio 01/2025, vítěz Konkurzu 2024) — dekóduje volbu z ' +
-      'analogových telefonů připojených přes RJ45/RJ11 a řídí logiku ústředny.',
+      'Zarlink Semiconductor / Mitel Semiconductor "MT8870D/MT8870D-1 — Integrated DTMF Receiver" ' +
+      '(datasheet, issue 4, srpen 1996; stejný čip dodnes prodáván i jako Microchip MT8870DS1 po ' +
+      'akvizici řady, i druhotní výrobci jako CM8870, KT8870). Kombinuje analogový pásmový filtr ' +
+      '(switched-capacitor) oddělující nízkou (697/770/852/941 Hz) a vysokou (1209/1336/1477/ ' +
+      '1633 Hz) skupinu DTMF tónů s digitálním dekodérem, který ověřuje platnost rozpoznaného páru ' +
+      'tónů zprůměrováním přes více period (odolnost proti "talk-off" od řeči a toleranci k ' +
+      'mírnému frekvenčnímu driftu) a výsledek vydává jako 4bitový binární kód na výstupech Q1–Q4. ' +
+      'Napájení VDD 4,75–5,25 V (typ. 5 V), typ. odběr cca 3 mA (dle novější Microchip MT8870DS1 ' +
+      'specifikace téhož čipu). Krystalový oscilátor 3,579545 MHz mezi piny OSC1/OSC2. Pin GS ' +
+      '(zisk vstupního zesilovače) umožňuje nastavit citlivost externím rezistorem, VRef je ' +
+      'referenční výstup pro vstupní obvody, /INH blokuje rozpoznání tónů *, #, A–D, PD uvádí ' +
+      'obvod do power-down režimu. Výstup Early Steering (ESt) se aktivuje ihned po rozpoznání ' +
+      'platného páru tónů, Delayed Steering (StD) signalizuje stabilní/platná data na Q1–Q4 po ' +
+      'uplynutí garantovaného času (guard time) nastaveného RC článkem na pinu St/GT. Výstupy ' +
+      'Q1–Q4 jsou 3-stavové, povolené pinem TOE. V této appce použito jako hlavní přijímač tónové ' +
+      'volby v projektu „Domácí interkom" (Praktická elektronika A Radio 01/2025, vítěz Konkurzu ' +
+      '2024) — dekóduje volbu z analogových telefonů připojených přes RJ45/RJ11 a řídí logiku ' +
+      'ústředny.',
     tags: 'io,dtmf,telefonie,mt8870,mt8870d,dekodér,volba',
   },
 
