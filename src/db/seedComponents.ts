@@ -492,9 +492,20 @@ const DIODE_SPECS: PartSpec[] = [
     packageType: '5 mm THT, difuzní čočka',
     value: 'Modrozelená LED (505 nm), 20 mA, vyzařovací úhel 30°',
     notes:
-      'Obecně známé katalogové označení (Agilent/Avago/Broadcom řada HLMP-CE2x) — hodnoty z obecně ' +
-      'dostupných údajů, ne z konkrétního nahraného datasheetu. V této appce použito jako S-LED ' +
-      'v retro konstrukci „Měnič pro modrozelenou LED" (Praktická elektronika A Radio 01/2025).',
+      'Hewlett-Packard/Agilent/Avago "T-1 3/4 (5 mm) Precision Optical Performance InGaN Bluish-' +
+      'Green LED Lamps" — datasheet pro rodinu HLMP-CE1x/CE2x/CE3x (SunPower/AlInGaP generace ' +
+      'optiky), HLMP-CE23 konkrétně: svítivost IV 1000–1500 mcd @IF=20 mA, vlnová délka peak ' +
+      'λpeak 502 nm / dominantní λd 505 nm (odpovídá mezinárodní normě pro zelenou dopravní ' +
+      'signalizaci), spektrální pološířka 35 nm, vyzařovací úhel θ1/2 23° (užší z dvojice 23°/30° ' +
+      'nabízené v této rodině), světelná účinnost 350 lm/W. VF typ. 3,8 V / max 4,0 V @IF=20 mA, ' +
+      'VR 10 V @IR=100 µA. Mezní hodnoty (dle novější varianty HLMP-CE23-UXQDD): IF(DC) 30 mA, ' +
+      'IF(peak) 100 mA, VR 5 V, provozní rozsah -40 až +80 °C (nad 50 °C nutný derating). Pouzdro ' +
+      'T-1 3/4 (5 mm), epoxid s UV filtrem pro venkovní použití, ESD citlivost třída 1. Typické ' +
+      'užití: dopravní signalizace, venkovní značení, automobilová interiérová světla. ⚠️ Existuje ' +
+      'mnoho suffixů (-TVQ00, -UXQDD, -VWC00 aj.) s odlišným binningem intenzity — zde uvedeny ' +
+      'hodnoty pro základní/holé označení HLMP-CE23 dle citovaného datasheetu. V této appce ' +
+      'použito jako S-LED v retro konstrukci „Měnič pro modrozelenou LED" (Praktická elektronika ' +
+      'A Radio 01/2025).',
     tags: 'dioda,led,hlmp-ce23,modrozelená',
   },
 
@@ -3619,7 +3630,25 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,npn,bipolární,to-92,zesilovací,bc546,pozor-pinout',
   },
   { name: 'BC547', packageType: 'TO-92', value: 'NPN, 45 V, 100 mA', notes: 'Malovýkonový bipolární tranzistor', tags: 'tranzistor,npn,bipolární' },
-  { name: 'BC548', packageType: 'TO-92', value: 'NPN, 30 V, 100 mA', notes: 'Malovýkonový bipolární tranzistor', tags: 'tranzistor,npn,bipolární', datasheetUrl: 'https://www.onsemi.com/download/data-sheet/pdf/bc546-d.pdf' },
+  {
+    name: 'BC548',
+    packageType: 'TO-92',
+    value: 'NPN, 30 V, 100 mA',
+    notes:
+      'ON Semiconductor "BC546, BC547, BC548, BC549, BC550 — Amplifier Transistors, NPN Silicon" ' +
+      '(dokument bc546-d.pdf, řada pokrývá všech pět typů v jednom listu). BC548 je 30V/100mA ' +
+      'varianta (shodné mezní hodnoty se sesterským BC549, liší se hlavně šumovými parametry — ' +
+      'BC549 je nízkošumová verze). Mezní hodnoty: VCEO 30 V, VCBO 30 V, VEBO 5 V, IC (DC) max ' +
+      '100 mA, celkový ztrátový výkon PC 500 mW @TA=25 °C, TJ/Tstg max 150 °C. Proudový ' +
+      'zesilovací činitel hFE (@VCE=5 V/IC=2 mA) dle binu: skupina A 110–220, B 200–450, C ' +
+      '420–800 (BC548 se dodává ve všech třech skupinách, na rozdíl od BC546, který existuje ' +
+      'jen v A/B). Pouzdro TO-92. ⚠️ Pozor na pořadí vývodů — různí výrobci (ON Semi/Fairchild/' +
+      'Philips/Vishay) udávají jinou konvenci C-B-E vs. E-B-C pro zdánlivě stejné TO-92 pouzdro, ' +
+      'ověřit vždy podle konkrétního kusu/výrobce (viz analogická poznámka u BC546 výše v této ' +
+      'databázi).',
+    tags: 'tranzistor,npn,bipolární',
+    datasheetUrl: 'https://www.onsemi.com/download/data-sheet/pdf/bc546-d.pdf',
+  },
   { name: 'BC549', packageType: 'TO-92', value: 'NPN, 30 V, 100 mA', notes: 'Malovýkonový bipolární tranzistor, nízký šum', tags: 'tranzistor,npn,bipolární' },
   {
     name: 'BC328',
@@ -3627,11 +3656,18 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     packageType: 'TO-92',
     value: 'PNP, 25 V (BC328-25) / 45 V (BC328-40), 800 mA, 625 mW',
     notes:
-      'Obecně známý malovýkonový/středněvýkonový PNP komplement k řadě BC337/BC338 (stejné ' +
-      'pouzdro a přibližně zrcadlové parametry) — běžný spínací/zesilovací tranzistor, hodnoty ' +
-      'z obecně dostupných katalogových údajů, ne z konkrétního nahraného datasheetu. V této ' +
-      'appce použito jako T2 (výstupní budič reproduktoru) v projektu „Elektronický kanárek" ' +
-      '(Praktická elektronika A Radio 01/2025).',
+      'ON Semiconductor "BC327, BC328 — Amplifier Transistors, PNP Silicon" (dokument ' +
+      'bc327-d.pdf, oba typy v jednom listu; BC327/BC328 jsou historicky Fairchild/Motorola ' +
+      'řada, dnes onsemi; status položky je obsolete/NRND, poslední nákup cca 2012 — pro nové ' +
+      'návrhy zvážit aktuálně vyráběné ekvivalenty). PNP komplement k řadě BC337/BC338 (stejné ' +
+      'pouzdro, přibližně zrcadlové parametry). Mezní hodnoty: VCEO -25 V (BC328-25) / -45 V ' +
+      '(BC328-40), VCBO -30 V / -50 V, VEBO -5 V, IC (DC) max -800 mA, celkový ztrátový výkon PD ' +
+      '625 mW @TA=25 °C (1,5 W @TC=25 °C, derating 12 mW/°C), RθJA 200 °C/W, RθJC 83,3 °C/W, ' +
+      'TJ/Tstg -55 až +150 °C. Proudový zesilovací činitel hFE1 (@IC=-100 mA/VCE=-1 V) dle ' +
+      'suffixu: -16 100–250, -25 160–400, -40 250–630; při vyšším proudu IC=-300 mA (hFE2) klesá ' +
+      'přibližně na -16 60–160, -25 100–250, -40 170–350. Pouzdro TO-92. V této appce použito ' +
+      'jako T2 (výstupní budič reproduktoru) v projektu „Elektronický kanárek" (Praktická ' +
+      'elektronika A Radio 01/2025).',
     tags: 'tranzistor,pnp,bipolární,bc328',
   },
   {
@@ -3640,11 +3676,19 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     packageType: 'TO-92',
     value: 'NPN, 45 V (BC337-40), 800 mA, 625 mW',
     notes:
-      'Obecně známý malovýkonový/středněvýkonový NPN tranzistor, komplement k BC328 — hodnoty ' +
-      'z obecně dostupných katalogových údajů, ne z konkrétního nahraného datasheetu. V této ' +
-      'appce použito jako spínací/oscilátorový tranzistor T1 v retro konstrukci „Měnič pro ' +
-      'modrozelenou LED" (Praktická elektronika A Radio 01/2025, rubrika RETRO — přetisk ' +
-      'článku z roku 2000).',
+      'ON Semiconductor "BC337, BC337-25, BC337-40 — Amplifier Transistors, NPN Silicon" ' +
+      '(dokument BC337/D, rev. 8, listopad 2013, bc337-d.pdf) — komplement k BC328 (shodné ' +
+      'pouzdro, zrcadlové parametry). Mezní hodnoty: VCEO 45 V, VCBO 50 V, VEBO 5 V, IC (DC) max ' +
+      '800 mA, celkový ztrátový výkon PD 625 mW @TA=25 °C (1,5 W @TC=25 °C, derating 12 mW/°C), ' +
+      'RθJA 200 °C/W, RθJC 83,3 °C/W, TJ/Tstg -55 až +150 °C. Proudový zesilovací činitel hFE1 ' +
+      '(@IC=100 mA/VCE=1 V) dle suffixu: -16 100–250, -25 160–400, -40 250–630; při IC=300 mA ' +
+      '(hFE2) klesá přibližně na -16 60–160, -25 100–250, -40 170–350. Tranzitní kmitočet fT min ' +
+      '100 MHz @VCE=5 V/IC=10 mA/f=50 MHz. VCE(sat) max 0,7 V @IC=500 mA/IB=50 mA, VBE(on) max ' +
+      '1,2 V @IC=300 mA/VCE=1 V. Výstupní kapacita Cob typ 12 pF @VCB=10 V. Pouzdro TO-92. ' +
+      'Status: obsolete/NRND u onsemi (poslední nákup cca 2012–2014), stále běžně dostupný jako ' +
+      'druhotní zdroj. V této appce použito jako spínací/oscilátorový tranzistor T1 v retro ' +
+      'konstrukci „Měnič pro modrozelenou LED" (Praktická elektronika A Radio 01/2025, rubrika ' +
+      'RETRO — přetisk článku z roku 2000).',
     tags: 'tranzistor,npn,bipolární,bc337',
   },
   {
@@ -4607,7 +4651,26 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'trr typ 69, max 104 ns @IF=62 A/di/dt=100 A/µs. Qrr typ 143, max 215 nC.',
     tags: 'tranzistor,mosfet,n-kanál,to-220,irf3205,spínací,pozor-proud',
   },
-  { name: '2N7000', packageType: 'TO-92', value: 'N-MOSFET, 60 V, 200 mA', notes: 'Malovýkonový spínací MOSFET', tags: 'tranzistor,mosfet,n-kanál', datasheetUrl: 'https://www.onsemi.com/download/data-sheet/pdf/2n7000-d.pdf' },
+  {
+    name: '2N7000',
+    packageType: 'TO-92',
+    value: 'N-MOSFET, 60 V, 200 mA',
+    notes:
+      'ON Semiconductor "2N7000, 2N7002, NDS7002A — N-Channel Enhancement Mode Field Effect ' +
+      'Transistor" (dokument 2n7000-d.pdf, rev. 3, říjen 2017) — společný datasheet pro tři ' +
+      'příbuzné typy (TO-92 2N7000, SOT-23 2N7002, SOT-23 NDS7002A), zde parametry pro THT ' +
+      'TO-92 variantu 2N7000. Mezní hodnoty: VDSS 60 V, VDGR 60 V (RGS≤1 MΩ), VGS ±20 V (trvale), ' +
+      'ID(continuous) 200 mA @TA=25 °C, PD 400 mW @TA=25 °C, TJ/Tstg -55 až +150 °C. VGS(th) ' +
+      '0,8–3,0 V (typ. 2,1 V) @VDS=VGS/ID=1 mA — nízký spínací práh. RDS(on) typ 1,2 Ω, max ' +
+      '5,0 Ω @VGS=10 V/ID=500 mA (max 9 Ω @TJ=125 °C); při slabším buzení VGS=4,5 V/ID=75 mA ' +
+      'typ 1,8 Ω, max 5,3 Ω. N-kanál, enhancement mode, DMOS proces. ⚠️ Pouzdro TO-92 — pořadí ' +
+      'vývodů (G/S/D) se mezi různými datasheety/case-kódy této rodiny liší (např. varianty ' +
+      'case 135AN vs. 135AR udávají opačné pořadí); u tohoto konkrétního listu (2n7000-d.pdf, ' +
+      'case 29) nebylo jednoznačné přiřazení pinů 1/2/3 z dostupných zdrojů ověřeno — před ' +
+      'osazením ověřit podle obrysového výkresu v PDF nebo multimetrem.',
+    tags: 'tranzistor,mosfet,n-kanál',
+    datasheetUrl: 'https://www.onsemi.com/download/data-sheet/pdf/2n7000-d.pdf',
+  },
   {
     name: '2N7002',
     packageType: 'SOT-23 (3 vývody): 1=G (gate), 2=S (source), 3=D (drain)',
@@ -4661,10 +4724,18 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     packageType: 'TO-92, 3 vývody: 1=D (drain), 2=G (gate), 3=S (source)',
     value: 'N-MOSFET, VDSS 200 V, ID 120 mA',
     notes:
-      'Obecně dostupné katalogové hodnoty, ne z konkrétního nahraného datasheetu — vlastní záznam ' +
-      'doplňující dříve přidaný BS170 (obvod v appce uváděl oba typy jako zaměnitelné alternativy, ' +
-      'ale mají odlišné mezní hodnoty: BS108 vyšší napětí/nižší proud, BS170 naopak). V této appce ' +
-      'použito jako T1, T2 v projektu „Solární lampička s Li-ion akumulátorem (THT)".',
+      'ON Semiconductor "BS108 — Small Signal MOSFET, 250 mA, 200 Volts" (dokument bs108-d.pdf). ' +
+      'N-kanálový spínací MOSFET s nízkým prahovým napětím (vhodný i pro slabší buzení hradla). ' +
+      'Mezní hodnoty: VDSS 200 V, VGS ±20 V, ID (continuous) 250 mA, IDM (pulzně) 500 mA, ' +
+      'celkový ztrátový výkon PD 350 mW @TA=25 °C, TJ/Tstg -55 až +150 °C. VGS(th) max 3,0 V — ' +
+      'nízký práh, low-drive požadavek. RDS(on): marking diagram v datasheetu udává 8 Ω, zatímco ' +
+      'aktuální produktová stránka onsemi uvádí 10 Ω — zdroje se mírně rozcházejí, počítat spíše ' +
+      's horší (vyšší) hodnotou. Pouzdro TO-92 (CASE 29-11, STYLE 301). Status: obsolete/NRND u ' +
+      'onsemi, dodáváno doprodejem. ⚠️ Nezaměňovat s podobně označeným, ale odlišným Vishay BS108 ' +
+      '(240 V/230 mA) — jiné mezní hodnoty. Doplňuje dříve přidaný BS170 (obvod v appce uváděl ' +
+      'oba typy jako zaměnitelné alternativy, ale mají odlišné mezní hodnoty: BS108 vyšší napětí/' +
+      'nižší proud, BS170 naopak). V této appce použito jako T1, T2 v projektu „Solární lampička ' +
+      's Li-ion akumulátorem (THT)".',
     tags: 'tranzistor,mosfet,n-kanál,to-92,bs108,spínací,solární',
   },
   {
@@ -4673,9 +4744,17 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     packageType: 'SOT-23, 3 vývody',
     value: 'NPN, 65 V, 100 mA (SMD varianta rodiny BC846/847/848)',
     notes:
-      'Obecně známý SMD tranzistor (SOT-23 obdoba BC546/547 řady), ne z konkrétního nahraného ' +
-      'datasheetu. V této appce použito pro ovládání TCST1103/výstup v projektu „Automatická ' +
-      'dvířka kurníku (ESP32, bakalářská práce)".',
+      'Nexperia "BC846 (Series) — NPN general-purpose transistors" (dokument BC846_SER.pdf, ' +
+      'rev. 9, 25. září 2012 — novější revize rodiny vychází pod označením BC846X_SER, rev. 12, ' +
+      'červenec 2022). SMD obdoba THT řady BC546/547 (SOT-23 místo TO-92). Nabízeno ve třech ' +
+      'pouzdrech: BC846 v SOT23 (TO-236AB), BC846W v SOT323, BC846T v SOT416; PNP komplement je ' +
+      'řada BC856. Mezní hodnoty: VCEO 65 V, IC max 100 mA. Proudový zesilovací činitel hFE ' +
+      '(@VCE=5 V/IC=2 mA): skupina A 110–220 (typ. 180), skupina B 200–450 (typ. 290) — BC846 se ' +
+      'na rozdíl od BC847/848 nedodává ve skupině C. Tepelný odpor RthJA (SOT23, volný vzduch) ' +
+      '500 K/W. ⚠️ Nezaměňovat s příbuznými, ale elektricky odlišnými typy BC847 (VCEO 45 V, ' +
+      'hFE až do skupiny C 110–800) a BC848 (VCEO 30 V) ze stejné rodiny pouzder — pokud je v ' +
+      'obvodu uveden konkrétně "BC846", jde o 65V variantu. V této appce použito pro ovládání ' +
+      'TCST1103/výstup v projektu „Automatická dvířka kurníku (ESP32, bakalářská práce)".',
     tags: 'tranzistor,npn,bipolární,smd,sot-23,bc846',
   },
   {
@@ -6709,7 +6788,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 118;
+export const SEED_LIBRARY_VERSION = 119;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
