@@ -487,6 +487,19 @@ const DIODE_SPECS: PartSpec[] = [
   { name: 'LED dvoubarevná (bicolor)', packageType: '5 mm THT, 3 vývody (společná katoda/anoda)', value: '~2,0/2,2 V / 20 mA (červená/zelená)', notes: 'Dvoubarevná LED se dvěma čipy ve společném pouzdře, přepínání barvy podle polarity nebo samostatných vývodů.', tags: 'dioda,led,dvoubarevná,bicolor' },
   { name: 'LED SMD (obecná)', packageType: 'SMD 0805/1206', value: '~2,0 V / 20 mA (dle barvy)', notes: 'Obecná SMD LED, přesné parametry (Vf, barva) dle konkrétního typu.', tags: 'dioda,led,smd' },
   {
+    name: 'Výkonová LED 1 W (bílá, obecná)',
+    packageType: 'Hvězdicový (star) hliníkový chladicí podklad nebo 5050/3535 SMD, 2 vývody',
+    value: '~3,0–3,4 V / 300–350 mA (1 W), teplá nebo studená bílá dle konkrétního typu',
+    notes:
+      'Obecná výkonová 1W LED do zahradních solárních svítidel a podobných konstrukcí — hodnoty ' +
+      'jsou typické/orientační pro tuto kategorii, ne z konkrétního datasheetu jednoho výrobku. Na ' +
+      'rozdíl od malých indikačních LED (viz výše) potřebuje proudové omezení na budicí tranzistor/' +
+      'MOSFET dimenzované na stovky mA, ne jen jednotky mA. V této appce použito jako LED1 v ' +
+      'projektu „Solární lampička s Li-ion akumulátorem (SMD)" a LED4 v „Solární lampička s Li-ion ' +
+      'akumulátorem (THT)" (Praktická elektronika A Radio 07/2023).',
+    tags: 'dioda,led,výkonová,1w,bílá,solární',
+  },
+  {
     name: 'HLMP-CE23',
     datasheetUrl: 'https://html.alldatasheet.com/html-pdf/859378/HP/HLMP-CE23/154/5/HLMP-CE23.html',
     packageType: '5 mm THT, difuzní čočka',
@@ -6788,7 +6801,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 121;
+export const SEED_LIBRARY_VERSION = 122;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),

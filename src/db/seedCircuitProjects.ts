@@ -1,6 +1,6 @@
 import type { CircuitProjectInput } from '../types/circuit';
 
-export const CIRCUIT_LIBRARY_VERSION = 12;
+export const CIRCUIT_LIBRARY_VERSION = 13;
 
 /**
  * Přesný počet kusů u drobných pasivních součástek (rezistory) je odhad podle
@@ -35,7 +35,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
       { label: 'Rezistor 2 kΩ', match: '2k', quantity: 1 },
       { label: 'Rezistor 4,7 kΩ', match: '4.7 kΩ', quantity: 1 },
       { label: 'Rezistor 10 kΩ', match: '10k', quantity: 2 },
-      { label: 'LED 5mm', match: 'LED', quantity: 3 },
+      { label: 'LED 5mm', match: 'dioda,led', quantity: 3 },
       { label: 'Elektrolytický kondenzátor 100 µF', match: '100 µF', quantity: 1 },
       { label: 'Tlačítko (push button)', match: 'tlačítko', quantity: 1 },
       { label: 'Napájecí konektor DC 5V', match: 'Napájecí konektor DC', quantity: 1 },
@@ -57,7 +57,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
       { label: 'R3–R8 — rezistor 1 kΩ', match: '1k', quantity: 6 },
       { label: 'C1 — kondenzátor 100 nF', match: '100 nF', quantity: 1 },
       { label: 'C2 — elektrolytický kondenzátor 100 µF/16 V', match: '100 µF', quantity: 1 },
-      { label: 'D1–D6 — LED 5 mm', match: 'LED', quantity: 6 },
+      { label: 'D1–D6 — LED 5 mm', match: 'dioda,led', quantity: 6 },
       { label: 'Konektor napájení 9 V (J1, J2)', match: 'konektor', quantity: 1 },
     ],
   },
@@ -119,7 +119,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
       { label: 'R1 33 k / R2 22 k / R3 15 k / R4 10 kΩ', match: 'rezistor', quantity: 4 },
       { label: 'R5 6k8 / R6 4k7 / R7 3k3', match: 'rezistor', quantity: 3 },
       { label: 'R8 — rezistor 1 MΩ, R9 120 Ω, R10 180 Ω, R11 27 kΩ', match: 'rezistor', quantity: 4 },
-      { label: 'D1 — LED (indikace napájení)', match: 'LED', quantity: 1 },
+      { label: 'D1 — LED (indikace napájení)', match: 'dioda,led', quantity: 1 },
       { label: 'C9 — elektrolytický kondenzátor 47 µF/25 V', match: '47 µF', quantity: 1 },
       { label: 'S2 — vypínač napájení', match: 'páčkový přepínač', quantity: 1 },
       { label: 'B1 — baterie 9 V', match: 'Baterie 9V', quantity: 1 },
@@ -203,7 +203,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
       { label: 'C1 — elektrolytický kondenzátor 100 µF', match: '100 µF', quantity: 1 },
       { label: 'C2 — kondenzátor 100 nF', match: '100 nF', quantity: 1 },
       { label: 'C3 — elektrolytický kondenzátor 47 µF/16 V', match: '47 µF', quantity: 1 },
-      { label: 'LED1 — LED zelená', match: 'LED', quantity: 1 },
+      { label: 'LED1 — LED zelená', match: 'LED 5mm zelená', quantity: 1 },
       { label: 'TL1, TL2 — tlačítko do plošného spoje', match: 'tlačítko', quantity: 2 },
     ],
   },
@@ -414,7 +414,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
       { label: 'FV panel — fotovoltaický panel (dobíjení akumulátoru)', match: 'solární článek', quantity: 1 },
       { label: 'Akumulátor Li-ion 18650, 3,7 V/3200 mAh', match: 'Akumulátor Li-ion', quantity: 1 },
       { label: 'BT1, BT2 — tlačítka (manuální otevření/zavření, párování)', match: 'tlačítko', quantity: 2 },
-      { label: 'LED R — LED (indikace stavu)', match: 'LED', quantity: 1 },
+      { label: 'LED R — LED (indikace stavu)', match: 'dioda,led', quantity: 1 },
     ],
   },
   {
@@ -459,7 +459,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
       { label: 'FC1 — solární článek 2 V (Ø 36–45 mm)', match: 'solární článek', quantity: 1 },
       { label: 'C1 — superkondenzátor 50–120 F/2,5–3 V', match: 'superkondenzátor', quantity: 1 },
       { label: 'L1 — tlumivka 330 µH', match: '330 µH', quantity: 1 },
-      { label: 'LED1 — LED bílá nebo barevná', match: 'LED', quantity: 1 },
+      { label: 'LED1 — LED bílá nebo barevná', match: 'dioda,led', quantity: 1 },
       { label: 'SW1 — drátová propojka/jumper', match: 'jumper', quantity: 1 },
     ],
   },
@@ -476,7 +476,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
       { label: 'Q1 — dvojitý MOSFET FDS9926 (SO-8)', match: 'FDS9926', quantity: 1 },
       { label: 'FC1 — solární článek 5,5 V', match: 'solární článek', quantity: 1 },
       { label: 'Akumulátor Li-ion/Li-pol, ≥300 mAh', match: 'Akumulátor Li-ion', quantity: 1 },
-      { label: 'LED1 — LED 1 W', match: 'LED', quantity: 1 },
+      { label: 'LED1 — LED 1 W', match: 'Výkonová LED', quantity: 1 },
       { label: 'R1 — rezistor SMD 10 kΩ (0805)', match: '10k', quantity: 1 },
       { label: 'R2 — rezistor SMD 1 MΩ (0805)', match: '1M', quantity: 1 },
       { label: 'R3 — rezistor SMD 33 Ω (1206)', match: '33 Ω', quantity: 1 },
@@ -498,7 +498,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
       { label: 'D1 — dioda 1N5818 (Schottky)', match: '1N5818', quantity: 1 },
       { label: 'FC2 — solární článek 5,5 V', match: 'solární článek', quantity: 1 },
       { label: 'Akumulátor Li-ion/Li-pol, ≥300 mAh', match: 'Akumulátor Li-ion', quantity: 1 },
-      { label: 'LED4 — LED (doporučeno pro proud alespoň 50 mA)', match: 'LED', quantity: 1 },
+      { label: 'LED4 — LED (doporučeno pro proud alespoň 50 mA)', match: 'Výkonová LED', quantity: 1 },
       { label: 'R4 — rezistor 100 kΩ, 0207', match: '100 kΩ', quantity: 1 },
       { label: 'R5 — rezistor 68 kΩ, 0207', match: '68 kΩ', quantity: 1 },
       { label: 'R6 — rezistor 2,7 kΩ, 0207', match: '2.7 kΩ', quantity: 1 },
@@ -737,7 +737,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
       { label: 'U2 (zdroj) — regulátor 7805', match: '7805', quantity: 1 },
       { label: 'D1–D4 (zdroj) — dioda 1N4007 (můstkový usměrňovač)', match: '1N4007', quantity: 4 },
       { label: 'Toroidní transformátor 2× 24 VAC', match: 'transformátor', quantity: 1 },
-      { label: 'D5 — LED 3 mm zelená (indikace napájení)', match: 'LED', quantity: 1 },
+      { label: 'D5 — LED 3 mm zelená (indikace napájení)', match: 'LED 3mm zelená', quantity: 1 },
     ],
   },
   {
@@ -753,7 +753,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
       { label: 'Induktivní snímač hladiny paliva', match: 'induktivní snímač', quantity: 1 },
       { label: 'T — fototranzistor/spínač KC507', match: 'KC507', quantity: 1 },
       { label: 'D1, D2 — dioda (ochranná)', match: 'dioda', quantity: 2 },
-      { label: 'LED — kontrolka zaplavení komory na palubní desce', match: 'LED', quantity: 1 },
+      { label: 'LED — kontrolka zaplavení komory na palubní desce', match: 'dioda,led', quantity: 1 },
       { label: 'Cn — kondenzátor soft-start (přidaný na výstup modulu)', match: 'kondenzátor', quantity: 1 },
       { label: 'Nízkotlaké DC palivové čerpadlo (např. ze Škoda)', match: 'Nízkotlaké palivové čerpadlo', quantity: 1 },
       { label: 'R — rezistor 10 Ω (pojistka pro napájení snímače)', match: '10 Ω', quantity: 1 },
