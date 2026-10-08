@@ -7,6 +7,8 @@ interface RelaySpec {
   notes: string;
   tags: string;
   schematicImage?: string;
+  /** Odkaz na datasheet/oficiální produktovou stránku, pokud byl dohledán. */
+  datasheetUrl?: string;
 }
 
 const RELAY_SPECS: RelaySpec[] = [
@@ -86,6 +88,26 @@ const RELAY_SPECS: RelaySpec[] = [
     value: 'Dvoupolohový posuvný spínač (slide), max. 0,5 A/50 V DC',
     notes: 'Malý posuvný spínač pro DPS/nepájivé pole.',
     tags: 'spínač,posuvný,slide,on-off',
+  },
+  {
+    name: 'Páčkový spínač KNX-1-D1',
+    datasheetUrl: 'https://www.gme.cz/v/1498191/knx-1-d1-packovy-spinac',
+    packageType:
+      'THT, panelový, montáž do otvoru, 3 pájecí očka (pájecí oko), délka páčky 12,5 mm',
+    value:
+      '1pólový přepínací (changeover) páčkový spínač, poloha ON-ON (aretovaný v obou polohách), ' +
+      '6 A/125 V AC, 3 A/250 V AC',
+    notes:
+      'Jietong "KNX-1-D1" (čínský výrobce miniaturních páčkových spínačů; stejný díl se prodává i ' +
+      'pod jinými katalogovými kódy, např. Micros "PRZ KNX-1" nebo katalogové číslo 631-003) — ' +
+      'miniaturní 1pólový přepínací páčkový spínač pro panelovou montáž, obě polohy ON-ON (nemá ' +
+      'klidovou/rozpojenou střední polohu, na rozdíl od MTS-103 ON-OFF-ON výše). Jmenovité zatížení ' +
+      '6 A/125 V AC a 3 A/250 V AC, přechodový odpor kontaktů max. 20 mΩ, elektrická životnost ' +
+      '10 000 cyklů, provozní teplota -25 až +85 °C. Hodnoty dohledány přes distributory (GME, ' +
+      'výrobce Jietong), ne z PDF datasheetu nahraného uživatelem. V této appce použito jako SW1 ' +
+      '(odpojuje Q2, přepíná rozsah 1↔2) v projektu „Omezovač proudu" (Praktická elektronika A ' +
+      'Radio 07/2023).',
+    tags: 'spínač,páčkový,toggle,knx-1-d1,changeover,on-on,jietong',
   },
   {
     name: 'Mikrospínač (koncový) KW11-3Z',
@@ -744,7 +766,7 @@ export function buildRelaySeed(): ComponentInput[] {
     value: spec.value,
     quantity: 0,
     location: null,
-    datasheetUrl: null,
+    datasheetUrl: spec.datasheetUrl ?? null,
     schematicImage: spec.schematicImage ?? null,
     notes: spec.notes,
     tags: spec.tags,
