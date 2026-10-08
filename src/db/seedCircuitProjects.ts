@@ -1,6 +1,6 @@
 import type { CircuitProjectInput } from '../types/circuit';
 
-export const CIRCUIT_LIBRARY_VERSION = 11;
+export const CIRCUIT_LIBRARY_VERSION = 12;
 
 /**
  * Přesný počet kusů u drobných pasivních součástek (rezistory) je odhad podle
@@ -350,7 +350,7 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
       { label: 'Q2 — tranzistor KU612 (rozsah 2, odpojitelný SW1)', match: 'KU612', quantity: 1 },
       { label: 'R1 — rezistor 10 Ω', match: '10 Ω', quantity: 1 },
       { label: 'RV2 — potenciometr 100 kΩ/G (logaritmický)', match: '100 kΩ', quantity: 1 },
-      { label: 'SW1 — spínač KNX-1-D1, 250V/3A (odpojení Q2, přepnutí rozsahu)', match: 'spínač', quantity: 1 },
+      { label: 'SW1 — spínač KNX-1-D1, 250V/3A (odpojení Q2, přepnutí rozsahu)', match: 'KNX-1-D1', quantity: 1 },
     ],
   },
   {
