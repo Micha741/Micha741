@@ -386,4 +386,5 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   '1N5820-5821-5822.jpg': require('../../assets/schematics/1N5820-5821-5822.jpg'),
   'H1N5817-5818-5819.jpg': require('../../assets/schematics/H1N5817-5818-5819.jpg'),
   'ER1600CT-1606CT.jpg': require('../../assets/schematics/ER1600CT-1606CT.jpg'),
+  'KAS40-04-05-06.jpg': require('../../assets/schematics/KAS40-04-05-06.jpg'),
 };
