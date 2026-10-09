@@ -144,7 +144,15 @@ const DIODE_SPECS: PartSpec[] = [
       'jmenovitém VR): 2,0 mA @TL=25 °C, 20 mA @TL=100 °C. Tepelný odpor RθJA typ. 40 °C/W (Vishay, ' +
       'PCB montáž), přesná hodnota dle typu montáže/délky vývodu (28–70 °C/W dle onsemi tabulky), ' +
       'RθJL typ. 10 °C/W. Pouzdro DO-201AD, hmotnost cca 1,1 g. Vhodné jako usměrňovač/ochranná ' +
-      'nebo volnoběžná (freewheeling) dioda v nízkonapěťových vysokofrekvenčních měničích.',
+      'nebo volnoběžná (freewheeling) dioda v nízkonapěťových vysokofrekvenčních měničích. ⚠️ Jiní ' +
+      'výrobci druhotného zdroje: STMicroelectronics ("1N582x — 3A Low Drop Power Schottky ' +
+      'Rectifier", červenec 2003) udává shodné VRRM/VF/IFSM, ale TJ/Tstg -65 až +150 °C — oproti ' +
+      '-65 až +125 °C u onsemi/Vishay (staršímu ST dokumentu věřit s rezervou, u reálného kusu ' +
+      'raději počítat s přísnějším limitem 125 °C). ST verze je dle distributorů (DigiKey) již ' +
+      'obsolete/nevyráběná. Stejně tak starší datasheety Diodes Incorporated (dok. DS23003, rev. ' +
+      '10, červen 2019, s bannerem "obsolete") a Fairchild (dnes součást onsemi) existují jen pro ' +
+      'referenci — oba výrobci tuto řadu ukončili. Pro nový nákup/návrh tedy nejspolehlivější ' +
+      'aktuální zdroj je onsemi nebo Vishay (viz výše).',
     tags: 'dioda,schottky,usměrňovací,1n5820,1n5821,1n5822,do-201ad',
   },
   {
@@ -159,7 +167,13 @@ const DIODE_SPECS: PartSpec[] = [
       'napěťový díl řady. Mezní hodnoty: VRRM/VRWM/VR 30 V, VRSM 36 V, VR(RMS) 21 V, IO 3,0 A ' +
       '@TL=95°C, IFSM 80 A, TJ/Tstg -65 až +125 °C. VF (max.): 0,380 V @IF=1 A, 0,500 V @IF=3 A, ' +
       '0,900 V @IF=9,4 A. IR (max.): 2,0 mA @TL=25 °C, 20 mA @TL=100 °C. RθJA typ. 40 °C/W (Vishay), ' +
-      'RθJL typ. 10 °C/W. Pouzdro DO-201AD, hmotnost cca 1,1 g.',
+      'RθJL typ. 10 °C/W. Pouzdro DO-201AD, hmotnost cca 1,1 g. ⚠️ Jiný výrobce druhotného zdroje: ' +
+      'STMicroelectronics "1N582x — 3A Low Drop Power Schottky Rectifier" (červenec 2003) potvrzuje ' +
+      'shodné VRRM 30 V, VF 0,500 V @3 A a IFSM 80 A, ale udává TJ/Tstg -65 až +150 °C — oproti -65 ' +
+      'až +125 °C u onsemi/Vishay (starší/méně spolehlivý dokument, raději počítat s přísnějším ' +
+      'limitem 125 °C). ST díl je dle DigiKey již obsolete/nevyráběný; stejně tak starší datasheety ' +
+      'Diodes Incorporated (dok. DS23003, rev. 10, červen 2019, "obsolete") a Fairchild (dnes ' +
+      'součást onsemi) jsou jen pro referenci — oba výrobci tuto řadu ukončili.',
     tags: 'dioda,schottky,usměrňovací,1n5820,1n5821,1n5822,do-201ad',
   },
   {
@@ -174,8 +188,62 @@ const DIODE_SPECS: PartSpec[] = [
       '"preferred device" dle onsemi). Mezní hodnoty: VRRM/VRWM/VR 40 V, VRSM 48 V, VR(RMS) 28 V, ' +
       'IO 3,0 A @TL=95°C, IFSM 80 A, TJ/Tstg -65 až +125 °C. VF (max.): 0,390 V @IF=1 A, 0,525 V ' +
       '@IF=3 A, 0,950 V @IF=9,4 A. IR (max.): 2,0 mA @TL=25 °C, 20 mA @TL=100 °C. RθJA typ. 40 °C/W ' +
-      '(Vishay), RθJL typ. 10 °C/W. Pouzdro DO-201AD, hmotnost cca 1,1 g.',
+      '(Vishay), RθJL typ. 10 °C/W. Pouzdro DO-201AD, hmotnost cca 1,1 g. ⚠️ Jiný výrobce druhotného ' +
+      'zdroje: STMicroelectronics "1N582x — 3A Low Drop Power Schottky Rectifier" (červenec 2003) ' +
+      'potvrzuje shodné VRRM 40 V, VF 0,525 V @3 A a IFSM 80 A, ale udává TJ/Tstg -65 až +150 °C — ' +
+      'oproti -65 až +125 °C u onsemi/Vishay (starší/méně spolehlivý dokument, raději počítat s ' +
+      'přísnějším limitem 125 °C). ST díl je dle DigiKey již obsolete/nevyráběný; stejně tak starší ' +
+      'datasheety Diodes Incorporated (dok. DS23003, rev. 10, červen 2019, "obsolete") a Fairchild ' +
+      '(dnes součást onsemi) jsou jen pro referenci — oba výrobci tuto řadu ukončili.',
     tags: 'dioda,schottky,usměrňovací,1n5820,1n5821,1n5822,do-201ad',
+  },
+
+  {
+    name: '1N5817',
+    datasheetUrl: 'https://www.onsemi.com/pdf/datasheet/1n5817-d.pdf',
+    packageType: 'DO-41, vývody: katoda = strana s pruhem (polarity band), anoda = druhý vývod',
+    value: 'Schottky usměrňovací dioda, 1,0 A / 20 V (VRRM/VDC), IFSM 25 A',
+    notes:
+      'Hi-Sincerity Microelectronics Corp. (HSMC, Tchaj-wan) "H1N5817 thru H1N5819 — 1.0 Amp. ' +
+      'Schottky Barrier Rectifiers" (spec. č. HL200101, vydáno 2000.01.15, revize 2001.12.06) — ' +
+      'datasheet nahraný uživatelem; "H" prefix je jen HSMC vlastní značení, elektricky jde o ' +
+      'stejnou generickou/druhotně zdrojovanou řadu 1N5817–1N5819 jako u onsemi (1n5817-d.pdf) a ' +
+      'Vishay (DO-204AL/DO-41) — všechny tři zdroje se shodují. Menší (1A) sourozenec řady ' +
+      '1N5820/5821/5822 (3A, samostatné záznamy) se stejnou Schottky topologií. 1N5817 je nejnižší ' +
+      'napěťový díl (1N5818 30 V, 1N5819 40 V — samostatné záznamy). Mezní hodnoty: VRRM/VDC 20 V, ' +
+      'VR(RMS) 14 V, IF(AV) 1,0 A @TL=90°C (0,375" délka vývodu), IFSM (8,3ms půlvlna, JEDEC metoda) ' +
+      '25 A, TJ/Tstg -65 až +125 °C. VF (max.): 0,45 V @IF=1 A, 0,750 V @IF=3 A. IR (max.): 1 mA ' +
+      '@TA=25 °C, 10 mA @TA=100 °C. RθJA typ. 50 °C/W (vertikální PCB montáž, 0,375" vývod), ' +
+      'kapacitance přechodu typ. 110 pF (@1 MHz, VR=4 V DC). Pouzdro DO-41, vývody 42 Alloy s ' +
+      'pocínováním.',
+    tags: 'dioda,schottky,usměrňovací,1n5817,1n5818,1n5819,h1n5817,do-41,hsmc',
+  },
+  {
+    name: '1N5818',
+    datasheetUrl: 'https://www.onsemi.com/pdf/datasheet/1n5817-d.pdf',
+    packageType: 'DO-41, vývody: katoda = strana s pruhem (polarity band), anoda = druhý vývod',
+    value: 'Schottky usměrňovací dioda, 1,0 A / 30 V (VRRM/VDC), IFSM 25 A',
+    notes:
+      'Hi-Sincerity Microelectronics Corp. (HSMC) "H1N5817 thru H1N5819 — 1.0 Amp. Schottky Barrier ' +
+      'Rectifiers" (spec. č. HL200101, revize 2001.12.06) — stejný společný datasheet jako 1N5817 ' +
+      '(viz tam obecný popis a shoda s onsemi/Vishay), zde prostřední napěťový díl řady. Mezní ' +
+      'hodnoty: VRRM/VDC 30 V, VR(RMS) 21 V, IF(AV) 1,0 A @TL=90°C, IFSM 25 A, TJ/Tstg -65 až +125 °C. ' +
+      'VF (max.): 0,550 V @IF=1 A, 0,875 V @IF=3 A. IR (max.): 1 mA @TA=25 °C, 10 mA @TA=100 °C. ' +
+      'RθJA typ. 50 °C/W. Pouzdro DO-41.',
+    tags: 'dioda,schottky,usměrňovací,1n5817,1n5818,1n5819,h1n5818,do-41,hsmc',
+  },
+  {
+    name: '1N5819',
+    datasheetUrl: 'https://www.onsemi.com/pdf/datasheet/1n5817-d.pdf',
+    packageType: 'DO-41, vývody: katoda = strana s pruhem (polarity band), anoda = druhý vývod',
+    value: 'Schottky usměrňovací dioda, 1,0 A / 40 V (VRRM/VDC), IFSM 25 A',
+    notes:
+      'Hi-Sincerity Microelectronics Corp. (HSMC) "H1N5817 thru H1N5819 — 1.0 Amp. Schottky Barrier ' +
+      'Rectifiers" (spec. č. HL200101, revize 2001.12.06) — stejný společný datasheet jako 1N5817, ' +
+      'zde nejvyšší napěťový díl řady. Mezní hodnoty: VRRM/VDC 40 V, VR(RMS) 28 V, IF(AV) 1,0 A ' +
+      '@TL=90°C, IFSM 25 A, TJ/Tstg -65 až +125 °C. VF (max.): 0,600 V @IF=1 A, 0,900 V @IF=3 A. ' +
+      'IR (max.): 1 mA @TA=25 °C, 10 mA @TA=100 °C. RθJA typ. 50 °C/W. Pouzdro DO-41.',
+    tags: 'dioda,schottky,usměrňovací,1n5817,1n5818,1n5819,h1n5819,do-41,hsmc',
   },
 
   {
@@ -6853,7 +6921,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 123;
+export const SEED_LIBRARY_VERSION = 124;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
