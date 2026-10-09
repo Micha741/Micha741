@@ -125,6 +125,58 @@ const DIODE_SPECS: PartSpec[] = [
   { name: '1N4007', packageType: 'DO-41', value: '1 A / 1000 V', notes: 'Usměrňovací dioda', tags: 'dioda,usměrňovací' },
   { name: '1N5399', packageType: 'DO-15', value: '1,5 A / 1000 V', notes: 'Usměrňovací dioda', tags: 'dioda,usměrňovací' },
   { name: '1N5408', packageType: 'DO-27', value: '3 A / 1000 V', notes: 'Usměrňovací dioda', tags: 'dioda,usměrňovací' },
+  {
+    name: '1N5820',
+    datasheetUrl: 'https://www.onsemi.com/pdf/datasheet/1n5820-d.pdf',
+    packageType: 'DO-201AD (axiální), vývody: katoda = strana s pruhem (polarity band), anoda = druhý vývod',
+    value: 'Schottky usměrňovací dioda, 3,0 A / 20 V (VRRM/VRWM/VR), IFSM 80 A',
+    notes:
+      'ON Semiconductor "1N5820, 1N5821, 1N5822 — Axial Lead Rectifiers" (dok. 1N5820/D, rev. 11, ' +
+      'listopad 2023) a Vishay General Semiconductor "1N5820, 1N5821, 1N5822 — Schottky Barrier ' +
+      'Plastic Rectifier" (dok. 88526, rev. 13. srpna 2013) — oba datasheety dohledány/nahrány ' +
+      'uživatelem, hodnoty se shodují. Schottky (kovový přechod) usměrňovací dioda — velmi nízký ' +
+      'úbytek napětí a rychlé spínání díky majoritní vodivosti (bez akumulace náboje/zotavovacího ' +
+      'času typického pro PN diody). 1N5820 je nejnižší napěťový díl řady (1N5821 30 V, 1N5822 40 V ' +
+      '— samostatné záznamy). Mezní hodnoty: VRRM/VRWM/VR 20 V, VRSM (špičkové nerepetitivní) 24 V, ' +
+      'VR(RMS) 14 V, IO (střední usměrněný proud) 3,0 A @TL=95°C (0,375" délka vývodu), IFSM ' +
+      '(špičkový nerepetitivní, 1 půlvlna 60 Hz) 80 A, TJ/Tstg -65 až +125 °C. Úbytek napětí VF ' +
+      '(max.): 0,370 V @IF=1 A, 0,475 V @IF=3 A, 0,850 V @IF=9,4 A. Zpětný proud IR (max., při ' +
+      'jmenovitém VR): 2,0 mA @TL=25 °C, 20 mA @TL=100 °C. Tepelný odpor RθJA typ. 40 °C/W (Vishay, ' +
+      'PCB montáž), přesná hodnota dle typu montáže/délky vývodu (28–70 °C/W dle onsemi tabulky), ' +
+      'RθJL typ. 10 °C/W. Pouzdro DO-201AD, hmotnost cca 1,1 g. Vhodné jako usměrňovač/ochranná ' +
+      'nebo volnoběžná (freewheeling) dioda v nízkonapěťových vysokofrekvenčních měničích.',
+    tags: 'dioda,schottky,usměrňovací,1n5820,1n5821,1n5822,do-201ad',
+  },
+  {
+    name: '1N5821',
+    datasheetUrl: 'https://www.onsemi.com/pdf/datasheet/1n5820-d.pdf',
+    packageType: 'DO-201AD (axiální), vývody: katoda = strana s pruhem (polarity band), anoda = druhý vývod',
+    value: 'Schottky usměrňovací dioda, 3,0 A / 30 V (VRRM/VRWM/VR), IFSM 80 A',
+    notes:
+      'ON Semiconductor "1N5820, 1N5821, 1N5822 — Axial Lead Rectifiers" (dok. 1N5820/D, rev. 11, ' +
+      'listopad 2023) a Vishay General Semiconductor, dok. 88526, rev. 13. srpna 2013 — stejný ' +
+      'společný datasheet jako 1N5820 (viz tam obecný popis Schottky principu), zde prostřední ' +
+      'napěťový díl řady. Mezní hodnoty: VRRM/VRWM/VR 30 V, VRSM 36 V, VR(RMS) 21 V, IO 3,0 A ' +
+      '@TL=95°C, IFSM 80 A, TJ/Tstg -65 až +125 °C. VF (max.): 0,380 V @IF=1 A, 0,500 V @IF=3 A, ' +
+      '0,900 V @IF=9,4 A. IR (max.): 2,0 mA @TL=25 °C, 20 mA @TL=100 °C. RθJA typ. 40 °C/W (Vishay), ' +
+      'RθJL typ. 10 °C/W. Pouzdro DO-201AD, hmotnost cca 1,1 g.',
+    tags: 'dioda,schottky,usměrňovací,1n5820,1n5821,1n5822,do-201ad',
+  },
+  {
+    name: '1N5822',
+    datasheetUrl: 'https://www.onsemi.com/pdf/datasheet/1n5820-d.pdf',
+    packageType: 'DO-201AD (axiální), vývody: katoda = strana s pruhem (polarity band), anoda = druhý vývod',
+    value: 'Schottky usměrňovací dioda, 3,0 A / 40 V (VRRM/VRWM/VR), IFSM 80 A',
+    notes:
+      'ON Semiconductor "1N5820, 1N5821, 1N5822 — Axial Lead Rectifiers" (dok. 1N5820/D, rev. 11, ' +
+      'listopad 2023) a Vishay General Semiconductor, dok. 88526, rev. 13. srpna 2013 — stejný ' +
+      'společný datasheet jako 1N5820, zde nejvyšší napěťový díl řady (společně s 1N5820 ' +
+      '"preferred device" dle onsemi). Mezní hodnoty: VRRM/VRWM/VR 40 V, VRSM 48 V, VR(RMS) 28 V, ' +
+      'IO 3,0 A @TL=95°C, IFSM 80 A, TJ/Tstg -65 až +125 °C. VF (max.): 0,390 V @IF=1 A, 0,525 V ' +
+      '@IF=3 A, 0,950 V @IF=9,4 A. IR (max.): 2,0 mA @TL=25 °C, 20 mA @TL=100 °C. RθJA typ. 40 °C/W ' +
+      '(Vishay), RθJL typ. 10 °C/W. Pouzdro DO-201AD, hmotnost cca 1,1 g.',
+    tags: 'dioda,schottky,usměrňovací,1n5820,1n5821,1n5822,do-201ad',
+  },
 
   {
     name: 'GP1120',
@@ -6801,7 +6853,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 122;
+export const SEED_LIBRARY_VERSION = 123;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
