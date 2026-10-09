@@ -144,9 +144,11 @@ const MISC_SPECS: MiscSpec[] = [
       'IML-0638 je určena konkrétně pro řadu "IRA-E" (jiný mechanický formát), nejde tedy o přímý ' +
       'doplněk k IRA-S410ST03, pouze o příbuzný produkt ze stejné produktové rodiny PIR senzorů ' +
       'od téhož výrobce. Provozní teplota -25 až +60 °C, skladovací teplota -30 až +80 °C. ' +
-      'Zařazeno do kategorie "Ostatní" jako čistě pasivní optická/mechanická součástka bez ' +
-      'vlastní elektroniky.',
+      'Zařazeno do kategorie "PIR čidla" společně se senzorovými elementy Murata IRA-S410ST03/ ' +
+      '230ST01/510ST01, ačkoli jde o čistě pasivní optickou/mechanickou součástku bez vlastní ' +
+      'elektroniky.',
     schematicImage: 'IML-0638.jpg',
+    category: 'PIR čidla',
     tags: 'optika,fresnelova-čočka,hdpe,pir,murata,ira-e,pohybový-senzor,pasivní',
   },
   {
@@ -175,9 +177,11 @@ const MISC_SPECS: MiscSpec[] = [
       'kolem čočky — šrafovaná oblast dle obrázku v datasheetu musí být zakrytá neprůhledným ' +
       'materiálem krytu, jinak hrozí falešná detekce průnikem nežádoucího IR záření mimo optickou ' +
       'dráhu čočky. Materiál HDPE (vysokohustotní polyetylen), barva přírodní/bílá. Provozní ' +
-      'teplota -25 až +60 °C, skladovací teplota -30 až +80 °C. Zařazeno do kategorie "Ostatní" ' +
-      'jako čistě pasivní optická/mechanická součástka bez vlastní elektroniky.',
+      'teplota -25 až +60 °C, skladovací teplota -30 až +80 °C. Zařazeno do kategorie "PIR čidla" ' +
+      'společně se senzorovými elementy Murata IRA-S410ST03/230ST01/510ST01, ačkoli jde o čistě ' +
+      'pasivní optickou/mechanickou součástku bez vlastní elektroniky.',
     schematicImage: 'IML-0637.jpg',
+    category: 'PIR čidla',
     tags: 'optika,fresnelova-čočka,hdpe,pir,murata,ira-e,pohybový-senzor,pasivní',
   },
   {
@@ -204,9 +208,11 @@ const MISC_SPECS: MiscSpec[] = [
       'lead-type řady). Nejde tedy o záměnnou náhradu ani variantu optického vzoru v rámci stejné ' +
       'mechanické řady, ale o zcela odlišný mechanický formát pro jiný typ senzorového pouzdra. ' +
       'Materiál HDPE (vysokohustotní polyetylen), barva přírodní/bílá. Provozní teplota -25 až ' +
-      '+60 °C, skladovací teplota -30 až +80 °C. Zařazeno do kategorie "Ostatní" jako čistě ' +
-      'pasivní optická/mechanická součástka bez vlastní elektroniky.',
+      '+60 °C, skladovací teplota -30 až +80 °C. Zařazeno do kategorie "PIR čidla" společně se ' +
+      'senzorovými elementy Murata IRA-S410ST03/230ST01/510ST01, ačkoli jde o čistě pasivní ' +
+      'optickou/mechanickou součástku bez vlastní elektroniky.',
     schematicImage: 'IML-0662N000-T1.jpg',
+    category: 'PIR čidla',
     tags: 'optika,fresnelova-čočka,hdpe,pir,murata,smd,pohybový-senzor,pasivní',
   },
   {
@@ -231,9 +237,11 @@ const MISC_SPECS: MiscSpec[] = [
       'balení (bulk/bag 200 ks u IML-0660 vs. tray 1000 ks u IML-0662N000-T1). Materiál HDPE ' +
       '(vysokohustotní polyetylen), barva přírodní/bílá. Provozní teplota -25 až +60 °C, ' +
       'skladovací teplota -30 až +80 °C (shodné s ostatními čočkami řady IML v této knihovně). ' +
-      'Zařazeno do kategorie "Ostatní" jako čistě pasivní optická/mechanická součástka bez ' +
-      'vlastní elektroniky.',
+      'Zařazeno do kategorie "PIR čidla" společně se senzorovými elementy Murata IRA-S410ST03/ ' +
+      '230ST01/510ST01, ačkoli jde o čistě pasivní optickou/mechanickou součástku bez vlastní ' +
+      'elektroniky.',
     schematicImage: 'IML-0660.jpg',
+    category: 'PIR čidla',
     tags: 'optika,fresnelova-čočka,hdpe,pir,murata,smd,pohybový-senzor,pasivní,discontinued',
   },
   {
