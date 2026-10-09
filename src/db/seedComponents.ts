@@ -388,6 +388,45 @@ const DIODE_SPECS: PartSpec[] = [
       'DO-35 (sklo), čiré sklo, kroužek na straně katody, hmotnost cca 0,15 g.',
     tags: 'dioda,schottky,bat41,do-35,stmicroelectronics',
   },
+  {
+    name: 'BAT47',
+    datasheetUrl: 'https://www.st.com/resource/en/datasheet/bat47.pdf',
+    packageType: 'DO-35 (sklo), vývody: katoda = strana s kroužkem (ring)',
+    value: 'Schottky dioda pro slabé signály, VRRM 20 V, IF 350 mA',
+    notes:
+      'STMicroelectronics "BAT 47, BAT 48 — Small Signal Schottky Diode" (srpen 1999, Ed: 1A) — ' +
+      'datasheet nahraný uživatelem, společný pro oba díly (BAT47 20 V, BAT48 40 V — samostatný ' +
+      'záznam). Obecné Schottky (kov-křemík) diody s velmi nízkým prahovým napětím a rychlým ' +
+      'spínáním, integrovaná ochrana proti přepětí (ESD). Mezní hodnoty: VRRM 20 V, IF 350 mA ' +
+      '(@TA=25°C), IFRM (opakovaný špičkový) 1 A (tp≤1s, δ≤0,5), IFSM (nerepetitivní špičkový) 7,5 A ' +
+      '(tp=10 ms) / 1,5 A (tp=1 s), Ptot 330 mW (@TA=25°C), TJ -65 až +125 °C, Tstg -65 až +150 °C, ' +
+      'TL max 230 °C (10 s, 4 mm od pouzdra), Rth(j-a) 300 °C/W (nekonečný chladič, 4 mm vývod). ' +
+      'Elektrické charakteristiky: VBR min. 20 V (@IR=10 µA). VF (max., pulzní test ≤300 µs): 0,25 V ' +
+      '@IF=0,1 mA, 0,3 V @IF=1 mA, 0,4 V @IF=10 mA, 0,5 V @IF=30 mA, 0,8 V @IF=150 mA, 1 V ' +
+      '@IF=300 mA (vše @TJ=25°C). IR max.: 1 µA @VR=1,5V/25°C (10 µA @60°C), 4 µA @VR=10V/25°C ' +
+      '(20 µA @60°C), 10 µA @VR=20V/25°C (30 µA @60°C). Kapacita přechodu C: typ. 20 pF @VR=0V, ' +
+      '12 pF @VR=1V (f=1 MHz, TJ=25°C). Doba zotavení trr typ. 10 ns (IF=10mA, VR=1V, irr=1mA, ' +
+      'RL=100Ω). Pouzdro DO-35 (sklo), čiré sklo, kroužek na straně katody, hmotnost cca 0,015 g.',
+    tags: 'dioda,schottky,bat47,do-35,stmicroelectronics',
+  },
+  {
+    name: 'BAT48',
+    datasheetUrl: 'https://www.st.com/resource/en/datasheet/bat47.pdf',
+    packageType: 'DO-35 (sklo), vývody: katoda = strana s kroužkem (ring)',
+    value: 'Schottky dioda pro slabé signály, VRRM 40 V, IF 350 mA',
+    notes:
+      'STMicroelectronics "BAT 47, BAT 48 — Small Signal Schottky Diode" (srpen 1999, Ed: 1A) — ' +
+      'stejný společný datasheet jako BAT47 (viz tam obecný popis), zde vyšší napěťový díl řady. ' +
+      'Mezní hodnoty: VRRM 40 V, IF 350 mA (@TA=25°C), IFRM 1 A (tp≤1s, δ≤0,5), IFSM 7,5 A (tp=10 ms) ' +
+      '/ 1,5 A (tp=1 s), Ptot 330 mW (@TA=25°C), TJ -65 až +125 °C, Tstg -65 až +150 °C, Rth(j-a) ' +
+      '300 °C/W. Elektrické charakteristiky: VBR min. 40 V (@IR=25 µA). VF (max., pulzní test): 0,25 V ' +
+      '@IF=0,1 mA, 0,3 V @IF=1 mA, 0,4 V @IF=10 mA, 0,5 V @IF=50 mA, 0,75 V @IF=200 mA, 0,9 V ' +
+      '@IF=500 mA (vše @TJ=25°C). IR max.: 1 µA @VR=1,5V/25°C (10 µA @60°C), 2 µA @VR=10V/25°C ' +
+      '(15 µA @60°C), 5 µA @VR=20V/25°C (25 µA @60°C), 25 µA @VR=40V/25°C (50 µA @60°C). Kapacita ' +
+      'přechodu C: typ. 20 pF @VR=0V, 12 pF @VR=1V (f=1 MHz, TJ=25°C). Doba zotavení trr typ. 10 ns. ' +
+      'Pouzdro DO-35 (sklo), čiré sklo, kroužek na straně katody, hmotnost cca 0,015 g.',
+    tags: 'dioda,schottky,bat48,do-35,stmicroelectronics',
+  },
   { name: 'BAT43', packageType: 'DO-35', value: '200 mA / 30 V', notes: 'Schottky dioda', tags: 'dioda,schottky' },
   { name: 'BAT46', packageType: 'DO-35', value: '150 mA / 100 V', notes: 'Schottky dioda', tags: 'dioda,schottky' },
   { name: 'BAT85', packageType: 'DO-35', value: '200 mA / 30 V', notes: 'Schottky dioda', tags: 'dioda,schottky' },
@@ -6936,7 +6975,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 125;
+export const SEED_LIBRARY_VERSION = 126;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
