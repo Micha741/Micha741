@@ -476,6 +476,145 @@ const DIODE_SPECS: PartSpec[] = [
     tags: 'dioda,usměrňovací,super-fast,wte,er16xxct,er1606ct,to-220,dual,common-anode',
   },
 
+  {
+    name: 'MBR2035CT',
+    packageType:
+      'TO-220AB (3 vývody): PIN1 a PIN3 = katody dvou nezávislých diod, PIN2 (spojen s tělem/' +
+      'chladičem) = společná anoda (+)',
+    value: 'Dvojitá Schottky usměrňovací dioda, 2× 20 A / 35 V (VRRM), IFSM 150 A, společná anoda',
+    notes:
+      'Taiwan Semiconductor "MBR2035CT – MBR20200CT — 20.0 AMPS Schottky Barrier Rectifiers" ' +
+      '(TO-220AB, verze F10) — datasheet nahraný uživatelem, společný pro 8 dílů lišících se jen ' +
+      'napětím (MBR2035CT 35 V, MBR2045CT 45 V, MBR2050CT 50 V, MBR2060CT 60 V, MBR2090CT 90 V, ' +
+      'MBR20100CT 100 V, MBR20150CT 150 V, MBR20200CT 200 V — samostatné záznamy). Pouzdro ' +
+      'TO-220AB obsahuje dvě samostatné Schottky diody se společnou anodou vyvedenou na PIN2/tělo ' +
+      'pouzdra (viz schéma) — typické zapojení pro dvoucestné usměrnění s odbočeným středem ' +
+      '(center-tap) sekundárního vinutí transformátoru. MBR2035CT je nejnižší napěťový díl řady. ' +
+      'Mezní hodnoty (společné pro celou řadu): IF(AV) 20 A @TC=135°C (na nožku), IFRM 20 A ' +
+      '@TC=135°C (obdélníkový průběh 20 kHz), IFSM (nerepetitivní špičkový, 8,3ms půlvlna, JEDEC ' +
+      'metoda) 150 A, TJ -65 až +150 °C, Tstg -65 až +175 °C, dV/dt 10 000 V/µs. Vlastní hodnoty ' +
+      'MBR2035CT: VRRM/VDC 35 V, VRMS 24 V, IRRM (opakovaný špičkový zpětný proud) 1,0 A (sdíleno s ' +
+      'MBR2045CT), VF max. 0,57 V @IF=10A/125°C, 0,84 V @IF=20A/25°C, 0,72 V @IF=20A/125°C ' +
+      '(hodnota @IF=10A/25°C v datasheetu neuvedena — sdíleno s MBR2045CT), IR max. 0,1 mA ' +
+      '@TA=25°C / 15 mA @TA=125°C (sdíleno s MBR2045CT), Cj typ. 400 pF (sdíleno s MBR2045CT), ' +
+      'RθJC typ. 1,0 °C/W na nožku (sdíleno s MBR2045CT, MBR2050CT, MBR2060CT). Pouzdro: hmotnost ' +
+      'cca 1,71 g, UL klasifikace hořlavosti 94V-0 (soubor E-326243), vývody cín bez olova.',
+    schematicImage: 'MBR2035CT-20200CT.jpg',
+    tags: 'dioda,schottky,usměrňovací,taiwan-semiconductor,mbr20xxct,mbr2035ct,to-220ab,dual,common-anode',
+  },
+  {
+    name: 'MBR2045CT',
+    packageType:
+      'TO-220AB (3 vývody): PIN1 a PIN3 = katody dvou nezávislých diod, PIN2 (spojen s tělem/' +
+      'chladičem) = společná anoda (+)',
+    value: 'Dvojitá Schottky usměrňovací dioda, 2× 20 A / 45 V (VRRM), IFSM 150 A, společná anoda',
+    notes:
+      'Taiwan Semiconductor "MBR2035CT – MBR20200CT — 20.0 AMPS Schottky Barrier Rectifiers" ' +
+      '(TO-220AB, verze F10) — stejný společný datasheet jako MBR2035CT (viz tam obecný popis a ' +
+      'společné mezní hodnoty IF(AV)/IFRM/IFSM/TJ/Tstg/dV/dt). Elektricky sdílí s MBR2035CT: IRRM ' +
+      '1,0 A, VF tabulku (max. 0,57 V @10A/125°C, 0,84 V @20A/25°C, 0,72 V @20A/125°C), IR max. ' +
+      '0,1 mA @25°C / 15 mA @125°C, Cj typ. 400 pF, RθJC typ. 1,0 °C/W. Vlastní hodnoty: VRRM/VDC ' +
+      '45 V, VRMS 31 V.',
+    schematicImage: 'MBR2035CT-20200CT.jpg',
+    tags: 'dioda,schottky,usměrňovací,taiwan-semiconductor,mbr20xxct,mbr2045ct,to-220ab,dual,common-anode',
+  },
+  {
+    name: 'MBR2050CT',
+    packageType:
+      'TO-220AB (3 vývody): PIN1 a PIN3 = katody dvou nezávislých diod, PIN2 (spojen s tělem/' +
+      'chladičem) = společná anoda (+)',
+    value: 'Dvojitá Schottky usměrňovací dioda, 2× 20 A / 50 V (VRRM), IFSM 150 A, společná anoda',
+    notes:
+      'Taiwan Semiconductor "MBR2035CT – MBR20200CT — 20.0 AMPS Schottky Barrier Rectifiers" ' +
+      '(TO-220AB, verze F10) — stejný společný datasheet jako MBR2035CT (viz tam obecný popis a ' +
+      'společné mezní hodnoty). Elektricky sdílí s MBR2060CT: IRRM 0,5 A, VF tabulku (max. 0,80 V ' +
+      '@10A/25°C, 0,70 V @10A/125°C, 0,95 V @20A/25°C, 0,85 V @20A/125°C), Cj typ. 320 pF, RθJC ' +
+      'typ. 1,0 °C/W (sdíleno i s MBR2035CT/MBR2045CT). IR max. 0,1 mA @25°C / 10 mA @125°C ' +
+      '(sdíleno s MBR2060CT). Vlastní hodnoty: VRRM/VDC 50 V, VRMS 35 V.',
+    schematicImage: 'MBR2035CT-20200CT.jpg',
+    tags: 'dioda,schottky,usměrňovací,taiwan-semiconductor,mbr20xxct,mbr2050ct,to-220ab,dual,common-anode',
+  },
+  {
+    name: 'MBR2060CT',
+    packageType:
+      'TO-220AB (3 vývody): PIN1 a PIN3 = katody dvou nezávislých diod, PIN2 (spojen s tělem/' +
+      'chladičem) = společná anoda (+)',
+    value: 'Dvojitá Schottky usměrňovací dioda, 2× 20 A / 60 V (VRRM), IFSM 150 A, společná anoda',
+    notes:
+      'Taiwan Semiconductor "MBR2035CT – MBR20200CT — 20.0 AMPS Schottky Barrier Rectifiers" ' +
+      '(TO-220AB, verze F10) — stejný společný datasheet jako MBR2035CT (viz tam obecný popis a ' +
+      'společné mezní hodnoty). Elektricky sdílí s MBR2050CT: IRRM 0,5 A, VF tabulku (max. 0,80 V ' +
+      '@10A/25°C, 0,70 V @10A/125°C, 0,95 V @20A/25°C, 0,85 V @20A/125°C), IR max. 0,1 mA @25°C / ' +
+      '10 mA @125°C, Cj typ. 320 pF, RθJC typ. 1,0 °C/W. Vlastní hodnoty: VRRM/VDC 60 V, VRMS 42 V.',
+    schematicImage: 'MBR2035CT-20200CT.jpg',
+    tags: 'dioda,schottky,usměrňovací,taiwan-semiconductor,mbr20xxct,mbr2060ct,to-220ab,dual,common-anode',
+  },
+  {
+    name: 'MBR2090CT',
+    packageType:
+      'TO-220AB (3 vývody): PIN1 a PIN3 = katody dvou nezávislých diod, PIN2 (spojen s tělem/' +
+      'chladičem) = společná anoda (+)',
+    value: 'Dvojitá Schottky usměrňovací dioda, 2× 20 A / 90 V (VRRM), IFSM 150 A, společná anoda',
+    notes:
+      'Taiwan Semiconductor "MBR2035CT – MBR20200CT — 20.0 AMPS Schottky Barrier Rectifiers" ' +
+      '(TO-220AB, verze F10) — stejný společný datasheet jako MBR2035CT (viz tam obecný popis a ' +
+      'společné mezní hodnoty). Elektricky sdílí s MBR20100CT: IRRM 0,5 A, VF tabulku (max. 0,85 V ' +
+      '@10A/25°C, 0,75 V @10A/125°C, 0,95 V @20A/25°C, 0,85 V @20A/125°C), IR max. 0,1 mA @25°C / ' +
+      '5,0 mA @125°C (sdíleno i s MBR20150CT), Cj typ. 320 pF, RθJC typ. 2,0 °C/W (sdíleno i s ' +
+      'MBR20100CT, MBR20150CT, MBR20200CT). Vlastní hodnoty: VRRM/VDC 90 V, VRMS 63 V.',
+    schematicImage: 'MBR2035CT-20200CT.jpg',
+    tags: 'dioda,schottky,usměrňovací,taiwan-semiconductor,mbr20xxct,mbr2090ct,to-220ab,dual,common-anode',
+  },
+  {
+    name: 'MBR20100CT',
+    packageType:
+      'TO-220AB (3 vývody): PIN1 a PIN3 = katody dvou nezávislých diod, PIN2 (spojen s tělem/' +
+      'chladičem) = společná anoda (+)',
+    value: 'Dvojitá Schottky usměrňovací dioda, 2× 20 A / 100 V (VRRM), IFSM 150 A, společná anoda',
+    notes:
+      'Taiwan Semiconductor "MBR2035CT – MBR20200CT — 20.0 AMPS Schottky Barrier Rectifiers" ' +
+      '(TO-220AB, verze F10) — stejný společný datasheet jako MBR2035CT (viz tam obecný popis a ' +
+      'společné mezní hodnoty). Elektricky sdílí s MBR2090CT: IRRM 0,5 A, VF tabulku (max. 0,85 V ' +
+      '@10A/25°C, 0,75 V @10A/125°C, 0,95 V @20A/25°C, 0,85 V @20A/125°C), IR max. 0,1 mA @25°C / ' +
+      '5,0 mA @125°C, Cj typ. 320 pF, RθJC typ. 2,0 °C/W. Vlastní hodnoty: VRRM/VDC 100 V, VRMS 70 V.',
+    schematicImage: 'MBR2035CT-20200CT.jpg',
+    tags: 'dioda,schottky,usměrňovací,taiwan-semiconductor,mbr20xxct,mbr20100ct,to-220ab,dual,common-anode',
+  },
+  {
+    name: 'MBR20150CT',
+    packageType:
+      'TO-220AB (3 vývody): PIN1 a PIN3 = katody dvou nezávislých diod, PIN2 (spojen s tělem/' +
+      'chladičem) = společná anoda (+)',
+    value: 'Dvojitá Schottky usměrňovací dioda, 2× 20 A / 150 V (VRRM), IFSM 150 A, společná anoda',
+    notes:
+      'Taiwan Semiconductor "MBR2035CT – MBR20200CT — 20.0 AMPS Schottky Barrier Rectifiers" ' +
+      '(TO-220AB, verze F10) — stejný společný datasheet jako MBR2035CT (viz tam obecný popis a ' +
+      'společné mezní hodnoty). Elektricky sdílí s MBR20200CT: VF tabulku (max. 0,99 V @10A/25°C, ' +
+      '0,87 V @10A/125°C, 1,23 V @20A/25°C, 1,10 V @20A/125°C), IRRM 0,5 A a RθJC typ. 2,0 °C/W ' +
+      '(sdíleno i s MBR2090CT/MBR20100CT). IR max. 0,1 mA @25°C / 5,0 mA @125°C (sdíleno s ' +
+      'MBR2090CT a MBR20100CT — MBR20200CT má vlastní nižší hodnotu 0,15 mA). Cj typ. 320 pF. ' +
+      'Vlastní hodnoty: VRRM/VDC 150 V, VRMS 105 V.',
+    schematicImage: 'MBR2035CT-20200CT.jpg',
+    tags: 'dioda,schottky,usměrňovací,taiwan-semiconductor,mbr20xxct,mbr20150ct,to-220ab,dual,common-anode',
+  },
+  {
+    name: 'MBR20200CT',
+    packageType:
+      'TO-220AB (3 vývody): PIN1 a PIN3 = katody dvou nezávislých diod, PIN2 (spojen s tělem/' +
+      'chladičem) = společná anoda (+)',
+    value: 'Dvojitá Schottky usměrňovací dioda, 2× 20 A / 200 V (VRRM), IFSM 150 A, společná anoda',
+    notes:
+      'Taiwan Semiconductor "MBR2035CT – MBR20200CT — 20.0 AMPS Schottky Barrier Rectifiers" ' +
+      '(TO-220AB, verze F10) — stejný společný datasheet jako MBR2035CT, nejvyšší napěťový díl ' +
+      'celé řady. Elektricky sdílí s MBR20150CT: VF tabulku (max. 0,99 V @10A/25°C, 0,87 V ' +
+      '@10A/125°C, 1,23 V @20A/25°C, 1,10 V @20A/125°C), IRRM 0,5 A, Cj typ. 320 pF, RθJC typ. ' +
+      '2,0 °C/W. Vlastní hodnoty: VRRM/VDC 200 V, VRMS 140 V, IR max. 0,1 mA @25°C / 0,15 mA ' +
+      '@125°C (nejnižší zpětný proud v řadě, na rozdíl od sdílené skupiny MBR2090CT–MBR20150CT ' +
+      's 5,0 mA).',
+    schematicImage: 'MBR2035CT-20200CT.jpg',
+    tags: 'dioda,schottky,usměrňovací,taiwan-semiconductor,mbr20xxct,mbr20200ct,to-220ab,dual,common-anode',
+  },
+
   { name: '1N4148', packageType: 'DO-35', value: '150 mA / 100 V', notes: 'Spínací (signálová) dioda', tags: 'dioda,spínací,signálová' },
   {
     name: 'KA206',
@@ -7186,7 +7325,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 130;
+export const SEED_LIBRARY_VERSION = 131;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
