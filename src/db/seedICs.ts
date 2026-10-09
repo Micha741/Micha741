@@ -1,4 +1,4 @@
-import type { ComponentInput } from '../types/component';
+import type { ComponentCategory, ComponentInput } from '../types/component';
 
 interface IcSpec {
   name: string;
@@ -9,6 +9,8 @@ interface IcSpec {
   schematicImage?: string;
   /** Odkaz na datasheet/oficiální produktovou stránku, pokud byl dohledán. */
   datasheetUrl?: string;
+  /** Přepíše výchozí kategorii 'IO', pokud díl patří jinam (např. 'PIR čidla'). */
+  category?: ComponentCategory;
 }
 
 const IC_SPECS: IcSpec[] = [
@@ -2314,10 +2316,11 @@ const IC_SPECS: IcSpec[] = [
       '(bezpečnostní čidla, automatické osvětlení, HVAC) — ⚠️ NENÍ určeno pro automobilové ' +
       'aplikace ("Not available for Automotive usage" dle datasheetu). Pro rozšíření/tvarování ' +
       'zorného pole se typicky kombinuje s externí Fresnelovou čočkou — viz související záznam ' +
-      'Murata IML-0638 v kategorii Ostatní (čočka pro příbuznou "IRA-E" řadu se stejným ' +
+      'Murata IML-0638 v kategorii PIR čidla (čočka pro příbuznou "IRA-E" řadu se stejným ' +
       'mechanickým TO-5 pouzdrem).',
     schematicImage: 'IRA-S-TO5.jpg',
-    tags: 'io,senzor,pir,pyroelektrický,pohybový,murata,ira-s410st03,jfet',
+    category: 'PIR čidla',
+    tags: 'senzor,pir,pyroelektrický,pohybový,murata,ira-s410st03,jfet',
   },
   {
     name: 'IRA-S230ST01',
@@ -2344,9 +2347,10 @@ const IC_SPECS: IcSpec[] = [
       'dvou pyroelektrických elementů potlačující souhlasné rušení, JFET source-follower pro ' +
       'impedanční přizpůsobení) shodný s IRA-S410ST03 — viz tam pro obecný popis. Pro rozšíření/ ' +
       'tvarování zorného pole se typicky kombinuje s externí Fresnelovou čočkou — viz související ' +
-      'záznamy Murata IML-0637 a IML-0638 v kategorii Ostatní.',
+      'záznamy Murata IML-0637 a IML-0638 v kategorii PIR čidla.',
     schematicImage: 'IRA-S-TO5.jpg',
-    tags: 'io,senzor,pir,pyroelektrický,pohybový,murata,ira-s230st01,jfet',
+    category: 'PIR čidla',
+    tags: 'senzor,pir,pyroelektrický,pohybový,murata,ira-s230st01,jfet',
   },
   {
     name: 'IRA-S510ST01',
@@ -2374,9 +2378,10 @@ const IC_SPECS: IcSpec[] = [
       'souhlasné rušení, JFET source-follower pro impedanční přizpůsobení) obdobný IRA-S410ST03 — ' +
       'viz tam pro obecný popis. Pro rozšíření/tvarování zorného pole se typicky kombinuje s ' +
       'externí Fresnelovou čočkou — viz související záznamy Murata IML-0637 a IML-0638 v kategorii ' +
-      'Ostatní.',
+      'PIR čidla.',
     schematicImage: 'IRA-S-TO5.jpg',
-    tags: 'io,senzor,pir,pyroelektrický,pohybový,murata,ira-s510st01,jfet,kvadrátní',
+    category: 'PIR čidla',
+    tags: 'senzor,pir,pyroelektrický,pohybový,murata,ira-s510st01,jfet,kvadrátní',
   },
   {
     name: 'PKGS-00LDP1-R',
@@ -4695,7 +4700,7 @@ const IC_SPECS: IcSpec[] = [
 export function buildIcSeed(): ComponentInput[] {
   return IC_SPECS.map((spec) => ({
     name: spec.name,
-    category: 'IO',
+    category: spec.category ?? 'IO',
     manufacturer: null,
     packageType: spec.packageType,
     value: spec.value,
