@@ -370,9 +370,24 @@ const DIODE_SPECS: PartSpec[] = [
   },
   { name: '1N914', packageType: 'DO-35', value: '100 mA / 100 V', notes: 'Spínací (signálová) dioda', tags: 'dioda,spínací,signálová' },
 
-  { name: '1N5817', packageType: 'DO-41', value: '1 A / 20 V', notes: 'Schottky dioda', tags: 'dioda,schottky' },
-  { name: '1N5818', packageType: 'DO-41', value: '1 A / 30 V', notes: 'Schottky dioda', tags: 'dioda,schottky' },
-  { name: '1N5819', packageType: 'DO-41', value: '1 A / 40 V', notes: 'Schottky dioda', tags: 'dioda,schottky' },
+  {
+    name: 'BAT41',
+    datasheetUrl: 'https://www.st.com/resource/en/datasheet/bat41.pdf',
+    packageType: 'DO-35 (sklo), vývody: katoda = strana s kroužkem (ring)',
+    value: 'Schottky dioda pro slabé signály, VRRM 100 V, IF 100 mA',
+    notes:
+      'STMicroelectronics "BAT 41 — Small Signal Schottky Diode" (srpen 1999, Ed: 1A) — datasheet ' +
+      'nahraný uživatelem. Schottky (kovový přechod) dioda pro malé signály — nízký úbytek napětí a ' +
+      'rychlé spínání, bez zotavovacího času typického pro PN diody. Mezní hodnoty: VRRM 100 V, IF ' +
+      '100 mA (@TA=25°C), IFRM (opakovaný špičkový) 350 mA (tp≤1s, δ≤0,5), IFSM (nerepetitivní ' +
+      'špičkový) 750 mA (tp≤10 ms), Ptot 100 mW (@TA=95°C), TJ/Tstg -65 až +125/+150 °C, TL max ' +
+      '230 °C (10 s, 4 mm od pouzdra), Rth(j-a) 300 °C/W (nekonečný chladič, 4 mm vývod). Elektrické ' +
+      'charakteristiky: VBR min. 100 V (@TJ=25 °C, IR=100 µA). VF typ. 0,4 V / max. 0,45 V ' +
+      '(@TJ=25 °C, IF=1 mA, pulzní test), max. 1 V (@IF=200 mA). IR max. 0,1 µA (@TJ=25 °C, VR=50 V), ' +
+      'max. 20 µA (@TJ=100 °C). Kapacita přechodu C typ. 2 pF (@TJ=25 °C, VR=1 V, f=1 MHz). Pouzdro ' +
+      'DO-35 (sklo), čiré sklo, kroužek na straně katody, hmotnost cca 0,15 g.',
+    tags: 'dioda,schottky,bat41,do-35,stmicroelectronics',
+  },
   { name: 'BAT43', packageType: 'DO-35', value: '200 mA / 30 V', notes: 'Schottky dioda', tags: 'dioda,schottky' },
   { name: 'BAT46', packageType: 'DO-35', value: '150 mA / 100 V', notes: 'Schottky dioda', tags: 'dioda,schottky' },
   { name: 'BAT85', packageType: 'DO-35', value: '200 mA / 30 V', notes: 'Schottky dioda', tags: 'dioda,schottky' },
@@ -6921,7 +6936,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 124;
+export const SEED_LIBRARY_VERSION = 125;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
