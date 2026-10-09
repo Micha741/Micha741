@@ -550,6 +550,74 @@ const DIODE_SPECS: PartSpec[] = [
     schematicImage: 'BAT47-BAT48.jpg',
     tags: 'dioda,schottky,bat48,do-35,stmicroelectronics',
   },
+  {
+    name: 'KAS40',
+    packageType: 'SOT-23 (SMD), Pin1 = anoda, Pin3 = katoda, Pin2 = nezapojen (NC)',
+    value: 'SMD Schottky dioda pro slabé signály, jednoduchá, VRRM 40 V, IFM 200 mA',
+    notes:
+      'Kexin Electronics (www.kexin.com.cn) "Surface Mount Schottky Barrier Diode KAS40,-04,-05,-06 ' +
+      '(BAS40,-04,-05,-06)" — datasheet nahraný uživatelem. Elektricky i rozměrově ekvivalentní ' +
+      'celosvětově rozšířené řadě BAS40/-04/-05/-06 (Nexperia/Vishay/ON) v pouzdru SOT-23 — Kexin je ' +
+      'druhotný/levnější zdroj, KAS40 = BAS40 (konkrétní výrobní značení K43 na pouzdře). V jednom ' +
+      'pouzdru SOT-23 je podle varianty 1 nebo 2 diody — KAS40 je jednoduchá dioda (anoda=Pin1, ' +
+      'katoda=Pin3, Pin2 nezapojen); KAS40-04 = dvě diody v sérii stejným směrem s odbočkou na Pin3 ' +
+      '(Pin1→dioda→Pin3→dioda→Pin2); KAS40-05 = společná katoda (anody na Pin1 a Pin2, katoda na ' +
+      'Pin3); KAS40-06 = společná anoda (katody na Pin1 a Pin2, anoda na Pin3) — viz samostatné ' +
+      'záznamy a schéma zapojení. Mezní hodnoty (společné pro celou řadu): VRRM/VRWM/VR 40 V, IFM ' +
+      '(trvalý průchozí proud) 200 mA, Ptot 350 mW, IFSM (špičkový, t<1,0s) 600 mA, RθJA 357 °C/W, ' +
+      'TJ -55 až +125 °C, Tstg -65 až +150 °C. Elektrické charakteristiky: V(BR) min. 40 V ' +
+      '(@IR=10 µA). VF max. 380 mV @IF=1,0 mA (tp<300 µs), max. 1000 mV @IF=40 mA. IR typ. 20 nA / ' +
+      'max. 200 nA (@VR=30 V, tp<300 µs). Kapacita přechodu Cj typ. 4,0 / max. 5,0 pF (@VR=0 V, ' +
+      'f=1,0 MHz). Reverse recovery time trr typ. 5,0 ns. PN guard ring pro ochranu proti ESD a ' +
+      'transientům. Určeno pro obvody detekce, směšování a spínání signálu při vysokých frekvencích.',
+    schematicImage: 'KAS40-04-05-06.jpg',
+    tags: 'dioda,schottky,smd,sot-23,kas40,bas40,kexin',
+  },
+  {
+    name: 'KAS40-04',
+    packageType: 'SOT-23 (SMD), Pin1 a Pin2 = krajní anoda/katoda sériové dvojice, Pin3 = odbočka (tap) mezi diodami',
+    value: 'SMD Schottky dioda pro slabé signály, 2× sériově se stejnou polaritou, VRRM 40 V, IFM 200 mA',
+    notes:
+      'Kexin Electronics "Surface Mount Schottky Barrier Diode KAS40,-04,-05,-06 (BAS40,-04,-05,-06)" ' +
+      '— stejný společný datasheet jako KAS40 (viz tam obecný popis a ekvivalence s BAS40-04). Dvě ' +
+      'diody zapojené v sérii se stejnou polaritou: Pin1 (anoda 1. diody) → katoda 1. diody = anoda ' +
+      '2. diody (odbočka na Pin3) → katoda 2. diody (Pin2). Výrobní značení na pouzdře K44. Mezní ' +
+      'hodnoty i elektrické charakteristiky shodné s KAS40 (viz tam) — VRRM 40 V, IFM 200 mA, Ptot ' +
+      '350 mW, IFSM 600 mA, V(BR) min. 40 V, VF max. 380 mV @1,0 mA / max. 1000 mV @40 mA, Cj typ. ' +
+      '4,0 pF, trr typ. 5,0 ns.',
+    schematicImage: 'KAS40-04-05-06.jpg',
+    tags: 'dioda,schottky,smd,sot-23,kas40-04,bas40-04,kexin',
+  },
+  {
+    name: 'KAS40-05',
+    packageType: 'SOT-23 (SMD), Pin1 a Pin2 = anody, Pin3 = společná katoda',
+    value: 'SMD Schottky dioda pro slabé signály, 2× se společnou katodou, VRRM 40 V, IFM 200 mA',
+    notes:
+      'Kexin Electronics "Surface Mount Schottky Barrier Diode KAS40,-04,-05,-06 (BAS40,-04,-05,-06)" ' +
+      '— stejný společný datasheet jako KAS40 (viz tam obecný popis a ekvivalence s BAS40-05). Dvě ' +
+      'diody se společnou katodou vyvedenou na Pin3, anody samostatně na Pin1 a Pin2 — typické ' +
+      'zapojení pro dvoucestné usměrnění slabého signálu nebo logické funkce OR/steering. Výrobní ' +
+      'značení na pouzdře K45. Mezní hodnoty i elektrické charakteristiky shodné s KAS40 (viz tam) — ' +
+      'VRRM 40 V, IFM 200 mA, Ptot 350 mW, IFSM 600 mA, V(BR) min. 40 V, VF max. 380 mV @1,0 mA / ' +
+      'max. 1000 mV @40 mA, Cj typ. 4,0 pF, trr typ. 5,0 ns.',
+    schematicImage: 'KAS40-04-05-06.jpg',
+    tags: 'dioda,schottky,smd,sot-23,kas40-05,bas40-05,kexin,common-cathode',
+  },
+  {
+    name: 'KAS40-06',
+    packageType: 'SOT-23 (SMD), Pin1 a Pin2 = katody, Pin3 = společná anoda',
+    value: 'SMD Schottky dioda pro slabé signály, 2× se společnou anodou, VRRM 40 V, IFM 200 mA',
+    notes:
+      'Kexin Electronics "Surface Mount Schottky Barrier Diode KAS40,-04,-05,-06 (BAS40,-04,-05,-06)" ' +
+      '— stejný společný datasheet jako KAS40 (viz tam obecný popis a ekvivalence s BAS40-06). Dvě ' +
+      'diody se společnou anodou vyvedenou na Pin3, katody samostatně na Pin1 a Pin2 — typické ' +
+      'zapojení pro ochranu signálových vstupů proti přepětí (clamping) k napájecí sběrnici. Výrobní ' +
+      'značení na pouzdře K46. Mezní hodnoty i elektrické charakteristiky shodné s KAS40 (viz tam) — ' +
+      'VRRM 40 V, IFM 200 mA, Ptot 350 mW, IFSM 600 mA, V(BR) min. 40 V, VF max. 380 mV @1,0 mA / ' +
+      'max. 1000 mV @40 mA, Cj typ. 4,0 pF, trr typ. 5,0 ns.',
+    schematicImage: 'KAS40-04-05-06.jpg',
+    tags: 'dioda,schottky,smd,sot-23,kas40-06,bas40-06,kexin,common-anode',
+  },
   { name: 'BAT43', packageType: 'DO-35', value: '200 mA / 30 V', notes: 'Schottky dioda', tags: 'dioda,schottky' },
   { name: 'BAT46', packageType: 'DO-35', value: '150 mA / 100 V', notes: 'Schottky dioda', tags: 'dioda,schottky' },
   { name: 'BAT85', packageType: 'DO-35', value: '200 mA / 30 V', notes: 'Schottky dioda', tags: 'dioda,schottky' },
@@ -7098,7 +7166,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 127;
+export const SEED_LIBRARY_VERSION = 128;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
