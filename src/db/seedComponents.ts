@@ -3854,6 +3854,79 @@ const DIODE_SPECS: PartSpec[] = [
   },
 ];
 
+const DIAC_SPECS: PartSpec[] = [
+  {
+    name: 'DB3',
+    packageType:
+      '~DO-35 / ~SOD-27 (skleněné pouzdro), 2 vývody — diak je symetrická (obousměrná) ' +
+      'součástka bez polarity, vývody lze zaměnit; Ø 1,9 mm, délka pouzdra 3,9 mm, celková ' +
+      'délka s vývody 62,5 mm, Ø vývodu max. 0,5 mm',
+    value: 'Diak (trigerová dioda), obousměrný spínací prvek, VBO 28–36 V (typ. 32 V), IPM ±2 A',
+    notes:
+      'Diotec Semiconductor "DB3, DB31, DB32, DB4 — Trigger-Diodes (Diacs)" (verze 2017-12-19) — ' +
+      'datasheet nahraný uživatelem, společný pro 4 díly lišící se jen rozsahem průrazného ' +
+      '(breakover) napětí VBO (DB3 28–36 V, DB31 30–34 V, DB32 32–36 V, DB4 35–45 V — samostatné ' +
+      'záznamy). Diak je dvouvývodová, obousměrně symetrická spínací polovodičová součástka ' +
+      '(na rozdíl od běžné diody nemá polaritu) — do přiložení napětí nevede, po dosažení ' +
+      'průrazného napětí VBO skokově (lavinovým jevem) sepne do vodivého stavu s výrazným ' +
+      'poklesem napětí (foldback, ΔVF/R > 5 V) — typicky používaná k zapálení (triggering) ' +
+      'triaků a tyristorů ve stmívačích (dimmer) a fázových regulátorech střídavého proudu. ' +
+      'Chráněna proti falešnému sepnutí vlivem světla. Mezní hodnoty (společné pro celou řadu): ' +
+      'Ptot 150 mW (@TA=50°C, platí při zachování vývodů na okolní teplotě ve vzdálenosti 10 mm ' +
+      'od pouzdra), IPM (špičkový impulzní proud, 120 Hz opakovací kmitočet, tp≤20 µs) ±2 A, ' +
+      'Tj (přechodová) -50 až +100 °C, Tstg -50 až +175 °C, RthA (tepelný odpor přechod-okolí) ' +
+      '<300 K/W. Elektrické charakteristiky (TA=25°C): IBO (průrazný proud, @V=98% VBO) < 200 µA, ' +
+      'ΔVBO (asymetrie průrazného napětí mezi oběma směry, |V(BO)F−V(BO)R|) < 3,8 V (u DB3; u ' +
+      'DB31/DB32 užší rozsah VBO = přesnější spárování obou směrů), ΔVF/R (foldback napětí, ' +
+      'pokles při přechodu z IBO na IF/IR=10 mA, dv/dt=10 V/µs) > 5 V. Vlastní hodnota DB3: ' +
+      'VBO 28–36 V (typicky udáváno 32 V).',
+    schematicImage: 'DB3-DB31-DB32-DB4.jpg',
+    tags: 'diak,trigerová-dioda,diac,diotec,db3,do-35,sod-27,triak,tyristor,dimmer',
+  },
+  {
+    name: 'DB31',
+    packageType:
+      '~DO-35 / ~SOD-27 (skleněné pouzdro), 2 vývody — bez polarity; Ø 1,9 mm, délka pouzdra ' +
+      '3,9 mm, celková délka s vývody 62,5 mm, Ø vývodu max. 0,5 mm',
+    value: 'Diak (trigerová dioda), obousměrný spínací prvek, VBO 30–34 V (užší rozsah), IPM ±2 A',
+    notes:
+      'Diotec Semiconductor "DB3, DB31, DB32, DB4 — Trigger-Diodes (Diacs)" (verze 2017-12-19) — ' +
+      'stejný společný datasheet jako DB3 (viz tam obecný popis a společné mezní hodnoty Ptot/ ' +
+      'IPM/Tj/Tstg/RthA). DB31 má oproti základnímu DB3 výrazně užší (přesněji spárovaný) rozsah ' +
+      'průrazného napětí VBO — vhodné pro aplikace vyžadující symetričtější spínání obou ' +
+      'půlvln. Vlastní hodnota: VBO 30–34 V.',
+    schematicImage: 'DB3-DB31-DB32-DB4.jpg',
+    tags: 'diak,trigerová-dioda,diac,diotec,db31,do-35,sod-27,triak,tyristor,dimmer',
+  },
+  {
+    name: 'DB32',
+    packageType:
+      '~DO-35 / ~SOD-27 (skleněné pouzdro), 2 vývody — bez polarity; Ø 1,9 mm, délka pouzdra ' +
+      '3,9 mm, celková délka s vývody 62,5 mm, Ø vývodu max. 0,5 mm',
+    value: 'Diak (trigerová dioda), obousměrný spínací prvek, VBO 32–36 V (užší rozsah), IPM ±2 A',
+    notes:
+      'Diotec Semiconductor "DB3, DB31, DB32, DB4 — Trigger-Diodes (Diacs)" (verze 2017-12-19) — ' +
+      'stejný společný datasheet jako DB3 (viz tam obecný popis a společné mezní hodnoty). Stejně ' +
+      'jako DB31 má užší/přesnější rozsah VBO než základní DB3, zde posunutý o něco výše. Vlastní ' +
+      'hodnota: VBO 32–36 V.',
+    schematicImage: 'DB3-DB31-DB32-DB4.jpg',
+    tags: 'diak,trigerová-dioda,diac,diotec,db32,do-35,sod-27,triak,tyristor,dimmer',
+  },
+  {
+    name: 'DB4',
+    packageType:
+      '~DO-35 / ~SOD-27 (skleněné pouzdro), 2 vývody — bez polarity; Ø 1,9 mm, délka pouzdra ' +
+      '3,9 mm, celková délka s vývody 62,5 mm, Ø vývodu max. 0,5 mm',
+    value: 'Diak (trigerová dioda), obousměrný spínací prvek, VBO 35–45 V (typ. 40 V), IPM ±2 A',
+    notes:
+      'Diotec Semiconductor "DB3, DB31, DB32, DB4 — Trigger-Diodes (Diacs)" (verze 2017-12-19) — ' +
+      'stejný společný datasheet jako DB3 (viz tam obecný popis a společné mezní hodnoty). DB4 je ' +
+      'nejvyšší napěťový díl řady. Vlastní hodnota: VBO 35–45 V (typicky udáváno 40 V).',
+    schematicImage: 'DB3-DB31-DB32-DB4.jpg',
+    tags: 'diak,trigerová-dioda,diac,diotec,db4,do-35,sod-27,triak,tyristor,dimmer',
+  },
+];
+
 const BRIDGE_SPECS: PartSpec[] = [
   {
     name: 'ABS2',
@@ -7307,7 +7380,7 @@ const CAPACITOR_PART_SPECS: PartSpec[] = [
 
 function buildFromSpecs(
   specs: PartSpec[],
-  category: 'Dioda' | 'Můstek' | 'Tranzistor' | 'Rezistor' | 'Kondenzátor'
+  category: 'Dioda' | 'Diak' | 'Můstek' | 'Tranzistor' | 'Rezistor' | 'Kondenzátor'
 ): ComponentInput[] {
   return specs.map((spec) => ({
     name: spec.name,
@@ -7325,7 +7398,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 132;
+export const SEED_LIBRARY_VERSION = 133;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
@@ -7333,6 +7406,7 @@ export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildCapacitorSeed(),
   ...buildFromSpecs(CAPACITOR_PART_SPECS, 'Kondenzátor'),
   ...buildFromSpecs(DIODE_SPECS, 'Dioda'),
+  ...buildFromSpecs(DIAC_SPECS, 'Diak'),
   ...buildFromSpecs(BRIDGE_SPECS, 'Můstek'),
   ...buildFromSpecs(TRANSISTOR_SPECS, 'Tranzistor'),
   ...buildIcSeed(),
