@@ -381,4 +381,9 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'FDS9926.jpg': require('../../assets/schematics/FDS9926.jpg'),
   'BS170.jpg': require('../../assets/schematics/BS170.jpg'),
   'NY-D01.jpg': require('../../assets/schematics/NY-D01.jpg'),
+  'BAT41.jpg': require('../../assets/schematics/BAT41.jpg'),
+  'BAT47-BAT48.jpg': require('../../assets/schematics/BAT47-BAT48.jpg'),
+  '1N5820-5821-5822.jpg': require('../../assets/schematics/1N5820-5821-5822.jpg'),
+  'H1N5817-5818-5819.jpg': require('../../assets/schematics/H1N5817-5818-5819.jpg'),
+  'ER1600CT-1606CT.jpg': require('../../assets/schematics/ER1600CT-1606CT.jpg'),
 };
