@@ -618,6 +618,26 @@ const DIODE_SPECS: PartSpec[] = [
     schematicImage: 'KAS40-04-05-06.jpg',
     tags: 'dioda,schottky,smd,sot-23,kas40-06,bas40-06,kexin,common-anode',
   },
+  {
+    name: 'BAS40WS',
+    packageType: 'SOD-323 (SMD, 2 vývody), polarita: katoda = strana s pruhem (band)',
+    value: 'SMD Schottky dioda pro slabé signály, jednoduchá, VRRM 40 V, IF 200 mA',
+    notes:
+      'Won-Top Electronics (WTE) "BAS40WS — Surface Mount Schottky Barrier Diode" (2006) — datasheet ' +
+      'nahraný uživatelem. Jednoduchá (2vývodová) Schottky dioda v menším pouzdře SOD-323 — na ' +
+      'rozdíl od 3vývodové SOT-23 řady KAS40/-04/-05/-06 (viz samostatné záznamy, elektricky stejná ' +
+      'rodina BAS40, ale jiné pouzdro a jen jednoduchá varianta). PN guard ring pro ochranu proti ' +
+      'ESD a transientům. Mezní hodnoty: VRRM/VRWM/VR 40 V, IF (trvalý průchozí proud, na ' +
+      'sklolaminátovém substrátu) 200 mA, IFSM (špičkový, t<1,0s) 600 mA, Pd 200 mW, RθJA 625 °C/W, ' +
+      'TJ/Tstg -55 až +125 °C. Elektrické charakteristiky: V(BR)R min. 40 V (@IR=10 µA). VF max.: ' +
+      '380 mV @IF=1,0 mA, 500 mV @IF=10 mA, 1000 mV @IF=40 mA (vše t<300 µs). IR typ. 20 / max. ' +
+      '200 nA (@VR=30 V, t<300 µs). Kapacita přechodu Cj typ. 4,0 / max. 5,0 pF (@VR=0 V, f=1,0 MHz). ' +
+      'Reverse recovery time trr max. 5,0 ns. Značení na pouzdře "S40". Hmotnost cca 0,004 g. Pro ' +
+      'bezolovnatou (RoHS) verzi výrobce přidává příponu "-LF" k označení (BAS40WS-LF) — elektricky ' +
+      'identické.',
+    schematicImage: 'BAS40WS.jpg',
+    tags: 'dioda,schottky,smd,sod-323,bas40ws,wte',
+  },
   { name: 'BAT43', packageType: 'DO-35', value: '200 mA / 30 V', notes: 'Schottky dioda', tags: 'dioda,schottky' },
   { name: 'BAT46', packageType: 'DO-35', value: '150 mA / 100 V', notes: 'Schottky dioda', tags: 'dioda,schottky' },
   { name: 'BAT85', packageType: 'DO-35', value: '200 mA / 30 V', notes: 'Schottky dioda', tags: 'dioda,schottky' },
@@ -7166,7 +7186,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 128;
+export const SEED_LIBRARY_VERSION = 129;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
