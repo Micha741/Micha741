@@ -676,6 +676,54 @@ const IC_SPECS: IcSpec[] = [
 
   // Spínané napájecí řadiče
   {
+    name: 'SC2616',
+    packageType:
+      'MLP-18 (18 vývodů + termální podložka pin 19, spojena interně s AGND), piny: ' +
+      '1=FB, 2=VTTSNS, 3=LGND, 4=5VSBY, 5,6=VTT, 7=VDDQSTBY, 8=VDDQIN, 9=5VCC, 10=SLP_S5, ' +
+      '11=SLP_S3, 12=AGND, 13=PGND, 14=BG, 15=TG, 16=12VCC, 17=COMP, 18=SS/EN, 19=termální ' +
+      'podložka (TH_PAD)',
+    value:
+      'Kompletní DDR napájecí řešení: synchronní buck řadič pro VDDQ (do 20 A) + lineární ' +
+      'sink/source regulátor pro VTT terminační napětí (2 A), s plnou podporou ACPI S0/S3/S5',
+    notes:
+      'Semtech "SC2616 — Complete DDR Power Solution" (revize 3, březen 2003) — datasheet ' +
+      'nahraný uživatelem. Jednočipové řešení napájení pamětí DDR dle specifikace motherboardu ' +
+      'ACPI — synchronní buck regulátor (externí FETy) dodává vysoký proud do VDDQ sběrnice s ' +
+      'účinností až 90 %, zatímco lineární sink/source regulátor zajišťuje terminační napětí ' +
+      'VTT (typicky VDDQ/2). Interní S3 standby LDO dodává VDDQSTBY proud min. 0,65 A pro ' +
+      '"Suspend to RAM". Nezávislé tepelné vypnutí pro VDDQ regulátor, VTT zdrojový a VTT ' +
+      'propadový regulátor (3 samostatné obvody). Logika sekvenování plně řízena signály ' +
+      'SLP_S3/SLP_S5 z motherboardu dle ACPI — ve stavu S3 je VDDQ napájeno jen přes interní ' +
+      'standby LDO (min. 0,65 A), VTT je tristejtováno; ve stavu S5 jsou obě výstupní napětí ' +
+      'zcela vypnuta. Starší, funkčně obdobná (ale jednodušší/méně integrovaná) obdoba novějšího ' +
+      'TPS51716 v této knihovně — TPS51716 navíc integruje i VTTREF buffer a pracuje v D-CAP2 ' +
+      'módu bez nutnosti externí kompenzace, zatímco SC2616 vyžaduje klasickou napěťovou ' +
+      'kompenzační smyčku (pin COMP) s externími RC články. ' +
+      'Mezní hodnoty: V5VCC max 7 V, V12VCC max 15 V, V5VSBY max 7 V, IQ(VTT) ±2 A, TA (provozní) ' +
+      '0 až 70 °C, TJ max 125 °C, RθJA 25 °C/W, RθJC 4 °C/W (MLP termální podložka pájena na ' +
+      'desku), Tstg -65 až +150 °C, TLEAD (pájení, 10 s) 300 °C, ESD (HBM) 2 kV. ' +
+      'Elektrické charakteristiky (TA=25°C, VCC12=12V, VCC5=5V, V5VSBY=5V): V5VCC 4,5-5,5 V, ' +
+      'V12VCC 10,8-13,2 V, V5VSBY 4,5-5,5 V. Klidový odběr IQ(5VSBY): 1,8/2,5 mA (S0,S5 typ/max), ' +
+      '3,5/5,0 mA (S3). UVLO12VCC typ. 8,2 V (7-10 V), UVLO5VCC typ. 3,7 V (3,5-4 V). VREF typ. ' +
+      '1,25 V. Spínač (switcher): oscilátor 225-275 kHz (typ. 250 kHz), soft-start proud typ. ' +
+      '25 µA, duty cycle 0-80 %, overcurrent trip 50-70 % VDDQ setpointu (typ. 60 %), TG/BG rise/ ' +
+      'fall time typ. 25/35 ns (@4000pF), dead time typ. 20-50 ns, error amp transkonduktance ' +
+      '0,8 mS, error amp gain @DC typ. 38 dB, modulator gain typ. 19 dB @VIN=5V. VDDQ load ' +
+      'regulace typ. 0,2 % (0-10A, S0). STBY LDO: výstupní proud min. 750 mA DC, load regulace ' +
+      'typ. 0,5 % (0-750mA, S3), current limit typ. 1 A. VTT LDO: výstupní napětí 1,235-1,265 V ' +
+      'typ. 1,25 V (@VDDQSTBY=2,5V), zdrojový/propadový proud typ. ±1,8 A, load regulace max ±1 % ' +
+      '(±1,8A), error amp gain typ. 75 dB, current limit typ. 3 A (S3=high). Proudová ochrana: ' +
+      'při poklesu VDDQ pod 60 % jmenovité hodnoty se TG/BG zablokují (latch), obnova cyklováním ' +
+      '5VCC/12VCC nebo SS/EN. "Back feeding" ochrana: při zpětném proudu z VDDQ do vstupní 5V ' +
+      'větve (přes body diodu horního FETu ve stavu S3) doporučeno zapojit MOSFETy zdroj-ke- ' +
+      'zdroji (source-to-source) sériově s horním FETem, nebo použít "instantly available" ACPI ' +
+      'řadič (např. Semtech SC1549) pro "always on" 5V sběrnici. Aplikace: napájení DDR pamětí ' +
+      'dle ACPI specifikace motherboardu, vysokorychlostní terminace datových linek, paměťové ' +
+      'karty.',
+    schematicImage: 'SC2616.jpg',
+    tags: 'io,řadič,spínaný-zdroj,buck,ldo,ddr,vtt,vddq,pamětový-zdroj,semtech,sc2616,mlp-18,acpi',
+  },
+  {
     name: 'TPS51716',
     packageType: '20-pin QFN (RUK), 3×3 mm, s termální podložkou (thermal pad na GND)',
     value:
