@@ -389,4 +389,5 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'KAS40-04-05-06.jpg': require('../../assets/schematics/KAS40-04-05-06.jpg'),
   'BAS40WS.jpg': require('../../assets/schematics/BAS40WS.jpg'),
   'ICM-0805-series.jpg': require('../../assets/schematics/ICM-0805-series.jpg'),
+  'MBR2035CT-20200CT.jpg': require('../../assets/schematics/MBR2035CT-20200CT.jpg'),
 };
