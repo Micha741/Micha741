@@ -153,6 +153,7 @@ const DIODE_SPECS: PartSpec[] = [
       '10, červen 2019, s bannerem "obsolete") a Fairchild (dnes součást onsemi) existují jen pro ' +
       'referenci — oba výrobci tuto řadu ukončili. Pro nový nákup/návrh tedy nejspolehlivější ' +
       'aktuální zdroj je onsemi nebo Vishay (viz výše).',
+    schematicImage: '1N5820-5821-5822.jpg',
     tags: 'dioda,schottky,usměrňovací,1n5820,1n5821,1n5822,do-201ad',
   },
   {
@@ -174,6 +175,7 @@ const DIODE_SPECS: PartSpec[] = [
       'limitem 125 °C). ST díl je dle DigiKey již obsolete/nevyráběný; stejně tak starší datasheety ' +
       'Diodes Incorporated (dok. DS23003, rev. 10, červen 2019, "obsolete") a Fairchild (dnes ' +
       'součást onsemi) jsou jen pro referenci — oba výrobci tuto řadu ukončili.',
+    schematicImage: '1N5820-5821-5822.jpg',
     tags: 'dioda,schottky,usměrňovací,1n5820,1n5821,1n5822,do-201ad',
   },
   {
@@ -195,6 +197,7 @@ const DIODE_SPECS: PartSpec[] = [
       'přísnějším limitem 125 °C). ST díl je dle DigiKey již obsolete/nevyráběný; stejně tak starší ' +
       'datasheety Diodes Incorporated (dok. DS23003, rev. 10, červen 2019, "obsolete") a Fairchild ' +
       '(dnes součást onsemi) jsou jen pro referenci — oba výrobci tuto řadu ukončili.',
+    schematicImage: '1N5820-5821-5822.jpg',
     tags: 'dioda,schottky,usměrňovací,1n5820,1n5821,1n5822,do-201ad',
   },
 
@@ -216,6 +219,7 @@ const DIODE_SPECS: PartSpec[] = [
       '@TA=25 °C, 10 mA @TA=100 °C. RθJA typ. 50 °C/W (vertikální PCB montáž, 0,375" vývod), ' +
       'kapacitance přechodu typ. 110 pF (@1 MHz, VR=4 V DC). Pouzdro DO-41, vývody 42 Alloy s ' +
       'pocínováním.',
+    schematicImage: 'H1N5817-5818-5819.jpg',
     tags: 'dioda,schottky,usměrňovací,1n5817,1n5818,1n5819,h1n5817,do-41,hsmc',
   },
   {
@@ -230,6 +234,7 @@ const DIODE_SPECS: PartSpec[] = [
       'hodnoty: VRRM/VDC 30 V, VR(RMS) 21 V, IF(AV) 1,0 A @TL=90°C, IFSM 25 A, TJ/Tstg -65 až +125 °C. ' +
       'VF (max.): 0,550 V @IF=1 A, 0,875 V @IF=3 A. IR (max.): 1 mA @TA=25 °C, 10 mA @TA=100 °C. ' +
       'RθJA typ. 50 °C/W. Pouzdro DO-41.',
+    schematicImage: 'H1N5817-5818-5819.jpg',
     tags: 'dioda,schottky,usměrňovací,1n5817,1n5818,1n5819,h1n5818,do-41,hsmc',
   },
   {
@@ -243,6 +248,7 @@ const DIODE_SPECS: PartSpec[] = [
       'zde nejvyšší napěťový díl řady. Mezní hodnoty: VRRM/VDC 40 V, VR(RMS) 28 V, IF(AV) 1,0 A ' +
       '@TL=90°C, IFSM 25 A, TJ/Tstg -65 až +125 °C. VF (max.): 0,600 V @IF=1 A, 0,900 V @IF=3 A. ' +
       'IR (max.): 1 mA @TA=25 °C, 10 mA @TA=100 °C. RθJA typ. 50 °C/W. Pouzdro DO-41.',
+    schematicImage: 'H1N5817-5818-5819.jpg',
     tags: 'dioda,schottky,usměrňovací,1n5817,1n5818,1n5819,h1n5819,do-41,hsmc',
   },
 
@@ -356,6 +362,120 @@ const DIODE_SPECS: PartSpec[] = [
     tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1600,do-41',
   },
 
+  {
+    name: 'ER1600CT',
+    packageType:
+      'TO-220 (3 vývody): PIN1 a PIN3 = katody dvou nezávislých diod, PIN2 (spojen s tělem/chladičem) = ' +
+      'společná anoda (+) — dvojitá dioda se společnou anodou, nikoli jedna dioda',
+    value: 'Dvojitá super-fast usměrňovací dioda, 2× 16 A / 50 V (VRRM), IFSM 125 A, společná anoda',
+    notes:
+      'Won-Top Electronics (WTE) "ER1600CT – ER1606CT — 16A Super-Fast Glass Passivated Rectifier" ' +
+      '(2002) — datasheet nahraný uživatelem, společný pro 7 dílů lišících se jen napětím (ER1600CT ' +
+      '50 V, ER1601CT 100 V, ER1601ACT 150 V, ER1602CT 200 V, ER1603CT 300 V, ER1604CT 400 V, ER1606CT ' +
+      '600 V — samostatné záznamy). Pouzdro TO-220 obsahuje dvě samostatné super-fast diody se ' +
+      'společnou anodou vyvedenou na PIN2/tělo pouzdra (viz schéma) — typické zapojení pro ' +
+      'dvoucestné usměrnění s odbočeným středem (center-tap) sekundárního vinutí transformátoru. ' +
+      'Skleněná pasivace čipu (glass passivated), plast s UL klasifikací hořlavosti 94V-O. Mezní ' +
+      'hodnoty (společné pro celou řadu): VRRM/VRWM/VR 50 V, VR(RMS) 35 V, IO (střední usměrněný ' +
+      'proud na diodu) 16 A @TC=105°C, IFSM (nerepetitivní špičkový, 8,3ms půlvlna, JEDEC metoda) ' +
+      '125 A, TJ/Tstg -65 až +150 °C. VFM max. 0,95 V @IF=8,0 A. IRM max. 10 µA @TA=25°C (500 µA ' +
+      '@TA=100°C). Reverse recovery time trr typ. 35 ns. Typická kapacita přechodu Cj typ. 80 pF. ' +
+      'Hmotnost cca 2,24 g, vývody pocínované, pájitelné dle MIL-STD-202 metoda 208.',
+    schematicImage: 'ER1600CT-1606CT.jpg',
+    tags: 'dioda,usměrňovací,super-fast,wte,er16xxct,er1600ct,to-220,dual,common-anode',
+  },
+  {
+    name: 'ER1601CT',
+    packageType:
+      'TO-220 (3 vývody): PIN1 a PIN3 = katody dvou nezávislých diod, PIN2 (spojen s tělem/chladičem) = ' +
+      'společná anoda (+)',
+    value: 'Dvojitá super-fast usměrňovací dioda, 2× 16 A / 100 V (VRRM), IFSM 125 A, společná anoda',
+    notes:
+      'Won-Top Electronics (WTE) "ER1600CT – ER1606CT — 16A Super-Fast Glass Passivated Rectifier" ' +
+      '(2002) — stejný společný datasheet jako ER1600CT (viz tam obecný popis pouzdra a zapojení), ' +
+      'zde druhý napěťový díl řady. Mezní hodnoty: VRRM/VRWM/VR 100 V, VR(RMS) 70 V, IO 16 A ' +
+      '@TC=105°C, IFSM 125 A, TJ/Tstg -65 až +150 °C. VFM max. 0,95 V @IF=8,0 A. IRM max. 10 µA ' +
+      '@TA=25°C (500 µA @TA=100°C). trr typ. 35 ns. Cj typ. 80 pF.',
+    schematicImage: 'ER1600CT-1606CT.jpg',
+    tags: 'dioda,usměrňovací,super-fast,wte,er16xxct,er1601ct,to-220,dual,common-anode',
+  },
+  {
+    name: 'ER1601ACT',
+    packageType:
+      'TO-220 (3 vývody): PIN1 a PIN3 = katody dvou nezávislých diod, PIN2 (spojen s tělem/chladičem) = ' +
+      'společná anoda (+)',
+    value: 'Dvojitá super-fast usměrňovací dioda, 2× 16 A / 150 V (VRRM), IFSM 125 A, společná anoda',
+    notes:
+      'Won-Top Electronics (WTE) "ER1600CT – ER1606CT — 16A Super-Fast Glass Passivated Rectifier" ' +
+      '(2002) — stejný společný datasheet jako ER1600CT, zde mezidíl mezi ER1601CT a ER1602CT. ' +
+      'Mezní hodnoty: VRRM/VRWM/VR 150 V, VR(RMS) 105 V, IO 16 A @TC=105°C, IFSM 125 A, TJ/Tstg -65 ' +
+      'až +150 °C. VFM max. 0,95 V @IF=8,0 A. IRM max. 10 µA @TA=25°C (500 µA @TA=100°C). trr typ. ' +
+      '35 ns. Cj typ. 80 pF.',
+    schematicImage: 'ER1600CT-1606CT.jpg',
+    tags: 'dioda,usměrňovací,super-fast,wte,er16xxct,er1601act,to-220,dual,common-anode',
+  },
+  {
+    name: 'ER1602CT',
+    packageType:
+      'TO-220 (3 vývody): PIN1 a PIN3 = katody dvou nezávislých diod, PIN2 (spojen s tělem/chladičem) = ' +
+      'společná anoda (+)',
+    value: 'Dvojitá super-fast usměrňovací dioda, 2× 16 A / 200 V (VRRM), IFSM 125 A, společná anoda',
+    notes:
+      'Won-Top Electronics (WTE) "ER1600CT – ER1606CT — 16A Super-Fast Glass Passivated Rectifier" ' +
+      '(2002) — stejný společný datasheet jako ER1600CT, zde nejvyšší díl skupiny se společnými ' +
+      'VFM/trr/Cj (ER1600CT–ER1602CT). Mezní hodnoty: VRRM/VRWM/VR 200 V, VR(RMS) 140 V, IO 16 A ' +
+      '@TC=105°C, IFSM 125 A, TJ/Tstg -65 až +150 °C. VFM max. 0,95 V @IF=8,0 A. IRM max. 10 µA ' +
+      '@TA=25°C (500 µA @TA=100°C). trr typ. 35 ns. Cj typ. 80 pF.',
+    schematicImage: 'ER1600CT-1606CT.jpg',
+    tags: 'dioda,usměrňovací,super-fast,wte,er16xxct,er1602ct,to-220,dual,common-anode',
+  },
+  {
+    name: 'ER1603CT',
+    packageType:
+      'TO-220 (3 vývody): PIN1 a PIN3 = katody dvou nezávislých diod, PIN2 (spojen s tělem/chladičem) = ' +
+      'společná anoda (+)',
+    value: 'Dvojitá super-fast usměrňovací dioda, 2× 16 A / 300 V (VRRM), IFSM 125 A, společná anoda',
+    notes:
+      'Won-Top Electronics (WTE) "ER1600CT – ER1606CT — 16A Super-Fast Glass Passivated Rectifier" ' +
+      '(2002) — stejný společný datasheet jako ER1600CT. Od tohoto dílu výše (ER1603CT, ER1604CT) má ' +
+      'skupina vyšší VFM, delší trr a nižší Cj než nižší napěťová skupina ER1600CT–ER1602CT. Mezní ' +
+      'hodnoty: VRRM/VRWM/VR 300 V, VR(RMS) 210 V, IO 16 A @TC=105°C, IFSM 125 A, TJ/Tstg -65 až ' +
+      '+150 °C. VFM max. 1,3 V @IF=8,0 A. IRM max. 10 µA @TA=25°C (500 µA @TA=100°C). trr typ. 50 ns. ' +
+      'Cj typ. 60 pF.',
+    schematicImage: 'ER1600CT-1606CT.jpg',
+    tags: 'dioda,usměrňovací,super-fast,wte,er16xxct,er1603ct,to-220,dual,common-anode',
+  },
+  {
+    name: 'ER1604CT',
+    packageType:
+      'TO-220 (3 vývody): PIN1 a PIN3 = katody dvou nezávislých diod, PIN2 (spojen s tělem/chladičem) = ' +
+      'společná anoda (+)',
+    value: 'Dvojitá super-fast usměrňovací dioda, 2× 16 A / 400 V (VRRM), IFSM 125 A, společná anoda',
+    notes:
+      'Won-Top Electronics (WTE) "ER1600CT – ER1606CT — 16A Super-Fast Glass Passivated Rectifier" ' +
+      '(2002) — stejný společný datasheet jako ER1600CT, viz poznámka u ER1603CT pro skupinové VFM/' +
+      'trr/Cj. Mezní hodnoty: VRRM/VRWM/VR 400 V, VR(RMS) 280 V, IO 16 A @TC=105°C, IFSM 125 A, ' +
+      'TJ/Tstg -65 až +150 °C. VFM max. 1,3 V @IF=8,0 A. IRM max. 10 µA @TA=25°C (500 µA @TA=100°C). ' +
+      'trr typ. 50 ns. Cj typ. 60 pF.',
+    schematicImage: 'ER1600CT-1606CT.jpg',
+    tags: 'dioda,usměrňovací,super-fast,wte,er16xxct,er1604ct,to-220,dual,common-anode',
+  },
+  {
+    name: 'ER1606CT',
+    packageType:
+      'TO-220 (3 vývody): PIN1 a PIN3 = katody dvou nezávislých diod, PIN2 (spojen s tělem/chladičem) = ' +
+      'společná anoda (+)',
+    value: 'Dvojitá super-fast usměrňovací dioda, 2× 16 A / 600 V (VRRM), IFSM 125 A, společná anoda',
+    notes:
+      'Won-Top Electronics (WTE) "ER1600CT – ER1606CT — 16A Super-Fast Glass Passivated Rectifier" ' +
+      '(2002) — stejný společný datasheet jako ER1600CT, nejvyšší napěťový díl celé řady, vlastní ' +
+      '(nejvyšší) VFM. Mezní hodnoty: VRRM/VRWM/VR 600 V, VR(RMS) 420 V, IO 16 A @TC=105°C, IFSM ' +
+      '125 A, TJ/Tstg -65 až +150 °C. VFM max. 1,7 V @IF=8,0 A. IRM max. 10 µA @TA=25°C (500 µA ' +
+      '@TA=100°C). trr typ. 50 ns. Cj typ. 60 pF.',
+    schematicImage: 'ER1600CT-1606CT.jpg',
+    tags: 'dioda,usměrňovací,super-fast,wte,er16xxct,er1606ct,to-220,dual,common-anode',
+  },
+
   { name: '1N4148', packageType: 'DO-35', value: '150 mA / 100 V', notes: 'Spínací (signálová) dioda', tags: 'dioda,spínací,signálová' },
   {
     name: 'KA206',
@@ -386,6 +506,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(@TJ=25 °C, IF=1 mA, pulzní test), max. 1 V (@IF=200 mA). IR max. 0,1 µA (@TJ=25 °C, VR=50 V), ' +
       'max. 20 µA (@TJ=100 °C). Kapacita přechodu C typ. 2 pF (@TJ=25 °C, VR=1 V, f=1 MHz). Pouzdro ' +
       'DO-35 (sklo), čiré sklo, kroužek na straně katody, hmotnost cca 0,15 g.',
+    schematicImage: 'BAT41.jpg',
     tags: 'dioda,schottky,bat41,do-35,stmicroelectronics',
   },
   {
@@ -407,6 +528,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(20 µA @60°C), 10 µA @VR=20V/25°C (30 µA @60°C). Kapacita přechodu C: typ. 20 pF @VR=0V, ' +
       '12 pF @VR=1V (f=1 MHz, TJ=25°C). Doba zotavení trr typ. 10 ns (IF=10mA, VR=1V, irr=1mA, ' +
       'RL=100Ω). Pouzdro DO-35 (sklo), čiré sklo, kroužek na straně katody, hmotnost cca 0,015 g.',
+    schematicImage: 'BAT47-BAT48.jpg',
     tags: 'dioda,schottky,bat47,do-35,stmicroelectronics',
   },
   {
@@ -425,6 +547,7 @@ const DIODE_SPECS: PartSpec[] = [
       '(15 µA @60°C), 5 µA @VR=20V/25°C (25 µA @60°C), 25 µA @VR=40V/25°C (50 µA @60°C). Kapacita ' +
       'přechodu C: typ. 20 pF @VR=0V, 12 pF @VR=1V (f=1 MHz, TJ=25°C). Doba zotavení trr typ. 10 ns. ' +
       'Pouzdro DO-35 (sklo), čiré sklo, kroužek na straně katody, hmotnost cca 0,015 g.',
+    schematicImage: 'BAT47-BAT48.jpg',
     tags: 'dioda,schottky,bat48,do-35,stmicroelectronics',
   },
   { name: 'BAT43', packageType: 'DO-35', value: '200 mA / 30 V', notes: 'Schottky dioda', tags: 'dioda,schottky' },
@@ -6975,7 +7098,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 126;
+export const SEED_LIBRARY_VERSION = 127;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
