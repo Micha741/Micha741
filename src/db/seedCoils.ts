@@ -46,6 +46,34 @@ const COIL_SPECS: CoilSpec[] = [
     tags: 'cívka,transformátor,proudový-transformátor,current-sense,smd,mps-industries,p4100e5,smps',
   },
   {
+    name: 'ICM-0805 series',
+    packageType:
+      'SMD souosá tlumivka (common mode choke), pouzdro 0805 (cca 2,0×1,2 mm), 4 vývody — ' +
+      'piny 1-2 = jedno vinutí, piny 4-3 = druhé (vázané) vinutí, tečka = počátek vinutí ' +
+      '(fázování)',
+    value:
+      'Souosá (common mode) tlumivka pro potlačení soufázového rušení, impedance při 100 MHz ' +
+      '30 až 370 Ω (dle varianty, ±20 %), jmenovité napětí 50 V',
+    notes:
+      'Vishay Dale "ICM-0805 — Surface Mount Common Mode Choke" (dok. č. 34159, revize ' +
+      '19-duben-2010) — datasheet nahraný uživatelem (konkrétně varianta ICM0805ER900M = 90 Ω). ' +
+      'Dvojité (vázané) vinutí na společném jádře — propouští diferenční (užitečný) signál, ale ' +
+      'tlumí soufázové (common mode) rušení, typicky na vysokorychlostních datových linkách ' +
+      '(USB 2.0, IEEE1394/FireWire) a v noteboocích/PC, digitálních fotoaparátech, scannerech. ' +
+      'Datasheet pokrývá celou modelovou řadu lišící se jen jmenovitou impedancí (jinak ' +
+      'mechanicky i elektricky shodnou, stejné pouzdro) — do knihovny přidán jako jeden ' +
+      'souhrnný záznam, konkrétní varianta se volí dle kódu impedance v globálním čísle dílu ' +
+      '(ICM0805ER + 3místný EIA kód + tolerance, např. "900M" = 90 Ω ±20 %, "121M" = 120 Ω ' +
+      '±20 %). Tabulka variant (impedance @100 MHz / jmenovitý proud max. / DC odpor max.): ' +
+      '30 Ω / 450 mA / 0,20 Ω; 67 Ω / 400 mA / 0,25 Ω; 90 Ω / 330 mA / 0,35 Ω; 120 Ω / 370 mA / ' +
+      '0,30 Ω; 160 Ω / 350 mA / 0,35 Ω; 180 Ω / 330 mA / 0,35 Ω; 260 Ω / 300 mA / 0,40 Ω; ' +
+      '370 Ω / 280 mA / 0,45 Ω — u všech variant jmenovité napětí 50 VDC, přepěťová pevnost ' +
+      '125 VDC, izolační odpor min. 10 MΩ. Impedance měřena na HP4287A při 100 MHz. Jmenovitý ' +
+      'proud odpovídá oteplení +15 °C. Provozní teplota -40 až +85 °C. RoHS.',
+    schematicImage: 'ICM-0805-series.jpg',
+    tags: 'cívka,tlumivka,souosá-tlumivka,common-mode-choke,smd,0805,vishay,dale,icm-0805,usb,ieee1394',
+  },
+  {
     name: 'Radiální tlumivka 10 µH',
     packageType: 'THT, radiální, barevný kód',
     value: '10 µH',
