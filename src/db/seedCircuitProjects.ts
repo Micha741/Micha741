@@ -1,18 +1,19 @@
 import type { CircuitProjectInput } from '../types/circuit';
 
-export const CIRCUIT_LIBRARY_VERSION = 14;
+export const CIRCUIT_LIBRARY_VERSION = 15;
 
 /**
  * Přesný počet kusů u drobných pasivních součástek (rezistory) je odhad podle
  * schématu zdroje, ne ověřená kusovka — před nákupem si ověř podle vlastního
  * zapojení.
  *
- * Projekty níže (vánoční stromeček s 4060 … vozítko s Mecanum Omni koly) jsou
- * zpracované podle časopisu Praktická elektronika A Radio 11/2024. Obrázky
- * schémat jsou oříznuté scany z tohoto časopisu — třetí strana publikace,
- * u některých článků navíc sama přebíraná z jiného zdroje (viz poznámka
- * „Zdroj“ u jednotlivých projektů). Než se tyto obrázky zveřejní uživatelům
- * appky, je potřeba ověřit licenční práva k jejich použití.
+ * Projekty níže jsou zpracované podle časopisu Praktická elektronika A Radio —
+ * většina podle vydání 11/2024, posledních 10 položek (vánoční stromeček
+ * s BC546 … dělič kilometrů) podle vydání 10/2023. Obrázky schémat jsou
+ * oříznuté scany z těchto časopisů — třetí strana publikace, u některých
+ * článků navíc sama přebíraná z jiného zdroje (viz poznámka „Zdroj“ u
+ * jednotlivých projektů). Než se tyto obrázky zveřejní uživatelům appky, je
+ * potřeba ověřit licenční práva k jejich použití.
  */
 export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
   {
@@ -775,6 +776,245 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
       { label: 'R1 — rezistor 680 Ω', match: '680 Ω', quantity: 1 },
       { label: 'Oscilátorová cívka — hrníčkové jádro 3B7, Ø14mm, 20+60 závitů', match: 'cívka', quantity: 1 },
       { label: 'Napájecí článek 1,5 V', match: 'baterie', quantity: 1 },
+    ],
+  },
+  {
+    name: 'Blikající vánoční stromeček (2023)',
+    description:
+      'Vánoční dekorace — šipkovitá deska s dvaceti LED v šesti šikmých řadách, které postupně po dvou řadách blikají odshora dolů (perioda cca 0,3 s). Blikání zajišťuje třístavový multivibrátor s tranzistory T1–T3, který přes spínací tranzistory T4–T6 budí LED.',
+    image: 'vanocni-stromecek-2023-10.jpg',
+    pcbImage: null,
+    notes:
+      'Zdroj: Praktická elektronika A Radio 10/2023, str. 3–4, rubrika Jednoduchá zapojení pro volný čas. Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Deska s plošnými spoji KE02Z8H, napájení 9 V (baterie 6F22 nebo síťový adaptér).',
+    parts: [
+      { label: 'T1–T6 — tranzistor BC546B', match: 'BC546', quantity: 6 },
+      { label: 'R1, R3, R5 — rezistor 33 kΩ', match: '33 kΩ', quantity: 3 },
+      { label: 'R2, R4, R6, R7, R9, R10, R11, R14 — rezistor 1 kΩ', match: '1 kΩ', quantity: 8 },
+      { label: 'R8, R12, R16 — rezistor 5,6 kΩ', match: '5.6 kΩ', quantity: 3 },
+      { label: 'R13, R15 — rezistor 1,5 kΩ', match: '1.5 kΩ', quantity: 2 },
+      { label: 'R17 — rezistor 2,2 kΩ', match: '2.2 kΩ', quantity: 1 },
+      { label: 'C1–C3 — elektrolytický kondenzátor 4,7 µF/16 V', match: '4.7 µF', quantity: 3 },
+      { label: 'C4 — elektrolytický kondenzátor 220 µF/16 V', match: '220 µF', quantity: 1 },
+      { label: 'D1–D20 — LED červená, 5 mm, supersvítivá', match: 'LED 5mm červená', quantity: 20 },
+      { label: 'Konektor napájení 9 V (J1, J2)', match: 'konektor', quantity: 1 },
+    ],
+  },
+  {
+    name: 'Automatický spínač odsávání',
+    description:
+      'Spínač, který při zapnutí elektrického stroje (např. brusky) automaticky zapne vysavač odsávání prachu. Zapojení je napájeno síťovým transformátorem a snímá malé střídavé napětí vznikající na bočníku R1–R4 v obvodu napájení stroje — po jeho zesílení a usměrnění sepne komparátor relé RE1.',
+    image: 'automaticky-spinac-odsavani.jpg',
+    pcbImage: null,
+    notes:
+      'Zdroj: Praktická elektronika A Radio 10/2023, str. 4–5, rubrika Jednoduchá zapojení pro volný čas, převzato z Elektronika praktyczna (PL), 11/2018. Schéma je oříznuté ze scanu časopisu, navíc samo převzaté z polského časopisu — ověřit práva k publikaci obrázku v appce. Bočník R1–R4 (4× 0,1 Ω/3 W) musí být drátové, metalizované, stejné zatížitelnosti — při přetížení se snadno přepálí.',
+    parts: [
+      { label: 'TR1 — síťový transformátor 230 V/12 V/0,5 VA', match: 'Transformátor 230V/12V', quantity: 1 },
+      { label: 'DB1 — můstkový usměrňovač 100 V/1 A', match: 'DF005S', quantity: 1 },
+      { label: 'PO1 — pojistka T63 mA', match: 'pojistka', quantity: 1 },
+      { label: 'IC1 — LM358 (dvojitý OZ)', match: 'LM358', quantity: 1 },
+      { label: 'T1 — tranzistor BC556B (PNP)', match: 'BC556', quantity: 1 },
+      { label: 'RE1 — relé 12 V, přepínací kontakt 250 V/10 A (RM96)', match: 'G5LE-1', quantity: 1 },
+      { label: 'D1, D3, D4 — dioda 1N4148', match: '1N4148', quantity: 3 },
+      { label: 'ZD1 — Zenerova dioda 5,6 V/0,5 W', match: 'BZX55C5V6', quantity: 1 },
+      { label: 'R1–R4 — rezistor 0,1 Ω/3 W (bočník)', match: '0.1 Ω', quantity: 4 },
+      { label: 'R5, R6, R13, R14 — rezistor 1 kΩ', match: '1 kΩ', quantity: 4 },
+      { label: 'R7, R11 — rezistor 3,3 MΩ', match: '3.3 MΩ', quantity: 2 },
+      { label: 'R8, R9, R10 — rezistor 10 kΩ', match: '10 kΩ', quantity: 3 },
+      { label: 'R12 — rezistor 100 kΩ', match: '100 kΩ', quantity: 1 },
+      { label: 'C1 — elektrolytický kondenzátor 470 µF/35 V', match: '470 µF', quantity: 1 },
+      { label: 'C2, C3, C4 — kondenzátor 100 nF', match: '100 nF', quantity: 3 },
+    ],
+  },
+  {
+    name: 'ESP8266 meteostanice (zobrazovač předpovědi počasí)',
+    description:
+      'Miniaturní zobrazovač předpovědi počasí na modulu ESP8266-12F s OLED displejem SSD1306 (128×64). Modul se přes Wi-Fi připojí k internetu, stáhne data z openweathermap.org v JSON formátu a zobrazí teplotu, oblačnost, rychlost větru, srážky a ikonu počasí na 3 dny dopředu.',
+    image: 'esp8266-meteostanice.jpg',
+    pcbImage: null,
+    notes:
+      'Zdroj: Praktická elektronika A Radio 10/2023, str. 8–10, rubrika Mikrokontroléry (Ondřej Fidra, OK2FTM). Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Program v Arduino IDE (balíček ESP8266 Boards), zdrojové kódy na https://github.com/DiggingFox/WeatherForecaster. Celé zařízení umístěno ve 3D tištěné krabičce ve tvaru retro počítače.',
+    parts: [
+      { label: 'U1 — ESP8266-12F (Wi-Fi modul)', match: 'ESP-12', quantity: 1 },
+      { label: 'U2 — OLED displej 128×64, řadič SSD1306', match: 'SSD1306', quantity: 1 },
+      { label: 'U3 — stabilizátor AMS1117-3.3', match: 'AMS1117', quantity: 1 },
+      { label: 'R1–R5 — rezistor 10 kΩ (pull-up/pull-down)', match: '10 kΩ', quantity: 5 },
+      { label: 'C1, C2 — elektrolytický kondenzátor 220 µF/6,3 V', match: '220 µF', quantity: 2 },
+      { label: 'C3, C4 — kondenzátor 100 nF', match: '100 nF', quantity: 2 },
+      { label: 'SW1 — tlačítko (RST)', match: 'tlačítko', quantity: 1 },
+      { label: 'SW2 — tlačítko (BOOT/GPIO0)', match: 'tlačítko', quantity: 1 },
+    ],
+  },
+  {
+    name: 'Modul řízení ventilátoru',
+    description:
+      'Autonomní modul, který zapne malý DC ventilátor podle teploty snímané termistorem NTC na pasivním chladiči — doplněk ke chlazení výkonového prvku, kombinující pasivní a aktivní chlazení s nižší hlukovou zátěží. Základem je komparátor (polovina LM358) porovnávající napětí z termistoru s referencí z TL431.',
+    image: 'modul-rizeni-ventilatoru.jpg',
+    pcbImage: null,
+    notes:
+      'Zdroj: Praktická elektronika A Radio 10/2023, str. 13–15, rubrika Konstrukce. Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Práh spínání nastaven pro teplotu cca 55 °C (trimrem R5, resp. rezistorem R5 dle Tab. 1 v článku), hystereze cca 25 °C zajišťuje rezistor R8. Modul je určen pro malé DC ventilátory 5, resp. 12 V do 200 mA.',
+    parts: [
+      { label: 'IC1 — LM358 (dvojitý OZ, využita 1 sekce)', match: 'LM358', quantity: 1 },
+      { label: 'VR1 — TL431 (přesná napěťová reference)', match: 'TL431', quantity: 1 },
+      { label: 'Q1 — tranzistor BC338', match: 'BC338', quantity: 1 },
+      { label: 'D1 — dioda 1N4148', match: '1N4148', quantity: 1 },
+      { label: 'R4 — termistor NTC 10 kΩ/B3950', match: 'NTC 10 kΩ B3950', quantity: 1 },
+      { label: 'R1 — rezistor 150 Ω', match: '150 Ω', quantity: 1 },
+      { label: 'R2 — rezistor 3,3 kΩ', match: '3.3 kΩ', quantity: 1 },
+      { label: 'R3 — rezistor 1,8 kΩ', match: '1.8 kΩ', quantity: 1 },
+      { label: 'R5 — rezistor 470 Ω (nastavení prahu, viz text)', match: '470 Ω', quantity: 1 },
+      { label: 'R6 — rezistor 1,3 kΩ', match: '1.3 kΩ', quantity: 1 },
+      { label: 'R7 — rezistor 10 kΩ', match: '10 kΩ', quantity: 1 },
+      { label: 'R8 — rezistor 1,5 MΩ (hystereze)', match: '1.5 MΩ', quantity: 1 },
+      { label: 'R9 — rezistor 1,2 kΩ', match: '1.2 kΩ', quantity: 1 },
+      { label: 'C1 — keramický kondenzátor 100 nF/50 V', match: '100 nF', quantity: 1 },
+    ],
+  },
+  {
+    name: 'Arduino UNO s mikrokontrolérem PICAXE',
+    description:
+      'Deska s plošnými spoji pinově kompatibilní s Arduino UNO (podporuje stejné shieldy), ale osazená mikrokontrolérem PICAXE (8M2/14M2/20M2) místo ATmega328. PICAXE se programuje v jazyce odvozeném od BASICu přes sériový (RS232/USB) programovací kabel, umožňuje programovou změnu taktovacího kmitočtu pro velmi nízkou spotřebu.',
+    image: 'arduino-picaxe-deska.jpg',
+    pcbImage: null,
+    notes:
+      'Zdroj: Praktická elektronika A Radio 10/2023, str. 18–20, rubrika Arduino (Ing. Vladimír Krátký, OK2-36523). Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Deska je jednostranná (65×89 mm), objímka DIL20 pojme PICAXE 8M2/14M2/20M2 dle potřeby. Rozdíl oproti originálnímu Arduinu: poslední 3 piny konektoru J3 mají Ucc (2× GND a 3,3V/RESET).',
+    parts: [
+      { label: 'IO2 — stabilizátor 7805', match: '7805', quantity: 1 },
+      { label: 'IO1 — mikrokontrolér PICAXE 8M2/14M2/20M2 (v objímce DIL20)', match: 'PICAXE', quantity: 1 },
+      { label: 'D1 — dioda 1N4007 (ochrana proti přepólování)', match: '1N4007', quantity: 1 },
+      { label: 'LED1, LED2 — indikační LED (napájení, sériová linka)', match: 'dioda,led', quantity: 2 },
+      { label: 'R1, R4 — rezistor 820 Ω', match: '820 Ω', quantity: 2 },
+      { label: 'R2 — rezistor 10 kΩ', match: '10 kΩ', quantity: 1 },
+      { label: 'R3 — rezistor 22 kΩ', match: '22 kΩ', quantity: 1 },
+      { label: 'R5 až R12 — rezistor 10 kΩ (pull-down)', match: '10 kΩ', quantity: 8 },
+      { label: 'C1 — elektrolytický kondenzátor 100 µF/16 V', match: '100 µF', quantity: 1 },
+      { label: 'C3 — elektrolytický kondenzátor 47 µF/16 V', match: '47 µF', quantity: 1 },
+      { label: 'C2, C4, C5 — keramický kondenzátor 100 nF', match: '100 nF', quantity: 3 },
+    ],
+  },
+  {
+    name: 'Inteligentní spínač',
+    description:
+      'Tlačítkový spínač malé zátěže (baterií napájená zařízení), který se automaticky vypne po nastavené době provozu (1, 2, 4, 16, 32 nebo 64 minut dle propojky JP1), i když uživatel zapomene zařízení vypnout. Jádrem je CMOS časovač 4060 řízený RS klopným obvodem z hradel 4001.',
+    image: 'inteligentni-spinac.jpg',
+    pcbImage: null,
+    notes:
+      'Zdroj: Praktická elektronika A Radio 10/2023, str. 23–25, rubrika Konstrukce. Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. ⚠️ CD4001 (hradla NOR) nebyl v databázi nalezen jako samostatná součástka — nezaměňovat s podobně znějícími 1N4001 nebo REL-110-4001. Spínač pracuje v rozsahu napětí 3–15 V, klidová spotřeba obou CMOS obvodů je zanedbatelná.',
+    parts: [
+      { label: 'IC1 — CMOS 4060 (14stupňový binární čítač/oscilátor)', match: '4060', quantity: 1 },
+      { label: 'IC2 — CMOS 4001 (4× 2vstupé NOR)', match: 'CD4001', quantity: 1 },
+      { label: 'Q1 — tranzistor BC328-40', match: 'BC328', quantity: 1 },
+      { label: 'LED1 — LED červená, nízkopříkonová', match: 'dioda,led', quantity: 1 },
+      { label: 'R1, R4 — rezistor 10 kΩ', match: '10 kΩ', quantity: 2 },
+      { label: 'R2, R3 — rezistor 100 kΩ', match: '100 kΩ', quantity: 2 },
+      { label: 'R5 — rezistor 510 kΩ (viz text)', match: '510 kΩ', quantity: 1 },
+      { label: 'R6 — rezistor 4,7 MΩ (viz text)', match: '4.7 MΩ', quantity: 1 },
+      { label: 'R7 — rezistor 3,3 kΩ', match: '3.3 kΩ', quantity: 1 },
+      { label: 'C1 — keramický kondenzátor 220 nF/50 V', match: '220 nF', quantity: 1 },
+    ],
+  },
+  {
+    name: 'Inovovaná nabíječka akumulátorů 5 A',
+    description:
+      'Automobilová olověná nabíječka s charakteristikou I-U (konstantní proud, poté konstantní napětí) a automatickým ukončením nabíjení. Komparátory LM358 (IO3, IO4) řídí výkonový MOSFET T1 (IRF540) tak, aby nabíjecí proud nepřekročil nastavenou hodnotu a nabíjecí napětí nepřekročilo 14,6–14,8 V; po dosažení udržovacího stavu (float) klesne proud na jednotky stovek mA.',
+    image: 'inovovana-nabijecka-5a.jpg',
+    pcbImage: null,
+    notes:
+      'Zdroj: Praktická elektronika A Radio 10/2023, str. 26–29, rubrika Konstrukce (Zdeněk Zátopek). Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Deska s plošnými spoji 94×69 mm. Chladič výkonového tranzistoru T1 je ofukován ventilátorem VE1, jehož otáčky řídí termistor NTC (R19) — od 18 V na 12 V dle teploty. ⚠️ BY550 a SR550 (usměrňovací/Schottky diody) ani IRFD120 (malý N-MOSFET v TO-92) nebyly v databázi nalezeny jako samostatné součástky.',
+    parts: [
+      { label: 'IO1 — stabilizátor 7818', match: '7818', quantity: 1 },
+      { label: 'IO2 — stabilizátor 78L10', match: '78L10', quantity: 1 },
+      { label: 'IO3, IO4 — LM358 (dvojitý OZ)', match: 'LM358', quantity: 2 },
+      { label: 'T1 — tranzistor IRF540 (výkonový N-MOSFET)', match: 'IRF540', quantity: 1 },
+      { label: 'T2 — tranzistor IRFD120 (N-MOSFET, řízení ventilátoru)', match: 'IRFD120', quantity: 1 },
+      { label: 'D1–D4 — usměrňovací dioda BY550', match: 'BY550', quantity: 4 },
+      { label: 'D7 — Schottky dioda SR550', match: 'SR550', quantity: 1 },
+      { label: 'D8 — LED 5 nebo 10 mm, žlutá nebo zelená', match: 'dioda,led', quantity: 1 },
+      { label: 'D10 — dioda 1N4148 (KA206, KA262)', match: '1N4148', quantity: 1 },
+      { label: 'VE1 — ventilátor 12 V/0,8 W, 50×50×10 mm', match: 'ventilátor', quantity: 1 },
+      { label: 'R19 — termistor NTC 10 kΩ (snímání teploty chladiče)', match: 'NTC 10 kΩ B3950', quantity: 1 },
+      { label: 'R2, R4, R6, R7, R8, R9, R12, R14 — rezistor 10 kΩ', match: '10 kΩ', quantity: 8 },
+      { label: 'R3 — rezistor 7,5 kΩ', match: '7.5 kΩ', quantity: 1 },
+      { label: 'R5 — rezistor 8,2 kΩ', match: '8.2 kΩ', quantity: 1 },
+      { label: 'R10 — rezistor 1 kΩ', match: '1 kΩ', quantity: 1 },
+      { label: 'R11 — rezistor 4,7 kΩ', match: '4.7 kΩ', quantity: 1 },
+      { label: 'R13 — rezistor 0,1 Ω/5 W (bočník)', match: '0.1 Ω', quantity: 1 },
+      { label: 'R15 — rezistor 39 kΩ', match: '39 kΩ', quantity: 1 },
+      { label: 'R16 — rezistor 1,2 kΩ', match: '1.2 kΩ', quantity: 1 },
+      { label: 'R1 — rezistor 180 Ω (2× paralelně)', match: '180 Ω', quantity: 2 },
+      { label: 'C1 — elektrolytický kondenzátor 4700 µF/35 V', match: '4700 µF', quantity: 1 },
+      { label: 'C4 — elektrolytický kondenzátor 220 µF/35 V', match: '220 µF', quantity: 1 },
+      { label: 'C2, C3, C5, C8 — kondenzátor 100 nF', match: '100 nF', quantity: 4 },
+      { label: 'C7 — kondenzátor 1 nF', match: '1 nF', quantity: 1 },
+      { label: 'toroidní síťový transformátor 230 V/16 V/6 A', match: 'transformátor', quantity: 1 },
+      { label: 'pojistka 6,3 AT + pojistkové pouzdro na panel', match: 'pojistka', quantity: 1 },
+    ],
+  },
+  {
+    name: 'Přijímač pro stanici SAQ',
+    description:
+      'Jednoúčelový přímosměšující přijímač pro poslech švédské historické radiotelegrafní stanice SAQ (Grimeton), vysílající na 17,2 kHz. Vstupní rezonanční obvod (cívka + otočný kondenzátor) je zesílen a demodulován obvodem MC1496, výsledný 1200 Hz tón je filtrován a zesílen pro malý reproduktor. Lze použít rámovou anténu nebo dlouhý drát.',
+    image: 'prijimac-saq.jpg',
+    pcbImage: null,
+    notes:
+      'Zdroj: Praktická elektronika A Radio 10/2023, str. 30–32, rubrika Radioamatérské rubriky (Ing. Josef Šroll, Ph.D). Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Funkční vzor zapojení je z roku 2007. ⚠️ Většina IO (MC1496, OP27, KF504) a krystal 4,096 MHz nebyly v databázi nalezeny jako samostatné součástky — seznam níže pokrývá hlavní aktivní prvky, desítky dalších SMD/THT rezistorů a kondenzátorů jsou uvedeny jen ve schématu.',
+    parts: [
+      { label: 'U5 — MC1496 (vyvážený směšovač/demodulátor)', match: 'MC1496', quantity: 1 },
+      { label: 'U9 — 74HCT4060 (binární čítač/oscilátor, dělička 16 kHz)', match: '4060', quantity: 1 },
+      { label: 'U6, U7 — TL072 (dvojitý OZ s JFET vstupem)', match: 'TL072', quantity: 2 },
+      { label: 'U8 — OP27 (přesný OZ)', match: 'OP27', quantity: 1 },
+      { label: 'Q1 — RF tranzistor KF504', match: 'KF504', quantity: 1 },
+      { label: 'U1 — stabilizátor LM7812', match: '7812', quantity: 1 },
+      { label: 'U2 — stabilizátor LM7805', match: '7805', quantity: 1 },
+      { label: 'U3 — stabilizátor LM7912', match: '7912', quantity: 1 },
+      { label: 'U4 — stabilizátor LM7908', match: '7908', quantity: 1 },
+      { label: 'D1, D2 — dioda 1N4448', match: '1N4448', quantity: 2 },
+      { label: 'D5–D8 — dioda 1N4007 (síťový usměrňovač)', match: '1N4007', quantity: 4 },
+      { label: 'D4 — LED (indikace napájení)', match: 'dioda,led', quantity: 1 },
+      { label: 'XTAL1 — krystal 4,096 MHz', match: '4,096 MHz', quantity: 1 },
+      { label: 'LS1 — malý reproduktor, ARZ0 84', match: 'reproduktor', quantity: 1 },
+      { label: 'T1 — síťový transformátor 2× 12 V/0,1 A', match: 'transformátor', quantity: 1 },
+    ],
+  },
+  {
+    name: 'Dálkové ovládání s hlasovým výstupem',
+    description:
+      'Dálkové ovládání s dosahem až 200 m (přijímač/vysílač 433 MHz), které navíc při každém povelu přehraje jeden ze 4 nahraných zvukových záznamníků (ISD1820) přes výkonový zesilovač TDA2050. Mikrokontrolér ATmega48 vyhodnocuje přijatý kód a podle navoleného algoritmu spíná výkonová relé RE1, RE2.',
+    image: 'dalkove-ovladani-hlasovy-vystup.jpg',
+    pcbImage: null,
+    notes:
+      'Zdroj: Praktická elektronika A Radio 10/2023, str. 44–45, rubrika Konstrukce (Jaroslav Romler). Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Deska s plošnými spoji 73×90 mm. ⚠️ ATmega48(-PU), TDA2050 a ISD1820 nebyly v databázi nalezeny jako samostatné součástky. Vysílačem je běžná 4kanálová „klíčenka" ZY68-4 433 MHz, přijímačem modul ZR17J s učícím se kódem — oba jsou samostatné hotové moduly, nezahrnuty v seznamu níže.',
+    parts: [
+      { label: 'DIL5 — mikrokontrolér ATmega48-PU', match: 'ATmega48', quantity: 1 },
+      { label: 'IC1 — stabilizátor 7805', match: '7805', quantity: 1 },
+      { label: 'IC2 — TDA2050 (výkonový NF zesilovač, pouzdro Pentawatt)', match: 'TDA2050', quantity: 1 },
+      { label: 'DIL1–DIL4 — ISD1820 (modul záznamu zvuku s reproduktorem)', match: 'ISD1820', quantity: 4 },
+      { label: 'T1, T2 — tranzistor BC337-40', match: 'BC337', quantity: 2 },
+      { label: 'RE1, RE2 — relé Songle SRD-12VDC-SL-C, 12 V, 250 VAC/10 A', match: 'G5LE-1', quantity: 2 },
+      { label: 'R1–R4 — rezistor 100 kΩ', match: '100 kΩ', quantity: 4 },
+      { label: 'R5–R8 — rezistor 10 kΩ', match: '10 kΩ', quantity: 4 },
+      { label: 'R9 — rezistor 620 Ω', match: '620 Ω', quantity: 1 },
+      { label: 'TR — trimr 25 kΩ (hlasitost)', match: 'Trimr 25 kΩ', quantity: 1 },
+      { label: 'C1, C2, C4 — elektrolytický kondenzátor 470 µF/16 V', match: '470 µF', quantity: 3 },
+      { label: 'C3 — elektrolytický kondenzátor 10 µF/10 V', match: '10 µF', quantity: 1 },
+      { label: 'C5 — kondenzátor 68 nF/63 V', match: '68 nF', quantity: 1 },
+    ],
+  },
+  {
+    name: 'Dělič kilometrů',
+    description:
+      'Malý mezikus pro cyklocomputer elektrovozítka s malými koly, jehož nejmenší nastavitelný obvod kola (1,5 m) neumožňuje zadat skutečně malá kola. Dělič pomocí klopného obvodu D (CMOS 4013) dělí impulsy ze snímače otáček kola dvěma — cyklocomputer pak zadáte s dvojnásobným obvodem kola a všechny údaje (rychlost, vzdálenost) vydělíte dvěma.',
+    image: 'delic-kilometru.jpg',
+    pcbImage: null,
+    notes:
+      'Zdroj: Praktická elektronika A Radio 10/2023, str. 49–50, rubrika Konstrukce (Jaroslav Skalník, OK1UKV). Schéma je oříznuté ze scanu časopisu — ověřit práva k publikaci obrázku v appce. Deska s plošnými spoji 62×42 mm. Dělič pracuje v rozsahu napájecího napětí 2 až 15 V, odběr jen desítky µA (CMOS). Při nesprávné polaritě připojení výstupu k cyklocomputeru se nic nepoškodí, jen se rychlost nezobrazí.',
+    parts: [
+      { label: 'IC1 — CMOS 4013 (dva D klopné obvody, využita 1 sekce)', match: '4013', quantity: 1 },
+      { label: 'T1 — tranzistor BS170 (N-MOSFET)', match: 'BS170', quantity: 1 },
+      { label: 'D1 — Zenerova dioda (ochrana proti napěťovým špičkám)', match: 'BZX', quantity: 1 },
+      { label: 'R1 — rezistor 68 kΩ', match: '68 kΩ', quantity: 1 },
+      { label: 'R2 — rezistor 1 kΩ', match: '1 kΩ', quantity: 1 },
+      { label: 'C1 — keramický kondenzátor 10 nF', match: '10 nF', quantity: 1 },
+      { label: 'C2 — keramický kondenzátor 100 nF/50 V', match: '100 nF', quantity: 1 },
     ],
   },
 ];
