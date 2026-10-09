@@ -5324,9 +5324,14 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       '@VDS=VGS/ID=1 mA. rDS(on) typ 1,8 Ω, max 5,0 Ω @VGS=10 V/ID=200 mA. ID(off) max 0,5 µA ' +
       '@VDS=25 V/VGS=0 V. gFS typ 200 mmhos @VDS=10 V/ID=250 mA. Ciss max 60 pF @VDS=10 V/' +
       'VGS=0 V/f=1 MHz. ton typ 4,0 ns (max 10 ns), toff typ 4,0 ns (max 10 ns) @ID=0,2 A. ' +
-      'Pouzdro Pb-free. V této appce vhodné jako T1, T2 v projektu „Solární lampička s Li-ion ' +
-      'akumulátorem (THT)" (alternativa k BS108).',
-    tags: 'tranzistor,mosfet,n-kanál,to-92,bs170,hbs170,on-semiconductor,spínací,solární',
+      'Pouzdro Pb-free. Doplněno i podle datasheetu Vishay Siliconix "2N7000/2N7002, VQ1000J/P, ' +
+      'BS170 — N-Channel 60-V (D-S) MOSFET" (dok. č. 70226, S-04279, rev. F, 16-Jul-01), poslaného ' +
+      'uživatelem jako další výrobcovská alternativa ke stejnému typu — mezní hodnoty se shodují ' +
+      '(VDSS 60 V, ID 0,5 A), Vishay navíc udává rDS(on) typ 2,4 Ω/max 5 Ω @VGS=10 V/ID=0,5 A, ' +
+      'VGS(th) 0,8–3,0 V, Ciss max 60 pF, PD 0,83 W @TA=25 °C (RthJA 156 °C/W), ton/toff typ 7 ns. ' +
+      'V této appce vhodné jako T1, T2 v projektu „Solární lampička s Li-ion akumulátorem (THT)" ' +
+      '(alternativa k BS108) a jako T1 v projektu „Dělič kilometrů".',
+    tags: 'tranzistor,mosfet,n-kanál,to-92,bs170,hbs170,on-semiconductor,vishay,siliconix,spínací,solární',
   },
   {
     name: 'BS108',
@@ -7398,7 +7403,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 134;
+export const SEED_LIBRARY_VERSION = 135;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
