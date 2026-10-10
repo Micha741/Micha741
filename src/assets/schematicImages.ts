@@ -194,6 +194,7 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'Han-Modular-09140010722.jpg': require('../../assets/schematics/Han-Modular-09140010722.jpg'),
   'Han-Modular-09140010321.jpg': require('../../assets/schematics/Han-Modular-09140010321.jpg'),
   'SCD-0134032010-KF-SA.jpg': require('../../assets/schematics/SCD-0134032010-KF-SA.jpg'),
+  'ZM1005.jpg': require('../../assets/schematics/ZM1005.jpg'),
   'GD-342AP.jpg': require('../../assets/schematics/GD-342AP.jpg'),
   'IML-0638.jpg': require('../../assets/schematics/IML-0638.jpg'),
   'IML-0637.jpg': require('../../assets/schematics/IML-0637.jpg'),
