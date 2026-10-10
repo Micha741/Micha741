@@ -131,6 +131,7 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'TPS3809.jpg': require('../../assets/schematics/TPS3809.jpg'),
   'BD48xxx-BD49xxx.jpg': require('../../assets/schematics/BD48xxx-BD49xxx.jpg'),
   'MCP120-MCP130.jpg': require('../../assets/schematics/MCP120-MCP130.jpg'),
+  'IWR2188.jpg': require('../../assets/schematics/IWR2188.jpg'),
   'ISL32173E-273E.jpg': require('../../assets/schematics/ISL32173E-273E.jpg'),
   'ISL32175E-275E.jpg': require('../../assets/schematics/ISL32175E-275E.jpg'),
   'ISL32177E-277E.jpg': require('../../assets/schematics/ISL32177E-277E.jpg'),
