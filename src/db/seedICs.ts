@@ -4177,6 +4177,47 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,supervizor,reset,napěťový-supervizor,voltage-supervisor,ti,tps3809,tps3809i50,sot-23,4.55v',
   },
   {
+    name: 'BD48xxx/BD49xxx Series',
+    packageType:
+      'K dispozici ve 4 pouzdrech: SSOP5 (podobné SOT-23-5, 5 vývodů 1=VOUT, 2=VDD, 3=GND, ' +
+      '4,5=N.C., rozměry 2,90×2,80×1,25mm), VSOF5 (5 vývodů 1=VOUT, 2=SUB (propojit s GND), ' +
+      '3=N.C., 4=GND, 5=VDD, 1,60×1,60×0,60mm), SSOP3(1pin GND) a SSOP3(3pin GND) — oba 3 ' +
+      'vývody, lišící se jen pořadím pinů (viz datasheet), 2,92×2,80×1,25mm. Marking na pouzdru ' +
+      '2znakový dle konkrétního typu (viz tabulka níže) + kód šarže (Lot. No).',
+    value:
+      'Standardní CMOS detektor napětí (reset IC), 2,3–6,0 V v krocích po 0,1 V (97 hodnot), ' +
+      'BD48xxx = N-channel open drain výstup, BD49xxx = CMOS výstup, přesnost ±1,0 %, klidový ' +
+      'proud 0,9 µA typ.',
+    schematicImage: 'BD48xxx-BD49xxx.jpg',
+    notes:
+      'ROHM "BD48xxx series, BD49xxx series — Standard CMOS Voltage Detector IC" (dok. ' +
+      'TSZ02201-0R7R0G300030-1-2, rev. 008, 22. května 2013) — datasheet nahraný uživatelem při ' +
+      'pátrání po jiné, neidentifikované SOT-23-5 součástce s potiskem "fiWZKR" — konkrétní ' +
+      'uživatelův kus BD48E23G-TR (2,3 V, open drain, pouzdro SSOP5) má podle tabulky marking ' +
+      '"Aa", takže to NENÍ hledaná součástka (packaging sedí — SSOP5 je výslovně "similar to ' +
+      'SOT-23-5 (JEDEC)" — ale marking je jen 2znakový, ne "WZKR"). Je to ale platná rodina ' +
+      'detektorů napětí/reset obvodů pro mikrokontrolérové/logické obvody vyžadující reset při ' +
+      'podpětí. Zpracováno jako jeden souhrnný záznam (obdoba NTE 90000 Series/PZUxB Series v ' +
+      'této knihovně) pro celou kombinatoriku 2 výstupní typy × 97 napěťových hodnot × 4 ' +
+      'pouzdra. Objednací kód: BD[48=open-drain/49=CMOS][pouzdro1][napětí 23–60][pouzdro2]-TR/TL ' +
+      '(např. BD48E23G-TR = open-drain, SSOP5, 2,3V, taping TR). ' +
+      'Příklad markingu (SSOP5, open drain, 2,3–2,6V): BD48E23=Aa, BD48E24=Ab, BD48E25=Ac, ' +
+      'BD48E26=Ad — plná tabulka pro všech 97 hodnot × 4 pouzdra je v datasheetu (Tabulky 1–2). ' +
+      'Mezní hodnoty: VDD-GND -0,3 až +10 V, VOUT (N-ch open drain) GND-0,3 až +10 V / (CMOS) ' +
+      'GND-0,3 až VDD+0,3 V, IO max 70 mA, Pd 540 mW (SSOP5) / 700 mW (SSOP3) / 210 mW (VSOF5) ' +
+      '(na standardní desce ROHM 70×70×1,6mm), Topr -40 až +105 °C, Tstg -55 až +125 °C. ' +
+      'Elektrické charakteristiky: VDET (detekční napětí) přesnost ±1,0 % (VDET(T)×0,99 až ' +
+      '×1,01 @25°C), např. VDET=2,5V: min 2,475/typ 2,5/max 2,525 V @25°C (širší tolerance při ' +
+      'extrémních teplotách, viz tabulka). tPLH (zpoždění výstupu L→H) max 100 µs. ICC1 (klidový ' +
+      'proud when ON) typ. 0,51–0,66 µA dle VDET pásma. ICC2 (when OFF) typ. 0,75–0,90 µA. VOL ' +
+      'max 0,5 V (Nch, @ISINK 0,4–2,0mA). VOH (BD49Exxx, CMOS) min VDD-0,5V. Teplotní koeficient ' +
+      'VDET ±100 typ/±360 max ppm/°C. Hystereze ΔVDET typ VDET×0,05 (0,03–0,08×VDET rozsah). ' +
+      'Typické zapojení: VDD1→BD48xxx/49xxx→VOUT s pull-up rezistorem RL (jen u open-drain ' +
+      'BD48xxx) k VDD2, a filtrační kondenzátor CL mezi VOUT a GND, výstup do RST pinu ' +
+      'mikrokontroléru.',
+    tags: 'io,supervizor,reset,detektor-napětí,voltage-detector,rohm,bd48,bd49,ssop5,vsof5,ssop3,sot-23-5',
+  },
+  {
     name: 'AT89C2051',
     packageType:
       '20-PDIP/20-SOIC, napájení VCC 2,7-6V, piny: 1=RST/VPP, 2=P3.0(RXD), 3=P3.1(TXD), ' +

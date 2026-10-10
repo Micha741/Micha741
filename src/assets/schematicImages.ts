@@ -128,6 +128,7 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'L1117-TO263.jpg': require('../../assets/schematics/L1117-TO263.jpg'),
   'NTC-Dxx.jpg': require('../../assets/schematics/NTC-Dxx.jpg'),
   'TPS3809.jpg': require('../../assets/schematics/TPS3809.jpg'),
+  'BD48xxx-BD49xxx.jpg': require('../../assets/schematics/BD48xxx-BD49xxx.jpg'),
   'ISL32173E-273E.jpg': require('../../assets/schematics/ISL32173E-273E.jpg'),
   'ISL32175E-275E.jpg': require('../../assets/schematics/ISL32175E-275E.jpg'),
   'ISL32177E-277E.jpg': require('../../assets/schematics/ISL32177E-277E.jpg'),
