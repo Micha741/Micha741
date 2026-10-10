@@ -44,8 +44,9 @@ type ScanState =
 
 function extractCandidates(text: string): string[] {
   // Plausible part-marking tokens: short alphanumeric runs, as printed on
-  // most THT/SMD parts (BS170, 1N4007, LM358, CD4013, G5LE-1, ...).
-  const matches = text.toUpperCase().match(/[0-9A-Z]{3,15}/g) ?? [];
+  // most THT/SMD parts (BS170, 1N4007, LM358, CD4013, G5LE-1, ...). Minimum
+  // length 2 to also catch short SMD marking codes (e.g. "Z6", "X8", "Aa").
+  const matches = text.toUpperCase().match(/[0-9A-Z]{2,15}/g) ?? [];
   const seen = new Set<string>();
   const ordered: string[] = [];
   for (const m of matches) {
@@ -125,7 +126,10 @@ export default function ComponentScannerScreen({ navigation }: Props) {
   const handleSearchAgain = async () => {
     if (state.phase !== 'result') return;
     const trimmed = query.trim();
-    const matches = await searchInventory(trimmed ? [trimmed] : []);
+    const candidates = extractCandidates(trimmed);
+    const matches = await searchInventory(
+      candidates.length > 0 ? candidates : trimmed ? [trimmed] : []
+    );
     setState({ ...state, query: trimmed, matches });
   };
 
