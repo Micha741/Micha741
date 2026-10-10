@@ -6267,6 +6267,28 @@ const TRANSISTOR_SPECS: PartSpec[] = [
     tags: 'tranzistor,pnp,bipolární,duální,sot-353,sc-88,2sa1873,smd',
   },
   {
+    name: '2SB1695K',
+    packageType:
+      'SOT-346 (ROHM SMT3 / EIAJ SC-59), 3 vývody: (1)=emitor, (2)=báze, (3)=kolektor — ' +
+      'rozměry pouzdra 2,8×1,6×1,1 mm, zkrácené značení na pouzdru "FL"',
+    value: 'PNP tranzistor pro nízkofrekvenční zesilovače/budiče, VCEO -30 V, IC -1,5 A, hFE 270–680',
+    schematicImage: '2SB1695K.jpg',
+    notes:
+      'ROHM "2SB1695K — Low frequency amplifier" (datasheet, strana 1/2) — datasheet nahraný ' +
+      'uživatelem. PNP tranzistor s velkým kolektorovým proudem a nízkým saturačním napětím ' +
+      '(VCE(sat) max -370 mV @IC=-1A/IB=-50mA) — vhodný pro budiče/koncové stupně NF ' +
+      'zesilovačů malého výkonu. Mezní hodnoty: VCBO=-30 V, VCEO=-30 V, VEBO=-6 V, IC=-1,5 A ' +
+      '(trvale), ICP=-3 A (jednorázový pulz, PW=1ms), PC=200 mW @TA=25°C, TJ max 150°C, ' +
+      'Tstg -55 až +150°C. ' +
+      'Elektrické charakteristiky (TA=25°C): V(BR)CBO min -30 V @IC=-10µA. V(BR)CEO min -30 V ' +
+      '@IC=-1mA. V(BR)EBO min -6 V @IE=-10µA. ICBO max -100 nA @VCB=-30V. IEBO max -100 nA ' +
+      '@VEB=-6V. VCE(sat) typ -200 mV / max -370 mV @IC=-1A/IB=-50mA. hFE min 270 max 680 ' +
+      '@VCE=-2V/IC=-100mA (pulzováno). fT typ 280 MHz @VCE=-2V/IE=100mA/f=100MHz (pulzováno). ' +
+      'Cob typ 13 pF @VCB=-10V/IE=0A/f=1MHz. Balení: páskové (taping), kód T146, základní ' +
+      'objednací jednotka 3000 ks.',
+    tags: 'tranzistor,pnp,bipolární,nízkofrekvenční,zesilovač,budič,sot-346,sc-59,rohm,2sb1695k,smd',
+  },
+  {
     name: 'EMZ8',
     packageType:
       'SOT-563, 6 vývodů (piny 1, 2, 3 dole, 4, 5, 6 nahoře), miniaturní SMD pouzdro menší než ' +
@@ -7542,7 +7564,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 141;
+export const SEED_LIBRARY_VERSION = 142;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
