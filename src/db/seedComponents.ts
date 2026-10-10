@@ -993,6 +993,55 @@ const DIODE_SPECS: PartSpec[] = [
   { name: 'BZX55C27', packageType: 'DO-35', value: '27 V / 0,5 W', notes: 'Zenerova dioda', tags: 'dioda,zener' },
 
   {
+    name: 'PZUxB Series',
+    packageType:
+      'SOD323F (SC-90), 2 vývody (ploché, flat-lead SMD): 1=katoda (strana s černým ' +
+      'značicím pruhem), 2=anoda. Rozměry pouzdra: 2,7×1,8×0,8 mm (max 2,3×1,6×0,3 mm min), ' +
+      'pájecí plošky rozteč 4 mm na pásce (8 mm tape and reel).',
+    value:
+      'Zenerova dioda, SMD, jmenovité napětí 2,4–36 V (97 typů dle normy E24), Ptot max 310 mW ' +
+      '(550 mW s rozšířenou plochou katodové plošky), tolerance dle výběru B (±5 %) / B1,B2,B3 ' +
+      '(postupně přesnější, ±2 %)',
+    notes:
+      'Philips Semiconductors "PZUxB series — Single Zener diodes in a SOD323F package" ' +
+      '(dok. PZUXB_SER_1, rev. 01, 7. březen 2006) — datasheet nahraný uživatelem (mimochodem ' +
+      'ne ta hledaná součástka s potiskem "fiWZKR"/SOT-23 — marking kódy téhle rodiny jsou ' +
+      '2znakové, viz níže). Zpracováno jako jeden souhrnný záznam pro celou řadu 97 typů (obdoba ' +
+      'přístupu u NTE 90000 Series a Multicomp MCBU/MCFU v této knihovně), protože jde o ' +
+      'jednotnou produktovou řadu lišící se jen jmenovitým napětím a tolerancí. ' +
+      'Objednací kód: "PZUx.xB" = základní tolerance B (~±5 %), přípony B1/B2/B3 = postupně ' +
+      'užší/sekvenční tolerance (~±2 %, ne všechny napěťové hodnoty mají všechny 4 varianty — ' +
+      'viz tabulka marking kódů níže, "-" = varianta neexistuje). ' +
+      'Marking kódy (2znakové, na pouzdře): PZU2.4=G3, PZU2.7=G4/F3/H1, PZU3.0=G5/F4/H2, ' +
+      'PZU3.3=G6/F5/H3, PZU3.6=G7/F6/H4, PZU3.9=G8/F7/H5, PZU4.3=G9/F8/H6/HS, PZU4.7=GA/F9/H7/HT, ' +
+      'PZU5.1=GB/FA/H8/HU, PZU5.6=GC/FB/H9/HV, PZU6.2=GD/FC/HA/HW, PZU6.8=GE/FD/HB/HX, ' +
+      'PZU7.5=GF/FE/HC/HY, PZU8.2=GG/FF/HD/HZ, PZU9.1=GH/FG/HE/KA, PZU10=GJ/FH/HF/KB, ' +
+      'PZU11=GK/FJ/HG/KC, PZU12=GL/FK/HH/KD, PZU13=GM/FL/HJ/KE, PZU14=-/-/HK/-, PZU15=GN/FM/HL/KF, ' +
+      'PZU16=GP/FN/HM/KG, PZU18=GQ/FP/HN/KH, PZU20=GR/FQ/HP/KJ, PZU22=GS/FR/HQ/KK, ' +
+      'PZU24=GT/FS/HR/KL, PZU27=GU, PZU30=GV, PZU33=GW, PZU36=GX (pořadí sloupců B/B1/B2/B3). ' +
+      'Mezní hodnoty: IF (průchozí proud) max 200 mA, IZSM (nárazový závěrný proud, tp=100µs ' +
+      'čtvercová vlna) dle Tab.8/9 v datasheetu (od 8 A u 2,4V po 0,8 A u 36V typu), PZSM ' +
+      '(nárazový závěrný výkon) max 40 W, Ptot max 310 mW (standardní plošky) / 550 mW ' +
+      '(rozšířená katodová ploška 1 cm²) na FR4 desce @Tamb≤25°C, TJ max 150°C, Tamb -65 až ' +
+      '+150°C, Tstg -65 až +150°C. Tepelný odpor RthJA 400 K/W (volný vzduch) / 230 K/W ' +
+      '(standardní FR4 ploška) / RthJ-sp 55 K/W (pájecí bod katody). ' +
+      'Elektrické charakteristiky (TJ=25°C): VF (@IF=100mA) max 1,1 V, (@IF=10mA) max 0,9 V. ' +
+      'Příklady pracovního napětí VZ (@IZ=5mA): 2,4V typ 2,3–2,6V, 5,1V typ 4,84–5,37V, ' +
+      '12V typ 11,42–12,60V, 36V typ 34–38V (přesné min/max rozsahy a tolerance B/B1/B2/B3 se ' +
+      'liší dle konkrétního typu, viz tabulky 8–9 v datasheetu). Diferenční odpor rdif (@IZ=5mA) ' +
+      'klesá s rostoucím napětím od 1000 Ω (nízkonapěťové typy do 3,9V) až na desítky Ω u ' +
+      'vysokonapěťových typů (např. 60 Ω @36V). Reverzní proud IR (@VR=1V) max 50 µA ' +
+      '(nízkonapěťové typy) až 500 nA (vysokonapěťové typy, @VR vyšší). Teplotní koeficient SZ ' +
+      'záporný u nízkonapěťových typů (např. -2,5 mV/K @3,9V) a kladný u vysokonapěťových ' +
+      '(+33 mV/K @36V) — přechod kolem 5,6V. Diodová kapacita Cd (f=1MHz, VR=0V) klesá s ' +
+      'napětím od 450 pF (2,4V) do 59 pF (36V). Reflow pájení je jediná doporučená metoda ' +
+      '(malé ploché SMD vývody nejsou vhodné pro vlnové pájení). Aplikace: obecné stabilizační/ ' +
+      'referenční funkce v prostorově omezených SMD návrzích.',
+    schematicImage: 'PZUxB-series.jpg',
+    tags: 'dioda,zener,smd,sod323f,sc-90,philips,pzuxb,stabilizační',
+  },
+
+  {
     name: 'BZX85C12',
     packageType: 'DO-41 (DO-204AL)',
     value: '11,4–12,7 V (nom. 12 V) / 1,3 W — výkonová Zenerova dioda',
@@ -7493,7 +7542,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 140;
+export const SEED_LIBRARY_VERSION = 141;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
