@@ -388,6 +388,7 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'ER1600CT-1606CT.jpg': require('../../assets/schematics/ER1600CT-1606CT.jpg'),
   'KAS40-04-05-06.jpg': require('../../assets/schematics/KAS40-04-05-06.jpg'),
   'BAS40WS.jpg': require('../../assets/schematics/BAS40WS.jpg'),
+  'SD103AW-BW-CW.jpg': require('../../assets/schematics/SD103AW-BW-CW.jpg'),
   'ICM-0805-series.jpg': require('../../assets/schematics/ICM-0805-series.jpg'),
   'MBR2035CT-20200CT.jpg': require('../../assets/schematics/MBR2035CT-20200CT.jpg'),
   'SC2616.jpg': require('../../assets/schematics/SC2616.jpg'),

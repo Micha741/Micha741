@@ -900,6 +900,59 @@ const DIODE_SPECS: PartSpec[] = [
     schematicImage: 'SS12-S100.jpg',
     tags: 'dioda,schottky,smd,sma,s100',
   },
+  {
+    name: 'SD103AW',
+    packageType: 'SOD-123 (SMD), 2 vývody: 1=anoda, 2=katoda (katoda = strana s pruhem)',
+    value: 'Small signal Schottky dioda, VRRM 40 V, IF 350 mA, marking Z6',
+    notes:
+      'Vishay Semiconductors "SD103AW, SD103BW, SD103CW — Small Signal Schottky Diodes" (dok. ' +
+      '86414, rev. 1.1, 12. květen 2025) — jediný datasheet pro 3 díly lišící se jen VRRM, viz i ' +
+      'sourozenecké záznamy SD103BW/SD103CW. Metal-on-silicon Schottky bariérový přechod chráněný ' +
+      'PN guard ringem. Pro ochranu MOS obvodů, steering/biasing/coupling diody pro rychlé spínání ' +
+      'a nízké logické úrovně, click suppression, můstky v telefonních přístrojích, blokovací ' +
+      'diody v nabíjecích obvodech. AEC-Q101 dostupné, Pb-free, RoHS. ' +
+      'Mezní hodnoty: VRRM=40 V, IF (trvalý, nekonečný chladič)=350 mA, Ptot=270 mW (FR-4 deska) / ' +
+      '370 mW (nekonečný chladič), IFSM=2 A (10 µs čtvercová vlna), RθJA=370 K/W, RθJL=270 K/W, ' +
+      'TJ max=125 °C, Tstg=-65 až +150 °C, Top=-55 až +125 °C. ' +
+      'Elektrické charakteristiky: IR max 5 µA @VR=30 V/25 °C. VF max 370 mV @IF=20 mA, 600 mV ' +
+      '@IF=200 mA. Cj max 50 pF @VR=0 V/f=1 MHz. trr typ 10 ns (@IF=IR=50–200 mA, zotavení na ' +
+      '0,1×IR). Pouzdro SOD-123, hmotnost cca 10,6 mg, MSL 1, max. pájecí teplota 260 °C. Marking ' +
+      'na pouzdře: "Z6" (⚠️ starší zdroje/agregátory uváděly pro tuhle rodinu jiné markingy — např. ' +
+      '"S4/S5/S6" nebo "S7" — ale tento aktuální oficiální Vishay datasheet (rev. 1.1/2025) uvádí ' +
+      'jednoznačně Z6/Z7/Z8 pro AW/BW/CW; při identifikaci podle potisku věřit této nejnovější verzi).',
+    schematicImage: 'SD103AW-BW-CW.jpg',
+    tags: 'dioda,schottky,smd,sod-123,sd103aw,vishay,z6',
+  },
+  {
+    name: 'SD103BW',
+    packageType: 'SOD-123 (SMD), 2 vývody: 1=anoda, 2=katoda (katoda = strana s pruhem)',
+    value: 'Small signal Schottky dioda, VRRM 30 V, IF 350 mA, marking Z7',
+    notes:
+      'Vishay Semiconductors "SD103AW, SD103BW, SD103CW — Small Signal Schottky Diodes" (dok. ' +
+      '86414, rev. 1.1, 12. květen 2025) — viz poznámka u sourozeneckého záznamu SD103AW pro plný ' +
+      'popis rodiny. AEC-Q101 dostupné, Pb-free, RoHS. ' +
+      'Mezní hodnoty: VRRM=30 V, IF=350 mA, Ptot=270/370 mW, IFSM=2 A, RθJA=370 K/W, RθJL=270 K/W, ' +
+      'TJ max=125 °C, Tstg=-65 až +150 °C, Top=-55 až +125 °C. ' +
+      'Elektrické charakteristiky: IR max 5 µA @VR=20 V/25 °C. VF max 370 mV @IF=20 mA, 600 mV ' +
+      '@IF=200 mA. Cj max 50 pF @VR=0 V/f=1 MHz. trr typ 10 ns. Marking na pouzdře: "Z7".',
+    schematicImage: 'SD103AW-BW-CW.jpg',
+    tags: 'dioda,schottky,smd,sod-123,sd103bw,vishay,z7',
+  },
+  {
+    name: 'SD103CW',
+    packageType: 'SOD-123 (SMD), 2 vývody: 1=anoda, 2=katoda (katoda = strana s pruhem)',
+    value: 'Small signal Schottky dioda, VRRM 20 V, IF 350 mA, marking Z8',
+    notes:
+      'Vishay Semiconductors "SD103AW, SD103BW, SD103CW — Small Signal Schottky Diodes" (dok. ' +
+      '86414, rev. 1.1, 12. květen 2025) — nejnižší napěťová varianta rodiny, viz poznámka u ' +
+      'sourozeneckého záznamu SD103AW pro plný popis rodiny. AEC-Q101 dostupné, Pb-free, RoHS. ' +
+      'Mezní hodnoty: VRRM=20 V, IF=350 mA, Ptot=270/370 mW, IFSM=2 A, RθJA=370 K/W, RθJL=270 K/W, ' +
+      'TJ max=125 °C, Tstg=-65 až +150 °C, Top=-55 až +125 °C. ' +
+      'Elektrické charakteristiky: IR max 5 µA @VR=10 V/25 °C. VF max 370 mV @IF=20 mA, 600 mV ' +
+      '@IF=200 mA. Cj max 50 pF @VR=0 V/f=1 MHz. trr typ 10 ns. Marking na pouzdře: "Z8".',
+    schematicImage: 'SD103AW-BW-CW.jpg',
+    tags: 'dioda,schottky,smd,sod-123,sd103cw,vishay,z8',
+  },
   { name: 'SS34', packageType: 'SMB (SMD)', value: '3 A / 40 V', notes: 'Schottky dioda, SMD', tags: 'dioda,schottky,smd' },
   {
     name: 'NSR01L30MXT5G',
@@ -7407,7 +7460,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 136;
+export const SEED_LIBRARY_VERSION = 137;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
