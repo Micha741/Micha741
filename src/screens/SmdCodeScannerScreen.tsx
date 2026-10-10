@@ -24,6 +24,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'SmdCodeScanner'>;
 // onto both the live preview and the final image regardless of resolution.
 const GUIDE = { xFrac: 0.15, yFrac: 0.35, widthFrac: 0.7, heightFrac: 0.3 };
 const CROP_OUTPUT_WIDTH = 640; // upscale the small printed code for better OCR
+const ZOOM_STEP = 0.1;
 
 type ScanState =
   | { phase: 'camera' }
@@ -52,8 +53,12 @@ export default function SmdCodeScannerScreen({ navigation }: Props) {
   const cameraRef = useRef<CameraView>(null);
   const [state, setState] = useState<ScanState>({ phase: 'camera' });
   const [code, setCode] = useState('');
+  const [zoom, setZoom] = useState(0);
 
   const decoded = useMemo(() => decodeSmdCode(code), [code]);
+
+  const handleZoomIn = () => setZoom((z) => Math.min(1, z + ZOOM_STEP));
+  const handleZoomOut = () => setZoom((z) => Math.max(0, z - ZOOM_STEP));
 
   const handleCapture = async () => {
     if (!cameraRef.current) return;
@@ -133,7 +138,7 @@ export default function SmdCodeScannerScreen({ navigation }: Props) {
   if (state.phase === 'camera' || state.phase === 'processing') {
     return (
       <View style={styles.container}>
-        <CameraView ref={cameraRef} style={styles.camera} facing="back" />
+        <CameraView ref={cameraRef} style={styles.camera} facing="back" zoom={zoom} />
         <View pointerEvents="none" style={styles.overlay}>
           <View
             style={[
@@ -148,6 +153,17 @@ export default function SmdCodeScannerScreen({ navigation }: Props) {
           />
           <Text style={styles.guideHint}>{t('smdScanner.guideHint')}</Text>
         </View>
+        {state.phase === 'camera' && (
+          <View style={styles.zoomControls}>
+            <Pressable style={styles.zoomButton} onPress={handleZoomIn}>
+              <Text style={styles.zoomButtonText}>+</Text>
+            </Pressable>
+            <Text style={styles.zoomLabel}>{Math.round(zoom * 100)}%</Text>
+            <Pressable style={styles.zoomButton} onPress={handleZoomOut}>
+              <Text style={styles.zoomButtonText}>−</Text>
+            </Pressable>
+          </View>
+        )}
         {state.phase === 'processing' ? (
           <View style={styles.processingOverlay}>
             <ActivityIndicator size="large" color="#fff" />
@@ -309,6 +325,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   shutterInner: { width: 56, height: 56, borderRadius: 28, backgroundColor: '#fff' },
+  zoomControls: {
+    position: 'absolute',
+    right: 16,
+    top: '32%',
+    alignItems: 'center',
+    gap: 8,
+  },
+  zoomButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  zoomButtonText: { color: '#fff', fontSize: 24, fontWeight: '700', lineHeight: 26 },
+  zoomLabel: { color: '#fff', fontSize: 12, fontWeight: '600' },
   permissionText: { textAlign: 'center', fontSize: 15, marginBottom: 16 },
   primaryButton: {
     paddingVertical: 12,

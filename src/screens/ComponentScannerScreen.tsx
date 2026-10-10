@@ -28,6 +28,7 @@ const GUIDE = { xFrac: 0.1, yFrac: 0.32, widthFrac: 0.8, heightFrac: 0.3 };
 const CROP_OUTPUT_WIDTH = 800; // upscale the printed marking for better OCR
 const MAX_CANDIDATES_SEARCHED = 8;
 const MAX_MATCHES_SHOWN = 30;
+const ZOOM_STEP = 0.1;
 
 type ScanState =
   | { phase: 'camera' }
@@ -64,6 +65,10 @@ export default function ComponentScannerScreen({ navigation }: Props) {
   const cameraRef = useRef<CameraView>(null);
   const [state, setState] = useState<ScanState>({ phase: 'camera' });
   const [query, setQuery] = useState('');
+  const [zoom, setZoom] = useState(0);
+
+  const handleZoomIn = () => setZoom((z) => Math.min(1, z + ZOOM_STEP));
+  const handleZoomOut = () => setZoom((z) => Math.max(0, z - ZOOM_STEP));
 
   const searchInventory = async (candidates: string[]): Promise<ElectronicComponent[]> => {
     const terms = candidates.length > 0 ? candidates.slice(0, MAX_CANDIDATES_SEARCHED) : [];
@@ -165,7 +170,7 @@ export default function ComponentScannerScreen({ navigation }: Props) {
   if (state.phase === 'camera' || state.phase === 'processing') {
     return (
       <View style={styles.container}>
-        <CameraView ref={cameraRef} style={styles.camera} facing="back" />
+        <CameraView ref={cameraRef} style={styles.camera} facing="back" zoom={zoom} />
         <View pointerEvents="none" style={styles.overlay}>
           <View
             style={[
@@ -180,6 +185,17 @@ export default function ComponentScannerScreen({ navigation }: Props) {
           />
           <Text style={styles.guideHint}>{t('componentScanner.guideHint')}</Text>
         </View>
+        {state.phase === 'camera' && (
+          <View style={styles.zoomControls}>
+            <Pressable style={styles.zoomButton} onPress={handleZoomIn}>
+              <Text style={styles.zoomButtonText}>+</Text>
+            </Pressable>
+            <Text style={styles.zoomLabel}>{Math.round(zoom * 100)}%</Text>
+            <Pressable style={styles.zoomButton} onPress={handleZoomOut}>
+              <Text style={styles.zoomButtonText}>−</Text>
+            </Pressable>
+          </View>
+        )}
         {state.phase === 'processing' ? (
           <View style={styles.processingOverlay}>
             <ActivityIndicator size="large" color="#fff" />
@@ -329,6 +345,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   shutterInner: { width: 56, height: 56, borderRadius: 28, backgroundColor: '#fff' },
+  zoomControls: {
+    position: 'absolute',
+    right: 16,
+    top: '32%',
+    alignItems: 'center',
+    gap: 8,
+  },
+  zoomButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  zoomButtonText: { color: '#fff', fontSize: 24, fontWeight: '700', lineHeight: 26 },
+  zoomLabel: { color: '#fff', fontSize: 12, fontWeight: '600' },
   permissionText: { textAlign: 'center', fontSize: 15, marginBottom: 16 },
   primaryButton: {
     paddingVertical: 12,
