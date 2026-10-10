@@ -2474,6 +2474,35 @@ const DIODE_SPECS: PartSpec[] = [
     tags: 'dioda,trisil,crowbar,přepěťová-ochrana,thyristor,smb,do-214aa,telekom,dsl,adsl',
   },
   {
+    name: 'FM05VL',
+    packageType:
+      'DFN1006-2L (JEDEC DFN1006), 2 vývody (symetrická/obousměrná součástka, SMD bezvývodové ' +
+      'pouzdro), rozměry pouzdra cca 1,0×0,6×0,6 mm (dle výkresu DFN1006-2); značení na pouzdru ' +
+      '"FL"',
+    value:
+      'Unidirekční TVS dioda pro ochranu jedné signálové linky proti ESD, extra nízká kapacita ' +
+      '0,8 pF max, 100 W špičkový pulzní výkon (8/20 µs)',
+    schematicImage: 'FM05VL.jpg',
+    notes:
+      'Futurewafer Technology "FM05VL — Extra Low Capacitance ESD Protection" (dok. ' +
+      'E1509F2A-STD-FW-037) — datasheet nahraný uživatelem (při pátrání po jiné, neidentifikované ' +
+      'SOT-23-5 součástce — tahle nesedí, viz 2vývodové DFN1006 pouzdro a marking "FL" vs. ' +
+      'hledané "fiWZKR"/5pinové SOT-23). Jednosměrná TVS (avalanche) dioda s velmi nízkou ' +
+      'kapacitou — určená pro ochranu vysokorychlostních datových linek (USB 3.0/3.1, Ethernet, ' +
+      'DVI, video), kde by běžná TVS dioda s vyšší kapacitou rušila signál. Splňuje IEC61000-4-2 ' +
+      '(ESD) Level 4 (kontaktní ±8 kV, vzduchem ±15 kV), IEC61000-4-4 (EFT) 40A-5/50ns, ' +
+      'IEC61000-4-5 (Surge) 4A-8/20µs. Pouzdro UL94V-0, bezhalogenové (Halogen Free), RoHS ' +
+      '(Pb-free). Mezní hodnoty: PPP (špičkový pulzní výkon, tp=8/20µs) 100 W, TJ -55 až +150°C, ' +
+      'Tstg -55 až +150°C. ' +
+      'Elektrické charakteristiky (TA=25°C, pin 2→1): VRWM (max. pracovní závěrné napětí) 5 V. ' +
+      'VBR (průrazné napětí, @IZ=1mA) 5,4–8,5 V. IR max 1,0 µA @VRWM. VF max 1,15 V @IF=15mA. VC ' +
+      '(zámkové napětí, @IPP=1A/tp=8/20µs) max 9,2 V. IPP (max. špičkový pulzní proud, tp=8/20µs) ' +
+      '4 A. CI/O (kapacita vstup/výstup-GND, @0V/1MHz) typ 0,4 / max 0,8 pF — extrémně nízká pro ' +
+      'minimální zkreslení vysokorychlostního signálu. Balení: páskové (tape and reel), 5000 ks/ ' +
+      'cívka.',
+    tags: 'dioda,tvs,esd-ochrana,nízká-kapacita,dfn1006,futurewafer,fm05vl,usb,ethernet,dvi',
+  },
+  {
     name: 'TLP140M/G/G-1',
     packageType:
       'Dostupné ve 3 pouzdrech se shodným čipem: PowerSO-10 (ozn. "M"), D²PAK (ozn. "G") nebo ' +
@@ -7564,7 +7593,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 142;
+export const SEED_LIBRARY_VERSION = 143;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),

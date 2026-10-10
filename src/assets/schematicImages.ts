@@ -111,6 +111,7 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'TOPLED-Black.jpg': require('../../assets/schematics/TOPLED-Black.jpg'),
   'LYM67K.jpg': require('../../assets/schematics/LYM67K.jpg'),
   'SMP-0SCMC.jpg': require('../../assets/schematics/SMP-0SCMC.jpg'),
+  'FM05VL.jpg': require('../../assets/schematics/FM05VL.jpg'),
   'BD13x-SOT32.jpg': require('../../assets/schematics/BD13x-SOT32.jpg'),
   'MMBT2907A.jpg': require('../../assets/schematics/MMBT2907A.jpg'),
   'KSE13009F.jpg': require('../../assets/schematics/KSE13009F.jpg'),
