@@ -528,6 +528,42 @@ const MISC_SPECS: MiscSpec[] = [
     notes: 'Obecné nízkotlaké DC palivové čerpadlo (např. z novějších modelů Škoda) — konkrétní tlak/průtok dle výrobce a modelu vozu.',
     tags: 'čerpadlo,palivové,motor,automotive',
   },
+  {
+    name: 'ZM1005 / ZM1005R',
+    datasheetUrl: 'https://frank.pocnet.net/sheets/013/z/ZM1005_7b_1979-05.pdf',
+    packageType:
+      '14pinová patice (dvouřadé vývody po 7, rozteč 2,54 mm, kompatibilní s roztečí DPS dle IEC ' +
+      'Publikace 97/0,1"), skleněné tělo, průměr pouzdra cca 19 mm max., výška cca 42,8 mm max. ' +
+      'Odchylka os vývodů od ideální polohy max. 0,3 mm.',
+    value:
+      'Doutnavková indikační trubice ("Nixie"-typ) se studenou katodou, 10 číslic (0-9) + desetinná ' +
+      'tečka, výška číslic cca 14 mm, zapalovací napětí max. 170 V, špičkový anodový proud 6-20 mA',
+    notes:
+      '⚠️ NENÍ KONDENZÁTOR a NENÍ z BBC micro:bit — uživatel nahrál s dotazem, zda jde o ' +
+      'kondenzátor z micro:bitu, ale dokument popisuje úplně jinou, vintage součástku: Mullard ' +
+      '"ZM1005/ZM1005R — Indicator Tube" (datasheet leden/duben 1970). Jde o doutnavkovou ' +
+      '(cold-cathode) indikační trubici pro boční čtení (side viewing), obdobu "Nixie" trubic — ' +
+      'žhavená vakuová/plynem plněná trubice se skleněným tělem, ne polovodičová ani pasivní SMD ' +
+      'součástka, proto zařazena do kategorie "Ostatní". ZM1005R má červený kontrastní filtr, ' +
+      'ZM1005 je identická, ale bez filtru. Princip činnosti: trubice obsahuje 10 katod ve tvaru ' +
+      'číslic 0-9 a jednu katodu ve tvaru desetinné tečky, primer (pomocná elektroda pro ' +
+      'ionizaci bez zpoždění při strobe/blanking aplikacích) a jednu společnou anodu — přiložením ' +
+      'vhodného napětí mezi anodu a jednu z katod se příslušná číslice/tečka rozsvítí červenou ' +
+      'neonovou září. Vývody: pr (primer), k0-k9 (katody číslic), kdp (katoda desetinné tečky), ' +
+      'a (anoda), i.c. (interně propojené/nezapojené vývody). Mezní hodnoty: Vign (zapalovací ' +
+      'napětí, pulzní) min. 170 V, Ia (anodový proud, průměrný, Tav≤20ms) max. 2,5 mA, Iap ' +
+      '(špičkový) min. 6 mA/max. 20 mA, Timp (délka pulzu) min. 50µs (10µs při Iap≥10mA), Vkk ' +
+      '(napětí výběru katody) 70-115 V, Vext (zhášecí napětí) min. 118 V, tamb -50 až +70°C ' +
+      '(pod 10°C snížená životnost). Doporučené rezistory: Rdp (katoda desetinné tečky) 10 kΩ±10%, ' +
+      'Rpr (primer, anoda-primer napájení min. 170V) 10 MΩ±10%. Pájení: max. 240°C po max. 10s do ' +
+      'vzdálenosti 3 mm od skleněných průchodek. Životnost při Ia=2mA: 100000 h (Iap=10mA, ' +
+      'sekvenční změna číslic každých ≤100h) / 20000 h (Iap=20mA), MTBF min. 200000 h. ' +
+      'Vlastní frekvence katodových číslic 300-800 Hz. Příslušenství výrobce: 55701 (montážní ' +
+      'DPS 19×100mm), 55702 (patice pro rastr 0,1"), 55703 (zaklapávací držák), 55704 (koncové ' +
+      'díly pro sestavu držáku).',
+    schematicImage: 'ZM1005.jpg',
+    tags: 'indikátor,trubice,nixie,doutnavka,cold-cathode,mullard,zm1005,zm1005r,vintage,číslicový-displej',
+  },
 ];
 
 export function buildMiscSeed(): ComponentInput[] {
