@@ -153,6 +153,7 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'ESP8285.jpg': require('../../assets/schematics/ESP8285.jpg'),
   'ESP8089.jpg': require('../../assets/schematics/ESP8089.jpg'),
   'ESP8684.jpg': require('../../assets/schematics/ESP8684.jpg'),
+  'raspberry-pi-pico-rp2040.jpg': require('../../assets/schematics/raspberry-pi-pico-rp2040.jpg'),
   'DS18B20.jpg': require('../../assets/schematics/DS18B20.jpg'),
   'DS1822.jpg': require('../../assets/schematics/DS1822.jpg'),
   'DHT11.jpg': require('../../assets/schematics/DHT11.jpg'),
