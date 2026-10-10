@@ -71,6 +71,21 @@ export default function ComponentScannerScreen({ navigation }: Props) {
   const handleZoomIn = () => setZoom((z) => Math.min(1, z + ZOOM_STEP));
   const handleZoomOut = () => setZoom((z) => Math.max(0, z - ZOOM_STEP));
 
+  // Lower is better: a match directly in the component name (ideally an exact
+  // or prefix match) is far more likely to be the scanned part than one that
+  // only turns up via a tag/note/value substring (e.g. "RP" inside "čerpadlo").
+  const matchRank = (name: string, terms: string[]): number => {
+    const nameUpper = name.toUpperCase();
+    let best = 3;
+    for (const term of terms) {
+      const termUpper = term.toUpperCase();
+      if (nameUpper === termUpper) return 0;
+      if (nameUpper.startsWith(termUpper)) best = Math.min(best, 1);
+      else if (nameUpper.includes(termUpper)) best = Math.min(best, 2);
+    }
+    return best;
+  };
+
   const searchInventory = async (candidates: string[]): Promise<ElectronicComponent[]> => {
     const terms = candidates.length > 0 ? candidates.slice(0, MAX_CANDIDATES_SEARCHED) : [];
     const byId = new Map<number, ElectronicComponent>();
@@ -82,7 +97,10 @@ export default function ComponentScannerScreen({ navigation }: Props) {
       if (byId.size >= MAX_MATCHES_SHOWN) break;
     }
     return Array.from(byId.values())
-      .sort((a, b) => a.name.localeCompare(b.name))
+      .sort((a, b) => {
+        const rankDiff = matchRank(a.name, terms) - matchRank(b.name, terms);
+        return rankDiff !== 0 ? rankDiff : a.name.localeCompare(b.name);
+      })
       .slice(0, MAX_MATCHES_SHOWN);
   };
 
