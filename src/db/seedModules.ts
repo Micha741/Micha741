@@ -5058,6 +5058,54 @@ const MODULE_SPECS: ModuleSpec[] = [
       '"Pin Definitions" datasheetu.',
     tags: 'modul,esp32,esp32-s3,wifi,ble,wroom',
   },
+  {
+    name: 'Raspberry Pi Pico',
+    datasheetUrl: 'https://datasheets.raspberrypi.com/pico/pico-datasheet.pdf',
+    packageType:
+      'THT/SMD hybridní modul, 51×21 mm, 1 mm tlustá DPS, 40 pinů na rastru 2,54 mm (DIP styl, ' +
+      'otvory 1 mm) + castellated plošky po obvodu pro SMT osazení jako modul na jinou desku, ' +
+      '4× montážní otvor Ø2,1 mm (±0,05 mm). Micro-USB B konektor pro napájení/data, 3pinový ' +
+      'SWD debug konektor, uživatelské tlačítko BOOTSEL.',
+    value:
+      'Vývojová deska s mikrokontrolérem RP2040 (dual-core Arm Cortex-M0+ do 133 MHz), 2 MB ' +
+      'externí QSPI Flash, 264 kB SRAM, 26× multifunkční 3,3V GPIO (3 ADC), VSYS 1,8–5,5 V',
+    notes:
+      'Raspberry Pi Ltd "Raspberry Pi Pico Datasheet — An RP2040-based microcontroller board" ' +
+      '(build-date 2023-06-14, build-version a6fe703-clean) — ⚠️ jde o datasheet CELÉ DESKY Pico ' +
+      '(RP2040 + flash + napájecí obvody + USB), ne jen holého čipu RP2040 (ten má vlastní ' +
+      'samostatný "RP2040 Datasheet" s čistě čipovými specifikacemi, který tento dokument jen ' +
+      'odkazuje, ale neobsahuje) — proto zařazeno jako Modul, ne IO. Objednací kódy: SC0915 ' +
+      '(Pico, nepájené THT piny), SC0916 (Pico, bez pinů/pro SMT osazení), SC0917 ("Pico H", ' +
+      'tovární předosazené piny). Dostupnost garantována výrobcem minimálně do ledna 2028. ' +
+      'RP2040 jádro: 2× Arm Cortex-M0+ do 133 MHz (interní PLL umožňuje měnit frekvenci jádra), ' +
+      '264 kB multi-bank SRAM, externí Quad-SPI Flash (2 MB na Pico, čip Winbond W25Q16JV) s ' +
+      'XIP (eXecute In Place) a 16 kB on-chip cache, plně křížová (crossbar) sběrnicová ' +
+      'architektura, USB 1.1 (host nebo device). 30 GPIO na čipu RP2040, z toho na desce Pico ' +
+      'vyvedeno 26 uživatelských multifunkčních 3,3V GPIO (23 jen digitálních, 3 i ADC), ' +
+      '4 GPIO interně využity pro funkce desky (GPIO23=SMPS power-save řízení, GPIO24=VBUS ' +
+      'sense, GPIO25=uživatelská LED, GPIO29=ADC3 pro měření VSYS/3). Periferie: 2× UART, 2× ' +
+      'I2C, 2× SPI, 16× PWM kanálů, 1× časovač se 4 alarmy, 1× RTC, 12bit ADC (500 ksps), ' +
+      '2× PIO (Programmable IO) blok po 4 state machine (8 celkem) pro flexibilní uživatelsky ' +
+      'definované I/O protokoly (lze emulovat SD Card, VGA apod.). IO napětí FIXNĚ 3,3 V (není ' +
+      'nastavitelné, na rozdíl od některých jiných desek). ' +
+      'Napájecí architektura: VBUS (nominálně 5 V z micro-USB, 0 V pokud USB nepřipojen) → ' +
+      'on-board buck-boost SMPS regulátor (RT6150B-33GQW) generuje 3,3V VSYS→3V3 pro RP2040 a ' +
+      'GPIO, VSYS akceptuje 1,8–5,5 V (lze napájet přímo z Li-ion článku nebo 3× AA baterií), ' +
+      '3V3_EN pin (pull-up 100 kΩ k VSYS) shortnutím na GND vypne 3,3V regulaci. SMPS má PS ' +
+      'pin (GPIO23) pro přepínání PFM/PWM režimu (PFM = výchozí, nejlepší účinnost; PWM = nižší ' +
+      'zvlnění, horší účinnost při slabé zátěži). RUN pin (interní pull-up ~50 kΩ k 3V3) pro ' +
+      'reset RP2040 zkratem na GND. ' +
+      'Odběr (VBUS @5V, "Popcorn" demo — VGA video+SD karta+I2S audio): průměr 85,6–88,0 mA, ' +
+      'špička 91,6–92,8 mA (dle teploty -25/25/85 °C) s power-save režimem SMPS zapnutým. ' +
+      'Doporučené provozní podmínky: teplota -20 až +85 °C (včetně vlastního zahřívání, max ' +
+      'okolní 70 °C doporučeno), VBUS 5V ±10 %, VSYS 1,8–5,5 V. Reprogramování flash přes USB ' +
+      '(drag-and-drop jako USB mass storage po zapnutí s podrženým BOOTSEL) nebo přes SWD port ' +
+      '(bez nutnosti tlačítka, umožňuje i interaktivní debug). 6 testovacích bodů TP1–TP6 na ' +
+      'spodní straně desky (TP1=GND, TP2=USB D−, TP3=USB D+, TP4=GPIO23/SMPS PS - nepoužívat ' +
+      'externě, TP5=GPIO25/LED - nedoporučeno pro externí použití, TP6=BOOTSEL).',
+    schematicImage: 'raspberry-pi-pico-rp2040.jpg',
+    tags: 'modul,mikrokontrolér,rp2040,raspberry-pi-pico,pico,arm,cortex-m0,dual-core,usb',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
