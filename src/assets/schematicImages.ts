@@ -104,6 +104,7 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'Talema-55xxx.jpg': require('../../assets/schematics/Talema-55xxx.jpg'),
   'GP1xxx.jpg': require('../../assets/schematics/GP1xxx.jpg'),
   'SS12-S100.jpg': require('../../assets/schematics/SS12-S100.jpg'),
+  'PZUxB-series.jpg': require('../../assets/schematics/PZUxB-series.jpg'),
   'LXML-Rebel-Color.jpg': require('../../assets/schematics/LXML-Rebel-Color.jpg'),
   'LCW-CR7P-OSLON80.jpg': require('../../assets/schematics/LCW-CR7P-OSLON80.jpg'),
   'TOPLED-Black.jpg': require('../../assets/schematics/TOPLED-Black.jpg'),
