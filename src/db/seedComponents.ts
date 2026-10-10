@@ -7179,6 +7179,39 @@ const CAPACITOR_PART_SPECS: PartSpec[] = [
     tags: 'kondenzátor,keramický,vysokonapěťový,disk,1000v,nte,90000',
   },
   {
+    name: 'NTE NPR/NPA Series',
+    packageType:
+      'THT hliníkový elektrolytický, NPR = radiální vývody (rozteč 2–7,5 mm dle průměru pouzdra ' +
+      '5–16 mm), NPA = axiální vývody (izolační rukáv, průměr pouzdra 6–16 mm) — konkrétní ' +
+      'rozměry (D×L) rostou s kapacitou/napětím, viz tabulka rozměrů v datasheetu',
+    value:
+      'Nepolarizovaný (bipolární) hliníkový elektrolytický kondenzátor, 0,47–1000 µF, 16–100 V, ' +
+      'tolerance ±20 % (M) — uživatelem poslaný konkrétní kus NPR47M50 = NPR, 47 µF, ±20 %, 50 V',
+    notes:
+      'NTE Electronics "Non-Polar Aluminum Electrolytic — NPR, NPA (Non-Polarized) Series" ' +
+      'katalogový list, str. 7–8 — subminiaturní NEPOLARIZOVANÉ (bipolární) elektrolytické ' +
+      'kondenzátory, určené pro obvody s neznámou/obrácenou polaritou nebo výhybkové sítě ' +
+      '(crossover) bez přísných nároků na parametry — na rozdíl od běžných polarizovaných ' +
+      'elektrolytických kondenzátorů v této knihovně (ty mají jasně danou polaritu +/−, tyhle ' +
+      'ne). Zpracováno jako jeden souhrnný záznam pokrývající celou řadu (obdoba přístupu u NTE ' +
+      '90000 Series v této knihovně), protože datasheet je kombinovaná tabulka cca 14 kapacit × ' +
+      '5 napětí × 2 provedení (radiální NPR / axiální NPA) — ne každá kombinace existuje (viz ' +
+      'tabulka rozměrů, prázdná políčka = nevyrábí se). Objednací kód: [řada NPR/NPA][kapacita ' +
+      'v µF][tolerance M=±20%][jmenovité napětí] — např. "NPR47M50" = NPR (radiální), 47 µF, ' +
+      '±20 %, 50 V. Mezní hodnoty: kapacitní rozsah 0,47–1000 µF, napěťový rozsah 16–100 V, ' +
+      'tolerance ±20 % (jediná nabízená, značení "M"), provozní teplota -40 až +85 °C. Svodový ' +
+      'proud I≤0,002×C×V+3 µA (měřeno po 5 min přiloženého napětí). Ztrátový činitel (tan δ, ' +
+      '120 Hz/20 °C): 0,16 (16 V) / 0,12 (25 V) / 0,08 (50 V) / 0,06 (63 a 100 V). Impedanční ' +
+      'poměr při nízké teplotě (120 Hz): Z(-25 °C)/Z(+20 °C) = 1,5–2×, Z(-40 °C)/Z(+20 °C) = 2–4× ' +
+      'dle napětí. Přepěťové (surge) napětí: 20/32/63/79/125 V pro 16/25/50/63/100 V jmenovitých. ' +
+      'Životnost (load life) 1000±12 h @85 °C při jmenovitém napětí (kapacita max ±15 % změna, ' +
+      'svodový proud a tan δ v mezích). Skladovatelnost (shelf life) 1000 h @85 °C bez napětí, ' +
+      'stejné limity. Vývody splňují pájitelnost dle MIL-STD-202 metoda 208. Značení na pouzdře: ' +
+      'typ řady, kapacita, jmenovité napětí, teplotní rozsah, označení anody/katody (i přes ' +
+      'nepolarizovanou konstrukci kvůli výrobnímu procesu), identifikace výrobce.',
+    tags: 'kondenzátor,elektrolytický,nepolarizovaný,bipolární,hliníkový,nte,npr,npa,npr47m50',
+  },
+  {
     name: 'Multicomp MCBU/MCFU Series',
     packageType:
       'THT keramický disk, radiální rovné vývody, průměr disku 5/6/7/8 mm dle kapacity, ' +
@@ -7460,7 +7493,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 137;
+export const SEED_LIBRARY_VERSION = 138;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
