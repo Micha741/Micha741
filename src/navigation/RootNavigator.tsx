@@ -5,6 +5,7 @@ import ComponentFormScreen from '../screens/ComponentFormScreen';
 import ResistorScannerScreen from '../screens/ResistorScannerScreen';
 import SmdCodeCalculatorScreen from '../screens/SmdCodeCalculatorScreen';
 import SmdCodeScannerScreen from '../screens/SmdCodeScannerScreen';
+import ComponentScannerScreen from '../screens/ComponentScannerScreen';
 import CapacitorCodeCalculatorScreen from '../screens/CapacitorCodeCalculatorScreen';
 import PackageReferenceScreen from '../screens/PackageReferenceScreen';
 import SettingsScreen from '../screens/SettingsScreen';
@@ -29,6 +30,7 @@ export type RootStackParamList = {
   ResistorScanner: undefined;
   SmdCodeCalculator: undefined;
   SmdCodeScanner: undefined;
+  ComponentScanner: undefined;
   CapacitorCodeCalculator: undefined;
   PackageReference: undefined;
   Settings: undefined;
@@ -74,6 +76,11 @@ export default function RootNavigator() {
         name="SmdCodeScanner"
         component={SmdCodeScannerScreen}
         options={{ title: t('nav.smdCodeScanner') }}
+      />
+      <Stack.Screen
+        name="ComponentScanner"
+        component={ComponentScannerScreen}
+        options={{ title: t('nav.componentScanner') }}
       />
       <Stack.Screen
         name="CapacitorCodeCalculator"
