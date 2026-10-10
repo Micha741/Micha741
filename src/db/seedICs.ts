@@ -4548,6 +4548,45 @@ const IC_SPECS: IcSpec[] = [
     schematicImage: 'HOPERF-HPxxx-HP5xxx-Series.jpg',
     tags: 'io,senzor,tlakový,tlakoměr,barometr,hoperf,i2c,spi,vodotěsný',
   },
+  {
+    name: 'IWR2188ABGAPER',
+    packageType:
+      'FCCSP (APE), 573 kuliček (BGA), rozteč kuliček 0,5 mm, rozměry pouzdra 14×15 mm, ' +
+      'max. výška 1,15 mm. Balení: cívka (Tape & Reel), 1000 ks. Marking: "IWR2188A / BG / 533A".',
+    value:
+      'Jednočipový kaskádovatelný 8×8 (8TX/8RX) FMCW radarový transceiver, 76–81 GHz, ' +
+      'integrovaná PLL/vysílač/přijímač/basebandová část/ADC, TX výkon 13 dBm, RX šumové ' +
+      'číslo 11 dB, ADC vzorkovací rychlost do 66,67 Msps',
+    schematicImage: 'IWR2188.jpg',
+    notes:
+      'Texas Instruments "IWR2188 Single Chip 8x8 Cascadable 76-to-81 GHz Transceiver in LOP ' +
+      'package" (dok. SLVSNU6, září 2026) — datasheet nahraný uživatelem s žádostí o přidání ' +
+      '"všech součástek Texas Instruments" z dokumentu; dokument ale popisuje jen jednu ' +
+      'objednatelnou variantu: IWR2188ABGAPER (Tape & Reel). FMCW (Frequency-Modulated ' +
+      'Continuous-Wave) radarový transceiver postavený na TI 45nm RFCMOS procesu — ' +
+      'monolitická integrace 8TX/8RX systému s vestavěnou PLL a A/D převodníky, určený pro ' +
+      'průmyslové radarové senzory (short/mid/long-range konfigurace programovatelné bez ' +
+      'změny hardwaru). Integrovaný "Launch on Package" (LOP) — anténní napáječe přímo v ' +
+      'pouzdře pro snadný routing na DPS. Architektura: RF analogová podsystém (8× LNA→mixer→ ' +
+      'IFA→ADC přijímací řetězec, 8× PA→fázový posuv ΔΦ vysílací řetězec, syntezátor 20GHz s ' +
+      'x4 násobičem, APLL, krystalový oscilátor), Radar Processor (jádro Cortex R4F + ROM/RAM, ' +
+      'generátor rampy, ADC buffer, frame sync), Host Interface Subsystem (Cortex M4F jádro + ' +
+      'ROM/RAM, periferie SPI/I2C/QSPI/UART/GPIO/SOP piny), Datapath Subsystem (CSI2 v1.2 a ' +
+      'MIPI D-PHY datové rozhraní s DMA, common buffer). Vestavěné kalibrační a self-test ' +
+      'funkce (ROM firmware, samokalibrace napříč procesem/teplotou). Pokročilé funkce: ' +
+      'embedded self-monitoring s omezenou účastí hostitele, kaskádování více čipů pro vyšší ' +
+      'počet kanálů, vestavěná detekce rušení (interference detection). Napájení: vestavěná ' +
+      'LDO síť pro PSRR, I/O podporují duální napětí 3,3V/1,8V. Hodinový zdroj: externí ' +
+      'hodiny (obdélník/sinus) 50MHz nebo 40MHz, nebo krystal 50/40MHz se zátěžovými ' +
+      'kondenzátory. Funkční bezpečnost: cíleno na SIL 2 dle IEC61508 (hardwarová integrita). ' +
+      'Provozní rozsah přechodové teploty -40 až +125°C. Aplikace: průmyslová automatizace, ' +
+      'robotika a humanoidi, monitoring dopravy, tovární automatizace, drony, snímání hladiny, ' +
+      'automatické dveře a brány, prevence kolizí, AGV/AMR (automaticky řízená vozidla/mobilní ' +
+      'roboty). Objednací kód dle nomenklatury: IWR2188ABGAPER = generace 2 (76-81GHz), 8 ' +
+      'RX/TX kanálů, varianta 1 (FE), verze A (ES2.0), bezpečnost B (SIL 2 Targeted), security ' +
+      'G (General), pouzdro APE (FCCSP/LOP), R (Tape & Reel).',
+    tags: 'io,rf,radar,transceiver,fmcw,ti,iwr2188,mmwave,76-81ghz,fccsp,bga,csi2,cortex-m4f,cortex-r4f',
+  },
 
   // Proudové zdroje
   {
