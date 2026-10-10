@@ -1661,6 +1661,45 @@ const IC_SPECS: IcSpec[] = [
     schematicImage: 'ESP8684.jpg',
     tags: 'io,mikrokontrolér,soc,esp8684,esp32-c2,wifi,bluetooth,ble,risc-v,qfn24',
   },
+  {
+    name: 'RP2040',
+    datasheetUrl: 'https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf',
+    packageType:
+      'QFN-56 (7×7 mm, rozteč pinů 0,4 mm), spodní GND ploška. Potisk na pouzdře: logo Raspberry ' +
+      '(pět "malin") + dvouřádkový text "RP2" / "B2" (B2 = aktuální křemíková revize) + kód šarže.',
+    value:
+      'Mikrokontrolér (holý čip, bez vestavěné flash), dual-core Arm Cortex-M0+ do 133 MHz, ' +
+      '264 kB SRAM, 30 GPIO, VDD_IO 1,8–3,63 V (typ. 3,3 V)',
+    notes:
+      'Raspberry Pi Ltd "RP2040 Datasheet" — holý mikrokontrolérový čip, přidán samostatně jako ' +
+      'IO záznam na rozdíl od existujícího záznamu "Raspberry Pi Pico" v knihovně (kategorie ' +
+      'Modul), který popisuje CELOU DESKU Pico (RP2040 + externí flash + napájecí obvody + USB ' +
+      'konektor) — uživatel tentokrát sken-oval holý čip přímo na vlastní desce (mimo oficiální ' +
+      'Pico), potisk "RP2" / "B2" + logo malin odpovídá přesně tomuto čipu. RP2040 nemá žádnou ' +
+      'vestavěnou (on-chip) flash paměť — vyžaduje externí QSPI flash čip (typicky 2-16 MB) ' +
+      'připojený přes dedikovaný QSPI port. Jádro: 2× Arm Cortex-M0+ (32bit, do 133 MHz, interní ' +
+      'PLL pro změnu frekvence), 264 kB multi-bank SRAM (6 nezávislých bank pro souběžný přístup ' +
+      'DMA/CPU/sběrnice), plně křížová (crossbar) sběrnicová architektura bez centrální sběrnice. ' +
+      'Integrovaný QSPI flash řadič s XIP (eXecute In Place) a 16 kB on-chip XIP cache. 30 ' +
+      'multifunkčních 3,3V GPIO (4 z nich sdílené s QSPI flash rozhraním u některých variant ' +
+      'pouzdření, ale u QFN-56 RP2040 dostupných všech 30 uživatelských GPIO), z toho 4 lze ' +
+      'nakonfigurovat jako ADC vstupy (12bit SAR ADC, 500 ksps). Periferie: 2× UART, 2× I2C, 2× ' +
+      'SPI, 16× PWM kanálů (8 slice × 2 kanály), USB 1.1 řadič (host nebo device, s integrovanou ' +
+      'PHY), 1× časovač se 4 alarmy (64bit, 1µs rozlišení), 1× RTC, 8× DMA kanálů, 2× PIO ' +
+      '(Programmable I/O) blok po 4 state machine (8 celkem, vlastní malá instrukční sada pro ' +
+      'implementaci libovolných I/O protokolů v softwaru bez zátěže CPU — např. emulace SD karty, ' +
+      'VGA, WS2812 LED, dalších sběrnic). Hardwarový dělič/násobič (integer divider), vestavěný ' +
+      'ring oscilátor i podpora externího krystalu/oscilátoru (obvykle 12 MHz na referenčních ' +
+      'deskách). Napájení: VDD_IO (I/O banky) 1,8–3,63 V, VDD_ADC (referenční pro ADC) 1,8–3,63 V, ' +
+      'DVDD (jádro, obvykle generováno interním/externím 1,1V regulátorem) 1,0–1,2 V — na desce ' +
+      'Pico řešeno externím buck-boost regulátorem generujícím 3,3V sběrnici, z níž čip interně ' +
+      'odvozuje nižší jádrové napětí. Bootloader v masked ROM podporuje nahrávání firmware přes ' +
+      'USB (jako USB mass storage) nebo přes SWD (2pinové ladicí rozhraní). Nízkopříkonové ' +
+      'režimy: dormant (zastavené hodiny, probuzení přerušením) a sleep. Provozní teplota -20 až ' +
+      '+85 °C (konzervativní doporučení; chip rating širší).',
+    schematicImage: 'raspberry-pi-pico-rp2040.jpg',
+    tags: 'io,mikrokontrolér,soc,rp2040,raspberry-pi,arm,cortex-m0,dual-core,qfn-56,pio,usb',
+  },
 
   // Mikrokontroléry AVR
   {
