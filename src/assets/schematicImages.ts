@@ -393,5 +393,6 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'ICM-0805-series.jpg': require('../../assets/schematics/ICM-0805-series.jpg'),
   'MBR2035CT-20200CT.jpg': require('../../assets/schematics/MBR2035CT-20200CT.jpg'),
   'SC2616.jpg': require('../../assets/schematics/SC2616.jpg'),
+  'TPSM265R1.jpg': require('../../assets/schematics/TPSM265R1.jpg'),
   'DB3-DB31-DB32-DB4.jpg': require('../../assets/schematics/DB3-DB31-DB32-DB4.jpg'),
 };
