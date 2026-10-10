@@ -28,7 +28,7 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Aplikace CircuitKit potřebuje přístup ke kameře pro sken barevného kódu rezistoru.",
+          "cameraPermission": "Aplikace CircuitKit potřebuje přístup ke kameře pro sken součástek (rezistor, SMD kód, vyhledání ve skladu).",
           "recordAudioAndroid": false,
           "barcodeScannerEnabled": false
         }

@@ -9,6 +9,7 @@ export const cs = {
   'nav.resistorScanner': 'Sken rezistoru',
   'nav.smdCodeCalculator': 'SMD kód rezistoru',
   'nav.smdCodeScanner': 'Sken SMD kódu',
+  'nav.componentScanner': 'Sken součástky',
   'nav.capacitorCodeCalculator': 'Kód kondenzátoru',
   'nav.packageReference': 'Pouzdra IC',
   'nav.settings': 'Nastavení',
@@ -134,6 +135,25 @@ export const cs = {
   'smdScanner.useValue': 'Použít → Nová součástka',
   'smdScanner.scanNote': 'Hodnota určena OCR skenem kódu na pouzdře: {code} ({type}).',
 
+  // Component scanner (general OCR lookup against the inventory)
+  'componentScanner.photoFailed': 'Fotografii se nepodařilo pořídit.',
+  'componentScanner.recognitionFailed': 'Rozpoznávání se nezdařilo.',
+  'componentScanner.permission': 'Pro sken součástky je potřeba přístup ke kameře.',
+  'componentScanner.allowCamera': 'Povolit kameru',
+  'componentScanner.guideHint': 'Umísti potisk (typové označení) na součástce doprostřed rámečku',
+  'componentScanner.processing': 'Rozpoznávám text…',
+  'componentScanner.tryAgain': 'Zkusit znovu',
+  'componentScanner.editLabel': 'Rozpoznaný text (uprav, pokud je potřeba)',
+  'componentScanner.queryPlaceholder': 'např. BS170, 1N4007, LM358',
+  'componentScanner.searchAgain': 'Hledat',
+  'componentScanner.matchesFound': 'Nalezeno ve skladu ({count})',
+  'componentScanner.noMatches': 'Ve skladu jsem nic podobného nenašel.',
+  'componentScanner.noText': '(nic)',
+  'componentScanner.retake': 'Vyfotit znovu',
+  'componentScanner.createNew': 'Založit jako novou součástku',
+  'componentScanner.scanNote':
+    'Založeno ze skenu součástky — rozpoznaný potisk: „{text}“. Kategorii a zbytek údajů zkontroluj a doplň ručně.',
+
   // Capacitor code calculator
   'capCalc.label': 'Kód na kondenzátoru',
   'capCalc.placeholder': 'např. 104, 104K, 4R7, 225K1C',
@@ -168,6 +188,7 @@ export const en: Record<TranslationKey, string> = {
   'nav.resistorScanner': 'Resistor Scan',
   'nav.smdCodeCalculator': 'SMD Resistor Code',
   'nav.smdCodeScanner': 'SMD Code Scan',
+  'nav.componentScanner': 'Component Scan',
   'nav.capacitorCodeCalculator': 'Capacitor Code',
   'nav.packageReference': 'IC Packages',
   'nav.settings': 'Settings',
@@ -292,6 +313,25 @@ export const en: Record<TranslationKey, string> = {
   'smdScanner.retake': 'Retake Photo',
   'smdScanner.useValue': 'Use → New Component',
   'smdScanner.scanNote': 'Value determined by OCR scan of the code on the package: {code} ({type}).',
+
+  // Component scanner (general OCR lookup against the inventory)
+  'componentScanner.photoFailed': 'Failed to capture the photo.',
+  'componentScanner.recognitionFailed': 'Recognition failed.',
+  'componentScanner.permission': 'Camera access is needed to scan a component.',
+  'componentScanner.allowCamera': 'Allow Camera',
+  'componentScanner.guideHint': 'Place the printed marking on the component in the middle of the frame',
+  'componentScanner.processing': 'Recognizing text…',
+  'componentScanner.tryAgain': 'Try Again',
+  'componentScanner.editLabel': 'Recognized text (edit if needed)',
+  'componentScanner.queryPlaceholder': 'e.g. BS170, 1N4007, LM358',
+  'componentScanner.searchAgain': 'Search',
+  'componentScanner.matchesFound': 'Found in stock ({count})',
+  'componentScanner.noMatches': 'Nothing similar found in stock.',
+  'componentScanner.noText': '(none)',
+  'componentScanner.retake': 'Retake Photo',
+  'componentScanner.createNew': 'Add as new component',
+  'componentScanner.scanNote':
+    'Created from a component scan — recognized marking: "{text}". Review and fill in the category and remaining fields manually.',
 
   // Capacitor code calculator
   'capCalc.label': 'Code on capacitor',

@@ -214,6 +214,13 @@ export default function ComponentListScreen({ navigation }: Props) {
       />
 
       <Pressable
+        style={[styles.componentScanFab, { backgroundColor: colors.fabBackground }]}
+        onPress={() => navigation.navigate('ComponentScanner')}
+      >
+        <Text style={styles.smdFabText}>🏷️</Text>
+      </Pressable>
+
+      <Pressable
         style={[styles.capFab, { backgroundColor: colors.fabBackground }]}
         onPress={() => navigation.navigate('CapacitorCodeCalculator')}
       >
@@ -353,6 +360,21 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 20,
     bottom: 272,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  componentScanFab: {
+    position: 'absolute',
+    right: 20,
+    bottom: 332,
     width: 48,
     height: 48,
     borderRadius: 24,
