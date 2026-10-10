@@ -1042,6 +1042,44 @@ const DIODE_SPECS: PartSpec[] = [
   },
 
   {
+    name: 'SZMM3Z Series',
+    packageType:
+      'SOD323 (SC-76), 2 vývody SMD: 1=katoda (strana se značicím pruhem), 2=anoda. ' +
+      'Plastové pouzdro, pájecí plošky standardní SOD323 stopa.',
+    value:
+      'Zenerova dioda (stabilizační), SMD, jmenovité pracovní napětí 2,4–75 V (37 typů), ' +
+      'tolerance přibližně ±5 %, Ptot max 300 mW, PZSM (nárazový závěrný výkon) max 40 W',
+    notes:
+      'Nexperia "SZMM3Z series — Voltage regulator diodes" (dok. SZMM3Z_SER, rev. 3, ' +
+      '20. února 2023) — datasheet nahraný uživatelem při pátrání po jiné, neidentifikované ' +
+      'SOT-23-5 součástce s potiskem "fiWZKR"/"TiWZKR". NENÍ hledaná součástka: SZMM3Z je ' +
+      '2vývodová SMD Zenerova dioda v SOD323, nikoliv 5pinový SOT-23-5 DC/DC měnič — pouzdro ' +
+      'ani počet vývodů nesedí, marking kódy jsou navíc jen 2znakové (viz tabulka níže), žádný ' +
+      'neobsahuje "WZKR". Objednací kód SZMM3Z<napětí>VT1G, např. SZMM3Z12VT1G = 12V typ. ' +
+      'Marking kódy (2znakové): 2V4=X8, 2V7=X9, 3V0=XT, 3V3=XW, 3V6=XZ, 3V9=ME, 4V3=MM, ' +
+      '4V7=MS, 5V1=MW, 5V6=LF, 6V2=LL, 6V8=LR, 7V5=LV, 8V2=LZ, 9V1=CU, 10V=VA, 11V=VE, 12V=VK, ' +
+      '13V=VP, 15V=VV, 16V=VZ, 18V=X4, 20V=XC, 22V=XG, 24V=XM, 27V=DK, 30V=DL, 33V=DM, 36V=DN, ' +
+      '39V=DP, 43V=DR, 47V=DS, 51V=DT, 56V=DU, 62V=DV, 68V=DW, 75V=DX. Mezní hodnoty: IF ' +
+      '(průchozí proud) max 200 mA, PZSM (tp=100µs čtvercová vlna, Tamb=25°C před nárazem) max ' +
+      '40 W, Ptot max 300 mW @Tamb=25°C (FR4 DPS, jednostranná cínovaná měď, standardní stopa), ' +
+      'TJ max 150°C, Tamb -55 až +150°C, Tstg -65 až +150°C. Tepelný odpor RthJA 415 K/W (volný ' +
+      'vzduch) / RthJ-sp 110 K/W (pájecí bod katody). Elektrické charakteristiky (TJ=25°C): VF ' +
+      'max 0,9 V (@IF=10mA) / max 1,1 V (@IF=100mA). Příklady pracovního napětí VZ (@IZ=5mA, ' +
+      'nižší napětí) resp. @IZ=2mA (vyšší napětí): 2,4V typ 2,30–2,60V, 5,1V typ 4,84–5,37V, ' +
+      '12V typ 11,42–12,60V, 24V typ 22,93–25,57V, 36V typ 34–38V, 75V typ 70–79V (přesné ' +
+      'min/max pro všech 37 typů viz tabulky 8–9 v datasheetu). Diferenční odpor rdif klesá s ' +
+      'rostoucím napětím od 1000 Ω (nízkonapěťové typy do 3,9V) po desítky/stovky Ω u ' +
+      'vysokonapěťových typů (např. 500 Ω @75V). Reverzní proud IR (@VR=1V) max 50 µA ' +
+      '(nízkonapěťové typy) klesající až na 0,05 µA u vysokonapěťových typů. Teplotní koeficient ' +
+      'SZ záporný u nízkonapěťových typů (-3,5 mV/K @2,4-3,9V) a kladný u vysokonapěťových ' +
+      '(až +88,6 mV/K @75V). Diodová kapacita Cd (f=1MHz, VR=0V) klesá s napětím od 450 pF ' +
+      '(2,4V) do 35 pF (75V). AEC-Q101 kvalifikováno (automotive). Aplikace: obecné ' +
+      'stabilizační/referenční funkce.',
+    schematicImage: 'SZMM3Z-series.jpg',
+    tags: 'dioda,zener,smd,sod323,sc-76,nexperia,szmm3z,stabilizační,aec-q101',
+  },
+
+  {
     name: 'BZX85C12',
     packageType: 'DO-41 (DO-204AL)',
     value: '11,4–12,7 V (nom. 12 V) / 1,3 W — výkonová Zenerova dioda',
@@ -7593,7 +7631,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 144;
+export const SEED_LIBRARY_VERSION = 145;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),

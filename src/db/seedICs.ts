@@ -4177,6 +4177,43 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,supervizor,reset,napěťový-supervizor,voltage-supervisor,ti,tps3809,tps3809i50,sot-23,4.55v',
   },
   {
+    name: 'MCP120/MCP130',
+    packageType:
+      'K dispozici ve 3 pouzdrech: TO-92 (3 vývody, 4 varianty pořadí pinů dle bondout ' +
+      'opce D/F/G/H — RST/VDD/VSS v různém pořadí, viz datasheet), SOT-23-3 (3 vývody: ' +
+      '1=RST, 2=VDD, 3=VSS) a 150mil SOIC-8 (1=RST, 2=VDD, 3=NC, 4=VSS, 5-8=NC). Marking na ' +
+      'SOT-23 "TT" variantě je 4znakový kód XXNN (2 písmena + 2 číslice, viz tabulka níže).',
+    value:
+      'Napěťový supervizor (reset obvod) s otevřeným kolektorem (drain), 7 prahových napětí ' +
+      '(2,70/3,00/3,15/4,50/4,60/4,75/4,85 V), MCP130 má interní pull-up rezistor 5 kΩ',
+    schematicImage: 'MCP120-MCP130.jpg',
+    notes:
+      'Microchip "MCP120/130 — Microcontroller Supervisory Circuit with Open Drain Output" ' +
+      '(dok. DS11184D, 2001) — datasheet nahraný uživatelem při pátrání po jiné, ' +
+      'neidentifikované SOT-23-5 součástce s potiskem "fiWZKR"/"TiWZKR". NENÍ hledaná ' +
+      'součástka: MCP120/130 existuje jen ve 3pinových pouzdrech (TO-92, SOT-23-3, SOIC-8) — ' +
+      'na fotce je 5pinové SOT-23-5 pouzdro, takže pouzdro nesedí. Navíc marking kódy jsou jen ' +
+      '2písmenné prefixy (SJ/SK/SL/SM/SN/SO/SP pro MCP120, PJ/PK/PL/PM/PN/PO/PP pro MCP130), ' +
+      'žádný neobsahuje "WZKR". Je to ale platný napěťový supervizor pro mikrokontrolérové ' +
+      'aplikace, drží RESET aktivní (nízko), dokud VDD nedosáhne stabilní úrovně nad prahem ' +
+      'VTRIP, a chrání proti brownout poklesům napájení. Aktivní-nízký RESET pin u obou typů; ' +
+      'MCP120 = čistý open drain výstup (bez interního pull-upu), MCP130 = open drain s ' +
+      'interním pull-up rezistorem 5 kΩ. Objednací kód: [MCP120/MCP130][T pro TT/SN]-' +
+      '[práh: 270/300/315/450/460/475/485][I][/pouzdro SN|TO|TT], např. MCP120T-315I/TT = ' +
+      'práh 3,00-3,15V, průmyslový teplotní rozsah, SOT-23 tape&reel. Mezní hodnoty: VDD max ' +
+      '7,0V, vstupy/výstupy vůči VSS -0,6 až VDD+1,0V, Tstg -65 až +150°C, Tamb s napájením ' +
+      '-65 až +125°C, ESD ochrana na všech pinech ≥2kV. Provozní rozsah: VDD 1,0-5,5V, ' +
+      'průmyslový teplotní rozsah -40 až +85°C. Provozní proud IDD typ. 45µA/max 60µA @VDD=5,5V ' +
+      '(bez zátěže). 7 prahových napětí VTRIP (min/typ/max): 2,55/2,625/2,7V, 2,85/2,925/3,0V, ' +
+      '3,0/3,075/3,15V, 4,25/4,375/4,5V, 4,35/4,475/4,6V, 4,5/4,625/4,75V, 4,6/4,725/4,85V. VOL ' +
+      'max 0,4V @IOL=3,2mA (nižší 4 prahy) nebo max 0,6V @IOL=8,5mA (vyšší 3 prahy), vždy při ' +
+      'VDD=VTRIP(min). VOH (jen MCP130, interní pull-up) min VDD-0,7V @IOH=50µA, VDD>VTRIP(max). ' +
+      'Výstupní svodový proud (jen MCP120) max 1µA. Prahová hystereze VHYS typ. 50mV. Doba ' +
+      'držení RESET po detekci VDD nad prahem (tRPU) min 150ms/typ. 350ms/max 700ms. Doba ' +
+      'reakce RESET na pokles VDD (tRPD) typ. 10µs. VDD minimum pro platný RESET (VDDMIN) 1,0V.',
+    tags: 'io,supervizor,reset,napěťový-supervizor,voltage-supervisor,microchip,mcp120,mcp130,sot-23,to-92,soic-8',
+  },
+  {
     name: 'BD48xxx/BD49xxx Series',
     packageType:
       'K dispozici ve 4 pouzdrech: SSOP5 (podobné SOT-23-5, 5 vývodů 1=VOUT, 2=VDD, 3=GND, ' +
