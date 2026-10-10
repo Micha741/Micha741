@@ -760,6 +760,56 @@ const IC_SPECS: IcSpec[] = [
       'a HSTL terminace.',
     tags: 'io,řadič,spínaný-zdroj,buck,ldo,ddr,vtt,vddq,pamětový-zdroj,texas-instruments,ti,tps51716,qfn,d-cap2',
   },
+  {
+    name: 'TPSM265R1',
+    packageType:
+      '10-pin uSiP (SIL-10C) s exponovanou termální podložkou (pin 11), rozměry jen ' +
+      '2,8×3,7×1,9 mm, piny (pohled shora): 1=VOUT, 2=SS, 3=GND, 4=VIN, 5=VIN, 6=GND, 7=HYS, ' +
+      '8=SENSE+/FB, 9=EN, 10=PGOOD, 11=GND (termální podložka, interně NESPojena s piny 3/6 — ' +
+      'pin 3 nutno propojit přímo na pin 11 na DPS)',
+    value:
+      'Synchronní buck DC-DC napájecí modul (integrovaný řadič+MOSFETy+cívka), VIN 3–65 V, ' +
+      'výstup nastavitelný 1,223–15 V, IOUT 100 mA, IQ 10,5 µA, varianta s adjustable výstupem',
+    notes:
+      'Texas Instruments "TPSM265R1 — 65-V Input, 100-mA Power Module with Ultra-Low IQ" (dok. ' +
+      'SNVSBF6B, říjen 2019, revidováno prosinec 2020) — datasheet nahraný uživatelem. Kompletní ' +
+      'synchronní buck napájecí modul v jednom maličkém pouzdře uSiP (2,8×3,7×1,9 mm) — plně ' +
+      'integruje řadič, MOSFETy i výstupní cívku, vyžaduje jen 2 externí pasivní součástky ' +
+      '(vstupní a výstupní kondenzátor) pro základní zapojení. Pracuje v PFM (pulse frequency ' +
+      'modulation) režimu pro vysokou účinnost při slabé zátěži, bez nutnosti kompenzace ' +
+      'smyčky (žádná externí kompenzace). Tři verze dle výstupu: "TPSM265R1" (adjustable, ' +
+      '1,223–15 V přes externí odporový dělič R_FBT/R_FBB — doporučeno R_FBT=100 kΩ, ' +
+      'R_FBB=1,223/(VOUT−1,223)×R_FBT), "TPSM265R1V3" (fixní 3,3 V), "TPSM265R1V5" (fixní 5 V) ' +
+      '— fixní verze mají interní odporový dělič zapojený přímo na SENSE+. ' +
+      'Funkce: precizní enable s programovatelnou hysterezí (pin HYS + externí rezistory pro ' +
+      'definici vlastní UVLO), nastavitelný soft-start (floating SS = cca 1 ms interní, nebo ' +
+      'externí kondenzátor na SS pro delší rozběh, 100 kΩ rezistor SS→GND = soft-start zcela ' +
+      'vypnut), monotónní náběh i do předbuzeného (prebiased) výstupu, open-drain PGOOD indikace, ' +
+      'tepelná ochrana s hysterezí, splňuje emisní normu CISPR11/EN55011. ' +
+      'Mezní hodnoty: VIN/EN −0,3 až 68 V, SENSE+/PGOOD −0,3 až 16 V, HYS −0,3 až 7 V, FB/SS ' +
+      '−0,3 až 3,6 V, VOUT −0,3 až 16 V, TJ −40 až 125 °C, Tstg −55 až 150 °C, max. reflow teplota ' +
+      '260 °C (max 3× reflow). ESD: HBM ±2500 V, CDM ±1000 V. ' +
+      'Doporučené provozní podmínky: VIN 3–65 V (min. je 3,0 V NEBO VOUT+1V, podle toho co je ' +
+      'větší), PGOOD do 12 V, HYS do 5 V, IOUT do 100 mA, TA −40 až 125 °C, CIN min 1 µF, COUT ' +
+      'min 10 µF (keramické). ' +
+      'Elektrické charakteristiky (TA=−40 až 125°C, VIN=12V, VOUT=5V): UVLO VIN rising typ. ' +
+      '2,75 V / falling typ. 2,45 V. IQ (neschaltující, klidový) typ. 10,5 µA (max 15 µA). ' +
+      'ISD (VIN shutdown, EN=0V) typ. 4,6 µA (max 6 µA). EN threshold rising typ. 1,212 V / ' +
+      'falling typ. 1,144 V, hystereze typ. 68 mV. R_HYS (EN=1V) typ. 80 Ω (max 200 Ω). FB ' +
+      '(adjustable): regulační práh 1,205–1,241 V (lower) / 1,220–1,246 V (upper), I_FB max ' +
+      '100 nA @VFB=1V. Fixní 5V: VOUT 4,9–5,1 V, účinnost typ. 83,0 % @VOUT=5V/IOUT=50mA. Fixní ' +
+      '3,3V: VOUT 3,23–3,37 V, účinnost typ. 77,2 % @VOUT=3,3V/IOUT=50mA. IOUT 0–100 mA, zkratový ' +
+      '(foldback) proudový limit typ. 130 mA. Soft-start: ISS typ. 10 µA, TSS (floating SS) typ. ' +
+      '900 µs. PGOOD: práh high typ. 94 %/low typ. 87 % VOUT, R_PGOOD(on) typ. 80 Ω (max 200 Ω), ' +
+      'únikový proud max 100 nA @5,5V. Tepelná ochrana: práh náběhu typ. 170 °C, hystereze typ. ' +
+      '10 °C. Tepelný odpor (10-pin SIL-10C): RθJA 49,7 °C/W, ψJT 2,3 °C/W, ψJB 28,7 °C/W. ' +
+      'Typické zapojení (fixní výstup): VIN→CIN, EN propojen na VIN (nebo přes rezistorový dělič ' +
+      'pro vlastní UVLO), SENSE+ propojen přímo na VOUT (fixní verze), VOUT→COUT→GND. Aplikace: ' +
+      'terénní vysílače a procesní senzory, poziční/přibližovací senzory, PLC/DCS/PAC, napájení ' +
+      'servopohonů, aplikace se záporným výstupem.',
+    schematicImage: 'TPSM265R1.jpg',
+    tags: 'io,regulátor,dc-dc,buck,modul,napájecí-modul,usip,texas-instruments,ti,tpsm265r1,tpsm265r1v3,tpsm265r1v5,ultra-low-iq',
+  },
 
   // Napájecí spínače (load switch)
   {
