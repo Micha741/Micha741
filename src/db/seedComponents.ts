@@ -782,14 +782,18 @@ const DIODE_SPECS: PartSpec[] = [
   { name: 'BAT85', packageType: 'DO-35', value: '200 mA / 30 V', notes: 'Schottky dioda', tags: 'dioda,schottky' },
   {
     name: 'SS12',
-    packageType: 'SMA (SMD, case 403AE), 2 vývody: 1=anoda, 2=katoda',
+    packageType: 'SMA/DO-214AC (SMD, case 403AE), 2 vývody: 1=anoda, 2=katoda',
     value: 'Schottky dioda, VRRM 20 V, IF(AV) 1,0 A, VF max 500 mV @IF=1,0 A',
     notes:
       'Součást rodiny SS12–S100 (ON Semiconductor, datasheet SS19/D rev. 3, leden 2019) — společný ' +
       'datasheet pro 8 dílů lišících se jen VRRM a VF, viz i sourozenecké záznamy SS13/SS14/SS15/SS16/' +
-      'SS18/SS19/S100. Pb-free/halogen-free, RoHS. Skleněný (glass-passivated) přechod, klip-bonded ' +
-      'nožičky pro nízký el. odpor a dobrý tepelný přenos. Vhodné pro free-wheeling, sekundární ' +
-      'usměrnění, ochranu proti přepólování. ' +
+      'SS18/SS19/S100. Doplněno i podle původního datasheetu Fairchild Semiconductor "SS12 - S100 — ' +
+      'Schottky Rectifier" (Rev. 1.1.2, říjen 2013, poslaný uživatelem jako doplnění k SS14) — Fairchild ' +
+      'byl akvírován společností ON Semiconductor v roce 2016, hodnoty v obou datasheetech jsou ' +
+      'identické, Fairchild navíc výslovně uvádí pouzdro jako JEDEC DO-214AC (stejný fyzický tvar jako ' +
+      'běžně používané označení SMA). Pb-free/halogen-free, RoHS. Skleněný (glass-passivated) přechod, ' +
+      'klip-bonded nožičky pro nízký el. odpor a dobrý tepelný přenos. Vhodné pro free-wheeling, ' +
+      'sekundární usměrnění, ochranu proti přepólování. ' +
       'Mezní hodnoty: VRRM=20 V, IF(AV)=1,0 A (0,375" délka vývodu @TA=75 °C), IFSM=40 A ' +
       '(8,3 ms jednorázová půlvlna), TJ=-65 až +125 °C, Tstg=-65 až +150 °C, Ptot=1,1 W, ' +
       'RθJA=88 °C/W (na FR4 desce). ' +
@@ -7403,7 +7407,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 135;
+export const SEED_LIBRARY_VERSION = 136;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
