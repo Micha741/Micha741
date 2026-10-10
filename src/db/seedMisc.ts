@@ -564,6 +564,38 @@ const MISC_SPECS: MiscSpec[] = [
     schematicImage: 'ZM1005.jpg',
     tags: 'indikátor,trubice,nixie,doutnavka,cold-cathode,mullard,zm1005,zm1005r,vintage,číslicový-displej',
   },
+  {
+    name: 'RV2,4P45',
+    datasheetUrl: 'https://tubedatabase.co/tubes/RV 2,4 P45',
+    packageType:
+      'Skleněná baňka, přímo žhavená oxidová katoda (vlákno), žhavicí napětí 2,4 V — typické pro ' +
+      'malé přenosné bateriové přijímače vojenské/válečné výroby (Wehrmacht). Přesné mechanické ' +
+      'rozměry a vývodové uspořádání se v dostupných zdrojích liší (viz poznámka níže).',
+    value:
+      'Prostorovou mřížkou řízená pentoda (Raumladegitter-Pentode), přímo žhavená, Va max 100 V, ' +
+      'Pa max 1 W, typický pracovní bod (NF/VF zesílení): Va 20 V, strmost 750 µA/V, ri 60 kΩ, ' +
+      'Ia 1,6 mA',
+    notes:
+      '⚠️ Nejde o datasheet nahraný uživatelem — uživatel poslal historický časopis "Radioamatér" ' +
+      'ročník XXVI, č. 8 (13. srpna 1947), kde elektronka RV2,4P45 figuruje ve stavebním návodu ' +
+      '"Malý přenosný superhet" (str. 216-219): dvě elektronky RV2,4P45 (V1=směšovač-oscilátor, ' +
+      'V2=NF/MF zesilovač) v bateriovém přenosném superhetu s rámovou anténou, napájené ' +
+      'žhavicím napětím 2,4 V (ze dvou tyčkových baterií "Mila") a anodovým napětím 15-18 V (ze ' +
+      'dvou plochých kapesních baterií). Protože se nejedná o oficiální výrobcovský datasheet, ' +
+      'elektrické parametry byly dohledány sekundárně (tubedatabase.co) a v dostupných zdrojích ' +
+      'se mírně rozcházejí mezi uváděnou skleněnou verzí (RV 2,4 P45 — Telefunken, Raumladegitter- ' +
+      'pentoda, oxidová katoda, odkaz na dodací podmínky Wehrmachtu TL 21b 7023) a kovovou verzí ' +
+      '(RV2P45 — 6kolíková kovová patice, Pa max 0,5 W, µ=45, strmost 700 µA/V, pravděpodobně ' +
+      'jiná/příbuzná varianta) — ⚠️ údaje tedy berte jako orientační, ne jako přesný ověřený ' +
+      'datasheet. Mezní hodnoty (skleněná verze): Va max 100 V, Pa max 1 W, Vg2 (stínicí mřížka) ' +
+      'max 50 V, Vg1 (řídicí mřížka) max -5 V, Ik max 6 mA. Typický pracovní bod pro NF/VF ' +
+      'zesílení: Va 20 V, strmost (gm) 750 µA/V, vnitřní odpor ri 60 kΩ, Ia 1,6 mA. Součást ' +
+      'rodiny příbuzných typů RV2,4P700, RV2,4P1400 (jiné, výkonnější elektronky stejné "RV2,4" ' +
+      'žhavicí řady, časté náhradní díly z vojenského demobilu v poválečném Československu — viz ' +
+      'i dobový text "Máte-li k dispozici zbytky dosavadní vojenské výzbroje...").',
+    schematicImage: 'RV2-4P45.jpg',
+    tags: 'elektronka,trubice,tube,pentoda,raumladegitter,vojenská,telefunken,rv2,4p45,vintage,žhavená,1947',
+  },
 ];
 
 export function buildMiscSeed(): ComponentInput[] {
