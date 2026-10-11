@@ -337,6 +337,7 @@ const MISC_SPECS: MiscSpec[] = [
   },
   {
     name: 'Baterie 9V (6F22)',
+    category: 'Baterie',
     packageType: 'Blokový 9V akumulátor/baterie, klip (snap) konektor',
     value: '9 V, alkalická nebo zinko-uhlíková (typ 6F22/PP3)',
     notes: 'Standardní blokový 9V zdroj pro malé přenosné obvody.',
@@ -344,6 +345,7 @@ const MISC_SPECS: MiscSpec[] = [
   },
   {
     name: 'Baterie AA (tužková, 1,5 V)',
+    category: 'Baterie',
     packageType: 'Válcový článek AA (LR6)',
     value: '1,5 V alkalický nebo 1,2 V NiMH akumulátor',
     notes: 'Standardní tužková baterie/akumulátor velikosti AA, obvykle v sadě v držáku (2–4 ks dle napětí).',
@@ -351,6 +353,7 @@ const MISC_SPECS: MiscSpec[] = [
   },
   {
     name: 'Knoflíková baterie LR44 (alkalická, 1,5 V)',
+    category: 'Baterie',
     packageType: 'Knoflíkový (plochý) článek, průměr 11,6 mm, výška 5,4 mm',
     value: '1,5 V alkalická, kapacita cca 110–150 mAh (dle výrobce)',
     notes:
@@ -364,6 +367,7 @@ const MISC_SPECS: MiscSpec[] = [
   },
   {
     name: 'Akumulátor Li-ion/Li-pol (obecný, ≥300 mAh)',
+    category: 'Baterie',
     packageType: 'Prizmatický nebo válcový článek, 2 vývody',
     value: '1 článek, 3,7 V nominál (4,2 V plně nabitý)',
     notes: 'Obecný jednočlánkový Li-ion/Li-pol akumulátor — kapacita a rozměr dle konkrétní konstrukce, nutná nabíječka s ochranou (např. TP4056).',
