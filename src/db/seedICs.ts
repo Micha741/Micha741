@@ -3893,7 +3893,16 @@ const IC_SPECS: IcSpec[] = [
       '(užší rozsah než LTV-356T/EL817, jejichž Topr sahá do -55°C), skladovací -55 až +125°C, ' +
       'pájecí teplota 270°C/10s. Schváleno UL (E64380, "under preparation" v tomto dok.), CSA ' +
       '("under preparation"). Shoda s RoHS (2011/65/EU), bez ODS látek a bromovaných retardérů ' +
-      'hoření (PBB/PBDE). Datum kódu na pouzdru: 3místný kód (rok+týden výroby).',
+      'hoření (PBB/PBDE). Datum kódu na pouzdru: 3místný kód (rok+týden výroby). ' +
+      '⚠️ DOPLNĚNO podle třetího, staršího Sharp datasheetu (spec. ED-95151, vydáno 28.11.1995, ' +
+      'business dealing names "PC817XI" až "PC817XI0", shodné rankové tabulky Ic jako výše) ' +
+      'nahraného uživatelem — většina parametrů se shoduje s novějšími revizemi (VF, Ct, IR, ' +
+      'VCE(sat), fc, tr/tf, Ptot, Topr/Tstg, Viso 5kVrms), ALE výstupní průrazná napětí jsou v ' +
+      'téhle starší revizi nižší: BVCEO min 35 V (ne 80 V jako v ED-14P010/ED-16P010) a ICEO ' +
+      'testováno @VCE=20V (ne @VCE=50V) — zdá se, že Sharp mezi lety 1995 a 2014/2016 zlepšil ' +
+      'výstupní průrazné napětí tranzistoru ze 35V na 80V při zachování ostatních parametrů. Při ' +
+      'identifikaci staršího kusu PC817 (bez RoHS značení, starší pouzdro) tedy počítejte spíše ' +
+      's VCEO≈35V.',
     schematicImage: 'PC817-Series.jpg',
     tags: 'io,optočlen,photocoupler,fototranzistor,galvanické-oddělení,sharp,pc817,dip-4,tht',
   },
