@@ -106,20 +106,22 @@ export default function ComponentScannerScreen({ navigation }: Props) {
       .slice(0, MAX_MATCHES_SHOWN);
   };
 
-  // Offers a quick "this looks like a printed resistor value" shortcut
-  // (reuses the same SMD-code decoder as the dedicated resistor scanner).
+  // Many SMD marking codes are genuinely ambiguous between component types —
+  // "102" is both the standard resistor code for 1 kΩ *and* the EIA code for
+  // a 1 nF ceramic capacitor, so a catalog hit under one reading (e.g. a
+  // capacitor named "102GQR500Z") must never hide the other. This offers a
+  // quick "this looks like a printed resistor value" shortcut alongside
+  // whatever the catalog search found, never instead of it (reuses the same
+  // SMD-code decoder as the dedicated resistor scanner).
   // A complete "digit-R-digit" token (e.g. "3R6") is an unambiguous resistor
   // value and always wins. A one-sided R-notation token (e.g. a bare "1R"
   // split off a lot/date code like "1R224") or a plain 3/4-digit numeric
-  // code is weaker evidence — those also turn up by coincidence inside
-  // ordinary IC part numbers (e.g. "555" in "NE555") — so they're only
-  // offered when nothing in the catalog looks like a real name match.
-  const findResistorHint = (
-    candidates: string[],
-    matches: ElectronicComponent[],
-    terms: string[]
-  ): SmdDecodeResult | null => {
-    const hasNameMatch = matches.some((m) => matchRank(m.name, terms) <= 1);
+  // code is weaker evidence, so it's only offered when it decodes to a
+  // plausible resistor magnitude (0.1 Ω–10 MΩ) — this filters out the
+  // occasional all-digit IC number (e.g. "4049" misread as 404 x 10^9 Ω).
+  const PLAUSIBLE_MIN_OHMS = 0.1;
+  const PLAUSIBLE_MAX_OHMS = 10_000_000;
+  const findResistorHint = (candidates: string[]): SmdDecodeResult | null => {
     let fallback: SmdDecodeResult | null = null;
     for (const token of candidates) {
       const decoded = decodeSmdCode(token);
@@ -127,7 +129,8 @@ export default function ComponentScannerScreen({ navigation }: Props) {
       const rParts = token.includes('R') ? token.split('R') : null;
       const isCompleteRNotation = !!rParts && rParts.length === 2 && rParts[0] !== '' && rParts[1] !== '';
       if (isCompleteRNotation) return decoded;
-      if (!fallback && (token.includes('R') || !hasNameMatch)) fallback = decoded;
+      const isPlausible = decoded.ohms >= PLAUSIBLE_MIN_OHMS && decoded.ohms <= PLAUSIBLE_MAX_OHMS;
+      if (!fallback && isPlausible) fallback = decoded;
     }
     return fallback;
   };
@@ -157,7 +160,7 @@ export default function ComponentScannerScreen({ navigation }: Props) {
       const nextQuery = candidates[0] ?? recognized.text.trim();
       const terms = candidates.length > 0 ? candidates : [recognized.text.trim()].filter(Boolean);
       const matches = await searchInventory(terms);
-      const resistorHint = findResistorHint(candidates, matches, terms);
+      const resistorHint = findResistorHint(candidates);
 
       setQuery(nextQuery);
       setState({
@@ -182,7 +185,7 @@ export default function ComponentScannerScreen({ navigation }: Props) {
     const candidates = extractCandidates(trimmed);
     const terms = candidates.length > 0 ? candidates : trimmed ? [trimmed] : [];
     const matches = await searchInventory(terms);
-    const resistorHint = findResistorHint(candidates.length > 0 ? candidates : terms, matches, terms);
+    const resistorHint = findResistorHint(candidates.length > 0 ? candidates : terms);
     setState({ ...state, query: trimmed, matches, resistorHint });
   };
 
