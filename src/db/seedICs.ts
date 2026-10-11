@@ -705,6 +705,79 @@ const IC_SPECS: IcSpec[] = [
     schematicImage: 'AMS1117-3.3.jpg',
     tags: 'io,regulátor,ldo,pevný,ams1117,ams1117-3.3,sot-89,sot-223,to-252,3.3v,breakout',
   },
+  {
+    name: 'AMS1117-1.5',
+    packageType: 'shodné s AMS1117-3.3 (SOT-223/TO-252/SOT-89) — viz jeho záznam pro plné specifikace',
+    value: 'Pevný LDO lineární regulátor +1,5 V, 1 A, přesnost výstupu ±1,5-2 % (dle výrobce)',
+    notes:
+      'Advanced Monolithic Systems "AMS1117" — součást rodiny AMS1117 (fixní 1,5V/1,8V/2,5V/ ' +
+      '2,85V/3,3V/5,0V + nastavitelný ADJ), viz záznam "AMS1117-3.3" pro plné společné ' +
+      'elektrické/mechanické specifikace i upozornění na rozcházející se parametry mezi ' +
+      'druhotnými výrobci/klony. Nejnižší napěťová třída celé řady, typicky pro napájení jader ' +
+      'DSP/FPGA/mikroprocesorů z vyššího napětí.',
+    schematicImage: 'AMS1117-3.3.jpg',
+    tags: 'io,regulátor,ldo,pevný,ams1117,ams1117-1.5,sot-89,sot-223,to-252,1.5v',
+  },
+  {
+    name: 'AMS1117-1.8',
+    packageType: 'shodné s AMS1117-3.3 (SOT-223/TO-252/SOT-89) — viz jeho záznam pro plné specifikace',
+    value: 'Pevný LDO lineární regulátor +1,8 V, 1 A, přesnost výstupu ±1,5-2 % (dle výrobce)',
+    notes:
+      'Advanced Monolithic Systems "AMS1117" — součást rodiny AMS1117, viz záznam "AMS1117-3.3" ' +
+      'pro plné společné elektrické/mechanické specifikace. Časté napájení I/O bank FPGA a ' +
+      'low-voltage logiky.',
+    schematicImage: 'AMS1117-3.3.jpg',
+    tags: 'io,regulátor,ldo,pevný,ams1117,ams1117-1.8,sot-89,sot-223,to-252,1.8v',
+  },
+  {
+    name: 'AMS1117-2.5',
+    packageType: 'shodné s AMS1117-3.3 (SOT-223/TO-252/SOT-89) — viz jeho záznam pro plné specifikace',
+    value: 'Pevný LDO lineární regulátor +2,5 V, 1 A, přesnost výstupu ±1,5-2 % (dle výrobce)',
+    notes:
+      'Advanced Monolithic Systems "AMS1117" — součást rodiny AMS1117, viz záznam "AMS1117-3.3" ' +
+      'pro plné společné elektrické/mechanické specifikace.',
+    schematicImage: 'AMS1117-3.3.jpg',
+    tags: 'io,regulátor,ldo,pevný,ams1117,ams1117-2.5,sot-89,sot-223,to-252,2.5v',
+  },
+  {
+    name: 'AMS1117-2.85',
+    packageType: 'shodné s AMS1117-3.3 (SOT-223/TO-252/SOT-89) — viz jeho záznam pro plné specifikace',
+    value: 'Pevný LDO lineární regulátor +2,85 V, 1 A, přesnost výstupu ±1,5 % (typ.)',
+    notes:
+      'Advanced Monolithic Systems "AMS1117" — součást rodiny AMS1117, viz záznam "AMS1117-3.3" ' +
+      'pro plné společné elektrické/mechanické specifikace. ⚠️ Netradiční napěťová třída (historicky ' +
+      'určená pro SCSI terminátory) — mnoho druhotných výrobců/klonů tuto variantu vůbec nenabízí ' +
+      '(nahrazují ji často variantou 1,2V, kterou zase nemá originální řada AMS).',
+    schematicImage: 'AMS1117-3.3.jpg',
+    tags: 'io,regulátor,ldo,pevný,ams1117,ams1117-2.85,sot-89,sot-223,to-252,2.85v,scsi',
+  },
+  {
+    name: 'AMS1117-5.0',
+    packageType: 'shodné s AMS1117-3.3 (SOT-223/TO-252/SOT-89) — viz jeho záznam pro plné specifikace',
+    value: 'Pevný LDO lineární regulátor +5,0 V, 1 A, přesnost výstupu ±1,5-2 % (dle výrobce)',
+    notes:
+      'Advanced Monolithic Systems "AMS1117" — součást rodiny AMS1117, viz záznam "AMS1117-3.3" ' +
+      'pro plné společné elektrické/mechanické specifikace. Nejvyšší pevná napěťová třída celé ' +
+      'řady — pozor na dostatečnou rezervu vstupního napětí vůči dropoutu (typicky potřeba vstup ' +
+      '≥6,3-6,5V pro plný 1A výstup).',
+    schematicImage: 'AMS1117-3.3.jpg',
+    tags: 'io,regulátor,ldo,pevný,ams1117,ams1117-5.0,sot-89,sot-223,to-252,5v',
+  },
+  {
+    name: 'AMS1117-ADJ',
+    packageType: 'shodné s AMS1117-3.3 (SOT-223/TO-252/SOT-89) — viz jeho záznam pro plné specifikace',
+    value:
+      'Nastavitelný LDO lineární regulátor, VREF=1,25 V (typ.), 1 A, výstup nastavitelný ' +
+      'externím děličem rezistorů od ~1,25V do ~13,8V',
+    notes:
+      'Advanced Monolithic Systems "AMS1117" — nastavitelná (ADJ) varianta rodiny AMS1117, viz ' +
+      'záznam "AMS1117-3.3" pro plné společné elektrické/mechanické specifikace. Výstupní napětí ' +
+      'nastaveno externím odporovým děličem mezi výstupem a GND/ADJ pinem podle vzorce ' +
+      'VOUT = VREF×(1+R2/R1), stejný princip jako konkurenční nastavitelný L1117 (NIKO-SEM) nebo ' +
+      'LM317 — viz jejich záznamy v této knihovně pro srovnání.',
+    schematicImage: 'AMS1117-3.3.jpg',
+    tags: 'io,regulátor,ldo,nastavitelný,ams1117,ams1117-adj,sot-89,sot-223,to-252,adj',
+  },
 
   // Spínané napájecí řadiče
   {
