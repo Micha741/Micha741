@@ -4731,7 +4731,24 @@ const TRANSISTOR_SPECS: PartSpec[] = [
       'Spínací časy (VCC=3 V, IC=10 mA, IB1=1 mA): td max 35 ns, tr max 35 ns, tstg max 200 ns, tf max 50 ns.',
     tags: 'tranzistor,npn,bipolární,to-92,2n3904,spínací,zesilovací',
   },
-  { name: 'S8050', packageType: 'TO-92', value: 'NPN, 25 V, 700 mA', notes: 'Malovýkonový bipolární tranzistor', tags: 'tranzistor,npn,bipolární' },
+  {
+    name: 'S8050',
+    packageType:
+      'SOT-23 (piny dle datasheetu: 1=Base, 2=Emitter, 3=Collector) — jako multi-source typ se ' +
+      'běžně vyrábí i v TO-92 (THT), konkrétní mezní hodnoty se pak mohou lišit podle výrobce',
+    value: 'NPN, VCBO 40 V, VCEO 25 V, VEBO 5 V, IC 0,5 A (continuous), PC 0,3 W, hFE 120–400 (dle třídy)',
+    notes:
+      'Dongguan YFW Electronics "S8050 SOT-23" datasheet. Elektrické charakteristiky @25°C: ' +
+      'ICBO max 0,1 µA @VCB=40V, ICEO max 1 µA @VCE=20V, IEBO max 0,1 µA @VEB=5V, VCE(sat) max ' +
+      '0,6 V @IC=500mA/IB=50mA, VBE(sat) max 1,2 V @IC=500mA/IB=50mA, tranzitní kmitočet fT typ. ' +
+      '150 MHz @VCE=6V/IC=20mA/f=30MHz. Junction/skladovací teplota -55 až +150°C. Čtyři třídy ' +
+      'podle zesílení hFE (měřeno @VCE=1V, IC=50mA): S8050 200–350, S8050-L 120–200, S8050-H ' +
+      '144–202, S8050-J 300–400 (vše se stejným značením "J3Y" na pouzdře dle tabulky výrobce). ' +
+      'Použit např. jako přepínací tranzistor v auto-program/reset obvodu USB-sériových desek ' +
+      '(viz poznámky u "CH340G" — NodeMCU DEVKIT v0.9 používá dvojici S8050 pro odvození RST/' +
+      'GPIO0 z DTR#/RTS#).',
+    tags: 'tranzistor,npn,bipolární,sot-23,to-92,s8050,yfw',
+  },
   {
     name: 'KTC3542T',
     packageType:
@@ -7796,7 +7813,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 159;
+export const SEED_LIBRARY_VERSION = 160;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
