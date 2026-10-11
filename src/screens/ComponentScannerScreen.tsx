@@ -19,7 +19,8 @@ import { listComponents } from '../db/componentRepository';
 import type { ElectronicComponent } from '../types/component';
 import { useTheme } from '../theme/ThemeContext';
 import { useI18n } from '../i18n/I18nContext';
-import { decodeSmdCode, type SmdDecodeResult } from '../utils/smdResistorCode';
+import { decodeSmdCode } from '../utils/smdResistorCode';
+import { formatOhms } from '../utils/resistorColorCode';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ComponentScanner'>;
 
@@ -31,6 +32,11 @@ const MAX_CANDIDATES_SEARCHED = 8;
 const MAX_MATCHES_SHOWN = 30;
 const ZOOM_STEP = 0.1;
 
+interface ResistorHint {
+  ohms: number;
+  formattedValue: string;
+}
+
 type ScanState =
   | { phase: 'camera' }
   | { phase: 'processing' }
@@ -40,7 +46,7 @@ type ScanState =
       rawText: string;
       query: string;
       matches: ElectronicComponent[];
-      resistorHint: SmdDecodeResult | null;
+      resistorHint: ResistorHint | null;
     }
   | { phase: 'error'; message: string };
 
@@ -121,8 +127,8 @@ export default function ComponentScannerScreen({ navigation }: Props) {
   // occasional all-digit IC number (e.g. "4049" misread as 404 x 10^9 Ω).
   const PLAUSIBLE_MIN_OHMS = 0.1;
   const PLAUSIBLE_MAX_OHMS = 10_000_000;
-  const findResistorHint = (candidates: string[]): SmdDecodeResult | null => {
-    let fallback: SmdDecodeResult | null = null;
+  const findResistorHint = (candidates: string[]): ResistorHint | null => {
+    let fallback: ResistorHint | null = null;
     for (const token of candidates) {
       const decoded = decodeSmdCode(token);
       if (!decoded) continue;
@@ -134,6 +140,27 @@ export default function ComponentScannerScreen({ navigation }: Props) {
     }
     return fallback;
   };
+
+  // Large power resistors (wirewound/cement) often print the value directly
+  // with units, e.g. "220Ω 10W", instead of a coded marking — extractCandidates
+  // would strip the "Ω" and split this into useless alphanumeric fragments, so
+  // this scans the raw OCR text instead, before that tokenization happens.
+  const findDirectResistorValue = (rawText: string): ResistorHint | null => {
+    const ohmMatch = /(\d+(?:[.,]\d+)?)\s*(k|K|M)?\s*Ω/.exec(rawText);
+    if (!ohmMatch) return null;
+    const base = Number(ohmMatch[1].replace(',', '.'));
+    if (!Number.isFinite(base)) return null;
+    const unit = ohmMatch[2]?.toUpperCase();
+    const multiplier = unit === 'K' ? 1_000 : unit === 'M' ? 1_000_000 : 1;
+    const ohms = base * multiplier;
+    const wattMatch = /(\d+(?:[.,]\d+)?)\s*W\b/.exec(rawText);
+    const watts = wattMatch ? Number(wattMatch[1].replace(',', '.')) : null;
+    const formattedValue = formatOhms(ohms) + (watts !== null && Number.isFinite(watts) ? ` (${watts} W)` : '');
+    return { ohms, formattedValue };
+  };
+
+  const findAnyResistorHint = (candidates: string[], rawText: string): ResistorHint | null =>
+    findResistorHint(candidates) ?? findDirectResistorValue(rawText);
 
   const handleCapture = async () => {
     if (!cameraRef.current) return;
@@ -160,7 +187,7 @@ export default function ComponentScannerScreen({ navigation }: Props) {
       const nextQuery = candidates[0] ?? recognized.text.trim();
       const terms = candidates.length > 0 ? candidates : [recognized.text.trim()].filter(Boolean);
       const matches = await searchInventory(terms);
-      const resistorHint = findResistorHint(candidates);
+      const resistorHint = findAnyResistorHint(candidates, recognized.text);
 
       setQuery(nextQuery);
       setState({
@@ -185,7 +212,7 @@ export default function ComponentScannerScreen({ navigation }: Props) {
     const candidates = extractCandidates(trimmed);
     const terms = candidates.length > 0 ? candidates : trimmed ? [trimmed] : [];
     const matches = await searchInventory(terms);
-    const resistorHint = findResistorHint(candidates.length > 0 ? candidates : terms);
+    const resistorHint = findAnyResistorHint(candidates.length > 0 ? candidates : terms, trimmed);
     setState({ ...state, query: trimmed, matches, resistorHint });
   };
 
