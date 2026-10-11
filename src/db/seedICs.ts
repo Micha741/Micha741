@@ -3255,6 +3255,159 @@ const IC_SPECS: IcSpec[] = [
       'pull-down rezistor přepnout na druhý DTR# pro vícerežimové MCU bootovací obvody.',
     tags: 'io,usb,uart,sériový port,most,bridge,ch340,ch340c,wch,sop16,arduino',
   },
+  {
+    name: 'CH340G',
+    packageType:
+      'SOP-16 (3,9 mm šířka, rozteč 1,27 mm), piny: 1=GND, 2=TXD, 3=RXD, 4=V3, 5=UD+, 6=UD-, ' +
+      '7=XI, 8=XO (XI/XO = vstup/výstup krystalového oscilátoru, nutný externí 12MHz krystal ' +
+      '+ 2× zátěžový kondenzátor, typ. 33 pF, u obtížně rozkmitávaných krystalů poloviční ' +
+      'hodnota na XI), 9=CTS#, 10=DSR#, 11=RI#, 12=DCD#, 13=DTR#, 14=RTS#, 15=R232 (pomocný ' +
+      'RS232 enable, aktivní vysoká úroveň, vnitřní pull-down), 16=VCC',
+    value:
+      'USB-sériový (UART) převodník, Full-Speed USB 2.0, přenosová rychlost 50 b/s – 2 Mb/s, ' +
+      'napájení 3,3 V nebo 5 V, vyžaduje externí 12MHz krystal',
+    schematicImage: 'CH340C.jpg',
+    notes:
+      'WCH "USB 转串口芯片 CH340 手册（一）" v3B — viz záznam "CH340C" pro plné sdílené ' +
+      'elektrické/funkční specifikace (MODEM signály, VCP ovladač kompatibilní s CH341, ' +
+      'datový formát). Na rozdíl od CH340C/N/K/E/X/B nemá CH340G vestavěné hodiny — vyžaduje ' +
+      'externí 12MHz krystal na pinech XI/XO. Provozní teplota -40 až 85 °C (širší rozsah než ' +
+      'CH340C). Proudový odběr: typ. 7 mA @5V / 4 mA @3,3V (shodné s CH340C).',
+    tags: 'io,usb,uart,sériový port,most,bridge,ch340,ch340g,wch,sop16,krystal',
+  },
+  {
+    name: 'CH340B',
+    packageType:
+      'SOP-16 (3,9 mm šířka, rozteč 1,27 mm), piny: 1=GND, 2=TXD, 3=RXD, 4=V3, 5=UD+, 6=UD-, ' +
+      '7=RST# (externí reset vstup, aktivní nízká úroveň, vnitřní pull-up), 8=NC. (nutno nechat ' +
+      'nezapojené), 9=CTS#, 10=DSR#, 11=RI#, 12=DCD#, 13=DTR#, 14=RTS#, 15=TNOW (indikace ' +
+      'probíhajícího vysílání, vysoká úroveň aktivní, pro poloduplexní RS485 přepínání ' +
+      'vysílač/přijímač), 16=VCC',
+    value:
+      'USB-sériový (UART) převodník s EEPROM, Full-Speed USB 2.0, přenosová rychlost ' +
+      '50 b/s – 2 Mb/s, napájení 3,3 V nebo 5 V, vestavěné hodiny (bez nutnosti externího krystalu)',
+    schematicImage: 'CH340C.jpg',
+    notes:
+      'WCH "USB 转串口芯片 CH340 手册（一）" v3B — viz záznam "CH340C" pro plné sdílené ' +
+      'elektrické/funkční specifikace. Jediná varianta rodiny CH340 s vestavěnou EEPROM pamětí ' +
+      'pro konfiguraci sériového čísla, VID/PID, max. odběru proudu a popisného řetězce ' +
+      '(nastavuje se přes offsety 00H-3FH: SIG, MODE, CFG, WP, VID 1A86H, PID 7523H, PWR, SN ' +
+      '"12345678" výchozí, PROD). Má externí reset vstup RST# (ostatní varianty jen interní ' +
+      'power-on reset). Proudový odběr o něco nižší než CH340C: typ. 6 mA @5V (max 15 mA) / ' +
+      'typ. 3 mA @3,3V (max 9 mA). Provozní teplota -20 až 70 °C.',
+    tags: 'io,usb,uart,sériový port,most,bridge,ch340,ch340b,wch,sop16,eeprom',
+  },
+  {
+    name: 'CH340T',
+    packageType:
+      'SSOP-20 (5,3 mm šířka, rozteč 0,65 mm), piny: 1=CKO (hodinový výstup), 2=ACT# (indikace ' +
+      'dokončené USB konfigurace, aktivní nízká úroveň), 3=TXD, 4=RXD, 5=V3, 6=UD+, 7=UD-, ' +
+      '8=GND, 9=XI, 10=XO (vyžadují externí 12MHz krystal + zátěžové kondenzátory), 11=CTS#, ' +
+      '12=DSR#, 13=RI#, 14=DCD#, 15=DTR#, 16=RTS#, 17=TNOW, 18=R232 (pomocný RS232 enable), ' +
+      '19=VCC, 20=NOS# (zákaz USB suspendu, aktivní nízká úroveň, vnitřní pull-up)',
+    value:
+      'USB-sériový (UART) převodník, Full-Speed USB 2.0, přenosová rychlost 50 b/s – 2 Mb/s, ' +
+      'napájení 3,3 V nebo 5 V, vyžaduje externí 12MHz krystal',
+    schematicImage: 'CH340C.jpg',
+    notes:
+      'WCH "USB 转串口芯片 CH340 手册（一）" v3B — viz záznam "CH340C" pro plné sdílené ' +
+      'elektrické/funkční specifikace. Největší pouzdro (SSOP-20) s nejvíce vyvedenými piny ' +
+      '(navíc oproti CH340C: CKO hodinový výstup, ACT# a NOS# USB stavové signály, TNOW). ' +
+      'Jako CH340G vyžaduje externí 12MHz krystal (žádné vestavěné hodiny). Typické použití: ' +
+      'referenční USB→RS232/RS485 zapojení v aplikačních schématech výrobce.',
+    tags: 'io,usb,uart,sériový port,most,bridge,ch340,ch340t,wch,ssop20,krystal',
+  },
+  {
+    name: 'CH340K',
+    packageType:
+      'ESSOP-10 s podstavou (3,9 mm šířka, rozteč 1,00 mm), piny: 0=GND (volitelná spodní ' +
+      'podstava, lze nechat nezapojenou), 1=UD+, 2=UD-, 3=GND (povinné připojení), 4=DTR# ' +
+      '(standardní push-pull výstup, bez ochranné diody), 5=CTS# (vstup s vnitřním pull-up, ' +
+      'bez diody) / 6=RTS#, 7=VCC, 8=TXD, 9=RXD, 10=V3',
+    value:
+      'USB-sériový (UART) převodník s ochranou proti zpětnému průtoku proudu, Full-Speed ' +
+      'USB 2.0, přenosová rychlost 50 b/s – 2 Mb/s, napájení 3,3 V nebo 5 V, vestavěné hodiny',
+    schematicImage: 'CH340C.jpg',
+    notes:
+      'WCH "USB 转串口芯片 CH340 手册（一）" v3B — viz záznam "CH340C" pro plné sdílené ' +
+      'elektrické/funkční specifikace. Nejmenší počet pinů z celé rodiny (10), navíc s ' +
+      'vestavěnými ochrannými diodami na TXD/RTS#/RXD proti zpětnému průtoku proudu (~75 kΩ ' +
+      'vestavěný slabý pull-up) — vhodné pro zapojení s odděleným napájením CH340K a MCU bez ' +
+      'rizika "zpětného napájení" při výpadku jedné ze stran. DTR#/CTS# bez této ochrany, ' +
+      'nedoporučeno pro přímé připojení k MCU. Snižuje i výstupní budicí proud oproti ostatním ' +
+      'variantám.',
+    tags: 'io,usb,uart,sériový port,most,bridge,ch340,ch340k,wch,essop10',
+  },
+  {
+    name: 'CH340E',
+    packageType:
+      'MSOP-10 (3,0 mm šířka, rozteč 0,50 mm), piny: 1=UD+, 2=UD-, 3=GND, 4=RTS#, 5=CTS# / ' +
+      '6=TNOW, 7=VCC, 8=TXD, 9=RXD, 10=V3',
+    value:
+      'USB-sériový (UART) převodník v mikropouzdru, Full-Speed USB 2.0, přenosová rychlost ' +
+      '50 b/s – 2 Mb/s, napájení 3,3 V nebo 5 V, vestavěné hodiny',
+    schematicImage: 'CH340C.jpg',
+    notes:
+      'WCH "USB 转串口芯片 CH340 手册（一）" v3B — viz záznam "CH340C" pro plné sdílené ' +
+      'elektrické/funkční specifikace. Nejmenší pouzdro (MSOP-10, 3,0 mm) z celé rodiny, bez ' +
+      'DTR# pinu (pouze TNOW pro poloduplexní RS485 přepínání). Předchůdce CH340X (viz jeho ' +
+      'záznam pro IO odolné do 5V a konfigurovatelný DTR# na pinu 6).',
+    tags: 'io,usb,uart,sériový port,most,bridge,ch340,ch340e,wch,msop10',
+  },
+  {
+    name: 'CH340X',
+    packageType:
+      'MSOP-10 (3,0 mm šířka, rozteč 0,50 mm), piny: 1=UD+, 2=UD-, 3=GND, 4=RTS#, 5=CTS# / ' +
+      '6=TNOW (výchozí stav) nebo DTR# (viz poznámka), 7=VCC, 8=TXD, 9=RXD, 10=V3',
+    value:
+      'USB-sériový (UART) převodník v mikropouzdru s 5V-odolnými IO, Full-Speed USB 2.0, ' +
+      'přenosová rychlost 50 b/s – 2 Mb/s, napájení 3,3 V nebo 5 V, vestavěné hodiny',
+    schematicImage: 'CH340C.jpg',
+    notes:
+      'WCH "USB 转串口芯片 CH340 手册（一）" v3B — viz záznam "CH340C" pro plné sdílené ' +
+      'elektrické/funkční specifikace. Vylepšená verze CH340E: IO odolné do 5V při 3,3V napájení ' +
+      'a ochrana proti zpětnému průtoku proudu. Pin 6 je ve výchozím stavu TNOW, ale lze jej ' +
+      'přepnout na DTR# externím 4,7kΩ rezistorem — buď k zemi (open-drain DTR#, "open-source ' +
+      'DTR enhanced mode" pro BOOT0 s výchozí nízkou úrovní), nebo mezi pin 6 a pin 5/VCC ' +
+      '(push-pull DTR#, výchozí vysoká úroveň) — používá se pro jednotlačítkové nahrávání ' +
+      'firmware do MCU (STM32 BOOT0 apod.) bez nutnosti ručního resetu.',
+    tags: 'io,usb,uart,sériový port,most,bridge,ch340,ch340x,wch,msop10,5v-tolerant',
+  },
+  {
+    name: 'CH340N',
+    packageType: 'SOP-8 (3,9 mm šířka, rozteč 1,27 mm), piny: 1=UD+, 2=UD-, 3=GND, 4=RTS# / 5=VCC, 6=TXD, 7=RXD, 8=V3',
+    value:
+      'USB-sériový (UART) převodník v 8pinovém pouzdru, Full-Speed USB 2.0, přenosová rychlost ' +
+      '50 b/s – 2 Mb/s, napájení 3,3 V nebo 5 V, vestavěné hodiny',
+    schematicImage: 'CH340C.jpg',
+    notes:
+      'WCH "USB 转串口芯片 CH340 手册（一）" v3B — viz záznam "CH340C" pro plné sdílené ' +
+      'elektrické/funkční specifikace. Standardní 8pinové SOP pouzdro bez MODEM signálů (jen ' +
+      'TXD/RXD/RTS#) — nejjednodušší varianta pro základní USB-TTL sériové zapojení bez dalšího ' +
+      'handshaku.',
+    tags: 'io,usb,uart,sériový port,most,bridge,ch340,ch340n,wch,sop8',
+  },
+  {
+    name: 'CH340R',
+    packageType:
+      'SSOP-20 (5,3 mm šířka, rozteč 0,65 mm), piny: 1=NC. (nutno nechat nezapojené), ' +
+      '2=ACT#, 3=TXD (invertovaný výstup oproti ostatním variantám), 4=RXD, 5=V3, 6=UD+, ' +
+      '7=UD-, 8=GND, 9=XI, 10=XO (vyžadují externí 12MHz krystal), 11=CTS#, 12=DSR#, 13=RI#, ' +
+      '14=DCD#, 15=DTR#, 16=RTS#, 17=IR# (volba režimu: nízká úroveň = IrDA SIR infračervený ' +
+      'sériový port, vysoká úroveň = běžný sériový port, vnitřní pull-up), 18=R232, 19=VCC, ' +
+      '20=NOS#',
+    value:
+      'USB-sériový (UART) převodník s podporou IrDA SIR infračerveného přenosu (2,4–115,2 kb/s), ' +
+      'Full-Speed USB 2.0, napájení 3,3 V nebo 5 V, vyžaduje externí 12MHz krystal',
+    schematicImage: 'CH340C.jpg',
+    notes:
+      'WCH "USB 转串口芯片 CH340 手册（一）" v3B — viz záznam "CH340C" pro plné sdílené ' +
+      'elektrické/funkční specifikace. ⚠️ Výrobcem označen jako ukončený ("已停产" = discontinued) ' +
+      'v tomto datasheetu. Jediná varianta s podporou IrDA SIR red infračerveného rozhraní ' +
+      '(typicky s externím IR transceiverem ZHX1810/HSDL3000/TFBS4711) a s invertovanými TXD a ' +
+      'MODEM signály oproti zbytku rodiny. Vyžaduje externí 12MHz krystal (jako CH340G/T).',
+    tags: 'io,usb,uart,sériový port,most,bridge,ch340,ch340r,wch,ssop20,irda,infračervený,discontinued',
+  },
 
   // RS-485/RS-422 přijímače
   {
