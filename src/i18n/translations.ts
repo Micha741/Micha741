@@ -151,6 +151,8 @@ export const cs = {
   'componentScanner.noText': '(nic)',
   'componentScanner.retake': 'Vyfotit znovu',
   'componentScanner.createNew': 'Založit jako novou součástku',
+  'componentScanner.resistorHint': 'Vypadá to jako potisk hodnoty rezistoru: {value}',
+  'componentScanner.createResistor': 'Založit jako rezistor',
   'componentScanner.scanNote':
     'Založeno ze skenu součástky — rozpoznaný potisk: „{text}“. Kategorii a zbytek údajů zkontroluj a doplň ručně.',
 
@@ -330,6 +332,8 @@ export const en: Record<TranslationKey, string> = {
   'componentScanner.noText': '(none)',
   'componentScanner.retake': 'Retake Photo',
   'componentScanner.createNew': 'Add as new component',
+  'componentScanner.resistorHint': 'Looks like a printed resistor value: {value}',
+  'componentScanner.createResistor': 'Add as resistor',
   'componentScanner.scanNote':
     'Created from a component scan — recognized marking: "{text}". Review and fill in the category and remaining fields manually.',
 

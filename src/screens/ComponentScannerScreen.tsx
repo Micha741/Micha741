@@ -19,6 +19,7 @@ import { listComponents } from '../db/componentRepository';
 import type { ElectronicComponent } from '../types/component';
 import { useTheme } from '../theme/ThemeContext';
 import { useI18n } from '../i18n/I18nContext';
+import { decodeSmdCode, type SmdDecodeResult } from '../utils/smdResistorCode';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ComponentScanner'>;
 
@@ -39,6 +40,7 @@ type ScanState =
       rawText: string;
       query: string;
       matches: ElectronicComponent[];
+      resistorHint: SmdDecodeResult | null;
     }
   | { phase: 'error'; message: string };
 
@@ -104,6 +106,32 @@ export default function ComponentScannerScreen({ navigation }: Props) {
       .slice(0, MAX_MATCHES_SHOWN);
   };
 
+  // Offers a quick "this looks like a printed resistor value" shortcut
+  // (reuses the same SMD-code decoder as the dedicated resistor scanner).
+  // A complete "digit-R-digit" token (e.g. "3R6") is an unambiguous resistor
+  // value and always wins. A one-sided R-notation token (e.g. a bare "1R"
+  // split off a lot/date code like "1R224") or a plain 3/4-digit numeric
+  // code is weaker evidence — those also turn up by coincidence inside
+  // ordinary IC part numbers (e.g. "555" in "NE555") — so they're only
+  // offered when nothing in the catalog looks like a real name match.
+  const findResistorHint = (
+    candidates: string[],
+    matches: ElectronicComponent[],
+    terms: string[]
+  ): SmdDecodeResult | null => {
+    const hasNameMatch = matches.some((m) => matchRank(m.name, terms) <= 1);
+    let fallback: SmdDecodeResult | null = null;
+    for (const token of candidates) {
+      const decoded = decodeSmdCode(token);
+      if (!decoded) continue;
+      const rParts = token.includes('R') ? token.split('R') : null;
+      const isCompleteRNotation = !!rParts && rParts.length === 2 && rParts[0] !== '' && rParts[1] !== '';
+      if (isCompleteRNotation) return decoded;
+      if (!fallback && (token.includes('R') || !hasNameMatch)) fallback = decoded;
+    }
+    return fallback;
+  };
+
   const handleCapture = async () => {
     if (!cameraRef.current) return;
     setState({ phase: 'processing' });
@@ -127,12 +155,19 @@ export default function ComponentScannerScreen({ navigation }: Props) {
       const recognized = await TextRecognition.recognize(saved.uri);
       const candidates = extractCandidates(recognized.text);
       const nextQuery = candidates[0] ?? recognized.text.trim();
-      const matches = await searchInventory(
-        candidates.length > 0 ? candidates : [recognized.text.trim()].filter(Boolean)
-      );
+      const terms = candidates.length > 0 ? candidates : [recognized.text.trim()].filter(Boolean);
+      const matches = await searchInventory(terms);
+      const resistorHint = findResistorHint(candidates, matches, terms);
 
       setQuery(nextQuery);
-      setState({ phase: 'result', imageUri: saved.uri, rawText: recognized.text, query: nextQuery, matches });
+      setState({
+        phase: 'result',
+        imageUri: saved.uri,
+        rawText: recognized.text,
+        query: nextQuery,
+        matches,
+        resistorHint,
+      });
     } catch (err) {
       setState({
         phase: 'error',
@@ -145,10 +180,10 @@ export default function ComponentScannerScreen({ navigation }: Props) {
     if (state.phase !== 'result') return;
     const trimmed = query.trim();
     const candidates = extractCandidates(trimmed);
-    const matches = await searchInventory(
-      candidates.length > 0 ? candidates : trimmed ? [trimmed] : []
-    );
-    setState({ ...state, query: trimmed, matches });
+    const terms = candidates.length > 0 ? candidates : trimmed ? [trimmed] : [];
+    const matches = await searchInventory(terms);
+    const resistorHint = findResistorHint(candidates.length > 0 ? candidates : terms, matches, terms);
+    setState({ ...state, query: trimmed, matches, resistorHint });
   };
 
   const handleRetake = () => {
@@ -163,6 +198,18 @@ export default function ComponentScannerScreen({ navigation }: Props) {
       prefill: {
         name: query.trim() || undefined,
         tags,
+        notes: t('componentScanner.scanNote', { text: state.rawText.trim() || t('componentScanner.noText') }),
+      },
+    });
+  };
+
+  const handleCreateResistor = () => {
+    if (state.phase !== 'result' || !state.resistorHint) return;
+    navigation.navigate('ComponentForm', {
+      prefill: {
+        category: 'Rezistor',
+        value: state.resistorHint.formattedValue,
+        tags: 'rezistor,sken',
         notes: t('componentScanner.scanNote', { text: state.rawText.trim() || t('componentScanner.noText') }),
       },
     });
@@ -278,6 +325,22 @@ export default function ComponentScannerScreen({ navigation }: Props) {
               <Text style={styles.primaryButtonText}>{t('componentScanner.searchAgain')}</Text>
             </Pressable>
           </View>
+
+          {state.resistorHint && (
+            <View style={[styles.resistorHintCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+              <Text style={[styles.resistorHintText, { color: colors.text }]}>
+                {t('componentScanner.resistorHint', { value: state.resistorHint.formattedValue })}
+              </Text>
+              <Pressable
+                style={[styles.secondaryButton, { backgroundColor: colors.chipBackground }]}
+                onPress={handleCreateResistor}
+              >
+                <Text style={[styles.secondaryButtonText, { color: colors.text }]}>
+                  {t('componentScanner.createResistor')}
+                </Text>
+              </Pressable>
+            </View>
+          )}
 
           <Text style={[styles.sectionLabel, { color: colors.textSecondary, marginTop: 20 }]}>
             {state.matches.length > 0
@@ -397,6 +460,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   secondaryButtonText: { fontSize: 15, fontWeight: '600' },
+  resistorHintCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+    marginTop: 16,
+    padding: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+  },
+  resistorHintText: { flex: 1, fontSize: 14, fontWeight: '600' },
   resultContainer: { padding: 16, paddingBottom: 48 },
   cropImage: {
     width: '100%',
