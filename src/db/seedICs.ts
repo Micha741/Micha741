@@ -3221,6 +3221,40 @@ const IC_SPECS: IcSpec[] = [
       '(v MTP paměti). Certifikováno USB-IF (USB 2.0 Full Speed), RoHS.',
     tags: 'io,usb,i2c,most,bridge,ft200xd,ftdi,dfn10',
   },
+  {
+    name: 'CH340C',
+    packageType:
+      'SOP-16 (3,9 mm šířka, rozteč 1,27 mm), piny: 1=GND, 2=TXD, 3=RXD, 4=V3, 5=UD+, 6=UD-, ' +
+      '7=NC. (nutno nechat nezapojené), 8=OUT# (MODEM výstupní signál, software definovaný, ' +
+      'aktivní nízká úroveň; u šarží s číslem 4xx a posledními 3 číslicemi > B40 lze přes 4,7kΩ ' +
+      'pull-down převést na druhý DTR# pro bootloader), 9=CTS#, 10=DSR#, 11=RI#, 12=DCD#, ' +
+      '13=DTR#, 14=RTS#, 15=R232 (pomocný RS232 enable, aktivní vysoká úroveň, vnitřní pull-down), ' +
+      '16=VCC',
+    value:
+      'USB-sériový (UART) převodník, Full-Speed USB 2.0, přenosová rychlost 50 b/s – 2 Mb/s, ' +
+      'napájení 3,3 V nebo 5 V, vestavěné hodiny (bez nutnosti externího krystalu)',
+    schematicImage: 'CH340C.jpg',
+    notes:
+      'WCH (Jiangsu Qin Heng / Nanjing QinHeng Microelectronics) "USB 转串口芯片 CH340 手册（一）" ' +
+      '(CH340 Datasheet, Manual 1), verze 3B, http://wch.cn. CH340C je jedna z variant rodiny ' +
+      'CH340 (dalšími jsou CH340G/T/R s nutností externího 12MHz krystalu, CH340B s EEPROM pro ' +
+      'sériové číslo, CH340N/K/E/X v menších pouzdrech) — nejběžnější varianta na čínských ' +
+      'klonech Arduino Nano/Uno a podobných USB-sériových deskách (SOP-16 u USB konektoru, ' +
+      'typicky vedle tlačítka RST). Emuluje standardní sériový port, ve Windows plně kompatibilní ' +
+      'se stávajícími sériovými aplikacemi beze změny ovladače; firmware kompatibilní s CH341, ' +
+      'lze použít stejný VCP ovladač. Podporuje běžné MODEM signály RTS, DTR, DCD, RI, DSR, CTS ' +
+      '(plus vlastní OUT#). Datový formát: 1 start bit, 5/6/7/8 datových bitů, 1-2 stop bity, ' +
+      'parita sudá/lichá/mark/space. Elektrické parametry (TA=25°C): při VCC=5V proudový odběr ' +
+      'typ. 7 mA (max 20 mA), v USB suspendu typ. 0,05 mA (max 0,15 mA); při VCC=V3=3,3V ' +
+      '(3,1–3,6 V) proudový odběr typ. 4 mA (max 12 mA), v suspendu typ. 0,04 mA (max 0,15 mA). ' +
+      'Provozní teplota -20 až 70 °C (šarže s číslem 4xx a posledními 3 číslicemi > B40 mají ' +
+      'rozšířený rozsah -40 až 85 °C a navíc IO odolné do 5V s ochranou proti zpětnému průtoku ' +
+      'proudu). Skladovací teplota -55 až 125 °C. DTR#/RTS# se běžně používají pro automatický ' +
+      'reset a vstup do bootloaderu (např. ESP8266/ESP32, STM32 BOOT0) bez nutnosti ručního ' +
+      'tlačítka. U šarží s číslem 4xx a posledními 3 číslicemi > B40 lze pin 8 (OUT#) přes 4,7kΩ ' +
+      'pull-down rezistor přepnout na druhý DTR# pro vícerežimové MCU bootovací obvody.',
+    tags: 'io,usb,uart,sériový port,most,bridge,ch340,ch340c,wch,sop16,arduino',
+  },
 
   // RS-485/RS-422 přijímače
   {
