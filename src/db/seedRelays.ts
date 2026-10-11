@@ -69,6 +69,28 @@ const RELAY_SPECS: RelaySpec[] = [
     tags: 'spínač,tlačítkový,tact-switch,smd',
   },
   {
+    name: 'C&K PTS 820 Series',
+    packageType:
+      'SMD, J-vývody (2 páry, J-bend), půdorys 3,9×2,9 mm, výška 1,5/2,0 nebo 2,5 mm (podle ' +
+      'konkrétního dílu, viz objednací kód), volitelné zajišťovací "pegs" (kolíčky proti pohybu ' +
+      'při pájení)',
+    value:
+      'Tlačítkový spínač (tact switch), 1× spínací kontakt (SPST-NO), aktuační síla 160 gf nebo ' +
+      '250 gf, max. 12 V DC / 50 mA',
+    notes:
+      'C&K Components "PTS 820 Series — Microminiature SMT Top Actuated" datasheet (4.3.2013). ' +
+      'Použit např. jako KEY_USER/KEY_FLASH tlačítka na oficiálním open-hardware návrhu NodeMCU ' +
+      'DEVKIT v0.9 (viz záznam "CH340G"). Objednací kód: PTS820-J[výška][síla][P]-SMTR-LFS, kde ' +
+      'výška je 15/20/25 (1,5/2,0/2,5 mm), síla M=160gf nebo K=250gf, volitelné P=s pegs ' +
+      '(bez P = bez pegs), SMTR = páskování cívka/reel, LFS = bezolovnatý/postříbřený (RoHS). ' +
+      'Zdvih (travel) 0,2 mm +0,1/-0,05 mm. Dielektrická pevnost 100 VA·C (1 min), odpor kontaktu ' +
+      'max 100 mΩ, izolační odpor min 100 MΩ. Doba zákmitu (bounce) max 10 ms. Životnost ' +
+      '100 000 nebo 200 000 sepnutí (dle varianty výšky/síly). Provozní teplota -40 až 85 °C. ' +
+      'Pájení: IR reflow dle IEC 61760-1. Balení: cívka 2 300 ks (výška 2,5 mm) nebo 2 500 ks ' +
+      '(výška 1,5/2,0 mm), vnější průměr cívky 330 mm.',
+    tags: 'spínač,tlačítkový,tact-switch,smd,pts820,c&k,ck-components,nodemcu',
+  },
+  {
     name: 'Páčkový přepínač MTS-102 (ON-OFF)',
     packageType: 'THT, panelový, 2 piny, montážní závit M6',
     value: 'Dvoupolohový páčkový přepínač (toggle), 1 pól (SPST), max. 3 A/250 V AC',

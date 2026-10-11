@@ -778,6 +778,32 @@ const IC_SPECS: IcSpec[] = [
     schematicImage: 'AMS1117-3.3.jpg',
     tags: 'io,regulátor,ldo,nastavitelný,ams1117,ams1117-adj,sot-89,sot-223,to-252,adj',
   },
+  {
+    name: 'SPX3819M5-L-3-3',
+    packageType:
+      'SOT-23-5, piny (TOP VIEW): 1=VIN, 2=GND, 3=EN (lze propojit přímo na VIN pro trvalé ' +
+      'zapnutí), 4=BYP (volitelný referenční bypass kondenzátor pro nízký šum), 5=VOUT. ' +
+      'Dostupné i v pouzdrech 8-Pin Narrow SOIC a 8-Pin 2×3 DFN (jiné číslování pinů).',
+    value:
+      'LDO lineární regulátor, pevný výstup +3,3 V, 500 mA, nízký šum (40 µV typ.), přesnost ' +
+      '±1 %, dropout 340 mV @ 500 mA',
+    schematicImage: 'SPX3819M5-L-3-3.jpg',
+    notes:
+      'Sipex (nyní Exar/MaxLinear) "SPX3819 500mA, Low-Noise LDO Voltage Regulator" datasheet ' +
+      'Rev. E (6/2007). Použit jako napájecí regulátor (U4, 5V USB → 3,3V) na oficiálním ' +
+      'open-hardware návrhu NodeMCU DEVKIT v0.9 (viz záznam "CH340G"). Logicky kompatibilní ' +
+      'ON/OFF vstup EN (lze propojit přímo na VIN pro trvalé zapnutí), v OFF stavu odběr téměř ' +
+      'nulový. Ochrana proti opačné polaritě baterie (reverse battery protection), proudové ' +
+      'omezení (typ. 800 mA, max 950 mA) a tepelná ochrana (thermal shutdown). Referenční BYP ' +
+      'pin pro optimální nízký šum (40 µV RMS s 10µF kondenzátorem na BYP, 300 µV RMS bez něj). ' +
+      'Klidový proud (ground pin current): typ. 90 µA @ IL=100µA, typ. 650 µA @ IL=50mA, typ. ' +
+      '25 mA @ IL=500mA. Vstupní napětí 2,5–16 V, provozní teplota přechodu -40 až +125 °C. ' +
+      'Dropout napětí dle zátěže: typ. 10 mV @100µA, 125 mV @50mA, 180 mV @150mA, 340 mV @500mA. ' +
+      'Fixní výstupy dostupné i v jiných napětích (1,2/1,5/1,8/2,5/3,0/3,1/5,0 V) nebo s ' +
+      'nastavitelným výstupem (ADJ varianta) — tento konkrétní díl "M5-L-3-3" je 5pinová SOT-23 ' +
+      'verze s nízkým šumem ("L") a fixním výstupem 3,3 V.',
+    tags: 'io,regulátor,ldo,pevný,spx3819,sipex,exar,sot-23-5,3.3v,nodemcu,nízký-šum',
+  },
 
   // Spínané napájecí řadiče
   {
