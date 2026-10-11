@@ -375,6 +375,93 @@ const DIODE_SPECS: PartSpec[] = [
   },
 
   {
+    name: 'FM220-C',
+    packageType: 'SMA (DO-214AC), SMD, katoda značena pruhem',
+    value: 'Schottky usměrňovací dioda, 2,0 A / 20 V (VRRM/VR), IFSM 50 A',
+    notes:
+      'Formosa MS "FM220-C THRU FM2100-C — Chip Schottky Barrier Diodes, Silicon epitaxial ' +
+      'planer type" datasheet. Řada SMD Schottky diod v pouzdře SMA (DO-214AC), značení na ' +
+      'pouzdru kódem "SK22" (ne "FM220"). Nejnižší napěťový díl řady (FM230–FM2100, samostatné ' +
+      'záznamy, 30–100 V). Mezní hodnoty společné pro FM220–FM240: VF max 0,55 V, provozní ' +
+      'teplota -55 až +125 °C (FM250–FM2100 mají širší rozsah -55 až +150 °C a vyšší VF 0,70/' +
+      '0,85 V — viz jejich záznamy). Společné pro celou řadu: IO (střední usměrněný proud) max ' +
+      '2,0 A, IFSM (8,3ms půlvlna, JEDEC metoda) max 50 A, IR max 0,5 mA @TA=25°C / 10 mA ' +
+      '@TA=125°C (@VR=VRRM), RθJA typ 75 °C/W, kapacitance přechodu CJ typ 160 pF @1MHz/4VDC, ' +
+      'Tstg -55 až +150 °C. Pouzdro UL 94V-0 (plastové, retardér hoření), splňuje MIL-S-19500/228.',
+    schematicImage: 'FM220-C.jpg',
+    tags: 'dioda,schottky,usměrňovací,fm220,fm220-c,sk22,sma,do-214ac,formosa',
+  },
+  {
+    name: 'FM230-C',
+    packageType: 'SMA (DO-214AC), SMD, katoda značena pruhem',
+    value: 'Schottky usměrňovací dioda, 2,0 A / 30 V (VRRM/VR), IFSM 50 A',
+    notes:
+      'Formosa MS "FM220-C THRU FM2100-C" — stejný společný datasheet jako "FM220-C" (viz tam ' +
+      'plné sdílené elektrické parametry). Značení na pouzdru "SK23". VRMS 21 V, VF max 0,55 V, ' +
+      'provozní teplota -55 až +125 °C.',
+    schematicImage: 'FM220-C.jpg',
+    tags: 'dioda,schottky,usměrňovací,fm230,fm230-c,sk23,sma,do-214ac,formosa',
+  },
+  {
+    name: 'FM240-C',
+    packageType: 'SMA (DO-214AC), SMD, katoda značena pruhem',
+    value: 'Schottky usměrňovací dioda, 2,0 A / 40 V (VRRM/VR), IFSM 50 A',
+    notes:
+      'Formosa MS "FM220-C THRU FM2100-C" — stejný společný datasheet jako "FM220-C" (viz tam ' +
+      'plné sdílené elektrické parametry). Značení na pouzdru "SK24". VRMS 28 V, VF max 0,55 V, ' +
+      'provozní teplota -55 až +125 °C.',
+    schematicImage: 'FM220-C.jpg',
+    tags: 'dioda,schottky,usměrňovací,fm240,fm240-c,sk24,sma,do-214ac,formosa',
+  },
+  {
+    name: 'FM250-C',
+    packageType: 'SMA (DO-214AC), SMD, katoda značena pruhem',
+    value: 'Schottky usměrňovací dioda, 2,0 A / 50 V (VRRM/VR), IFSM 50 A',
+    notes:
+      'Formosa MS "FM220-C THRU FM2100-C" — stejný společný datasheet jako "FM220-C" (viz tam ' +
+      'plné sdílené elektrické parametry). Značení na pouzdru "SK25". VRMS 35 V, VF max 0,70 V, ' +
+      'provozní teplota -55 až +150 °C (širší rozsah než FM220–FM240).',
+    schematicImage: 'FM220-C.jpg',
+    tags: 'dioda,schottky,usměrňovací,fm250,fm250-c,sk25,sma,do-214ac,formosa',
+  },
+  {
+    name: 'FM260-C',
+    packageType: 'SMA (DO-214AC), SMD, katoda značena pruhem',
+    value: 'Schottky usměrňovací dioda, 2,0 A / 60 V (VRRM/VR), IFSM 50 A',
+    notes:
+      'Formosa MS "FM220-C THRU FM2100-C" — stejný společný datasheet jako "FM220-C" (viz tam ' +
+      'plné sdílené elektrické parametry). Značení na pouzdru "SK26". VRMS 42 V, VF max 0,70 V, ' +
+      'provozní teplota -55 až +150 °C.',
+    schematicImage: 'FM220-C.jpg',
+    tags: 'dioda,schottky,usměrňovací,fm260,fm260-c,sk26,sma,do-214ac,formosa',
+  },
+  {
+    name: 'FM280-C',
+    packageType: 'SMA (DO-214AC), SMD, katoda značena pruhem',
+    value: 'Schottky usměrňovací dioda, 2,0 A / 80 V (VRRM/VR), IFSM 50 A',
+    notes:
+      'Formosa MS "FM220-C THRU FM2100-C" — stejný společný datasheet jako "FM220-C" (viz tam ' +
+      'plné sdílené elektrické parametry). Značení na pouzdru "SK28". VRMS 56 V, VF max 0,85 V, ' +
+      'provozní teplota -55 až +150 °C.',
+    schematicImage: 'FM220-C.jpg',
+    tags: 'dioda,schottky,usměrňovací,fm280,fm280-c,sk28,sma,do-214ac,formosa',
+  },
+  {
+    name: 'FM2100-C',
+    packageType: 'SMA (DO-214AC), SMD, katoda značena pruhem',
+    value: 'Schottky usměrňovací dioda, 2,0 A / 100 V (VRRM/VR), IFSM 50 A',
+    notes:
+      'Formosa MS "FM220-C THRU FM2100-C" — stejný společný datasheet jako "FM220-C" (viz tam ' +
+      'plné sdílené elektrické parametry). Nejvyšší napěťový díl řady, značení na pouzdru "S210" ' +
+      '(ne "SK..." jako ostatní díly). VRMS 70 V, VF max 0,85 V, provozní teplota -55 až +150 °C. ' +
+      '⚠️ Neobvykle vysoké VRRM (100 V) pro Schottky diodu — Schottky usměrňovače typicky mívají ' +
+      'nízké napěťové rozsahy (desítky V) kvůli vyšším svodovým proudům při vyšším napětí; ' +
+      'hodnota je nicméně přímo z tabulky datasheetu.',
+    schematicImage: 'FM220-C.jpg',
+    tags: 'dioda,schottky,usměrňovací,fm2100,fm2100-c,s210,sma,do-214ac,formosa',
+  },
+
+  {
     name: 'GP1120',
     packageType: 'DO-41, plastové pouzdro (UL 94V-0), barevný pruh = katoda',
     value: '⚠️ 1 A / 1200 V (odvozeno, viz poznámka) — vysokonapěťová usměrňovací dioda',
@@ -482,6 +569,29 @@ const DIODE_SPECS: PartSpec[] = [
       '(@TA=50°C), IFSM=15 A, VFM max 6,0 V.',
     schematicImage: 'GP1xxx.jpg',
     tags: 'dioda,usměrňovací,vysokonapěťová,diotec,gp-series,gp1600,do-41',
+  },
+  {
+    name: 'FM2500W',
+    packageType:
+      'SMX (SMD), rozměry cca 5,31×2,79×1,70 mm (D×H×tloušťka vývodu dle datasheetu), vývody ' +
+      'typu "gull wing", katoda značena pruhem/orientací pouzdra',
+    value: 'Vysokonapěťová usměrňovací dioda, VRRM 2500 V, IO 0,15 A, IFSM 30 A',
+    notes:
+      'Rectron Semiconductor "FM2500W — High Voltage Rectifier" technical specification ' +
+      '(dok. 2004-8). ⚠️ Pozor na záměnu s podobně pojmenovanou řadou "FM220-C THRU FM2100-C" ' +
+      '(Formosa MS, Schottky diody v SMA pouzdře, 20–100 V) — jde o zcela odlišný díl jiného ' +
+      'výrobce, jiné technologie (standardní křemíková usměrňovací dioda, ne Schottky) i jiného ' +
+      'pouzdra (SMX, ne SMA). Mezní hodnoty: VRRM 2500 V, VRMS 1750 V, VDC (blokovací) 2500 V, ' +
+      'IO (střední usměrněný proud) 0,15 A @TA=50°C (vývod 9,5mm/75°C), IFSM (8,3ms půlvlna, ' +
+      'JEDEC metoda) 30 A, IFSM (10ms půlvlna @105°C, JEDEC metoda) 3,0 A. VF max 2,0 V @IF=0,15A ' +
+      'DC. IR max 5,0 µA @TA=25°C / 50 µA @TA=100°C (při jmenovitém VDC), max 30 µA (plné ' +
+      'zatížení, průměr za celý cyklus, vývod 9,5mm@75°C). CJ typ 35 pF @1MHz/4VDC. TJ/Tstg -55 ' +
+      'až +150 °C. Pouzdro UL 94V-0 (plastové, retardér hoření). Určeno pro aplikace vyžadující ' +
+      'velmi vysoké závěrné napětí při nízkém proudu (např. násobiče napětí, vysokonapěťové ' +
+      'zdroje, CRT/laserové obvody) — pro vyšší proudové nároky viz vícenásobně vyšší napěťová ' +
+      'řada GP1120–GP1600 (do 6000 V, ale nižší proud) nebo AMS-01-15 (15 kV).',
+    schematicImage: 'FM2500W.jpg',
+    tags: 'dioda,usměrňovací,vysokonapěťová,rectron,fm2500w,smx,2500v',
   },
 
   {
@@ -7813,7 +7923,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 164;
+export const SEED_LIBRARY_VERSION = 165;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
