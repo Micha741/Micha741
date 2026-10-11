@@ -3452,6 +3452,70 @@ const IC_SPECS: IcSpec[] = [
       'nebo přímý USBXpress API, certifikováno Microsoft WHQL.',
     tags: 'io,usb,uart,sériový port,most,bridge,cp2102,silicon labs,siliconlabs,qfn28,eeprom,nodemcu',
   },
+  {
+    name: 'PL2303GC',
+    packageType:
+      'SSOP-28 nebo UQFN-24 (konkrétní pin-mapa není v tomto dokumentu — Prolific zde vydal jen ' +
+      'produktovou brožuru s blokovým diagramem, ne plný datasheet s pinoutem)',
+    value:
+      'USB-sériový (UART) převodník, Full-Speed USB 2.0, programovatelná přenosová rychlost ' +
+      '1 b/s – 12 Mb/s, vestavěný 5V→3,3V regulátor, vestavěný 96MHz generátor hodin',
+    notes:
+      'Prolific Technology Inc. "PL2303GC USB to Serial Bridge Controller" produktová brožura ' +
+      'v1.0 (25.1.2019). ⚠️ Zdrojový dokument je jen stručná marketingová brožura s blokovým ' +
+      'diagramem, ne plný datasheet — pin-mapa (číslo/název/typ pinu) proto chybí a nebyla sem ' +
+      'zapsána, aby nedošlo k domýšlení. Konkurenční alternativa k CH340/CP2102 (viz jejich ' +
+      'záznamy) — starší generace PL2303 (HX/HXD) byla po letech problémů s čínskými padělky ' +
+      'částečně zablokovaná oficiálními Windows ovladači Prolific; PL2303GC je novější revize. ' +
+      'Vestavěná OTPROM (One-Time Programmable paměť) pro USB deskriptory, programovatelná přímo ' +
+      'přes USB port. Každý čip má unikátní ID (slouží jako sériové číslo). Plně duplexní ' +
+      'vysílač/přijímač: 5, 6, 7 nebo 8 datových bitů; parita None/Odd/Even/Mark/Space; 1, 1,5 ' +
+      'nebo 2 stop bity; detekce parity/framing chyb a break signálu. 1024bajtové obousměrné ' +
+      'datové buffery (768 B příjem / 256 B vysílání). Nezávislý zdroj napájení pro sériové ' +
+      'rozhraní. Funguje se stávajícím COM-port softwarem bez úprav.',
+    tags: 'io,usb,uart,sériový port,most,bridge,pl2303,pl2303gc,prolific,ssop28,uqfn24',
+  },
+  {
+    name: 'FT232RL',
+    packageType:
+      'SSOP-28, piny: 1=TXD (výstup), 2=DTR# (výstup), 3=RTS# (výstup), 4=VCCIO (napájení ' +
+      'UART/CBUS skupiny, 1,8–5,25 V), 5=RXD (vstup), 6=RI# (vstup, probuzení z USB suspendu), ' +
+      '7=GND, 8=NC, 9=DSR# (vstup), 10=DCD# (vstup), 11=CTS# (vstup), 12=CBUS4 (I/O, výchozí ' +
+      'SLEEP#), 13=CBUS2 (I/O, výchozí TXDEN), 14=CBUS3 (I/O, výchozí PWREN#, doporučen 10kΩ ' +
+      'pull-up), 15=USBDP (USB D+, vestavěný sériový rezistor + 1,5kΩ pull-up na 3,3V), ' +
+      '16=USBDM (USB D-, vestavěný sériový rezistor), 17=3V3OUT (výstup interního LDO, ' +
+      'blokovat 100nF ke GND), 18=GND, 19=RESET# (vstup, aktivní nízká úroveň), 20=VCC ' +
+      '(napájení jádra, 3,3–5,25 V), 21=GND, 22=CBUS1 (I/O, výchozí RXLED#), 23=CBUS0 (I/O, ' +
+      'výchozí TXLED#), 24=NC, 25=AGND (analogová zem pro vnitřní násobič hodin), 26=TEST ' +
+      '(vstup, musí být na GND pro normální provoz), 27=OSCI (vstup, volitelný externí 12MHz ' +
+      'krystal), 28=OSCO (výstup, volitelný externí 12MHz krystal). Alternativní pouzdro ' +
+      'QFN-32 (FT232RQ-xxxx) má odlišné číslování pinů se stejnými signály.',
+    value:
+      'USB-sériový (UART) převodník, USB 2.0 Full-Speed, přenosová rychlost 300 b/s – 3 Mb/s ' +
+      '(TTL úrovně pro RS232/RS422/RS485), vestavěná 1024bitová EEPROM, vestavěné hodiny a ' +
+      'USB terminační rezistory (bez nutnosti externího krystalu), vestavěný 3,3V LDO regulátor',
+    datasheetUrl: 'https://ftdichip.com/wp-content/uploads/2020/08/DS_FT232R.pdf',
+    schematicImage: 'FT232RL.jpg',
+    notes:
+      'FTDI (Future Technology Devices International) "FT232R USB UART IC" datasheet verze 2.07 ' +
+      '(dok. FT_000053). Nejrozšířenější "prémiová" alternativa k CH340/CP2102 (viz jejich ' +
+      'záznamy) — dlouhodobě referenční čip pro USB-sériové převodníky, royalty-free VCP i ' +
+      'přímé D2XX ovladače pro Windows/Mac/Linux. Každý kus má z výroby naprogramované ' +
+      'unikátní USB sériové číslo (FTDIChip-ID). 5 konfigurovatelných CBUS I/O pinů (funkce ' +
+      'nastavitelná v EEPROM) s výchozím zapojením TXLED#/RXLED#/PWREN#/TXDEN/SLEEP# pro ' +
+      'indikaci přenosu, úsporu energie a řízení poloduplexních RS485 budičů. FIFO buffery ' +
+      '128 B příjem / 256 B vysílání. Podpora 7 nebo 8 datových bitů, 1 nebo 2 stop bity, ' +
+      'sudá/lichá/mark/space/bez parity. Absolutní maxima: skladovací teplota -65 až 150 °C, ' +
+      'okolní teplota (pod napětím) -40 až 85 °C, VCC -0,5 až +6,00 V, vstupní napětí USBDP/' +
+      'USBDM -0,5 až 3,8 V, výstupní proud 24 mA, ztrátový výkon max 500 mW @VCC=5,25V. ' +
+      'Provozní napětí: VCC 4,0–5,25 V (s vnitřním oscilátorem) nebo 3,3–5,25 V (s externím ' +
+      'krystalem), VCCIO 1,8–5,25 V (umožňuje přímé propojení s 1,8V/2,5V/3,3V logikou bez ' +
+      'level shifteru). Proudový odběr: typ. 15 mA (běžný provoz), typ. 70 µA / max 100 µA ' +
+      '(USB suspend). Výstup 3V3OUT 3,0–3,6 V (typ. 3,3 V), max 50 mA pro externí logiku. ' +
+      'MTTF (střední doba do poruchy): 11 162 037 h (SSOP verze FT232RL) / 4 464 815 h (QFN ' +
+      'verze FT232RQ).',
+    tags: 'io,usb,uart,sériový port,most,bridge,ft232,ft232rl,ft232rq,ftdi,ssop28,qfn32,eeprom',
+  },
 
   // RS-485/RS-422 přijímače
   {
