@@ -127,14 +127,24 @@ export default function ComponentScannerScreen({ navigation }: Props) {
   // occasional all-digit IC number (e.g. "4049" misread as 404 x 10^9 Ω).
   const PLAUSIBLE_MIN_OHMS = 0.1;
   const PLAUSIBLE_MAX_OHMS = 10_000_000;
+  const isCompleteScaledNotation = (token: string, separator: string): boolean => {
+    if (!token.includes(separator)) return false;
+    const parts = token.split(separator);
+    return parts.length === 2 && parts[0] !== '' && parts[1] !== '';
+  };
+
   const findResistorHint = (candidates: string[]): ResistorHint | null => {
     let fallback: ResistorHint | null = null;
     for (const token of candidates) {
       const decoded = decodeSmdCode(token);
       if (!decoded) continue;
-      const rParts = token.includes('R') ? token.split('R') : null;
-      const isCompleteRNotation = !!rParts && rParts.length === 2 && rParts[0] !== '' && rParts[1] !== '';
-      if (isCompleteRNotation) return decoded;
+      // "R"/"K"/"M" standing in for the decimal point on both sides (e.g.
+      // "3R6", "3K3", "2M2") is an unambiguous resistor value and always wins.
+      const isCompleteNotation =
+        isCompleteScaledNotation(token, 'R') ||
+        isCompleteScaledNotation(token, 'K') ||
+        isCompleteScaledNotation(token, 'M');
+      if (isCompleteNotation) return decoded;
       const isPlausible = decoded.ohms >= PLAUSIBLE_MIN_OHMS && decoded.ohms <= PLAUSIBLE_MAX_OHMS;
       if (!fallback && isPlausible) fallback = decoded;
     }
