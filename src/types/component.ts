@@ -12,6 +12,7 @@ export type ComponentCategory =
   | 'Modul'
   | 'LCD'
   | 'PIR čidla'
+  | 'Baterie'
   | 'Ostatní';
 
 export const COMPONENT_CATEGORIES: ComponentCategory[] = [
@@ -28,6 +29,7 @@ export const COMPONENT_CATEGORIES: ComponentCategory[] = [
   'Modul',
   'LCD',
   'PIR čidla',
+  'Baterie',
   'Ostatní',
 ];
 
