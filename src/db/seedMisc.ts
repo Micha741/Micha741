@@ -374,6 +374,69 @@ const MISC_SPECS: MiscSpec[] = [
     tags: 'baterie,akumulátor,li-ion,li-pol,napájení',
   },
   {
+    name: 'Akumulátor Li-ion 18650',
+    category: 'Baterie',
+    packageType: 'Válcový článek, průměr 18 mm, délka 65 mm (ploché nebo vyčnívající +, s/bez PCM ochrany)',
+    value: '1 článek, 3,7 V nominál (4,2 V plně nabitý, 2,5–3,0 V vybitý), kapacita typicky 1500–3500 mAh',
+    notes:
+      'Nejrozšířenější velikost válcového Li-ion akumulátoru (název odvozen od rozměru ' +
+      '18×65 mm) — svítilny, powerbanky, vapy, laptopy, elektrická kola/nářadí, battery packy. ' +
+      'Nevybíjet pod cca 2,5 V a nenabíjet nad 4,2 V (riziko poškození/požáru) — nabíjet jen ' +
+      'vyhrazenou nabíječkou s ochranou nebo přes modul s BMS/PCM (např. TP4056). Kapacita a ' +
+      'max. vybíjecí proud se výrazně liší dle výrobce/kvality článku (ověřit u konkrétního kusu).',
+    tags: 'baterie,akumulátor,li-ion,18650,válcový,napájení',
+  },
+  {
+    name: 'Baterie AAA (mikrotužková, 1,5 V)',
+    category: 'Baterie',
+    packageType: 'Válcový článek AAA (LR03)',
+    value: '1,5 V alkalický nebo 1,2 V NiMH akumulátor',
+    notes: 'Standardní mikrotužková baterie/akumulátor velikosti AAA, menší a slabší proudová kapacita než AA — dálkové ovladače, hodiny, menší přenosná elektronika.',
+    tags: 'baterie,aaa,lr03,napájení,článek',
+  },
+  {
+    name: 'Baterie C (malý monočlánek, 1,5 V)',
+    category: 'Baterie',
+    packageType: 'Válcový článek C (LR14)',
+    value: '1,5 V alkalický nebo 1,2 V NiMH akumulátor',
+    notes: 'Větší válcový článek mezi AA a D — svítilny, rádia, hračky s vyšším odběrem.',
+    tags: 'baterie,c,lr14,napájení,článek',
+  },
+  {
+    name: 'Baterie D (monočlánek, 1,5 V)',
+    category: 'Baterie',
+    packageType: 'Válcový článek D (LR20)',
+    value: '1,5 V alkalický nebo 1,2 V NiMH akumulátor',
+    notes: 'Největší běžný válcový článek — svítilny, rádia, zařízení s vysokým odběrem nebo dlouhou výdrží.',
+    tags: 'baterie,d,lr20,napájení,článek',
+  },
+  {
+    name: 'Knoflíková baterie CR2032 (lithiová, 3 V)',
+    category: 'Baterie',
+    packageType: 'Knoflíkový (plochý) článek, průměr 20 mm, výška 3,2 mm',
+    value: '3 V lithiová (Li-MnO2), kapacita cca 200–240 mAh',
+    notes:
+      'Nejběžnější lithiová knoflíková baterie — záložní napájení RTC obvodů (viz "DS1307" a ' +
+      'podobné RTC s I2C), základní desky PC, dálkové ovladače aut, váhy, kalkulačky, ' +
+      'LED svíčky. Nenabíjitelná (na rozdíl od vizuálně podobné nabíjitelné LIR2032, ' +
+      '3,6 V Li-ion — nezaměňovat, LIR2032 má jiné napětí a nesmí se použít tam, kde obvod ' +
+      'počítá s nenabíjitelnou CR2032). Číslo "2032" = průměr 20 mm × výška 3,2 mm (stejná ' +
+      'konvence platí pro menší sourozence CR2025 = 20×2,5 mm a CR2016 = 20×1,6 mm, všechny ' +
+      '3 V, ale s nižší kapacitou).',
+    tags: 'baterie,knoflíková,button-cell,cr2032,lithiová,3v,napájení,rtc,záložní',
+  },
+  {
+    name: 'Baterie CR123A (lithiová, 3 V)',
+    category: 'Baterie',
+    packageType: 'Válcový článek, průměr 17 mm, výška 34,5 mm',
+    value: '3 V lithiová (Li-MnO2), kapacita cca 1200–1500 mAh',
+    notes:
+      'Válcový lithiový článek (nenabíjitelný) — fotoaparáty, svítilny, PIR senzory/alarmy ' +
+      'a další zařízení s vyšším odběrem vyžadující stabilní 3V zdroj i při nízkých teplotách. ' +
+      'Nezaměňovat s vizuálně podobnou nabíjitelnou RCR123A/16340 (3,7 V Li-ion, jiné napětí).',
+    tags: 'baterie,cr123a,lithiová,3v,válcový,napájení',
+  },
+  {
     name: 'Trubičková pojistka (obecná, skleněná)',
     packageType: '5×20 mm nebo 6,3×32 mm skleněná trubička + držák',
     value: 'Tavná pojistka, proud dle konkrétní konstrukce (typicky 0,1–3 A)',
