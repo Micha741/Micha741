@@ -71,6 +71,7 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'ACS754xCB-150.jpg': require('../../assets/schematics/ACS754xCB-150.jpg'),
   'ACS755xCB-050.jpg': require('../../assets/schematics/ACS755xCB-050.jpg'),
   'FT200XD.jpg': require('../../assets/schematics/FT200XD.jpg'),
+  'CH340C.jpg': require('../../assets/schematics/CH340C.jpg'),
   'ATM0680L2A.jpg': require('../../assets/schematics/ATM0680L2A.jpg'),
   'ATM0680L2A-CT.jpg': require('../../assets/schematics/ATM0680L2A-CT.jpg'),
   'RPR-0521RS-EVK-001.jpg': require('../../assets/schematics/RPR-0521RS-EVK-001.jpg'),
