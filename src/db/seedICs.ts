@@ -675,6 +675,36 @@ const IC_SPECS: IcSpec[] = [
     schematicImage: 'L1117-TO263.jpg',
     tags: 'io,regulátor,ldo,pevný,niko-sem,l1117,l1117s-5,to-263,d2pak,5v,smd',
   },
+  {
+    name: 'AMS1117-3.3',
+    packageType:
+      'K dispozici v SOT-223, TO-252 i SOT-89, vždy 4 vývody/plošky: 1=GND/ADJ, 2=výstup ' +
+      '(OUT, i TAB), 3=vstup (IN), 4=výstup (OUT, zdvojený TAB) — naskenovaný kus má potisk ' +
+      '"AMS1117 / 3.3 / DNJT" na pouzdře se 3 vývody na jedné straně + 1 širším vývodem ' +
+      '(TAB) na druhé, odpovídá SOT-223.',
+    value:
+      'Pevný LDO lineární regulátor +3,3 V, 1 A, dropout typ. 1,1-1,3 V (dle výrobce @0,8-1A), ' +
+      'přesnost výstupu ±1,5-2 % (dle výrobce)',
+    notes:
+      'Advanced Monolithic Systems "AMS1117 — 1A Low Dropout Voltage Regulator" — nesmírně ' +
+      'rozšířený LDO regulátor (fakticky průmyslový standard, osazovaný na většině čínských ' +
+      'vývojových/breakout desek jako 3,3V zdroj z 5V USB). ⚠️ Existuje obrovské množství ' +
+      'druhotných výrobců/klonů (QNHCHIP, KEXIN, JSMSEMI, TECH PUBLIC, TWGMC a další) prodávajících ' +
+      'pod stejným označením "AMS1117-3.3" se vzájemně se LIŠÍCÍMI publikovanými parametry ' +
+      '(nalezeny rozpory: max. vstupní napětí uváděno 12V/15V/18V/30V dle zdroje, dropout napětí ' +
+      '1,1-1,3V, klidový proud 2-10mA, přesnost ±1,5-2%, teplotní rozsah -40 až +125°C nebo -50 ' +
+      'až +140°C dle výrobce) — hodnoty v tomto záznamu jsou tedy orientační/typické průměry napříč ' +
+      'zdroji, ne ověřený jednotný datasheet od Advanced Monolithic Systems samotného (jeho PDF ' +
+      'nebylo možné z tohoto prostředí stáhnout, síťový přístup byl blokován). Rodina zahrnuje i ' +
+      'pevné verze 1,5V/1,8V/2,5V/2,85V/5V a nastavitelnou verzi AMS1117-ADJ (VREF 1,25V, stejně ' +
+      'jako konkurenční NIKO-SEM L1117 — viz tato rodina v knihovně pro obdobnou, lépe zdrojovanou ' +
+      'referenci). Doporučen výstupní kondenzátor min. 10µF (tantalový nebo keramický nízko-ESR) ' +
+      'pro stabilitu smyčky, vstupní blokovací kondenzátor 10µF/0,1µF. Vestavěná tepelná ochrana a ' +
+      'proudové omezení (přesná mez se mezi klony liší). Typické použití: lokální 3,3V napájení z ' +
+      '5V USB/sběrnice na hobby/vývojových deskách (Arduino klony, ESP breakout desky apod.).',
+    schematicImage: 'AMS1117-3.3.jpg',
+    tags: 'io,regulátor,ldo,pevný,ams1117,ams1117-3.3,sot-89,sot-223,to-252,3.3v,breakout',
+  },
 
   // Spínané napájecí řadiče
   {
