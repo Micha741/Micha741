@@ -123,7 +123,129 @@ const DIODE_SPECS: PartSpec[] = [
   { name: '1N4005', packageType: 'DO-41', value: '1 A / 600 V', notes: 'Usměrňovací dioda', tags: 'dioda,usměrňovací' },
   { name: '1N4006', packageType: 'DO-41', value: '1 A / 800 V', notes: 'Usměrňovací dioda', tags: 'dioda,usměrňovací' },
   { name: '1N4007', packageType: 'DO-41', value: '1 A / 1000 V', notes: 'Usměrňovací dioda', tags: 'dioda,usměrňovací' },
-  { name: '1N5399', packageType: 'DO-15', value: '1,5 A / 1000 V', notes: 'Usměrňovací dioda', tags: 'dioda,usměrňovací' },
+  {
+    name: '1N5391',
+    datasheetUrl: 'https://www.yfwdiode.com',
+    packageType:
+      'DO-15 (axiální, skleněné/pryskyřicové pouzdro), rozměry: A (délka těla) 5,80-7,60 mm, ' +
+      'B (průměr těla) 2,60-3,60 mm, C (průměr vývodu) 0,70-0,90 mm, D (délka vývodu) min 25,40 mm ' +
+      'na obou stranách. Katoda označena barevným proužkem ("Cathode Mark").',
+    value:
+      'Usměrňovací dioda, 1,5 A, max. opakovatelné špičkové závěrné napětí (VRRM) 50 V, DC blokovací ' +
+      'napětí 50 V, RMS napětí 35 V — nejnižší napěťová třída celé rodiny 1N5391-1N5399',
+    notes:
+      'YFW (Dongguan You Feng Wei Electronics Co., Ltd.) "1N5391 THRU 1N5399 — 1.5 Amp Rectifier, ' +
+      '50-1000 Volts" (dok. bez uvedeného čísla revize, www.yfwdiode.com) — datasheet nahraný ' +
+      'uživatelem k fotce axiální diody s nejasně čitelným potiskem; tabulka v datasheetu uvádí ' +
+      'sloupec "Device Marking" jako "---" pro všechny typy této rodiny (výrobce needeklaruje ' +
+      'jednotný zkrácený marking kód — potisk na reálném kusu tedy může být přímo celé katalogové ' +
+      'číslo, např. "1N5391", nebo se může lišit dle konkrétního výrobce/šarže). ' +
+      'Celá rodina sdílí stejné mezní a elektrické parametry, liší se jen napěťovou třídou (viz ' +
+      'sourozenecké záznamy "1N5392" až "1N5399" pro ostatní napěťové třídy). Mezní hodnoty: ' +
+      'provozní teplota -55 až +125°C, skladovací teplota -55 až +150°C, typický tepelný odpor ' +
+      '26°C/W (přechod-vývod). Elektrické charakteristiky (@25°C): IF(AV) (průměrný propustný ' +
+      'proud) 1,5 A @TA=70°C, IFSM (špičkový nárazový propustný proud) 50 A @8,3ms půlvlna ' +
+      '(JEDEC metoda, @TA=75°C), VF (max. okamžité propustné napětí) 1,1 V @IFM=1,5A/TJ=25°C ' +
+      '(pulzní test: šířka pulzu 300µs, duty cycle 1%), IR (max. závěrný proud při jmenovitém DC ' +
+      'blokovacím napětí) 5,0µA @TJ=25°C / 50µA @TJ=100°C, CJ (typická kapacita přechodu) 20pF ' +
+      '@1,0MHz/VR=4,0V. Objednací řada: 1N5391 (50V) - 1N5392 (100V) - 1N5393 (200V) - 1N5394 ' +
+      '(300V) - 1N5395 (400V) - 1N5396 (500V) - 1N5397 (600V) - 1N5398 (800V) - 1N5399 (1000V), ' +
+      'vždy VRRM/VDC shodné, VRMS = 0,7×VRRM.',
+    schematicImage: '1N5391-5399-series.jpg',
+    tags: 'dioda,usměrňovací,rectifier,do-15,1n5391,yfw,1.5a',
+  },
+  {
+    name: '1N5392',
+    packageType: 'shodné s 1N5391 (DO-15) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      'Usměrňovací dioda, 1,5 A, VRRM 100 V, DC blokovací napětí 100 V, RMS napětí 70 V',
+    notes:
+      'YFW "1N5391 THRU 1N5399" — součást rodiny 1N5391-1N5399, viz záznam "1N5391" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace (IF(AV) 1,5A, VF max 1,1V, ' +
+      'IFSM 50A, provozní teplota -55 až +125°C atd.). Druhá napěťová třída rodiny.',
+    schematicImage: '1N5391-5399-series.jpg',
+    tags: 'dioda,usměrňovací,rectifier,do-15,1n5392,yfw,1.5a',
+  },
+  {
+    name: '1N5393',
+    packageType: 'shodné s 1N5391 (DO-15) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      'Usměrňovací dioda, 1,5 A, VRRM 200 V, DC blokovací napětí 200 V, RMS napětí 140 V',
+    notes:
+      'YFW "1N5391 THRU 1N5399" — součást rodiny 1N5391-1N5399, viz záznam "1N5391" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace.',
+    schematicImage: '1N5391-5399-series.jpg',
+    tags: 'dioda,usměrňovací,rectifier,do-15,1n5393,yfw,1.5a',
+  },
+  {
+    name: '1N5394',
+    packageType: 'shodné s 1N5391 (DO-15) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      'Usměrňovací dioda, 1,5 A, VRRM 300 V, DC blokovací napětí 300 V, RMS napětí 210 V',
+    notes:
+      'YFW "1N5391 THRU 1N5399" — součást rodiny 1N5391-1N5399, viz záznam "1N5391" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace.',
+    schematicImage: '1N5391-5399-series.jpg',
+    tags: 'dioda,usměrňovací,rectifier,do-15,1n5394,yfw,1.5a',
+  },
+  {
+    name: '1N5395',
+    packageType: 'shodné s 1N5391 (DO-15) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      'Usměrňovací dioda, 1,5 A, VRRM 400 V, DC blokovací napětí 400 V, RMS napětí 280 V',
+    notes:
+      'YFW "1N5391 THRU 1N5399" — součást rodiny 1N5391-1N5399, viz záznam "1N5391" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace.',
+    schematicImage: '1N5391-5399-series.jpg',
+    tags: 'dioda,usměrňovací,rectifier,do-15,1n5395,yfw,1.5a',
+  },
+  {
+    name: '1N5396',
+    packageType: 'shodné s 1N5391 (DO-15) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      'Usměrňovací dioda, 1,5 A, VRRM 500 V, DC blokovací napětí 500 V, RMS napětí 350 V',
+    notes:
+      'YFW "1N5391 THRU 1N5399" — součást rodiny 1N5391-1N5399, viz záznam "1N5391" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace.',
+    schematicImage: '1N5391-5399-series.jpg',
+    tags: 'dioda,usměrňovací,rectifier,do-15,1n5396,yfw,1.5a',
+  },
+  {
+    name: '1N5397',
+    packageType: 'shodné s 1N5391 (DO-15) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      'Usměrňovací dioda, 1,5 A, VRRM 600 V, DC blokovací napětí 600 V, RMS napětí 420 V',
+    notes:
+      'YFW "1N5391 THRU 1N5399" — součást rodiny 1N5391-1N5399, viz záznam "1N5391" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace.',
+    schematicImage: '1N5391-5399-series.jpg',
+    tags: 'dioda,usměrňovací,rectifier,do-15,1n5397,yfw,1.5a',
+  },
+  {
+    name: '1N5398',
+    packageType: 'shodné s 1N5391 (DO-15) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      'Usměrňovací dioda, 1,5 A, VRRM 800 V, DC blokovací napětí 800 V, RMS napětí 560 V',
+    notes:
+      'YFW "1N5391 THRU 1N5399" — součást rodiny 1N5391-1N5399, viz záznam "1N5391" v této ' +
+      'knihovně pro plné společné elektrické/mechanické specifikace.',
+    schematicImage: '1N5391-5399-series.jpg',
+    tags: 'dioda,usměrňovací,rectifier,do-15,1n5398,yfw,1.5a',
+  },
+  {
+    name: '1N5399',
+    datasheetUrl: 'https://www.yfwdiode.com',
+    packageType: 'shodné s 1N5391 (DO-15) — viz jeho záznam pro plné mechanické specifikace',
+    value:
+      'Usměrňovací dioda, 1,5 A, VRRM 1000 V, DC blokovací napětí 1000 V, RMS napětí 700 V — ' +
+      'nejvyšší napěťová třída celé rodiny 1N5391-1N5399',
+    notes:
+      '⚠️ Záznam aktualizován (dříve jen strohý placeholder "Usměrňovací dioda") podle nahraného ' +
+      'datasheetu YFW "1N5391 THRU 1N5399" — součást rodiny 1N5391-1N5399, viz záznam "1N5391" ' +
+      'v této knihovně pro plné společné elektrické/mechanické specifikace.',
+    schematicImage: '1N5391-5399-series.jpg',
+    tags: 'dioda,usměrňovací,rectifier,do-15,1n5399,yfw,1.5a',
+  },
   { name: '1N5408', packageType: 'DO-27', value: '3 A / 1000 V', notes: 'Usměrňovací dioda', tags: 'dioda,usměrňovací' },
   {
     name: '1N5820',
@@ -7631,7 +7753,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 149;
+export const SEED_LIBRARY_VERSION = 150;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
