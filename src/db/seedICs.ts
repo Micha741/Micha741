@@ -3272,8 +3272,15 @@ const IC_SPECS: IcSpec[] = [
       'elektrické/funkční specifikace (MODEM signály, VCP ovladač kompatibilní s CH341, ' +
       'datový formát). Na rozdíl od CH340C/N/K/E/X/B nemá CH340G vestavěné hodiny — vyžaduje ' +
       'externí 12MHz krystal na pinech XI/XO. Provozní teplota -40 až 85 °C (širší rozsah než ' +
-      'CH340C). Proudový odběr: typ. 7 mA @5V / 4 mA @3,3V (shodné s CH340C).',
-    tags: 'io,usb,uart,sériový port,most,bridge,ch340,ch340g,wch,sop16,krystal',
+      'CH340C). Proudový odběr: typ. 7 mA @5V / 4 mA @3,3V (shodné s CH340C). Použit jako USB↔UART ' +
+      'most v oficiálním open-hardware návrhu NodeMCU DEVKIT v0.9 (ESP-12/ESP8266, github.com/' +
+      'nodemcu/nodemcu-devkit, schéma NODEMCU_ESP12.SchDoc) — se 40H/2520 12MHz krystalem (X1, ' +
+      '2× 22 pF zátěžové kondenzátory) a klasickým "auto program circuit" ze dvou NPN tranzistorů ' +
+      'S8050, který z DTR#/RTS# odvozuje signály RST a GPIO0 pro automatický reset a vstup do ' +
+      'bootloaderu bez ručních tlačítek (pravdivostní tabulka DTR/RTS→RST/GPIO0: 1,1→1,1; ' +
+      '0,0→1,1; 1,0→0,1; 0,1→1,0). Napájení desky řeší LDO SPX3819M5-L-3-3 (3,3 V, 500 mA) z 5V ' +
+      'USB větve chráněné diodou 1N4007.',
+    tags: 'io,usb,uart,sériový port,most,bridge,ch340,ch340g,wch,sop16,krystal,nodemcu,esp8266,esp-12',
   },
   {
     name: 'CH340B',
@@ -3407,6 +3414,43 @@ const IC_SPECS: IcSpec[] = [
       '(typicky s externím IR transceiverem ZHX1810/HSDL3000/TFBS4711) a s invertovanými TXD a ' +
       'MODEM signály oproti zbytku rodiny. Vyžaduje externí 12MHz krystal (jako CH340G/T).',
     tags: 'io,usb,uart,sériový port,most,bridge,ch340,ch340r,wch,ssop20,irda,infračervený,discontinued',
+  },
+  {
+    name: 'CP2102',
+    packageType:
+      'QFN-28 (5×5 mm), piny: 1=DCD (vstup, aktivní nízká úroveň), 2=RI (vstup, aktivní nízká ' +
+      'úroveň), 3=GND, 4=D+ (USB), 5=D- (USB), 6=VDD (napájecí vstup 3,0–3,6 V / výstup 3,3V ' +
+      'regulátoru), 7=REGIN (vstup 5V regulátoru), 8=VBUS (vstup, detekce USB napětí), ' +
+      '9=RST (I/O, otevřený kolektor, aktivní nízká úroveň, interní power-on reset), ' +
+      '10=NC, 11=SUSPEND# (výstup, nízká úroveň při USB suspendu), 12=SUSPEND (výstup, vysoká ' +
+      'úroveň při USB suspendu), 13-22=NC (nutno nechat nezapojené nebo připojit na VDD), ' +
+      '23=CTS (vstup, aktivní nízká úroveň), 24=RTS (výstup, aktivní nízká úroveň), 25=RXD ' +
+      '(vstup), 26=TXD (výstup), 27=DSR (vstup, aktivní nízká úroveň), 28=DTR (výstup, aktivní ' +
+      'nízká úroveň)',
+    value:
+      'USB-sériový (UART) převodník, USB 2.0 Full-Speed (12 Mb/s), přenosová rychlost UART ' +
+      '300 b/s – 1 Mb/s (až 921600 b/s standardně), napájení 3,0–3,6 V (self-powered) nebo ' +
+      '4,0–5,25 V přes vestavěný regulátor (USB bus-powered), vestavěné hodiny a USB transceiver ' +
+      '(bez nutnosti externího krystalu/rezistorů)',
+    datasheetUrl: 'https://www.silabs.com/documents/public/data-sheets/CP2102-9.pdf',
+    schematicImage: 'CP2102.jpg',
+    notes:
+      'Silicon Laboratories "CP2102 Single-Chip USB to UART Bridge" datasheet rev. 1.2 (3/2007). ' +
+      'Konkurenční alternativa k WCH CH340 (viz záznamy "CH340C"/"CH340G" atd.) — typická na ' +
+      'originálních/kvalitnějších USB-sériových deskách a některých variantách ESP8266/ESP32 ' +
+      'vývojových desek (NodeMCU V3/Lolin klony), zatímco levnější čínské klony Arduino Nano/Uno ' +
+      'a oficiální NodeMCU DEVKIT v0.9 (viz záznam "CH340G") používají CH340. Vestavěná ' +
+      '1024bajtová EEPROM pro konfiguraci VID/PID (výchozí 10C4h/EA60h), sériového čísla, ' +
+      'popisného řetězce a power descriptoru — programovatelná přes USB, 100 000 zápisových ' +
+      'cyklů, 100 let retence dat. Vestavěný 5V→3,3V regulátor (vstup REGIN 4,0–5,25 V, výstup ' +
+      'na VDD 3,0–3,6 V @ 1–100 mA) umožňuje dvě napájecí konfigurace: USB bus-powered (REGIN ' +
+      'z VBUS, VDD napájí i externí obvody) nebo self-powered (externí 3,3V zdroj přímo na VDD, ' +
+      'REGIN propojen na stejnou 3V síť pro vypnutí regulátoru). Podporuje všechny RS232 ' +
+      'handshake signály (RTS/CTS, DTR/DSR, DCD, RI) i hardwarové/X-On-X-Off řízení toku. ' +
+      'Proudový odběr: typ. 20 mA (max 26 mA) v běžném provozu, typ. 80 µA (max 100 µA) v USB ' +
+      'suspendu. Provozní teplota -40 až 85 °C. Ovladače: royalty-free VCP (Virtual COM Port) ' +
+      'nebo přímý USBXpress API, certifikováno Microsoft WHQL.',
+    tags: 'io,usb,uart,sériový port,most,bridge,cp2102,silicon labs,siliconlabs,qfn28,eeprom,nodemcu',
   },
 
   // RS-485/RS-422 přijímače
