@@ -7422,6 +7422,13 @@ const RESISTOR_SPECS: PartSpec[] = [
     tags: 'rezistor',
   },
   {
+    name: 'Trimr 3,3 kΩ',
+    packageType: 'THT, ležatý nebo stojatý, rozteč 5 mm (typ 3296 nebo obdobný)',
+    value: '3,3 kΩ',
+    notes: 'Podstavný trimovací potenciometr pro nastavení na DPS.',
+    tags: 'rezistor,trimr,trimovací',
+  },
+  {
     name: 'Trimr 4,7 kΩ',
     packageType: 'THT, ležatý nebo stojatý, rozteč 5 mm (typ 3296 nebo obdobný)',
     value: '4,7 kΩ',
@@ -7789,7 +7796,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 153;
+export const SEED_LIBRARY_VERSION = 154;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
