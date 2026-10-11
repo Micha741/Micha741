@@ -350,6 +350,19 @@ const MISC_SPECS: MiscSpec[] = [
     tags: 'baterie,aa,lr6,napájení,článek',
   },
   {
+    name: 'Knoflíková baterie LR44 (alkalická, 1,5 V)',
+    packageType: 'Knoflíkový (plochý) článek, průměr 11,6 mm, výška 5,4 mm',
+    value: '1,5 V alkalická, kapacita cca 110–150 mAh (dle výrobce)',
+    notes:
+      'Standardizovaná velikost alkalického knoflíkového článku, shodné rozměry a ekvivalentní ' +
+      'označení pod více názvy dle výrobce: AG13, A76, LR1154, V13GA, 357 (pozor: "357" bez ' +
+      '"A" bývá naopak označení pro stříbro-oxidovou SR44, 1,55 V — mírně vyšší a stabilnější ' +
+      'napětí než alkalická LR44, proto nejsou vždy zcela zaměnitelné u zařízení citlivých na ' +
+      'přesné napětí, např. některé multimetry/laserová ukazovátka). Časté použití: kalkulačky, ' +
+      'laserová ukazovátka, hodinky, hračky, glukometry, malé svítilny.',
+    tags: 'baterie,knoflíková,button-cell,lr44,ag13,a76,357,alkalická,napájení',
+  },
+  {
     name: 'Akumulátor Li-ion/Li-pol (obecný, ≥300 mAh)',
     packageType: 'Prizmatický nebo válcový článek, 2 vývody',
     value: '1 článek, 3,7 V nominál (4,2 V plně nabitý)',
