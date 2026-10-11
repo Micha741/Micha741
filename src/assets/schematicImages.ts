@@ -196,6 +196,8 @@ export const SCHEMATIC_IMAGES: Record<string, ImageSourcePropType> = {
   'SCD-0134032010-KF-SA.jpg': require('../../assets/schematics/SCD-0134032010-KF-SA.jpg'),
   'ZM1005.jpg': require('../../assets/schematics/ZM1005.jpg'),
   'RV2-4P45.jpg': require('../../assets/schematics/RV2-4P45.jpg'),
+  'AMS-01-15.jpg': require('../../assets/schematics/AMS-01-15.jpg'),
+  'AMS1117-3.3.jpg': require('../../assets/schematics/AMS1117-3.3.jpg'),
   '1N5391-5399-series.jpg': require('../../assets/schematics/1N5391-5399-series.jpg'),
   'GD-342AP.jpg': require('../../assets/schematics/GD-342AP.jpg'),
   'IML-0638.jpg': require('../../assets/schematics/IML-0638.jpg'),

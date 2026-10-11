@@ -485,6 +485,42 @@ const DIODE_SPECS: PartSpec[] = [
   },
 
   {
+    name: 'AMS-01-15',
+    datasheetUrl: 'http://www.americanmicrosemiconductor.com',
+    packageType:
+      'Axiální, pryskyřicové (epoxy resin) pouzdro Ø7,5±0,5 mm, vývody Ø1,2±0,03 mm; buď holé ' +
+      'drátové vývody (délka pouzdra 22,0±0,5 mm, vývody min. 22 mm na obě strany) nebo s ' +
+      'rychlospojkami typu "ring terminal" (objednací kód s příponou "-TERM", celková délka ' +
+      '85,0 mm: 32,5±2,5 / 22,0±0,5 / 30,5±2,5 mm). Katoda označena páskovým "Cathode Mark" + ' +
+      'kódem šarže (Code Lot No.) na těle.',
+    value:
+      'Vysokonapěťová usměrňovací dioda, VRRM 15 kV (!), IO (průměrný propustný proud) 350 mA, ' +
+      'IFSM (nárazový propustný proud) 30 A',
+    notes:
+      'American Microsemiconductor Inc. "AMS-01-15 — Technical Specifications" (Madison, NJ, USA; ' +
+      'cert. AS/EN/JISQ 9100:2009 Rev. C a ISO 9001:2008). Extrémně vysokonapěťová usměrňovací ' +
+      'dioda (15 kV opakovatelné špičkové závěrné napětí) — typické využití ve vysokonapěťových ' +
+      'obvodech jako fotografické blesky (nabíjení/násobení napětí), laserové a rentgenové zdroje, ' +
+      'násobiče napětí, elektrostatické a izolační aplikace, mikrovlnné trouby. Vnitřně jde ' +
+      'pravděpodobně o sériové zapojení více nízkonapěťových křemíkových přechodů v jednom ' +
+      'pryskyřicovém pouzdře (typická konstrukce vysokonapěťových usměrňovačů tohoto typu), čemuž ' +
+      'odpovídá i neobvykle vysoký propustný úbytek napětí VF=10,5V @IF=350mA (běžná křemíková ' +
+      'dioda má VF~0,7-1V — zde několikanásobně vyšší kvůli sériově řazeným přechodům). Mezní ' +
+      'hodnoty: TJ max 120°C, Tstg -40 až +120°C. Elektrické charakteristiky: IR1 (závěrný proud ' +
+      'při normální teplotě, @VR=VRRM) max 2,0 µA, IR2 (@VR=VRRM, Tamb=100°C) max 50 µA. Zkušební ' +
+      'podmínky dle datasheetu: vysokoteplotní závěrné napětí @1000h (VRM=VRRM, f=50Hz, ' +
+      'Tamb=100°C, půlvlna), vysokoteplotní skladování @1000h (130±2°C), odolnost proti pájecímu ' +
+      'teplu (ponorná lázeň 350±10°C, 3,5±0,5s), test vysokotlakým "kouřem" (120°C, 2×10⁵ Pa, 10h), ' +
+      'izolační odpor (min. 1000 MΩ mezi středem těla a vývodem, DC 500V), izolační pevnost ' +
+      '(10 kV půlvlna mezi středem těla a vývodem v izolační kapalině, 1 min.), test ohybu vývodu ' +
+      '(síla 10N, ohyb ±90°), test tahu vývodu (síla 70N axiálně, 1 min.). Objednací varianta s ' +
+      'příponou "-TERM" dodává díl s našroubovanými kruhovými (ring) rychlospojkami na obou ' +
+      'koncích vývodů místo holého drátu.',
+    schematicImage: 'AMS-01-15.jpg',
+    tags: 'dioda,usměrňovací,vysokonapěťová,american-microsemiconductor,ams-01-15,15kv,blesk,násobič-napětí',
+  },
+
+  {
     name: 'ER1600CT',
     packageType:
       'TO-220 (3 vývody): PIN1 a PIN3 = katody dvou nezávislých diod, PIN2 (spojen s tělem/chladičem) = ' +
@@ -7753,7 +7789,7 @@ function buildFromSpecs(
 }
 
 // Zvyšovat o 1 při každé změně seed dat (nová/upravená součástka), spolu s verzí v app.json.
-export const SEED_LIBRARY_VERSION = 150;
+export const SEED_LIBRARY_VERSION = 151;
 
 export const SEED_COMPONENTS: ComponentInput[] = [
   ...buildResistorSeed(),
