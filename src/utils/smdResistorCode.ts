@@ -41,16 +41,24 @@ export interface SmdDecodeResult {
   codeType: SmdCodeType;
 }
 
-/** Parses an "R-notation" code where R stands in for the decimal point (e.g. "4R7" -> 4.7, "R47" -> 0.47). */
-function parseRNotation(code: string): number | null {
-  const parts = code.split('R');
+/**
+ * Parses a code where a letter stands in for the decimal point, scaled by
+ * that letter's multiplier (e.g. "4R7" -> 4.7, "3K3" -> 3300, "2M2" -> 2_200_000).
+ */
+function parseScaledNotation(code: string, separator: string, scale: number): number | null {
+  const parts = code.split(separator);
   if (parts.length !== 2) return null;
   const [intPart, fracPart] = parts;
   if (intPart === '' && fracPart === '') return null;
   if (!/^\d*$/.test(intPart) || !/^\d*$/.test(fracPart)) return null;
   const combined = `${intPart || '0'}.${fracPart || '0'}`;
   const value = Number(combined);
-  return Number.isFinite(value) ? value : null;
+  return Number.isFinite(value) ? value * scale : null;
+}
+
+/** Parses an "R-notation" code where R stands in for the decimal point (e.g. "4R7" -> 4.7, "R47" -> 0.47). */
+function parseRNotation(code: string): number | null {
+  return parseScaledNotation(code, 'R', 1);
 }
 
 /**
@@ -81,6 +89,31 @@ export function decodeSmdCode(raw: string): SmdDecodeResult | null {
     const ohms = parseRNotation(code);
     if (ohms === null) return null;
     const digitCount = code.replace('R', '').length;
+    return {
+      ohms,
+      formattedValue: formatOhms(ohms),
+      codeType: digitCount >= 3 ? '4-digit' : '3-digit',
+    };
+  }
+
+  // Directly-printed values on leaded resistors/trimmers often use "K"/"M"
+  // the same way SMD codes use "R" — as the decimal point, scaled to
+  // kilohms/megohms (e.g. "3K3" -> 3.3 kΩ, "2M2" -> 2.2 MΩ).
+  if (code.includes('K')) {
+    const ohms = parseScaledNotation(code, 'K', 1_000);
+    if (ohms === null) return null;
+    const digitCount = code.replace('K', '').length;
+    return {
+      ohms,
+      formattedValue: formatOhms(ohms),
+      codeType: digitCount >= 3 ? '4-digit' : '3-digit',
+    };
+  }
+
+  if (code.includes('M')) {
+    const ohms = parseScaledNotation(code, 'M', 1_000_000);
+    if (ohms === null) return null;
+    const digitCount = code.replace('M', '').length;
     return {
       ohms,
       formattedValue: formatOhms(ohms),
