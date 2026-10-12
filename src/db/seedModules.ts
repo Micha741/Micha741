@@ -5106,6 +5106,27 @@ const MODULE_SPECS: ModuleSpec[] = [
     schematicImage: 'raspberry-pi-pico-rp2040.jpg',
     tags: 'modul,mikrokontrolér,rp2040,raspberry-pi-pico,pico,arm,cortex-m0,dual-core,usb',
   },
+  {
+    name: 'GY-BMP280 modul',
+    packageType:
+      'Malá breakout deska, typicky 4 nebo 6 pinů (VCC/3V3, GND, SCL, SDA, volitelně CSB/SDO ' +
+      'pro I2C/SPI přepínání), čip v maloplošném pouzdře na desce',
+    value: 'Tlakový/teplotní senzorový modul, deklarováno jako Bosch BMP280 (I2C, 1,71–3,6 V)',
+    notes:
+      '⚠️ Čip osazený na konkrétním kusu této desky nese marking "N20", který neodpovídá ' +
+      'oficiálnímu značení Bosch BMP280 podle datasheetu "BMP280 Digital Pressure Sensor" rev. ' +
+      '1.19 (BST-BMP280-DS001-19) — ten pro sériovou výrobu předepisuje formát "CCC/TL•" (3místný ' +
+      'lot kód + pevné "T"="K" pro BMP280 + subcon ID "L" + tečka orientačního otvoru), pro ' +
+      'inženýrské vzorky "XXN/CC•". Marking "N20" v žádné z těchto tabulek není. Jde ' +
+      'pravděpodobně o běžný problém levných čínských "GY-BMP280" breakout desek, kde osazený ' +
+      'čip nemusí být originální Bosch díl (klon/náhrada s jiným interním senzorem, i když deska ' +
+      'je potištěna/prodávána jako BMP280) — funkčnost a přesnost neověřena, doporučeno otestovat ' +
+      'proti referenčnímu tlakoměru/teploměru před použitím v přesnější aplikaci. Pro skutečné ' +
+      'specifikace originálního Bosch BMP280 (8-pin LGA metal-lid, 2,0×2,5×0,95 mm, I2C do ' +
+      '3,4 MHz/SPI do 10 MHz, tlak 300–1100 hPa, přesnost ±1 hPa) viz oficiální datasheet — tento ' +
+      'záznam popisuje fyzicky osazenou desku z uživatelské sbírky, ne ověřený originální čip.',
+    tags: 'modul,senzor,tlak,teplota,bmp280,gy-bmp280,i2c,spi,klon,breakout',
+  },
 ];
 
 export function buildModuleSeed(): ComponentInput[] {
