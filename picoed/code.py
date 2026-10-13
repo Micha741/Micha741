@@ -305,6 +305,9 @@ def show_icon(name):
         display = None
 
 
+# set to False to ignore the IR obstacle sensors (e.g. to test driving straight)
+USE_IR_SENSORS = True
+
 # --- driving manoeuvres ---
 SPEED_FORWARD = (40, 255, 40, 255)
 SPEED_BACK = (255, 40, 255, 40)
@@ -348,8 +351,17 @@ lights_normal()
 while True:
     # get data from IO expander
     sensor_data = fetchSensorData()
-    obstacle_left = sensor_data[5] is False   # False = obstacle
-    obstacle_right = sensor_data[6] is False
+    # an obstacle counts only when the sensor reports it 3 times in a row,
+    # so single noisy readings do not make the car turn
+    obstacle_left = USE_IR_SENSORS and sensor_data[5] is False   # False = obstacle
+    obstacle_right = USE_IR_SENSORS and sensor_data[6] is False
+    for _ in range(2):
+        if not (obstacle_left or obstacle_right):
+            break
+        time.sleep(0.01)
+        again = fetchSensorData()
+        obstacle_left = obstacle_left and again[5] is False
+        obstacle_right = obstacle_right and again[6] is False
     distance = get_distance()
     # debug output for the Serial window in Mu
     print("IO:", "{:08b}".format(sensor_buf[0]), "IR L:", sensor_data[5],
@@ -357,6 +369,7 @@ while True:
 
     if obstacle_left or obstacle_right:
         # hit an obstacle: stop, back up a little, turn away from it
+        print("PREKAZKA:", "vlevo" if obstacle_left else "", "vpravo" if obstacle_right else "")
         stop()
         time.sleep(0.2)
         reverse()
