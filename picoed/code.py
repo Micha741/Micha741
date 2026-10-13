@@ -348,20 +348,40 @@ def turn(direction):
 
 lights_normal()
 
+# --- calibrate IR obstacle sensors ---
+# Some sensors report False for an obstacle, some True. At start-up the car
+# stands still with NOTHING in front of it and remembers what "free" looks like;
+# later an obstacle is whatever differs from that.
+show_icon("stop")
+print("kalibrace IR cidel - pred autem nesmi nic byt...")
+time.sleep(1)
+votes_left = 0
+votes_right = 0
+SAMPLES = 20
+for _ in range(SAMPLES):
+    d = fetchSensorData()
+    votes_left += 1 if d[5] else 0
+    votes_right += 1 if d[6] else 0
+    time.sleep(0.05)
+FREE_LEFT = votes_left > SAMPLES // 2
+FREE_RIGHT = votes_right > SAMPLES // 2
+print("volno znamena: IR L =", FREE_LEFT, "IR P =", FREE_RIGHT,
+      "(hlasu", votes_left, "/", votes_right, "z", SAMPLES, ")")
+
 while True:
     # get data from IO expander
     sensor_data = fetchSensorData()
     # an obstacle counts only when the sensor reports it 3 times in a row,
     # so single noisy readings do not make the car turn
-    obstacle_left = USE_IR_SENSORS and sensor_data[5] is False   # False = obstacle
-    obstacle_right = USE_IR_SENSORS and sensor_data[6] is False
+    obstacle_left = USE_IR_SENSORS and sensor_data[5] != FREE_LEFT
+    obstacle_right = USE_IR_SENSORS and sensor_data[6] != FREE_RIGHT
     for _ in range(2):
         if not (obstacle_left or obstacle_right):
             break
         time.sleep(0.01)
         again = fetchSensorData()
-        obstacle_left = obstacle_left and again[5] is False
-        obstacle_right = obstacle_right and again[6] is False
+        obstacle_left = obstacle_left and again[5] != FREE_LEFT
+        obstacle_right = obstacle_right and again[6] != FREE_RIGHT
     distance = get_distance()
     # debug output for the Serial window in Mu
     print("IO:", "{:08b}".format(sensor_buf[0]), "IR L:", sensor_data[5],
