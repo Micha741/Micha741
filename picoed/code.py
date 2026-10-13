@@ -14,7 +14,6 @@ import board
 import busio
 import digitalio
 import pwmio
-import pulseio
 import neopixel_write
 
 # define here your Joy Car Mainboard Revision
@@ -146,30 +145,41 @@ trigger = digitalio.DigitalInOut(board.P8)
 trigger.direction = digitalio.Direction.OUTPUT
 trigger.value = False
 
-echo = pulseio.PulseIn(board.P12, maxlen=1, idle_state=False)
-echo.pause()
-echo.clear()
+echo = digitalio.DigitalInOut(board.P12)
+echo.direction = digitalio.Direction.INPUT
+echo.pull = digitalio.Pull.DOWN  # no sensor / no signal -> reads 0, not noise
 
 
-# distance from ultrasonic sensor in cm (999 = nothing measured)
-def get_distance():
-    echo.clear()
-    # short impulse onto the trigger pin
+# one measurement: length of the echo pulse in microseconds (None = no echo)
+def measure_echo_us():
     trigger.value = True
     time.sleep(0.00001)
     trigger.value = False
-    echo.resume()
-    start = time.monotonic()
-    while len(echo) == 0:
-        if time.monotonic() - start > 0.1:
-            echo.pause()
-            return 999
-    echo.pause()
-    duration = echo[0]  # microseconds
-    if duration >= 65535:
+    t0 = time.monotonic_ns()
+    while not echo.value:
+        if time.monotonic_ns() - t0 > 30000000:  # 30 ms without echo
+            return None
+    start = time.monotonic_ns()
+    while echo.value:
+        if time.monotonic_ns() - start > 30000000:
+            return None
+    return (time.monotonic_ns() - start) / 1000
+
+
+# distance from ultrasonic sensor in cm (999 = nothing measured)
+# median of 3 measurements, pulses shorter than ~2 cm are ignored as noise
+def get_distance():
+    values = []
+    for _ in range(3):
+        us = measure_echo_us()
+        if us is not None and us > 120:
+            # speed of sound 343 m/s, there and back -> 0.01715 cm/us
+            values.append(us * 0.01715)
+        time.sleep(0.01)
+    if not values:
         return 999
-    # speed of sound 343 m/s, there and back -> 0.01715 cm/us
-    return round(duration * 0.01715, 2)
+    values.sort()
+    return round(values[len(values) // 2], 1)
 
 
 # servos: 100 Hz (10 ms period), pulse 1-2 ms
@@ -196,7 +206,7 @@ while True:
     sensor_data = fetchSensorData()
     # debug output for the Serial window in Mu
     # obstacle sensors: False = obstacle, True = free
-    print("IR L:", sensor_data[5], "IR P:", sensor_data[6])
+    print("IO:", "{:08b}".format(sensor_buf[0]), "IR L:", sensor_data[5], "IR P:", sensor_data[6])
 
     # check if both sensors detect an obstacle
     if sensor_data[5] is False and sensor_data[6] is False:
