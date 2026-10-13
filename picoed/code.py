@@ -22,14 +22,41 @@ joycar_rev = 1.3
 PWM_ADDR = 0x70  # PWM radic motoru
 IO_ADDR = 0x38   # IO expander se senzory
 
-# initialize I2C interface for the Joy Car Mainboard (P19 = SCL, P20 = SDA)
-i2c = busio.I2C(board.SCL, board.SDA, frequency=400000)
-while not i2c.try_lock():
-    pass
+# The ELECFREAKS "picoed" library (display, buttons, buzzer) opens the
+# P19/P20 I2C bus itself when imported, so it must be imported first and
+# its bus shared with the Joy-Car board. Without the library we open the bus.
+try:
+    import picoed
+    i2c = picoed.i2c
+    display = picoed.display
+except Exception as e:
+    print("knihovna picoed neni dostupna, displej nebude:", e)
+    i2c = busio.I2C(board.SCL, board.SDA)
+    display = None
+
+
+# the bus may be shared with the display (pico:ed V1), so lock it per use
+def i2c_write(addr, data):
+    while not i2c.try_lock():
+        pass
+    try:
+        i2c.writeto(addr, data)
+    finally:
+        i2c.unlock()
+
+
+def i2c_read_into(addr, buf):
+    while not i2c.try_lock():
+        pass
+    try:
+        i2c.readfrom_into(addr, buf)
+    finally:
+        i2c.unlock()
+
 
 # initialize PWM controller
-i2c.writeto(PWM_ADDR, bytes([0x00, 0x01]))
-i2c.writeto(PWM_ADDR, bytes([0xE8, 0xAA]))
+i2c_write(PWM_ADDR, bytes([0x00, 0x01]))
+i2c_write(PWM_ADDR, bytes([0xE8, 0xAA]))
 
 # the deceleration of a motor bias can be used to compensate for different motor speeds
 biasR = 0  # deceleration of the right motor in percent
@@ -57,7 +84,7 @@ def drive(PWM0, PWM1, PWM2, PWM3):
     )
     # transmit value for PWM channel (0-255) to PWM controller
     for channel, value in zip((0x02, 0x03, 0x04, 0x05), values):
-        i2c.writeto(PWM_ADDR, bytes([channel, value]))
+        i2c_write(PWM_ADDR, bytes([channel, value]))
 
 
 # --- RGB LED lights (8x NeoPixel on P0) ---
@@ -127,7 +154,7 @@ sensor_buf = bytearray(1)
 # bit 5 = ObstclLeft, bit 6 = ObstclRight, bit 7 = free pin(7)
 # (bit 8 = free (pin0) bit 9 = free (pin1)) - just with revision 1.3 or newer
 def fetchSensorData():
-    i2c.readfrom_into(IO_ADDR, sensor_buf)
+    i2c_read_into(IO_ADDR, sensor_buf)
     data = {}
     for bit in range(8):
         data[bit] = bool(sensor_buf[0] & (1 << bit))
@@ -208,14 +235,7 @@ def servo(channel, position):
         servo2.duty_cycle = duty
 
 
-# --- LED matrix directly on pico:ed (17 x 7) ---
-# uses the "picoed" library that ELECFREAKS ships in the lib folder;
-# without it the car still drives, only the arrows are not shown
-try:
-    from picoed import display
-except Exception as e:
-    display = None
-    print("displej pico:ed neni dostupny:", e)
+# --- LED matrix directly on pico:ed (17 x 7), `display` from picoed above ---
 
 ICONS = {
     "forward": (
