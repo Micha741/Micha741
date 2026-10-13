@@ -136,6 +136,9 @@ def servo(channel, position):
 while True:
     # get data from IO expander
     sensor_data = fetchSensorData()
+    # debug output for the Serial window in Mu
+    # obstacle sensors: False = obstacle, True = free
+    print("IR L:", sensor_data[5], "IR P:", sensor_data[6])
 
     # check if both sensors detect an obstacle
     if sensor_data[5] is False and sensor_data[6] is False:
@@ -154,7 +157,9 @@ while True:
         drive(40, 255, 40, 255)
 
     # check if there is more than 20cm otherwise do this routine
-    if get_distance() < 20:
+    distance = get_distance()
+    print("distance:", distance, "cm")
+    if distance < 20:
         # stop the JoyCar
         drive(0, 0, 0, 0)
         time.sleep(0.5)
