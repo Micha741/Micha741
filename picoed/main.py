@@ -30,8 +30,8 @@ biasR = 0  # deceleration of the right motor in percent
 biasL = 0  # deceleration of the left motor in percent
 
 # if a motor turns the wrong way, set True to swap its direction
-reverseL = True   # left motor (PWM0, PWM1) is wired the other way round
-reverseR = False  # right motor (PWM2, PWM3)
+reverseL = False  # left motor (PWM0, PWM1)
+reverseR = True   # right motor (PWM2, PWM3) is wired the other way round
 
 
 # control motors using the PWM controller
