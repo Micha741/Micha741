@@ -152,8 +152,12 @@ echo.pull = digitalio.Pull.DOWN  # no sensor / no signal -> reads 0, not noise
 
 # one measurement: length of the echo pulse in microseconds (None = no echo)
 def measure_echo_us():
+    # trigger pulse must be at least 10 us; time.sleep() is too coarse for that,
+    # so wait actively (about 20-50 us)
     trigger.value = True
-    time.sleep(0.00001)
+    t = time.monotonic_ns()
+    while time.monotonic_ns() - t < 20000:
+        pass
     trigger.value = False
     t0 = time.monotonic_ns()
     while not echo.value:
