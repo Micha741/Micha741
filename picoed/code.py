@@ -140,6 +140,9 @@ def fetchSensorData():
     return data
 
 
+# set to True once a working ultrasonic sensor is connected
+USE_ULTRASONIC = False
+
 # pins for ultrasonic sensor
 trigger = digitalio.DigitalInOut(board.P8)
 trigger.direction = digitalio.Direction.OUTPUT
@@ -173,6 +176,8 @@ def measure_echo_us():
 # distance from ultrasonic sensor in cm (999 = nothing measured)
 # median of 3 measurements, pulses shorter than ~2 cm are ignored as noise
 def get_distance():
+    if not USE_ULTRASONIC:
+        return 999
     values = []
     for _ in range(3):
         us = measure_echo_us()
