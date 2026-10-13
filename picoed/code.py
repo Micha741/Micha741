@@ -285,6 +285,9 @@ ICONS = {
     ),
 }
 DISPLAY_BRIGHTNESS = 40  # 0-255
+# pico:ed sits in the Joy-Car upside down relative to the driving direction,
+# so the icons are rotated by 180 degrees; set False if arrows point the wrong way
+DISPLAY_ROTATE_180 = True
 current_icon = None
 
 
@@ -299,7 +302,10 @@ def show_icon(name):
         for y, row in enumerate(ICONS[name]):
             for x, ch in enumerate(row):
                 if ch == "#":
-                    display.pixel(x0 + x, y, DISPLAY_BRIGHTNESS)
+                    px, py = x0 + x, y
+                    if DISPLAY_ROTATE_180:
+                        px, py = 16 - px, 6 - py
+                    display.pixel(px, py, DISPLAY_BRIGHTNESS)
     except Exception as e:
         print("chyba displeje, vypinam ho:", e)
         display = None
