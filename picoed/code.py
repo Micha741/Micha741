@@ -1,4 +1,4 @@
-# Joy-Car (Joy-IT) - vyhybani prekazkam + svetla
+# Joy-Car (Joy-IT) - vyhybani prekazkam + svetla + sipky na displeji pico:ed
 # Verze pro ELECFREAKS pico:ed s firmwarem CircuitPython.
 # Editor Mu 1.2: rezim "CircuitPython", ulozit jako code.py na disk CIRCUITPY.
 #
@@ -208,58 +208,163 @@ def servo(channel, position):
         servo2.duty_cycle = duty
 
 
+# --- LED matrix directly on pico:ed (17 x 7) ---
+# uses the "picoed" library that ELECFREAKS ships in the lib folder;
+# without it the car still drives, only the arrows are not shown
+try:
+    from picoed import display
+except Exception as e:
+    display = None
+    print("displej pico:ed neni dostupny:", e)
+
+ICONS = {
+    "forward": (
+        "...#...",
+        "..###..",
+        ".#.#.#.",
+        "#..#..#",
+        "...#...",
+        "...#...",
+        "...#...",
+    ),
+    "back": (
+        "...#...",
+        "...#...",
+        "...#...",
+        "#..#..#",
+        ".#.#.#.",
+        "..###..",
+        "...#...",
+    ),
+    "right": (
+        "...#...",
+        "....#..",
+        ".....#.",
+        "#######",
+        ".....#.",
+        "....#..",
+        "...#...",
+    ),
+    "left": (
+        "...#...",
+        "..#....",
+        ".#.....",
+        "#######",
+        ".#.....",
+        "..#....",
+        "...#...",
+    ),
+    "stop": (
+        "#.....#",
+        ".#...#.",
+        "..#.#..",
+        "...#...",
+        "..#.#..",
+        ".#...#.",
+        "#.....#",
+    ),
+}
+DISPLAY_BRIGHTNESS = 40  # 0-255
+current_icon = None
+
+
+def show_icon(name):
+    global display, current_icon
+    if display is None or name == current_icon:
+        return
+    current_icon = name
+    try:
+        display.fill(0)
+        x0 = (17 - 7) // 2  # center the 7x7 icon on the 17x7 display
+        for y, row in enumerate(ICONS[name]):
+            for x, ch in enumerate(row):
+                if ch == "#":
+                    display.pixel(x0 + x, y, DISPLAY_BRIGHTNESS)
+    except Exception as e:
+        print("chyba displeje, vypinam ho:", e)
+        display = None
+
+
+# --- driving manoeuvres ---
+SPEED_FORWARD = (40, 255, 40, 255)
+SPEED_BACK = (255, 40, 255, 40)
+TURN_RIGHT = (255, 40, 40, 255)
+TURN_LEFT = (40, 255, 255, 40)
+
+# how long to reverse after hitting an obstacle; about 3-5 cm,
+# make it longer/shorter if the car backs up too much or too little
+REVERSE_TIME = 0.3
+TURN_TIME = 0.5
+
+
+def stop():
+    drive(0, 0, 0, 0)
+    lights_brake()
+    show_icon("stop")
+
+
+def reverse():
+    show_icon("back")
+    drive(*SPEED_BACK)
+    time.sleep(REVERSE_TIME)
+    stop()
+    time.sleep(0.2)
+
+
+def turn(direction):
+    if direction == "right":
+        show_icon("right")
+        drive(*TURN_RIGHT)
+        blink(INDICATOR_RIGHT, TURN_TIME)
+    else:
+        show_icon("left")
+        drive(*TURN_LEFT)
+        blink(INDICATOR_LEFT, TURN_TIME)
+    drive(0, 0, 0, 0)
+
+
 lights_normal()
 
 while True:
     # get data from IO expander
     sensor_data = fetchSensorData()
-    # debug output for the Serial window in Mu
-    # obstacle sensors: False = obstacle, True = free
-    print("IO:", "{:08b}".format(sensor_buf[0]), "IR L:", sensor_data[5], "IR P:", sensor_data[6])
-
-    # check if both sensors detect an obstacle
-    if sensor_data[5] is False and sensor_data[6] is False:
-        # evade obstacle (turn right)
-        drive(255, 40, 40, 255)
-        blink(INDICATOR_RIGHT, 0.5)
-    # check if obstacle is detected on the left
-    elif sensor_data[5] is False and sensor_data[6] is True:
-        # evade obstacle (turn right)
-        drive(255, 40, 0, 0)
-        blink(INDICATOR_RIGHT, 0.5)
-    # check if obstacle is detected on the right
-    elif sensor_data[6] is False and sensor_data[5] is True:
-        # evade obstacle (turn left)
-        drive(0, 0, 255, 40)
-        blink(INDICATOR_LEFT, 0.5)
-    else:
-        # drive forwards
-        drive(40, 255, 40, 255)
-
-    # check if there is more than 20cm otherwise do this routine
+    obstacle_left = sensor_data[5] is False   # False = obstacle
+    obstacle_right = sensor_data[6] is False
     distance = get_distance()
-    print("distance:", distance, "cm")
-    if distance < 20:
-        # stop the JoyCar
-        drive(0, 0, 0, 0)
-        lights_brake()
-        time.sleep(0.5)
-        # set servomotor to the far right and measure distance
+    # debug output for the Serial window in Mu
+    print("IO:", "{:08b}".format(sensor_buf[0]), "IR L:", sensor_data[5],
+          "IR P:", sensor_data[6], "| distance:", distance, "cm")
+
+    if obstacle_left or obstacle_right:
+        # hit an obstacle: stop, back up a little, turn away from it
+        stop()
+        time.sleep(0.2)
+        reverse()
+        if obstacle_right and not obstacle_left:
+            turn("left")
+        else:
+            turn("right")
+        lights_normal()
+    elif distance < 20:
+        # ultrasonic: obstacle ahead, back up and look left/right with the servo
+        stop()
+        time.sleep(0.2)
+        reverse()
         servo(1, 0)
         time.sleep(0.5)
         distance_right = get_distance()
-        # set servomotor to the far left and measure distance
         servo(1, 180)
         time.sleep(0.5)
         distance_left = get_distance()
-        # set servomotor back in the middle
         servo(1, 90)
         time.sleep(0.5)
         if distance_left < distance_right:
-            # turn right
-            drive(255, 0, 0, 255)
-            blink(INDICATOR_RIGHT, 0.5)
+            turn("right")
         else:
-            # turn left
-            drive(0, 255, 255, 0)
-            blink(INDICATOR_LEFT, 0.5)
+            turn("left")
+        lights_normal()
+    else:
+        # drive forwards
+        show_icon("forward")
+        drive(*SPEED_FORWARD)
+        time.sleep(0.05)
