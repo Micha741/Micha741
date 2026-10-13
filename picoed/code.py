@@ -1,12 +1,13 @@
-# Joy-Car (Joy-IT) - vyhybani prekazkam
+# Joy-Car (Joy-IT) - vyhybani prekazkam + svetla
 # Verze pro ELECFREAKS pico:ed s firmwarem CircuitPython.
 # Editor Mu 1.2: rezim "CircuitPython", ulozit jako code.py na disk CIRCUITPY.
 #
 # Piny pico:ed (stejne oznaceni jako na micro:bitu):
-#   P19 = SCL, P20 = SDA  -> I2C k desce Joy-Car
+#   P19 = SCL, P20 = SDA  -> I2C k desce Joy-Car (motory, IR senzory)
 #   P8  = trigger, P12 = echo -> ultrazvuk
 #   P14, P15 -> snimace rychlosti (od revize 1.3)
 #   P1, P13  -> serva
+#   P0       -> RGB LED svetla (8x NeoPixel)
 
 import time
 import board
@@ -14,6 +15,7 @@ import busio
 import digitalio
 import pwmio
 import pulseio
+import neopixel_write
 
 # define here your Joy Car Mainboard Revision
 joycar_rev = 1.3
@@ -35,16 +37,16 @@ biasR = 0  # deceleration of the right motor in percent
 biasL = 0  # deceleration of the left motor in percent
 
 # if a motor turns the wrong way, set True to swap its direction
-reverseL = False  # left motor (PWM0, PWM1)
-reverseR = True   # right motor (PWM2, PWM3) is wired the other way round
+reverseR = False  # right motor (PWM0, PWM1)
+reverseL = True   # left motor (PWM2, PWM3) is wired the other way round
 
 
 # control motors using the PWM controller
-# PWM0 and PWM1 for the left motor and PWM2 and PWM3 for the right motor
+# PWM0 and PWM1 for the right motor and PWM2 and PWM3 for the left motor
 def drive(PWM0, PWM1, PWM2, PWM3):
-    if reverseL:
-        PWM0, PWM1 = PWM1, PWM0
     if reverseR:
+        PWM0, PWM1 = PWM1, PWM0
+    if reverseL:
         PWM2, PWM3 = PWM3, PWM2
     factorR = (100 - biasR) / 100
     factorL = (100 - biasL) / 100
@@ -57,6 +59,60 @@ def drive(PWM0, PWM1, PWM2, PWM3):
     # transmit value for PWM channel (0-255) to PWM controller
     for channel, value in zip((0x02, 0x03, 0x04, 0x05), values):
         i2c.writeto(PWM_ADDR, bytes([channel, value]))
+
+
+# --- RGB LED lights (8x NeoPixel on P0) ---
+# LED numbers - if a different LED lights up than expected, change them here
+HEADLIGHTS = (0, 3)       # predni svetla
+BACKLIGHTS = (5, 6)       # zadni svetla
+INDICATOR_LEFT = (1, 4)   # levy blinkr
+INDICATOR_RIGHT = (2, 7)  # pravy blinkr
+
+WHITE = (60, 60, 60)
+RED_DIM = (40, 0, 0)
+RED = (255, 0, 0)
+ORANGE = (255, 80, 0)
+OFF = (0, 0, 0)
+
+led_pin = digitalio.DigitalInOut(board.P0)
+led_pin.direction = digitalio.Direction.OUTPUT
+pixels = [OFF] * 8
+
+
+def show_leds():
+    buf = bytearray()
+    for r, g, b in pixels:
+        buf += bytes([g, r, b])  # NeoPixel expects GRB order
+    neopixel_write.neopixel_write(led_pin, buf)
+
+
+def set_leds(indices, color):
+    for i in indices:
+        pixels[i] = color
+
+
+def lights_normal():
+    set_leds(range(8), OFF)
+    set_leds(HEADLIGHTS, WHITE)
+    set_leds(BACKLIGHTS, RED_DIM)
+    show_leds()
+
+
+def lights_brake():
+    set_leds(BACKLIGHTS, RED)
+    show_leds()
+
+
+# blink the indicator for the given time (replaces time.sleep while turning)
+def blink(indicator, seconds):
+    end = time.monotonic() + seconds
+    on = True
+    while time.monotonic() < end:
+        set_leds(indicator, ORANGE if on else OFF)
+        show_leds()
+        on = not on
+        time.sleep(0.25)
+    lights_normal()
 
 
 # speed sensors (revision 1.3 and newer)
@@ -133,6 +189,8 @@ def servo(channel, position):
         servo2.duty_cycle = duty
 
 
+lights_normal()
+
 while True:
     # get data from IO expander
     sensor_data = fetchSensorData()
@@ -142,16 +200,19 @@ while True:
 
     # check if both sensors detect an obstacle
     if sensor_data[5] is False and sensor_data[6] is False:
+        # evade obstacle (turn right)
         drive(255, 40, 40, 255)
-        time.sleep(0.5)
+        blink(INDICATOR_RIGHT, 0.5)
     # check if obstacle is detected on the left
     elif sensor_data[5] is False and sensor_data[6] is True:
+        # evade obstacle (turn right)
         drive(255, 40, 0, 0)
-        time.sleep(0.5)
+        blink(INDICATOR_RIGHT, 0.5)
     # check if obstacle is detected on the right
     elif sensor_data[6] is False and sensor_data[5] is True:
+        # evade obstacle (turn left)
         drive(0, 0, 255, 40)
-        time.sleep(0.5)
+        blink(INDICATOR_LEFT, 0.5)
     else:
         # drive forwards
         drive(40, 255, 40, 255)
@@ -162,6 +223,7 @@ while True:
     if distance < 20:
         # stop the JoyCar
         drive(0, 0, 0, 0)
+        lights_brake()
         time.sleep(0.5)
         # set servomotor to the far right and measure distance
         servo(1, 0)
@@ -177,8 +239,8 @@ while True:
         if distance_left < distance_right:
             # turn right
             drive(255, 0, 0, 255)
-            time.sleep(0.5)
+            blink(INDICATOR_RIGHT, 0.5)
         else:
             # turn left
             drive(0, 255, 255, 0)
-            time.sleep(0.5)
+            blink(INDICATOR_LEFT, 0.5)
