@@ -34,10 +34,18 @@ i2c.writeto(PWM_ADDR, bytes([0xE8, 0xAA]))
 biasR = 0  # deceleration of the right motor in percent
 biasL = 0  # deceleration of the left motor in percent
 
+# if a motor turns the wrong way, set True to swap its direction
+reverseL = True   # left motor (PWM0, PWM1) is wired the other way round
+reverseR = False  # right motor (PWM2, PWM3)
+
 
 # control motors using the PWM controller
 # PWM0 and PWM1 for the left motor and PWM2 and PWM3 for the right motor
 def drive(PWM0, PWM1, PWM2, PWM3):
+    if reverseL:
+        PWM0, PWM1 = PWM1, PWM0
+    if reverseR:
+        PWM2, PWM3 = PWM3, PWM2
     factorR = (100 - biasR) / 100
     factorL = (100 - biasL) / 100
     values = (
