@@ -1,6 +1,6 @@
 import type { CircuitProjectInput } from '../types/circuit';
 
-export const CIRCUIT_LIBRARY_VERSION = 16;
+export const CIRCUIT_LIBRARY_VERSION = 17;
 
 /**
  * Přesný počet kusů u drobných pasivních součástek (rezistory) je odhad podle
@@ -1026,7 +1026,9 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
       'propojovací jednotka mezi micro:bit a všemi senzory/akčními členy — 8 senzorů/vstupů je ' +
       'navíc svedeno přes I2C IO-expander (jen 2 piny micro:bitu), motory a servo řízeny přes PWM ' +
       'řadič. Lze programovat blokově (MakeCode) i textově (MicroPython), druhý micro:bit navíc ' +
-      'umožňuje bezdrátové ovládání přes BT/rádio s využitím akcelerometru jako joysticku.',
+      'umožňuje bezdrátové ovládání přes BT/rádio s využitím akcelerometru jako joysticku. ' +
+      '⚠️ Místo BBC micro:bitu lze použít i ElecFreaks Pico:ed (RP2040, "micro:bit form factor") ' +
+      '— viz poznámka níže pro rozdíly.',
     image: 'joycar-schema.jpg',
     pcbImage: null,
     notes:
@@ -1059,9 +1061,22 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
       '(0=standby, 1=sledování čáry, 2=vyhýbání se překážkám); sonar.py — sonar() vrací vzdálenost ' +
       'v cm z ultrazvukového senzoru; servo.py — servo(x,y), x=kanál 1–2, y=poloha 0–180°. ' +
       'Kompletní předpřipravený sketch se 3 režimy (přepínání tlačítkem A) je ke stažení přímo na ' +
-      'webu výrobce, stačí zkopírovat na micro:bit jako MICROBIT disk.',
+      'webu výrobce, stačí zkopírovat na micro:bit jako MICROBIT disk. ' +
+      'ALTERNATIVA ElecFreaks Pico:ed: podle oficiálního "Pico:ed V2 Pin Diagram" (elecfreaks.com, ' +
+      'ověřeno uživatelem nahraným obrázkem diagramu) používá Pico:ed stejné "microbit pin" ' +
+      'označení na hranovém konektoru (0, 1, 2, 3V, GND, 8, 12, 13/14/15, 16, SDA/SCL) jako ' +
+      'skutečný BBC micro:bit — je navržen jako fyzicky i pinově kompatibilní náhrada ("micro:bit ' +
+      'form factor"), takže zapojení Joy-Car mainboardu na tyto piny (viz schéma výše) zůstává ' +
+      'stejné. Vnitřní GPIO čísla RP2040 pod jednotlivými "microbit pin" označeními se liší od ' +
+      'skutečného micro:bitu (nRF51/52) — relevantní jen pokud píšeš kód s přímými čísly GPIO ' +
+      'místo kompatibilní micro:bit knihovny. ⚠️ ZÁSADNÍ ROZDÍL: Pico:ed NEMÁ Bluetooth ani ' +
+      'proprietární 2,4GHz rádio (na rozdíl od BBC micro:bit v1/v2) — funkce bezdrátového ' +
+      'dálkového ovládání druhým micro:bitem (rc_joycar.py/rc_remote.py, rc_plus_*.py) proto na ' +
+      'Pico:ed nelze použít beze změny, chybí jí potřebný hardware. Pico:ed má vlastní 2 tlačítka ' +
+      '(A/B) a 5×5 (resp. větší) LED maticový displej jako micro:bit, pohání ho dvoujádrový ' +
+      'RP2040 (Cortex-M0+) místo nRF52/nRF51.',
     parts: [
-      { label: 'BBC micro:bit (v1/v2) — řídicí jednotka', match: 'micro:bit', quantity: 1 },
+      { label: 'BBC micro:bit (v1/v2) — řídicí jednotka (nebo ElecFreaks Pico:ed, viz poznámka — bez Bluetooth/rádia)', match: 'micro:bit', quantity: 1 },
       { label: 'Joy-Car Mainboard (propojovací deska s IO-expanderem a PWM/motor řadičem)', match: 'joy-car mainboard', quantity: 1 },
       { label: 'DC převodovkový motor s kolem (žlutý TT motor)', match: 'DC motor', quantity: 2 },
       { label: 'Servomotor (mini, 1–2 kanály)', match: 'servo', quantity: 2 },
