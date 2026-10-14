@@ -6,6 +6,7 @@ import type { ImageSourcePropType } from 'react-native';
 // přidat řádek ručně.
 export const CIRCUIT_IMAGES: Record<string, ImageSourcePropType> = {
   'DS18B20-arduino-wiring.jpg': require('../../assets/circuits/DS18B20-arduino-wiring.jpg'),
+  'joycar-schema.jpg': require('../../assets/circuits/joycar-schema.jpg'),
   'vanocni-stromecek-4060.jpg': require('../../assets/circuits/vanocni-stromecek-4060.jpg'),
   'ultrazvukova-pistalka.jpg': require('../../assets/circuits/ultrazvukova-pistalka.jpg'),
   'univerzalni-reproskrin.jpg': require('../../assets/circuits/univerzalni-reproskrin.jpg'),

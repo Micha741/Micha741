@@ -1,6 +1,6 @@
 import type { CircuitProjectInput } from '../types/circuit';
 
-export const CIRCUIT_LIBRARY_VERSION = 15;
+export const CIRCUIT_LIBRARY_VERSION = 16;
 
 /**
  * Přesný počet kusů u drobných pasivních součástek (rezistory) je odhad podle
@@ -1015,6 +1015,64 @@ export const SEED_CIRCUIT_PROJECTS: CircuitProjectInput[] = [
       { label: 'R2 — rezistor 1 kΩ', match: '1 kΩ', quantity: 1 },
       { label: 'C1 — keramický kondenzátor 10 nF', match: '10 nF', quantity: 1 },
       { label: 'C2 — keramický kondenzátor 100 nF/50 V', match: '100 nF', quantity: 1 },
+    ],
+  },
+  {
+    name: 'Joy-Car (Joy-IT) — micro:bit education robot',
+    description:
+      'Modulární výukový robotický podvozek na bázi BBC micro:bit. Dvě kola s DC motory a snímači ' +
+      'otáček, servem polohovaný ultrazvukový senzor vzdálenosti, 3 senzory sledování čáry, 2 ' +
+      'senzory překážek (IR), 4 RGB LED "světlomety" a reproduktor. Mainboard funguje jako ' +
+      'propojovací jednotka mezi micro:bit a všemi senzory/akčními členy — 8 senzorů/vstupů je ' +
+      'navíc svedeno přes I2C IO-expander (jen 2 piny micro:bitu), motory a servo řízeny přes PWM ' +
+      'řadič. Lze programovat blokově (MakeCode) i textově (MicroPython), druhý micro:bit navíc ' +
+      'umožňuje bezdrátové ovládání přes BT/rádio s využitím akcelerometru jako joysticku.',
+    image: 'joycar-schema.jpg',
+    pcbImage: null,
+    notes:
+      'Zdroj: Joy-IT "JOY-CAR — Educationroboter auf micro:bit Basis", Anleitung V. 2021-04-30 ' +
+      '(www.joy-it.net), nahraný uživatelem PDF manuál. Schéma je převzaté z oficiálního manuálu ' +
+      '(str. 48, "Alles am rechten Fleck") — kompletní propojovací diagram všech modulů na piny ' +
+      'micro:bitu/IO-expanderu, ne scan časopisu. Pinout micro:bitu: Pin0=LED světlomety (přes ' +
+      'IO-expander), Pin1=Servo1 (ultrazvuk pan), Pin2=Servo2, Pin8=US Trigger, Pin12=US Echo, ' +
+      'Pin13/14/15=SPI (SCK/MISO/MOSI, nevyužito senzory), Pin16=Speaker, 3V analogový vstup=ADC ' +
+      'měření napětí baterie, SDA/SCL (I2C)=IO-expander (8 vstupů: speed L/R, line-tracking L/M/R, ' +
+      'obstacle L/R, 1 volný digitální výstup EOUT7) + PWM/motor řadič (oba motory). Motory ' +
+      'připojeny přímo na svorkovnice mainboardu (MOT_L/MOT_R), ne přes micro:bit piny. ' +
+      'Napájení: BAT terminál přijímá 4,5–9 V (typicky 4× AA baterie), přepínač ON/OFF na desce, ' +
+      'jumpery SPEAKER/P16 a BATTERY/P2 uvolňují tyto piny pro vlastní použití, pokud reproduktor/' +
+      'ADC měření nepotřebuješ. ' +
+      'PROGRAMOVÁNÍ: MakeCode (blokové, pro začátečníky, JavaScript/Python export) nebo MicroPython ' +
+      '(editor Mu, https://codewith.mu). Hotový ukázkový MicroPython kód je výrobcem rozdělen do ' +
+      '12 souborů (ke stažení na joycar.joy-it.net, nejsou doslovně v manuálu, proto zde jen popis ' +
+      'API/funkcí, ne přepsaný zdrojový kód): io_expander_read.py — fetchSensorData() vrací ' +
+      'dictionary stavů 8 senzorů (0=speed L, 1=speed R, 2=line L, 3=line M, 4=line R, 5=obstacle ' +
+      'L, 6=obstacle R, 7=volitelný EOUT7), hodnoty jako bool; io_expander_control.py — out7on()/' +
+      'out7off() pro volitelný digitální výstup; motor_control.py — drive(PWM0,PWM1,PWM2,PWM3) ' +
+      '0–255 pro oba motory (PWM0/1=levý, PWM2/3=pravý, směr dle poměru), stop() pro brzdění; ' +
+      'adc_read.py — supplyVoltage() vrací napětí baterie z interního ADC; rc_joycar.py + ' +
+      'rc_remote.py — jednoduché dálkové ovládání druhým micro:bitem přes náklon (Button A=houkačka, ' +
+      'Button B=světla); rc_plus_joycar.py + rc_plus_remote.py — totéž s plynulou rychlostí/' +
+      'zatáčením dle úhlu náklonu; lights.py — ovládání WS2812B RGB LED "světlometů": lights(x), ' +
+      'highBeam(x), breakLight(x), reverseLight(x) (x=0/1), indicator(y) (y=0 vypnuto/1 vlevo/' +
+      '2 vpravo/3 výstražný); demo.py — ukázková aplikace se 3 režimy přepínanými tlačítkem A ' +
+      '(0=standby, 1=sledování čáry, 2=vyhýbání se překážkám); sonar.py — sonar() vrací vzdálenost ' +
+      'v cm z ultrazvukového senzoru; servo.py — servo(x,y), x=kanál 1–2, y=poloha 0–180°. ' +
+      'Kompletní předpřipravený sketch se 3 režimy (přepínání tlačítkem A) je ke stažení přímo na ' +
+      'webu výrobce, stačí zkopírovat na micro:bit jako MICROBIT disk.',
+    parts: [
+      { label: 'BBC micro:bit (v1/v2) — řídicí jednotka', match: 'micro:bit', quantity: 1 },
+      { label: 'Joy-Car Mainboard (propojovací deska s IO-expanderem a PWM/motor řadičem)', match: 'joy-car mainboard', quantity: 1 },
+      { label: 'DC převodovkový motor s kolem (žlutý TT motor)', match: 'DC motor', quantity: 2 },
+      { label: 'Servomotor (mini, 1–2 kanály)', match: 'servo', quantity: 2 },
+      { label: 'Ultrazvukový senzor vzdálenosti (HC-SR04 kompatibilní)', match: 'HC-SR04', quantity: 1 },
+      { label: 'Line-tracking (IR) senzor sledování čáry', match: 'line tracking', quantity: 3 },
+      { label: 'Hindernis (IR) senzor překážek', match: 'IR senzor překážek', quantity: 2 },
+      { label: 'Speed senzor (optický snímač otáček kola)', match: 'speed senzor', quantity: 2 },
+      { label: 'RGB LED modul (WS2812B, "světlomet")', match: 'WS2812B', quantity: 4 },
+      { label: 'Baterie 4× AA v pouzdře (4,5–9 V)', match: 'Baterie AA', quantity: 4 },
+      { label: 'Propojovací kabel Dupont 3-pin', match: 'dupont kabel', quantity: 7 },
+      { label: 'Propojovací kabel Dupont 4-pin', match: 'dupont kabel', quantity: 5 },
     ],
   },
 ];
