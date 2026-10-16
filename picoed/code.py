@@ -63,9 +63,10 @@ biasR = 0  # deceleration of the right motor in percent
 biasL = 0  # deceleration of the left motor in percent
 
 # if a motor turns the wrong way, set True to swap its direction
-# with both False the car drove straight but backwards, so both are inverted
-reverseR = True   # right motor (PWM0, PWM1)
-reverseL = True   # left motor (PWM2, PWM3)
+# tested: PWM0=40 PWM1=255 / PWM2=40 PWM3=255 drive both wheels forward,
+# so nothing is swapped (True/True makes the car drive backwards)
+reverseR = False  # right motor (PWM0, PWM1)
+reverseL = False  # left motor (PWM2, PWM3)
 
 
 # control motors using the PWM controller
