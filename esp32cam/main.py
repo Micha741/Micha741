@@ -1,12 +1,12 @@
 # Joy-Car + pico:ed: kamera a ovladani pres Wi-Fi
-# Deska: Freenove ESP32-WROVER CAM, firmware Lemariva micropython-camera-driver
-# (https://github.com/lemariva/micropython-camera-driver) + picoweb.
+# Deska: Freenove ESP32-S3 WROOM (s kamerou), MicroPython s modulem "camera"
+# (firmware pro ESP32-S3 z navodu Freenove) + picoweb.
 # Thonny: ulozit na ESP32 jako main.py.
 #
 # Propojeni s pico:ed (seriova linka, obe desky maji 3,3 V logiku):
-#   ESP32 GPIO33 (RX)  <-  pico:ed P16 (TX)
-#   ESP32 GPIO32 (TX)  ->  pico:ed P13 (RX)
-#   ESP32 GND          --  pico:ed / Joy-Car GND
+#   ESP32-S3 GPIO14 (RX)  <-  pico:ed P2  (TX)  - velka ploska na okraji pico:ed
+#   ESP32-S3 GPIO21 (TX)  ->  pico:ed P13 (RX)  - signal konektoru serva 2 na Joy-Caru
+#   ESP32-S3 GND          --  pico:ed GND
 #
 # Po spusteni otevri v prohlizeci adresu, kterou ESP32 vypise
 # v Thonny ("network config: ('192.168.x.x', ...)").
@@ -21,7 +21,7 @@ SSID = "Doma"          # Enter your WiFi name
 PASSWORD = "*****"     # Enter your WiFi password
 
 # serial link to pico:ed
-uart = UART(2, baudrate=115200, tx=32, rx=33, rxbuf=1024)
+uart = UART(1, baudrate=115200, tx=21, rx=14, rxbuf=1024)
 status_line = b""      # last status from pico:ed, e.g. b"D:23.5;M:AUTO;L:1;R:1"
 rx_buf = b""
 
@@ -61,11 +61,12 @@ def wifi_connect():
 # Initializing the Camera
 def camera_init():
     camera.deinit()
-    camera.init(0, d0=4, d1=5, d2=18, d3=19, d4=36, d5=39, d6=34, d7=35,
+    # camera pins of the Freenove ESP32-S3 WROOM (see its pinout: CAM_Y2..Y9 etc.)
+    camera.init(0, d0=11, d1=9, d2=8, d3=10, d4=12, d5=18, d6=17, d7=16,
                 format=camera.JPEG, framesize=camera.FRAME_VGA,
                 xclk_freq=camera.XCLK_20MHz,
-                href=23, vsync=25, reset=-1, pwdn=-1,
-                sioc=27, siod=26, xclk=21, pclk=22, fb_location=camera.PSRAM)
+                href=7, vsync=6, reset=-1, pwdn=-1,
+                sioc=5, siod=4, xclk=15, pclk=13, fb_location=camera.PSRAM)
     camera.framesize(camera.FRAME_VGA)
     camera.flip(1)
     camera.mirror(1)

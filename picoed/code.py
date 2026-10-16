@@ -8,7 +8,7 @@
 #   P14, P15 -> snimace rychlosti (od revize 1.3)
 #   P1       -> servo ultrazvuku
 #   P0       -> RGB LED svetla (8x NeoPixel)
-#   P16 (TX), P13 (RX) -> seriova linka do ESP32 kamery (ovladani pres Wi-Fi)
+#   P2 (TX), P13 (RX)  -> seriova linka do ESP32 kamery (ovladani pres Wi-Fi)
 
 import time
 import board
@@ -360,7 +360,7 @@ lights_normal()
 servo(1, 90)
 time.sleep(0.5)
 
-# --- remote control from the ESP32 camera (serial link P16 TX / P13 RX) ---
+# --- remote control from the ESP32 camera (serial link P2 TX / P13 RX) ---
 # The camera web page sends one letter per line:
 #   F/B/L/R = drive forward/back/left/right, S = stop  (switches to manual mode)
 #   A = automatic driving, M = manual mode
@@ -373,7 +373,7 @@ STATUS_INTERVAL = 0.3
 uart = None
 if USE_REMOTE:
     try:
-        uart = busio.UART(board.P16, board.P13, baudrate=115200, timeout=0,
+        uart = busio.UART(board.P2, board.P13, baudrate=115200, timeout=0,
                           receiver_buffer_size=256)
     except Exception as e:
         print("seriova linka do kamery nejde otevrit:", e)
