@@ -419,6 +419,7 @@ while True:
         lights_normal()
     elif distance < OBSTACLE_DISTANCE:
         # ultrasonic: obstacle ahead, back up and look left/right with the servo
+        print("PREKAZKA: ultrazvuk", distance, "cm")
         stop()
         time.sleep(0.2)
         reverse()
@@ -430,6 +431,7 @@ while True:
         distance_left = get_distance()
         servo(1, 90)
         time.sleep(0.5)
+        print("  vpravo:", distance_right, "cm  vlevo:", distance_left, "cm")
         if distance_left < distance_right:
             turn("right")
         else:
