@@ -170,7 +170,8 @@ def fetchSensorData():
 
 
 # set to True once a working ultrasonic sensor is connected
-USE_ULTRASONIC = False
+USE_ULTRASONIC = True
+OBSTACLE_DISTANCE = 20  # cm: closer than this counts as an obstacle ahead
 
 # pins for ultrasonic sensor
 trigger = digitalio.DigitalInOut(board.P8)
@@ -396,6 +397,11 @@ while True:
         obstacle_left = obstacle_left and again[5] != FREE_LEFT
         obstacle_right = obstacle_right and again[6] != FREE_RIGHT
     distance = get_distance()
+    # a single short reading can be noise: only trust it if a second one agrees
+    if distance < OBSTACLE_DISTANCE:
+        second = get_distance()
+        if second >= OBSTACLE_DISTANCE:
+            distance = second
     # debug output for the Serial window in Mu
     print("IO:", "{:08b}".format(sensor_buf[0]), "IR L:", sensor_data[5],
           "IR P:", sensor_data[6], "| distance:", distance, "cm")
@@ -411,7 +417,7 @@ while True:
         else:
             turn("right")
         lights_normal()
-    elif distance < 20:
+    elif distance < OBSTACLE_DISTANCE:
         # ultrasonic: obstacle ahead, back up and look left/right with the servo
         stop()
         time.sleep(0.2)
