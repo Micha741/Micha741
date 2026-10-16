@@ -356,6 +356,11 @@ def turn(direction):
 
 lights_normal()
 
+# point the ultrasonic sensor (on servo 1) straight ahead; without this the
+# servo gets no signal after start-up and the sensor may face sideways
+servo(1, 90)
+time.sleep(0.5)
+
 # --- calibrate IR obstacle sensors ---
 # Some sensors report False for an obstacle, some True. At start-up the car
 # stands still with NOTHING in front of it and remembers what "free" looks like;
