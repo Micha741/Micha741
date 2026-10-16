@@ -6,8 +6,9 @@
 #   P19 = SCL, P20 = SDA  -> I2C k desce Joy-Car (motory, IR senzory)
 #   P8  = trigger, P12 = echo -> ultrazvuk
 #   P14, P15 -> snimace rychlosti (od revize 1.3)
-#   P1, P13  -> serva
+#   P1       -> servo ultrazvuku
 #   P0       -> RGB LED svetla (8x NeoPixel)
+#   P16 (TX), P13 (RX) -> seriova linka do ESP32 kamery (ovladani pres Wi-Fi)
 
 import time
 import board
@@ -223,7 +224,6 @@ def get_distance():
 
 # servos: 100 Hz (10 ms period), pulse 1-2 ms
 servo1 = pwmio.PWMOut(board.P1, frequency=100, duty_cycle=0)
-servo2 = pwmio.PWMOut(board.P13, frequency=100, duty_cycle=0)
 
 
 # method to change position of servo motors (0-180 degrees)
@@ -234,8 +234,6 @@ def servo(channel, position):
     duty = int(pulse_ms / 10 * 65535)
     if channel == 1:
         servo1.duty_cycle = duty
-    elif channel == 2:
-        servo2.duty_cycle = duty
 
 
 # --- LED matrix directly on pico:ed (17 x 7), `display` from picoed above ---
@@ -362,6 +360,100 @@ lights_normal()
 servo(1, 90)
 time.sleep(0.5)
 
+# --- remote control from the ESP32 camera (serial link P16 TX / P13 RX) ---
+# The camera web page sends one letter per line:
+#   F/B/L/R = drive forward/back/left/right, S = stop  (switches to manual mode)
+#   A = automatic driving, M = manual mode
+# While a drive button is held the page repeats the command; if nothing comes
+# for MANUAL_TIMEOUT seconds the car stops (e.g. Wi-Fi dropped).
+USE_REMOTE = True
+MANUAL_TIMEOUT = 1.0
+STATUS_INTERVAL = 0.3
+
+uart = None
+if USE_REMOTE:
+    try:
+        uart = busio.UART(board.P16, board.P13, baudrate=115200, timeout=0,
+                          receiver_buffer_size=256)
+    except Exception as e:
+        print("seriova linka do kamery nejde otevrit:", e)
+
+mode = "AUTO"
+manual_cmd = "S"
+last_cmd_time = 0.0
+last_status_time = 0.0
+uart_buf = b""
+
+
+def poll_remote():
+    global mode, manual_cmd, last_cmd_time, uart_buf
+    if uart is None:
+        return
+    data = uart.read(64)
+    if not data:
+        return
+    uart_buf = (uart_buf + data)[-64:]
+    while b"\n" in uart_buf:
+        line, uart_buf = uart_buf.split(b"\n", 1)
+        line = line.strip()
+        if len(line) != 1:
+            continue
+        c = chr(line[0])
+        if c == "A":
+            mode = "AUTO"
+            print("REMOTE: automaticka jizda")
+        elif c == "M":
+            mode = "MANUAL"
+            manual_cmd = "S"
+        elif c in "FBLRS":
+            if mode != "MANUAL":
+                print("REMOTE: rucni rizeni")
+            mode = "MANUAL"
+            manual_cmd = c
+            last_cmd_time = time.monotonic()
+
+
+def send_status(distance, sensor_data):
+    global last_status_time
+    if uart is None or time.monotonic() - last_status_time < STATUS_INTERVAL:
+        return
+    last_status_time = time.monotonic()
+    line = "D:%.1f;M:%s;L:%d;R:%d\n" % (
+        distance, mode, 1 if sensor_data[5] == FREE_LEFT else 0,
+        1 if sensor_data[6] == FREE_RIGHT else 0)
+    try:
+        uart.write(line.encode())
+    except Exception:
+        pass
+
+
+def manual_drive(distance):
+    global manual_cmd
+    if manual_cmd != "S" and time.monotonic() - last_cmd_time > MANUAL_TIMEOUT:
+        manual_cmd = "S"  # no command from the phone for a while -> stop
+    if manual_cmd == "F":
+        if distance < OBSTACLE_DISTANCE:
+            drive(0, 0, 0, 0)  # do not drive into an obstacle
+            lights_brake()
+            show_icon("stop")
+        else:
+            lights_normal()
+            show_icon("forward")
+            drive(*SPEED_FORWARD)
+    elif manual_cmd == "B":
+        show_icon("back")
+        drive(*SPEED_BACK)
+    elif manual_cmd == "L":
+        show_icon("left")
+        drive(*TURN_LEFT)
+    elif manual_cmd == "R":
+        show_icon("right")
+        drive(*TURN_RIGHT)
+    else:
+        drive(0, 0, 0, 0)
+        show_icon("stop")
+
+
 # --- calibrate IR obstacle sensors ---
 # Some sensors report False for an obstacle, some True. At start-up the car
 # stands still with NOTHING in front of it and remembers what "free" looks like;
@@ -383,6 +475,7 @@ print("volno znamena: IR L =", FREE_LEFT, "IR P =", FREE_RIGHT,
       "(hlasu", votes_left, "/", votes_right, "z", SAMPLES, ")")
 
 while True:
+    poll_remote()
     # get data from IO expander
     sensor_data = fetchSensorData()
     # an obstacle counts only when the sensor reports it 3 times in a row,
@@ -402,6 +495,13 @@ while True:
         second = get_distance()
         if second >= OBSTACLE_DISTANCE:
             distance = second
+    send_status(distance, sensor_data)
+
+    if mode == "MANUAL":
+        manual_drive(distance)
+        time.sleep(0.02)
+        continue
+
     # debug output for the Serial window in Mu
     print("IO:", "{:08b}".format(sensor_buf[0]), "IR L:", sensor_data[5],
           "IR P:", sensor_data[6], "| distance:", distance, "cm")
