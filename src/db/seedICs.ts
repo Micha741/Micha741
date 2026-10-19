@@ -570,10 +570,34 @@ const IC_SPECS: IcSpec[] = [
   },
   {
     name: 'LM337',
-    packageType: 'TO-220 — vývody: 1=ADJ, 2=výstup (OUT), 3=vstup (IN)',
-    value: 'Nastavitelný lineární regulátor -1,25 až -37 V / 1,5 A',
-    notes: 'Záporná obdoba LM317, pro symetrická napájení operačních zesilovačů.',
-    tags: 'io,regulátor,lm337,napájení,nastavitelný',
+    packageType:
+      'T suffix: TO-220 (CASE 221A), piny 1=Adjust, 2=Vin, 3=Vout — pozor, chladicí ploška ' +
+      '(heatsink) pouzdra je vodivě spojená s pinem 2 (Vin), ne s Vout jako u kladného LM317! ' +
+      'D2T suffix: D2PAK/TO-263 (CASE 936, SMD), stejné pořadí pinů 1/2/3, terminál 4 (chladicí ' +
+      'ploška) = Vin.',
+    value:
+      'Nastavitelný lineární regulátor záporného napětí, -1,2 až -37 V, výstupní proud >1,5 A, ' +
+      'Vref typ. -1,25 V',
+    notes:
+      'Motorola (nyní onsemi) "LM337 — Three-Terminal Adjustable Output Negative Voltage ' +
+      'Regulator" (dok. LM337/D, rev. 1, 1996). Záporná komplementární obdoba LM317 (viz tam) — ' +
+      'používá se hlavně pro symetrická ± napájení operačních zesilovačů spolu s LM317 na kladné ' +
+      'větvi. Plovoucí (floating) 3-vývodový regulátor, interní tepelná ochrana, zkratuvzdorné ' +
+      'proudové omezení konstantní s teplotou, kompenzace bezpečné pracovní oblasti výstupního ' +
+      'tranzistoru. Vout = Vref × (1 + R2/R1) + IAdj×R2, typicky R1=120 Ω (na rozdíl od R1=240 Ω ' +
+      'běžně používaného u LM317). Ochranné diody D1/D2 (1N4002) doporučeny při VO přes -25 V ' +
+      'nebo CO>25 µF/CAdj>10 µF — D1 brání vybíjení CO přes IC při zkratu vstupu, D2 chrání CAdj ' +
+      'proti vybíjení přes IC. Obsahuje 39 aktivních tranzistorů. Mezní hodnoty: VI-VO max 40 V, ' +
+      'PD interně omezen, RθJA 65 °C/W (TO-220) / 70 °C/W (D2PAK), RθJC 5,0 °C/W, TJ -40 až ' +
+      '+125 °C, Tstg -65 až +150 °C. Elektrické char. @|VI-VO|=5V/IO=0,5A/25°C: Vref -1,213 až ' +
+      '-1,287 V (typ. -1,25 V), proud vývodu Adjust typ. 65 µA/max 100 µA, minimální zátěžový ' +
+      'proud (nutný pro regulaci) 1,5-6,0 mA (ΔV≤10V) / 2,5-10 mA (ΔV≤40V), max výstupní proud ' +
+      '1,5-2,2 A (ΔV≤15V, T pouzdro), potlačení zvlnění (ripple rejection) typ. 60 dB bez CAdj / ' +
+      '77 dB s CAdj=10µF, dlouhodobá stabilita 0,3-1,0 %/1000h. Objednací varianty: LM337T/' +
+      'LM337BT (TO-220), LM337D2T/LM337BD2T (D2PAK) — "B" varianty mají širší provozní rozsah ' +
+      'teploty přechodu -40 až +125°C, ostatní 0 až +125°C.',
+    schematicImage: 'LM337.jpg',
+    tags: 'io,regulátor,lm337,napájení,nastavitelný,záporné napětí,motorola,onsemi,to-220,d2pak',
   },
   {
     name: 'L1117L',
