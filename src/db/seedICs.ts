@@ -91,6 +91,57 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,časovač,555,ts555,cmos,st,nízkopříkonový,oscilátor,pwm,monostabilní,astabilní',
   },
 
+  // Napěťově-kmitočtové převodníky (V/F)
+  {
+    name: 'LM231',
+    datasheetUrl: 'https://www.ti.com/lit/ds/snosbi2c/snosbi2c.pdf',
+    packageType:
+      '8-Pin PDIP, piny: 1=IOUT (proudový výstup), 2=IREF (referenční proud, zároveň ' +
+      'napěťová reference 1,90 VDC), 3=FOUT (kmitočtový výstup, otevřený kolektor, vyžaduje ' +
+      'pull-up rezistor), 4=GND, 5=R/C (vstup R-C časovacího článku), 6=THRESH (prahový vstup), ' +
+      '7=COMPIN (komparátorový vstup), 8=VS (napájecí napětí)',
+    value:
+      'Přesný napěťově-kmitočtový (V/F) převodník, linearita 0,01 % max, plný rozsah kmitočtu ' +
+      '1 Hz – 100 kHz, VS 4–40 V, příkon typ. 15 mW @5V, dynamický rozsah min 100 dB @10kHz',
+    notes:
+      'Texas Instruments (původně National Semiconductor) "LMx31x Precision Voltage-to-' +
+      'Frequency Converters" (SNOSBI2C, červen 1999, revize září 2015). Výstup jako V/F ' +
+      'převodník je impulsní řada s kmitočtem přesně úměrným vstupnímu napětí — použití pro ' +
+      'A/D převod, přesnou integraci, frekvenční modulaci/demodulaci, vzdálené snímání přes ' +
+      'optočlen (galvanické oddělení přenosem kmitočtu), tachometry. Vnitřně: teplotně ' +
+      'kompenzovaná bandgap reference (1,90 V na pinu 2, platí pro IREF 10–500 µA), přesný ' +
+      'proudový zrcadlový obvod, R-S klopný obvod + časovací komparátor (pin 5 prahová úroveň ' +
+      '2/3 VS), vstupní komparátor (piny 6/7), výstupní budicí tranzistor (saturační odpor ' +
+      'cca 50 Ω na pinu 3, zkratuvzdorný, proudově omezený pod 50 mA). Výstup kompatibilní se ' +
+      'všemi logickými rodinami, snese až 3 TTL zátěže, nebo vysokonapěťový výstup až 40 V ' +
+      '(open-collector, odolný proti zkratu i vůči VCC). LM231 provozní teplota -25 až +85 °C ' +
+      '(LM331 má širší/jiný rozsah 0 až +70 °C — viz samostatný záznam "LM331"). Referenční ' +
+      'napětí (pin 2) LM231/LM231A: 1,76–2,02 V (typ. 1,89 V). Konverzní zisk (scale factor) ' +
+      'LM231/LM231A: 0,95–1,05 kHz/V (@RS=14kΩ, VIN=-10V). Teplotní stabilita zisku: LM231 ' +
+      '±30 až ±150 ppm/°C, přesnější LM231A ±20 až ±50 ppm/°C. Mezní hodnoty: VS max 40 V, ' +
+      'vstupní napětí -0,2 až +VS, pájecí teplota (10s) 260 °C. ESD: HBM ±500 V. RθJA 100 °C/W.',
+    schematicImage: 'LM231.jpg',
+    tags: 'io,převodník,v/f,napěťově-kmitočtový,lm231,timer,reference,pdip8,ti,national',
+  },
+  {
+    name: 'LM331',
+    datasheetUrl: 'https://www.ti.com/lit/ds/snosbi2c/snosbi2c.pdf',
+    packageType: 'shodné s LM231 (8-Pin PDIP) — viz jeho záznam pro plný pinout',
+    value:
+      'Přesný napěťově-kmitočtový (V/F) převodník, linearita 0,01 % max, plný rozsah kmitočtu ' +
+      '1 Hz – 100 kHz, VS 4–40 V',
+    notes:
+      'Texas Instruments "LMx31x Precision Voltage-to-Frequency Converters" (SNOSBI2C) — stejný ' +
+      'společný datasheet jako "LM231" (viz tam plný popis principu/pinoutu/mezních hodnot). ' +
+      'Oproti LM231 má LM331 širší komerční provozní rozsah teplot 0 až +70 °C (LM231 -25 až ' +
+      '+85 °C). Referenční napětí (pin 2) LM331/LM331A: 1,70–2,08 V (typ. 1,89 V, širší tolerance ' +
+      'než LM231). Konverzní zisk LM331/LM331A: 0,9–1,1 kHz/V. Proudový výstup (pin 1): LM331/' +
+      'LM331A 116–156 µA (LM231/LM231A 126–144 µA). Napájecí proud: VS=5V typ. 1,5mA/max 6mA, ' +
+      'VS=40V typ. 2mA/max 8mA (LM231 má o něco vyšší spotřebu: 2-4mA@5V, 2,5-6mA@40V).',
+    schematicImage: 'LM231.jpg',
+    tags: 'io,převodník,v/f,napěťově-kmitočtový,lm331,timer,reference,pdip8,ti,national',
+  },
+
   // Operační zesilovače
   {
     name: 'MAA741',
