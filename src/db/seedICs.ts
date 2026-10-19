@@ -536,7 +536,9 @@ const IC_SPECS: IcSpec[] = [
     packageType:
       'TO-220 (T suffix, case 221AB/221A) — vývody: 1=ADJ, 2=výstup (Vout), 3=vstup (Vin), ' +
       'chladicí ploška spojena s pinem 2 (Vout); dostupné i v D²PAK-3 (D2T suffix, case 936, ' +
-      'stejný pinout a stejně spojená chladicí ploška)',
+      'stejný pinout a stejně spojená chladicí ploška). Dále i v SMD pouzdře SOT-223 (SO-223), ' +
+      '4 vývody: 1=Adj, 2=Output, 3=Input, 4=Output (tab, interně spojen s pinem 2) — ověřeno ' +
+      'podle Multicomp Pro "Positive Voltage Regulator LM317" (29.7.2024, V1.0).',
     schematicImage: 'LM317.jpg',
     value:
       'Nastavitelný kladný lineární regulátor, výstup 1,2 až 37 V, výstupní proud přes 1,5 A, ' +
@@ -566,7 +568,7 @@ const IC_SPECS: IcSpec[] = [
       'R1 typicky 240Ω. Ochranné diody (1N400x) doporučeny při Vout>25V nebo Co>25µF/CAdj>10µF, ' +
       'aby se kondenzátory nevybíjely zpět do IC při zkratu vstupu/výstupu. Pb-free, halogen/BFR ' +
       'free, RoHS.',
-    tags: 'io,regulátor,lm317,ncv317,napájení,nastavitelný,onsemi,to-220,d2pak',
+    tags: 'io,regulátor,lm317,ncv317,napájení,nastavitelný,onsemi,to-220,d2pak,sot-223,multicomp',
   },
   {
     name: 'LM337',
