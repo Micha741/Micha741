@@ -128,6 +128,47 @@ const IC_SPECS: IcSpec[] = [
     schematicImage: 'TPL5010.jpg',
     tags: 'io,časovač,watchdog,nano-power,nízkopříkonový,tpl5010,ti,sot23,wake-up,power-gating',
   },
+  {
+    name: 'STWD100',
+    datasheetUrl: 'https://www.st.com/resource/en/datasheet/stwd100.pdf',
+    packageType:
+      '5-pin SOT23-5 (WY) nebo SC70-5/SOT323-5 (W8), piny: 1=WDO# (výstup, otevřený kolektor ' +
+      'nebo push-pull, aktivní nízká úroveň), 2=GND, 3=EN# (povolovací vstup, aktivní nízká ' +
+      'úroveň, vnitřní pull-down 32-100kΩ — vstup ponechaný plovoucí = zařízení povoleno), ' +
+      '4=WDI (hodinovací vstup watchdogu), 5=VCC',
+    value:
+      'Watchdog časovací obvod, spotřeba typ. 13 µA, pevný watchdog timeout podle varianty ' +
+      '(3,4 ms / 6,3 ms / 102 ms / 1,6 s), VCC 2,7–5,5 V',
+    schematicImage: 'STWD100.jpg',
+    notes:
+      'STMicroelectronics "STWD100 — Watchdog timer circuit" (DocID014134 Rev. 8, březen 2014). ' +
+      'Samostatný (externí) watchdog hlídající "utržený" mikrokontrolér — pin WDI musí být ' +
+      'periodicky překlápěn v rámci intervalu tWD, jinak se aktivuje výstup WDO# a resetuje ' +
+      'MCU. Interní watchdog čítač se vynuluje buď (1) změnou úrovně na výstupu WDO#, (2) ' +
+      'impulzem na EN# (pozitivní pulz delší než 1µs), nebo (3) sepnutím WDI (náběžná hrana u ' +
+      'všech variant, u STWD100xW/xX/xY navíc i sestupná hrana — na STWD100xP ne). Pulzy kratší ' +
+      'než 100 ns na WDI/EN# jsou ignorovány jako zákmity (glitch rejection), min. platná délka ' +
+      'pulzu 1 µs. Pokud zůstane WDI trvale na pevné úrovni a EN# na nízké úrovni, WDO# ' +
+      'periodicky překlápí každých tWD (STWD100xP), nebo tWD+tPW (STWD100xW/xX/xY). Fixní doba ' +
+      'watchdog timeoutu (tWD) daná konkrétní variantou objednacího kódu: STWD100xP typ. 3,4 ms ' +
+      '(2,3–4,6ms), STWD100xW typ. 6,3 ms (4,3–8,6ms), STWD100YxW (automotive grade) typ. 6,3 ms ' +
+      '(5,1–8,6ms), STWD100xX typ. 102 ms (71–142ms), STWD100xY typ. 1,6 s (1,12–2,24s) — u ' +
+      'tohoto nahraného kusu/datasheetu konkrétní varianta (a tedy přesný časový interval) ' +
+      'záleží na topside markingu na pouzdru (viz tabulka objednacích kódů v datasheetu, ' +
+      'str. 22-23), tady neuvedeno, aby nedošlo k domýšlení bez fyzické kontroly součástky. Pro ' +
+      'variantu xW/xX/xY zůstává WDO# asertováno po dobu tPW (140-210-280ms) bez ohledu na ' +
+      'případné WDI přechody, zatímco u xP se po timeoutu WDO# deasertuje okamžitě při platném ' +
+      'WDI pulzu. Doporučený externí pull-up (při open-drain výstupu) 10 kΩ k libovolnému napětí ' +
+      'do 6V. Pro MCU s obousměrným reset pinem doporučen sériový 4,7kΩ rezistor mezi WDO# a ' +
+      'reset vstupem MCU (zabrání kolizi výstupů). Elektrické parametry @VCC=2,7-5,5V: ICC typ ' +
+      '13µA/max 26µA, VIH min 0,7×VCC, VIL max 0,3×VCC, VOL max 0,3V@ISINK=1,2mA (VCC≥2,7V) nebo ' +
+      '0,4V@3,2mA (VCC≥4,5V), VOH (jen push-pull varianta) min 0,8×VCC @ISOURCE 500µA/800µA. ' +
+      'Startovací napětí VSTART (kdy se spustí čítání po power-up) typ 2,2V (min 1,9/max 2,7V). ' +
+      'Mezní hodnoty: Tstg -55 až 150°C, pájecí teplota (10s) 260°C, VIO -0,3 až VCC+0,3V, VCC ' +
+      '-0,3 až 7,0V, IO max 20mA, PD max 320mW. ESD: HBM 2000V, RCDM(CDM) 1000V. Provozní ' +
+      'teplota -40 až +125°C.',
+    tags: 'io,časovač,watchdog,stwd100,st,stmicroelectronics,sot23-5,sc70-5,sot323-5',
+  },
 
   // Napěťově-kmitočtové převodníky (V/F)
   {
