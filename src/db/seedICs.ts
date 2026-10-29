@@ -4648,6 +4648,35 @@ const IC_SPECS: IcSpec[] = [
       'telekomunikační linkové karty.',
     tags: 'io,hodiny,clock,generator,pll,i2c,multisynth,si5338,silicon labs,siliconlabs,qfn24,pcie,ethernet',
   },
+  {
+    name: '74FCT38074S',
+    packageType:
+      '8-pin SOIC nebo 8-pin DFN (2×2 mm, rozteč 0,5 mm) — stejný pinout v obou pouzdrech: ' +
+      '1=VDD, 2=VDD, 3=ICLK (hodinový vstup), 4=GND, 5=Q1, 6=Q2, 7=Q3, 8=Q4 (hodinové výstupy)',
+    value:
+      'Nízkoskewový 1-ku-4 hodinový budič (clock buffer/fan-out), vstupní/výstupní kmitočet do ' +
+      '200 MHz, výstup-výstup skew typ. 50 ps (max 65 ps), aditivní fázový jitter RMS typ. 50 fs',
+    schematicImage: '74FCT38074S.jpg',
+    notes:
+      'Renesas (dříve IDT) "74FCT38074S — Low Skew 1 to 4 Clock Buffer" datasheet (REVISION A, ' +
+      '03/18/15). Jednoduchý nízkopříkonový CMOS budič hodinového signálu — rozvádí jeden ' +
+      'vstupní hodinový signál (ICLK) na 4 nízkoskewové výstupy (Q1-Q4), typicky pro distribuci ' +
+      'hodin na FPGA/procesory/paměti vyžadující přesnou synchronizaci mezi více obvody. ' +
+      'Napájení volitelně 1,8/2,5/3,3 V ±5 %. Pro dosažení nízkého skew je nutné zachovat ' +
+      'identické zakončení, zátěž i geometrii vedení na všech 4 výstupech (příklad: 30Ω ' +
+      'zakončení na jednom výstupu oproti 33Ω na ostatních způsobí min. 15 ps skew navíc) — ' +
+      'doporučen sériový zakončovací rezistor 33 Ω na každém výstupu při delší stopě než 1". ' +
+      'Blokovací kondenzátor 0,01 µF mezi VDD (piny 1,2) a GND (pin 4) co nejblíže součástce. ' +
+      'Elektrické parametry @VDD=3,3V±5%: IDD typ. 22 mA (bez zátěže, 135 MHz), VOH min 2,2 V ' +
+      '@IOH=-25mA, VOL max 0,7 V @IOL=25mA, vstupní kapacitance ICLK typ 5 pF, doba náběhu/' +
+      'náběhu typ 0,6 ns (max 1,0 ns), propagační zpoždění typ 2,5 ns (max 4 ns), start-up time ' +
+      'max 2 ms po náběhu VDD. Mezní hodnoty: VDD max 3,465 V, výstupy -0,5V až VDD+0,5V, ' +
+      'provozní teplota (extended) -40 až +105°C, Tstg -65 až +150°C, TJ max 125°C, pájecí ' +
+      'teplota 260°C. Tepelný odpor θJA 150°C/W (klidný vzduch, 8-SOIC), θJC 40°C/W. Marking: ' +
+      '8-SOIC "IDT74FC / T38074S / DCGI / YYWW$", 8-DFN "074S / YW**". Objednací varianty: ' +
+      '74FCT38074SDCGI(8) (8-SOIC, tuby/pásek), 74FCT38074SCMGI(8) (8-DFN, cut tape/pásek).',
+    tags: 'io,hodiny,clock,buffer,budič,fanout,74fct38074s,idt,renesas,soic8,dfn8,nízký-skew',
+  },
 
   // Ethernet kontroléry
   {
