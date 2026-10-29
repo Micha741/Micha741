@@ -90,6 +90,44 @@ const IC_SPECS: IcSpec[] = [
     schematicImage: 'TS555.jpg',
     tags: 'io,časovač,555,ts555,cmos,st,nízkopříkonový,oscilátor,pwm,monostabilní,astabilní',
   },
+  {
+    name: 'TPL5010',
+    datasheetUrl: 'https://www.ti.com/lit/ds/symlink/tpl5010.pdf',
+    packageType:
+      '6-Lead SOT-23 (DDC package), piny: 1=VDD, 2=GND, 3=DELAY/M_RST (nastavení časového ' +
+      'intervalu externím rezistorem + vstup ručního resetu), 4=DONE (vstup, potvrzení od µC), ' +
+      '5=WAKE (výstup, budicí impulz pro µC), 6=RSTn (výstup s otevřeným kolektorem, reset µC, ' +
+      'vyžaduje pull-up ~100 kΩ)',
+    value:
+      'Nanovýkonový systémový časovač s watchdog funkcí, spotřeba typ. 35 nA, 1650 volitelných ' +
+      'časových intervalů 100 ms – 7200 s (nastaveno externím rezistorem 500 Ω – 170 kΩ), ' +
+      'přesnost intervalu ±0,6 %, VDD 1,8–5,5 V',
+    notes:
+      'Texas Instruments "TPL5010 Nano-Power System Timer With Watchdog Function" (SNAS651A, ' +
+      'leden 2015, revize září 2018). Určen k buzení mikrokontroléru ve velmi úsporném ' +
+      '(standby/sleep) režimu v pravidelných intervalech — nahrazuje interní časovač MCU, čímž ' +
+      'umožňuje MCU zůstat v hlubším spánku (TPL5010 odebírá jen 35 nA typ. oproti mikroampérům ' +
+      'interního časovače MCU). Watchdog funkce: po impulzu WAKE musí MCU do dalšího intervalu ' +
+      'poslat potvrzovací impulz DONE (min. 20 ms před náběžnou hranou dalšího WAKE), jinak ' +
+      'TPL5010 aktivuje RSTn a resetuje MCU. Ruční reset (manual reset) realizován přivedením ' +
+      'VDD na pin DELAY/M_RST na min. 20 ms (odolné vůči zákmitům/glitchům díky debounce). ' +
+      'Časový interval tIP se nastavuje jednorázově při power-on-reset změřením externího ' +
+      'rezistoru REXT připojeného mezi DELAY/M_RST a GND (rozsah 500 Ω – 170 kΩ, doporučena ' +
+      'přesnost ≥1 %) podle vzorce REXT = 100×((-b+√(b²-4a(c-100T)))/2a), kde T = požadovaný ' +
+      'interval v sekundách a koeficienty a/b/c se liší podle rozsahu (1–5s, 5–10s, 10–100s, ' +
+      '100–1000s, >1000s — viz tabulka v datasheetu). Příklad: pro 8 s interval REXT=10,18 kΩ. ' +
+      'Mezní hodnoty: VDD -0,3 až 6 V, vstupní napětí -0,3 až VDD+0,3 V, vstupní proud ±5 mA, TJ ' +
+      'max 150°C, Tstg -65 až 150°C. ESD: HBM ±1000V, CDM ±250V. Doporučený provoz: VDD 1,8–' +
+      '5,5 V, teplota -40 až +105°C. Elektrické parametry @VDD=2,5V/25°C: IDD typ 35nA/max 50nA ' +
+      '(provozní režim), 200-400µA (během jednorázové konverze REXT po POR). Přesnost nastavení ' +
+      'intervalu ±0,6 % (bez vlivu přesnosti REXT), ±25 ppm/V vliv napájecího napětí. Oscilátor: ' +
+      'přesnost ±0,5 % @25°C, ±100-400 ppm/°C v rozsahu -40 až 105°C. Šířka pulzu DONE min ' +
+      '100 ns, RSTn min 320 ms, WAKE min 20 ms. Rodina TPL5x1x zahrnuje i TPL5010Q (automotive), ' +
+      'TPL5111 a TPL5110 (varianty s integrovaným MOS-driverem pro power-gating, aktivní ' +
+      'výstup vysoká/nízká úroveň — samostatné díly, zde nepřidány).',
+    schematicImage: 'TPL5010.jpg',
+    tags: 'io,časovač,watchdog,nano-power,nízkopříkonový,tpl5010,ti,sot23,wake-up,power-gating',
+  },
 
   // Napěťově-kmitočtové převodníky (V/F)
   {
