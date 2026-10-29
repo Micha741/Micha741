@@ -4677,6 +4677,53 @@ const IC_SPECS: IcSpec[] = [
       '74FCT38074SDCGI(8) (8-SOIC, tuby/pásek), 74FCT38074SCMGI(8) (8-DFN, cut tape/pásek).',
     tags: 'io,hodiny,clock,buffer,budič,fanout,74fct38074s,idt,renesas,soic8,dfn8,nízký-skew',
   },
+  {
+    name: '74FCT3807',
+    packageType:
+      '20-pin SOIC/SSOP/QSOP, piny: 1=IN (hodinový vstup), 2=GND, 3=O1, 4=VCC, 5=O2, 6=GND, ' +
+      '7=O3, 8=VCC, 9=O4, 10=GND, 11=O5, 12=O6, 13=GND, 14=O7, 15=VCC, 16=O8, 17=GND, 18=O9, ' +
+      '19=O10, 20=VCC — více napájecích/zemních pinů rozmístěných mezi výstupy snižuje přeslechy',
+    value:
+      '3,3V CMOS 1-ku-10 hodinový budič (clock driver/fanout), zaručený nízký skew <350 ps max, ' +
+      'propagační zpoždění <3 ns max, max. pracovní kmitočet 133,33 MHz',
+    schematicImage: '74FCT3807.jpg',
+    notes:
+      'Renesas (dříve IDT) "IDT74FCT3807/A — 3.3V CMOS 1-to-10 Clock Driver" datasheet (Rev. 1.0, ' +
+      'březen 2020, dok. DSC-4647/5). Vyrobeno technologií 0,5µm CMOS, rozvádí jeden vstupní ' +
+      'hodinový signál na 10 výstupů (O1-O10) s nízkým vzájemným zpožděním — pro náročnější ' +
+      'distribuci hodin než příbuzný 1-ku-4 "74FCT38074S" (viz jeho záznam). Nízkokapacitní ' +
+      'vstup s hysterezí (typ 150 mV) pro lepší odstup od šumu, TTL kompatibilní vstupy/výstupy, ' +
+      'vstupy lze budit z 3,3V i 5V logiky. DC charakteristiky (VCC=3,3V±0,3V): VIH 2-5,5V, VIL ' +
+      '-0,5-0,8V, VOH min VCC-0,2V @IOH=-0,1mA (typ 3V @-8mA), VOL max 0,2V @0,1mA (max 0,4V ' +
+      '@16mA, 0,5V @24mA), výstupní proud IODH typ -60mA (min -36/max -110), IODL typ 90mA (min ' +
+      '50/max 200), zkratový proud IOS typ -135mA. Spínací charakteristiky (komerční rozsah, ' +
+      'ZO=50Ω k VCC/2, CL=10pF, f≤100MHz): tPLH/tPHL 1,5-3,5ns, tR/tF max 1,5ns, výstupní skew ' +
+      'tSK(O) max 0,5ns (mezi výstupy stejného pouzdra), pulsní skew tSK(P) max 0,5ns, pouzdrový ' +
+      'skew tSK(T) max 0,9ns (mezi výstupy různých kusů za stejných podmínek). Mezní hodnoty: ' +
+      'VTERM (VCC piny) -0,5 až +4,6V, VTERM (vstupy) -0,5 až +7V, VTERM (výstupy/I/O) -0,5 až ' +
+      'VCC+0,5V, Tstg -65 až +150°C, IOUT -60 až +60mA. Provozní teplota: komerční 0 až +70°C, ' +
+      'průmyslová (varianta s příponou "I") -40 až +85°C. Objednací kódy: 74FCT3807 + pouzdro ' +
+      '(SOG=SOIC/PYG=SSOP/QG=QSOP, vše "Green"/RoHS) + teplota (bez přípony=komerční/I=' +
+      'průmyslová) + balení (bez přípony=tuby/8=páska a cívka), např. 74FCT3807SOG.',
+    tags: 'io,hodiny,clock,driver,budič,fanout,74fct3807,idt,renesas,soic20,ssop20,qsop20',
+  },
+  {
+    name: '74FCT3807A',
+    packageType: 'shodné s 74FCT3807 (20-pin SOIC/SSOP/QSOP) — viz jeho záznam pro plný pinout',
+    value:
+      '3,3V CMOS 1-ku-10 hodinový budič, zpřesněná verze s nižším max. skew <350 ps → <250 ps, ' +
+      'propagační zpoždění <3 ns max, max. pracovní kmitočet 133,33 MHz',
+    notes:
+      'Renesas (dříve IDT) "IDT74FCT3807/A — 3.3V CMOS 1-to-10 Clock Driver" — stejný společný ' +
+      'datasheet jako "74FCT3807" (viz tam plné sdílené specifikace, pinout, DC charakteristiky). ' +
+      'Verze "A" má přísnější (nižší) mezní hodnoty skew: tPLH/tPHL max 3,0ns (komerční, ZO=50Ω/' +
+      'CL=10pF), tSK(O) max 0,35ns (oproti 0,5ns u základní verze), tSK(P) max 0,35ns, tSK(T) ' +
+      'max 0,65ns (oproti 0,9ns) — vhodnější tam, kde je kritická minimální vzájemná odchylka ' +
+      'mezi distribuovanými hodinovými výstupy. Objednací kód: 74FCT3807A + pouzdro/teplota/' +
+      'balení stejně jako u 74FCT3807.',
+    schematicImage: '74FCT3807.jpg',
+    tags: 'io,hodiny,clock,driver,budič,fanout,74fct3807a,idt,renesas,soic20,ssop20,qsop20',
+  },
 
   // Ethernet kontroléry
   {
