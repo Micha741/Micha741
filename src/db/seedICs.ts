@@ -4606,6 +4606,49 @@ const IC_SPECS: IcSpec[] = [
     tags: 'io,optočlen,optický-přerušovač,slotted,tcst1103,enkodér',
   },
 
+  // Generátory hodinového signálu (PLL)
+  {
+    name: 'Si5338',
+    datasheetUrl: 'https://www.silabs.com/documents/public/data-sheets/Si5338.pdf',
+    packageType:
+      '24-Lead QFN (4×4 mm, rozteč 0,5 mm), centrální GND ploška (musí být připojena na zem). ' +
+      'Piny: 1=IN1, 2=IN2 (diferenciální hodinový/XTAL vstup, při nepoužití IN1 nezapojen, IN2 ' +
+      'na GND), 3=IN3 (funkce dle part number: CLKIN/PINC/FINC/OEB), 4=IN4 (I2C_LSB/FDBK/PDEC/' +
+      'FDEC), 5,6=IN5/IN6 (diferenciální zpětnovazební vstup FDBK/FDBKB nebo sekundární hodinový ' +
+      'vstup), 7=VDD (jádro, 1,8/2,5/3,3 V), 8=INTR (přerušení, open-drain, 3,6V tolerantní), ' +
+      '9=CLK3B, 10=CLK3A (výstup kanálu 3), 11=VDDO3 (napájení výstupu 3: 1,5/1,8/2,5/3,3 V), ' +
+      '12=SCL (I2C hodiny, 3,3V tolerantní), 13=CLK2B, 14=CLK2A (kanál 2), 15=VDDO2, 16=VDDO1, ' +
+      '17=CLK1B, 18=CLK1A (kanál 1), 19=SDA (I2C data, 3,3V tolerantní), 20=VDDO0, 21=CLK0B, ' +
+      '22=CLK0A (kanál 0), 23=GND (RSVD_GND), 24=VDD. Nepoužité výstupní kanály: VDDOx se musí ' +
+      'připojit na VDD (pin 7/24).',
+    value:
+      'I2C programovatelný "any-frequency, any-output" generátor hodinového signálu, 4 ' +
+      'nezávislé diferenciální výstupní kanály, 0 ppm přesnost syntézy, fázový jitter typ. ' +
+      '0,7 ps RMS, max. výstupní kmitočet 200/350/710 MHz dle verze',
+    schematicImage: 'Si5338.jpg',
+    notes:
+      'Silicon Labs "Si5338 — I2C-Programmable Any-Frequency, Any-Output Quad Clock Generator" ' +
+      '(rev. 1.6, 12/2015). Patentovaná technologie MultiSynth umožňuje nezávislou syntézu ' +
+      'libovolného kmitočtu na každém ze 4 výstupních driverů z jednoho vstupního referenčního ' +
+      'zdroje (externí krystal 8–30 MHz, CMOS 5–200 MHz, SSTL/HSTL 5–350 MHz, nebo diferenciální ' +
+      'vstup 5–710 MHz) — nahrazuje až 4 různé krystalové oscilátory. Výstupní formáty ' +
+      'konfigurovatelné nezávisle na každém kanálu: LVPECL/LVDS (0,16–710 MHz), HCSL (0,16–' +
+      '250 MHz), CMOS (0,16–200 MHz), SSTL/HSTL (0,16–350 MHz) — jednotlivě nebo diferenciálně, ' +
+      'výstupní napětí volitelné 1,5/1,8/2,5/3,3 V na kanál. Programování přes I2C/SMBus ' +
+      '(adresa 70h nebo 71h dle pinu I2C_LSB u variant A/B/C/K/L/M). Volitelné funkce dle ' +
+      'objednacího kódu (A–Q, liší se funkcí pinů 3/4 a max. kmitočtem 200/350/710 MHz): ' +
+      'I2C_LSB (volba adresy), FINC/FDEC (frekvenční inkrement/dekrement v krocích 1 ppm bez ' +
+      'přerušení výstupu), PINC/PDEC (fázový posun s přesností <20 ps), OEB (hardwarový output ' +
+      'enable), nebo FDBK (zero-delay režim se zpětnou vazbou). Alarmy loss-of-lock a loss-of-' +
+      'signal na pinu INTR. Spotřeba jádra typ. 45 mA (100 MHz na všech výstupech, 25MHz refclk), ' +
+      'výstupní driver dle formátu: LVPECL max 30mA, LVDS max 8mA, CMOS typ 6-13mA (dle napětí). ' +
+      'Mezní hodnoty: VDD -0,5 až 3,8 V, Tstg -55 až 150°C, TJ max 150°C, ESD HBM 2,5kV/CDM ' +
+      '550V/MM 175V. Provozní teplota -40 až +85°C. Aplikace: Ethernet switche/routery (1/10 GbE), ' +
+      'PCIe Gen1/2/3/4, broadcast video/audio timing, FPGA/procesorové hodiny, MSAN/DSLAM/PON, ' +
+      'telekomunikační linkové karty.',
+    tags: 'io,hodiny,clock,generator,pll,i2c,multisynth,si5338,silicon labs,siliconlabs,qfn24,pcie,ethernet',
+  },
+
   // Ethernet kontroléry
   {
     name: 'W5500',
