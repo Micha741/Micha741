@@ -8,7 +8,8 @@
 <text x="400.00" y="50.00" font-size="1.38" fill="#008">• DRAM_P5..P11: adresové výstupy podle pinů ULA (Gama: pin 7 = A0, 6 = A1, 5 = A2) – Ve schématu Spectra je pořadí jiné (pin 5 = A0) – firmware musí vydávat bity podle zapojení multiplexeru v Gamě</text>
 <text x="400.00" y="54.00" font-size="1.38" fill="#008">• U1 firmware: zx_ula (OpenCores, GPL) s přiřazením pinů z ula_cpld_modul.ucf – Názvy portů v HDL namapovat na názvy netů v UCF; hodiny 14 MHz na GCK1 (pin 22)</text>
 <text x="400.00" y="58.00" font-size="1.38" fill="#008">• MG pin 28: výstup MIC přes 1k, vstup EAR přes 10k – Prahy vstupu CPLD (LVTTL) se liší od ULA – při potížích s nahráváním doplnit Schmittův klopný obvod</text>
-<text x="400.00" y="62.00" font-size="1.38" fill="#008">• J1: kolíky do patice ULA – Použít precizní (soustružené) kolíky; modul nesmí narazit na okolní součástky</text>
+<text x="400.00" y="62.00" font-size="1.38" fill="#008">• BEEP (pin 35): firmware musí na BEEP vydávat bit 4 portu FE (reproduktor) – Doplnit do HDL jako samostatný výstup; MIC/EAR na pinu 28 zůstává pro magnetofon</text>
+<text x="400.00" y="66.00" font-size="1.38" fill="#008">• J1: kolíky do patice ULA – Použít precizní (soustružené) kolíky; modul nesmí narazit na okolní součástky</text>
 <rect x="167.64" y="139.70" width="25.40" height="154.94" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
 <text x="180.34" y="138.70" font-size="1.8" text-anchor="middle" fill="#066">U1</text>
 <text x="180.34" y="296.94" font-size="1.5" text-anchor="middle" fill="#066">XC95144XL-10TQG100C</text>
@@ -226,7 +227,8 @@
 <line x1="195.58" y1="142.24" x2="193.04" y2="142.24" stroke="#800" stroke-width="0.2"/>
 <text x="194.31" y="141.84" font-size="0.9" text-anchor="middle" fill="#800">35</text>
 <text x="192.44" y="142.69" font-size="1.15" text-anchor="end" fill="#066">FB5_35</text>
-<path d="M194.98000000000002,141.64000000000001 L196.18,142.84 M194.98000000000002,142.84 L196.18,141.64000000000001" stroke="#00f" stroke-width="0.2"/>
+<line x1="195.58" y1="142.24" x2="198.12" y2="142.24" stroke="#080" stroke-width="0.15"/>
+<text x="198.52" y="141.94" font-size="1.2" text-anchor="start" fill="#000">BEEP</text>
 <line x1="195.58" y1="144.78" x2="193.04" y2="144.78" stroke="#800" stroke-width="0.2"/>
 <text x="194.31" y="144.38" font-size="0.9" text-anchor="middle" fill="#800">36</text>
 <text x="192.44" y="145.23" font-size="1.15" text-anchor="end" fill="#066">FB5_36</text>
@@ -670,42 +672,50 @@
 <text x="337.22" y="206.19" font-size="1.15" text-anchor="end" fill="#066">D1</text>
 <line x1="340.36" y1="205.74" x2="342.90" y2="205.74" stroke="#080" stroke-width="0.15"/>
 <text x="343.30" y="205.44" font-size="1.2" text-anchor="start" fill="#000">D1</text>
-<rect x="426.72" y="109.22" width="5.08" height="22.86" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="429.26" y="108.22" font-size="1.8" text-anchor="middle" fill="#066">J2</text>
-<text x="429.26" y="134.38" font-size="1.5" text-anchor="middle" fill="#066">RGB + napájení (na J8 hlavní desky)</text>
+<rect x="426.72" y="106.68" width="5.08" height="27.94" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="429.26" y="105.68" font-size="1.8" text-anchor="middle" fill="#066">J2</text>
+<text x="429.26" y="136.92" font-size="1.5" text-anchor="middle" fill="#066">RGB + zvuk + napájení (na J8 hlavní desky)</text>
+<line x1="424.18" y1="109.22" x2="426.72" y2="109.22" stroke="#800" stroke-width="0.2"/>
+<text x="425.45" y="108.82" font-size="0.9" text-anchor="middle" fill="#800">1</text>
+<line x1="424.18" y1="109.22" x2="421.64" y2="109.22" stroke="#080" stroke-width="0.15"/>
+<text x="421.24" y="108.92" font-size="1.2" text-anchor="end" fill="#000">VID_R</text>
 <line x1="424.18" y1="111.76" x2="426.72" y2="111.76" stroke="#800" stroke-width="0.2"/>
-<text x="425.45" y="111.36" font-size="0.9" text-anchor="middle" fill="#800">1</text>
+<text x="425.45" y="111.36" font-size="0.9" text-anchor="middle" fill="#800">2</text>
 <line x1="424.18" y1="111.76" x2="421.64" y2="111.76" stroke="#080" stroke-width="0.15"/>
-<text x="421.24" y="111.46" font-size="1.2" text-anchor="end" fill="#000">VID_R</text>
+<text x="421.24" y="111.46" font-size="1.2" text-anchor="end" fill="#000">VID_G</text>
 <line x1="424.18" y1="114.30" x2="426.72" y2="114.30" stroke="#800" stroke-width="0.2"/>
-<text x="425.45" y="113.90" font-size="0.9" text-anchor="middle" fill="#800">2</text>
+<text x="425.45" y="113.90" font-size="0.9" text-anchor="middle" fill="#800">3</text>
 <line x1="424.18" y1="114.30" x2="421.64" y2="114.30" stroke="#080" stroke-width="0.15"/>
-<text x="421.24" y="114.00" font-size="1.2" text-anchor="end" fill="#000">VID_G</text>
+<text x="421.24" y="114.00" font-size="1.2" text-anchor="end" fill="#000">VID_B</text>
 <line x1="424.18" y1="116.84" x2="426.72" y2="116.84" stroke="#800" stroke-width="0.2"/>
-<text x="425.45" y="116.44" font-size="0.9" text-anchor="middle" fill="#800">3</text>
+<text x="425.45" y="116.44" font-size="0.9" text-anchor="middle" fill="#800">4</text>
 <line x1="424.18" y1="116.84" x2="421.64" y2="116.84" stroke="#080" stroke-width="0.15"/>
-<text x="421.24" y="116.54" font-size="1.2" text-anchor="end" fill="#000">VID_B</text>
+<text x="421.24" y="116.54" font-size="1.2" text-anchor="end" fill="#000">VID_I</text>
 <line x1="424.18" y1="119.38" x2="426.72" y2="119.38" stroke="#800" stroke-width="0.2"/>
-<text x="425.45" y="118.98" font-size="0.9" text-anchor="middle" fill="#800">4</text>
+<text x="425.45" y="118.98" font-size="0.9" text-anchor="middle" fill="#800">5</text>
 <line x1="424.18" y1="119.38" x2="421.64" y2="119.38" stroke="#080" stroke-width="0.15"/>
-<text x="421.24" y="119.08" font-size="1.2" text-anchor="end" fill="#000">VID_I</text>
+<text x="421.24" y="119.08" font-size="1.2" text-anchor="end" fill="#000">CSYNC_n</text>
 <line x1="424.18" y1="121.92" x2="426.72" y2="121.92" stroke="#800" stroke-width="0.2"/>
-<text x="425.45" y="121.52" font-size="0.9" text-anchor="middle" fill="#800">5</text>
+<text x="425.45" y="121.52" font-size="0.9" text-anchor="middle" fill="#800">6</text>
 <line x1="424.18" y1="121.92" x2="421.64" y2="121.92" stroke="#080" stroke-width="0.15"/>
-<text x="421.24" y="121.62" font-size="1.2" text-anchor="end" fill="#000">CSYNC_n</text>
+<text x="421.24" y="121.62" font-size="1.2" text-anchor="end" fill="#000">VSYNC_n</text>
 <line x1="424.18" y1="124.46" x2="426.72" y2="124.46" stroke="#800" stroke-width="0.2"/>
-<text x="425.45" y="124.06" font-size="0.9" text-anchor="middle" fill="#800">6</text>
+<text x="425.45" y="124.06" font-size="0.9" text-anchor="middle" fill="#800">7</text>
 <line x1="424.18" y1="124.46" x2="421.64" y2="124.46" stroke="#080" stroke-width="0.15"/>
-<text x="421.24" y="124.16" font-size="1.2" text-anchor="end" fill="#000">VSYNC_n</text>
+<path d="M420.88,123.19 L421.64,121.91999999999999 L422.4,123.19 M421.64,124.46 L421.64,121.91999999999999" stroke="#800" stroke-width="0.2" fill="none"/>
+<text x="421.64" y="121.46" font-size="1" text-anchor="middle">+5V</text>
 <line x1="424.18" y1="127.00" x2="426.72" y2="127.00" stroke="#800" stroke-width="0.2"/>
-<text x="425.45" y="126.60" font-size="0.9" text-anchor="middle" fill="#800">7</text>
+<text x="425.45" y="126.60" font-size="0.9" text-anchor="middle" fill="#800">8</text>
 <line x1="424.18" y1="127.00" x2="421.64" y2="127.00" stroke="#080" stroke-width="0.15"/>
-<path d="M420.88,125.73 L421.64,124.46 L422.4,125.73 M421.64,127.0 L421.64,124.46" stroke="#800" stroke-width="0.2" fill="none"/>
-<text x="421.64" y="124.00" font-size="1" text-anchor="middle">+5V</text>
+<path d="M421.64,127.0 L421.64,128.27 L420.37,128.27 L421.64,129.54 L422.90999999999997,128.27 L421.64,128.27" stroke="#800" stroke-width="0.2" fill="none"/>
 <line x1="424.18" y1="129.54" x2="426.72" y2="129.54" stroke="#800" stroke-width="0.2"/>
-<text x="425.45" y="129.14" font-size="0.9" text-anchor="middle" fill="#800">8</text>
+<text x="425.45" y="129.14" font-size="0.9" text-anchor="middle" fill="#800">9</text>
 <line x1="424.18" y1="129.54" x2="421.64" y2="129.54" stroke="#080" stroke-width="0.15"/>
-<path d="M421.64,129.54 L421.64,130.81 L420.37,130.81 L421.64,132.07999999999998 L422.90999999999997,130.81 L421.64,130.81" stroke="#800" stroke-width="0.2" fill="none"/>
+<text x="421.24" y="129.24" font-size="1.2" text-anchor="end" fill="#000">BEEP</text>
+<line x1="424.18" y1="132.08" x2="426.72" y2="132.08" stroke="#800" stroke-width="0.2"/>
+<text x="425.45" y="131.68" font-size="0.9" text-anchor="middle" fill="#800">10</text>
+<line x1="424.18" y1="132.08" x2="421.64" y2="132.08" stroke="#080" stroke-width="0.15"/>
+<path d="M421.64,132.07999999999998 L421.64,133.35 L420.37,133.35 L421.64,134.61999999999998 L422.90999999999997,133.35 L421.64,133.35" stroke="#800" stroke-width="0.2" fill="none"/>
 <line x1="398.78000000000003" y1="375.92" x2="398.78000000000003" y2="386.08" stroke="#800" stroke-width="0.2"/>
 <rect x="397.78000000000003" y="378.46" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
 <text x="400.98" y="380.7" font-size="1.3" fill="#066">R1</text>

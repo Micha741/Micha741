@@ -4,7 +4,7 @@ Překresleno z tištěné předlohy „DIDAKTIK GAMA – SCHÉMA ZAPOJENIA“.
 
 | Soubor | Obsah |
 |---|---|
-| `didaktik_gama.kicad_sch` / `.kicad_pro` | schéma pro KiCad 8 a novější (A1, jedna strana, vlastní knihovna symbolů je v souboru) |
+| `didaktik_gama.kicad_sch` / `.kicad_pro` | schéma pro KiCad 8 a novější (A0, jedna strana, vlastní knihovna symbolů je v souboru) |
 | `didaktik_gama_nahled.pdf` / `.svg` | náhled bez KiCadu |
 | `netlist.csv` | všechny nety a piny (`U1.30` = U1 pin 30) |
 | `bom.csv` | soupis součástek |

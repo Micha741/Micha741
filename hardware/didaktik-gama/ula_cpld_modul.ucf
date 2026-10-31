@@ -19,6 +19,7 @@ NET "CLK14" LOC = "P22";
 NET "RAS_n" LOC = "P24";
 NET "CAS_n" LOC = "P25";
 NET "WE_n" LOC = "P28";
+NET "BEEP" LOC = "P35";
 NET "VID_R" LOC = "P63";
 NET "VID_G" LOC = "P64";
 NET "VID_B" LOC = "P65";

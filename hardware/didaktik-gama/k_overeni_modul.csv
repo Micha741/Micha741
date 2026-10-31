@@ -3,4 +3,5 @@ GND modulu,zem a +5 V přicházejí kabelem přes J2 z J8 hlavní desky,Pin GND 
 DRAM_P5..P11,"adresové výstupy podle pinů ULA (Gama: pin 7 = A0, 6 = A1, 5 = A2)",Ve schématu Spectra je pořadí jiné (pin 5 = A0) – firmware musí vydávat bity podle zapojení multiplexeru v Gamě
 U1 firmware,"zx_ula (OpenCores, GPL) s přiřazením pinů z ula_cpld_modul.ucf",Názvy portů v HDL namapovat na názvy netů v UCF; hodiny 14 MHz na GCK1 (pin 22)
 MG pin 28,"výstup MIC přes 1k, vstup EAR přes 10k",Prahy vstupu CPLD (LVTTL) se liší od ULA – při potížích s nahráváním doplnit Schmittův klopný obvod
+BEEP (pin 35),firmware musí na BEEP vydávat bit 4 portu FE (reproduktor),Doplnit do HDL jako samostatný výstup; MIC/EAR na pinu 28 zůstává pro magnetofon
 J1,kolíky do patice ULA,Použít precizní (soustružené) kolíky; modul nesmí narazit na okolní součástky

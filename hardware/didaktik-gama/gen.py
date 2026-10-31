@@ -8,10 +8,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 MOD = len(sys.argv) > 1 and sys.argv[1] == "modul"
 if MOD:
     from netlist_modul import parts, verify, LAYOUT_M, TITLE, PROJ, PAPER, IO, SPECIAL, VCCINT, VCCIO, GND_PINS, JTAG  # noqa
-    POWER_BLOCK = VIDEO_BLOCK = CONV_BLOCK = VGA_BLOCK = USB_BLOCK = []
+    POWER_BLOCK = VIDEO_BLOCK = CONV_BLOCK = VGA_BLOCK = USB_BLOCK = AUDIO_BLOCK = []
 else:
-    from netlist import parts, verify, POWER_BLOCK, VIDEO_BLOCK, CONV_BLOCK, VGA_BLOCK, USB_BLOCK  # noqa: E402
-    TITLE, PROJ, PAPER = "Didaktik Gama – schéma zapojení", "didaktik_gama", ("A1", 841, 594)
+    from netlist import parts, verify, POWER_BLOCK, VIDEO_BLOCK, CONV_BLOCK, VGA_BLOCK, USB_BLOCK, AUDIO_BLOCK  # noqa: E402
+    TITLE, PROJ, PAPER = "Didaktik Gama – schéma zapojení", "didaktik_gama", ("A0", 1189, 841)
 
 OUT = os.path.dirname(os.path.abspath(__file__))
 G = 2.54
@@ -114,6 +114,22 @@ if MOD:
        title="ULA patice")
     ic("OSC4", [P(1, "EN"), P(4, "VDD", PW)], [P(3, "OUT"), P(2, "GND", PW)], w=10.16, title="OSC")
     ic("LDO", [P(3, "VIN")], [P(2, "VOUT"), P(1, "GND", PW)], w=10.16, title="LDO")
+ic("YM2149", [P(37 - i, f"DA{i}") for i in range(8)] + [None, P(27, "BDIR"), P(28, "BC2"), P(29, "BC1"),
+                P(25, "A8"), P(24, "~{A9}"), P(23, "~{RESET}"), P(22, "CLOCK"), P(26, "SEL"), P(39, "TEST1")],
+   [P(4, "ANALOG_A"), P(3, "ANALOG_B"), P(38, "ANALOG_C"), None]
+   + [P(21 - i, f"IOA{i}") for i in range(8)] + [P(13 - i, f"IOB{i}") for i in range(8)]
+   + [None, P(2, "NC"), P(5, "NC"), P(40, "VCC", PW), P(1, "GND", PW)], w=20.32, title="YM2149")
+ic("74HCT11", [P(1, "1A"), P(2, "1B"), P(13, "1C"), None, P(3, "2A"), P(4, "2B"), P(5, "2C"), None,
+               P(9, "3A"), P(10, "3B"), P(11, "3C")],
+   [P(12, "1Y"), None, None, None, P(6, "2Y"), None, None, None, P(8, "3Y"), None, P(14, "VCC", PW),
+    P(7, "GND", PW)], w=12.7)
+ic("74HCT74", [P(2, "1D"), P(3, "1CLK"), P(4, "~{1PRE}"), P(1, "~{1CLR}"), None, P(12, "2D"), P(11, "2CLK"),
+               P(10, "~{2PRE}"), P(13, "~{2CLR}")],
+   [P(5, "1Q"), P(6, "~{1Q}"), None, None, None, P(9, "2Q"), P(8, "~{2Q}"), None, P(14, "VCC", PW),
+    P(7, "GND", PW)], w=12.7)
+ic("LM386", [P(3, "+IN"), P(2, "-IN"), P(1, "GAIN"), P(8, "GAIN")],
+   [P(5, "OUT"), P(7, "BYPASS"), P(6, "VS", PW), P(4, "GND", PW)], w=12.7)
+ic("POT", [P(1, "1"), P(3, "3")], [P(2, "W")], w=7.62, title="POT")
 ic("PICO",
    [P(1, "GP0"), P(2, "GP1"), P(4, "GP2"), P(5, "GP3"), P(6, "GP4"), P(7, "GP5"), P(9, "GP6"), P(10, "GP7"),
     P(11, "GP8"), P(12, "GP9"), P(14, "GP10"), P(15, "GP11"), P(16, "GP12"), P(17, "GP13"), P(19, "GP14"),
@@ -418,8 +434,13 @@ at("U40", grid(650), grid(462))
 at("U41", grid(730), grid(462))
 for i, r in enumerate(USB_BLOCK):
     at(r, grid(630 + i * 16), grid(530))
+for r, (x, y) in {"U42": (900, 110), "U43": (980, 90), "U44": (980, 150), "U45": (1060, 110),
+                  "RV1": (1060, 160), "J9": (1130, 110), "J10": (1130, 150)}.items():
+    at(r, grid(x), grid(y))
+for i, r in enumerate(AUDIO_BLOCK):
+    at(r, grid(870 + (i % 16) * 17), grid(230 + (i // 16) * 30))
 PASSIVES = [r for r in parts if parts[r]["sym"] in ("R", "C", "CP", "D", "SW", "XTAL", "SPK", "NPN", "PNP", "NPN_ECB", "F", "LED", "L")
-            and r not in POWER_BLOCK and r not in VIDEO_BLOCK and r not in CONV_BLOCK and r not in VGA_BLOCK and r not in USB_BLOCK]
+            and r not in POWER_BLOCK and r not in VIDEO_BLOCK and r not in CONV_BLOCK and r not in VGA_BLOCK and r not in USB_BLOCK and r not in AUDIO_BLOCK]
 PASSIVES.sort(key=lambda r: (r.rstrip("0123456789"), int("".join(c for c in r if c.isdigit()) or 0)))
 col, row = 0, 0
 for r in PASSIVES:
@@ -603,6 +624,7 @@ for i, (where, what, why) in enumerate(verify):
 if not MOD:
     notes += [txt("VGA VÝSTUP (digitální RGB z modulu ULA s CPLD, 15 kHz)", 500, 112, 2),
               txt("NAPÁJENÍ (doplněno – na předloze jen +5V)", 500, 270, 2),
+              txt("ZVUK: YM2149/AY (porty FFFD/BFFD jako Spectrum 128K) + BEEP z modulu -> LM386 a linkový výstup", 870, 50, 2),
               txt("USB KLÁVESNICE (RPi Pico jako USB host, emulace matice A8–A15 / KB1–KB5)", 520, 412, 2)]
 notes_s = [n.replace("(text ", "(text ", 1)[:-1] + f" (uuid {q(uid())}))" for n in notes]
 
@@ -665,7 +687,7 @@ GROUP = {"UA880D": "CPU", "27128": "ROM", "8255": "I/O", "ULA": "ULA", "4164": "
          "74LS157": "Multiplexer", "7400": "Logika", "7404": "Logika", "7410": "Logika", "7432": "Logika",
          "R": "Rezistor", "C": "Kondenzátor", "CP": "Kondenzátor", "D": "Dioda", "NPN": "Tranzistor",
          "SW": "Ostatní", "XTAL": "Ostatní", "SPK": "Ostatní", "CONN": "Konektor", "KODER": "Video",
-         "MODULATOR": "Video", "COIL1703": "Napájení", "MC34063": "Napájení", "AD8032": "Video", "LM1881": "Video", "VGA": "Konektor", "XC95144XL": "CPLD", "ULA40": "Konektor", "OSC4": "Ostatní", "LDO": "Napájení", "PICO": "Klávesnice USB", "74LVC245": "Klávesnice USB", "74LVC07": "Klávesnice USB", "74HCT244": "Video", "74HCT08": "Video", "L": "Napájení", "PNP": "Tranzistor", "NPN_ECB": "Tranzistor", "7805": "Napájení", "LM1889": "Video", "F": "Napájení", "LED": "Napájení"}
+         "MODULATOR": "Video", "COIL1703": "Napájení", "MC34063": "Napájení", "AD8032": "Video", "LM1881": "Video", "VGA": "Konektor", "YM2149": "Zvuk", "74HCT11": "Zvuk", "74HCT74": "Zvuk", "LM386": "Zvuk", "POT": "Zvuk", "XC95144XL": "CPLD", "ULA40": "Konektor", "OSC4": "Ostatní", "LDO": "Napájení", "PICO": "Klávesnice USB", "74LVC245": "Klávesnice USB", "74LVC07": "Klávesnice USB", "74HCT244": "Video", "74HCT08": "Video", "L": "Napájení", "PNP": "Tranzistor", "NPN_ECB": "Tranzistor", "7805": "Napájení", "LM1889": "Video", "F": "Napájení", "LED": "Napájení"}
 bom = defaultdict(list)
 for ref, p in parts.items():
     bom[(GROUP[p["sym"]], p["value"], p["fp"])].append(ref)

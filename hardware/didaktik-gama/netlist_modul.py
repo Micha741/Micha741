@@ -63,6 +63,8 @@ ASSIGN = {
     74: "D0", 76: "D1", 77: "D2", 78: "D3", 79: "D4", 80: "D5", 81: "D6", 82: "D7",
     # FB8: digitální video výstup
     63: "VID_R", 64: "VID_G", 65: "VID_B", 66: "VID_I", 67: "CSYNC_n", 68: "VSYNC_n",
+    # FB5: samostatný zvukový výstup (bit 4 portu FE) pro zesilovač na hlavní desce
+    35: "BEEP",
 }
 cpld = {}
 for fb, pins in IO.items():
@@ -87,9 +89,10 @@ ula = {
 add("J1", "ULA40", "do patice ULA (precizní kolíky)", "Package_DIP:DIP-40_W15.24mm", ula)
 
 # výstup RGB – stejné pořadí jako J8 na hlavní desce
-add("J2", "CONN", "RGB + napájení (na J8 hlavní desky)",
-    "Connector_PinHeader_2.54mm:PinHeader_1x08_P2.54mm_Vertical",
-    {1: "VID_R", 2: "VID_G", 3: "VID_B", 4: "VID_I", 5: "CSYNC_n", 6: "VSYNC_n", 7: "+5V", 8: "GND"})
+add("J2", "CONN", "RGB + zvuk + napájení (na J8 hlavní desky)",
+    "Connector_PinHeader_2.54mm:PinHeader_1x10_P2.54mm_Vertical",
+    {1: "VID_R", 2: "VID_G", 3: "VID_B", 4: "VID_I", 5: "CSYNC_n", 6: "VSYNC_n", 7: "+5V", 8: "GND",
+     9: "BEEP", 10: "GND"})
 
 # MG (pin 28): výstup přes 1k, vstup přes 10k (vstupy XC9500XL snesou 5 V)
 R("R1", "1k", "MIC_OUT", "MG")
@@ -125,4 +128,6 @@ verify.append(("U1 firmware", "zx_ula (OpenCores, GPL) s přiřazením pinů z u
                "Názvy portů v HDL namapovat na názvy netů v UCF; hodiny 14 MHz na GCK1 (pin 22)"))
 verify.append(("MG pin 28", "výstup MIC přes 1k, vstup EAR přes 10k",
                "Prahy vstupu CPLD (LVTTL) se liší od ULA – při potížích s nahráváním doplnit Schmittův klopný obvod"))
+verify.append(("BEEP (pin 35)", "firmware musí na BEEP vydávat bit 4 portu FE (reproduktor)",
+               "Doplnit do HDL jako samostatný výstup; MIC/EAR na pinu 28 zůstává pro magnetofon"))
 verify.append(("J1", "kolíky do patice ULA", "Použít precizní (soustružené) kolíky; modul nesmí narazit na okolní součástky"))

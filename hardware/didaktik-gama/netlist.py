@@ -138,8 +138,9 @@ def vR(ref, val, a_, b_):
     R(ref, val, a_, b_); VGA_BLOCK.append(ref)
 def vC(ref, val, a_, b_):
     C(ref, val, a_, b_); VGA_BLOCK.append(ref)
-add("J8", "CONN", "RGB z modulu ULA", "Connector_PinHeader_2.54mm:PinHeader_1x08_P2.54mm_Vertical",
-    {1: "RGB_R", 2: "RGB_G", 3: "RGB_B", 4: "RGB_I", 5: "/RGB_CSYNC", 6: "/RGB_VSYNC", 7: "+5V", 8: "GND"})
+add("J8", "CONN", "RGB + zvuk z modulu ULA", "Connector_PinHeader_2.54mm:PinHeader_1x10_P2.54mm_Vertical",
+    {1: "RGB_R", 2: "RGB_G", 3: "RGB_B", 4: "RGB_I", 5: "/RGB_CSYNC", 6: "/RGB_VSYNC", 7: "+5V", 8: "GND",
+     9: "BEEP", 10: "GND"})
 add("U37", "74HCT244", "74HCT244", "Package_DIP:DIP-20_W7.62mm", {
     1: "GND", 19: "GND",
     2: "RGB_R", 18: "DAC_R", 4: "RGB_G", 16: "DAC_G", 6: "RGB_B", 14: "DAC_B",
@@ -214,6 +215,65 @@ verify.append(("U39 Raspberry Pi Pico", "USB host přes micro-USB a redukci OTG,
 verify.append(("U40/U41 74LVC245, 74LVC07", "převod úrovní 5 V <-> 3,3 V",
                "Vstupy LVC snesou 5 V při napájení 3,3 V; 74LVC07 má otevřený kolektor – KB linky dál táhnou původní pull-upy 10k na +5V"))
 
+# ---------------------------------------------------------------- zvuk (doplněno)
+# YM2149F (= AY-3-8910) na portech jako Spectrum 128K: FFFD výběr/čtení registru, BFFD zápis dat.
+#   IOX  = IORQ & /M1(neaktivní) & A1=0        (74HCT11 A)
+#   BC1  = IOX & A15 & A14   -> FFFD            (74HCT11 B)
+#   BDIR = IOX & A15 & WR    -> zápis FFFD/BFFD (74HCT11 C)   BC2 = 1, A8 = 1, /A9 = 0
+# Hodiny AY 1,75 MHz = CLK CPU / 2 (74HCT74). Mix: BEEP z modulu + kanály A, B, C ->
+# hlasitost 10k -> LM386 (napájení VIN 9 V) -> reproduktor J9; linkový výstup J10.
+AUDIO_BLOCK = []
+def aR(ref, val, a_, b_):
+    R(ref, val, a_, b_); AUDIO_BLOCK.append(ref)
+def aC(ref, val, a_, b_, pol=False):
+    if pol:
+        add(ref, "CP", val, "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm", {1: a_, 2: b_})
+    else:
+        C(ref, val, a_, b_)
+    AUDIO_BLOCK.append(ref)
+ay = {37 - i: f"D{i}" for i in range(8)}
+ay.update({1: "GND", 40: "+5V", 2: None, 5: None, 4: "AY_A", 3: "AY_B", 38: "AY_C",
+           22: "AY_CLK", 23: "/RESET", 24: "GND", 25: "+5V", 26: "+5V", 27: "AY_BDIR", 28: "+5V",
+           29: "AY_BC1", 39: None})
+for i in range(8):
+    ay[21 - i] = None   # IOA0..7
+    ay[13 - i] = None   # IOB0..7
+add("U42", "YM2149", "YM2149F (nebo AY-3-8910)", "Package_DIP:DIP-40_W15.24mm", ay)
+add("U43", "74HCT11", "74HCT11", "Package_DIP:DIP-14_W7.62mm", {
+    1: "IORQ_H", 2: "/M1", 13: "A1_N", 12: "AY_IOX",
+    3: "AY_IOX", 4: "A15", 5: "A14", 6: "AY_BC1",
+    9: "AY_IOX", 10: "A15", 11: "WR_I", 8: "AY_BDIR",
+    7: "GND", 14: "+5V"})
+add("U44", "74HCT74", "74HCT74", "Package_DIP:DIP-14_W7.62mm", {
+    1: "+5V", 2: "AY_CLK_N", 3: "CLK", 4: "+5V", 5: "AY_CLK", 6: "AY_CLK_N",
+    10: "+5V", 11: "GND", 12: "GND", 13: "+5V", 9: None, 8: None, 7: "GND", 14: "+5V"})
+add("U45", "LM386", "LM386N-1", "Package_DIP:DIP-8_W7.62mm", {
+    1: None, 8: None, 2: "GND", 3: "AMP_IN", 4: "GND", 5: "AMP_OUT", 6: "VIN", 7: "AMP_BYP"})
+add("RV1", "POT", "10k log (hlasitost)", "Potentiometer_THT:Potentiometer_Alps_RK09K_Single_Vertical",
+    {1: "MIX_AC", 2: "AMP_IN", 3: "GND"})
+add("J9", "CONN", "Reproduktor 8 ohm", "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
+    {1: "SPK_OUT", 2: "GND"})
+add("J10", "CONN", "Linkový výstup (jack 3,5 mm)", "Connector_Audio:Jack_3.5mm_CUI_SJ1-3523N_Horizontal",
+    {1: "LINE_OUT", 2: "LINE_OUT", 3: "GND"})
+aR("R98", "1k", "AY_A", "GND"); aR("R99", "1k", "AY_B", "GND"); aR("R100", "1k", "AY_C", "GND")
+aR("R101", "4k7", "AY_A", "MIX"); aR("R102", "4k7", "AY_B", "MIX"); aR("R103", "4k7", "AY_C", "MIX")
+aR("R104", "10k", "BEEP", "MIX"); aR("R105", "100k", "BEEP", "GND")
+aR("R106", "2k2", "MIX", "GND")
+aC("C86", "10u/16V", "MIX", "MIX_AC", pol=True)
+aC("C87", "10u/16V", "AMP_BYP", "GND", pol=True)
+aC("C88", "220u/16V", "AMP_OUT", "SPK_OUT", pol=True)
+aR("R107", "10R", "AMP_OUT", "ZOBEL"); aC("C89", "47n", "ZOBEL", "GND")
+aC("C90", "100u/25V", "VIN", "GND", pol=True); aC("C91", "100n", "VIN", "GND")
+aC("C92", "10u/16V", "MIX", "LINE_AC", pol=True); aR("R108", "1k", "LINE_AC", "LINE_OUT")
+aR("R109", "47k", "LINE_OUT", "GND")
+aC("C93", "100n", "+5V", "GND"); aC("C94", "100n", "+5V", "GND"); aC("C95", "100n", "+5V", "GND")
+verify.append(("U42 YM2149F", "pinout AY-3-8910/YM2149 (DIP-40), pin 26 (SEL) na +5V = hodiny bez dělení",
+               "Ověřit s datasheetem; u AY-3-8910 je pin 26 TEST2 – nezapojovat (přerušit spoj na +5V)"))
+verify.append(("U43 dekódování AY", "FFFD = výběr registru, BFFD = data (A15, A14, A1, IORQ, WR, /M1)",
+               "Shodné s portem Spectra 128K; Gama 8255 (A7=0, A1=1) ani ULA (A0=0) nekolidují"))
+verify.append(("Zvuk – mix a LM386", "BEEP 10k + AY 3x 4k7 do 2k2, hlasitost 10k, LM386 z VIN 9 V",
+               "Poměr hlasitosti beeperu a AY podle sluchu (R104); LS1 a D9/D10 z původního zapojení neosazovat, reproduktor na J9"))
+
 # ---------------------------------------------------------------- video RAM 8x2118 (16K)
 # piny 2118 podle čísel u vodičů na předloze
 p2118_addr = {"VA3": 13, "VA4": 12, "VA5": 10, "VA6": 6, "VA0": 5, "VA1": 11, "VA2": 7}
@@ -276,7 +336,8 @@ add("U25", "7404", "74LS04", "Package_DIP:DIP-14_W7.62mm", {
     11: None, 10: None, 7: "GND", 14: "+5V"})
 add("U26", "7404", "74LS04", "Package_DIP:DIP-14_W7.62mm", {
     1: "PC0", 2: "BANK", 11: "BANK", 10: "/BANKSEL",
-    3: None, 4: None, 5: None, 6: None, 9: None, 8: None, 13: None, 12: None,
+    3: "A1", 4: "A1_N",                                          # dekódování AY (A1 = 0)
+    5: None, 6: None, 9: None, 8: None, 13: None, 12: None,
     7: "GND", 14: "+5V"})
 add("U27", "7400", "74LS00", "Package_DIP:DIP-14_W7.62mm", {
     5: "WR_D", 4: "/RD", 6: "RW",
