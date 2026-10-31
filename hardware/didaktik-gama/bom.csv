@@ -5,7 +5,7 @@ Dioda,KA136,11,D1 D2 D3 D4 D5 D6 D7 D8 D9 D10 D11,Diode_THT:D_DO-35_SOD27_P7.62m
 I/O,8255 (MHB8255),1,U3,Package_DIP:DIP-40_W15.24mm
 Klávesnice USB,74LVC07,1,U41,Package_SO:SOIC-14_3.9x8.7mm_P1.27mm
 Klávesnice USB,74LVC245,1,U40,Package_SO:SOIC-20W_7.5x12.8mm_P1.27mm
-Klávesnice USB,Raspberry Pi Pico (USB host),1,U39,
+Klávesnice USB,Raspberry Pi Pico (USB host),1,U39,gama:RaspberryPi_Pico_THT
 Kondenzátor,1000u/25V,1,C11,Capacitor_THT:CP_Radial_D10.0mm_P5.00mm
 Kondenzátor,100n,42,C5 C6 C7 C12 C13 C20 C21 C22 C23 C24 C25 C26 C27 C28 C29 C30 C31 C32 C33 C34 C35 C36 C37 C38 C39 C40 C41 C42 C43 C44 C45 C46 C47 C48 C81 C82 C83 C84 C91 C93 C94 C95,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm
 Kondenzátor,100p,3,C2 C9 C10,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm

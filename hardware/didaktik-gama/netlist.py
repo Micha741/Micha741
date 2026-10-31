@@ -192,7 +192,7 @@ for i in range(5):
     pico[gp_pin[8 + i]] = f"KBD_KB{i + 1}"     # GP8..GP12 -> KB1..KB5 (přes 74LVC07)
 pico[gp_pin[13]] = "KBD_RST"                   # GP13 -> /RESET (Ctrl+Alt+Del)
 pico[gp_pin[14]] = "KBD_TAPE"                  # GP14 -> signál kazety (přehrávač .TAP z USB disku)
-add("U39", "PICO", "Raspberry Pi Pico (USB host)", "", pico)
+add("U39", "PICO", "Raspberry Pi Pico (USB host)", "gama:RaspberryPi_Pico_THT", pico)
 add("U40", "74LVC245", "74LVC245", "Package_SO:SOIC-20W_7.5x12.8mm_P1.27mm", {
     1: "+3V3_KBD", 19: "GND", 10: "GND", 20: "+3V3_KBD",
     **{2 + i: f"A{8 + i}" for i in range(8)},
@@ -253,8 +253,8 @@ add("RV1", "POT", "10k log (hlasitost)", "Potentiometer_THT:Potentiometer_Alps_R
     {1: "MIX_AC", 2: "AMP_IN", 3: "GND"})
 add("J9", "CONN", "Reproduktor 8 ohm", "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
     {1: "SPK_OUT", 2: "GND"})
-add("J10", "CONN", "Linkový výstup (jack 3,5 mm)", "Connector_Audio:Jack_3.5mm_CUI_SJ1-3523N_Horizontal",
-    {1: "LINE_OUT", 2: "LINE_OUT", 3: "GND"})
+add("J10", "JACK3", "Linkový výstup (jack 3,5 mm)", "Connector_Audio:Jack_3.5mm_CUI_SJ1-3523N_Horizontal",
+    {"T": "LINE_OUT", "R": "LINE_OUT", "S": "GND"})
 aR("R98", "1k", "AY_A", "GND"); aR("R99", "1k", "AY_B", "GND"); aR("R100", "1k", "AY_C", "GND")
 aR("R101", "4k7", "AY_A", "MIX"); aR("R102", "4k7", "AY_B", "MIX"); aR("R103", "4k7", "AY_C", "MIX")
 aR("R104", "10k", "BEEP", "MIX"); aR("R105", "100k", "BEEP", "GND")

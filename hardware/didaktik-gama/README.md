@@ -4,6 +4,10 @@ Překresleno z tištěné předlohy „DIDAKTIK GAMA – SCHÉMA ZAPOJENIA“.
 
 | Soubor | Obsah |
 |---|---|
+| `didaktik_gama.kicad_pcb` | plošný spoj hlavní desky 300 × 225 mm, 4 vrstvy – rozmístěno, nety přiřazeny, **cesty signálů zatím nevedené** |
+| `didaktik_gama_pcb_nahled.pdf` | náhled rozmístění desky |
+| `gen_pcb.py` | generátor desky z `netlist.py` (`python3 gen_pcb.py`, potřebuje KiCad s modulem pcbnew) |
+| `gama.pretty/`, `fp-lib-table` | vlastní pouzdro Raspberry Pi Pico (THT 2×20) |
 | `didaktik_gama.kicad_sch` / `.kicad_pro` | schéma pro KiCad 8 a novější (A0, jedna strana, vlastní knihovna symbolů je v souboru) |
 | `didaktik_gama_nahled.pdf` / `.svg` | náhled bez KiCadu |
 | `netlist.csv` | všechny nety a piny (`U1.30` = U1 pin 30) |
@@ -24,3 +28,21 @@ kondenzátory 100n u každého IC) na předloze není – je doplněno a vedeno 
 
 Pinouty UA880D, 27128, 8255, 4164, 2118 a 74LS157 odpovídají katalogovým listům
 a souhlasí s čísly na předloze. ULA je očíslovaná podle předlohy (shodné se ZX ULA).
+
+## Plošný spoj hlavní desky
+- **Rozměr 300 × 225 mm, 4 vrstvy:** F.Cu a B.Cu pro signály, In1.Cu = celoplošná **GND**, In2.Cu =
+  celoplošná **+5V**. Napájení všech vývodových součástek je tím propojené bez cest.
+- **Rozmístění po blocích:** konektory na horním okraji (napájení, MG, jack, reproduktor, VGA,
+  klávesnice, porty 8255) → CPU / ROM / 8255 / patice ULA → multiplexery a logika → 8× 4164 →
+  8× 2118 → zvuk (YM2149, LM386), USB klávesnice (Pico), napájení. Blokovací kondenzátory u každého IC.
+- **Kontrola DRC:** žádné překryvy pouzder ani chyby obrysu; zbývá **499 nepropojených spojů** (cesty
+  signálů + napájení SMD obvodů U40/U41, které potřebují prokovy do vnitřních vrstev).
+
+### Dokončení (vedení cest)
+1. Otevřít `didaktik_gama.kicad_pro` v KiCadu 8/9 (soubor desky je ve formátu KiCadu 7, otevře se).
+2. Automaticky: **Freerouting** (plugin v KiCadu nebo File → Export → Specctra DSN, výsledek
+   File → Import → Specctra Session). Pravidla: cesta 0,25 mm, mezera 0,2 mm, prokov 0,6/0,3 mm;
+   napájecí cesty (VIN, SPK_OUT) ručně 0,6–1 mm.
+3. Zkontrolovat orientaci konektorů na hraně (VGA, jack, napájecí konektor) ve 3D náhledu.
+4. Po začátku vedení cest už **nespouštět `gen_pcb.py`** (přepíše desku) – změny ze schématu přenášet
+   v KiCadu přes *Update PCB from Schematic*.

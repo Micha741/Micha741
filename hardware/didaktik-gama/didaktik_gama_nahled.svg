@@ -2493,21 +2493,24 @@
 <text x="1126.49" y="111.36" font-size="0.9" text-anchor="middle" fill="#800">2</text>
 <line x1="1125.22" y1="111.76" x2="1122.68" y2="111.76" stroke="#080" stroke-width="0.15"/>
 <path d="M1122.68,111.76 L1122.68,113.03 L1121.41,113.03 L1122.68,114.30000000000001 L1123.95,113.03 L1122.68,113.03" stroke="#800" stroke-width="0.2" fill="none"/>
-<rect x="1127.76" y="144.78" width="5.08" height="10.16" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<rect x="1126.49" y="144.78" width="7.62" height="10.16" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
 <text x="1130.30" y="143.78" font-size="1.8" text-anchor="middle" fill="#066">J10</text>
 <text x="1130.30" y="157.24" font-size="1.5" text-anchor="middle" fill="#066">Linkový výstup (jack 3,5 mm)</text>
-<line x1="1125.22" y1="147.32" x2="1127.76" y2="147.32" stroke="#800" stroke-width="0.2"/>
-<text x="1126.49" y="146.92" font-size="0.9" text-anchor="middle" fill="#800">1</text>
-<line x1="1125.22" y1="147.32" x2="1122.68" y2="147.32" stroke="#080" stroke-width="0.15"/>
-<text x="1122.28" y="147.02" font-size="1.2" text-anchor="end" fill="#000">LINE_OUT</text>
-<line x1="1125.22" y1="149.86" x2="1127.76" y2="149.86" stroke="#800" stroke-width="0.2"/>
-<text x="1126.49" y="149.46" font-size="0.9" text-anchor="middle" fill="#800">2</text>
-<line x1="1125.22" y1="149.86" x2="1122.68" y2="149.86" stroke="#080" stroke-width="0.15"/>
-<text x="1122.28" y="149.56" font-size="1.2" text-anchor="end" fill="#000">LINE_OUT</text>
-<line x1="1125.22" y1="152.40" x2="1127.76" y2="152.40" stroke="#800" stroke-width="0.2"/>
-<text x="1126.49" y="152.00" font-size="0.9" text-anchor="middle" fill="#800">3</text>
-<line x1="1125.22" y1="152.40" x2="1122.68" y2="152.40" stroke="#080" stroke-width="0.15"/>
-<path d="M1122.68,152.4 L1122.68,153.67000000000002 L1121.41,153.67000000000002 L1122.68,154.94 L1123.95,153.67000000000002 L1122.68,153.67000000000002" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="1123.95" y1="147.32" x2="1126.49" y2="147.32" stroke="#800" stroke-width="0.2"/>
+<text x="1125.22" y="146.92" font-size="0.9" text-anchor="middle" fill="#800">T</text>
+<text x="1127.09" y="147.77" font-size="1.15" text-anchor="start" fill="#066">TIP</text>
+<line x1="1123.95" y1="147.32" x2="1121.41" y2="147.32" stroke="#080" stroke-width="0.15"/>
+<text x="1121.01" y="147.02" font-size="1.2" text-anchor="end" fill="#000">LINE_OUT</text>
+<line x1="1123.95" y1="149.86" x2="1126.49" y2="149.86" stroke="#800" stroke-width="0.2"/>
+<text x="1125.22" y="149.46" font-size="0.9" text-anchor="middle" fill="#800">R</text>
+<text x="1127.09" y="150.31" font-size="1.15" text-anchor="start" fill="#066">RING</text>
+<line x1="1123.95" y1="149.86" x2="1121.41" y2="149.86" stroke="#080" stroke-width="0.15"/>
+<text x="1121.01" y="149.56" font-size="1.2" text-anchor="end" fill="#000">LINE_OUT</text>
+<line x1="1123.95" y1="152.40" x2="1126.49" y2="152.40" stroke="#800" stroke-width="0.2"/>
+<text x="1125.22" y="152.00" font-size="0.9" text-anchor="middle" fill="#800">S</text>
+<text x="1127.09" y="152.85" font-size="1.15" text-anchor="start" fill="#066">SLEEVE</text>
+<line x1="1123.95" y1="152.40" x2="1121.41" y2="152.40" stroke="#080" stroke-width="0.15"/>
+<path d="M1121.41,152.4 L1121.41,153.67000000000002 L1120.14,153.67000000000002 L1121.41,154.94 L1122.68,153.67000000000002 L1121.41,153.67000000000002" stroke="#800" stroke-width="0.2" fill="none"/>
 <line x1="871.22" y1="226.06" x2="871.22" y2="236.22000000000003" stroke="#800" stroke-width="0.2"/>
 <rect x="870.22" y="228.60000000000002" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
 <text x="873.4200000000001" y="230.84" font-size="1.3" fill="#066">R98</text>

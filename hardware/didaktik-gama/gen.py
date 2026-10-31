@@ -129,6 +129,7 @@ ic("74HCT74", [P(2, "1D"), P(3, "1CLK"), P(4, "~{1PRE}"), P(1, "~{1CLR}"), None,
     P(7, "GND", PW)], w=12.7)
 ic("LM386", [P(3, "+IN"), P(2, "-IN"), P(1, "GAIN"), P(8, "GAIN")],
    [P(5, "OUT"), P(7, "BYPASS"), P(6, "VS", PW), P(4, "GND", PW)], w=12.7)
+ic("JACK3", [P("T", "TIP"), P("R", "RING"), P("S", "SLEEVE")], [], w=7.62, title="JACK")
 ic("POT", [P(1, "1"), P(3, "3")], [P(2, "W")], w=7.62, title="POT")
 ic("PICO",
    [P(1, "GP0"), P(2, "GP1"), P(4, "GP2"), P(5, "GP3"), P(6, "GP4"), P(7, "GP5"), P(9, "GP6"), P(10, "GP7"),
@@ -687,7 +688,7 @@ GROUP = {"UA880D": "CPU", "27128": "ROM", "8255": "I/O", "ULA": "ULA", "4164": "
          "74LS157": "Multiplexer", "7400": "Logika", "7404": "Logika", "7410": "Logika", "7432": "Logika",
          "R": "Rezistor", "C": "Kondenzátor", "CP": "Kondenzátor", "D": "Dioda", "NPN": "Tranzistor",
          "SW": "Ostatní", "XTAL": "Ostatní", "SPK": "Ostatní", "CONN": "Konektor", "KODER": "Video",
-         "MODULATOR": "Video", "COIL1703": "Napájení", "MC34063": "Napájení", "AD8032": "Video", "LM1881": "Video", "VGA": "Konektor", "YM2149": "Zvuk", "74HCT11": "Zvuk", "74HCT74": "Zvuk", "LM386": "Zvuk", "POT": "Zvuk", "XC95144XL": "CPLD", "ULA40": "Konektor", "OSC4": "Ostatní", "LDO": "Napájení", "PICO": "Klávesnice USB", "74LVC245": "Klávesnice USB", "74LVC07": "Klávesnice USB", "74HCT244": "Video", "74HCT08": "Video", "L": "Napájení", "PNP": "Tranzistor", "NPN_ECB": "Tranzistor", "7805": "Napájení", "LM1889": "Video", "F": "Napájení", "LED": "Napájení"}
+         "MODULATOR": "Video", "COIL1703": "Napájení", "MC34063": "Napájení", "AD8032": "Video", "LM1881": "Video", "VGA": "Konektor", "YM2149": "Zvuk", "74HCT11": "Zvuk", "74HCT74": "Zvuk", "LM386": "Zvuk", "POT": "Zvuk", "JACK3": "Konektor", "XC95144XL": "CPLD", "ULA40": "Konektor", "OSC4": "Ostatní", "LDO": "Napájení", "PICO": "Klávesnice USB", "74LVC245": "Klávesnice USB", "74LVC07": "Klávesnice USB", "74HCT244": "Video", "74HCT08": "Video", "L": "Napájení", "PNP": "Tranzistor", "NPN_ECB": "Tranzistor", "7805": "Napájení", "LM1889": "Video", "F": "Napájení", "LED": "Napájení"}
 bom = defaultdict(list)
 for ref, p in parts.items():
     bom[(GROUP[p["sym"]], p["value"], p["fp"])].append(ref)

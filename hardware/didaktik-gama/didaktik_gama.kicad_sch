@@ -932,6 +932,30 @@
       (symbol "F_1_1"
         (pin passive line (at 0.00 5.08 270) (length 2.54) (name "1" (effects (font (size 1.27 1.27)) hide)) (number "1" (effects (font (size 1.27 1.27)))))
         (pin passive line (at 0.00 -5.08 90) (length 2.54) (name "2" (effects (font (size 1.27 1.27)) hide)) (number "2" (effects (font (size 1.27 1.27)))))))
+    (symbol "gama:JACK3"
+      (pin_names
+        (offset 1.016))
+      (exclude_from_sim no)
+      (in_bom yes)
+      (on_board yes)
+      (property "Reference" "U"
+        (at 0 6.35 0)
+        (effects (font (size 1.27 1.27))))
+      (property "Value" "JACK"
+        (at 0 -6.35 0)
+        (effects (font (size 1.27 1.27))))
+      (property "Footprint" ""
+        (at 0 0 0)
+        (effects (font (size 1.27 1.27)) hide))
+      (property "Datasheet" ""
+        (at 0 0 0)
+        (effects (font (size 1.27 1.27)) hide))
+      (symbol "JACK3_0_1"
+        (rectangle (start -3.81 5.08) (end 3.81 -5.08) (stroke (width 0.254) (type default)) (fill (type background))))
+      (symbol "JACK3_1_1"
+        (pin passive line (at -6.35 2.54 0) (length 2.54) (name "TIP" (effects (font (size 1.27 1.27)))) (number "T" (effects (font (size 1.27 1.27)))))
+        (pin passive line (at -6.35 0.00 0) (length 2.54) (name "RING" (effects (font (size 1.27 1.27)))) (number "R" (effects (font (size 1.27 1.27)))))
+        (pin passive line (at -6.35 -2.54 0) (length 2.54) (name "SLEEVE" (effects (font (size 1.27 1.27)))) (number "S" (effects (font (size 1.27 1.27)))))))
     (symbol "gama:LED"
       (pin_names
         (offset 0) hide)
@@ -5220,24 +5244,24 @@
     (uuid "eaabcf8c-09fc-5f07-bcf4-1d2ebc87d19b"))
   (wire
     (pts
-      (xy 1125.22 147.32)
-      (xy 1122.68 147.32))
+      (xy 1123.95 147.32)
+      (xy 1121.41 147.32))
     (stroke
       (width 0)
       (type default))
     (uuid "f7548f43-3b63-5681-9d5a-c2f8de2b4607"))
   (wire
     (pts
-      (xy 1125.22 149.86)
-      (xy 1122.68 149.86))
+      (xy 1123.95 149.86)
+      (xy 1121.41 149.86))
     (stroke
       (width 0)
       (type default))
     (uuid "b8a6592f-e4d1-5bf7-8e8c-5e00d68016cc"))
   (wire
     (pts
-      (xy 1125.22 152.40)
-      (xy 1122.68 152.40))
+      (xy 1123.95 152.40)
+      (xy 1121.41 152.40))
     (stroke
       (width 0)
       (type default))
@@ -12731,7 +12755,7 @@
       (justify right bottom))
     (uuid "6ca13434-4d9e-5264-9c49-556427b0e3c4"))
   (label "LINE_OUT"
-    (at 1122.68 147.32 180)
+    (at 1121.41 147.32 180)
     (fields_autoplaced yes)
     (effects
       (font
@@ -12739,7 +12763,7 @@
       (justify right bottom))
     (uuid "49d746a2-f495-5ea6-aac9-b2fe78059f94"))
   (label "LINE_OUT"
-    (at 1122.68 149.86 180)
+    (at 1121.41 149.86 180)
     (fields_autoplaced yes)
     (effects
       (font
@@ -18866,7 +18890,7 @@
       (at 558.80 500.34 0)
       (effects
         (font (size 1.27 1.27))))
-    (property "Footprint" ""
+    (property "Footprint" "gama:RaspberryPi_Pico_THT"
       (at 558.80 469.90 0)
       (effects
         (font (size 1.27 1.27)) hide))
@@ -19764,7 +19788,7 @@
       (project "didaktik_gama"
         (path "/749bded9-dac2-5d4c-8e6d-156d036e5f62" (reference "J9") (unit 1)))))
   (symbol
-    (lib_id "gama:CONN_3")
+    (lib_id "gama:JACK3")
     (at 1130.30 149.86 0)
     (unit 1)
     (exclude_from_sim no)
@@ -19788,11 +19812,11 @@
       (at 1130.30 149.86 0)
       (effects
         (font (size 1.27 1.27)) hide))
-    (pin "1"
+    (pin "T"
       (uuid "a481d3b6-896c-5a00-b712-776bb0cf44c7"))
-    (pin "2"
+    (pin "R"
       (uuid "83bf267a-399e-5126-a43d-16b00569aa12"))
-    (pin "3"
+    (pin "S"
       (uuid "dd744f73-667d-5cac-a085-448b878671d2"))
     (instances
       (project "didaktik_gama"
@@ -27533,7 +27557,7 @@
         (path "/749bded9-dac2-5d4c-8e6d-156d036e5f62" (reference "#PWR094") (unit 1)))))
   (symbol
     (lib_id "power:GND")
-    (at 1122.68 152.40 0)
+    (at 1121.41 152.40 0)
     (unit 1)
     (exclude_from_sim no)
     (in_bom yes)
@@ -27541,19 +27565,19 @@
     (dnp no)
     (uuid "0ca0c809-dff0-5657-9ddd-e6b9a102299b")
     (property "Reference" "#PWR095"
-      (at 1122.68 152.40 0)
+      (at 1121.41 152.40 0)
       (effects
         (font (size 1.27 1.27)) hide))
     (property "Value" "GND"
-      (at 1122.68 156.60 0)
+      (at 1121.41 156.60 0)
       (effects
         (font (size 1.0 1.0))))
     (property "Footprint" ""
-      (at 1122.68 152.40 0)
+      (at 1121.41 152.40 0)
       (effects
         (font (size 1.27 1.27)) hide))
     (property "Datasheet" ""
-      (at 1122.68 152.40 0)
+      (at 1121.41 152.40 0)
       (effects
         (font (size 1.27 1.27)) hide))
     (pin "1"
