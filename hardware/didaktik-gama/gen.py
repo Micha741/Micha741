@@ -5,7 +5,7 @@ import csv, os, sys, uuid
 from collections import defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from netlist import parts, verify, POWER_BLOCK, VIDEO_BLOCK  # noqa: E402
+from netlist import parts, verify, POWER_BLOCK, VIDEO_BLOCK, CONV_BLOCK  # noqa: E402
 
 OUT = os.path.dirname(os.path.abspath(__file__))
 G = 2.54
@@ -89,6 +89,7 @@ ic("LM1889",
    [P(2, "R-Y"), P(4, "B-Y"), P(3, "BIAS"), None, P(17, "OSC"), P(1, "LEAD"), P(18, "LAG"), None, P(12, "VIDEO")],
    [P(13, "CHROMA"), None, P(15, "SND"), P(14, "RF_VCC", PW), P(16, "VCC", PW), P(5, "GND", PW), None]
    + [P(n, "NC", "no_connect") for n in range(6, 12)], w=15.24)
+ic("COIL1703", [P(1, "PRIM"), P(2, "PRIM_SW")], [P(3, "FB_A"), P(4, "FB_B")], w=10.16, title="L 1703")
 ic("KODER", [P(1, "U"), P(2, "V"), P(3, "Y")], [P(4, "CVBS")], w=12.7, title="KODER")
 ic("MODULATOR", [P(1, "VIDEO"), None, P(2, "+5V", PW)], [P(3, "RF"), None, P(4, "GND", PW)], w=12.7, title="MODULÁTOR")
 
@@ -105,6 +106,7 @@ for g, (units, fn, neg) in GATES.items():
 for t in ("R", "C", "CP", "D", "SW", "XTAL", "SPK", "F", "LED"):
     SYM[t] = dict(kind="two", t=t)
 SYM["NPN"] = dict(kind="npn")
+SYM["PNP"] = dict(kind="npn", pnp=True)
 
 
 def conn_sym(n):
@@ -269,7 +271,9 @@ def lib_symbol(name):
                f"(property \"Footprint\" \"\" (at 0 0 0) {eff(hide=True)})"
                f"(property \"Datasheet\" \"\" (at 0 0 0) {eff(hide=True)})"]
         g = [poly([(-0.508, 1.905), (-0.508, -1.905)], w=0.5), poly([(-0.508, 0.635), (1.27, 2.54)]),
-             poly([(-0.508, -0.635), (1.27, -2.54)]), poly([(0.6, -1.95), (1.27, -2.54), (0.5, -2.6)])]
+             poly([(-0.508, -0.635), (1.27, -2.54)]),
+             (poly([(0.2, -1.2), (-0.508, -0.635), (0.4, -0.5)]) if s.get("pnp") else
+              poly([(0.6, -1.95), (1.27, -2.54), (0.5, -2.6)]))]
         out.append(f"(symbol {q(name + '_0_1')} {' '.join(g)})")
         pl = [pin_s("passive", "line", 1.27, -5.08, 90, G, "E", 1, True),
               pin_s("passive", "line", -3.81, 0, 0, 3.302, "B", 2, True),
@@ -342,8 +346,10 @@ for i, r in enumerate(POWER_BLOCK):
     at(r, grid(505 + i * 17 + (8 if r == "U32" else 0) + (16 if i > POWER_BLOCK.index("U32") else 0)), grid(285))
 for i, r in enumerate(VIDEO_BLOCK):
     at(r, grid(497 + (i % 15) * 16), grid(114 + (i // 15) * 28))
-PASSIVES = [r for r in parts if parts[r]["sym"] in ("R", "C", "CP", "D", "SW", "XTAL", "SPK", "NPN", "F", "LED")
-            and r not in POWER_BLOCK and r not in VIDEO_BLOCK]
+for i, r in enumerate(CONV_BLOCK):
+    at(r, grid(560 + i * 18 + (10 if r == "L1" else 0) + (22 if i > CONV_BLOCK.index("L1") else 0)), grid(420))
+PASSIVES = [r for r in parts if parts[r]["sym"] in ("R", "C", "CP", "D", "SW", "XTAL", "SPK", "NPN", "PNP", "F", "LED")
+            and r not in POWER_BLOCK and r not in VIDEO_BLOCK and r not in CONV_BLOCK]
 PASSIVES.sort(key=lambda r: (r.rstrip("0123456789"), int("".join(c for c in r if c.isdigit()) or 0)))
 col, row = 0, 0
 for r in PASSIVES:
@@ -514,6 +520,7 @@ notes = [
     txt("Spoje jsou vedeny návěštími (labels) – stejné jméno = stejný net. ~{X} = aktivní v nule.", 30, 26, 1.8),
     txt("KODÉR PAL LM1889 + VIDEO VÝSTUP", 500, 100, 2),
     txt("NAPÁJENÍ (doplněno – na předloze jen +5V)", 500, 270, 2),
+    txt("MĚNIČ +12 V pro kodér (podle ZX Spectra, TR4/TR5 + cívka 1703)", 560, 402, 2),
     txt("K OVĚŘENÍ (na předloze nečitelné / odhadnuté):", 560, 312, 2),
 ]
 for i, (where, what, why) in enumerate(verify):
@@ -579,7 +586,7 @@ GROUP = {"UA880D": "CPU", "27128": "ROM", "8255": "I/O", "ULA": "ULA", "4164": "
          "74LS157": "Multiplexer", "7400": "Logika", "7404": "Logika", "7410": "Logika", "7432": "Logika",
          "R": "Rezistor", "C": "Kondenzátor", "CP": "Kondenzátor", "D": "Dioda", "NPN": "Tranzistor",
          "SW": "Ostatní", "XTAL": "Ostatní", "SPK": "Ostatní", "CONN": "Konektor", "KODER": "Video",
-         "MODULATOR": "Video", "7805": "Napájení", "LM1889": "Video", "F": "Napájení", "LED": "Napájení"}
+         "MODULATOR": "Video", "COIL1703": "Napájení", "PNP": "Tranzistor", "7805": "Napájení", "LM1889": "Video", "F": "Napájení", "LED": "Napájení"}
 bom = defaultdict(list)
 for ref, p in parts.items():
     bom[(GROUP[p["sym"]], p["value"], p["fp"])].append(ref)

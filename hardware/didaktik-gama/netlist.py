@@ -134,7 +134,7 @@ verify.append(("MG / zvuk (D9–D11, LS1, T3)", "horní konce reproduktoru, diod
 add("U30", "LM1889", "LM1889N", "Package_DIP:DIP-18_W7.62mm", {
     1: "CH_LEAD", 2: "RY", 3: "CBIAS", 4: "BY", 5: "GND",
     6: None, 7: None, 8: None, 9: None, 10: None, 11: None,
-    12: "LM_VIN", 13: "CHROMA", 14: "+12V", 15: "+12V", 16: "+12V",
+    12: "LM_VIN", 13: "CHROMA", 14: "+12VA", 15: "+12VA", 16: "+12VA",
     17: "CH_OSC", 18: "CH_LAG"})
 # Okolí LM1889 překresleno ze schématu ZX Spectrum Issue 1/2 (Sinclair, VII/1983),
 # hodnoty z jeho soupisu součástek (Appendix C). V závorce označení ve Spectru.
@@ -148,10 +148,10 @@ R("R53", "330R (Sp R57)", "V", "GND")
 C("C64", "47n (Sp C33)", "+12V", "RY")
 # předpětí chroma (pin 3 = 4,8 V) a napájení video vstupu (pin 12)
 R("R54", "1K (Sp R40)", "CBIAS", "GND")
-R("R55", "1K5 (Sp R41)", "+12V", "CBIAS")
+R("R55", "1K5 (Sp R41)", "+12VA", "CBIAS")
 add("C65", "CP", "22u/16V (Sp C34)", "Capacitor_THT:CP_Radial_D5.0mm_P2.00mm", {1: "CBIAS", 2: "GND"})
-R("R56", "1K (Sp R42)", "+12V", "LM_VIN")
-C("C66", "47n (Sp C40)", "+12V", "GND")
+R("R56", "1K (Sp R42)", "+12VA", "LM_VIN")
+C("C66", "47n (Sp C40)", "+12VA", "GND")
 # oscilátor 4,433619 MHz a fázovací článek (piny 17, 18, 1)
 R("R58", "3K (Sp R43)", "CH_OSC", "GND")
 R("R59", "5K1 (Sp R44)", "CH_OSC", "CH_N2")
@@ -178,16 +178,34 @@ R("R69", "390R (Sp R53)", "CVBS", "GND")
 R("R70", "15R (Sp R64)", "+5V", "+5V_MOD")
 C("C74", "47n (Sp C61)", "+5V_MOD", "GND")
 add("C75", "CP", "22u/16V (Sp C25)", "Capacitor_THT:CP_Radial_D5.0mm_P2.00mm", {1: "+5V_MOD", 2: "GND"})
-# +12V pro LM1889 (Spectrum: měnič TR4/TR5 -> +12VA přes 15R)
-R("R57", "47", "VIN", "+12V")
-add("C69", "CP", "100u/16V", "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm", {1: "+12V", 2: "GND"})
-C("C70", "100n", "+12V", "GND")
+# +12V měnič podle ZX Spectra (Issue 1/2): TR4 spínač s cívkou 1703 (zpětnovazební vinutí),
+# TR5 reguluje buzení podle děliče R58/R59 z +12V. Větve -5V/-12V vynechány (Gama nemá 4116).
+CONV_BLOCK = ["R71", "R72", "T7", "C80", "R73", "C76", "R74", "L1", "T8", "C77", "D14", "C78", "R75", "C79"]
+R("R71", "1K8 2% (Sp R59)", "+12V", "CONV_FB")
+R("R72", "1K 2% (Sp R58)", "CONV_FB", "GND")
+add("T7", "PNP", "KF517 (Sp TR5 ZTX213)", "Package_TO_SOT_THT:TO-39-3", {1: "+5V", 2: "CONV_FB", 3: "CONV_T7C"})
+add("C80", "CP", "4u7/16V (úprava dle manuálu)", "Capacitor_THT:CP_Radial_D5.0mm_P2.00mm", {1: "+5V", 2: "CONV_FB"})
+R("R73", "270R (Sp R60, Issue 3)", "CONV_T7C", "CONV_DRV")
+C("C76", "100n (Sp C43)", "CONV_DRV", "GND")
+R("R74", "15R (Sp R62)", "CONV_DRV", "CONV_FA")
+add("L1", "COIL1703", "Cívka SPECTRUM 1703", "", {1: "VIN", 2: "CONV_SW", 3: "CONV_FA", 4: "CONV_T8B"})
+add("T8", "NPN", "KD139 (Sp TR4 ZTX651/TIP31)", "Package_TO_SOT_THT:TO-126-3_Vertical", {1: "GND", 2: "CONV_T8B", 3: "CONV_SW"})
+C("C77", "47n (Sp C49)", "CONV_SW", "GND")
+add("D14", "D", "BA157 (Sp D15)", "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal", {1: "+12V", 2: "CONV_SW"})
+add("C78", "CP", "100u/16V (Sp C44)", "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm", {1: "+12V", 2: "GND"})
+R("R75", "15R (Sp R61)", "+12V", "+12VA")
+add("C79", "CP", "100u/16V (Sp C45)", "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm", {1: "+12VA", 2: "GND"})
+verify.append(("L1 (cívka 1703)", "dvě vinutí: primár VIN–spínač, zpětná vazba R74–báze T8",
+               "Počet závitů / indukčnost cívky Sinclair 1703 schéma neuvádí; začátky vinutí (tečky) dle schématu Spectra"))
+verify.append(("T7, T8", "náhrady ZTX213 -> KF517 (PNP), ZTX651 -> KD139/BD139 (NPN)",
+               "Pinout pouzder se liší od ZTX (E-B-C), osadit podle skutečného tranzistoru"))
+verify.append(("C80, R73", "úprava stability měniče z manuálu (4u7 E–B T5, R60 270R)",
+               "Doporučeno servisním manuálem Spectra pro desky Issue 2/3"))
+
 verify.append(("U30 LM1889 + okolí", "překresleno ze schématu ZX Spectrum Issue 1/2",
                "Předloha Gamy má jen blok KÓDER – ověřit, že Gama používá stejné zapojení (typ obvodu na desce)"))
-verify.append(("U30 pin 16", "chroma supply na +12V",
+verify.append(("U30 pin 16", "chroma supply na +12VA",
                "Ve schématu Spectra není spoj pinu 16 jasně vidět; podle manuálu je to napájení chroma"))
-verify.append(("R57, C69 (+12V)", "napájení LM1889 z nestabilizovaného vstupu",
-               "Spectrum vyrábí +12 V měničem TR4/TR5; u Gamy zdroj 12 V ověřit (z 9V adaptéru 12 V nebude)"))
 
 # modulátor = stíněný modul (UM1233 / tuzemský ekvivalent): +5V, video, GND, VF výstup
 add("U31", "MODULATOR", "VF modulátor (UM1233 nebo ekv.)", "", {1: "CVBS", 2: "+5V_MOD", 3: "TV", 4: "GND"})
@@ -198,7 +216,7 @@ verify.append(("U31 (modulátor)", "vývody modulu +5V / VIDEO / GND / VF",
 VIDEO_BLOCK = ["R48", "R49", "R50", "R51", "R52", "R53", "C64", "R54", "R55", "C65", "R56", "C66",
                "R58", "R59", "C67", "Y2", "R60", "C68", "C71", "R61", "C72", "R62", "C73",
                "R63", "R64", "R65", "R66", "T5", "R67", "R68", "T6", "R69", "R70", "C74", "C75",
-               "R57", "C69", "C70", "T4", "R46", "C62", "R47", "J6", "C63"]
+               "T4", "R46", "C62", "R47", "J6", "C63"]
 add("T4", "NPN", "KC507 (BC547)", "Package_TO_SOT_THT:TO-18-3", {1: "CVBS_E", 2: "CVBS", 3: "+5V"})
 R("R46", "470", "CVBS_E", "GND")
 add("C62", "CP", "220u/10V", "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm", {1: "CVBS_E", 2: "CVBS_C"})
