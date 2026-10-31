@@ -189,7 +189,7 @@ R("R73", "270R (Sp R60, Issue 3)", "CONV_T7C", "CONV_DRV")
 C("C76", "100n (Sp C43)", "CONV_DRV", "GND")
 R("R74", "15R (Sp R62)", "CONV_DRV", "CONV_FA")
 add("L1", "COIL1703", "Cívka SPECTRUM 1703", "", {1: "VIN", 2: "CONV_SW", 3: "CONV_FA", 4: "CONV_T8B"})
-add("T8", "NPN", "KD139 (Sp TR4 ZTX651/TIP31)", "Package_TO_SOT_THT:TO-126-3_Vertical", {1: "GND", 2: "CONV_T8B", 3: "CONV_SW"})
+add("T8", "NPN_ECB", "KD139 (Sp TR4 ZTX651/TIP31)", "Package_TO_SOT_THT:TO-126-3_Vertical", {1: "GND", 2: "CONV_SW", 3: "CONV_T8B"})
 C("C77", "47n (Sp C49)", "CONV_SW", "GND")
 add("D14", "D", "BA157 (Sp D15)", "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal", {1: "+12V", 2: "CONV_SW"})
 add("C78", "CP", "100u/16V (Sp C44)", "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm", {1: "+12V", 2: "GND"})
@@ -199,7 +199,8 @@ verify.append(("L1 (cívka 1703)", "dvě vinutí: primár VIN–spínač, zpětn
                "Počet závitů / indukčnost cívky Sinclair 1703 schéma neuvádí; začátky vinutí (tečky) dle schématu Spectra"))
 verify.append(("T7 KF517", "náhrada ZTX213 ověřena katalogovým listem TESLA",
                "PNP, -Uceo 30 V, -Ic 600 mA, Pc 0,8 W, pouzdro K505 (TO-39): vývody E-B-C, výstupek u E; kolektor je spojen s pouzdrem – nesmí se dotýkat okolí"))
-verify.append(("T8 KD139", "náhrada ZTX651 (NPN)", "Pinout pouzdra TO-126 se liší od ZTX, osadit podle skutečného tranzistoru"))
+verify.append(("T8 KD139", "náhrada ZTX651 ověřena katalogovým listem TESLA",
+               "NPN, Uceo 80–100 V, Ic 1,5 A (špička 2 A), Ptot 1 W / 12,5 W s chladičem; TO-126 vývody E-C-B (pady 1-2-3), kovová plocha = kolektor – při montáži na chladič izolovat"))
 verify.append(("C80, R73", "úprava stability měniče z manuálu (4u7 E–B T5, R60 270R)",
                "Doporučeno servisním manuálem Spectra pro desky Issue 2/3"))
 

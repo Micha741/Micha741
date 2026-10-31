@@ -107,6 +107,7 @@ for t in ("R", "C", "CP", "D", "SW", "XTAL", "SPK", "F", "LED"):
     SYM[t] = dict(kind="two", t=t)
 SYM["NPN"] = dict(kind="npn")
 SYM["PNP"] = dict(kind="npn", pnp=True)
+SYM["NPN_ECB"] = dict(kind="npn", map={"E": 1, "C": 2, "B": 3})  # TO-126: E-C-B
 
 
 def conn_sym(n):
@@ -275,9 +276,10 @@ def lib_symbol(name):
              (poly([(0.2, -1.2), (-0.508, -0.635), (0.4, -0.5)]) if s.get("pnp") else
               poly([(0.6, -1.95), (1.27, -2.54), (0.5, -2.6)]))]
         out.append(f"(symbol {q(name + '_0_1')} {' '.join(g)})")
-        pl = [pin_s("passive", "line", 1.27, -5.08, 90, G, "E", 1, True),
-              pin_s("passive", "line", -3.81, 0, 0, 3.302, "B", 2, True),
-              pin_s("passive", "line", 1.27, 5.08, 270, G, "C", 3, True)]
+        m = s.get("map", {"E": 1, "B": 2, "C": 3})
+        pl = [pin_s("passive", "line", 1.27, -5.08, 90, G, "E", m["E"], True),
+              pin_s("passive", "line", -3.81, 0, 0, 3.302, "B", m["B"], True),
+              pin_s("passive", "line", 1.27, 5.08, 270, G, "C", m["C"], True)]
         out.append(f"(symbol {q(name + '_1_1')} {' '.join(pl)})")
         return " ".join(out) + ")"
 
@@ -348,7 +350,7 @@ for i, r in enumerate(VIDEO_BLOCK):
     at(r, grid(497 + (i % 15) * 16), grid(114 + (i // 15) * 28))
 for i, r in enumerate(CONV_BLOCK):
     at(r, grid(560 + i * 18 + (10 if r == "L1" else 0) + (22 if i > CONV_BLOCK.index("L1") else 0)), grid(420))
-PASSIVES = [r for r in parts if parts[r]["sym"] in ("R", "C", "CP", "D", "SW", "XTAL", "SPK", "NPN", "PNP", "F", "LED")
+PASSIVES = [r for r in parts if parts[r]["sym"] in ("R", "C", "CP", "D", "SW", "XTAL", "SPK", "NPN", "PNP", "NPN_ECB", "F", "LED")
             and r not in POWER_BLOCK and r not in VIDEO_BLOCK and r not in CONV_BLOCK]
 PASSIVES.sort(key=lambda r: (r.rstrip("0123456789"), int("".join(c for c in r if c.isdigit()) or 0)))
 col, row = 0, 0
@@ -483,7 +485,8 @@ for ref, p in parts.items():
         X, Y = LAYOUT[ref]
         emit_symbol(ref, sym, X, Y, 1, p["value"], p["fp"], ["1", "2", "3"], (X + 3.0, Y - 1), (X + 3.0, Y + 1.5))
         svg.append(("npn", X, Y, ref, p["value"]))
-        for n, nm, lx, ly, a in ((1, "E", 1.27, -5.08, 90), (2, "B", -3.81, 0, 0), (3, "C", 1.27, 5.08, 270)):
+        m = s.get("map", {"E": 1, "B": 2, "C": 3})
+        for n, nm, lx, ly, a in ((m["E"], "E", 1.27, -5.08, 90), (m["B"], "B", -3.81, 0, 0), (m["C"], "C", 1.27, 5.08, 270)):
             connect_pin(ref, n, nm, X, Y, lx, ly, a)
 
 # PWR_FLAG na +5V a GND
@@ -586,7 +589,7 @@ GROUP = {"UA880D": "CPU", "27128": "ROM", "8255": "I/O", "ULA": "ULA", "4164": "
          "74LS157": "Multiplexer", "7400": "Logika", "7404": "Logika", "7410": "Logika", "7432": "Logika",
          "R": "Rezistor", "C": "Kondenzátor", "CP": "Kondenzátor", "D": "Dioda", "NPN": "Tranzistor",
          "SW": "Ostatní", "XTAL": "Ostatní", "SPK": "Ostatní", "CONN": "Konektor", "KODER": "Video",
-         "MODULATOR": "Video", "COIL1703": "Napájení", "PNP": "Tranzistor", "7805": "Napájení", "LM1889": "Video", "F": "Napájení", "LED": "Napájení"}
+         "MODULATOR": "Video", "COIL1703": "Napájení", "PNP": "Tranzistor", "NPN_ECB": "Tranzistor", "7805": "Napájení", "LM1889": "Video", "F": "Napájení", "LED": "Napájení"}
 bom = defaultdict(list)
 for ref, p in parts.items():
     bom[(GROUP[p["sym"]], p["value"], p["fp"])].append(ref)
