@@ -13,3 +13,4 @@
 #define CFG_TUH_HID 4
 #define CFG_TUH_HID_EPIN_BUFSIZE 64
 #define CFG_TUH_HID_EPOUT_BUFSIZE 64
+#define CFG_TUH_MSC 1               // USB flash disk se soubory .TAP

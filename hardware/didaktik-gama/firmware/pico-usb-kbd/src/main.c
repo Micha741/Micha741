@@ -4,7 +4,9 @@
 //   GP0..GP7  <- A8..A15 přes 74LVC245 (5 V -> 3,3 V)
 //   GP8..GP12 -> KB1..KB5 přes 74LVC07 (otevřený kolektor; 0 = klávesa stisknuta)
 //   GP13      -> /RESET přes 74LVC07 (0 = reset)
-//   USB (micro-USB přes redukci OTG) = klávesnice, napájení +5V do VBUS
+//   GP14      -> signál kazety přes dělič do vstupu magnetofonu (přehrávač .TAP, viz player.h)
+//   USB (micro-USB přes redukci OTG, případně USB rozbočovač) = klávesnice + flash disk,
+//   napájení +5V do VBUS
 //
 // Jádro 1 v nekonečné smyčce čte A8..A15 a z tabulky okamžitě nastaví KB1..KB5 – počítač
 // při čtení portu FE vidí stejnou odezvu jako u mechanické klávesnice.
@@ -14,6 +16,7 @@
 #include "hardware/gpio.h"
 #include "hardware/structs/sio.h"
 #include "keymap.h"
+#include "player.h"
 #include "pico/multicore.h"
 #include "pico/stdlib.h"
 #include "tusb.h"
@@ -62,7 +65,8 @@ static void publish(const zx_keys_t *keys) {
         gpio_put(PIN_RESET, 0);
         reset_until = to_ms_since_boot(get_absolute_time()) + RESET_MS;
     }
-    gpio_put(PICO_DEFAULT_LED_PIN, memcmp(keys->rows, (uint8_t[ZX_ROWS]){0}, ZX_ROWS) != 0);
+    if (!player_owns_led())
+        gpio_put(PICO_DEFAULT_LED_PIN, memcmp(keys->rows, (uint8_t[ZX_ROWS]){0}, ZX_ROWS) != 0);
 }
 
 // ------------------------------------------------------------------ USB HID (TinyUSB host)
@@ -85,6 +89,7 @@ void tuh_hid_report_received_cb(uint8_t dev_addr, uint8_t instance, uint8_t cons
         len >= sizeof(hid_keyboard_report_t)) {
         const hid_keyboard_report_t *r = (const hid_keyboard_report_t *)report;
         zx_keys_t keys;
+        player_keys(r->keycode);
         keymap_compute(r->modifier, r->keycode, &keys);
         publish(&keys);
     }
@@ -109,6 +114,7 @@ int main(void) {
     gpio_init(PICO_DEFAULT_LED_PIN);
     gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
 
+    player_init();
     const zx_keys_t none = {0};
     publish(&none);
     multicore_launch_core1(matrix_loop);
@@ -116,6 +122,7 @@ int main(void) {
     tusb_init();  // režim host podle CFG_TUSB_RHPORT0_MODE v tusb_config.h
     for (;;) {
         tuh_task();
+        player_task();
         if (reset_until && to_ms_since_boot(get_absolute_time()) >= reset_until) {
             gpio_put(PIN_RESET, 1);
             reset_until = 0;

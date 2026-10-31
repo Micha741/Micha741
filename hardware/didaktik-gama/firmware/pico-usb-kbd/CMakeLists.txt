@@ -14,7 +14,7 @@ project(gama_usb_kbd C CXX ASM)
 set(CMAKE_C_STANDARD 11)
 pico_sdk_init()
 
-add_executable(gama_usb_kbd src/main.c src/keymap.c)
+add_executable(gama_usb_kbd src/main.c src/keymap.c src/player.c src/fat.c src/tap.c)
 target_include_directories(gama_usb_kbd PRIVATE src)
 target_link_libraries(gama_usb_kbd PRIVATE pico_stdlib pico_multicore tinyusb_host tinyusb_board)
 pico_add_extra_outputs(gama_usb_kbd)

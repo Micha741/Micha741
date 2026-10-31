@@ -190,6 +190,7 @@ for i in range(8):
 for i in range(5):
     pico[gp_pin[8 + i]] = f"KBD_KB{i + 1}"     # GP8..GP12 -> KB1..KB5 (přes 74LVC07)
 pico[gp_pin[13]] = "KBD_RST"                   # GP13 -> /RESET (Ctrl+Alt+Del)
+pico[gp_pin[14]] = "KBD_TAPE"                  # GP14 -> signál kazety (přehrávač .TAP z USB disku)
 add("U39", "PICO", "Raspberry Pi Pico (USB host)", "", pico)
 add("U40", "74LVC245", "74LVC245", "Package_SO:SOIC-20W_7.5x12.8mm_P1.27mm", {
     1: "+3V3_KBD", 19: "GND", 10: "GND", 20: "+3V3_KBD",
@@ -202,6 +203,12 @@ add("U41", "74LVC07", "74LVC07", "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm", {
 for i in range(6):
     uR(f"R{90 + i}", "10k", "+3V3_KBD", ["KBD_KB1", "KBD_KB2", "KBD_KB3", "KBD_KB4", "KBD_KB5", "KBD_RST"][i])
 uC("C83", "100n", "+3V3_KBD", "GND"); uC("C84", "100n", "+3V3_KBD", "GND")
+# přehrávač kazet: 3,3 V obdélník z GP14 -> dělič 10k/2k2 (~0,6 V) -> 1u -> vstup magnetofonu MG_IN
+uR("R96", "10k", "KBD_TAPE", "TAPE_DIV")
+uR("R97", "2k2", "TAPE_DIV", "GND")
+add("C85", "CP", "1u/16V", "Capacitor_THT:CP_Radial_D5.0mm_P2.00mm", {1: "TAPE_DIV", 2: "MG_IN"}); USB_BLOCK.append("C85")
+verify.append(("R96, R97, C85 (přehrávač kazet)", "GP14 Pica -> MG_IN, úroveň ~0,6 V jako výstup magnetofonu",
+               "Při nahrávání nemít připojený skutečný magnetofon (oba výstupy by se sčítaly); úroveň případně upravit R97"))
 verify.append(("U39 Raspberry Pi Pico", "USB host přes micro-USB a redukci OTG, napájení +5V do VBUS (pin 40)",
                "Potřebuje firmware (TinyUSB host HID + emulace matice 8x5); pull-upy 10k drží KB1–5 a /RESET uvolněné, dokud Pico nenaběhne"))
 verify.append(("U40/U41 74LVC245, 74LVC07", "převod úrovní 5 V <-> 3,3 V",

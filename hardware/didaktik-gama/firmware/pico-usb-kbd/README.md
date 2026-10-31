@@ -1,4 +1,4 @@
-# Didaktik Gama – USB klávesnice (Raspberry Pi Pico)
+# Didaktik Gama – USB klávesnice a přehrávač kazet (Raspberry Pi Pico)
 
 Firmware pro blok „USB KLÁVESNICE“ na hlavní desce (U39 Pico, U40 74LVC245, U41 74LVC07).
 Pico pracuje jako USB host: přečte běžnou USB klávesnici a emuluje matici klávesnice Spectra.
@@ -9,6 +9,23 @@ Pico pracuje jako USB host: přečte běžnou USB klávesnici a emuluje matici k
 - **Jádro 0** obsluhuje USB (TinyUSB) a při každé změně kláves tabulku přepočítá (dvojitý buffer).
 - Původní klávesnice Gamy funguje současně (výstupy s otevřeným kolektorem).
 - Svítící LED na Picu = je stisknutá nějaká klávesa.
+
+## Přehrávač kazet (.TAP z USB flash disku)
+Klávesnici a flash disk připojte přes **USB rozbočovač** (do micro-USB Pica přes redukci OTG).
+Pico přečte z kořenového adresáře disku soubory `*.TAP` (FAT12/16/32, krátká jména 8.3, seřazené
+abecedně) a na GP14 vysílá signál kazety se standardním časováním ROM; přes dělič R96/R97 a C85
+jde do vstupu magnetofonu MG_IN – Gama nahrává normálně přes `LOAD ""`.
+
+| Klávesa | Funkce |
+|---|---|
+| F1 | další soubor |
+| F3 | předchozí soubor |
+| F2 | přehrát / zastavit |
+
+LED na Picu po vložení disku blikne 1× (10× = disk nečitelný nebo bez souborů .TAP), po výběru
+souboru blikne tolikrát, kolikátý soubor je vybrán; během přehrávání svítí.
+Postup: na Gamě napište `LOAD ""` + Enter, pak F2. Při přehrávání nemějte připojený magnetofon.
+Formát `.TZX` (turbo a chráněné nahrávače) zatím podporován není.
 
 ## Klávesy (US rozložení PC klávesnice)
 | PC | Gama |
@@ -37,12 +54,12 @@ cmake --build build
 Výsledný `build/gama_usb_kbd.uf2` nahrajte do Pica: držte tlačítko BOOTSEL, připojte Pico k PC
 a soubor zkopírujte na disk RPI-RP2.
 
-## Test převodu kláves (bez Pica)
+## Testy na počítači (bez Pica)
 ```bash
-cd test
-cc -I../src test_keymap.c ../src/keymap.c -o test_keymap
-./test_keymap
+test/run_tests.sh
 ```
+Otestuje převod kláves, čtení FAT12/16/32 (s MBR i bez, soubory přes více clusterů) a generátor
+signálu kazety (pulzy se dekódují zpět na bajty a porovnají se souborem).
 
 ## Oživení
 - Pokud stisk např. `Q` vypíše jinou klávesu ze stejné řady (W, E, R, T), liší se pořadí linek

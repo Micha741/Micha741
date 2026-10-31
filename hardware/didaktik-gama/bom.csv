@@ -11,6 +11,7 @@ Kondenzátor,100n,38,C5 C6 C7 C12 C13 C20 C21 C22 C23 C24 C25 C26 C27 C28 C29 C3
 Kondenzátor,100p,3,C2 C9 C10,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm
 Kondenzátor,10n,1,C4,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm
 Kondenzátor,10u/16V,1,C15,Capacitor_THT:CP_Radial_D5.0mm_P2.00mm
+Kondenzátor,1u/16V,1,C85,Capacitor_THT:CP_Radial_D5.0mm_P2.00mm
 Kondenzátor,220u/10V,1,C14,Capacitor_THT:CP_Radial_D6.3mm_P2.50mm
 Kondenzátor,2u,1,C1,Capacitor_THT:CP_Radial_D5.0mm_P2.50mm
 Kondenzátor,47p,2,C3 C8,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm
@@ -35,13 +36,14 @@ Ostatní,Reproduktor,1,LS1,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Ver
 RAM 4164,4164,8,U9 U10 U11 U12 U13 U14 U15 U16,Package_DIP:DIP-16_W7.62mm
 ROM,27128 (16K EPROM),1,U2,Package_DIP:DIP-28_W15.24mm
 Rezistor,100,1,R34,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
-Rezistor,10k,21,R1 R2 R3 R10 R11 R12 R13 R14 R15 R84 R85 R86 R87 R88 R89 R90 R91 R92 R93 R94 R95,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
+Rezistor,10k,22,R1 R2 R3 R10 R11 R12 R13 R14 R15 R84 R85 R86 R87 R88 R89 R90 R91 R92 R93 R94 R95 R96,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
 Rezistor,15,1,R9,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
 Rezistor,180,1,R8,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
 Rezistor,1k,2,R7 R17,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
 Rezistor,1k5,3,R77 R79 R81,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
 Rezistor,220,2,R43 R44,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
 Rezistor,220k,1,R4,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
+Rezistor,2k2,1,R97,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
 Rezistor,330,7,R27 R28 R29 R30 R31 R32 R33,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
 Rezistor,330k,1,R18,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
 Rezistor,470,11,R5 R6 R19 R20 R21 R22 R23 R24 R25 R26 R45,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
