@@ -127,16 +127,59 @@ verify.append(("MG / zvuk (D9–D11, LS1, T3)", "horní konce reproduktoru, diod
                "Na předloze končí bez označení – připojeno na GND; zapojení KC507 přepsáno doslova, ověřit"))
 
 # Video výstup
-add("U30", "KODER", "Kodér PAL", "", {1: "U", 2: "V", 3: "Y", 4: "CVBS"})
-verify.append(("U30 (kodér)", "vnitřní zapojení kodéru zatím jen jako blok",
-               "Předloha kreslí jen blok KÓDER; typ obvodu (pravděpodobně LM1889 jako ve ZX Spectru) a jeho pinout ověřit z datasheetu"))
+# Kodér PAL – LM1889 (jako ZX Spectrum 48K, IC14). Funkce pinů ze servisního manuálu
+# ZX Spectrum 48K (kap. 7.1): 1 chroma lead, 2 R-Y, 3 chroma bias, 4 B-Y, 5 GND,
+# 6–11 nezapojeny, 12 video vstup, 13 chroma výstup, 14 RF napájení, 15 zvukový obvod,
+# 16 napájení chroma, 17 výstup oscilátoru, 18 chroma lag.
+add("U30", "LM1889", "LM1889", "Package_DIP:DIP-18_W7.62mm", {
+    1: "CH_LEAD", 2: "RY", 3: "CBIAS", 4: "BY", 5: "GND",
+    6: None, 7: None, 8: None, 9: None, 10: None, 11: None,
+    12: "+12V", 13: "CHROMA", 14: "+12V", 15: "+12V", 16: "+12V",
+    17: "CH_OSC", 18: "CH_LAG"})
+# posun úrovně U/V -> B-Y/R-Y (pasivní varianta Issue 2: trimry VR1/VR2 2k2)
+R("R48", "1k", "U", "BY")
+R("R49", "2k2 trimr (VR1)", "BY", "CBIAS")
+R("R50", "1k", "V", "RY")
+R("R51", "2k2 trimr (VR2)", "RY", "CBIAS")
+C("C64", "100n", "CBIAS", "GND")
+# oscilátor 4,433619 MHz + fázovací RC článek mezi piny 1 a 18
+add("Y2", "XTAL", "4.433619MHz", "Crystal:Crystal_HC49-4H_Vertical", {1: "CH_OSC", 2: "CH_XT"})
+C("C65", "5–30p trimr (TC2)", "CH_XT", "GND")
+R("R52", "1k", "CH_OSC", "CH_LEAD")
+C("C66", "150p", "CH_LEAD", "CH_LAG")
+C("C67", "150p", "CH_LAG", "GND")
+# sčítání jasu a barvy: TR1 invertuje Y, chroma přes kondenzátor na bázi TR2 (sledovač)
+add("T5", "NPN", "KC507 (ZTX313)", "Package_TO_SOT_THT:TO-18-3", {1: "T5_E", 2: "T5_B", 3: "CVBS_MIX"})
+R("R53", "1k", "Y", "T5_B")
+R("R54", "100", "T5_E", "GND")
+R("R55", "1k", "+5V", "CVBS_MIX")
+C("C68", "1n", "CHROMA", "CVBS_MIX")
+add("T6", "NPN", "KC507 (ZTX313)", "Package_TO_SOT_THT:TO-18-3", {1: "CVBS", 2: "CVBS_MIX", 3: "+5V"})
+R("R56", "1k", "CVBS", "GND")
+# +12V pro LM1889 z nestabilizovaného vstupu (Spectrum má měnič TR4/TR5)
+R("R57", "47", "VIN", "+12V")
+add("C69", "CP", "100u/16V", "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm", {1: "+12V", 2: "GND"})
+C("C70", "100n", "+12V", "GND")
+verify.append(("U30 LM1889", "piny podle servisního manuálu ZX Spectrum 48K (kap. 7.1)",
+               "Typ kodéru u Gamy ověřit na desce; piny 12/14/15 na +12V podle tabulky napětí v manuálu"))
+verify.append(("R48–R51, C64", "posun úrovně U/V (trimry VR1/VR2 2k2)",
+               "Topologie podle popisu v manuálu (Issue 2), hodnoty 1k typické – nastavit dle kap. 3.1.3 manuálu"))
+verify.append(("Y2, C65–C67, R52", "oscilátor 4,433619 MHz a fázovací RC 1–18",
+               "Krystal a 150p dle soupisu Spectra; přesné zapojení RC článku ze schématu Spectra ověřit"))
+verify.append(("T5, T6, R53–R56, C68", "sčítání jasu a barvy do CVBS",
+               "Podle popisu v manuálu (TR1/TR2 ZTX313); hodnoty typické, ověřit"))
+verify.append(("R57, C69 (+12V)", "napájení LM1889 z nestabilizovaného vstupu",
+               "Spectrum vyrábí +12 V měničem TR4/TR5; u Gamy zdroj 12 V ověřit (při 9V adaptéru nestačí)"))
+
 # modulátor = stíněný modul (UM1233 / tuzemský ekvivalent): +5V, video, GND, VF výstup
 add("U31", "MODULATOR", "VF modulátor (UM1233 nebo ekv.)", "", {1: "CVBS", 2: "+5V", 3: "TV", 4: "GND"})
 C("C63", "100n", "+5V", "GND")
 verify.append(("U31 (modulátor)", "vývody modulu +5V / VIDEO / GND / VF",
                "Modul je na předloze jen blok; pořadí vývodů podle konkrétního modulu"))
 # kompozitní výstup (doplněno): emitorový sledovač + 75R na cinch
-VIDEO_BLOCK = ["T4", "R46", "C62", "R47", "J6", "C63"]
+VIDEO_BLOCK = ["R48", "R49", "R50", "R51", "C64", "Y2", "C65", "R52", "C66", "C67",
+               "T5", "R53", "R54", "R55", "C68", "T6", "R56", "R57", "C69", "C70",
+               "T4", "R46", "C62", "R47", "J6", "C63"]
 add("T4", "NPN", "KC507 (BC547)", "Package_TO_SOT_THT:TO-18-3", {1: "CVBS_E", 2: "CVBS", 3: "+5V"})
 R("R46", "470", "CVBS_E", "GND")
 add("C62", "CP", "220u/10V", "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm", {1: "CVBS_E", 2: "CVBS_C"})

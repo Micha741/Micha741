@@ -85,6 +85,10 @@ ic("2118",
    [P(4, "~{RAS}"), P(15, "~{CAS}"), P(3, "~{WE}"), P(14, "Q"), None, P(8, "VCC", PW), P(9, "VCC", PW),
     P(16, "GND", PW), P(1, "NC", "no_connect")], w=12.7)
 ic("7805", [P(1, "IN")], [P(3, "OUT"), P(2, "GND", PW)], w=10.16, title="7805")
+ic("LM1889",
+   [P(2, "R-Y"), P(4, "B-Y"), P(3, "BIAS"), None, P(17, "OSC"), P(1, "LEAD"), P(18, "LAG"), None, P(12, "VIDEO")],
+   [P(13, "CHROMA"), None, P(15, "SND"), P(14, "RF_VCC", PW), P(16, "VCC", PW), P(5, "GND", PW), None]
+   + [P(n, "NC", "no_connect") for n in range(6, 12)], w=15.24)
 ic("KODER", [P(1, "U"), P(2, "V"), P(3, "Y")], [P(4, "CVBS")], w=12.7, title="KODER")
 ic("MODULATOR", [P(1, "VIDEO"), None, P(2, "+5V", PW)], [P(3, "RF"), None, P(4, "GND", PW)], w=12.7, title="MODULÁTOR")
 
@@ -325,11 +329,11 @@ for i in range(8):
     at(f"U{17 + i}", grid(45 + i * 52), grid(265))
 # kodér/modulátor, konektory
 at("U30", grid(515), grid(70))
-at("U31", grid(560), grid(70))
+at("U31", grid(580), grid(70))
 at("J1", grid(625), grid(80))
 at("J2", grid(670), grid(60))
 at("J3", grid(610), grid(70) - 0)
-at("J4", grid(720), grid(100))
+at("J4", grid(805), grid(100))
 
 GATE_UNITS = {}   # ref -> seznam (unit, x, y)
 
@@ -337,7 +341,7 @@ GATE_UNITS = {}   # ref -> seznam (unit, x, y)
 for i, r in enumerate(POWER_BLOCK):
     at(r, grid(505 + i * 17 + (8 if r == "U32" else 0) + (16 if i > POWER_BLOCK.index("U32") else 0)), grid(262))
 for i, r in enumerate(VIDEO_BLOCK):
-    at(r, grid(505 + i * 22), grid(112))
+    at(r, grid(500 + (i % 13) * 18), grid(120 + (i // 13) * 30))
 PASSIVES = [r for r in parts if parts[r]["sym"] in ("R", "C", "CP", "D", "SW", "XTAL", "SPK", "NPN", "F", "LED")
             and r not in POWER_BLOCK and r not in VIDEO_BLOCK]
 PASSIVES.sort(key=lambda r: (r.rstrip("0123456789"), int("".join(c for c in r if c.isdigit()) or 0)))
@@ -356,7 +360,7 @@ for ref in ("U25", "U26", "U27", "U28", "U29"):
     used = [k for k, (ins, o) in enumerate(units, 1) if any(pins.get(p) for p in (*ins, o))]
     lst = []
     for k in used + [len(units) + 1]:
-        lst.append((k, grid(500 + gx * 36), grid(170 + gy * 26)))
+        lst.append((k, grid(500 + gx * 36), grid(178 + gy * 25)))
         gx += 1
         if gx >= 9:
             gx, gy = 0, gy + 1
@@ -508,7 +512,7 @@ labels = [l for l in labels if "+5V_FLAG" not in l]
 notes = [
     txt("DIDAKTIK GAMA – SCHÉMA ZAPOJENIA (překresleno z tištěné předlohy)", 30, 20, 3),
     txt("Spoje jsou vedeny návěštími (labels) – stejné jméno = stejný net. ~{X} = aktivní v nule.", 30, 26, 1.8),
-    txt("VIDEO VÝSTUP (kompozit doplněn)", 500, 98, 2),
+    txt("KODÉR PAL LM1889 + VIDEO VÝSTUP", 500, 100, 2),
     txt("NAPÁJENÍ (doplněno – na předloze jen +5V)", 500, 245, 2),
     txt("K OVĚŘENÍ (na předloze nečitelné / odhadnuté):", 560, 290, 2),
 ]
@@ -575,7 +579,7 @@ GROUP = {"UA880D": "CPU", "27128": "ROM", "8255": "I/O", "ULA": "ULA", "4164": "
          "74LS157": "Multiplexer", "7400": "Logika", "7404": "Logika", "7410": "Logika", "7432": "Logika",
          "R": "Rezistor", "C": "Kondenzátor", "CP": "Kondenzátor", "D": "Dioda", "NPN": "Tranzistor",
          "SW": "Ostatní", "XTAL": "Ostatní", "SPK": "Ostatní", "CONN": "Konektor", "KODER": "Video",
-         "MODULATOR": "Video", "7805": "Napájení", "F": "Napájení", "LED": "Napájení"}
+         "MODULATOR": "Video", "7805": "Napájení", "LM1889": "Video", "F": "Napájení", "LED": "Napájení"}
 bom = defaultdict(list)
 for ref, p in parts.items():
     bom[(GROUP[p["sym"]], p["value"], p["fp"])].append(ref)
