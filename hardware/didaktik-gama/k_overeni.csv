@@ -1,0 +1,10 @@
+misto,co,proc
+U2 pin 20 (/CE),/ROMCS = ULA pin 34,U pinu 20 je jen kondenzátor 100p; připojení na ULA ROMCS je odhad
+U4 (ULA),pin GND není ve schématu nakreslen,Čísla pinů 36/37 (A14/A15) a 2 (/WR) jsou na předloze rozmazaná – převzato dle zapojení ZX ULA
+"MG / zvuk (D9–D11, LS1, T3)","horní konce reproduktoru, diod a 10n","Na předloze končí bez označení – připojeno na GND; zapojení KC507 přepsáno doslova, ověřit"
+U7/U8 vstupy,přiřazení A/B vstupů LS157,Na předloze jsou vidět jen odbočky z adresové sběrnice – řádek An / sloupec An+7 je odvozeno funkčně
+U5 pin 10,sloupcový bit RA7 = BANK (PC0 8255),Funkční odhad: horních 32K je 2x32K banka přepínaná PC0
+U27 pin 10,= A15,"Vstup přichází z adresové sběrnice, konkrétní linka nečitelná"
+U28 (CS 8255),"3vstupé NAND: ~A7, IORQ, /M1",Typ hradla a třetí vstup (/M1) odhadnuty; port 8255 = A7=0 (1Fh/3Fh/5Fh/7Fh)
+U29D (/WE64),"vstupy 12 = /WR, 13 = /MREQ",Výstup 11 jde na /WE 4164 – vstupy na předloze nejasné
+C9,100p z MUX2_D na GND,Druhý konec kondenzátoru na předloze nejasný
