@@ -14,10 +14,50 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from netlist_modul import parts  # noqa: E402
 
-FP = "/usr/share/kicad/footprints"
 W, H = 70.0, 50.0
 OX, OY = 110.0, 90.0          # poloha na listu A4
 mm = pcbnew.FromMM
+
+
+def footprint_dirs():
+    """adresáře knihoven pouzder: proměnné KiCadu, instalace vedle Pythonu KiCadu (Windows), Linux/macOS"""
+    dirs = [os.environ.get(f"KICAD{v}_FOOTPRINT_DIR", "") for v in (9, 8, 7)]
+    exe_dir = os.path.dirname(sys.executable)                       # ...\KiCad\8.0\bin
+    dirs += [os.path.normpath(os.path.join(exe_dir, "..", "share", "kicad", "footprints")),
+             "/usr/share/kicad/footprints", "/usr/local/share/kicad/footprints",
+             "/Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints"]
+    for v in ("9.0", "8.0", "7.0"):
+        dirs.append(rf"C:\Program Files\KiCad\{v}\share\kicad\footprints")
+    return [d for d in dirs if d and os.path.isdir(d)]
+
+
+def set_default_netclass(board, track, clearance, via, drill):
+    """výchozí pravidla – API se mezi KiCadem 7 a 8/9 liší, proto více cest"""
+    ns = board.GetDesignSettings().m_NetSettings
+    for get in (lambda: ns.m_DefaultNetClass, lambda: ns.GetDefaultNetclass(), lambda: ns.m_DefaultNetClass.get()):
+        try:
+            nc = get()
+            nc.SetTrackWidth(track)
+            nc.SetClearance(clearance)
+            nc.SetViaDiameter(via)
+            nc.SetViaDrill(drill)
+            return True
+        except Exception:
+            continue
+    print("Pozor: výchozí pravidla netclass nenastavena – nastavte v KiCadu (Board Setup)")
+    return False
+
+
+FP_DIRS = footprint_dirs()
+
+
+def load_fp(lib, name):
+    for d in FP_DIRS:
+        if os.path.isdir(os.path.join(d, lib + ".pretty")):
+            fp = pcbnew.FootprintLoad(os.path.join(d, lib + ".pretty"), name)
+            if fp:
+                return fp
+    raise SystemExit(f"Pouzdro nenalezeno: {lib}:{name} (hledáno v {FP_DIRS}); nastavte KICAD8_FOOTPRINT_DIR")
 OUT = os.path.join(HERE, "ula_cpld_modul.kicad_pcb")
 
 
@@ -27,11 +67,7 @@ def V(x, y):
 
 board = pcbnew.NewBoard(OUT)
 board.SetCopperLayerCount(2)
-nc = board.GetDesignSettings().m_NetSettings.m_DefaultNetClass
-nc.SetTrackWidth(mm(0.2))
-nc.SetClearance(mm(0.15))
-nc.SetViaDiameter(mm(0.6))
-nc.SetViaDrill(mm(0.3))
+set_default_netclass(board, mm(0.2), mm(0.15), mm(0.6), mm(0.3))
 
 nets = {}
 
@@ -47,7 +83,7 @@ def net(name):
 fps = {}
 for ref, p in parts.items():
     lib, name = p["fp"].split(":", 1)
-    fp = pcbnew.FootprintLoad(os.path.join(FP, lib + ".pretty"), name)
+    fp = load_fp(lib, name)
     fp.SetReference(ref)
     fp.SetValue(p["value"][:40])
     pins = {str(k): v for k, v in p["pins"].items()}
@@ -72,23 +108,28 @@ def place(ref, x, y, rot=0):
 # aby mezi řadami šly osadit SMD součástky
 j1 = fps["J1"]
 for gi in list(j1.GraphicalItems()):
-    if gi.GetLayer() in (pcbnew.F_CrtYd, pcbnew.F_Fab, pcbnew.F_SilkS) and isinstance(gi, pcbnew.FP_SHAPE):
+    if gi.GetLayer() in (pcbnew.F_CrtYd, pcbnew.F_Fab, pcbnew.F_SilkS) and gi.GetClass() in ("MGRAPHIC", "PCB_SHAPE", "FP_SHAPE"):
         j1.Remove(gi)
+def fp_rect(fp, layer, width, x0, y0, x1, y1):
+    """obdélník v souřadnicích pouzdra (pouzdro je zatím v počátku, bez otočení)"""
+    if hasattr(pcbnew, "FP_SHAPE"):            # KiCad 7
+        r = pcbnew.FP_SHAPE(fp)
+        r.SetShape(pcbnew.SHAPE_T_RECT)
+        r.SetStart0(pcbnew.VECTOR2I(mm(x0), mm(y0)))
+        r.SetEnd0(pcbnew.VECTOR2I(mm(x1), mm(y1)))
+    else:                                      # KiCad 8/9
+        r = pcbnew.PCB_SHAPE(fp)
+        r.SetShape(pcbnew.SHAPE_T_RECT)
+        r.SetStart(pcbnew.VECTOR2I(mm(x0), mm(y0)))
+        r.SetEnd(pcbnew.VECTOR2I(mm(x1), mm(y1)))
+    r.SetLayer(layer)
+    r.SetWidth(mm(width))
+    fp.Add(r)
+
+
 for x0, x1 in ((-1.5, 1.5), (13.74, 16.74)):  # řady kolíků DIP-40 v souřadnicích pouzdra (x = 0 a 15,24)
-    r = pcbnew.FP_SHAPE(j1)
-    r.SetShape(pcbnew.SHAPE_T_RECT)
-    r.SetLayer(pcbnew.F_CrtYd)
-    r.SetWidth(mm(0.05))
-    r.SetStart0(pcbnew.VECTOR2I(mm(x0), mm(-1.5)))
-    r.SetEnd0(pcbnew.VECTOR2I(mm(x1), mm(49.76)))
-    j1.Add(r)
-    sk = pcbnew.FP_SHAPE(j1)
-    sk.SetShape(pcbnew.SHAPE_T_RECT)
-    sk.SetLayer(pcbnew.F_SilkS)
-    sk.SetWidth(mm(0.12))
-    sk.SetStart0(r.GetStart0())
-    sk.SetEnd0(r.GetEnd0())
-    j1.Add(sk)
+    fp_rect(j1, pcbnew.F_CrtYd, 0.05, x0, -1.5, x1, 49.76)
+    fp_rect(j1, pcbnew.F_SilkS, 0.12, x0, -1.5, x1, 49.76)
 # J1: DIP-40 otočené o 90° -> řady kolíků vodorovně (y = 30,0 a 45,24), pin 1 vlevo dole
 place("J1", 35.0, 37.62, 90)
 # CPLD nad horní řadou kolíků

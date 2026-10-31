@@ -14,6 +14,7 @@ import argparse
 import csv
 import os
 import re
+import shutil
 import subprocess
 import sys
 import zipfile
@@ -51,8 +52,20 @@ def drc(pcb_path):
     return unconnected, errors
 
 
+def kicad_cli():
+    """kicad-cli z PATH, jinak vedle Pythonu KiCadu (Windows: ...\\KiCad\\8.0\\bin\\kicad-cli.exe)"""
+    exe = shutil.which("kicad-cli")
+    if exe:
+        return exe
+    for name in ("kicad-cli.exe", "kicad-cli"):
+        cand = os.path.join(os.path.dirname(sys.executable), name)
+        if os.path.exists(cand):
+            return cand
+    raise SystemExit("kicad-cli nenalezen – spusťte skript z 'KiCad Command Prompt' nebo přes vyroba.bat")
+
+
 def run(*args):
-    r = subprocess.run(["kicad-cli", *args], capture_output=True, text=True)
+    r = subprocess.run([kicad_cli(), *args], capture_output=True, text=True)
     if r.returncode:
         raise SystemExit(f"kicad-cli selhal: {' '.join(args)}\n{r.stdout}\n{r.stderr}")
 

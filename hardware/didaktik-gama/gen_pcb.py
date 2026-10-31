@@ -15,10 +15,40 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from netlist import parts  # noqa: E402
 
-FP_DIRS = ["/usr/share/kicad/footprints", os.environ.get("KICAD7_FOOTPRINT_DIR", ""),
-           os.environ.get("KICAD8_FOOTPRINT_DIR", "")]
 BOARD_W, BOARD_H = 300.0, 225.0
 mm = pcbnew.FromMM
+
+
+def footprint_dirs():
+    """adresáře knihoven pouzder: proměnné KiCadu, instalace vedle Pythonu KiCadu (Windows), Linux/macOS"""
+    dirs = [os.environ.get(f"KICAD{v}_FOOTPRINT_DIR", "") for v in (9, 8, 7)]
+    exe_dir = os.path.dirname(sys.executable)                       # ...\KiCad\8.0\bin
+    dirs += [os.path.normpath(os.path.join(exe_dir, "..", "share", "kicad", "footprints")),
+             "/usr/share/kicad/footprints", "/usr/local/share/kicad/footprints",
+             "/Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints"]
+    for v in ("9.0", "8.0", "7.0"):
+        dirs.append(rf"C:\Program Files\KiCad\{v}\share\kicad\footprints")
+    return [d for d in dirs if d and os.path.isdir(d)]
+
+
+def set_default_netclass(board, track, clearance, via, drill):
+    """výchozí pravidla – API se mezi KiCadem 7 a 8/9 liší, proto více cest"""
+    ns = board.GetDesignSettings().m_NetSettings
+    for get in (lambda: ns.m_DefaultNetClass, lambda: ns.GetDefaultNetclass(), lambda: ns.m_DefaultNetClass.get()):
+        try:
+            nc = get()
+            nc.SetTrackWidth(track)
+            nc.SetClearance(clearance)
+            nc.SetViaDiameter(via)
+            nc.SetViaDrill(drill)
+            return True
+        except Exception:
+            continue
+    print("Pozor: výchozí pravidla netclass nenastavena – nastavte v KiCadu (Board Setup)")
+    return False
+
+
+FP_DIRS = footprint_dirs()
 
 
 OX, OY = 60.0, 36.0   # posun desky na listu A3
@@ -38,7 +68,7 @@ def load_fp(fpid):
             fp = pcbnew.FootprintLoad(p, name)
             if fp:
                 return fp
-    raise SystemExit(f"Pouzdro nenalezeno: {fpid}")
+    raise SystemExit(f"Pouzdro nenalezeno: {fpid} (hledáno v {FP_DIRS}); nastavte KICAD8_FOOTPRINT_DIR")
 
 
 OUT = os.path.join(HERE, "didaktik_gama.kicad_pcb")
@@ -46,14 +76,7 @@ board = pcbnew.NewBoard(OUT)            # deska s projektem (nastavení netclass
 board.SetCopperLayerCount(4)
 ds = board.GetDesignSettings()
 ds.SetBoardThickness(mm(1.6))
-try:
-    nc = ds.m_NetSettings.m_DefaultNetClass
-    nc.SetTrackWidth(mm(0.25))
-    nc.SetClearance(mm(0.2))
-    nc.SetViaDiameter(mm(0.6))
-    nc.SetViaDrill(mm(0.3))
-except Exception as e:  # jiná verze API – výchozí pravidla KiCadu
-    print("netclass nenastavena:", e)
+set_default_netclass(board, mm(0.25), mm(0.2), mm(0.6), mm(0.3))
 print("deska vytvořena", flush=True)
 
 # ------------------------------------------------------------------ nety

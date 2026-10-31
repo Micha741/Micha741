@@ -79,3 +79,52 @@ vrstvy, mapy vrtání PDF, job soubor), `<deska>_bom.csv` (soupis ve formátu Co
 |---|---|
 | hlavní | 300 × 225 mm, 4 vrstvy (In1 GND, In2 +5V), FR-4 1,6 mm, Cu 35 µm, HASL bezolovnatý / ENIG |
 | modul ULA | 70 × 50 mm, 2 vrstvy, FR-4 1,6 mm, ENIG doporučeno (TQFP s roztečí 0,5 mm) |
+
+## Návod pro Windows
+
+### 1. Programy
+| Program | K čemu | Odkud |
+|---|---|---|
+| **KiCad 8 nebo 9** | schéma, desky, trasování, gerbery; obsahuje i Python s modulem `pcbnew` | https://www.kicad.org/download/windows/ |
+| Git for Windows (volitelně) | stažení repozitáře, Git Bash pro skripty `.sh` | https://git-scm.com/download/win |
+| Freerouting (volitelně) | automatické vedení cest – v KiCadu *Plugin and Content Manager* → „Freerouting“ | správce doplňků KiCadu |
+
+Repozitář stáhněte přes *Code → Download ZIP* na GitHubu (nebo `git clone`) a rozbalte například do
+`C:\gama`. Dále se pracuje ve složce `C:\gama\hardware\didaktik-gama`.
+
+### 2. Dávkové soubory (dvojklik)
+Soubory `.bat` samy najdou Python, který dodává KiCad (`C:\Program Files\KiCad\9.0` nebo `8.0`).
+
+| Soubor | Co udělá |
+|---|---|
+| `vyroba.bat` | výrobní podklady do `vyroba\` (stejně jako `make_fab.py`; lze `vyroba.bat modul`, `vyroba.bat --force -o C:\test`) |
+| `schema.bat` | znovu vytvoří schémata, netlisty, BOM a seznam k ověření z `netlist.py` / `netlist_modul.py` |
+| `deska.bat` | znovu vytvoří obě desky z netlistu – **přepíše natrasované cesty**, proto se ptá |
+
+Ručně lze totéž spustit z nabídky Start → **KiCad 8.0 Command Prompt** (má v cestě `python` i `kicad-cli`):
+```bat
+cd /d C:\gama\hardware\didaktik-gama
+python make_fab.py
+```
+
+### 3. Postup od desky k objednávce
+1. Dvojklik na `didaktik_gama.kicad_pro` → otevře se KiCad; otevřít editor desky.
+2. Trasování: *Tools → External Plugins → Freerouting* (nebo *File → Export → Specctra DSN*, ve Freeroutingu
+   *Autorouter*, pak *File → Import → Specctra Session*). Totéž pro `ula_cpld_modul.kicad_pcb`.
+3. *Inspect → Design Rules Checker* → opravit chyby, nepropojené spoje musí být 0.
+4. Dvojklik `vyroba.bat` → ve `vyroba\hlavni\` a `vyroba\modul\` jsou ZIPy pro výrobce a `PARAMETRY.txt`.
+
+### 4. Firmware na Windows
+- **Pico (USB klávesnice a kazety):** instalátor *Raspberry Pi Pico* pro Windows nebo rozšíření
+  *Raspberry Pi Pico* ve VS Code (obsahuje Pico SDK, CMake a překladač). Otevřít složku
+  `firmware\pico-usb-kbd`, přeložit, `gama_usb_kbd.uf2` zkopírovat na disk RPI-RP2 (Pico s BOOTSEL).
+  Testy na PC (`test\run_tests.sh`) jdou v Git Bash s překladačem `gcc` (např. z MSYS2) nebo ve WSL.
+- **CPLD (náhrada ULA):** Xilinx ISE 14.7 – pro Windows 10/11 je od AMD/Xilinx edice „ISE 14.7 Windows 10“
+  (běží ve virtuálním stroji). Projekt podle `firmware\cpld-ula\README.md`, nahrání přes JTAG (iMPACT).
+  Simulace: Icarus Verilog pro Windows (https://bleyer.org/icarus/), v Git Bash `sim/run_sim.sh`.
+
+### 5. Časté problémy
+- „Pouzdro nenalezeno“: KiCad je jinde než v `C:\Program Files\KiCad` – nastavte proměnnou
+  `KICAD8_FOOTPRINT_DIR` na složku `...\share\kicad\footprints`.
+- „kicad-cli nenalezen“: spouštějte přes `vyroba.bat` nebo z *KiCad Command Prompt*.
+- KiCad se při otevření desky zeptá na převod formátu (deska je uložená KiCadem 7) – potvrďte a uložte.
