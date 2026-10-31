@@ -9,6 +9,7 @@ Překresleno z tištěné předlohy „DIDAKTIK GAMA – SCHÉMA ZAPOJENIA“.
 | `gen_pcb.py` | generátor desky z `netlist.py` (`python3 gen_pcb.py`, potřebuje KiCad s modulem pcbnew) |
 | `ula_cpld_modul.kicad_pcb` / `_pcb_nahled.pdf` | plošný spoj modulu ULA 70 × 50 mm, 2 vrstvy – rozmístěno, nety přiřazeny, cesty nevedené |
 | `gen_pcb_modul.py` | generátor desky modulu (`python3 gen_pcb_modul.py`) |
+| `make_fab.py` | výrobní podklady: gerbery, vrtání, soupis součástek, souřadnice osazení, ZIP (do `vyroba/`) |
 | `gama.pretty/`, `fp-lib-table` | vlastní pouzdro Raspberry Pi Pico (THT 2×20) |
 | `didaktik_gama.kicad_sch` / `.kicad_pro` | schéma pro KiCad 8 a novější (A0, jedna strana, vlastní knihovna symbolů je v souboru) |
 | `didaktik_gama_nahled.pdf` / `.svg` | náhled bez KiCadu |
@@ -60,3 +61,21 @@ a souhlasí s čísly na předloze. ULA je očíslovaná podle předlohy (shodn�
   pod modulem smí být jen nízké součástky (odpory, keramické kondenzátory).
 - DRC: bez překryvů; zbývá 76 nepropojených spojů (cesty) a 2 zemní plošky CPLD s jedním
   tepelným můstkem – vyřeší se při vedení cest (prokov k zemi u vývodu).
+
+## Výrobní podklady (gerbery)
+Až budou obě desky natrasované a DRC v KiCadu čisté:
+```bash
+python3 make_fab.py            # obě desky
+python3 make_fab.py modul      # jen modul ULA
+```
+Vznikne `vyroba/<deska>/`: `<deska>_gerber.zip` (gerbery + vrtání, nahrát výrobci), `gerber/` (jednotlivé
+vrstvy, mapy vrtání PDF, job soubor), `<deska>_bom.csv` (soupis ve formátu Comment/Designator/Footprint),
+`<deska>_pozice.csv` (souřadnice pro strojní osazení) a `PARAMETRY.txt` (parametry objednávky).
+
+**Pojistka:** skript nejdřív spustí DRC; pokud deska má nevedené cesty nebo chyby, export odmítne
+(gerbery by daly nefunkční desku). `--force -o DIR` vytvoří zkušební export s varováním NEVYRÁBĚT.
+
+| Deska | Parametry objednávky |
+|---|---|
+| hlavní | 300 × 225 mm, 4 vrstvy (In1 GND, In2 +5V), FR-4 1,6 mm, Cu 35 µm, HASL bezolovnatý / ENIG |
+| modul ULA | 70 × 50 mm, 2 vrstvy, FR-4 1,6 mm, ENIG doporučeno (TQFP s roztečí 0,5 mm) |
