@@ -1,5 +1,6 @@
-// Přehrávač kazet: soubory .TAP z USB flash disku -> signál kazety na GP14 -> vstup magnetofonu Gamy.
-// Ovládání z USB klávesnice: F1 = další soubor, F3 = předchozí, F2 = přehrát / zastavit.
+// Přehrávač kazet: soubory .TAP a .TZX z USB flash disku -> signál kazety na GP14 -> vstup magnetofonu Gamy.
+// Ovládání z USB klávesnice: F1 = další soubor, F3 = předchozí, F2 = přehrát / zastavit
+// (po zastavení pásky blokem TZX 0x20/0x2A pokračuje F2 dalším blokem).
 // LED na Picu: po výběru blikne tolikrát, kolikátý soubor je vybrán (abecedně); při přehrávání svítí.
 #pragma once
 #include <stdbool.h>

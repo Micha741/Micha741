@@ -22,6 +22,7 @@ PY
 for t in 12 16 32; do
   python3 mkfat.py $t $((t != 12)) "$T/fat$t.img" AHRA.TAP="$T/a.tap" ZDEMO.TAP="$T/z.tap"
 done
+cc -Wall -Wextra -I../src test_tzx.c ../src/tzx.c ../src/tap.c -o "$T/test_tzx" && "$T/test_tzx"
 cc -Wall -Wextra -I../src test_fat_tap.c ../src/fat.c ../src/tap.c -o "$T/test_fat_tap"
 "$T/test_fat_tap" "$T/fat12.img" "$T/a.tap" "$T/fat16.img" "$T/a.tap" "$T/fat32.img" "$T/a.tap"
 rm -rf "$T"

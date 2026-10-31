@@ -7,6 +7,8 @@
 #include "hardware/gpio.h"
 #include "pico/stdlib.h"
 #include "tap.h"
+#include "tzx.h"
+#include <string.h>
 #include "tusb.h"
 
 #define PIN_TAPE 14
@@ -94,6 +96,8 @@ static fat_entry_t files[MAX_FILES];
 static int nfiles, sel;
 static fat_file_t file;
 static tap_t tap;
+static tzx_t tzx;
+static bool is_tzx, resumable;   // TZX zastavil pásku (blok 0x20/0x2A) -> F2 pokračuje
 static uint32_t frac;            // zbytek převodu T-stavů na µs
 static volatile bool k_next, k_prev, k_play;
 static uint8_t prev_keys[6];
@@ -101,6 +105,21 @@ static int blink_left;
 static absolute_time_t blink_at;
 
 static int file_getc(void *ctx) { return fat_getc((fat_file_t *)ctx); }
+static bool file_seek(void *ctx, uint32_t pos) { return fat_seek((fat_file_t *)ctx, pos); }
+static uint32_t file_tell(void *ctx) { return ((fat_file_t *)ctx)->pos; }
+
+static bool ends_with(const char *name, const char *ext) {
+    const size_t n = strlen(name);
+    return n > 4 && strcmp(name + n - 4, ext) == 0;
+}
+
+// další pulz z TAP nebo TZX; false = konec nebo zastavení pásky
+static bool next_pulse(tap_pulse_t *p) {
+    if (!is_tzx) return tap_next(&tap, p);
+    const tzx_result_t r = tzx_next(&tzx, p);
+    if (r == TZX_STOP) resumable = true;
+    return r == TZX_PULSE;
+}
 
 static void blink(int n) {
     blink_left = n * 2;
@@ -109,6 +128,7 @@ static void blink(int n) {
 }
 
 static void stop(void) {
+    resumable = false;
     playing = false;
     flush = true;
 }
@@ -137,7 +157,7 @@ void player_keys(const uint8_t keycodes[6]) {
 static void fill(void) {
     while (playing && wr - rd < RING - 24) {   // rezerva na rozdělenou pauzu (1 s = 17 položek)
         tap_pulse_t p;
-        if (!tap_next(&tap, &p)) {
+        if (!next_pulse(&p)) {
             playing = false;
             break;
         }
@@ -164,7 +184,17 @@ void player_task(void) {
     }
     if (msc_new && msc_addr && tuh_msc_ready(msc_addr)) {
         msc_new = false;
-        nfiles = fat_mount(&fs, disk_read, NULL) ? fat_list(&fs, "TAP", files, MAX_FILES) : 0;
+        nfiles = 0;
+        if (fat_mount(&fs, disk_read, NULL)) {
+            nfiles = fat_list(&fs, "TAP", files, MAX_FILES);
+            nfiles += fat_list(&fs, "TZX", files + nfiles, MAX_FILES - nfiles);
+            for (int i = 1; i < nfiles; i++)   // TAP a TZX dohromady podle abecedy
+                for (int j = i; j > 0 && strcmp(files[j - 1].name, files[j].name) > 0; j--) {
+                    const fat_entry_t tmp = files[j];
+                    files[j] = files[j - 1];
+                    files[j - 1] = tmp;
+                }
+        }
         sel = 0;
         blink(nfiles ? 1 : 10);            // 10 bliknutí = disk bez souborů .TAP nebo nečitelný
     }
@@ -181,11 +211,21 @@ void player_task(void) {
         k_play = false;
         if (playing) {
             stop();
+        } else if (resumable) {          // pokračovat po zastavení pásky v TZX
+            resumable = false;
+            playing = true;
         } else if (nfiles) {
             fat_open(&fs, &files[sel], &file);
-            tap_init(&tap, file_getc, &file);
             frac = 0;
-            playing = true;
+            is_tzx = ends_with(files[sel].name, ".TZX");
+            if (is_tzx) {
+                const tape_io_t io = {file_getc, file_seek, file_tell, &file};
+                playing = tzx_open(&tzx, &io);
+                if (!playing) blink(10);  // poškozený nebo neplatný TZX
+            } else {
+                tap_init(&tap, file_getc, &file);
+                playing = true;
+            }
         }
     }
     fill();

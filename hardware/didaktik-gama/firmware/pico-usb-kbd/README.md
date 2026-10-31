@@ -10,9 +10,9 @@ Pico pracuje jako USB host: přečte běžnou USB klávesnici a emuluje matici k
 - Původní klávesnice Gamy funguje současně (výstupy s otevřeným kolektorem).
 - Svítící LED na Picu = je stisknutá nějaká klávesa.
 
-## Přehrávač kazet (.TAP z USB flash disku)
+## Přehrávač kazet (.TAP a .TZX z USB flash disku)
 Klávesnici a flash disk připojte přes **USB rozbočovač** (do micro-USB Pica přes redukci OTG).
-Pico přečte z kořenového adresáře disku soubory `*.TAP` (FAT12/16/32, krátká jména 8.3, seřazené
+Pico přečte z kořenového adresáře disku soubory `*.TAP` a `*.TZX` (FAT12/16/32, krátká jména 8.3, seřazené
 abecedně) a na GP14 vysílá signál kazety se standardním časováním ROM; přes dělič R96/R97 a C85
 jde do vstupu magnetofonu MG_IN – Gama nahrává normálně přes `LOAD ""`.
 
@@ -25,7 +25,17 @@ jde do vstupu magnetofonu MG_IN – Gama nahrává normálně přes `LOAD ""`.
 LED na Picu po vložení disku blikne 1× (10× = disk nečitelný nebo bez souborů .TAP), po výběru
 souboru blikne tolikrát, kolikátý soubor je vybrán; během přehrávání svítí.
 Postup: na Gamě napište `LOAD ""` + Enter, pak F2. Při přehrávání nemějte připojený magnetofon.
-Formát `.TZX` (turbo a chráněné nahrávače) zatím podporován není.
+### Podpora TZX (v1.20)
+| Blok | Podpora |
+|---|---|
+| 0x10 standardní, 0x11 turbo, 0x12 tón, 0x13 pulzy, 0x14 čistá data, 0x15 přímý záznam | přehraje |
+| 0x20 pauza (0 = stop), 0x2A stop v režimu 48K | zastaví pásku; **F2 pokračuje** dalším blokem |
+| 0x23 skok, 0x24/0x25 smyčka, 0x26/0x27 volání/návrat, 0x2B úroveň signálu | ano |
+| 0x30–0x35, 0x5A, 0x21/0x22, 0x28 (texty, informace, skupiny, výběr) | přeskočí |
+| 0x18 CSW, 0x19 generalized data | přeskočí (nepodporováno, vzácné) |
+
+Hry s vlastním nahrávačem obvykle obsahují zastavení pásky: když se na Gamě objeví výzva
+nebo nahrávání skončí uprostřed, stiskněte znovu F2.
 
 ## Klávesy (US rozložení PC klávesnice)
 | PC | Gama |
@@ -58,7 +68,7 @@ a soubor zkopírujte na disk RPI-RP2.
 ```bash
 test/run_tests.sh
 ```
-Otestuje převod kláves, čtení FAT12/16/32 (s MBR i bez, soubory přes více clusterů) a generátor
+Otestuje převod kláves, přehrávač TZX (všechny podporované bloky), čtení FAT12/16/32 (s MBR i bez, soubory přes více clusterů) a generátor
 signálu kazety (pulzy se dekódují zpět na bajty a porovnají se souborem).
 
 ## Oživení

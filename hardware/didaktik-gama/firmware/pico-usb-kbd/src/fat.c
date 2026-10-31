@@ -142,3 +142,15 @@ int fat_getc(fat_file_t *f) {
     }
     return f->sec[f->pos++ % 512];
 }
+
+bool fat_seek(fat_file_t *f, uint32_t pos) {
+    if (pos > f->size) return false;
+    const uint32_t clus_bytes = (uint32_t)f->fs->sec_per_clus * 512;
+    uint32_t c = f->first_cluster;
+    for (uint32_t i = pos / clus_bytes; i && pos < f->size; i--)
+        if (!(c = next_cluster(f->fs, c))) return false;
+    f->cluster = c;
+    f->pos = pos;
+    f->sec_lba = 0xFFFFFFFFu;  // na hranici clusteru se pak znovu neposouvá
+    return true;
+}

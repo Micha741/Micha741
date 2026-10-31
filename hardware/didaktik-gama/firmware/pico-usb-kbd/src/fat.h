@@ -42,3 +42,5 @@ int fat_list(fat_fs_t *fs, const char *ext, fat_entry_t *out, int max);
 void fat_open(fat_fs_t *fs, const fat_entry_t *e, fat_file_t *f);
 // přečte jeden bajt; vrací -1 na konci souboru nebo při chybě
 int fat_getc(fat_file_t *f);
+// přesun na pozici v souboru (pro skoky a smyčky TZX); false = mimo soubor nebo chyba
+bool fat_seek(fat_file_t *f, uint32_t pos);
