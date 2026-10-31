@@ -233,7 +233,7 @@ def aC(ref, val, a_, b_, pol=False):
     AUDIO_BLOCK.append(ref)
 ay = {37 - i: f"D{i}" for i in range(8)}
 ay.update({1: "GND", 40: "+5V", 2: None, 5: None, 4: "AY_A", 3: "AY_B", 38: "AY_C",
-           22: "AY_CLK", 23: "/RESET", 24: "GND", 25: "+5V", 26: "+5V", 27: "AY_BDIR", 28: "+5V",
+           22: "AY_CLK", 23: "/RESET", 24: "GND", 25: "+5V", 26: None, 27: "AY_BDIR", 28: "+5V",
            29: "AY_BC1", 39: None})
 for i in range(8):
     ay[21 - i] = None   # IOA0..7
@@ -267,8 +267,8 @@ aC("C90", "100u/25V", "VIN", "GND", pol=True); aC("C91", "100n", "VIN", "GND")
 aC("C92", "10u/16V", "MIX", "LINE_AC", pol=True); aR("R108", "1k", "LINE_AC", "LINE_OUT")
 aR("R109", "47k", "LINE_OUT", "GND")
 aC("C93", "100n", "+5V", "GND"); aC("C94", "100n", "+5V", "GND"); aC("C95", "100n", "+5V", "GND")
-verify.append(("U42 YM2149F", "pinout AY-3-8910/YM2149 (DIP-40), pin 26 (SEL) na +5V = hodiny bez dělení",
-               "Ověřit s datasheetem; u AY-3-8910 je pin 26 TEST2 – nezapojovat (přerušit spoj na +5V)"))
+verify.append(("U42 YM2149F", "pinout ověřen katalogovým listem Yamaha YM2149 (1992)",
+               "Pin 26 /SEL nezapojen – vnitřní pull-up = hodiny bez dělení (1,75 MHz jako AY); totéž funguje s AY-3-8910"))
 verify.append(("U43 dekódování AY", "FFFD = výběr registru, BFFD = data (A15, A14, A1, IORQ, WR, /M1)",
                "Shodné s portem Spectra 128K; Gama 8255 (A7=0, A1=1) ani ULA (A0=0) nekolidují"))
 verify.append(("Zvuk – mix a LM386", "BEEP 10k + AY 3x 4k7 do 2k2, hlasitost 10k, LM386 z VIN 9 V",
@@ -305,6 +305,8 @@ mux157("U8", "MUX1", {12: ("A0", "A7", "VM0"), 4: ("A1", "A8", "VM1"),
                       7: ("A2", "A9", "VM2")})
 for i in range(7):
     R(f"R{27+i}", "330", f"VM{i}", VA[i])
+verify.append(("R27–R33 (330R)", "oddělení multiplexeru od adresy DRAM",
+               "S modulem CPLD (3,3 V) zvážit 470R – omezí proud do výstupů CPLD, když ULA přebíjí multiplexer"))
 R("R34", "100", "/VRAS", "MUX1")
 verify.append(("U7/U8 vstupy", "přiřazení A/B vstupů LS157",
                "Na předloze jsou vidět jen odbočky z adresové sběrnice – řádek An / sloupec An+7 je odvozeno funkčně"))

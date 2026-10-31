@@ -13,18 +13,19 @@
 <text x="560.00" y="338.40" font-size="1.38" fill="#008">• R96, R97, C85 (přehrávač kazet): GP14 Pica -&gt; MG_IN, úroveň ~0,6 V jako výstup magnetofonu – Při nahrávání nemít připojený skutečný magnetofon (oba výstupy by se sčítaly); úroveň případně upravit R97</text>
 <text x="560.00" y="341.80" font-size="1.38" fill="#008">• U39 Raspberry Pi Pico: USB host přes micro-USB a redukci OTG, napájení +5V do VBUS (pin 40) – Potřebuje firmware (TinyUSB host HID + emulace matice 8x5); pull-upy 10k drží KB1–5 a /RESET uvolněné, dokud Pico nenaběhne</text>
 <text x="560.00" y="345.20" font-size="1.38" fill="#008">• U40/U41 74LVC245, 74LVC07: převod úrovní 5 V &lt;-&gt; 3,3 V – Vstupy LVC snesou 5 V při napájení 3,3 V; 74LVC07 má otevřený kolektor – KB linky dál táhnou původní pull-upy 10k na +5V</text>
-<text x="560.00" y="348.60" font-size="1.38" fill="#008">• U42 YM2149F: pinout AY-3-8910/YM2149 (DIP-40), pin 26 (SEL) na +5V = hodiny bez dělení – Ověřit s datasheetem; u AY-3-8910 je pin 26 TEST2 – nezapojovat (přerušit spoj na +5V)</text>
+<text x="560.00" y="348.60" font-size="1.38" fill="#008">• U42 YM2149F: pinout ověřen katalogovým listem Yamaha YM2149 (1992) – Pin 26 /SEL nezapojen – vnitřní pull-up = hodiny bez dělení (1,75 MHz jako AY); totéž funguje s AY-3-8910</text>
 <text x="560.00" y="352.00" font-size="1.38" fill="#008">• U43 dekódování AY: FFFD = výběr registru, BFFD = data (A15, A14, A1, IORQ, WR, /M1) – Shodné s portem Spectra 128K; Gama 8255 (A7=0, A1=1) ani ULA (A0=0) nekolidují</text>
 <text x="560.00" y="355.40" font-size="1.38" fill="#008">• Zvuk – mix a LM386: BEEP 10k + AY 3x 4k7 do 2k2, hlasitost 10k, LM386 z VIN 9 V – Poměr hlasitosti beeperu a AY podle sluchu (R104); LS1 a D9/D10 z původního zapojení neosazovat, reproduktor na J9</text>
-<text x="560.00" y="358.80" font-size="1.38" fill="#008">• U7/U8 vstupy: přiřazení A/B vstupů LS157 – Na předloze jsou vidět jen odbočky z adresové sběrnice – řádek An / sloupec An+7 je odvozeno funkčně</text>
-<text x="560.00" y="362.20" font-size="1.38" fill="#008">• U5 pin 10: sloupcový bit RA7 = BANK (PC0 8255) – Funkční odhad: horních 32K je 2x32K banka přepínaná PC0</text>
-<text x="560.00" y="365.60" font-size="1.38" fill="#008">• U27 pin 10: = A15 – Vstup přichází z adresové sběrnice, konkrétní linka nečitelná</text>
-<text x="560.00" y="369.00" font-size="1.38" fill="#008">• U28 (CS 8255): 3vstupé NAND: ~A7, IORQ, /M1 – Typ hradla a třetí vstup (/M1) odhadnuty; port 8255 = A7=0 (1Fh/3Fh/5Fh/7Fh)</text>
-<text x="560.00" y="372.40" font-size="1.38" fill="#008">• U29D (/WE64): vstupy 12 = /WR, 13 = /MREQ – Výstup 11 jde na /WE 4164 – vstupy na předloze nejasné</text>
-<text x="560.00" y="375.80" font-size="1.38" fill="#008">• C9: 100p z MUX2_D na GND – Druhý konec kondenzátoru na předloze nejasný</text>
-<text x="560.00" y="379.20" font-size="1.38" fill="#008">• U32 spínaný stabilizátor: R-78E5.0-1.0 místo MA7805 (stejné vývody IN-GND-OUT) – Méně tepla (účinnost ~90 %); při rušení obrazu lze vrátit MA7805 na chladiči</text>
-<text x="560.00" y="382.60" font-size="1.38" fill="#008">• Napájení (J5, F1, D12, U32): celý blok doplněn – Na předloze není – 9 V nestabilizovaných + 7805 odpovídá servisnímu manuálu ZX Spectrum 128 (zdroj ZX power pack); u Gamy ověřit na adaptéru</text>
-<text x="560.00" y="386.00" font-size="1.38" fill="#008">• C20–C61: blokování napájení – Doplněno: 100n u každého IC (u napájecích pinů), 47u u bank 4164 a 2118</text>
+<text x="560.00" y="358.80" font-size="1.38" fill="#008">• R27–R33 (330R): oddělení multiplexeru od adresy DRAM – S modulem CPLD (3,3 V) zvážit 470R – omezí proud do výstupů CPLD, když ULA přebíjí multiplexer</text>
+<text x="560.00" y="362.20" font-size="1.38" fill="#008">• U7/U8 vstupy: přiřazení A/B vstupů LS157 – Na předloze jsou vidět jen odbočky z adresové sběrnice – řádek An / sloupec An+7 je odvozeno funkčně</text>
+<text x="560.00" y="365.60" font-size="1.38" fill="#008">• U5 pin 10: sloupcový bit RA7 = BANK (PC0 8255) – Funkční odhad: horních 32K je 2x32K banka přepínaná PC0</text>
+<text x="560.00" y="369.00" font-size="1.38" fill="#008">• U27 pin 10: = A15 – Vstup přichází z adresové sběrnice, konkrétní linka nečitelná</text>
+<text x="560.00" y="372.40" font-size="1.38" fill="#008">• U28 (CS 8255): 3vstupé NAND: ~A7, IORQ, /M1 – Typ hradla a třetí vstup (/M1) odhadnuty; port 8255 = A7=0 (1Fh/3Fh/5Fh/7Fh)</text>
+<text x="560.00" y="375.80" font-size="1.38" fill="#008">• U29D (/WE64): vstupy 12 = /WR, 13 = /MREQ – Výstup 11 jde na /WE 4164 – vstupy na předloze nejasné</text>
+<text x="560.00" y="379.20" font-size="1.38" fill="#008">• C9: 100p z MUX2_D na GND – Druhý konec kondenzátoru na předloze nejasný</text>
+<text x="560.00" y="382.60" font-size="1.38" fill="#008">• U32 spínaný stabilizátor: R-78E5.0-1.0 místo MA7805 (stejné vývody IN-GND-OUT) – Méně tepla (účinnost ~90 %); při rušení obrazu lze vrátit MA7805 na chladiči</text>
+<text x="560.00" y="386.00" font-size="1.38" fill="#008">• Napájení (J5, F1, D12, U32): celý blok doplněn – Na předloze není – 9 V nestabilizovaných + 7805 odpovídá servisnímu manuálu ZX Spectrum 128 (zdroj ZX power pack); u Gamy ověřit na adaptéru</text>
+<text x="560.00" y="389.40" font-size="1.38" fill="#008">• C20–C61: blokování napájení – Doplněno: 100n u každého IC (u napájecích pinů), 47u u bank 4164 a 2118</text>
 <text x="500.00" y="112.00" font-size="2.4" fill="#008">VGA VÝSTUP (digitální RGB z modulu ULA s CPLD, 15 kHz)</text>
 <text x="500.00" y="270.00" font-size="2.4" fill="#008">NAPÁJENÍ (doplněno – na předloze jen +5V)</text>
 <text x="870.00" y="50.00" font-size="2.4" fill="#008">ZVUK: YM2149/AY (porty FFFD/BFFD jako Spectrum 128K) + BEEP z modulu -&gt; LM386 a linkový výstup</text>
@@ -1259,27 +1260,27 @@
 <text x="543.56" y="88.66" font-size="1.5" text-anchor="middle" fill="#066">74HCT244</text>
 <line x1="534.67" y1="58.42" x2="537.21" y2="58.42" stroke="#800" stroke-width="0.2"/>
 <text x="535.94" y="58.02" font-size="0.9" text-anchor="middle" fill="#800">2</text>
-<text x="537.81" y="58.87" font-size="1.15" text-anchor="start" fill="#066">1A1</text>
+<text x="537.81" y="58.87" font-size="1.15" text-anchor="start" fill="#066">1A0</text>
 <line x1="534.67" y1="58.42" x2="532.13" y2="58.42" stroke="#080" stroke-width="0.15"/>
 <text x="531.73" y="58.12" font-size="1.2" text-anchor="end" fill="#000">RGB_R</text>
 <line x1="534.67" y1="60.96" x2="537.21" y2="60.96" stroke="#800" stroke-width="0.2"/>
 <text x="535.94" y="60.56" font-size="0.9" text-anchor="middle" fill="#800">4</text>
-<text x="537.81" y="61.41" font-size="1.15" text-anchor="start" fill="#066">1A2</text>
+<text x="537.81" y="61.41" font-size="1.15" text-anchor="start" fill="#066">1A1</text>
 <line x1="534.67" y1="60.96" x2="532.13" y2="60.96" stroke="#080" stroke-width="0.15"/>
 <text x="531.73" y="60.66" font-size="1.2" text-anchor="end" fill="#000">RGB_G</text>
 <line x1="534.67" y1="63.50" x2="537.21" y2="63.50" stroke="#800" stroke-width="0.2"/>
 <text x="535.94" y="63.10" font-size="0.9" text-anchor="middle" fill="#800">6</text>
-<text x="537.81" y="63.95" font-size="1.15" text-anchor="start" fill="#066">1A3</text>
+<text x="537.81" y="63.95" font-size="1.15" text-anchor="start" fill="#066">1A2</text>
 <line x1="534.67" y1="63.50" x2="532.13" y2="63.50" stroke="#080" stroke-width="0.15"/>
 <text x="531.73" y="63.20" font-size="1.2" text-anchor="end" fill="#000">RGB_B</text>
 <line x1="534.67" y1="66.04" x2="537.21" y2="66.04" stroke="#800" stroke-width="0.2"/>
 <text x="535.94" y="65.64" font-size="0.9" text-anchor="middle" fill="#800">8</text>
-<text x="537.81" y="66.49" font-size="1.15" text-anchor="start" fill="#066">1A4</text>
+<text x="537.81" y="66.49" font-size="1.15" text-anchor="start" fill="#066">1A3</text>
 <line x1="534.67" y1="66.04" x2="532.13" y2="66.04" stroke="#080" stroke-width="0.15"/>
 <text x="531.73" y="65.74" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">RGB_CSYNC</tspan></text>
 <line x1="534.67" y1="68.58" x2="537.21" y2="68.58" stroke="#800" stroke-width="0.2"/>
 <text x="535.94" y="68.18" font-size="0.9" text-anchor="middle" fill="#800">11</text>
-<text x="537.81" y="69.03" font-size="1.15" text-anchor="start" fill="#066">2A1</text>
+<text x="537.81" y="69.03" font-size="1.15" text-anchor="start" fill="#066">2A3</text>
 <line x1="534.67" y1="68.58" x2="532.13" y2="68.58" stroke="#080" stroke-width="0.15"/>
 <text x="531.73" y="68.28" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">RGB_VSYNC</tspan></text>
 <line x1="534.67" y1="71.12" x2="537.21" y2="71.12" stroke="#800" stroke-width="0.2"/>
@@ -1289,12 +1290,12 @@
 <path d="M532.1300000000001,71.12 L532.1300000000001,72.39 L530.8600000000001,72.39 L532.1300000000001,73.66000000000001 L533.4000000000001,72.39 L532.1300000000001,72.39" stroke="#800" stroke-width="0.2" fill="none"/>
 <line x1="534.67" y1="73.66" x2="537.21" y2="73.66" stroke="#800" stroke-width="0.2"/>
 <text x="535.94" y="73.26" font-size="0.9" text-anchor="middle" fill="#800">15</text>
-<text x="537.81" y="74.11" font-size="1.15" text-anchor="start" fill="#066">2A3</text>
+<text x="537.81" y="74.11" font-size="1.15" text-anchor="start" fill="#066">2A1</text>
 <line x1="534.67" y1="73.66" x2="532.13" y2="73.66" stroke="#080" stroke-width="0.15"/>
 <path d="M532.1300000000001,73.66000000000001 L532.1300000000001,74.93 L530.8600000000001,74.93 L532.1300000000001,76.20000000000002 L533.4000000000001,74.93 L532.1300000000001,74.93" stroke="#800" stroke-width="0.2" fill="none"/>
 <line x1="534.67" y1="76.20" x2="537.21" y2="76.20" stroke="#800" stroke-width="0.2"/>
 <text x="535.94" y="75.80" font-size="0.9" text-anchor="middle" fill="#800">17</text>
-<text x="537.81" y="76.65" font-size="1.15" text-anchor="start" fill="#066">2A4</text>
+<text x="537.81" y="76.65" font-size="1.15" text-anchor="start" fill="#066">2A0</text>
 <line x1="534.67" y1="76.20" x2="532.13" y2="76.20" stroke="#080" stroke-width="0.15"/>
 <path d="M532.1300000000001,76.2 L532.1300000000001,77.47 L530.8600000000001,77.47 L532.1300000000001,78.74000000000001 L533.4000000000001,77.47 L532.1300000000001,77.47" stroke="#800" stroke-width="0.2" fill="none"/>
 <line x1="534.67" y1="81.28" x2="537.21" y2="81.28" stroke="#800" stroke-width="0.2"/>
@@ -1309,27 +1310,27 @@
 <path d="M532.1300000000001,83.82000000000001 L532.1300000000001,85.09 L530.8600000000001,85.09 L532.1300000000001,86.36000000000001 L533.4000000000001,85.09 L532.1300000000001,85.09" stroke="#800" stroke-width="0.2" fill="none"/>
 <line x1="552.45" y1="58.42" x2="549.91" y2="58.42" stroke="#800" stroke-width="0.2"/>
 <text x="551.18" y="58.02" font-size="0.9" text-anchor="middle" fill="#800">18</text>
-<text x="549.31" y="58.87" font-size="1.15" text-anchor="end" fill="#066">1Y1</text>
+<text x="549.31" y="58.87" font-size="1.15" text-anchor="end" fill="#066">1Y0</text>
 <line x1="552.45" y1="58.42" x2="554.99" y2="58.42" stroke="#080" stroke-width="0.15"/>
 <text x="555.39" y="58.12" font-size="1.2" text-anchor="start" fill="#000">DAC_R</text>
 <line x1="552.45" y1="60.96" x2="549.91" y2="60.96" stroke="#800" stroke-width="0.2"/>
 <text x="551.18" y="60.56" font-size="0.9" text-anchor="middle" fill="#800">16</text>
-<text x="549.31" y="61.41" font-size="1.15" text-anchor="end" fill="#066">1Y2</text>
+<text x="549.31" y="61.41" font-size="1.15" text-anchor="end" fill="#066">1Y1</text>
 <line x1="552.45" y1="60.96" x2="554.99" y2="60.96" stroke="#080" stroke-width="0.15"/>
 <text x="555.39" y="60.66" font-size="1.2" text-anchor="start" fill="#000">DAC_G</text>
 <line x1="552.45" y1="63.50" x2="549.91" y2="63.50" stroke="#800" stroke-width="0.2"/>
 <text x="551.18" y="63.10" font-size="0.9" text-anchor="middle" fill="#800">14</text>
-<text x="549.31" y="63.95" font-size="1.15" text-anchor="end" fill="#066">1Y3</text>
+<text x="549.31" y="63.95" font-size="1.15" text-anchor="end" fill="#066">1Y2</text>
 <line x1="552.45" y1="63.50" x2="554.99" y2="63.50" stroke="#080" stroke-width="0.15"/>
 <text x="555.39" y="63.20" font-size="1.2" text-anchor="start" fill="#000">DAC_B</text>
 <line x1="552.45" y1="66.04" x2="549.91" y2="66.04" stroke="#800" stroke-width="0.2"/>
 <text x="551.18" y="65.64" font-size="0.9" text-anchor="middle" fill="#800">12</text>
-<text x="549.31" y="66.49" font-size="1.15" text-anchor="end" fill="#066">1Y4</text>
+<text x="549.31" y="66.49" font-size="1.15" text-anchor="end" fill="#066">1Y3</text>
 <line x1="552.45" y1="66.04" x2="554.99" y2="66.04" stroke="#080" stroke-width="0.15"/>
 <text x="555.39" y="65.74" font-size="1.2" text-anchor="start" fill="#000">VGA_HS_D</text>
 <line x1="552.45" y1="68.58" x2="549.91" y2="68.58" stroke="#800" stroke-width="0.2"/>
 <text x="551.18" y="68.18" font-size="0.9" text-anchor="middle" fill="#800">9</text>
-<text x="549.31" y="69.03" font-size="1.15" text-anchor="end" fill="#066">2Y1</text>
+<text x="549.31" y="69.03" font-size="1.15" text-anchor="end" fill="#066">2Y3</text>
 <line x1="552.45" y1="68.58" x2="554.99" y2="68.58" stroke="#080" stroke-width="0.15"/>
 <text x="555.39" y="68.28" font-size="1.2" text-anchor="start" fill="#000">VGA_VS_D</text>
 <line x1="552.45" y1="71.12" x2="549.91" y2="71.12" stroke="#800" stroke-width="0.2"/>
@@ -1338,11 +1339,11 @@
 <path d="M551.85,70.52000000000001 L553.0500000000001,71.72 M551.85,71.72 L553.0500000000001,70.52000000000001" stroke="#00f" stroke-width="0.2"/>
 <line x1="552.45" y1="73.66" x2="549.91" y2="73.66" stroke="#800" stroke-width="0.2"/>
 <text x="551.18" y="73.26" font-size="0.9" text-anchor="middle" fill="#800">5</text>
-<text x="549.31" y="74.11" font-size="1.15" text-anchor="end" fill="#066">2Y3</text>
+<text x="549.31" y="74.11" font-size="1.15" text-anchor="end" fill="#066">2Y1</text>
 <path d="M551.85,73.06000000000002 L553.0500000000001,74.26 M551.85,74.26 L553.0500000000001,73.06000000000002" stroke="#00f" stroke-width="0.2"/>
 <line x1="552.45" y1="76.20" x2="549.91" y2="76.20" stroke="#800" stroke-width="0.2"/>
 <text x="551.18" y="75.80" font-size="0.9" text-anchor="middle" fill="#800">3</text>
-<text x="549.31" y="76.65" font-size="1.15" text-anchor="end" fill="#066">2Y4</text>
+<text x="549.31" y="76.65" font-size="1.15" text-anchor="end" fill="#066">2Y0</text>
 <path d="M551.85,75.60000000000001 L553.0500000000001,76.8 M551.85,76.8 L553.0500000000001,75.60000000000001" stroke="#00f" stroke-width="0.2"/>
 <line x1="552.45" y1="81.28" x2="549.91" y2="81.28" stroke="#800" stroke-width="0.2"/>
 <text x="551.18" y="80.88" font-size="0.9" text-anchor="middle" fill="#800">20</text>
@@ -2169,9 +2170,7 @@
 <line x1="886.46" y1="119.38" x2="889.00" y2="119.38" stroke="#800" stroke-width="0.2"/>
 <text x="887.73" y="118.98" font-size="0.9" text-anchor="middle" fill="#800">26</text>
 <text x="889.60" y="119.83" font-size="1.15" text-anchor="start" fill="#066">SEL</text>
-<line x1="886.46" y1="119.38" x2="883.92" y2="119.38" stroke="#080" stroke-width="0.15"/>
-<path d="M883.16,118.11 L883.92,116.83999999999999 L884.68,118.11 M883.92,119.38 L883.92,116.83999999999999" stroke="#800" stroke-width="0.2" fill="none"/>
-<text x="883.92" y="116.38" font-size="1" text-anchor="middle">+5V</text>
+<path d="M885.8599999999999,118.78 L887.06,119.97999999999999 M885.8599999999999,119.97999999999999 L887.06,118.78" stroke="#00f" stroke-width="0.2"/>
 <line x1="886.46" y1="121.92" x2="889.00" y2="121.92" stroke="#800" stroke-width="0.2"/>
 <text x="887.73" y="121.52" font-size="0.9" text-anchor="middle" fill="#800">39</text>
 <text x="889.60" y="122.37" font-size="1.15" text-anchor="start" fill="#066">TEST1</text>
