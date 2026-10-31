@@ -85,7 +85,7 @@ vrstvy, mapy vrtání PDF, job soubor), `<deska>_bom.csv` (soupis ve formátu Co
 ### 1. Programy
 | Program | K čemu | Odkud |
 |---|---|---|
-| **KiCad 8 nebo 9** | schéma, desky, trasování, gerbery; obsahuje i Python s modulem `pcbnew` | https://www.kicad.org/download/windows/ |
+| **KiCad 10** (stabilní; případně 9) | schéma, desky, trasování, gerbery; obsahuje i Python s modulem `pcbnew`. **Ne vývojovou verzi 10.99** – ta Python/`pcbnew` nemá | https://www.kicad.org/download/windows/ |
 | Git for Windows (volitelně) | stažení repozitáře, Git Bash pro skripty `.sh` | https://git-scm.com/download/win |
 | Freerouting (volitelně) | automatické vedení cest – v KiCadu *Plugin and Content Manager* → „Freerouting“ | správce doplňků KiCadu |
 
@@ -93,7 +93,7 @@ Repozitář stáhněte přes *Code → Download ZIP* na GitHubu (nebo `git clone
 `C:\gama`. Dále se pracuje ve složce `C:\gama\hardware\didaktik-gama`.
 
 ### 2. Dávkové soubory (dvojklik)
-Soubory `.bat` samy najdou Python, který dodává KiCad (`C:\Program Files\KiCad\9.0` nebo `8.0`).
+Soubory `.bat` samy najdou Python, který dodává KiCad (`C:\Program Files\KiCad\10.0`, `9.0` nebo `8.0`).
 
 | Soubor | Co udělá |
 |---|---|
@@ -101,7 +101,7 @@ Soubory `.bat` samy najdou Python, který dodává KiCad (`C:\Program Files\KiCa
 | `schema.bat` | znovu vytvoří schémata, netlisty, BOM a seznam k ověření z `netlist.py` / `netlist_modul.py` |
 | `deska.bat` | znovu vytvoří obě desky z netlistu – **přepíše natrasované cesty**, proto se ptá |
 
-Ručně lze totéž spustit z nabídky Start → **KiCad 8.0 Command Prompt** (má v cestě `python` i `kicad-cli`):
+Ručně lze totéž spustit z nabídky Start → **KiCad Command Prompt** (má v cestě `python` i `kicad-cli`):
 ```bat
 cd /d C:\gama\hardware\didaktik-gama
 python make_fab.py
@@ -125,6 +125,6 @@ python make_fab.py
 
 ### 5. Časté problémy
 - „Pouzdro nenalezeno“: KiCad je jinde než v `C:\Program Files\KiCad` – nastavte proměnnou
-  `KICAD8_FOOTPRINT_DIR` na složku `...\share\kicad\footprints`.
+  `KICAD10_FOOTPRINT_DIR` (u KiCadu 9 `KICAD9_FOOTPRINT_DIR`) na složku `...\share\kicad\footprints`.
 - „kicad-cli nenalezen“: spouštějte přes `vyroba.bat` nebo z *KiCad Command Prompt*.
 - KiCad se při otevření desky zeptá na převod formátu (deska je uložená KiCadem 7) – potvrďte a uložte.

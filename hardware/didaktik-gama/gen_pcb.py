@@ -21,12 +21,12 @@ mm = pcbnew.FromMM
 
 def footprint_dirs():
     """adresáře knihoven pouzder: proměnné KiCadu, instalace vedle Pythonu KiCadu (Windows), Linux/macOS"""
-    dirs = [os.environ.get(f"KICAD{v}_FOOTPRINT_DIR", "") for v in (9, 8, 7)]
+    dirs = [os.environ.get(f"KICAD{v}_FOOTPRINT_DIR", "") for v in (10, 9, 8, 7)]
     exe_dir = os.path.dirname(sys.executable)                       # ...\KiCad\8.0\bin
     dirs += [os.path.normpath(os.path.join(exe_dir, "..", "share", "kicad", "footprints")),
              "/usr/share/kicad/footprints", "/usr/local/share/kicad/footprints",
              "/Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints"]
-    for v in ("9.0", "8.0", "7.0"):
+    for v in ("10.0", "9.0", "8.0", "7.0"):
         dirs.append(rf"C:\Program Files\KiCad\{v}\share\kicad\footprints")
     return [d for d in dirs if d and os.path.isdir(d)]
 
@@ -68,7 +68,7 @@ def load_fp(fpid):
             fp = pcbnew.FootprintLoad(p, name)
             if fp:
                 return fp
-    raise SystemExit(f"Pouzdro nenalezeno: {fpid} (hledáno v {FP_DIRS}); nastavte KICAD8_FOOTPRINT_DIR")
+    raise SystemExit(f"Pouzdro nenalezeno: {fpid} (hledáno v {FP_DIRS}); nastavte KICAD10_FOOTPRINT_DIR (nebo KICAD9_…)")
 
 
 OUT = os.path.join(HERE, "didaktik_gama.kicad_pcb")
