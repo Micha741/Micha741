@@ -2,11 +2,9 @@ misto,co,proc
 U2 pin 20 (/CE),/ROMCS = ULA pin 34,U pinu 20 je jen kondenzátor 100p; připojení na ULA ROMCS je odhad
 U4 (ULA),pin GND není ve schématu nakreslen,Čísla pinů 36/37 (A14/A15) a 2 (/WR) jsou na předloze rozmazaná – převzato dle zapojení ZX ULA
 "MG / zvuk (D9–D11, LS1, T3)","horní konce reproduktoru, diod a 10n","Na předloze končí bez označení – připojeno na GND; zapojení KC507 přepsáno doslova, ověřit"
-U30 LM1889,piny podle servisního manuálu ZX Spectrum 48K (kap. 7.1),Typ kodéru u Gamy ověřit na desce; piny 12/14/15 na +12V podle tabulky napětí v manuálu
-"R48–R51, C64",posun úrovně U/V (trimry VR1/VR2 2k2),"Topologie podle popisu v manuálu (Issue 2), hodnoty 1k typické – nastavit dle kap. 3.1.3 manuálu"
-"Y2, C65–C67, R52","oscilátor 4,433619 MHz a fázovací RC 1–18",Krystal a 150p dle soupisu Spectra; přesné zapojení RC článku ze schématu Spectra ověřit
-"T5, T6, R53–R56, C68",sčítání jasu a barvy do CVBS,"Podle popisu v manuálu (TR1/TR2 ZTX313); hodnoty typické, ověřit"
-"R57, C69 (+12V)",napájení LM1889 z nestabilizovaného vstupu,Spectrum vyrábí +12 V měničem TR4/TR5; u Gamy zdroj 12 V ověřit (při 9V adaptéru nestačí)
+U30 LM1889 + okolí,překresleno ze schématu ZX Spectrum Issue 1/2,"Předloha Gamy má jen blok KÓDER – ověřit, že Gama používá stejné zapojení (typ obvodu na desce)"
+U30 pin 16,chroma supply na +12V,Ve schématu Spectra není spoj pinu 16 jasně vidět; podle manuálu je to napájení chroma
+"R57, C69 (+12V)",napájení LM1889 z nestabilizovaného vstupu,Spectrum vyrábí +12 V měničem TR4/TR5; u Gamy zdroj 12 V ověřit (z 9V adaptéru 12 V nebude)
 U31 (modulátor),vývody modulu +5V / VIDEO / GND / VF,Modul je na předloze jen blok; pořadí vývodů podle konkrétního modulu
 "T4, R46, C62, R47, J6",kompozitní video výstup,"Doplněno (na předloze není) – přímý výstup CVBS pro monitor/TV se vstupem AV, obchází modulátor"
 U7/U8 vstupy,přiřazení A/B vstupů LS157,Na předloze jsou vidět jen odbočky z adresové sběrnice – řádek An / sloupec An+7 je odvozeno funkčně

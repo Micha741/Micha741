@@ -4,26 +4,24 @@
 <text x="30.00" y="20.00" font-size="3.5999999999999996" fill="#008">DIDAKTIK GAMA – SCHÉMA ZAPOJENIA (překresleno z tištěné předlohy)</text>
 <text x="30.00" y="26.00" font-size="2.16" fill="#008">Spoje jsou vedeny návěštími (labels) – stejné jméno = stejný net. X = aktivní v nule.</text>
 <text x="500.00" y="100.00" font-size="2.4" fill="#008">KODÉR PAL LM1889 + VIDEO VÝSTUP</text>
-<text x="500.00" y="245.00" font-size="2.4" fill="#008">NAPÁJENÍ (doplněno – na předloze jen +5V)</text>
-<text x="560.00" y="290.00" font-size="2.4" fill="#008">K OVĚŘENÍ (na předloze nečitelné / odhadnuté):</text>
-<text x="560.00" y="296.00" font-size="1.524" fill="#008">• U2 pin 20 (/CE): /ROMCS = ULA pin 34 – U pinu 20 je jen kondenzátor 100p; připojení na ULA ROMCS je odhad</text>
-<text x="560.00" y="300.20" font-size="1.524" fill="#008">• U4 (ULA): pin GND není ve schématu nakreslen – Čísla pinů 36/37 (A14/A15) a 2 (/WR) jsou na předloze rozmazaná – převzato dle zapojení ZX ULA</text>
-<text x="560.00" y="304.40" font-size="1.524" fill="#008">• MG / zvuk (D9–D11, LS1, T3): horní konce reproduktoru, diod a 10n – Na předloze končí bez označení – připojeno na GND; zapojení KC507 přepsáno doslova, ověřit</text>
-<text x="560.00" y="308.60" font-size="1.524" fill="#008">• U30 LM1889: piny podle servisního manuálu ZX Spectrum 48K (kap. 7.1) – Typ kodéru u Gamy ověřit na desce; piny 12/14/15 na +12V podle tabulky napětí v manuálu</text>
-<text x="560.00" y="312.80" font-size="1.524" fill="#008">• R48–R51, C64: posun úrovně U/V (trimry VR1/VR2 2k2) – Topologie podle popisu v manuálu (Issue 2), hodnoty 1k typické – nastavit dle kap. 3.1.3 manuálu</text>
-<text x="560.00" y="317.00" font-size="1.524" fill="#008">• Y2, C65–C67, R52: oscilátor 4,433619 MHz a fázovací RC 1–18 – Krystal a 150p dle soupisu Spectra; přesné zapojení RC článku ze schématu Spectra ověřit</text>
-<text x="560.00" y="321.20" font-size="1.524" fill="#008">• T5, T6, R53–R56, C68: sčítání jasu a barvy do CVBS – Podle popisu v manuálu (TR1/TR2 ZTX313); hodnoty typické, ověřit</text>
-<text x="560.00" y="325.40" font-size="1.524" fill="#008">• R57, C69 (+12V): napájení LM1889 z nestabilizovaného vstupu – Spectrum vyrábí +12 V měničem TR4/TR5; u Gamy zdroj 12 V ověřit (při 9V adaptéru nestačí)</text>
-<text x="560.00" y="329.60" font-size="1.524" fill="#008">• U31 (modulátor): vývody modulu +5V / VIDEO / GND / VF – Modul je na předloze jen blok; pořadí vývodů podle konkrétního modulu</text>
-<text x="560.00" y="333.80" font-size="1.524" fill="#008">• T4, R46, C62, R47, J6: kompozitní video výstup – Doplněno (na předloze není) – přímý výstup CVBS pro monitor/TV se vstupem AV, obchází modulátor</text>
-<text x="560.00" y="338.00" font-size="1.524" fill="#008">• U7/U8 vstupy: přiřazení A/B vstupů LS157 – Na předloze jsou vidět jen odbočky z adresové sběrnice – řádek An / sloupec An+7 je odvozeno funkčně</text>
-<text x="560.00" y="342.20" font-size="1.524" fill="#008">• U5 pin 10: sloupcový bit RA7 = BANK (PC0 8255) – Funkční odhad: horních 32K je 2x32K banka přepínaná PC0</text>
-<text x="560.00" y="346.40" font-size="1.524" fill="#008">• U27 pin 10: = A15 – Vstup přichází z adresové sběrnice, konkrétní linka nečitelná</text>
-<text x="560.00" y="350.60" font-size="1.524" fill="#008">• U28 (CS 8255): 3vstupé NAND: ~A7, IORQ, /M1 – Typ hradla a třetí vstup (/M1) odhadnuty; port 8255 = A7=0 (1Fh/3Fh/5Fh/7Fh)</text>
-<text x="560.00" y="354.80" font-size="1.524" fill="#008">• U29D (/WE64): vstupy 12 = /WR, 13 = /MREQ – Výstup 11 jde na /WE 4164 – vstupy na předloze nejasné</text>
-<text x="560.00" y="359.00" font-size="1.524" fill="#008">• C9: 100p z MUX2_D na GND – Druhý konec kondenzátoru na předloze nejasný</text>
-<text x="560.00" y="363.20" font-size="1.524" fill="#008">• Napájení (J5, F1, D12, U32): celý blok doplněn – Na předloze není – 9 V nestabilizovaných + 7805 odpovídá servisnímu manuálu ZX Spectrum 128 (zdroj ZX power pack); u Gamy ověřit na adaptéru</text>
-<text x="560.00" y="367.40" font-size="1.524" fill="#008">• C20–C61: blokování napájení – Doplněno: 100n u každého IC (u napájecích pinů), 47u u bank 4164 a 2118</text>
+<text x="500.00" y="270.00" font-size="2.4" fill="#008">NAPÁJENÍ (doplněno – na předloze jen +5V)</text>
+<text x="560.00" y="312.00" font-size="2.4" fill="#008">K OVĚŘENÍ (na předloze nečitelné / odhadnuté):</text>
+<text x="560.00" y="318.00" font-size="1.524" fill="#008">• U2 pin 20 (/CE): /ROMCS = ULA pin 34 – U pinu 20 je jen kondenzátor 100p; připojení na ULA ROMCS je odhad</text>
+<text x="560.00" y="322.20" font-size="1.524" fill="#008">• U4 (ULA): pin GND není ve schématu nakreslen – Čísla pinů 36/37 (A14/A15) a 2 (/WR) jsou na předloze rozmazaná – převzato dle zapojení ZX ULA</text>
+<text x="560.00" y="326.40" font-size="1.524" fill="#008">• MG / zvuk (D9–D11, LS1, T3): horní konce reproduktoru, diod a 10n – Na předloze končí bez označení – připojeno na GND; zapojení KC507 přepsáno doslova, ověřit</text>
+<text x="560.00" y="330.60" font-size="1.524" fill="#008">• U30 LM1889 + okolí: překresleno ze schématu ZX Spectrum Issue 1/2 – Předloha Gamy má jen blok KÓDER – ověřit, že Gama používá stejné zapojení (typ obvodu na desce)</text>
+<text x="560.00" y="334.80" font-size="1.524" fill="#008">• U30 pin 16: chroma supply na +12V – Ve schématu Spectra není spoj pinu 16 jasně vidět; podle manuálu je to napájení chroma</text>
+<text x="560.00" y="339.00" font-size="1.524" fill="#008">• R57, C69 (+12V): napájení LM1889 z nestabilizovaného vstupu – Spectrum vyrábí +12 V měničem TR4/TR5; u Gamy zdroj 12 V ověřit (z 9V adaptéru 12 V nebude)</text>
+<text x="560.00" y="343.20" font-size="1.524" fill="#008">• U31 (modulátor): vývody modulu +5V / VIDEO / GND / VF – Modul je na předloze jen blok; pořadí vývodů podle konkrétního modulu</text>
+<text x="560.00" y="347.40" font-size="1.524" fill="#008">• T4, R46, C62, R47, J6: kompozitní video výstup – Doplněno (na předloze není) – přímý výstup CVBS pro monitor/TV se vstupem AV, obchází modulátor</text>
+<text x="560.00" y="351.60" font-size="1.524" fill="#008">• U7/U8 vstupy: přiřazení A/B vstupů LS157 – Na předloze jsou vidět jen odbočky z adresové sběrnice – řádek An / sloupec An+7 je odvozeno funkčně</text>
+<text x="560.00" y="355.80" font-size="1.524" fill="#008">• U5 pin 10: sloupcový bit RA7 = BANK (PC0 8255) – Funkční odhad: horních 32K je 2x32K banka přepínaná PC0</text>
+<text x="560.00" y="360.00" font-size="1.524" fill="#008">• U27 pin 10: = A15 – Vstup přichází z adresové sběrnice, konkrétní linka nečitelná</text>
+<text x="560.00" y="364.20" font-size="1.524" fill="#008">• U28 (CS 8255): 3vstupé NAND: ~A7, IORQ, /M1 – Typ hradla a třetí vstup (/M1) odhadnuty; port 8255 = A7=0 (1Fh/3Fh/5Fh/7Fh)</text>
+<text x="560.00" y="368.40" font-size="1.524" fill="#008">• U29D (/WE64): vstupy 12 = /WR, 13 = /MREQ – Výstup 11 jde na /WE 4164 – vstupy na předloze nejasné</text>
+<text x="560.00" y="372.60" font-size="1.524" fill="#008">• C9: 100p z MUX2_D na GND – Druhý konec kondenzátoru na předloze nejasný</text>
+<text x="560.00" y="376.80" font-size="1.524" fill="#008">• Napájení (J5, F1, D12, U32): celý blok doplněn – Na předloze není – 9 V nestabilizovaných + 7805 odpovídá servisnímu manuálu ZX Spectrum 128 (zdroj ZX power pack); u Gamy ověřit na adaptéru</text>
+<text x="560.00" y="381.00" font-size="1.524" fill="#008">• C20–C61: blokování napájení – Doplněno: 100n u každého IC (u napájecích pinů), 47u u bank 4164 a 2118</text>
 <rect x="45.72" y="66.04" width="20.32" height="58.42" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
 <text x="55.88" y="65.04" font-size="1.8" text-anchor="middle" fill="#066">U1</text>
 <text x="55.88" y="126.76" font-size="1.5" text-anchor="middle" fill="#066">UA880D (Z80)</text>
@@ -1210,7 +1208,7 @@
 <path d="M662.94,63.5 L662.94,64.77 L661.6700000000001,64.77 L662.94,66.04 L664.21,64.77 L662.94,64.77" stroke="#800" stroke-width="0.2" fill="none"/>
 <rect x="508.00" y="53.34" width="15.24" height="35.56" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
 <text x="515.62" y="52.34" font-size="1.8" text-anchor="middle" fill="#066">U30</text>
-<text x="515.62" y="91.20" font-size="1.5" text-anchor="middle" fill="#066">LM1889</text>
+<text x="515.62" y="91.20" font-size="1.5" text-anchor="middle" fill="#066">LM1889N</text>
 <line x1="505.46" y1="55.88" x2="508.00" y2="55.88" stroke="#800" stroke-width="0.2"/>
 <text x="506.73" y="55.48" font-size="0.9" text-anchor="middle" fill="#800">2</text>
 <text x="508.60" y="56.33" font-size="1.15" text-anchor="start" fill="#066">R-Y</text>
@@ -1245,7 +1243,7 @@
 <text x="506.73" y="75.80" font-size="0.9" text-anchor="middle" fill="#800">12</text>
 <text x="508.60" y="76.65" font-size="1.15" text-anchor="start" fill="#066">VIDEO</text>
 <line x1="505.46" y1="76.20" x2="502.92" y2="76.20" stroke="#080" stroke-width="0.15"/>
-<text x="502.52" y="75.90" font-size="1.2" text-anchor="end" fill="#000">+12V</text>
+<text x="502.52" y="75.90" font-size="1.2" text-anchor="end" fill="#000">LM_VIN</text>
 <line x1="525.78" y1="55.88" x2="523.24" y2="55.88" stroke="#800" stroke-width="0.2"/>
 <text x="524.51" y="55.48" font-size="0.9" text-anchor="middle" fill="#800">13</text>
 <text x="522.64" y="56.33" font-size="1.15" text-anchor="end" fill="#066">CHROMA</text>
@@ -1295,172 +1293,316 @@
 <text x="524.51" y="85.96" font-size="0.9" text-anchor="middle" fill="#800">11</text>
 <text x="522.64" y="86.81" font-size="1.15" text-anchor="end" fill="#066">NC</text>
 <path d="M525.18,85.76000000000002 L526.38,86.96000000000001 M525.18,86.96000000000001 L526.38,85.76000000000002" stroke="#00f" stroke-width="0.2"/>
-<line x1="500.38" y1="114.3" x2="500.38" y2="124.46" stroke="#800" stroke-width="0.2"/>
-<rect x="499.38" y="116.83999999999999" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
-<text x="502.58" y="119.08" font-size="1.3" fill="#066">R48</text>
-<text x="502.58" y="120.78" font-size="1.1" fill="#066">1k</text>
-<line x1="500.38" y1="114.30" x2="500.38" y2="111.76" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(500.08,111.36) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">U</text>
-<line x1="500.38" y1="124.46" x2="500.38" y2="127.00" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(500.08,127.40) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">BY</text>
-<line x1="518.16" y1="114.3" x2="518.16" y2="124.46" stroke="#800" stroke-width="0.2"/>
-<rect x="517.16" y="116.83999999999999" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
-<text x="520.36" y="119.08" font-size="1.3" fill="#066">R49</text>
-<text x="520.36" y="120.78" font-size="1.1" fill="#066">2k2 trimr (VR1)</text>
-<line x1="518.16" y1="114.30" x2="518.16" y2="111.76" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(517.86,111.36) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">BY</text>
-<line x1="518.16" y1="124.46" x2="518.16" y2="127.00" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(517.86,127.40) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">CBIAS</text>
-<line x1="535.94" y1="114.3" x2="535.94" y2="124.46" stroke="#800" stroke-width="0.2"/>
-<rect x="534.94" y="116.83999999999999" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
-<text x="538.1400000000001" y="119.08" font-size="1.3" fill="#066">R50</text>
-<text x="538.1400000000001" y="120.78" font-size="1.1" fill="#066">1k</text>
-<line x1="535.94" y1="114.30" x2="535.94" y2="111.76" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(535.64,111.36) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">V</text>
-<line x1="535.94" y1="124.46" x2="535.94" y2="127.00" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(535.64,127.40) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">RY</text>
-<line x1="553.72" y1="114.3" x2="553.72" y2="124.46" stroke="#800" stroke-width="0.2"/>
-<rect x="552.72" y="116.83999999999999" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
-<text x="555.9200000000001" y="119.08" font-size="1.3" fill="#066">R51</text>
-<text x="555.9200000000001" y="120.78" font-size="1.1" fill="#066">2k2 trimr (VR2)</text>
-<line x1="553.72" y1="114.30" x2="553.72" y2="111.76" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(553.42,111.36) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">RY</text>
-<line x1="553.72" y1="124.46" x2="553.72" y2="127.00" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(553.42,127.40) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">CBIAS</text>
-<line x1="571.5" y1="114.3" x2="571.5" y2="124.46" stroke="#800" stroke-width="0.2"/>
-<rect x="569.5" y="118.75" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M569.5,118.75 h4 M569.5,120.00999999999999 h4" stroke="#800" stroke-width="0.4"/>
-<text x="573.7" y="119.08" font-size="1.3" fill="#066">C64</text>
-<text x="573.7" y="120.78" font-size="1.1" fill="#066">100n</text>
-<line x1="571.50" y1="114.30" x2="571.50" y2="111.76" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(571.20,111.36) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CBIAS</text>
-<line x1="571.50" y1="124.46" x2="571.50" y2="127.00" stroke="#080" stroke-width="0.15"/>
-<path d="M571.5,127.0 L571.5,128.27 L570.23,128.27 L571.5,129.54 L572.77,128.27 L571.5,128.27" stroke="#800" stroke-width="0.2" fill="none"/>
-<line x1="589.28" y1="114.3" x2="589.28" y2="124.46" stroke="#800" stroke-width="0.2"/>
-<rect x="588.01" y="118.61999999999999" width="2.54" height="1.52" fill="#fff" stroke="#800" stroke-width="0.25"/>
-<text x="591.48" y="119.08" font-size="1.3" fill="#066">Y2</text>
-<text x="591.48" y="120.78" font-size="1.1" fill="#066">4.433619MHz</text>
-<line x1="589.28" y1="114.30" x2="589.28" y2="111.76" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(588.98,111.36) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CH_OSC</text>
-<line x1="589.28" y1="124.46" x2="589.28" y2="127.00" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(588.98,127.40) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">CH_XT</text>
-<line x1="607.0600000000001" y1="114.3" x2="607.0600000000001" y2="124.46" stroke="#800" stroke-width="0.2"/>
-<rect x="605.0600000000001" y="118.75" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M605.0600000000001,118.75 h4 M605.0600000000001,120.00999999999999 h4" stroke="#800" stroke-width="0.4"/>
-<text x="609.2600000000001" y="119.08" font-size="1.3" fill="#066">C65</text>
-<text x="609.2600000000001" y="120.78" font-size="1.1" fill="#066">5–30p trimr (TC2)</text>
-<line x1="607.06" y1="114.30" x2="607.06" y2="111.76" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(606.76,111.36) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CH_XT</text>
-<line x1="607.06" y1="124.46" x2="607.06" y2="127.00" stroke="#080" stroke-width="0.15"/>
-<path d="M607.0600000000001,127.0 L607.0600000000001,128.27 L605.7900000000001,128.27 L607.0600000000001,129.54 L608.33,128.27 L607.0600000000001,128.27" stroke="#800" stroke-width="0.2" fill="none"/>
-<line x1="624.84" y1="114.3" x2="624.84" y2="124.46" stroke="#800" stroke-width="0.2"/>
-<rect x="623.84" y="116.83999999999999" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
-<text x="627.0400000000001" y="119.08" font-size="1.3" fill="#066">R52</text>
-<text x="627.0400000000001" y="120.78" font-size="1.1" fill="#066">1k</text>
-<line x1="624.84" y1="114.30" x2="624.84" y2="111.76" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(624.54,111.36) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CH_OSC</text>
-<line x1="624.84" y1="124.46" x2="624.84" y2="127.00" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(624.54,127.40) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">CH_LEAD</text>
-<line x1="645.16" y1="114.3" x2="645.16" y2="124.46" stroke="#800" stroke-width="0.2"/>
-<rect x="643.16" y="118.75" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M643.16,118.75 h4 M643.16,120.00999999999999 h4" stroke="#800" stroke-width="0.4"/>
-<text x="647.36" y="119.08" font-size="1.3" fill="#066">C66</text>
-<text x="647.36" y="120.78" font-size="1.1" fill="#066">150p</text>
-<line x1="645.16" y1="114.30" x2="645.16" y2="111.76" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(644.86,111.36) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CH_LEAD</text>
-<line x1="645.16" y1="124.46" x2="645.16" y2="127.00" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(644.86,127.40) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">CH_LAG</text>
-<line x1="662.94" y1="114.3" x2="662.94" y2="124.46" stroke="#800" stroke-width="0.2"/>
-<rect x="660.94" y="118.75" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M660.94,118.75 h4 M660.94,120.00999999999999 h4" stroke="#800" stroke-width="0.4"/>
-<text x="665.1400000000001" y="119.08" font-size="1.3" fill="#066">C67</text>
-<text x="665.1400000000001" y="120.78" font-size="1.1" fill="#066">150p</text>
-<line x1="662.94" y1="114.30" x2="662.94" y2="111.76" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(662.64,111.36) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CH_LAG</text>
-<line x1="662.94" y1="124.46" x2="662.94" y2="127.00" stroke="#080" stroke-width="0.15"/>
-<path d="M662.94,127.0 L662.94,128.27 L661.6700000000001,128.27 L662.94,129.54 L664.21,128.27 L662.94,128.27" stroke="#800" stroke-width="0.2" fill="none"/>
-<path d="M676.9100000000001,119.38 H680.22 M680.22,117.47999999999999 V121.28 M680.22,118.75 L681.99,116.83999999999999 V114.3 M680.22,120.00999999999999 L681.99,121.92 V124.46" stroke="#800" stroke-width="0.25" fill="none"/>
-<circle cx="681.02" cy="119.38" r="3" fill="none" stroke="#800" stroke-width="0.2"/>
-<text x="684.32" y="119.08" font-size="1.3" fill="#066">T5</text>
-<text x="684.32" y="120.78" font-size="1.1" fill="#066">KC507 (ZTX313)</text>
-<line x1="681.99" y1="124.46" x2="681.99" y2="127.00" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(681.69,127.40) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">T5_E</text>
-<line x1="676.91" y1="119.38" x2="674.37" y2="119.38" stroke="#080" stroke-width="0.15"/>
-<text x="673.97" y="119.08" font-size="1.2" text-anchor="end" fill="#000">T5_B</text>
-<line x1="681.99" y1="114.30" x2="681.99" y2="111.76" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(681.69,111.36) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CVBS_MIX</text>
-<line x1="698.5" y1="114.3" x2="698.5" y2="124.46" stroke="#800" stroke-width="0.2"/>
-<rect x="697.5" y="116.83999999999999" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
-<text x="700.7" y="119.08" font-size="1.3" fill="#066">R53</text>
-<text x="700.7" y="120.78" font-size="1.1" fill="#066">1k</text>
-<line x1="698.50" y1="114.30" x2="698.50" y2="111.76" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(698.20,111.36) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">Y</text>
-<line x1="698.50" y1="124.46" x2="698.50" y2="127.00" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(698.20,127.40) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">T5_B</text>
-<line x1="716.28" y1="114.3" x2="716.28" y2="124.46" stroke="#800" stroke-width="0.2"/>
-<rect x="715.28" y="116.83999999999999" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
-<text x="718.48" y="119.08" font-size="1.3" fill="#066">R54</text>
-<text x="718.48" y="120.78" font-size="1.1" fill="#066">100</text>
-<line x1="716.28" y1="114.30" x2="716.28" y2="111.76" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(715.98,111.36) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">T5_E</text>
-<line x1="716.28" y1="124.46" x2="716.28" y2="127.00" stroke="#080" stroke-width="0.15"/>
-<path d="M716.28,127.0 L716.28,128.27 L715.01,128.27 L716.28,129.54 L717.55,128.27 L716.28,128.27" stroke="#800" stroke-width="0.2" fill="none"/>
-<line x1="500.38" y1="144.78" x2="500.38" y2="154.94000000000003" stroke="#800" stroke-width="0.2"/>
-<rect x="499.38" y="147.32000000000002" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
-<text x="502.58" y="149.56" font-size="1.3" fill="#066">R55</text>
-<text x="502.58" y="151.26000000000002" font-size="1.1" fill="#066">1k</text>
-<line x1="500.38" y1="144.78" x2="500.38" y2="142.24" stroke="#080" stroke-width="0.15"/>
-<path d="M499.62,140.97 L500.38,139.70000000000002 L501.14,140.97 M500.38,142.24 L500.38,139.70000000000002" stroke="#800" stroke-width="0.2" fill="none"/>
-<text x="500.38" y="139.24" font-size="1" text-anchor="middle">+5V</text>
-<line x1="500.38" y1="154.94" x2="500.38" y2="157.48" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(500.08,157.88) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">CVBS_MIX</text>
-<line x1="518.16" y1="144.78" x2="518.16" y2="154.94000000000003" stroke="#800" stroke-width="0.2"/>
-<rect x="516.16" y="149.23000000000002" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M516.16,149.23000000000002 h4 M516.16,150.49 h4" stroke="#800" stroke-width="0.4"/>
-<text x="520.36" y="149.56" font-size="1.3" fill="#066">C68</text>
-<text x="520.36" y="151.26000000000002" font-size="1.1" fill="#066">1n</text>
-<line x1="518.16" y1="144.78" x2="518.16" y2="142.24" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(517.86,141.84) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CHROMA</text>
-<line x1="518.16" y1="154.94" x2="518.16" y2="157.48" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(517.86,157.88) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">CVBS_MIX</text>
-<path d="M532.1300000000001,149.86 H535.44 M535.44,147.96 V151.76000000000002 M535.44,149.23000000000002 L537.21,147.32000000000002 V144.78 M535.44,150.49 L537.21,152.4 V154.94000000000003" stroke="#800" stroke-width="0.25" fill="none"/>
-<circle cx="536.24" cy="149.86" r="3" fill="none" stroke="#800" stroke-width="0.2"/>
-<text x="539.5400000000001" y="149.56" font-size="1.3" fill="#066">T6</text>
-<text x="539.5400000000001" y="151.26000000000002" font-size="1.1" fill="#066">KC507 (ZTX313)</text>
-<line x1="537.21" y1="154.94" x2="537.21" y2="157.48" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(536.91,157.88) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">CVBS</text>
-<line x1="532.13" y1="149.86" x2="529.59" y2="149.86" stroke="#080" stroke-width="0.15"/>
-<text x="529.19" y="149.56" font-size="1.2" text-anchor="end" fill="#000">CVBS_MIX</text>
-<line x1="537.21" y1="144.78" x2="537.21" y2="142.24" stroke="#080" stroke-width="0.15"/>
-<path d="M536.45,140.97 L537.21,139.70000000000002 L537.97,140.97 M537.21,142.24 L537.21,139.70000000000002" stroke="#800" stroke-width="0.2" fill="none"/>
-<text x="537.21" y="139.24" font-size="1" text-anchor="middle">+5V</text>
-<line x1="553.72" y1="144.78" x2="553.72" y2="154.94000000000003" stroke="#800" stroke-width="0.2"/>
-<rect x="552.72" y="147.32000000000002" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
-<text x="555.9200000000001" y="149.56" font-size="1.3" fill="#066">R56</text>
-<text x="555.9200000000001" y="151.26000000000002" font-size="1.1" fill="#066">1k</text>
-<line x1="553.72" y1="144.78" x2="553.72" y2="142.24" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(553.42,141.84) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CVBS</text>
-<line x1="553.72" y1="154.94" x2="553.72" y2="157.48" stroke="#080" stroke-width="0.15"/>
-<path d="M553.72,157.48000000000002 L553.72,158.75000000000003 L552.45,158.75000000000003 L553.72,160.02 L554.99,158.75000000000003 L553.72,158.75000000000003" stroke="#800" stroke-width="0.2" fill="none"/>
-<line x1="571.5" y1="144.78" x2="571.5" y2="154.94000000000003" stroke="#800" stroke-width="0.2"/>
-<rect x="570.5" y="147.32000000000002" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
-<text x="573.7" y="149.56" font-size="1.3" fill="#066">R57</text>
-<text x="573.7" y="151.26000000000002" font-size="1.1" fill="#066">47</text>
-<line x1="571.50" y1="144.78" x2="571.50" y2="142.24" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(571.20,141.84) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">VIN</text>
-<line x1="571.50" y1="154.94" x2="571.50" y2="157.48" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(571.20,157.88) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">+12V</text>
-<line x1="589.28" y1="144.78" x2="589.28" y2="154.94000000000003" stroke="#800" stroke-width="0.2"/>
-<rect x="587.28" y="149.23000000000002" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M587.28,149.23000000000002 h4 M587.28,150.49 h4" stroke="#800" stroke-width="0.4"/>
-<text x="591.48" y="149.56" font-size="1.3" fill="#066">C69</text>
-<text x="591.48" y="151.26000000000002" font-size="1.1" fill="#066">100u/16V</text>
-<line x1="589.28" y1="144.78" x2="589.28" y2="142.24" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(588.98,141.84) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">+12V</text>
-<line x1="589.28" y1="154.94" x2="589.28" y2="157.48" stroke="#080" stroke-width="0.15"/>
-<path d="M589.28,157.48000000000002 L589.28,158.75000000000003 L588.01,158.75000000000003 L589.28,160.02 L590.55,158.75000000000003 L589.28,158.75000000000003" stroke="#800" stroke-width="0.2" fill="none"/>
-<line x1="607.0600000000001" y1="144.78" x2="607.0600000000001" y2="154.94000000000003" stroke="#800" stroke-width="0.2"/>
-<rect x="605.0600000000001" y="149.23000000000002" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M605.0600000000001,149.23000000000002 h4 M605.0600000000001,150.49 h4" stroke="#800" stroke-width="0.4"/>
-<text x="609.2600000000001" y="149.56" font-size="1.3" fill="#066">C70</text>
-<text x="609.2600000000001" y="151.26000000000002" font-size="1.1" fill="#066">100n</text>
-<line x1="607.06" y1="144.78" x2="607.06" y2="142.24" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(606.76,141.84) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">+12V</text>
-<line x1="607.06" y1="154.94" x2="607.06" y2="157.48" stroke="#080" stroke-width="0.15"/>
-<path d="M607.0600000000001,157.48000000000002 L607.0600000000001,158.75000000000003 L605.7900000000001,158.75000000000003 L607.0600000000001,160.02 L608.33,158.75000000000003 L607.0600000000001,158.75000000000003" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="497.84000000000003" y1="109.22" x2="497.84000000000003" y2="119.38" stroke="#800" stroke-width="0.2"/>
+<rect x="496.84000000000003" y="111.75999999999999" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="500.04" y="114.0" font-size="1.3" fill="#066">R48</text>
+<text x="500.04" y="115.7" font-size="1.1" fill="#066">3K3 (Sp R38)</text>
+<line x1="497.84" y1="109.22" x2="497.84" y2="106.68" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(497.54,106.28) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">+12V</text>
+<line x1="497.84" y1="119.38" x2="497.84" y2="121.92" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(497.54,122.32) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">BY</text>
+<line x1="513.08" y1="109.22" x2="513.08" y2="119.38" stroke="#800" stroke-width="0.2"/>
+<rect x="512.08" y="111.75999999999999" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="515.2800000000001" y="114.0" font-size="1.3" fill="#066">R49</text>
+<text x="515.2800000000001" y="115.7" font-size="1.1" fill="#066">2K2 trimr (Sp VR1)</text>
+<line x1="513.08" y1="109.22" x2="513.08" y2="106.68" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(512.78,106.28) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">BY</text>
+<line x1="513.08" y1="119.38" x2="513.08" y2="121.92" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(512.78,122.32) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">U</text>
+<line x1="528.32" y1="109.22" x2="528.32" y2="119.38" stroke="#800" stroke-width="0.2"/>
+<rect x="527.32" y="111.75999999999999" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="530.5200000000001" y="114.0" font-size="1.3" fill="#066">R50</text>
+<text x="530.5200000000001" y="115.7" font-size="1.1" fill="#066">220R (Sp R56)</text>
+<line x1="528.32" y1="109.22" x2="528.32" y2="106.68" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(528.02,106.28) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">U</text>
+<line x1="528.32" y1="119.38" x2="528.32" y2="121.92" stroke="#080" stroke-width="0.15"/>
+<path d="M528.32,121.92 L528.32,123.19 L527.0500000000001,123.19 L528.32,124.46000000000001 L529.59,123.19 L528.32,123.19" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="546.1" y1="109.22" x2="546.1" y2="119.38" stroke="#800" stroke-width="0.2"/>
+<rect x="545.1" y="111.75999999999999" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="548.3000000000001" y="114.0" font-size="1.3" fill="#066">R51</text>
+<text x="548.3000000000001" y="115.7" font-size="1.1" fill="#066">3K3 (Sp R39)</text>
+<line x1="546.10" y1="109.22" x2="546.10" y2="106.68" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(545.80,106.28) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">+12V</text>
+<line x1="546.10" y1="119.38" x2="546.10" y2="121.92" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(545.80,122.32) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">RY</text>
+<line x1="561.34" y1="109.22" x2="561.34" y2="119.38" stroke="#800" stroke-width="0.2"/>
+<rect x="560.34" y="111.75999999999999" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="563.5400000000001" y="114.0" font-size="1.3" fill="#066">R52</text>
+<text x="563.5400000000001" y="115.7" font-size="1.1" fill="#066">2K2 trimr (Sp VR2)</text>
+<line x1="561.34" y1="109.22" x2="561.34" y2="106.68" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(561.04,106.28) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">RY</text>
+<line x1="561.34" y1="119.38" x2="561.34" y2="121.92" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(561.04,122.32) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">V</text>
+<line x1="576.58" y1="109.22" x2="576.58" y2="119.38" stroke="#800" stroke-width="0.2"/>
+<rect x="575.58" y="111.75999999999999" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="578.7800000000001" y="114.0" font-size="1.3" fill="#066">R53</text>
+<text x="578.7800000000001" y="115.7" font-size="1.1" fill="#066">330R (Sp R57)</text>
+<line x1="576.58" y1="109.22" x2="576.58" y2="106.68" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(576.28,106.28) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">V</text>
+<line x1="576.58" y1="119.38" x2="576.58" y2="121.92" stroke="#080" stroke-width="0.15"/>
+<path d="M576.58,121.92 L576.58,123.19 L575.3100000000001,123.19 L576.58,124.46000000000001 L577.85,123.19 L576.58,123.19" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="591.82" y1="109.22" x2="591.82" y2="119.38" stroke="#800" stroke-width="0.2"/>
+<rect x="589.82" y="113.67" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M589.82,113.67 h4 M589.82,114.92999999999999 h4" stroke="#800" stroke-width="0.4"/>
+<text x="594.0200000000001" y="114.0" font-size="1.3" fill="#066">C64</text>
+<text x="594.0200000000001" y="115.7" font-size="1.1" fill="#066">47n (Sp C33)</text>
+<line x1="591.82" y1="109.22" x2="591.82" y2="106.68" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(591.52,106.28) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">+12V</text>
+<line x1="591.82" y1="119.38" x2="591.82" y2="121.92" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(591.52,122.32) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">RY</text>
+<line x1="609.6" y1="109.22" x2="609.6" y2="119.38" stroke="#800" stroke-width="0.2"/>
+<rect x="608.6" y="111.75999999999999" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="611.8000000000001" y="114.0" font-size="1.3" fill="#066">R54</text>
+<text x="611.8000000000001" y="115.7" font-size="1.1" fill="#066">1K (Sp R40)</text>
+<line x1="609.60" y1="109.22" x2="609.60" y2="106.68" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(609.30,106.28) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CBIAS</text>
+<line x1="609.60" y1="119.38" x2="609.60" y2="121.92" stroke="#080" stroke-width="0.15"/>
+<path d="M609.6,121.92 L609.6,123.19 L608.33,123.19 L609.6,124.46000000000001 L610.87,123.19 L609.6,123.19" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="624.84" y1="109.22" x2="624.84" y2="119.38" stroke="#800" stroke-width="0.2"/>
+<rect x="623.84" y="111.75999999999999" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="627.0400000000001" y="114.0" font-size="1.3" fill="#066">R55</text>
+<text x="627.0400000000001" y="115.7" font-size="1.1" fill="#066">1K5 (Sp R41)</text>
+<line x1="624.84" y1="109.22" x2="624.84" y2="106.68" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(624.54,106.28) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">+12V</text>
+<line x1="624.84" y1="119.38" x2="624.84" y2="121.92" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(624.54,122.32) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">CBIAS</text>
+<line x1="640.08" y1="109.22" x2="640.08" y2="119.38" stroke="#800" stroke-width="0.2"/>
+<rect x="638.08" y="113.67" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M638.08,113.67 h4 M638.08,114.92999999999999 h4" stroke="#800" stroke-width="0.4"/>
+<text x="642.2800000000001" y="114.0" font-size="1.3" fill="#066">C65</text>
+<text x="642.2800000000001" y="115.7" font-size="1.1" fill="#066">22u/16V (Sp C34)</text>
+<line x1="640.08" y1="109.22" x2="640.08" y2="106.68" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(639.78,106.28) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CBIAS</text>
+<line x1="640.08" y1="119.38" x2="640.08" y2="121.92" stroke="#080" stroke-width="0.15"/>
+<path d="M640.08,121.92 L640.08,123.19 L638.8100000000001,123.19 L640.08,124.46000000000001 L641.35,123.19 L640.08,123.19" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="657.86" y1="109.22" x2="657.86" y2="119.38" stroke="#800" stroke-width="0.2"/>
+<rect x="656.86" y="111.75999999999999" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="660.0600000000001" y="114.0" font-size="1.3" fill="#066">R56</text>
+<text x="660.0600000000001" y="115.7" font-size="1.1" fill="#066">1K (Sp R42)</text>
+<line x1="657.86" y1="109.22" x2="657.86" y2="106.68" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(657.56,106.28) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">+12V</text>
+<line x1="657.86" y1="119.38" x2="657.86" y2="121.92" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(657.56,122.32) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">LM_VIN</text>
+<line x1="673.1" y1="109.22" x2="673.1" y2="119.38" stroke="#800" stroke-width="0.2"/>
+<rect x="671.1" y="113.67" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M671.1,113.67 h4 M671.1,114.92999999999999 h4" stroke="#800" stroke-width="0.4"/>
+<text x="675.3000000000001" y="114.0" font-size="1.3" fill="#066">C66</text>
+<text x="675.3000000000001" y="115.7" font-size="1.1" fill="#066">47n (Sp C40)</text>
+<line x1="673.10" y1="109.22" x2="673.10" y2="106.68" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(672.80,106.28) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">+12V</text>
+<line x1="673.10" y1="119.38" x2="673.10" y2="121.92" stroke="#080" stroke-width="0.15"/>
+<path d="M673.1,121.92 L673.1,123.19 L671.83,123.19 L673.1,124.46000000000001 L674.37,123.19 L673.1,123.19" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="688.34" y1="109.22" x2="688.34" y2="119.38" stroke="#800" stroke-width="0.2"/>
+<rect x="687.34" y="111.75999999999999" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="690.5400000000001" y="114.0" font-size="1.3" fill="#066">R58</text>
+<text x="690.5400000000001" y="115.7" font-size="1.1" fill="#066">3K (Sp R43)</text>
+<line x1="688.34" y1="109.22" x2="688.34" y2="106.68" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(688.04,106.28) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CH_OSC</text>
+<line x1="688.34" y1="119.38" x2="688.34" y2="121.92" stroke="#080" stroke-width="0.15"/>
+<path d="M688.34,121.92 L688.34,123.19 L687.07,123.19 L688.34,124.46000000000001 L689.61,123.19 L688.34,123.19" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="706.12" y1="109.22" x2="706.12" y2="119.38" stroke="#800" stroke-width="0.2"/>
+<rect x="705.12" y="111.75999999999999" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="708.32" y="114.0" font-size="1.3" fill="#066">R59</text>
+<text x="708.32" y="115.7" font-size="1.1" fill="#066">5K1 (Sp R44)</text>
+<line x1="706.12" y1="109.22" x2="706.12" y2="106.68" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(705.82,106.28) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CH_OSC</text>
+<line x1="706.12" y1="119.38" x2="706.12" y2="121.92" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(705.82,122.32) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">CH_N2</text>
+<line x1="721.36" y1="109.22" x2="721.36" y2="119.38" stroke="#800" stroke-width="0.2"/>
+<rect x="719.36" y="113.67" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M719.36,113.67 h4 M719.36,114.92999999999999 h4" stroke="#800" stroke-width="0.4"/>
+<text x="723.5600000000001" y="114.0" font-size="1.3" fill="#066">C67</text>
+<text x="723.5600000000001" y="115.7" font-size="1.1" fill="#066">trimr (Sp VC2)</text>
+<line x1="721.36" y1="109.22" x2="721.36" y2="106.68" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(721.06,106.28) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CH_N2</text>
+<line x1="721.36" y1="119.38" x2="721.36" y2="121.92" stroke="#080" stroke-width="0.15"/>
+<path d="M721.36,121.92 L721.36,123.19 L720.09,123.19 L721.36,124.46000000000001 L722.63,123.19 L721.36,123.19" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="497.84000000000003" y1="137.16" x2="497.84000000000003" y2="147.32000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="496.57000000000005" y="141.48000000000002" width="2.54" height="1.52" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="500.04" y="141.94" font-size="1.3" fill="#066">Y2</text>
+<text x="500.04" y="143.64000000000001" font-size="1.1" fill="#066">4.433619MHz (Sp X2)</text>
+<line x1="497.84" y1="137.16" x2="497.84" y2="134.62" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(497.54,134.22) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CH_N2</text>
+<line x1="497.84" y1="147.32" x2="497.84" y2="149.86" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(497.54,150.26) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">CH_N3</text>
+<line x1="513.08" y1="137.16" x2="513.08" y2="147.32000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="512.08" y="139.70000000000002" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="515.2800000000001" y="141.94" font-size="1.3" fill="#066">R60</text>
+<text x="515.2800000000001" y="143.64000000000001" font-size="1.1" fill="#066">1K (Sp R45)</text>
+<line x1="513.08" y1="137.16" x2="513.08" y2="134.62" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(512.78,134.22) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CH_N3</text>
+<line x1="513.08" y1="147.32" x2="513.08" y2="149.86" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(512.78,150.26) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">CH_LAG</text>
+<line x1="528.32" y1="137.16" x2="528.32" y2="147.32000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="526.32" y="141.61" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M526.32,141.61 h4 M526.32,142.87 h4" stroke="#800" stroke-width="0.4"/>
+<text x="530.5200000000001" y="141.94" font-size="1.3" fill="#066">C68</text>
+<text x="530.5200000000001" y="143.64000000000001" font-size="1.1" fill="#066">33p (Sp C37)</text>
+<line x1="528.32" y1="137.16" x2="528.32" y2="134.62" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(528.02,134.22) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CH_LAG</text>
+<line x1="528.32" y1="147.32" x2="528.32" y2="149.86" stroke="#080" stroke-width="0.15"/>
+<path d="M528.32,149.86 L528.32,151.13000000000002 L527.0500000000001,151.13000000000002 L528.32,152.4 L529.59,151.13000000000002 L528.32,151.13000000000002" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="546.1" y1="137.16" x2="546.1" y2="147.32000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="544.1" y="141.61" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M544.1,141.61 h4 M544.1,142.87 h4" stroke="#800" stroke-width="0.4"/>
+<text x="548.3000000000001" y="141.94" font-size="1.3" fill="#066">C71</text>
+<text x="548.3000000000001" y="143.64000000000001" font-size="1.1" fill="#066">33p (Sp C38)</text>
+<line x1="546.10" y1="137.16" x2="546.10" y2="134.62" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(545.80,134.22) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CH_N3</text>
+<line x1="546.10" y1="147.32" x2="546.10" y2="149.86" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(545.80,150.26) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">CH_N4</text>
+<line x1="561.34" y1="137.16" x2="561.34" y2="147.32000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="560.34" y="139.70000000000002" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="563.5400000000001" y="141.94" font-size="1.3" fill="#066">R61</text>
+<text x="563.5400000000001" y="143.64000000000001" font-size="1.1" fill="#066">1K (Sp R46)</text>
+<line x1="561.34" y1="137.16" x2="561.34" y2="134.62" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(561.04,134.22) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CH_N4</text>
+<line x1="561.34" y1="147.32" x2="561.34" y2="149.86" stroke="#080" stroke-width="0.15"/>
+<path d="M561.34,149.86 L561.34,151.13000000000002 L560.07,151.13000000000002 L561.34,152.4 L562.61,151.13000000000002 L561.34,151.13000000000002" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="576.58" y1="137.16" x2="576.58" y2="147.32000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="574.58" y="141.61" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M574.58,141.61 h4 M574.58,142.87 h4" stroke="#800" stroke-width="0.4"/>
+<text x="578.7800000000001" y="141.94" font-size="1.3" fill="#066">C72</text>
+<text x="578.7800000000001" y="143.64000000000001" font-size="1.1" fill="#066">10n (Sp C39)</text>
+<line x1="576.58" y1="137.16" x2="576.58" y2="134.62" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(576.28,134.22) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CH_N4</text>
+<line x1="576.58" y1="147.32" x2="576.58" y2="149.86" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(576.28,150.26) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">CH_LEAD</text>
+<line x1="591.82" y1="137.16" x2="591.82" y2="147.32000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="590.82" y="139.70000000000002" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="594.0200000000001" y="141.94" font-size="1.3" fill="#066">R62</text>
+<text x="594.0200000000001" y="143.64000000000001" font-size="1.1" fill="#066">10K (Sp R72)</text>
+<line x1="591.82" y1="137.16" x2="591.82" y2="134.62" stroke="#080" stroke-width="0.15"/>
+<path d="M591.0600000000001,133.35 L591.82,132.08 L592.58,133.35 M591.82,134.62 L591.82,132.08" stroke="#800" stroke-width="0.2" fill="none"/>
+<text x="591.82" y="131.62" font-size="1" text-anchor="middle">+5V</text>
+<line x1="591.82" y1="147.32" x2="591.82" y2="149.86" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(591.52,150.26) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">CHROMA</text>
+<line x1="609.6" y1="137.16" x2="609.6" y2="147.32000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="607.6" y="141.61" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M607.6,141.61 h4 M607.6,142.87 h4" stroke="#800" stroke-width="0.4"/>
+<text x="611.8000000000001" y="141.94" font-size="1.3" fill="#066">C73</text>
+<text x="611.8000000000001" y="143.64000000000001" font-size="1.1" fill="#066">22u/16V (Sp C65)</text>
+<line x1="609.60" y1="137.16" x2="609.60" y2="134.62" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(609.30,134.22) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CHROMA</text>
+<line x1="609.60" y1="147.32" x2="609.60" y2="149.86" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(609.30,150.26) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">T6_B</text>
+<line x1="624.84" y1="137.16" x2="624.84" y2="147.32000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="623.84" y="139.70000000000002" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="627.0400000000001" y="141.94" font-size="1.3" fill="#066">R63</text>
+<text x="627.0400000000001" y="143.64000000000001" font-size="1.1" fill="#066">220R (Sp R47)</text>
+<line x1="624.84" y1="137.16" x2="624.84" y2="134.62" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(624.54,134.22) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">Y</text>
+<line x1="624.84" y1="147.32" x2="624.84" y2="149.86" stroke="#080" stroke-width="0.15"/>
+<path d="M624.84,149.86 L624.84,151.13000000000002 L623.57,151.13000000000002 L624.84,152.4 L626.11,151.13000000000002 L624.84,151.13000000000002" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="640.08" y1="137.16" x2="640.08" y2="147.32000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="639.08" y="139.70000000000002" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="642.2800000000001" y="141.94" font-size="1.3" fill="#066">R64</text>
+<text x="642.2800000000001" y="143.64000000000001" font-size="1.1" fill="#066">4K7 (Sp R48)</text>
+<line x1="640.08" y1="137.16" x2="640.08" y2="134.62" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(639.78,134.22) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">Y</text>
+<line x1="640.08" y1="147.32" x2="640.08" y2="149.86" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(639.78,150.26) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">T5_B</text>
+<line x1="657.86" y1="137.16" x2="657.86" y2="147.32000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="656.86" y="139.70000000000002" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="660.0600000000001" y="141.94" font-size="1.3" fill="#066">R65</text>
+<text x="660.0600000000001" y="143.64000000000001" font-size="1.1" fill="#066">4K7 (Sp R50)</text>
+<line x1="657.86" y1="137.16" x2="657.86" y2="134.62" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(657.56,134.22) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">T5_B</text>
+<line x1="657.86" y1="147.32" x2="657.86" y2="149.86" stroke="#080" stroke-width="0.15"/>
+<path d="M657.86,149.86 L657.86,151.13000000000002 L656.59,151.13000000000002 L657.86,152.4 L659.13,151.13000000000002 L657.86,151.13000000000002" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="673.1" y1="137.16" x2="673.1" y2="147.32000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="672.1" y="139.70000000000002" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="675.3000000000001" y="141.94" font-size="1.3" fill="#066">R66</text>
+<text x="675.3000000000001" y="143.64000000000001" font-size="1.1" fill="#066">18K (Sp R49)</text>
+<line x1="673.10" y1="137.16" x2="673.10" y2="134.62" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(672.80,134.22) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">+5V_MOD</text>
+<line x1="673.10" y1="147.32" x2="673.10" y2="149.86" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(672.80,150.26) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">T5_B</text>
+<path d="M684.5300000000001,142.24 H687.84 M687.84,140.34 V144.14000000000001 M687.84,141.61 L689.61,139.70000000000002 V137.16 M687.84,142.87 L689.61,144.78 V147.32000000000002" stroke="#800" stroke-width="0.25" fill="none"/>
+<circle cx="688.64" cy="142.24" r="3" fill="none" stroke="#800" stroke-width="0.2"/>
+<text x="691.94" y="141.94" font-size="1.3" fill="#066">T5</text>
+<text x="691.94" y="143.64000000000001" font-size="1.1" fill="#066">KC507 (Sp TR1 ZTX313)</text>
+<line x1="689.61" y1="147.32" x2="689.61" y2="149.86" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(689.31,150.26) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">T5_E</text>
+<line x1="684.53" y1="142.24" x2="681.99" y2="142.24" stroke="#080" stroke-width="0.15"/>
+<text x="681.59" y="141.94" font-size="1.2" text-anchor="end" fill="#000">T5_B</text>
+<line x1="689.61" y1="137.16" x2="689.61" y2="134.62" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(689.31,134.22) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">T6_B</text>
+<line x1="706.12" y1="137.16" x2="706.12" y2="147.32000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="705.12" y="139.70000000000002" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="708.32" y="141.94" font-size="1.3" fill="#066">R67</text>
+<text x="708.32" y="143.64000000000001" font-size="1.1" fill="#066">2K2 (Sp R52)</text>
+<line x1="706.12" y1="137.16" x2="706.12" y2="134.62" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(705.82,134.22) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">T5_E</text>
+<line x1="706.12" y1="147.32" x2="706.12" y2="149.86" stroke="#080" stroke-width="0.15"/>
+<path d="M706.12,149.86 L706.12,151.13000000000002 L704.85,151.13000000000002 L706.12,152.4 L707.39,151.13000000000002 L706.12,151.13000000000002" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="721.36" y1="137.16" x2="721.36" y2="147.32000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="720.36" y="139.70000000000002" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="723.5600000000001" y="141.94" font-size="1.3" fill="#066">R68</text>
+<text x="723.5600000000001" y="143.64000000000001" font-size="1.1" fill="#066">2K2 (Sp R51)</text>
+<line x1="721.36" y1="137.16" x2="721.36" y2="134.62" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(721.06,134.22) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">+5V_MOD</text>
+<line x1="721.36" y1="147.32" x2="721.36" y2="149.86" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(721.06,150.26) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">T6_B</text>
+<path d="M494.03000000000003,170.18 H497.34000000000003 M497.34000000000003,168.28 V172.08 M497.34000000000003,169.55 L499.11,167.64000000000001 V165.1 M497.34000000000003,170.81 L499.11,172.72 V175.26000000000002" stroke="#800" stroke-width="0.25" fill="none"/>
+<circle cx="498.14000000000004" cy="170.18" r="3" fill="none" stroke="#800" stroke-width="0.2"/>
+<text x="501.44000000000005" y="169.88" font-size="1.3" fill="#066">T6</text>
+<text x="501.44000000000005" y="171.58" font-size="1.1" fill="#066">KC507 (Sp TR2 ZTX313)</text>
+<line x1="499.11" y1="175.26" x2="499.11" y2="177.80" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(498.81,178.20) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">CVBS</text>
+<line x1="494.03" y1="170.18" x2="491.49" y2="170.18" stroke="#080" stroke-width="0.15"/>
+<text x="491.09" y="169.88" font-size="1.2" text-anchor="end" fill="#000">T6_B</text>
+<line x1="499.11" y1="165.10" x2="499.11" y2="162.56" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(498.81,162.16) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">+5V_MOD</text>
+<line x1="513.08" y1="165.1" x2="513.08" y2="175.26000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="512.08" y="167.64000000000001" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="515.2800000000001" y="169.88" font-size="1.3" fill="#066">R69</text>
+<text x="515.2800000000001" y="171.58" font-size="1.1" fill="#066">390R (Sp R53)</text>
+<line x1="513.08" y1="165.10" x2="513.08" y2="162.56" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(512.78,162.16) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CVBS</text>
+<line x1="513.08" y1="175.26" x2="513.08" y2="177.80" stroke="#080" stroke-width="0.15"/>
+<path d="M513.08,177.8 L513.08,179.07000000000002 L511.81000000000006,179.07000000000002 L513.08,180.34 L514.35,179.07000000000002 L513.08,179.07000000000002" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="528.32" y1="165.1" x2="528.32" y2="175.26000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="527.32" y="167.64000000000001" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="530.5200000000001" y="169.88" font-size="1.3" fill="#066">R70</text>
+<text x="530.5200000000001" y="171.58" font-size="1.1" fill="#066">15R (Sp R64)</text>
+<line x1="528.32" y1="165.10" x2="528.32" y2="162.56" stroke="#080" stroke-width="0.15"/>
+<path d="M527.5600000000001,161.29 L528.32,160.02 L529.08,161.29 M528.32,162.56 L528.32,160.02" stroke="#800" stroke-width="0.2" fill="none"/>
+<text x="528.32" y="159.56" font-size="1" text-anchor="middle">+5V</text>
+<line x1="528.32" y1="175.26" x2="528.32" y2="177.80" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(528.02,178.20) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">+5V_MOD</text>
+<line x1="546.1" y1="165.1" x2="546.1" y2="175.26000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="544.1" y="169.55" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M544.1,169.55 h4 M544.1,170.81 h4" stroke="#800" stroke-width="0.4"/>
+<text x="548.3000000000001" y="169.88" font-size="1.3" fill="#066">C74</text>
+<text x="548.3000000000001" y="171.58" font-size="1.1" fill="#066">47n (Sp C61)</text>
+<line x1="546.10" y1="165.10" x2="546.10" y2="162.56" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(545.80,162.16) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">+5V_MOD</text>
+<line x1="546.10" y1="175.26" x2="546.10" y2="177.80" stroke="#080" stroke-width="0.15"/>
+<path d="M546.1,177.8 L546.1,179.07000000000002 L544.83,179.07000000000002 L546.1,180.34 L547.37,179.07000000000002 L546.1,179.07000000000002" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="561.34" y1="165.1" x2="561.34" y2="175.26000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="559.34" y="169.55" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M559.34,169.55 h4 M559.34,170.81 h4" stroke="#800" stroke-width="0.4"/>
+<text x="563.5400000000001" y="169.88" font-size="1.3" fill="#066">C75</text>
+<text x="563.5400000000001" y="171.58" font-size="1.1" fill="#066">22u/16V (Sp C25)</text>
+<line x1="561.34" y1="165.10" x2="561.34" y2="162.56" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(561.04,162.16) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">+5V_MOD</text>
+<line x1="561.34" y1="175.26" x2="561.34" y2="177.80" stroke="#080" stroke-width="0.15"/>
+<path d="M561.34,177.8 L561.34,179.07000000000002 L560.07,179.07000000000002 L561.34,180.34 L562.61,179.07000000000002 L561.34,179.07000000000002" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="576.58" y1="165.1" x2="576.58" y2="175.26000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="575.58" y="167.64000000000001" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="578.7800000000001" y="169.88" font-size="1.3" fill="#066">R57</text>
+<text x="578.7800000000001" y="171.58" font-size="1.1" fill="#066">47</text>
+<line x1="576.58" y1="165.10" x2="576.58" y2="162.56" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(576.28,162.16) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">VIN</text>
+<line x1="576.58" y1="175.26" x2="576.58" y2="177.80" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(576.28,178.20) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">+12V</text>
+<line x1="591.82" y1="165.1" x2="591.82" y2="175.26000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="589.82" y="169.55" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M589.82,169.55 h4 M589.82,170.81 h4" stroke="#800" stroke-width="0.4"/>
+<text x="594.0200000000001" y="169.88" font-size="1.3" fill="#066">C69</text>
+<text x="594.0200000000001" y="171.58" font-size="1.1" fill="#066">100u/16V</text>
+<line x1="591.82" y1="165.10" x2="591.82" y2="162.56" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(591.52,162.16) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">+12V</text>
+<line x1="591.82" y1="175.26" x2="591.82" y2="177.80" stroke="#080" stroke-width="0.15"/>
+<path d="M591.82,177.8 L591.82,179.07000000000002 L590.5500000000001,179.07000000000002 L591.82,180.34 L593.09,179.07000000000002 L591.82,179.07000000000002" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="609.6" y1="165.1" x2="609.6" y2="175.26000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="607.6" y="169.55" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M607.6,169.55 h4 M607.6,170.81 h4" stroke="#800" stroke-width="0.4"/>
+<text x="611.8000000000001" y="169.88" font-size="1.3" fill="#066">C70</text>
+<text x="611.8000000000001" y="171.58" font-size="1.1" fill="#066">100n</text>
+<line x1="609.60" y1="165.10" x2="609.60" y2="162.56" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(609.30,162.16) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">+12V</text>
+<line x1="609.60" y1="175.26" x2="609.60" y2="177.80" stroke="#080" stroke-width="0.15"/>
+<path d="M609.6,177.8 L609.6,179.07000000000002 L608.33,179.07000000000002 L609.6,180.34 L610.87,179.07000000000002 L609.6,179.07000000000002" stroke="#800" stroke-width="0.2" fill="none"/>
 <rect x="572.77" y="66.04" width="12.70" height="10.16" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
 <text x="579.12" y="65.04" font-size="1.8" text-anchor="middle" fill="#066">U31</text>
 <text x="579.12" y="78.50" font-size="1.5" text-anchor="middle" fill="#066">VF modulátor (UM1233 nebo ekv.)</text>
@@ -1473,8 +1615,7 @@
 <text x="571.50" y="73.26" font-size="0.9" text-anchor="middle" fill="#800">2</text>
 <text x="573.37" y="74.11" font-size="1.15" text-anchor="start" fill="#066">+5V</text>
 <line x1="570.23" y1="73.66" x2="567.69" y2="73.66" stroke="#080" stroke-width="0.15"/>
-<path d="M566.9300000000001,72.39000000000001 L567.69,71.12 L568.45,72.39000000000001 M567.69,73.66000000000001 L567.69,71.12" stroke="#800" stroke-width="0.2" fill="none"/>
-<text x="567.69" y="70.66" font-size="1" text-anchor="middle">+5V</text>
+<text x="567.29" y="73.36" font-size="1.2" text-anchor="end" fill="#000">+5V_MOD</text>
 <line x1="588.01" y1="68.58" x2="585.47" y2="68.58" stroke="#800" stroke-width="0.2"/>
 <text x="586.74" y="68.18" font-size="0.9" text-anchor="middle" fill="#800">3</text>
 <text x="584.87" y="69.03" font-size="1.15" text-anchor="end" fill="#066">RF</text>
@@ -1485,61 +1626,61 @@
 <text x="584.87" y="74.11" font-size="1.15" text-anchor="end" fill="#066">GND</text>
 <line x1="588.01" y1="73.66" x2="590.55" y2="73.66" stroke="#080" stroke-width="0.15"/>
 <path d="M590.55,73.66000000000001 L590.55,74.93 L589.28,74.93 L590.55,76.20000000000002 L591.8199999999999,74.93 L590.55,74.93" stroke="#800" stroke-width="0.2" fill="none"/>
-<line x1="716.28" y1="144.78" x2="716.28" y2="154.94000000000003" stroke="#800" stroke-width="0.2"/>
-<rect x="714.28" y="149.23000000000002" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M714.28,149.23000000000002 h4 M714.28,150.49 h4" stroke="#800" stroke-width="0.4"/>
-<text x="718.48" y="149.56" font-size="1.3" fill="#066">C63</text>
-<text x="718.48" y="151.26000000000002" font-size="1.1" fill="#066">100n</text>
-<line x1="716.28" y1="144.78" x2="716.28" y2="142.24" stroke="#080" stroke-width="0.15"/>
-<path d="M715.52,140.97 L716.28,139.70000000000002 L717.04,140.97 M716.28,142.24 L716.28,139.70000000000002" stroke="#800" stroke-width="0.2" fill="none"/>
-<text x="716.28" y="139.24" font-size="1" text-anchor="middle">+5V</text>
-<line x1="716.28" y1="154.94" x2="716.28" y2="157.48" stroke="#080" stroke-width="0.15"/>
-<path d="M716.28,157.48000000000002 L716.28,158.75000000000003 L715.01,158.75000000000003 L716.28,160.02 L717.55,158.75000000000003 L716.28,158.75000000000003" stroke="#800" stroke-width="0.2" fill="none"/>
-<path d="M621.0300000000001,149.86 H624.34 M624.34,147.96 V151.76000000000002 M624.34,149.23000000000002 L626.11,147.32000000000002 V144.78 M624.34,150.49 L626.11,152.4 V154.94000000000003" stroke="#800" stroke-width="0.25" fill="none"/>
-<circle cx="625.14" cy="149.86" r="3" fill="none" stroke="#800" stroke-width="0.2"/>
-<text x="628.44" y="149.56" font-size="1.3" fill="#066">T4</text>
-<text x="628.44" y="151.26000000000002" font-size="1.1" fill="#066">KC507 (BC547)</text>
-<line x1="626.11" y1="154.94" x2="626.11" y2="157.48" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(625.81,157.88) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">CVBS_E</text>
-<line x1="621.03" y1="149.86" x2="618.49" y2="149.86" stroke="#080" stroke-width="0.15"/>
-<text x="618.09" y="149.56" font-size="1.2" text-anchor="end" fill="#000">CVBS</text>
-<line x1="626.11" y1="144.78" x2="626.11" y2="142.24" stroke="#080" stroke-width="0.15"/>
-<path d="M625.35,140.97 L626.11,139.70000000000002 L626.87,140.97 M626.11,142.24 L626.11,139.70000000000002" stroke="#800" stroke-width="0.2" fill="none"/>
-<text x="626.11" y="139.24" font-size="1" text-anchor="middle">+5V</text>
-<line x1="645.16" y1="144.78" x2="645.16" y2="154.94000000000003" stroke="#800" stroke-width="0.2"/>
-<rect x="644.16" y="147.32000000000002" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
-<text x="647.36" y="149.56" font-size="1.3" fill="#066">R46</text>
-<text x="647.36" y="151.26000000000002" font-size="1.1" fill="#066">470</text>
-<line x1="645.16" y1="144.78" x2="645.16" y2="142.24" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(644.86,141.84) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CVBS_E</text>
-<line x1="645.16" y1="154.94" x2="645.16" y2="157.48" stroke="#080" stroke-width="0.15"/>
-<path d="M645.16,157.48000000000002 L645.16,158.75000000000003 L643.89,158.75000000000003 L645.16,160.02 L646.43,158.75000000000003 L645.16,158.75000000000003" stroke="#800" stroke-width="0.2" fill="none"/>
-<line x1="662.94" y1="144.78" x2="662.94" y2="154.94000000000003" stroke="#800" stroke-width="0.2"/>
-<rect x="660.94" y="149.23000000000002" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M660.94,149.23000000000002 h4 M660.94,150.49 h4" stroke="#800" stroke-width="0.4"/>
-<text x="665.1400000000001" y="149.56" font-size="1.3" fill="#066">C62</text>
-<text x="665.1400000000001" y="151.26000000000002" font-size="1.1" fill="#066">220u/10V</text>
-<line x1="662.94" y1="144.78" x2="662.94" y2="142.24" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(662.64,141.84) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CVBS_E</text>
-<line x1="662.94" y1="154.94" x2="662.94" y2="157.48" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(662.64,157.88) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">CVBS_C</text>
-<line x1="680.72" y1="144.78" x2="680.72" y2="154.94000000000003" stroke="#800" stroke-width="0.2"/>
-<rect x="679.72" y="147.32000000000002" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
-<text x="682.9200000000001" y="149.56" font-size="1.3" fill="#066">R47</text>
-<text x="682.9200000000001" y="151.26000000000002" font-size="1.1" fill="#066">75</text>
-<line x1="680.72" y1="144.78" x2="680.72" y2="142.24" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(680.42,141.84) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CVBS_C</text>
-<line x1="680.72" y1="154.94" x2="680.72" y2="157.48" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(680.42,157.88) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">VIDEO_OUT</text>
-<rect x="695.96" y="147.32" width="5.08" height="7.62" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="698.50" y="146.32" font-size="1.8" text-anchor="middle" fill="#066">J6</text>
-<text x="698.50" y="157.24" font-size="1.5" text-anchor="middle" fill="#066">Video (cinch)</text>
-<line x1="693.42" y1="149.86" x2="695.96" y2="149.86" stroke="#800" stroke-width="0.2"/>
-<text x="694.69" y="149.46" font-size="0.9" text-anchor="middle" fill="#800">1</text>
-<line x1="693.42" y1="149.86" x2="690.88" y2="149.86" stroke="#080" stroke-width="0.15"/>
-<text x="690.48" y="149.56" font-size="1.2" text-anchor="end" fill="#000">VIDEO_OUT</text>
-<line x1="693.42" y1="152.40" x2="695.96" y2="152.40" stroke="#800" stroke-width="0.2"/>
-<text x="694.69" y="152.00" font-size="0.9" text-anchor="middle" fill="#800">2</text>
-<line x1="693.42" y1="152.40" x2="690.88" y2="152.40" stroke="#080" stroke-width="0.15"/>
-<path d="M690.88,152.4 L690.88,153.67000000000002 L689.61,153.67000000000002 L690.88,154.94 L692.15,153.67000000000002 L690.88,153.67000000000002" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="706.12" y1="165.1" x2="706.12" y2="175.26000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="704.12" y="169.55" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M704.12,169.55 h4 M704.12,170.81 h4" stroke="#800" stroke-width="0.4"/>
+<text x="708.32" y="169.88" font-size="1.3" fill="#066">C63</text>
+<text x="708.32" y="171.58" font-size="1.1" fill="#066">100n</text>
+<line x1="706.12" y1="165.10" x2="706.12" y2="162.56" stroke="#080" stroke-width="0.15"/>
+<path d="M705.36,161.29 L706.12,160.02 L706.88,161.29 M706.12,162.56 L706.12,160.02" stroke="#800" stroke-width="0.2" fill="none"/>
+<text x="706.12" y="159.56" font-size="1" text-anchor="middle">+5V</text>
+<line x1="706.12" y1="175.26" x2="706.12" y2="177.80" stroke="#080" stroke-width="0.15"/>
+<path d="M706.12,177.8 L706.12,179.07000000000002 L704.85,179.07000000000002 L706.12,180.34 L707.39,179.07000000000002 L706.12,179.07000000000002" stroke="#800" stroke-width="0.2" fill="none"/>
+<path d="M621.0300000000001,170.18 H624.34 M624.34,168.28 V172.08 M624.34,169.55 L626.11,167.64000000000001 V165.1 M624.34,170.81 L626.11,172.72 V175.26000000000002" stroke="#800" stroke-width="0.25" fill="none"/>
+<circle cx="625.14" cy="170.18" r="3" fill="none" stroke="#800" stroke-width="0.2"/>
+<text x="628.44" y="169.88" font-size="1.3" fill="#066">T4</text>
+<text x="628.44" y="171.58" font-size="1.1" fill="#066">KC507 (BC547)</text>
+<line x1="626.11" y1="175.26" x2="626.11" y2="177.80" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(625.81,178.20) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">CVBS_E</text>
+<line x1="621.03" y1="170.18" x2="618.49" y2="170.18" stroke="#080" stroke-width="0.15"/>
+<text x="618.09" y="169.88" font-size="1.2" text-anchor="end" fill="#000">CVBS</text>
+<line x1="626.11" y1="165.10" x2="626.11" y2="162.56" stroke="#080" stroke-width="0.15"/>
+<path d="M625.35,161.29 L626.11,160.02 L626.87,161.29 M626.11,162.56 L626.11,160.02" stroke="#800" stroke-width="0.2" fill="none"/>
+<text x="626.11" y="159.56" font-size="1" text-anchor="middle">+5V</text>
+<line x1="640.08" y1="165.1" x2="640.08" y2="175.26000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="639.08" y="167.64000000000001" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="642.2800000000001" y="169.88" font-size="1.3" fill="#066">R46</text>
+<text x="642.2800000000001" y="171.58" font-size="1.1" fill="#066">470</text>
+<line x1="640.08" y1="165.10" x2="640.08" y2="162.56" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(639.78,162.16) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CVBS_E</text>
+<line x1="640.08" y1="175.26" x2="640.08" y2="177.80" stroke="#080" stroke-width="0.15"/>
+<path d="M640.08,177.8 L640.08,179.07000000000002 L638.8100000000001,179.07000000000002 L640.08,180.34 L641.35,179.07000000000002 L640.08,179.07000000000002" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="657.86" y1="165.1" x2="657.86" y2="175.26000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="655.86" y="169.55" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M655.86,169.55 h4 M655.86,170.81 h4" stroke="#800" stroke-width="0.4"/>
+<text x="660.0600000000001" y="169.88" font-size="1.3" fill="#066">C62</text>
+<text x="660.0600000000001" y="171.58" font-size="1.1" fill="#066">220u/10V</text>
+<line x1="657.86" y1="165.10" x2="657.86" y2="162.56" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(657.56,162.16) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CVBS_E</text>
+<line x1="657.86" y1="175.26" x2="657.86" y2="177.80" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(657.56,178.20) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">CVBS_C</text>
+<line x1="673.1" y1="165.1" x2="673.1" y2="175.26000000000002" stroke="#800" stroke-width="0.2"/>
+<rect x="672.1" y="167.64000000000001" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="675.3000000000001" y="169.88" font-size="1.3" fill="#066">R47</text>
+<text x="675.3000000000001" y="171.58" font-size="1.1" fill="#066">75</text>
+<line x1="673.10" y1="165.10" x2="673.10" y2="162.56" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(672.80,162.16) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CVBS_C</text>
+<line x1="673.10" y1="175.26" x2="673.10" y2="177.80" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(672.80,178.20) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">VIDEO_OUT</text>
+<rect x="685.80" y="167.64" width="5.08" height="7.62" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="688.34" y="166.64" font-size="1.8" text-anchor="middle" fill="#066">J6</text>
+<text x="688.34" y="177.56" font-size="1.5" text-anchor="middle" fill="#066">Video (cinch)</text>
+<line x1="683.26" y1="170.18" x2="685.80" y2="170.18" stroke="#800" stroke-width="0.2"/>
+<text x="684.53" y="169.78" font-size="0.9" text-anchor="middle" fill="#800">1</text>
+<line x1="683.26" y1="170.18" x2="680.72" y2="170.18" stroke="#080" stroke-width="0.15"/>
+<text x="680.32" y="169.88" font-size="1.2" text-anchor="end" fill="#000">VIDEO_OUT</text>
+<line x1="683.26" y1="172.72" x2="685.80" y2="172.72" stroke="#800" stroke-width="0.2"/>
+<text x="684.53" y="172.32" font-size="0.9" text-anchor="middle" fill="#800">2</text>
+<line x1="683.26" y1="172.72" x2="680.72" y2="172.72" stroke="#080" stroke-width="0.15"/>
+<path d="M680.72,172.72 L680.72,173.99 L679.45,173.99 L680.72,175.26 L681.99,173.99 L680.72,173.99" stroke="#800" stroke-width="0.2" fill="none"/>
 <rect x="607.06" y="68.58" width="5.08" height="7.62" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
 <text x="609.60" y="67.58" font-size="1.8" text-anchor="middle" fill="#066">J3</text>
 <text x="609.60" y="78.50" font-size="1.5" text-anchor="middle" fill="#066">TV</text>
@@ -3420,262 +3561,262 @@
 <text x="165.10" y="444.04" font-size="1" text-anchor="middle">+5V</text>
 <line x1="165.10" y1="459.74" x2="165.10" y2="462.28" stroke="#080" stroke-width="0.15"/>
 <text transform="translate(164.80,462.68) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">D7</text>
-<rect x="496.57" y="175.26" width="7.62" height="5.08" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="500.38" y="178.50" font-size="2" text-anchor="middle" fill="#800">1</text>
-<text x="500.38" y="174.46" font-size="1.5" text-anchor="middle" fill="#066">U25A</text>
-<circle cx="504.79" cy="177.80" r="0.6" fill="#fff" stroke="#800" stroke-width="0.2"/>
-<line x1="491.49" y1="177.80" x2="496.57" y2="177.80" stroke="#800" stroke-width="0.2"/>
-<text x="494.03" y="177.40" font-size="0.9" text-anchor="middle" fill="#800">1</text>
-<line x1="491.49" y1="177.80" x2="488.95" y2="177.80" stroke="#080" stroke-width="0.15"/>
-<text x="488.55" y="177.50" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">WR</tspan></text>
-<line x1="504.19" y1="177.80" x2="509.27" y2="177.80" stroke="#800" stroke-width="0.2"/>
-<text x="506.73" y="177.40" font-size="0.9" text-anchor="middle" fill="#800">2</text>
-<line x1="509.27" y1="177.80" x2="511.81" y2="177.80" stroke="#080" stroke-width="0.15"/>
-<text x="512.21" y="177.50" font-size="1.2" text-anchor="start" fill="#000">WR_I</text>
-<rect x="532.13" y="175.26" width="7.62" height="5.08" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="535.94" y="178.50" font-size="2" text-anchor="middle" fill="#800">1</text>
-<text x="535.94" y="174.46" font-size="1.5" text-anchor="middle" fill="#066">U25B</text>
-<circle cx="540.35" cy="177.80" r="0.6" fill="#fff" stroke="#800" stroke-width="0.2"/>
-<line x1="527.05" y1="177.80" x2="532.13" y2="177.80" stroke="#800" stroke-width="0.2"/>
-<text x="529.59" y="177.40" font-size="0.9" text-anchor="middle" fill="#800">3</text>
-<line x1="527.05" y1="177.80" x2="524.51" y2="177.80" stroke="#080" stroke-width="0.15"/>
-<text x="524.11" y="177.50" font-size="1.2" text-anchor="end" fill="#000">WR_I</text>
-<line x1="539.75" y1="177.80" x2="544.83" y2="177.80" stroke="#800" stroke-width="0.2"/>
-<text x="542.29" y="177.40" font-size="0.9" text-anchor="middle" fill="#800">4</text>
-<line x1="544.83" y1="177.80" x2="547.37" y2="177.80" stroke="#080" stroke-width="0.15"/>
-<text x="547.77" y="177.50" font-size="1.2" text-anchor="start" fill="#000">WR_D</text>
-<rect x="567.69" y="175.26" width="7.62" height="5.08" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="571.50" y="178.50" font-size="2" text-anchor="middle" fill="#800">1</text>
-<text x="571.50" y="174.46" font-size="1.5" text-anchor="middle" fill="#066">U25C</text>
-<circle cx="575.91" cy="177.80" r="0.6" fill="#fff" stroke="#800" stroke-width="0.2"/>
-<line x1="562.61" y1="177.80" x2="567.69" y2="177.80" stroke="#800" stroke-width="0.2"/>
-<text x="565.15" y="177.40" font-size="0.9" text-anchor="middle" fill="#800">5</text>
-<line x1="562.61" y1="177.80" x2="560.07" y2="177.80" stroke="#080" stroke-width="0.15"/>
-<text x="559.67" y="177.50" font-size="1.2" text-anchor="end" fill="#000">A7</text>
-<line x1="575.31" y1="177.80" x2="580.39" y2="177.80" stroke="#800" stroke-width="0.2"/>
-<text x="577.85" y="177.40" font-size="0.9" text-anchor="middle" fill="#800">6</text>
-<line x1="580.39" y1="177.80" x2="582.93" y2="177.80" stroke="#080" stroke-width="0.15"/>
-<text x="583.33" y="177.50" font-size="1.2" text-anchor="start" fill="#000">A7_N</text>
-<rect x="603.25" y="175.26" width="7.62" height="5.08" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="607.06" y="178.50" font-size="2" text-anchor="middle" fill="#800">1</text>
-<text x="607.06" y="174.46" font-size="1.5" text-anchor="middle" fill="#066">U25D</text>
-<circle cx="611.47" cy="177.80" r="0.6" fill="#fff" stroke="#800" stroke-width="0.2"/>
-<line x1="598.17" y1="177.80" x2="603.25" y2="177.80" stroke="#800" stroke-width="0.2"/>
-<text x="600.71" y="177.40" font-size="0.9" text-anchor="middle" fill="#800">9</text>
-<line x1="598.17" y1="177.80" x2="595.63" y2="177.80" stroke="#080" stroke-width="0.15"/>
-<text x="595.23" y="177.50" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">IORQ</tspan></text>
-<line x1="610.87" y1="177.80" x2="615.95" y2="177.80" stroke="#800" stroke-width="0.2"/>
-<text x="613.41" y="177.40" font-size="0.9" text-anchor="middle" fill="#800">8</text>
-<line x1="615.95" y1="177.80" x2="618.49" y2="177.80" stroke="#080" stroke-width="0.15"/>
-<text x="618.89" y="177.50" font-size="1.2" text-anchor="start" fill="#000">IORQ_H</text>
-<rect x="641.35" y="175.26" width="7.62" height="5.08" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="645.16" y="178.50" font-size="2" text-anchor="middle" fill="#800">1</text>
-<text x="645.16" y="174.46" font-size="1.5" text-anchor="middle" fill="#066">U25F</text>
-<circle cx="649.57" cy="177.80" r="0.6" fill="#fff" stroke="#800" stroke-width="0.2"/>
-<line x1="636.27" y1="177.80" x2="641.35" y2="177.80" stroke="#800" stroke-width="0.2"/>
-<text x="638.81" y="177.40" font-size="0.9" text-anchor="middle" fill="#800">13</text>
-<line x1="636.27" y1="177.80" x2="633.73" y2="177.80" stroke="#080" stroke-width="0.15"/>
-<text x="633.33" y="177.50" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">RESET</tspan></text>
-<line x1="648.97" y1="177.80" x2="654.05" y2="177.80" stroke="#800" stroke-width="0.2"/>
-<text x="651.51" y="177.40" font-size="0.9" text-anchor="middle" fill="#800">12</text>
-<line x1="654.05" y1="177.80" x2="656.59" y2="177.80" stroke="#080" stroke-width="0.15"/>
-<text x="656.99" y="177.50" font-size="1.2" text-anchor="start" fill="#000">RESET</text>
-<rect x="676.91" y="173.99" width="7.62" height="7.62" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="680.72" y="172.99" font-size="1.8" text-anchor="middle" fill="#066">U25</text>
-<text x="680.72" y="183.91" font-size="1.5" text-anchor="middle" fill="#066">PWR</text>
-<line x1="680.72" y1="171.45" x2="680.72" y2="173.99" stroke="#800" stroke-width="0.2"/>
-<text x="680.72" y="172.72" font-size="0.9" text-anchor="middle" fill="#800">14</text>
-<line x1="680.72" y1="181.61" x2="680.72" y2="184.15" stroke="#800" stroke-width="0.2"/>
-<text x="680.72" y="182.88" font-size="0.9" text-anchor="middle" fill="#800">7</text>
-<line x1="680.72" y1="171.45" x2="680.72" y2="168.91" stroke="#080" stroke-width="0.15"/>
-<path d="M679.96,167.64000000000001 L680.72,166.37000000000003 L681.48,167.64000000000001 M680.72,168.91000000000003 L680.72,166.37000000000003" stroke="#800" stroke-width="0.2" fill="none"/>
-<text x="680.72" y="165.91" font-size="1" text-anchor="middle">+5V</text>
-<line x1="680.72" y1="184.15" x2="680.72" y2="186.69" stroke="#080" stroke-width="0.15"/>
-<path d="M680.72,186.69 L680.72,187.96 L679.45,187.96 L680.72,189.23 L681.99,187.96 L680.72,187.96" stroke="#800" stroke-width="0.2" fill="none"/>
-<rect x="712.47" y="175.26" width="7.62" height="5.08" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="716.28" y="178.50" font-size="2" text-anchor="middle" fill="#800">1</text>
-<text x="716.28" y="174.46" font-size="1.5" text-anchor="middle" fill="#066">U26A</text>
-<circle cx="720.69" cy="177.80" r="0.6" fill="#fff" stroke="#800" stroke-width="0.2"/>
-<line x1="707.39" y1="177.80" x2="712.47" y2="177.80" stroke="#800" stroke-width="0.2"/>
-<text x="709.93" y="177.40" font-size="0.9" text-anchor="middle" fill="#800">1</text>
-<line x1="707.39" y1="177.80" x2="704.85" y2="177.80" stroke="#080" stroke-width="0.15"/>
-<text x="704.45" y="177.50" font-size="1.2" text-anchor="end" fill="#000">PC0</text>
-<line x1="720.09" y1="177.80" x2="725.17" y2="177.80" stroke="#800" stroke-width="0.2"/>
-<text x="722.63" y="177.40" font-size="0.9" text-anchor="middle" fill="#800">2</text>
-<line x1="725.17" y1="177.80" x2="727.71" y2="177.80" stroke="#080" stroke-width="0.15"/>
-<text x="728.11" y="177.50" font-size="1.2" text-anchor="start" fill="#000">BANK</text>
-<rect x="748.03" y="175.26" width="7.62" height="5.08" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="751.84" y="178.50" font-size="2" text-anchor="middle" fill="#800">1</text>
-<text x="751.84" y="174.46" font-size="1.5" text-anchor="middle" fill="#066">U26E</text>
-<circle cx="756.25" cy="177.80" r="0.6" fill="#fff" stroke="#800" stroke-width="0.2"/>
-<line x1="742.95" y1="177.80" x2="748.03" y2="177.80" stroke="#800" stroke-width="0.2"/>
-<text x="745.49" y="177.40" font-size="0.9" text-anchor="middle" fill="#800">11</text>
-<line x1="742.95" y1="177.80" x2="740.41" y2="177.80" stroke="#080" stroke-width="0.15"/>
-<text x="740.01" y="177.50" font-size="1.2" text-anchor="end" fill="#000">BANK</text>
-<line x1="755.65" y1="177.80" x2="760.73" y2="177.80" stroke="#800" stroke-width="0.2"/>
-<text x="758.19" y="177.40" font-size="0.9" text-anchor="middle" fill="#800">10</text>
-<line x1="760.73" y1="177.80" x2="763.27" y2="177.80" stroke="#080" stroke-width="0.15"/>
-<text x="763.67" y="177.50" font-size="1.2" text-anchor="start" fill="#000"><tspan text-decoration="overline">BANKSEL</tspan></text>
-<rect x="783.59" y="173.99" width="7.62" height="7.62" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="787.40" y="172.99" font-size="1.8" text-anchor="middle" fill="#066">U26</text>
-<text x="787.40" y="183.91" font-size="1.5" text-anchor="middle" fill="#066">PWR</text>
-<line x1="787.40" y1="171.45" x2="787.40" y2="173.99" stroke="#800" stroke-width="0.2"/>
-<text x="787.40" y="172.72" font-size="0.9" text-anchor="middle" fill="#800">14</text>
-<line x1="787.40" y1="181.61" x2="787.40" y2="184.15" stroke="#800" stroke-width="0.2"/>
-<text x="787.40" y="182.88" font-size="0.9" text-anchor="middle" fill="#800">7</text>
-<line x1="787.40" y1="171.45" x2="787.40" y2="168.91" stroke="#080" stroke-width="0.15"/>
-<path d="M786.64,167.64000000000001 L787.4,166.37000000000003 L788.16,167.64000000000001 M787.4,168.91000000000003 L787.4,166.37000000000003" stroke="#800" stroke-width="0.2" fill="none"/>
-<text x="787.40" y="165.91" font-size="1" text-anchor="middle">+5V</text>
-<line x1="787.40" y1="184.15" x2="787.40" y2="186.69" stroke="#080" stroke-width="0.15"/>
-<path d="M787.4,186.69 L787.4,187.96 L786.13,187.96 L787.4,189.23 L788.67,187.96 L787.4,187.96" stroke="#800" stroke-width="0.2" fill="none"/>
-<rect x="496.57" y="198.12" width="7.62" height="10.16" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="500.38" y="203.90" font-size="2" text-anchor="middle" fill="#800">&amp;</text>
-<text x="500.38" y="197.32" font-size="1.5" text-anchor="middle" fill="#066">U27B</text>
-<circle cx="504.79" cy="203.20" r="0.6" fill="#fff" stroke="#800" stroke-width="0.2"/>
+<rect x="496.57" y="198.12" width="7.62" height="5.08" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="500.38" y="201.36" font-size="2" text-anchor="middle" fill="#800">1</text>
+<text x="500.38" y="197.32" font-size="1.5" text-anchor="middle" fill="#066">U25A</text>
+<circle cx="504.79" cy="200.66" r="0.6" fill="#fff" stroke="#800" stroke-width="0.2"/>
 <line x1="491.49" y1="200.66" x2="496.57" y2="200.66" stroke="#800" stroke-width="0.2"/>
-<text x="494.03" y="200.26" font-size="0.9" text-anchor="middle" fill="#800">4</text>
+<text x="494.03" y="200.26" font-size="0.9" text-anchor="middle" fill="#800">1</text>
 <line x1="491.49" y1="200.66" x2="488.95" y2="200.66" stroke="#080" stroke-width="0.15"/>
-<text x="488.55" y="200.36" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">RD</tspan></text>
-<line x1="491.49" y1="205.74" x2="496.57" y2="205.74" stroke="#800" stroke-width="0.2"/>
-<text x="494.03" y="205.34" font-size="0.9" text-anchor="middle" fill="#800">5</text>
-<line x1="491.49" y1="205.74" x2="488.95" y2="205.74" stroke="#080" stroke-width="0.15"/>
-<text x="488.55" y="205.44" font-size="1.2" text-anchor="end" fill="#000">WR_D</text>
-<line x1="504.19" y1="203.20" x2="509.27" y2="203.20" stroke="#800" stroke-width="0.2"/>
-<text x="506.73" y="202.80" font-size="0.9" text-anchor="middle" fill="#800">6</text>
-<line x1="509.27" y1="203.20" x2="511.81" y2="203.20" stroke="#080" stroke-width="0.15"/>
-<text x="512.21" y="202.90" font-size="1.2" text-anchor="start" fill="#000">RW</text>
-<rect x="532.13" y="198.12" width="7.62" height="10.16" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="535.94" y="203.90" font-size="2" text-anchor="middle" fill="#800">&amp;</text>
-<text x="535.94" y="197.32" font-size="1.5" text-anchor="middle" fill="#066">U27C</text>
-<circle cx="540.35" cy="203.20" r="0.6" fill="#fff" stroke="#800" stroke-width="0.2"/>
+<text x="488.55" y="200.36" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">WR</tspan></text>
+<line x1="504.19" y1="200.66" x2="509.27" y2="200.66" stroke="#800" stroke-width="0.2"/>
+<text x="506.73" y="200.26" font-size="0.9" text-anchor="middle" fill="#800">2</text>
+<line x1="509.27" y1="200.66" x2="511.81" y2="200.66" stroke="#080" stroke-width="0.15"/>
+<text x="512.21" y="200.36" font-size="1.2" text-anchor="start" fill="#000">WR_I</text>
+<rect x="532.13" y="198.12" width="7.62" height="5.08" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="535.94" y="201.36" font-size="2" text-anchor="middle" fill="#800">1</text>
+<text x="535.94" y="197.32" font-size="1.5" text-anchor="middle" fill="#066">U25B</text>
+<circle cx="540.35" cy="200.66" r="0.6" fill="#fff" stroke="#800" stroke-width="0.2"/>
 <line x1="527.05" y1="200.66" x2="532.13" y2="200.66" stroke="#800" stroke-width="0.2"/>
-<text x="529.59" y="200.26" font-size="0.9" text-anchor="middle" fill="#800">9</text>
+<text x="529.59" y="200.26" font-size="0.9" text-anchor="middle" fill="#800">3</text>
 <line x1="527.05" y1="200.66" x2="524.51" y2="200.66" stroke="#080" stroke-width="0.15"/>
-<text x="524.11" y="200.36" font-size="1.2" text-anchor="end" fill="#000">RW</text>
-<line x1="527.05" y1="205.74" x2="532.13" y2="205.74" stroke="#800" stroke-width="0.2"/>
-<text x="529.59" y="205.34" font-size="0.9" text-anchor="middle" fill="#800">10</text>
-<line x1="527.05" y1="205.74" x2="524.51" y2="205.74" stroke="#080" stroke-width="0.15"/>
-<text x="524.11" y="205.44" font-size="1.2" text-anchor="end" fill="#000">A15</text>
-<line x1="539.75" y1="203.20" x2="544.83" y2="203.20" stroke="#800" stroke-width="0.2"/>
-<text x="542.29" y="202.80" font-size="0.9" text-anchor="middle" fill="#800">8</text>
-<line x1="544.83" y1="203.20" x2="547.37" y2="203.20" stroke="#080" stroke-width="0.15"/>
-<text x="547.77" y="202.90" font-size="1.2" text-anchor="start" fill="#000"><tspan text-decoration="overline">SEL64</tspan></text>
-<rect x="567.69" y="199.39" width="7.62" height="7.62" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="571.50" y="198.39" font-size="1.8" text-anchor="middle" fill="#066">U27</text>
-<text x="571.50" y="209.31" font-size="1.5" text-anchor="middle" fill="#066">PWR</text>
-<line x1="571.50" y1="196.85" x2="571.50" y2="199.39" stroke="#800" stroke-width="0.2"/>
-<text x="571.50" y="198.12" font-size="0.9" text-anchor="middle" fill="#800">14</text>
-<line x1="571.50" y1="207.01" x2="571.50" y2="209.55" stroke="#800" stroke-width="0.2"/>
-<text x="571.50" y="208.28" font-size="0.9" text-anchor="middle" fill="#800">7</text>
-<line x1="571.50" y1="196.85" x2="571.50" y2="194.31" stroke="#080" stroke-width="0.15"/>
-<path d="M570.74,193.04 L571.5,191.77 L572.26,193.04 M571.5,194.31 L571.5,191.77" stroke="#800" stroke-width="0.2" fill="none"/>
-<text x="571.50" y="191.31" font-size="1" text-anchor="middle">+5V</text>
-<line x1="571.50" y1="209.55" x2="571.50" y2="212.09" stroke="#080" stroke-width="0.15"/>
-<path d="M571.5,212.08999999999997 L571.5,213.35999999999999 L570.23,213.35999999999999 L571.5,214.62999999999997 L572.77,213.35999999999999 L571.5,213.35999999999999" stroke="#800" stroke-width="0.2" fill="none"/>
-<rect x="603.25" y="198.12" width="7.62" height="10.16" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="607.06" y="203.90" font-size="2" text-anchor="middle" fill="#800">&amp;</text>
-<text x="607.06" y="197.32" font-size="1.5" text-anchor="middle" fill="#066">U28B</text>
-<circle cx="611.47" cy="203.20" r="0.6" fill="#fff" stroke="#800" stroke-width="0.2"/>
+<text x="524.11" y="200.36" font-size="1.2" text-anchor="end" fill="#000">WR_I</text>
+<line x1="539.75" y1="200.66" x2="544.83" y2="200.66" stroke="#800" stroke-width="0.2"/>
+<text x="542.29" y="200.26" font-size="0.9" text-anchor="middle" fill="#800">4</text>
+<line x1="544.83" y1="200.66" x2="547.37" y2="200.66" stroke="#080" stroke-width="0.15"/>
+<text x="547.77" y="200.36" font-size="1.2" text-anchor="start" fill="#000">WR_D</text>
+<rect x="567.69" y="198.12" width="7.62" height="5.08" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="571.50" y="201.36" font-size="2" text-anchor="middle" fill="#800">1</text>
+<text x="571.50" y="197.32" font-size="1.5" text-anchor="middle" fill="#066">U25C</text>
+<circle cx="575.91" cy="200.66" r="0.6" fill="#fff" stroke="#800" stroke-width="0.2"/>
+<line x1="562.61" y1="200.66" x2="567.69" y2="200.66" stroke="#800" stroke-width="0.2"/>
+<text x="565.15" y="200.26" font-size="0.9" text-anchor="middle" fill="#800">5</text>
+<line x1="562.61" y1="200.66" x2="560.07" y2="200.66" stroke="#080" stroke-width="0.15"/>
+<text x="559.67" y="200.36" font-size="1.2" text-anchor="end" fill="#000">A7</text>
+<line x1="575.31" y1="200.66" x2="580.39" y2="200.66" stroke="#800" stroke-width="0.2"/>
+<text x="577.85" y="200.26" font-size="0.9" text-anchor="middle" fill="#800">6</text>
+<line x1="580.39" y1="200.66" x2="582.93" y2="200.66" stroke="#080" stroke-width="0.15"/>
+<text x="583.33" y="200.36" font-size="1.2" text-anchor="start" fill="#000">A7_N</text>
+<rect x="603.25" y="198.12" width="7.62" height="5.08" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="607.06" y="201.36" font-size="2" text-anchor="middle" fill="#800">1</text>
+<text x="607.06" y="197.32" font-size="1.5" text-anchor="middle" fill="#066">U25D</text>
+<circle cx="611.47" cy="200.66" r="0.6" fill="#fff" stroke="#800" stroke-width="0.2"/>
 <line x1="598.17" y1="200.66" x2="603.25" y2="200.66" stroke="#800" stroke-width="0.2"/>
-<text x="600.71" y="200.26" font-size="0.9" text-anchor="middle" fill="#800">3</text>
+<text x="600.71" y="200.26" font-size="0.9" text-anchor="middle" fill="#800">9</text>
 <line x1="598.17" y1="200.66" x2="595.63" y2="200.66" stroke="#080" stroke-width="0.15"/>
-<text x="595.23" y="200.36" font-size="1.2" text-anchor="end" fill="#000">A7_N</text>
-<line x1="598.17" y1="203.20" x2="603.25" y2="203.20" stroke="#800" stroke-width="0.2"/>
-<text x="600.71" y="202.80" font-size="0.9" text-anchor="middle" fill="#800">4</text>
-<line x1="598.17" y1="203.20" x2="595.63" y2="203.20" stroke="#080" stroke-width="0.15"/>
-<text x="595.23" y="202.90" font-size="1.2" text-anchor="end" fill="#000">IORQ_H</text>
-<line x1="598.17" y1="205.74" x2="603.25" y2="205.74" stroke="#800" stroke-width="0.2"/>
-<text x="600.71" y="205.34" font-size="0.9" text-anchor="middle" fill="#800">5</text>
-<line x1="598.17" y1="205.74" x2="595.63" y2="205.74" stroke="#080" stroke-width="0.15"/>
-<text x="595.23" y="205.44" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">M1</tspan></text>
-<line x1="610.87" y1="203.20" x2="615.95" y2="203.20" stroke="#800" stroke-width="0.2"/>
-<text x="613.41" y="202.80" font-size="0.9" text-anchor="middle" fill="#800">6</text>
-<line x1="615.95" y1="203.20" x2="618.49" y2="203.20" stroke="#080" stroke-width="0.15"/>
-<text x="618.89" y="202.90" font-size="1.2" text-anchor="start" fill="#000"><tspan text-decoration="overline">CS8255</tspan></text>
-<rect x="641.35" y="199.39" width="7.62" height="7.62" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="645.16" y="198.39" font-size="1.8" text-anchor="middle" fill="#066">U28</text>
-<text x="645.16" y="209.31" font-size="1.5" text-anchor="middle" fill="#066">PWR</text>
-<line x1="645.16" y1="196.85" x2="645.16" y2="199.39" stroke="#800" stroke-width="0.2"/>
-<text x="645.16" y="198.12" font-size="0.9" text-anchor="middle" fill="#800">14</text>
-<line x1="645.16" y1="207.01" x2="645.16" y2="209.55" stroke="#800" stroke-width="0.2"/>
-<text x="645.16" y="208.28" font-size="0.9" text-anchor="middle" fill="#800">7</text>
-<line x1="645.16" y1="196.85" x2="645.16" y2="194.31" stroke="#080" stroke-width="0.15"/>
-<path d="M644.4,193.04 L645.16,191.77 L645.92,193.04 M645.16,194.31 L645.16,191.77" stroke="#800" stroke-width="0.2" fill="none"/>
-<text x="645.16" y="191.31" font-size="1" text-anchor="middle">+5V</text>
-<line x1="645.16" y1="209.55" x2="645.16" y2="212.09" stroke="#080" stroke-width="0.15"/>
-<path d="M645.16,212.08999999999997 L645.16,213.35999999999999 L643.89,213.35999999999999 L645.16,214.62999999999997 L646.43,213.35999999999999 L645.16,213.35999999999999" stroke="#800" stroke-width="0.2" fill="none"/>
-<rect x="676.91" y="198.12" width="7.62" height="10.16" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="680.72" y="203.90" font-size="2" text-anchor="middle" fill="#800">≥1</text>
-<text x="680.72" y="197.32" font-size="1.5" text-anchor="middle" fill="#066">U29A</text>
-<line x1="671.83" y1="200.66" x2="676.91" y2="200.66" stroke="#800" stroke-width="0.2"/>
-<text x="674.37" y="200.26" font-size="0.9" text-anchor="middle" fill="#800">1</text>
-<line x1="671.83" y1="200.66" x2="669.29" y2="200.66" stroke="#080" stroke-width="0.15"/>
-<text x="668.89" y="200.36" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">MREQ</tspan></text>
-<line x1="671.83" y1="205.74" x2="676.91" y2="205.74" stroke="#800" stroke-width="0.2"/>
-<text x="674.37" y="205.34" font-size="0.9" text-anchor="middle" fill="#800">2</text>
-<line x1="671.83" y1="205.74" x2="669.29" y2="205.74" stroke="#080" stroke-width="0.15"/>
-<text x="668.89" y="205.44" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">MREQ</tspan></text>
-<line x1="684.53" y1="203.20" x2="689.61" y2="203.20" stroke="#800" stroke-width="0.2"/>
-<text x="687.07" y="202.80" font-size="0.9" text-anchor="middle" fill="#800">3</text>
-<line x1="689.61" y1="203.20" x2="692.15" y2="203.20" stroke="#080" stroke-width="0.15"/>
-<text x="692.55" y="202.90" font-size="1.2" text-anchor="start" fill="#000"><tspan text-decoration="overline">RAS64</tspan></text>
-<rect x="712.47" y="198.12" width="7.62" height="10.16" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="716.28" y="203.90" font-size="2" text-anchor="middle" fill="#800">≥1</text>
-<text x="716.28" y="197.32" font-size="1.5" text-anchor="middle" fill="#066">U29B</text>
+<text x="595.23" y="200.36" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">IORQ</tspan></text>
+<line x1="610.87" y1="200.66" x2="615.95" y2="200.66" stroke="#800" stroke-width="0.2"/>
+<text x="613.41" y="200.26" font-size="0.9" text-anchor="middle" fill="#800">8</text>
+<line x1="615.95" y1="200.66" x2="618.49" y2="200.66" stroke="#080" stroke-width="0.15"/>
+<text x="618.89" y="200.36" font-size="1.2" text-anchor="start" fill="#000">IORQ_H</text>
+<rect x="641.35" y="198.12" width="7.62" height="5.08" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="645.16" y="201.36" font-size="2" text-anchor="middle" fill="#800">1</text>
+<text x="645.16" y="197.32" font-size="1.5" text-anchor="middle" fill="#066">U25F</text>
+<circle cx="649.57" cy="200.66" r="0.6" fill="#fff" stroke="#800" stroke-width="0.2"/>
+<line x1="636.27" y1="200.66" x2="641.35" y2="200.66" stroke="#800" stroke-width="0.2"/>
+<text x="638.81" y="200.26" font-size="0.9" text-anchor="middle" fill="#800">13</text>
+<line x1="636.27" y1="200.66" x2="633.73" y2="200.66" stroke="#080" stroke-width="0.15"/>
+<text x="633.33" y="200.36" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">RESET</tspan></text>
+<line x1="648.97" y1="200.66" x2="654.05" y2="200.66" stroke="#800" stroke-width="0.2"/>
+<text x="651.51" y="200.26" font-size="0.9" text-anchor="middle" fill="#800">12</text>
+<line x1="654.05" y1="200.66" x2="656.59" y2="200.66" stroke="#080" stroke-width="0.15"/>
+<text x="656.99" y="200.36" font-size="1.2" text-anchor="start" fill="#000">RESET</text>
+<rect x="676.91" y="196.85" width="7.62" height="7.62" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="680.72" y="195.85" font-size="1.8" text-anchor="middle" fill="#066">U25</text>
+<text x="680.72" y="206.77" font-size="1.5" text-anchor="middle" fill="#066">PWR</text>
+<line x1="680.72" y1="194.31" x2="680.72" y2="196.85" stroke="#800" stroke-width="0.2"/>
+<text x="680.72" y="195.58" font-size="0.9" text-anchor="middle" fill="#800">14</text>
+<line x1="680.72" y1="204.47" x2="680.72" y2="207.01" stroke="#800" stroke-width="0.2"/>
+<text x="680.72" y="205.74" font-size="0.9" text-anchor="middle" fill="#800">7</text>
+<line x1="680.72" y1="194.31" x2="680.72" y2="191.77" stroke="#080" stroke-width="0.15"/>
+<path d="M679.96,190.5 L680.72,189.23000000000002 L681.48,190.5 M680.72,191.77 L680.72,189.23000000000002" stroke="#800" stroke-width="0.2" fill="none"/>
+<text x="680.72" y="188.77" font-size="1" text-anchor="middle">+5V</text>
+<line x1="680.72" y1="207.01" x2="680.72" y2="209.55" stroke="#080" stroke-width="0.15"/>
+<path d="M680.72,209.54999999999998 L680.72,210.82 L679.45,210.82 L680.72,212.08999999999997 L681.99,210.82 L680.72,210.82" stroke="#800" stroke-width="0.2" fill="none"/>
+<rect x="712.47" y="198.12" width="7.62" height="5.08" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="716.28" y="201.36" font-size="2" text-anchor="middle" fill="#800">1</text>
+<text x="716.28" y="197.32" font-size="1.5" text-anchor="middle" fill="#066">U26A</text>
+<circle cx="720.69" cy="200.66" r="0.6" fill="#fff" stroke="#800" stroke-width="0.2"/>
 <line x1="707.39" y1="200.66" x2="712.47" y2="200.66" stroke="#800" stroke-width="0.2"/>
-<text x="709.93" y="200.26" font-size="0.9" text-anchor="middle" fill="#800">4</text>
+<text x="709.93" y="200.26" font-size="0.9" text-anchor="middle" fill="#800">1</text>
 <line x1="707.39" y1="200.66" x2="704.85" y2="200.66" stroke="#080" stroke-width="0.15"/>
-<text x="704.45" y="200.36" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">RAS64</tspan></text>
-<line x1="707.39" y1="205.74" x2="712.47" y2="205.74" stroke="#800" stroke-width="0.2"/>
-<text x="709.93" y="205.34" font-size="0.9" text-anchor="middle" fill="#800">5</text>
-<line x1="707.39" y1="205.74" x2="704.85" y2="205.74" stroke="#080" stroke-width="0.15"/>
-<text x="704.45" y="205.44" font-size="1.2" text-anchor="end" fill="#000">MUX2_D</text>
-<line x1="720.09" y1="203.20" x2="725.17" y2="203.20" stroke="#800" stroke-width="0.2"/>
-<text x="722.63" y="202.80" font-size="0.9" text-anchor="middle" fill="#800">6</text>
-<line x1="725.17" y1="203.20" x2="727.71" y2="203.20" stroke="#080" stroke-width="0.15"/>
-<text x="728.11" y="202.90" font-size="1.2" text-anchor="start" fill="#000"><tspan text-decoration="overline">CAS64</tspan></text>
-<rect x="748.03" y="198.12" width="7.62" height="10.16" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="751.84" y="203.90" font-size="2" text-anchor="middle" fill="#800">≥1</text>
-<text x="751.84" y="197.32" font-size="1.5" text-anchor="middle" fill="#066">U29C</text>
+<text x="704.45" y="200.36" font-size="1.2" text-anchor="end" fill="#000">PC0</text>
+<line x1="720.09" y1="200.66" x2="725.17" y2="200.66" stroke="#800" stroke-width="0.2"/>
+<text x="722.63" y="200.26" font-size="0.9" text-anchor="middle" fill="#800">2</text>
+<line x1="725.17" y1="200.66" x2="727.71" y2="200.66" stroke="#080" stroke-width="0.15"/>
+<text x="728.11" y="200.36" font-size="1.2" text-anchor="start" fill="#000">BANK</text>
+<rect x="748.03" y="198.12" width="7.62" height="5.08" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="751.84" y="201.36" font-size="2" text-anchor="middle" fill="#800">1</text>
+<text x="751.84" y="197.32" font-size="1.5" text-anchor="middle" fill="#066">U26E</text>
+<circle cx="756.25" cy="200.66" r="0.6" fill="#fff" stroke="#800" stroke-width="0.2"/>
 <line x1="742.95" y1="200.66" x2="748.03" y2="200.66" stroke="#800" stroke-width="0.2"/>
-<text x="745.49" y="200.26" font-size="0.9" text-anchor="middle" fill="#800">9</text>
+<text x="745.49" y="200.26" font-size="0.9" text-anchor="middle" fill="#800">11</text>
 <line x1="742.95" y1="200.66" x2="740.41" y2="200.66" stroke="#080" stroke-width="0.15"/>
-<text x="740.01" y="200.36" font-size="1.2" text-anchor="end" fill="#000">RAS_D</text>
-<line x1="742.95" y1="205.74" x2="748.03" y2="205.74" stroke="#800" stroke-width="0.2"/>
-<text x="745.49" y="205.34" font-size="0.9" text-anchor="middle" fill="#800">10</text>
-<line x1="742.95" y1="205.74" x2="740.41" y2="205.74" stroke="#080" stroke-width="0.15"/>
-<text x="740.01" y="205.44" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">SEL64</tspan></text>
-<line x1="755.65" y1="203.20" x2="760.73" y2="203.20" stroke="#800" stroke-width="0.2"/>
-<text x="758.19" y="202.80" font-size="0.9" text-anchor="middle" fill="#800">8</text>
-<line x1="760.73" y1="203.20" x2="763.27" y2="203.20" stroke="#080" stroke-width="0.15"/>
-<text x="763.67" y="202.90" font-size="1.2" text-anchor="start" fill="#000">MUX2</text>
-<rect x="783.59" y="198.12" width="7.62" height="10.16" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="787.40" y="203.90" font-size="2" text-anchor="middle" fill="#800">≥1</text>
-<text x="787.40" y="197.32" font-size="1.5" text-anchor="middle" fill="#066">U29D</text>
-<line x1="778.51" y1="200.66" x2="783.59" y2="200.66" stroke="#800" stroke-width="0.2"/>
-<text x="781.05" y="200.26" font-size="0.9" text-anchor="middle" fill="#800">12</text>
-<line x1="778.51" y1="200.66" x2="775.97" y2="200.66" stroke="#080" stroke-width="0.15"/>
-<text x="775.57" y="200.36" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">WR</tspan></text>
-<line x1="778.51" y1="205.74" x2="783.59" y2="205.74" stroke="#800" stroke-width="0.2"/>
-<text x="781.05" y="205.34" font-size="0.9" text-anchor="middle" fill="#800">13</text>
-<line x1="778.51" y1="205.74" x2="775.97" y2="205.74" stroke="#080" stroke-width="0.15"/>
-<text x="775.57" y="205.44" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">MREQ</tspan></text>
-<line x1="791.21" y1="203.20" x2="796.29" y2="203.20" stroke="#800" stroke-width="0.2"/>
-<text x="793.75" y="202.80" font-size="0.9" text-anchor="middle" fill="#800">11</text>
-<line x1="796.29" y1="203.20" x2="798.83" y2="203.20" stroke="#080" stroke-width="0.15"/>
-<text x="799.23" y="202.90" font-size="1.2" text-anchor="start" fill="#000"><tspan text-decoration="overline">WE64</tspan></text>
-<rect x="496.57" y="224.79" width="7.62" height="7.62" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="500.38" y="223.79" font-size="1.8" text-anchor="middle" fill="#066">U29</text>
-<text x="500.38" y="234.71" font-size="1.5" text-anchor="middle" fill="#066">PWR</text>
-<line x1="500.38" y1="222.25" x2="500.38" y2="224.79" stroke="#800" stroke-width="0.2"/>
-<text x="500.38" y="223.52" font-size="0.9" text-anchor="middle" fill="#800">14</text>
-<line x1="500.38" y1="232.41" x2="500.38" y2="234.95" stroke="#800" stroke-width="0.2"/>
-<text x="500.38" y="233.68" font-size="0.9" text-anchor="middle" fill="#800">7</text>
-<line x1="500.38" y1="222.25" x2="500.38" y2="219.71" stroke="#080" stroke-width="0.15"/>
-<path d="M499.62,218.44 L500.38,217.17000000000002 L501.14,218.44 M500.38,219.71 L500.38,217.17000000000002" stroke="#800" stroke-width="0.2" fill="none"/>
-<text x="500.38" y="216.71" font-size="1" text-anchor="middle">+5V</text>
-<line x1="500.38" y1="234.95" x2="500.38" y2="237.49" stroke="#080" stroke-width="0.15"/>
-<path d="M500.38,237.48999999999998 L500.38,238.76 L499.11,238.76 L500.38,240.02999999999997 L501.65,238.76 L500.38,238.76" stroke="#800" stroke-width="0.2" fill="none"/>
+<text x="740.01" y="200.36" font-size="1.2" text-anchor="end" fill="#000">BANK</text>
+<line x1="755.65" y1="200.66" x2="760.73" y2="200.66" stroke="#800" stroke-width="0.2"/>
+<text x="758.19" y="200.26" font-size="0.9" text-anchor="middle" fill="#800">10</text>
+<line x1="760.73" y1="200.66" x2="763.27" y2="200.66" stroke="#080" stroke-width="0.15"/>
+<text x="763.67" y="200.36" font-size="1.2" text-anchor="start" fill="#000"><tspan text-decoration="overline">BANKSEL</tspan></text>
+<rect x="783.59" y="196.85" width="7.62" height="7.62" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="787.40" y="195.85" font-size="1.8" text-anchor="middle" fill="#066">U26</text>
+<text x="787.40" y="206.77" font-size="1.5" text-anchor="middle" fill="#066">PWR</text>
+<line x1="787.40" y1="194.31" x2="787.40" y2="196.85" stroke="#800" stroke-width="0.2"/>
+<text x="787.40" y="195.58" font-size="0.9" text-anchor="middle" fill="#800">14</text>
+<line x1="787.40" y1="204.47" x2="787.40" y2="207.01" stroke="#800" stroke-width="0.2"/>
+<text x="787.40" y="205.74" font-size="0.9" text-anchor="middle" fill="#800">7</text>
+<line x1="787.40" y1="194.31" x2="787.40" y2="191.77" stroke="#080" stroke-width="0.15"/>
+<path d="M786.64,190.5 L787.4,189.23000000000002 L788.16,190.5 M787.4,191.77 L787.4,189.23000000000002" stroke="#800" stroke-width="0.2" fill="none"/>
+<text x="787.40" y="188.77" font-size="1" text-anchor="middle">+5V</text>
+<line x1="787.40" y1="207.01" x2="787.40" y2="209.55" stroke="#080" stroke-width="0.15"/>
+<path d="M787.4,209.54999999999998 L787.4,210.82 L786.13,210.82 L787.4,212.08999999999997 L788.67,210.82 L787.4,210.82" stroke="#800" stroke-width="0.2" fill="none"/>
+<rect x="496.57" y="218.44" width="7.62" height="10.16" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="500.38" y="224.22" font-size="2" text-anchor="middle" fill="#800">&amp;</text>
+<text x="500.38" y="217.64" font-size="1.5" text-anchor="middle" fill="#066">U27B</text>
+<circle cx="504.79" cy="223.52" r="0.6" fill="#fff" stroke="#800" stroke-width="0.2"/>
+<line x1="491.49" y1="220.98" x2="496.57" y2="220.98" stroke="#800" stroke-width="0.2"/>
+<text x="494.03" y="220.58" font-size="0.9" text-anchor="middle" fill="#800">4</text>
+<line x1="491.49" y1="220.98" x2="488.95" y2="220.98" stroke="#080" stroke-width="0.15"/>
+<text x="488.55" y="220.68" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">RD</tspan></text>
+<line x1="491.49" y1="226.06" x2="496.57" y2="226.06" stroke="#800" stroke-width="0.2"/>
+<text x="494.03" y="225.66" font-size="0.9" text-anchor="middle" fill="#800">5</text>
+<line x1="491.49" y1="226.06" x2="488.95" y2="226.06" stroke="#080" stroke-width="0.15"/>
+<text x="488.55" y="225.76" font-size="1.2" text-anchor="end" fill="#000">WR_D</text>
+<line x1="504.19" y1="223.52" x2="509.27" y2="223.52" stroke="#800" stroke-width="0.2"/>
+<text x="506.73" y="223.12" font-size="0.9" text-anchor="middle" fill="#800">6</text>
+<line x1="509.27" y1="223.52" x2="511.81" y2="223.52" stroke="#080" stroke-width="0.15"/>
+<text x="512.21" y="223.22" font-size="1.2" text-anchor="start" fill="#000">RW</text>
+<rect x="532.13" y="218.44" width="7.62" height="10.16" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="535.94" y="224.22" font-size="2" text-anchor="middle" fill="#800">&amp;</text>
+<text x="535.94" y="217.64" font-size="1.5" text-anchor="middle" fill="#066">U27C</text>
+<circle cx="540.35" cy="223.52" r="0.6" fill="#fff" stroke="#800" stroke-width="0.2"/>
+<line x1="527.05" y1="220.98" x2="532.13" y2="220.98" stroke="#800" stroke-width="0.2"/>
+<text x="529.59" y="220.58" font-size="0.9" text-anchor="middle" fill="#800">9</text>
+<line x1="527.05" y1="220.98" x2="524.51" y2="220.98" stroke="#080" stroke-width="0.15"/>
+<text x="524.11" y="220.68" font-size="1.2" text-anchor="end" fill="#000">RW</text>
+<line x1="527.05" y1="226.06" x2="532.13" y2="226.06" stroke="#800" stroke-width="0.2"/>
+<text x="529.59" y="225.66" font-size="0.9" text-anchor="middle" fill="#800">10</text>
+<line x1="527.05" y1="226.06" x2="524.51" y2="226.06" stroke="#080" stroke-width="0.15"/>
+<text x="524.11" y="225.76" font-size="1.2" text-anchor="end" fill="#000">A15</text>
+<line x1="539.75" y1="223.52" x2="544.83" y2="223.52" stroke="#800" stroke-width="0.2"/>
+<text x="542.29" y="223.12" font-size="0.9" text-anchor="middle" fill="#800">8</text>
+<line x1="544.83" y1="223.52" x2="547.37" y2="223.52" stroke="#080" stroke-width="0.15"/>
+<text x="547.77" y="223.22" font-size="1.2" text-anchor="start" fill="#000"><tspan text-decoration="overline">SEL64</tspan></text>
+<rect x="567.69" y="219.71" width="7.62" height="7.62" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="571.50" y="218.71" font-size="1.8" text-anchor="middle" fill="#066">U27</text>
+<text x="571.50" y="229.63" font-size="1.5" text-anchor="middle" fill="#066">PWR</text>
+<line x1="571.50" y1="217.17" x2="571.50" y2="219.71" stroke="#800" stroke-width="0.2"/>
+<text x="571.50" y="218.44" font-size="0.9" text-anchor="middle" fill="#800">14</text>
+<line x1="571.50" y1="227.33" x2="571.50" y2="229.87" stroke="#800" stroke-width="0.2"/>
+<text x="571.50" y="228.60" font-size="0.9" text-anchor="middle" fill="#800">7</text>
+<line x1="571.50" y1="217.17" x2="571.50" y2="214.63" stroke="#080" stroke-width="0.15"/>
+<path d="M570.74,213.36 L571.5,212.09000000000003 L572.26,213.36 M571.5,214.63000000000002 L571.5,212.09000000000003" stroke="#800" stroke-width="0.2" fill="none"/>
+<text x="571.50" y="211.63" font-size="1" text-anchor="middle">+5V</text>
+<line x1="571.50" y1="229.87" x2="571.50" y2="232.41" stroke="#080" stroke-width="0.15"/>
+<path d="M571.5,232.41 L571.5,233.68 L570.23,233.68 L571.5,234.95 L572.77,233.68 L571.5,233.68" stroke="#800" stroke-width="0.2" fill="none"/>
+<rect x="603.25" y="218.44" width="7.62" height="10.16" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="607.06" y="224.22" font-size="2" text-anchor="middle" fill="#800">&amp;</text>
+<text x="607.06" y="217.64" font-size="1.5" text-anchor="middle" fill="#066">U28B</text>
+<circle cx="611.47" cy="223.52" r="0.6" fill="#fff" stroke="#800" stroke-width="0.2"/>
+<line x1="598.17" y1="220.98" x2="603.25" y2="220.98" stroke="#800" stroke-width="0.2"/>
+<text x="600.71" y="220.58" font-size="0.9" text-anchor="middle" fill="#800">3</text>
+<line x1="598.17" y1="220.98" x2="595.63" y2="220.98" stroke="#080" stroke-width="0.15"/>
+<text x="595.23" y="220.68" font-size="1.2" text-anchor="end" fill="#000">A7_N</text>
+<line x1="598.17" y1="223.52" x2="603.25" y2="223.52" stroke="#800" stroke-width="0.2"/>
+<text x="600.71" y="223.12" font-size="0.9" text-anchor="middle" fill="#800">4</text>
+<line x1="598.17" y1="223.52" x2="595.63" y2="223.52" stroke="#080" stroke-width="0.15"/>
+<text x="595.23" y="223.22" font-size="1.2" text-anchor="end" fill="#000">IORQ_H</text>
+<line x1="598.17" y1="226.06" x2="603.25" y2="226.06" stroke="#800" stroke-width="0.2"/>
+<text x="600.71" y="225.66" font-size="0.9" text-anchor="middle" fill="#800">5</text>
+<line x1="598.17" y1="226.06" x2="595.63" y2="226.06" stroke="#080" stroke-width="0.15"/>
+<text x="595.23" y="225.76" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">M1</tspan></text>
+<line x1="610.87" y1="223.52" x2="615.95" y2="223.52" stroke="#800" stroke-width="0.2"/>
+<text x="613.41" y="223.12" font-size="0.9" text-anchor="middle" fill="#800">6</text>
+<line x1="615.95" y1="223.52" x2="618.49" y2="223.52" stroke="#080" stroke-width="0.15"/>
+<text x="618.89" y="223.22" font-size="1.2" text-anchor="start" fill="#000"><tspan text-decoration="overline">CS8255</tspan></text>
+<rect x="641.35" y="219.71" width="7.62" height="7.62" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="645.16" y="218.71" font-size="1.8" text-anchor="middle" fill="#066">U28</text>
+<text x="645.16" y="229.63" font-size="1.5" text-anchor="middle" fill="#066">PWR</text>
+<line x1="645.16" y1="217.17" x2="645.16" y2="219.71" stroke="#800" stroke-width="0.2"/>
+<text x="645.16" y="218.44" font-size="0.9" text-anchor="middle" fill="#800">14</text>
+<line x1="645.16" y1="227.33" x2="645.16" y2="229.87" stroke="#800" stroke-width="0.2"/>
+<text x="645.16" y="228.60" font-size="0.9" text-anchor="middle" fill="#800">7</text>
+<line x1="645.16" y1="217.17" x2="645.16" y2="214.63" stroke="#080" stroke-width="0.15"/>
+<path d="M644.4,213.36 L645.16,212.09000000000003 L645.92,213.36 M645.16,214.63000000000002 L645.16,212.09000000000003" stroke="#800" stroke-width="0.2" fill="none"/>
+<text x="645.16" y="211.63" font-size="1" text-anchor="middle">+5V</text>
+<line x1="645.16" y1="229.87" x2="645.16" y2="232.41" stroke="#080" stroke-width="0.15"/>
+<path d="M645.16,232.41 L645.16,233.68 L643.89,233.68 L645.16,234.95 L646.43,233.68 L645.16,233.68" stroke="#800" stroke-width="0.2" fill="none"/>
+<rect x="676.91" y="218.44" width="7.62" height="10.16" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="680.72" y="224.22" font-size="2" text-anchor="middle" fill="#800">≥1</text>
+<text x="680.72" y="217.64" font-size="1.5" text-anchor="middle" fill="#066">U29A</text>
+<line x1="671.83" y1="220.98" x2="676.91" y2="220.98" stroke="#800" stroke-width="0.2"/>
+<text x="674.37" y="220.58" font-size="0.9" text-anchor="middle" fill="#800">1</text>
+<line x1="671.83" y1="220.98" x2="669.29" y2="220.98" stroke="#080" stroke-width="0.15"/>
+<text x="668.89" y="220.68" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">MREQ</tspan></text>
+<line x1="671.83" y1="226.06" x2="676.91" y2="226.06" stroke="#800" stroke-width="0.2"/>
+<text x="674.37" y="225.66" font-size="0.9" text-anchor="middle" fill="#800">2</text>
+<line x1="671.83" y1="226.06" x2="669.29" y2="226.06" stroke="#080" stroke-width="0.15"/>
+<text x="668.89" y="225.76" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">MREQ</tspan></text>
+<line x1="684.53" y1="223.52" x2="689.61" y2="223.52" stroke="#800" stroke-width="0.2"/>
+<text x="687.07" y="223.12" font-size="0.9" text-anchor="middle" fill="#800">3</text>
+<line x1="689.61" y1="223.52" x2="692.15" y2="223.52" stroke="#080" stroke-width="0.15"/>
+<text x="692.55" y="223.22" font-size="1.2" text-anchor="start" fill="#000"><tspan text-decoration="overline">RAS64</tspan></text>
+<rect x="712.47" y="218.44" width="7.62" height="10.16" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="716.28" y="224.22" font-size="2" text-anchor="middle" fill="#800">≥1</text>
+<text x="716.28" y="217.64" font-size="1.5" text-anchor="middle" fill="#066">U29B</text>
+<line x1="707.39" y1="220.98" x2="712.47" y2="220.98" stroke="#800" stroke-width="0.2"/>
+<text x="709.93" y="220.58" font-size="0.9" text-anchor="middle" fill="#800">4</text>
+<line x1="707.39" y1="220.98" x2="704.85" y2="220.98" stroke="#080" stroke-width="0.15"/>
+<text x="704.45" y="220.68" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">RAS64</tspan></text>
+<line x1="707.39" y1="226.06" x2="712.47" y2="226.06" stroke="#800" stroke-width="0.2"/>
+<text x="709.93" y="225.66" font-size="0.9" text-anchor="middle" fill="#800">5</text>
+<line x1="707.39" y1="226.06" x2="704.85" y2="226.06" stroke="#080" stroke-width="0.15"/>
+<text x="704.45" y="225.76" font-size="1.2" text-anchor="end" fill="#000">MUX2_D</text>
+<line x1="720.09" y1="223.52" x2="725.17" y2="223.52" stroke="#800" stroke-width="0.2"/>
+<text x="722.63" y="223.12" font-size="0.9" text-anchor="middle" fill="#800">6</text>
+<line x1="725.17" y1="223.52" x2="727.71" y2="223.52" stroke="#080" stroke-width="0.15"/>
+<text x="728.11" y="223.22" font-size="1.2" text-anchor="start" fill="#000"><tspan text-decoration="overline">CAS64</tspan></text>
+<rect x="748.03" y="218.44" width="7.62" height="10.16" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="751.84" y="224.22" font-size="2" text-anchor="middle" fill="#800">≥1</text>
+<text x="751.84" y="217.64" font-size="1.5" text-anchor="middle" fill="#066">U29C</text>
+<line x1="742.95" y1="220.98" x2="748.03" y2="220.98" stroke="#800" stroke-width="0.2"/>
+<text x="745.49" y="220.58" font-size="0.9" text-anchor="middle" fill="#800">9</text>
+<line x1="742.95" y1="220.98" x2="740.41" y2="220.98" stroke="#080" stroke-width="0.15"/>
+<text x="740.01" y="220.68" font-size="1.2" text-anchor="end" fill="#000">RAS_D</text>
+<line x1="742.95" y1="226.06" x2="748.03" y2="226.06" stroke="#800" stroke-width="0.2"/>
+<text x="745.49" y="225.66" font-size="0.9" text-anchor="middle" fill="#800">10</text>
+<line x1="742.95" y1="226.06" x2="740.41" y2="226.06" stroke="#080" stroke-width="0.15"/>
+<text x="740.01" y="225.76" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">SEL64</tspan></text>
+<line x1="755.65" y1="223.52" x2="760.73" y2="223.52" stroke="#800" stroke-width="0.2"/>
+<text x="758.19" y="223.12" font-size="0.9" text-anchor="middle" fill="#800">8</text>
+<line x1="760.73" y1="223.52" x2="763.27" y2="223.52" stroke="#080" stroke-width="0.15"/>
+<text x="763.67" y="223.22" font-size="1.2" text-anchor="start" fill="#000">MUX2</text>
+<rect x="783.59" y="218.44" width="7.62" height="10.16" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="787.40" y="224.22" font-size="2" text-anchor="middle" fill="#800">≥1</text>
+<text x="787.40" y="217.64" font-size="1.5" text-anchor="middle" fill="#066">U29D</text>
+<line x1="778.51" y1="220.98" x2="783.59" y2="220.98" stroke="#800" stroke-width="0.2"/>
+<text x="781.05" y="220.58" font-size="0.9" text-anchor="middle" fill="#800">12</text>
+<line x1="778.51" y1="220.98" x2="775.97" y2="220.98" stroke="#080" stroke-width="0.15"/>
+<text x="775.57" y="220.68" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">WR</tspan></text>
+<line x1="778.51" y1="226.06" x2="783.59" y2="226.06" stroke="#800" stroke-width="0.2"/>
+<text x="781.05" y="225.66" font-size="0.9" text-anchor="middle" fill="#800">13</text>
+<line x1="778.51" y1="226.06" x2="775.97" y2="226.06" stroke="#080" stroke-width="0.15"/>
+<text x="775.57" y="225.76" font-size="1.2" text-anchor="end" fill="#000"><tspan text-decoration="overline">MREQ</tspan></text>
+<line x1="791.21" y1="223.52" x2="796.29" y2="223.52" stroke="#800" stroke-width="0.2"/>
+<text x="793.75" y="223.12" font-size="0.9" text-anchor="middle" fill="#800">11</text>
+<line x1="796.29" y1="223.52" x2="798.83" y2="223.52" stroke="#080" stroke-width="0.15"/>
+<text x="799.23" y="223.22" font-size="1.2" text-anchor="start" fill="#000"><tspan text-decoration="overline">WE64</tspan></text>
+<rect x="496.57" y="245.11" width="7.62" height="7.62" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="500.38" y="244.11" font-size="1.8" text-anchor="middle" fill="#066">U29</text>
+<text x="500.38" y="255.03" font-size="1.5" text-anchor="middle" fill="#066">PWR</text>
+<line x1="500.38" y1="242.57" x2="500.38" y2="245.11" stroke="#800" stroke-width="0.2"/>
+<text x="500.38" y="243.84" font-size="0.9" text-anchor="middle" fill="#800">14</text>
+<line x1="500.38" y1="252.73" x2="500.38" y2="255.27" stroke="#800" stroke-width="0.2"/>
+<text x="500.38" y="254.00" font-size="0.9" text-anchor="middle" fill="#800">7</text>
+<line x1="500.38" y1="242.57" x2="500.38" y2="240.03" stroke="#080" stroke-width="0.15"/>
+<path d="M499.62,238.76000000000002 L500.38,237.49000000000004 L501.14,238.76000000000002 M500.38,240.03000000000003 L500.38,237.49000000000004" stroke="#800" stroke-width="0.2" fill="none"/>
+<text x="500.38" y="237.03" font-size="1" text-anchor="middle">+5V</text>
+<line x1="500.38" y1="255.27" x2="500.38" y2="257.81" stroke="#080" stroke-width="0.15"/>
+<path d="M500.38,257.81 L500.38,259.08 L499.11,259.08 L500.38,260.35 L501.65,259.08 L500.38,259.08" stroke="#800" stroke-width="0.2" fill="none"/>
 <line x1="187.96" y1="449.58000000000004" x2="187.96" y2="459.74" stroke="#800" stroke-width="0.2"/>
 <rect x="186.96" y="452.12" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
 <text x="190.16" y="454.36" font-size="1.3" fill="#066">R43</text>
@@ -3824,112 +3965,112 @@
 <text x="801.37" y="131.68" font-size="0.9" text-anchor="middle" fill="#800">26</text>
 <line x1="800.10" y1="132.08" x2="797.56" y2="132.08" stroke="#080" stroke-width="0.15"/>
 <path d="M797.5600000000001,132.08 L797.5600000000001,133.35000000000002 L796.2900000000001,133.35000000000002 L797.5600000000001,134.62 L798.83,133.35000000000002 L797.5600000000001,133.35000000000002" stroke="#800" stroke-width="0.2" fill="none"/>
-<rect x="502.92" y="259.08" width="5.08" height="7.62" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="505.46" y="258.08" font-size="1.8" text-anchor="middle" fill="#066">J5</text>
-<text x="505.46" y="269.00" font-size="1.5" text-anchor="middle" fill="#066">Napájení 9–12V DC</text>
-<line x1="500.38" y1="261.62" x2="502.92" y2="261.62" stroke="#800" stroke-width="0.2"/>
-<text x="501.65" y="261.22" font-size="0.9" text-anchor="middle" fill="#800">1</text>
-<line x1="500.38" y1="261.62" x2="497.84" y2="261.62" stroke="#080" stroke-width="0.15"/>
-<text x="497.44" y="261.32" font-size="1.2" text-anchor="end" fill="#000">VIN_RAW</text>
-<line x1="500.38" y1="264.16" x2="502.92" y2="264.16" stroke="#800" stroke-width="0.2"/>
-<text x="501.65" y="263.76" font-size="0.9" text-anchor="middle" fill="#800">2</text>
-<line x1="500.38" y1="264.16" x2="497.84" y2="264.16" stroke="#080" stroke-width="0.15"/>
-<path d="M497.84,264.16 L497.84,265.43 L496.57,265.43 L497.84,266.70000000000005 L499.10999999999996,265.43 L497.84,265.43" stroke="#800" stroke-width="0.2" fill="none"/>
-<line x1="523.24" y1="256.54" x2="523.24" y2="266.7" stroke="#800" stroke-width="0.2"/>
-<rect x="522.24" y="259.08" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/><line x1="523.24" y1="259.08" x2="523.24" y2="264.16" stroke="#800" stroke-width="0.2"/>
-<text x="525.44" y="261.32" font-size="1.3" fill="#066">F1</text>
-<text x="525.44" y="263.02" font-size="1.1" fill="#066">1A T</text>
-<line x1="523.24" y1="256.54" x2="523.24" y2="254.00" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(522.94,253.60) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">VIN_RAW</text>
-<line x1="523.24" y1="266.70" x2="523.24" y2="269.24" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(522.94,269.64) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">VIN_F</text>
-<line x1="538.48" y1="256.54" x2="538.48" y2="266.7" stroke="#800" stroke-width="0.2"/>
-<path d="M537.21,262.38 h2.54 L538.48,260.86 Z M537.21,260.86 h2.54" fill="#800" stroke="#800" stroke-width="0.2"/>
-<text x="540.6800000000001" y="261.32" font-size="1.3" fill="#066">D12</text>
-<text x="540.6800000000001" y="263.02" font-size="1.1" fill="#066">KY132/80 (1N4007)</text>
-<line x1="538.48" y1="256.54" x2="538.48" y2="254.00" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(538.18,253.60) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">VIN</text>
-<line x1="538.48" y1="266.70" x2="538.48" y2="269.24" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(538.18,269.64) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">VIN_F</text>
-<line x1="556.26" y1="256.54" x2="556.26" y2="266.7" stroke="#800" stroke-width="0.2"/>
-<rect x="554.26" y="260.99" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M554.26,260.99 h4 M554.26,262.25 h4" stroke="#800" stroke-width="0.4"/>
-<text x="558.46" y="261.32" font-size="1.3" fill="#066">C11</text>
-<text x="558.46" y="263.02" font-size="1.1" fill="#066">1000u/25V</text>
-<line x1="556.26" y1="256.54" x2="556.26" y2="254.00" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(555.96,253.60) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">VIN</text>
-<line x1="556.26" y1="266.70" x2="556.26" y2="269.24" stroke="#080" stroke-width="0.15"/>
-<path d="M556.26,269.24 L556.26,270.51 L554.99,270.51 L556.26,271.78000000000003 L557.53,270.51 L556.26,270.51" stroke="#800" stroke-width="0.2" fill="none"/>
-<line x1="574.04" y1="256.54" x2="574.04" y2="266.7" stroke="#800" stroke-width="0.2"/>
-<rect x="572.04" y="260.99" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M572.04,260.99 h4 M572.04,262.25 h4" stroke="#800" stroke-width="0.4"/>
-<text x="576.24" y="261.32" font-size="1.3" fill="#066">C12</text>
-<text x="576.24" y="263.02" font-size="1.1" fill="#066">100n</text>
-<line x1="574.04" y1="256.54" x2="574.04" y2="254.00" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(573.74,253.60) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">VIN</text>
-<line x1="574.04" y1="266.70" x2="574.04" y2="269.24" stroke="#080" stroke-width="0.15"/>
-<path d="M574.04,269.24 L574.04,270.51 L572.77,270.51 L574.04,271.78000000000003 L575.31,270.51 L574.04,270.51" stroke="#800" stroke-width="0.2" fill="none"/>
-<rect x="591.82" y="259.08" width="10.16" height="7.62" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="596.90" y="258.08" font-size="1.8" text-anchor="middle" fill="#066">U32</text>
-<text x="596.90" y="269.00" font-size="1.5" text-anchor="middle" fill="#066">MA7805</text>
-<line x1="589.28" y1="261.62" x2="591.82" y2="261.62" stroke="#800" stroke-width="0.2"/>
-<text x="590.55" y="261.22" font-size="0.9" text-anchor="middle" fill="#800">1</text>
-<text x="592.42" y="262.07" font-size="1.15" text-anchor="start" fill="#066">IN</text>
-<line x1="589.28" y1="261.62" x2="586.74" y2="261.62" stroke="#080" stroke-width="0.15"/>
-<text x="586.34" y="261.32" font-size="1.2" text-anchor="end" fill="#000">VIN</text>
-<line x1="604.52" y1="261.62" x2="601.98" y2="261.62" stroke="#800" stroke-width="0.2"/>
-<text x="603.25" y="261.22" font-size="0.9" text-anchor="middle" fill="#800">3</text>
-<text x="601.38" y="262.07" font-size="1.15" text-anchor="end" fill="#066">OUT</text>
-<line x1="604.52" y1="261.62" x2="607.06" y2="261.62" stroke="#080" stroke-width="0.15"/>
-<path d="M606.3,260.35 L607.06,259.08 L607.8199999999999,260.35 M607.06,261.62 L607.06,259.08" stroke="#800" stroke-width="0.2" fill="none"/>
-<text x="607.06" y="258.62" font-size="1" text-anchor="middle">+5V</text>
-<line x1="604.52" y1="264.16" x2="601.98" y2="264.16" stroke="#800" stroke-width="0.2"/>
-<text x="603.25" y="263.76" font-size="0.9" text-anchor="middle" fill="#800">2</text>
-<text x="601.38" y="264.61" font-size="1.15" text-anchor="end" fill="#066">GND</text>
-<line x1="604.52" y1="264.16" x2="607.06" y2="264.16" stroke="#080" stroke-width="0.15"/>
-<path d="M607.06,264.16 L607.06,265.43 L605.79,265.43 L607.06,266.70000000000005 L608.3299999999999,265.43 L607.06,265.43" stroke="#800" stroke-width="0.2" fill="none"/>
-<line x1="622.3" y1="256.54" x2="622.3" y2="266.7" stroke="#800" stroke-width="0.2"/>
-<rect x="620.3" y="260.99" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M620.3,260.99 h4 M620.3,262.25 h4" stroke="#800" stroke-width="0.4"/>
-<text x="624.5" y="261.32" font-size="1.3" fill="#066">C13</text>
-<text x="624.5" y="263.02" font-size="1.1" fill="#066">100n</text>
-<line x1="622.30" y1="256.54" x2="622.30" y2="254.00" stroke="#080" stroke-width="0.15"/>
-<path d="M621.54,252.73000000000002 L622.3,251.46000000000004 L623.06,252.73000000000002 M622.3,254.00000000000003 L622.3,251.46000000000004" stroke="#800" stroke-width="0.2" fill="none"/>
-<text x="622.30" y="251.00" font-size="1" text-anchor="middle">+5V</text>
-<line x1="622.30" y1="266.70" x2="622.30" y2="269.24" stroke="#080" stroke-width="0.15"/>
-<path d="M622.3,269.24 L622.3,270.51 L621.03,270.51 L622.3,271.78000000000003 L623.5699999999999,270.51 L622.3,270.51" stroke="#800" stroke-width="0.2" fill="none"/>
-<line x1="640.08" y1="256.54" x2="640.08" y2="266.7" stroke="#800" stroke-width="0.2"/>
-<rect x="638.08" y="260.99" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M638.08,260.99 h4 M638.08,262.25 h4" stroke="#800" stroke-width="0.4"/>
-<text x="642.2800000000001" y="261.32" font-size="1.3" fill="#066">C14</text>
-<text x="642.2800000000001" y="263.02" font-size="1.1" fill="#066">220u/10V</text>
-<line x1="640.08" y1="256.54" x2="640.08" y2="254.00" stroke="#080" stroke-width="0.15"/>
-<path d="M639.32,252.73000000000002 L640.08,251.46000000000004 L640.84,252.73000000000002 M640.08,254.00000000000003 L640.08,251.46000000000004" stroke="#800" stroke-width="0.2" fill="none"/>
-<text x="640.08" y="251.00" font-size="1" text-anchor="middle">+5V</text>
-<line x1="640.08" y1="266.70" x2="640.08" y2="269.24" stroke="#080" stroke-width="0.15"/>
-<path d="M640.08,269.24 L640.08,270.51 L638.8100000000001,270.51 L640.08,271.78000000000003 L641.35,270.51 L640.08,270.51" stroke="#800" stroke-width="0.2" fill="none"/>
-<line x1="657.86" y1="256.54" x2="657.86" y2="266.7" stroke="#800" stroke-width="0.2"/>
-<rect x="655.86" y="260.99" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M655.86,260.99 h4 M655.86,262.25 h4" stroke="#800" stroke-width="0.4"/>
-<text x="660.0600000000001" y="261.32" font-size="1.3" fill="#066">C15</text>
-<text x="660.0600000000001" y="263.02" font-size="1.1" fill="#066">10u/16V</text>
-<line x1="657.86" y1="256.54" x2="657.86" y2="254.00" stroke="#080" stroke-width="0.15"/>
-<path d="M657.1,252.73000000000002 L657.86,251.46000000000004 L658.62,252.73000000000002 M657.86,254.00000000000003 L657.86,251.46000000000004" stroke="#800" stroke-width="0.2" fill="none"/>
-<text x="657.86" y="251.00" font-size="1" text-anchor="middle">+5V</text>
-<line x1="657.86" y1="266.70" x2="657.86" y2="269.24" stroke="#080" stroke-width="0.15"/>
-<path d="M657.86,269.24 L657.86,270.51 L656.59,270.51 L657.86,271.78000000000003 L659.13,270.51 L657.86,270.51" stroke="#800" stroke-width="0.2" fill="none"/>
-<line x1="673.1" y1="256.54" x2="673.1" y2="266.7" stroke="#800" stroke-width="0.2"/>
-<path d="M671.83,262.38 h2.54 L673.1,260.86 Z M671.83,260.86 h2.54" fill="#800" stroke="#800" stroke-width="0.2"/>
-<text x="675.3000000000001" y="261.32" font-size="1.3" fill="#066">D13</text>
-<text x="675.3000000000001" y="263.02" font-size="1.1" fill="#066">LED zelená</text>
-<line x1="673.10" y1="256.54" x2="673.10" y2="254.00" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(672.80,253.60) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">LED_K</text>
-<line x1="673.10" y1="266.70" x2="673.10" y2="269.24" stroke="#080" stroke-width="0.15"/>
-<path d="M672.34,267.97 L673.1,266.7 L673.86,267.97 M673.1,269.24 L673.1,266.7" stroke="#800" stroke-width="0.2" fill="none"/>
-<text x="673.10" y="266.24" font-size="1" text-anchor="middle">+5V</text>
-<line x1="690.88" y1="256.54" x2="690.88" y2="266.7" stroke="#800" stroke-width="0.2"/>
-<rect x="689.88" y="259.08" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
-<text x="693.08" y="261.32" font-size="1.3" fill="#066">R45</text>
-<text x="693.08" y="263.02" font-size="1.1" fill="#066">470</text>
-<line x1="690.88" y1="256.54" x2="690.88" y2="254.00" stroke="#080" stroke-width="0.15"/>
-<text transform="translate(690.58,253.60) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">LED_K</text>
-<line x1="690.88" y1="266.70" x2="690.88" y2="269.24" stroke="#080" stroke-width="0.15"/>
-<path d="M690.88,269.24 L690.88,270.51 L689.61,270.51 L690.88,271.78000000000003 L692.15,270.51 L690.88,270.51" stroke="#800" stroke-width="0.2" fill="none"/>
+<rect x="502.92" y="281.94" width="5.08" height="7.62" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="505.46" y="280.94" font-size="1.8" text-anchor="middle" fill="#066">J5</text>
+<text x="505.46" y="291.86" font-size="1.5" text-anchor="middle" fill="#066">Napájení 9–12V DC</text>
+<line x1="500.38" y1="284.48" x2="502.92" y2="284.48" stroke="#800" stroke-width="0.2"/>
+<text x="501.65" y="284.08" font-size="0.9" text-anchor="middle" fill="#800">1</text>
+<line x1="500.38" y1="284.48" x2="497.84" y2="284.48" stroke="#080" stroke-width="0.15"/>
+<text x="497.44" y="284.18" font-size="1.2" text-anchor="end" fill="#000">VIN_RAW</text>
+<line x1="500.38" y1="287.02" x2="502.92" y2="287.02" stroke="#800" stroke-width="0.2"/>
+<text x="501.65" y="286.62" font-size="0.9" text-anchor="middle" fill="#800">2</text>
+<line x1="500.38" y1="287.02" x2="497.84" y2="287.02" stroke="#080" stroke-width="0.15"/>
+<path d="M497.84,287.02000000000004 L497.84,288.29 L496.57,288.29 L497.84,289.56000000000006 L499.10999999999996,288.29 L497.84,288.29" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="523.24" y1="279.40000000000003" x2="523.24" y2="289.56" stroke="#800" stroke-width="0.2"/>
+<rect x="522.24" y="281.94" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/><line x1="523.24" y1="281.94" x2="523.24" y2="287.02000000000004" stroke="#800" stroke-width="0.2"/>
+<text x="525.44" y="284.18" font-size="1.3" fill="#066">F1</text>
+<text x="525.44" y="285.88" font-size="1.1" fill="#066">1A T</text>
+<line x1="523.24" y1="279.40" x2="523.24" y2="276.86" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(522.94,276.46) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">VIN_RAW</text>
+<line x1="523.24" y1="289.56" x2="523.24" y2="292.10" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(522.94,292.50) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">VIN_F</text>
+<line x1="538.48" y1="279.40000000000003" x2="538.48" y2="289.56" stroke="#800" stroke-width="0.2"/>
+<path d="M537.21,285.24 h2.54 L538.48,283.72 Z M537.21,283.72 h2.54" fill="#800" stroke="#800" stroke-width="0.2"/>
+<text x="540.6800000000001" y="284.18" font-size="1.3" fill="#066">D12</text>
+<text x="540.6800000000001" y="285.88" font-size="1.1" fill="#066">KY132/80 (1N4007)</text>
+<line x1="538.48" y1="279.40" x2="538.48" y2="276.86" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(538.18,276.46) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">VIN</text>
+<line x1="538.48" y1="289.56" x2="538.48" y2="292.10" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(538.18,292.50) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">VIN_F</text>
+<line x1="556.26" y1="279.40000000000003" x2="556.26" y2="289.56" stroke="#800" stroke-width="0.2"/>
+<rect x="554.26" y="283.85" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M554.26,283.85 h4 M554.26,285.11 h4" stroke="#800" stroke-width="0.4"/>
+<text x="558.46" y="284.18" font-size="1.3" fill="#066">C11</text>
+<text x="558.46" y="285.88" font-size="1.1" fill="#066">1000u/25V</text>
+<line x1="556.26" y1="279.40" x2="556.26" y2="276.86" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(555.96,276.46) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">VIN</text>
+<line x1="556.26" y1="289.56" x2="556.26" y2="292.10" stroke="#080" stroke-width="0.15"/>
+<path d="M556.26,292.1 L556.26,293.37 L554.99,293.37 L556.26,294.64000000000004 L557.53,293.37 L556.26,293.37" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="574.04" y1="279.40000000000003" x2="574.04" y2="289.56" stroke="#800" stroke-width="0.2"/>
+<rect x="572.04" y="283.85" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M572.04,283.85 h4 M572.04,285.11 h4" stroke="#800" stroke-width="0.4"/>
+<text x="576.24" y="284.18" font-size="1.3" fill="#066">C12</text>
+<text x="576.24" y="285.88" font-size="1.1" fill="#066">100n</text>
+<line x1="574.04" y1="279.40" x2="574.04" y2="276.86" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(573.74,276.46) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">VIN</text>
+<line x1="574.04" y1="289.56" x2="574.04" y2="292.10" stroke="#080" stroke-width="0.15"/>
+<path d="M574.04,292.1 L574.04,293.37 L572.77,293.37 L574.04,294.64000000000004 L575.31,293.37 L574.04,293.37" stroke="#800" stroke-width="0.2" fill="none"/>
+<rect x="591.82" y="281.94" width="10.16" height="7.62" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="596.90" y="280.94" font-size="1.8" text-anchor="middle" fill="#066">U32</text>
+<text x="596.90" y="291.86" font-size="1.5" text-anchor="middle" fill="#066">MA7805</text>
+<line x1="589.28" y1="284.48" x2="591.82" y2="284.48" stroke="#800" stroke-width="0.2"/>
+<text x="590.55" y="284.08" font-size="0.9" text-anchor="middle" fill="#800">1</text>
+<text x="592.42" y="284.93" font-size="1.15" text-anchor="start" fill="#066">IN</text>
+<line x1="589.28" y1="284.48" x2="586.74" y2="284.48" stroke="#080" stroke-width="0.15"/>
+<text x="586.34" y="284.18" font-size="1.2" text-anchor="end" fill="#000">VIN</text>
+<line x1="604.52" y1="284.48" x2="601.98" y2="284.48" stroke="#800" stroke-width="0.2"/>
+<text x="603.25" y="284.08" font-size="0.9" text-anchor="middle" fill="#800">3</text>
+<text x="601.38" y="284.93" font-size="1.15" text-anchor="end" fill="#066">OUT</text>
+<line x1="604.52" y1="284.48" x2="607.06" y2="284.48" stroke="#080" stroke-width="0.15"/>
+<path d="M606.3,283.21000000000004 L607.06,281.94 L607.8199999999999,283.21000000000004 M607.06,284.48 L607.06,281.94" stroke="#800" stroke-width="0.2" fill="none"/>
+<text x="607.06" y="281.48" font-size="1" text-anchor="middle">+5V</text>
+<line x1="604.52" y1="287.02" x2="601.98" y2="287.02" stroke="#800" stroke-width="0.2"/>
+<text x="603.25" y="286.62" font-size="0.9" text-anchor="middle" fill="#800">2</text>
+<text x="601.38" y="287.47" font-size="1.15" text-anchor="end" fill="#066">GND</text>
+<line x1="604.52" y1="287.02" x2="607.06" y2="287.02" stroke="#080" stroke-width="0.15"/>
+<path d="M607.06,287.02000000000004 L607.06,288.29 L605.79,288.29 L607.06,289.56000000000006 L608.3299999999999,288.29 L607.06,288.29" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="622.3" y1="279.40000000000003" x2="622.3" y2="289.56" stroke="#800" stroke-width="0.2"/>
+<rect x="620.3" y="283.85" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M620.3,283.85 h4 M620.3,285.11 h4" stroke="#800" stroke-width="0.4"/>
+<text x="624.5" y="284.18" font-size="1.3" fill="#066">C13</text>
+<text x="624.5" y="285.88" font-size="1.1" fill="#066">100n</text>
+<line x1="622.30" y1="279.40" x2="622.30" y2="276.86" stroke="#080" stroke-width="0.15"/>
+<path d="M621.54,275.59000000000003 L622.3,274.32 L623.06,275.59000000000003 M622.3,276.86 L622.3,274.32" stroke="#800" stroke-width="0.2" fill="none"/>
+<text x="622.30" y="273.86" font-size="1" text-anchor="middle">+5V</text>
+<line x1="622.30" y1="289.56" x2="622.30" y2="292.10" stroke="#080" stroke-width="0.15"/>
+<path d="M622.3,292.1 L622.3,293.37 L621.03,293.37 L622.3,294.64000000000004 L623.5699999999999,293.37 L622.3,293.37" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="640.08" y1="279.40000000000003" x2="640.08" y2="289.56" stroke="#800" stroke-width="0.2"/>
+<rect x="638.08" y="283.85" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M638.08,283.85 h4 M638.08,285.11 h4" stroke="#800" stroke-width="0.4"/>
+<text x="642.2800000000001" y="284.18" font-size="1.3" fill="#066">C14</text>
+<text x="642.2800000000001" y="285.88" font-size="1.1" fill="#066">220u/10V</text>
+<line x1="640.08" y1="279.40" x2="640.08" y2="276.86" stroke="#080" stroke-width="0.15"/>
+<path d="M639.32,275.59000000000003 L640.08,274.32 L640.84,275.59000000000003 M640.08,276.86 L640.08,274.32" stroke="#800" stroke-width="0.2" fill="none"/>
+<text x="640.08" y="273.86" font-size="1" text-anchor="middle">+5V</text>
+<line x1="640.08" y1="289.56" x2="640.08" y2="292.10" stroke="#080" stroke-width="0.15"/>
+<path d="M640.08,292.1 L640.08,293.37 L638.8100000000001,293.37 L640.08,294.64000000000004 L641.35,293.37 L640.08,293.37" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="657.86" y1="279.40000000000003" x2="657.86" y2="289.56" stroke="#800" stroke-width="0.2"/>
+<rect x="655.86" y="283.85" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M655.86,283.85 h4 M655.86,285.11 h4" stroke="#800" stroke-width="0.4"/>
+<text x="660.0600000000001" y="284.18" font-size="1.3" fill="#066">C15</text>
+<text x="660.0600000000001" y="285.88" font-size="1.1" fill="#066">10u/16V</text>
+<line x1="657.86" y1="279.40" x2="657.86" y2="276.86" stroke="#080" stroke-width="0.15"/>
+<path d="M657.1,275.59000000000003 L657.86,274.32 L658.62,275.59000000000003 M657.86,276.86 L657.86,274.32" stroke="#800" stroke-width="0.2" fill="none"/>
+<text x="657.86" y="273.86" font-size="1" text-anchor="middle">+5V</text>
+<line x1="657.86" y1="289.56" x2="657.86" y2="292.10" stroke="#080" stroke-width="0.15"/>
+<path d="M657.86,292.1 L657.86,293.37 L656.59,293.37 L657.86,294.64000000000004 L659.13,293.37 L657.86,293.37" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="673.1" y1="279.40000000000003" x2="673.1" y2="289.56" stroke="#800" stroke-width="0.2"/>
+<path d="M671.83,285.24 h2.54 L673.1,283.72 Z M671.83,283.72 h2.54" fill="#800" stroke="#800" stroke-width="0.2"/>
+<text x="675.3000000000001" y="284.18" font-size="1.3" fill="#066">D13</text>
+<text x="675.3000000000001" y="285.88" font-size="1.1" fill="#066">LED zelená</text>
+<line x1="673.10" y1="279.40" x2="673.10" y2="276.86" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(672.80,276.46) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">LED_K</text>
+<line x1="673.10" y1="289.56" x2="673.10" y2="292.10" stroke="#080" stroke-width="0.15"/>
+<path d="M672.34,290.83000000000004 L673.1,289.56 L673.86,290.83000000000004 M673.1,292.1 L673.1,289.56" stroke="#800" stroke-width="0.2" fill="none"/>
+<text x="673.10" y="289.10" font-size="1" text-anchor="middle">+5V</text>
+<line x1="690.88" y1="279.40000000000003" x2="690.88" y2="289.56" stroke="#800" stroke-width="0.2"/>
+<rect x="689.88" y="281.94" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="693.08" y="284.18" font-size="1.3" fill="#066">R45</text>
+<text x="693.08" y="285.88" font-size="1.1" fill="#066">470</text>
+<line x1="690.88" y1="279.40" x2="690.88" y2="276.86" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(690.58,276.46) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">LED_K</text>
+<line x1="690.88" y1="289.56" x2="690.88" y2="292.10" stroke="#080" stroke-width="0.15"/>
+<path d="M690.88,292.1 L690.88,293.37 L689.61,293.37 L690.88,294.64000000000004 L692.15,293.37 L690.88,293.37" stroke="#800" stroke-width="0.2" fill="none"/>
 <line x1="248.92000000000002" y1="312.42" x2="248.92000000000002" y2="322.58" stroke="#800" stroke-width="0.2"/>
 <rect x="246.92000000000002" y="316.87" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M246.92000000000002,316.87 h4 M246.92000000000002,318.13 h4" stroke="#800" stroke-width="0.4"/>
 <text x="251.12" y="317.2" font-size="1.3" fill="#066">C20</text>

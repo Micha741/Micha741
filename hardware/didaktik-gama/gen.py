@@ -339,9 +339,9 @@ GATE_UNITS = {}   # ref -> seznam (unit, x, y)
 
 # blok napájení
 for i, r in enumerate(POWER_BLOCK):
-    at(r, grid(505 + i * 17 + (8 if r == "U32" else 0) + (16 if i > POWER_BLOCK.index("U32") else 0)), grid(262))
+    at(r, grid(505 + i * 17 + (8 if r == "U32" else 0) + (16 if i > POWER_BLOCK.index("U32") else 0)), grid(285))
 for i, r in enumerate(VIDEO_BLOCK):
-    at(r, grid(500 + (i % 13) * 18), grid(120 + (i // 13) * 30))
+    at(r, grid(497 + (i % 15) * 16), grid(114 + (i // 15) * 28))
 PASSIVES = [r for r in parts if parts[r]["sym"] in ("R", "C", "CP", "D", "SW", "XTAL", "SPK", "NPN", "F", "LED")
             and r not in POWER_BLOCK and r not in VIDEO_BLOCK]
 PASSIVES.sort(key=lambda r: (r.rstrip("0123456789"), int("".join(c for c in r if c.isdigit()) or 0)))
@@ -360,7 +360,7 @@ for ref in ("U25", "U26", "U27", "U28", "U29"):
     used = [k for k, (ins, o) in enumerate(units, 1) if any(pins.get(p) for p in (*ins, o))]
     lst = []
     for k in used + [len(units) + 1]:
-        lst.append((k, grid(500 + gx * 36), grid(178 + gy * 25)))
+        lst.append((k, grid(500 + gx * 36), grid(200 + gy * 24)))
         gx += 1
         if gx >= 9:
             gx, gy = 0, gy + 1
@@ -513,11 +513,11 @@ notes = [
     txt("DIDAKTIK GAMA – SCHÉMA ZAPOJENIA (překresleno z tištěné předlohy)", 30, 20, 3),
     txt("Spoje jsou vedeny návěštími (labels) – stejné jméno = stejný net. ~{X} = aktivní v nule.", 30, 26, 1.8),
     txt("KODÉR PAL LM1889 + VIDEO VÝSTUP", 500, 100, 2),
-    txt("NAPÁJENÍ (doplněno – na předloze jen +5V)", 500, 245, 2),
-    txt("K OVĚŘENÍ (na předloze nečitelné / odhadnuté):", 560, 290, 2),
+    txt("NAPÁJENÍ (doplněno – na předloze jen +5V)", 500, 270, 2),
+    txt("K OVĚŘENÍ (na předloze nečitelné / odhadnuté):", 560, 312, 2),
 ]
 for i, (where, what, why) in enumerate(verify):
-    notes.append(txt(f"• {where}: {what} – {why}", 560, 296 + i * 4.2, 1.27))
+    notes.append(txt(f"• {where}: {what} – {why}", 560, 318 + i * 4.2, 1.27))
 notes_s = [n.replace("(text ", "(text ", 1)[:-1] + f" (uuid {q(uid())}))" for n in notes]
 
 lib = [lib_symbol(s) for s in sorted(used_lib)] + list(POWER_LIB.values())
