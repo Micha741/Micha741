@@ -178,31 +178,25 @@ R("R69", "390R (Sp R53)", "CVBS", "GND")
 R("R70", "15R (Sp R64)", "+5V", "+5V_MOD")
 C("C74", "47n (Sp C61)", "+5V_MOD", "GND")
 add("C75", "CP", "22u/16V (Sp C25)", "Capacitor_THT:CP_Radial_D5.0mm_P2.00mm", {1: "+5V_MOD", 2: "GND"})
-# +12V měnič podle ZX Spectra (Issue 1/2): TR4 spínač s cívkou 1703 (zpětnovazební vinutí),
-# TR5 reguluje buzení podle děliče R58/R59 z +12V. Větve -5V/-12V vynechány (Gama nemá 4116).
-CONV_BLOCK = ["R71", "R72", "T7", "C80", "R73", "C76", "R74", "L1", "T8", "C77", "D14", "C78", "R75", "C79"]
-R("R71", "1K8 2% (Sp R59)", "+12V", "CONV_FB")
-R("R72", "1K 2% (Sp R58)", "CONV_FB", "GND")
-add("T7", "PNP", "KF517 (Sp TR5 ZTX213)", "Package_TO_SOT_THT:TO-39-3", {1: "+5V", 2: "CONV_FB", 3: "CONV_T7C"})
-add("C80", "CP", "4u7/16V (úprava dle manuálu)", "Capacitor_THT:CP_Radial_D5.0mm_P2.00mm", {1: "+5V", 2: "CONV_FB"})
-R("R73", "270R (Sp R60, Issue 3)", "CONV_T7C", "CONV_DRV")
-C("C76", "100n (Sp C43)", "CONV_DRV", "GND")
-R("R74", "15R (Sp R62)", "CONV_DRV", "CONV_FA")
-add("L1", "COIL1703", "Cívka SPECTRUM 1703", "", {1: "VIN", 2: "CONV_SW", 3: "CONV_FA", 4: "CONV_T8B"})
-add("T8", "NPN_ECB", "KD139 (Sp TR4 ZTX651/TIP31)", "Package_TO_SOT_THT:TO-126-3_Vertical", {1: "GND", 2: "CONV_SW", 3: "CONV_T8B"})
-C("C77", "47n (Sp C49)", "CONV_SW", "GND")
-add("D14", "D", "BA157 (Sp D15)", "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal", {1: "+12V", 2: "CONV_SW"})
-add("C78", "CP", "100u/16V (Sp C44)", "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm", {1: "+12V", 2: "GND"})
+# +12V měnič – moderní náhrada Spectrova měniče s cívkou 1703: MC34063A jako boost 9 V -> 12 V.
+# Vout = 1,25 V * (1 + R73/R74) = 1,25 * (1 + 13k/1k5) = 12,1 V
+CONV_BLOCK = ["C80", "U33", "R71", "R72", "L1", "D14", "C76", "R73", "R74", "C77", "C78", "R75", "C79"]
+add("C80", "CP", "100u/25V", "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm", {1: "VIN", 2: "GND"})
+add("U33", "MC34063", "MC34063A", "Package_DIP:DIP-8_W7.62mm", {
+    1: "BST_SW", 2: "GND", 3: "BST_CT", 4: "GND", 5: "BST_FB", 6: "VIN", 7: "BST_IPK", 8: "BST_DRV"})
+R("R71", "0R33 / 0,5 W (Rsc)", "VIN", "BST_IPK")
+R("R72", "180R", "BST_DRV", "BST_IPK")
+add("L1", "L", "100u / 1 A", "Inductor_THT:L_Radial_D8.7mm_P5.00mm_Fastron_07HCP", {1: "BST_IPK", 2: "BST_SW"})
+add("D14", "D", "1N5819 (Schottky)", "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal", {1: "+12V", 2: "BST_SW"})
+C("C76", "1n5", "BST_CT", "GND")
+R("R73", "13k 1%", "+12V", "BST_FB")
+R("R74", "1k5 1%", "BST_FB", "GND")
+C("C77", "100n", "+12V", "GND")
+add("C78", "CP", "330u/25V low ESR", "Capacitor_THT:CP_Radial_D8.0mm_P3.50mm", {1: "+12V", 2: "GND"})
 R("R75", "15R (Sp R61)", "+12V", "+12VA")
 add("C79", "CP", "100u/16V (Sp C45)", "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm", {1: "+12VA", 2: "GND"})
-verify.append(("L1 (cívka 1703)", "dvě vinutí: primár VIN–spínač, zpětná vazba R74–báze T8",
-               "Počet závitů / indukčnost cívky Sinclair 1703 schéma neuvádí; začátky vinutí (tečky) dle schématu Spectra"))
-verify.append(("T7 KF517", "náhrada ZTX213 ověřena katalogovým listem TESLA",
-               "PNP, -Uceo 30 V, -Ic 600 mA, Pc 0,8 W, pouzdro K505 (TO-39): vývody E-B-C, výstupek u E; kolektor je spojen s pouzdrem – nesmí se dotýkat okolí"))
-verify.append(("T8 KD139", "náhrada ZTX651 ověřena katalogovým listem TESLA",
-               "NPN, Uceo 80–100 V, Ic 1,5 A (špička 2 A), Ptot 1 W / 12,5 W s chladičem; TO-126 vývody E-C-B (pady 1-2-3), kovová plocha = kolektor – při montáži na chladič izolovat"))
-verify.append(("C80, R73", "úprava stability měniče z manuálu (4u7 E–B T5, R60 270R)",
-               "Doporučeno servisním manuálem Spectra pro desky Issue 2/3"))
+verify.append(("U33 MC34063A (měnič +12 V)", "náhrada měniče Spectra (TR4/TR5 + cívka 1703)",
+               "Zapojení boost podle aplikační poznámky MC34063; Rsc 0R33 = proudové omezení ~0,9 A, Ct 1n5 ~ 30 kHz – ověřit s datasheetem"))
 
 verify.append(("U30 LM1889 + okolí", "překresleno ze schématu ZX Spectrum Issue 1/2",
                "Předloha Gamy má jen blok KÓDER – ověřit, že Gama používá stejné zapojení (typ obvodu na desce)"))
@@ -334,17 +328,19 @@ add("J5", "CONN", "Napájení 9–12V DC", "Connector_BarrelJack:BarrelJack_Hori
     {1: "VIN_RAW", 2: "GND"})
 add("F1", "F", "1A T", "Fuse:Fuseholder_Cylinder-5x20mm_Stelvio-Kontek_PTF78_Horizontal_Open",
     {1: "VIN_RAW", 2: "VIN_F"})
-add("D12", "D", "KY132/80 (1N4007)", "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal",
+add("D12", "D", "1N5822 (Schottky 3A)", "Diode_THT:D_DO-201AD_P15.24mm_Horizontal",
     {1: "VIN", 2: "VIN_F"})                              # ochrana proti přepólování
 add("C11", "CP", "1000u/25V", "Capacitor_THT:CP_Radial_D10.0mm_P5.00mm", {1: "VIN", 2: "GND"})
 C("C12", "100n", "VIN", "GND")
-add("U32", "7805", "MA7805", "Package_TO_SOT_THT:TO-220-3_Vertical",
+add("U32", "7805", "R-78E5.0-1.0 (spínaný, náhrada 7805)", "Converter_DCDC:Converter_DCDC_RECOM_R-78E-0.5_THT",
     {1: "VIN", 2: "GND", 3: "+5V"})
 C("C13", "100n", "+5V", "GND")
 add("C14", "CP", "220u/10V", "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm", {1: "+5V", 2: "GND"})
 add("C15", "CP", "10u/16V", "Capacitor_THT:CP_Radial_D5.0mm_P2.00mm", {1: "+5V", 2: "GND"})
 add("D13", "LED", "LED zelená", "LED_THT:LED_D5.0mm", {1: "LED_K", 2: "+5V"})
 R("R45", "470", "LED_K", "GND")
+verify.append(("U32 spínaný stabilizátor", "R-78E5.0-1.0 místo MA7805 (stejné vývody IN-GND-OUT)",
+               "Méně tepla (účinnost ~90 %); při rušení obrazu lze vrátit MA7805 na chladiči"))
 verify.append(("Napájení (J5, F1, D12, U32)", "celý blok doplněn",
                "Na předloze není – 9 V nestabilizovaných + 7805 odpovídá servisnímu manuálu ZX Spectrum 128 (zdroj ZX power pack); u Gamy ověřit na adaptéru"))
 

@@ -89,6 +89,7 @@ ic("LM1889",
    [P(2, "R-Y"), P(4, "B-Y"), P(3, "BIAS"), None, P(17, "OSC"), P(1, "LEAD"), P(18, "LAG"), None, P(12, "VIDEO")],
    [P(13, "CHROMA"), None, P(15, "SND"), P(14, "RF_VCC", PW), P(16, "VCC", PW), P(5, "GND", PW), None]
    + [P(n, "NC", "no_connect") for n in range(6, 12)], w=15.24)
+ic("MC34063", [P(6, "VCC"), P(7, "IPK"), P(8, "DRV"), P(3, "CT")], [P(1, "SWC"), P(2, "SWE"), P(5, "FB"), P(4, "GND", PW)], w=12.7, title="MC34063")
 ic("COIL1703", [P(1, "PRIM"), P(2, "PRIM_SW")], [P(3, "FB_A"), P(4, "FB_B")], w=10.16, title="L 1703")
 ic("KODER", [P(1, "U"), P(2, "V"), P(3, "Y")], [P(4, "CVBS")], w=12.7, title="KODER")
 ic("MODULATOR", [P(1, "VIDEO"), None, P(2, "+5V", PW)], [P(3, "RF"), None, P(4, "GND", PW)], w=12.7, title="MODULÁTOR")
@@ -103,7 +104,7 @@ GATES = {
 for g, (units, fn, neg) in GATES.items():
     SYM[g] = dict(kind="gate", units=units, fn=fn, neg=neg)
 
-for t in ("R", "C", "CP", "D", "SW", "XTAL", "SPK", "F", "LED"):
+for t in ("R", "C", "CP", "D", "SW", "XTAL", "SPK", "F", "LED", "L"):
     SYM[t] = dict(kind="two", t=t)
 SYM["NPN"] = dict(kind="npn")
 SYM["PNP"] = dict(kind="npn", pnp=True)
@@ -229,7 +230,7 @@ def lib_symbol(name):
         return " ".join(out) + ")"
     if s["kind"] == "two":
         t = s["t"]
-        refc = {"R": "R", "C": "C", "CP": "C", "D": "D", "SW": "SW", "XTAL": "Y", "SPK": "LS", "F": "F", "LED": "D"}[t]
+        refc = {"R": "R", "C": "C", "CP": "C", "D": "D", "SW": "SW", "XTAL": "Y", "SPK": "LS", "F": "F", "LED": "D", "L": "L"}[t]
         out = [head + " (pin_names (offset 0) hide) (exclude_from_sim no) (in_bom yes) (on_board yes)",
                f"(property \"Reference\" {q(refc)} (at 2.54 0.8 0) {eff(justify='left')})"
                f"(property \"Value\" {q(t)} (at 2.54 -1.2 0) {eff(justify='left')})"
@@ -243,6 +244,9 @@ def lib_symbol(name):
                   poly([(0, 2.54), (0, 0.635)]), poly([(0, -0.635), (0, -2.54)])]
             if t == "CP":
                 g.append(txt("+", -1.5, 1.6))
+        elif t == "L":
+            g += [poly([(0, 2.54), (0, 2.0), (0.8, 1.6), (0.8, 0.8), (0, 0.4), (0.8, 0.0), (0.8, -0.8), (0, -1.2),
+                        (0.8, -1.6), (0.8, -2.2), (0, -2.54)])]
         elif t == "F":
             g += [rect(-1.016, 2.54, 1.016, -2.54, "none"), poly([(0, 2.54), (0, -2.54)])]
         elif t == "LED":
@@ -349,8 +353,8 @@ for i, r in enumerate(POWER_BLOCK):
 for i, r in enumerate(VIDEO_BLOCK):
     at(r, grid(497 + (i % 15) * 16), grid(114 + (i // 15) * 28))
 for i, r in enumerate(CONV_BLOCK):
-    at(r, grid(560 + i * 18 + (10 if r == "L1" else 0) + (22 if i > CONV_BLOCK.index("L1") else 0)), grid(420))
-PASSIVES = [r for r in parts if parts[r]["sym"] in ("R", "C", "CP", "D", "SW", "XTAL", "SPK", "NPN", "PNP", "NPN_ECB", "F", "LED")
+    at(r, grid(560 + i * 17 + (12 if i >= CONV_BLOCK.index("U33") else 0) + (12 if i > CONV_BLOCK.index("U33") else 0)), grid(420))
+PASSIVES = [r for r in parts if parts[r]["sym"] in ("R", "C", "CP", "D", "SW", "XTAL", "SPK", "NPN", "PNP", "NPN_ECB", "F", "LED", "L")
             and r not in POWER_BLOCK and r not in VIDEO_BLOCK and r not in CONV_BLOCK]
 PASSIVES.sort(key=lambda r: (r.rstrip("0123456789"), int("".join(c for c in r if c.isdigit()) or 0)))
 col, row = 0, 0
@@ -523,7 +527,7 @@ notes = [
     txt("Spoje jsou vedeny návěštími (labels) – stejné jméno = stejný net. ~{X} = aktivní v nule.", 30, 26, 1.8),
     txt("KODÉR PAL LM1889 + VIDEO VÝSTUP", 500, 100, 2),
     txt("NAPÁJENÍ (doplněno – na předloze jen +5V)", 500, 270, 2),
-    txt("MĚNIČ +12 V pro kodér (podle ZX Spectra, TR4/TR5 + cívka 1703)", 560, 402, 2),
+    txt("MĚNIČ +12 V pro kodér (MC34063A, náhrada měniče ze Spectra)", 560, 402, 2),
     txt("K OVĚŘENÍ (na předloze nečitelné / odhadnuté):", 560, 312, 2),
 ]
 for i, (where, what, why) in enumerate(verify):
@@ -589,7 +593,7 @@ GROUP = {"UA880D": "CPU", "27128": "ROM", "8255": "I/O", "ULA": "ULA", "4164": "
          "74LS157": "Multiplexer", "7400": "Logika", "7404": "Logika", "7410": "Logika", "7432": "Logika",
          "R": "Rezistor", "C": "Kondenzátor", "CP": "Kondenzátor", "D": "Dioda", "NPN": "Tranzistor",
          "SW": "Ostatní", "XTAL": "Ostatní", "SPK": "Ostatní", "CONN": "Konektor", "KODER": "Video",
-         "MODULATOR": "Video", "COIL1703": "Napájení", "PNP": "Tranzistor", "NPN_ECB": "Tranzistor", "7805": "Napájení", "LM1889": "Video", "F": "Napájení", "LED": "Napájení"}
+         "MODULATOR": "Video", "COIL1703": "Napájení", "MC34063": "Napájení", "L": "Napájení", "PNP": "Tranzistor", "NPN_ECB": "Tranzistor", "7805": "Napájení", "LM1889": "Video", "F": "Napájení", "LED": "Napájení"}
 bom = defaultdict(list)
 for ref, p in parts.items():
     bom[(GROUP[p["sym"]], p["value"], p["fp"])].append(ref)
@@ -696,6 +700,8 @@ for e in svg:
                      f'<path d="M{x - 2},{y - 0.63} h4 M{x - 2},{y + 0.63} h4" stroke="#800" stroke-width="0.4"/>')
         elif t in ("D", "LED"):
             o.append(f'<path d="M{x - 1.27},{y + 0.76} h2.54 L{x},{y - 0.76} Z M{x - 1.27},{y - 0.76} h2.54" fill="#800" stroke="#800" stroke-width="0.2"/>')
+        elif t == "L":
+            o.append(f'<path d="M{x},{y - 2.54} q1.4,0.85 0,1.7 q1.4,0.85 0,1.7 q1.4,0.85 0,1.7" fill="none" stroke="#800" stroke-width="0.25"/>')
         elif t == "F":
             o.append(f'<rect x="{x - 1.0}" y="{y - 2.54}" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>'
                      f'<line x1="{x}" y1="{y - 2.54}" x2="{x}" y2="{y + 2.54}" stroke="#800" stroke-width="0.2"/>')
