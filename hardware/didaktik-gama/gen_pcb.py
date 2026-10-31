@@ -146,7 +146,7 @@ place_center("U1", 45, 42, 90)
 place_center("U2", 108, 42, 90)
 place_center("U3", 172, 42, 90)
 place_center("U4", 240, 42, 90)
-place_center("J8", 281, 28, 90)
+place_center("J8", 293, 52, 0)       # mimo plochu modulu ULA (70 x 50 mm nad paticí)
 
 # ---- řada B: multiplexery, logika, video budiče
 def place_row(refs, x0, y, gap):
@@ -190,7 +190,7 @@ for c, u in (("C93", "U42"), ("C94", "U43"), ("C95", "U44"), ("C81", "U37"), ("C
     place_left_of(c, u)
 
 # ---- pasivní součástky po skupinách v pásech mezi řadami
-pack(rr("R", 1, 14) + ["C1", "C2", "C3", "SW1", "T1", "T2", "Y1"] + rr("D", 1, 8), 6, 54, 296)
+pack(rr("R", 1, 14) + ["C1", "C2", "C3", "SW1", "T1", "T2", "Y1"] + rr("D", 1, 8), 6, 54, 284)
 pack(rr("R", 27, 34) + ["R43", "R44", "C8", "C9", "C10"] + rr("R", 76, 89), 6, 93, 296)
 pack(rr("R", 35, 42) + ["C60"], 6, 123, 296)
 pack(rr("R", 19, 26) + ["C61", "D9", "D10", "D11", "LS1", "T3"] + rr("C", 4, 7) + rr("R", 15, 18), 6, 155, 296)

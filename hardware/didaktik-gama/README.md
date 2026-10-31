@@ -7,6 +7,8 @@ Překresleno z tištěné předlohy „DIDAKTIK GAMA – SCHÉMA ZAPOJENIA“.
 | `didaktik_gama.kicad_pcb` | plošný spoj hlavní desky 300 × 225 mm, 4 vrstvy – rozmístěno, nety přiřazeny, **cesty signálů zatím nevedené** |
 | `didaktik_gama_pcb_nahled.pdf` | náhled rozmístění desky |
 | `gen_pcb.py` | generátor desky z `netlist.py` (`python3 gen_pcb.py`, potřebuje KiCad s modulem pcbnew) |
+| `ula_cpld_modul.kicad_pcb` / `_pcb_nahled.pdf` | plošný spoj modulu ULA 70 × 50 mm, 2 vrstvy – rozmístěno, nety přiřazeny, cesty nevedené |
+| `gen_pcb_modul.py` | generátor desky modulu (`python3 gen_pcb_modul.py`) |
 | `gama.pretty/`, `fp-lib-table` | vlastní pouzdro Raspberry Pi Pico (THT 2×20) |
 | `didaktik_gama.kicad_sch` / `.kicad_pro` | schéma pro KiCad 8 a novější (A0, jedna strana, vlastní knihovna symbolů je v souboru) |
 | `didaktik_gama_nahled.pdf` / `.svg` | náhled bez KiCadu |
@@ -46,3 +48,15 @@ a souhlasí s čísly na předloze. ULA je očíslovaná podle předlohy (shodn�
 3. Zkontrolovat orientaci konektorů na hraně (VGA, jack, napájecí konektor) ve 3D náhledu.
 4. Po začátku vedení cest už **nespouštět `gen_pcb.py`** (přepíše desku) – změny ze schématu přenášet
    v KiCadu přes *Update PCB from Schematic*.
+
+## Plošný spoj modulu ULA
+- **70 × 50 mm, 2 vrstvy**, zem rozlitá z obou stran (F.Cu i B.Cu).
+- **J1** = 40 kolíků v rozteči DIP-40 (600 mil), zespodu do patice U4; pin 1 vlevo dole (čtvercová ploška).
+  Mezi řadami kolíků jsou SMD součástky (stabilizátor U2, oscilátor X1, odpory) – J1 má proto vymezení
+  jen kolem řad kolíků. Použít precizní (soustružené) kolíky.
+- **U1** XC95144XL (TQFP-100) nad horní řadou kolíků, blokovací kondenzátory u napájecích vývodů.
+- **J2** vlevo (RGB + zvuk + napájení, kabel 1:1 na J8 hlavní desky), **J3** JTAG vpravo.
+- Modul přesahuje patici: na hlavní desce zabírá plochu 70 × 50 mm nad U4. J8 je proto u pravé hrany;
+  pod modulem smí být jen nízké součástky (odpory, keramické kondenzátory).
+- DRC: bez překryvů; zbývá 76 nepropojených spojů (cesty) a 2 zemní plošky CPLD s jedním
+  tepelným můstkem – vyřeší se při vedení cest (prokov k zemi u vývodu).
