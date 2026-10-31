@@ -18,7 +18,7 @@
 <text x="560.00" y="333.80" font-size="1.524" fill="#008">• U28 (CS 8255): 3vstupé NAND: ~A7, IORQ, /M1 – Typ hradla a třetí vstup (/M1) odhadnuty; port 8255 = A7=0 (1Fh/3Fh/5Fh/7Fh)</text>
 <text x="560.00" y="338.00" font-size="1.524" fill="#008">• U29D (/WE64): vstupy 12 = /WR, 13 = /MREQ – Výstup 11 jde na /WE 4164 – vstupy na předloze nejasné</text>
 <text x="560.00" y="342.20" font-size="1.524" fill="#008">• C9: 100p z MUX2_D na GND – Druhý konec kondenzátoru na předloze nejasný</text>
-<text x="560.00" y="346.40" font-size="1.524" fill="#008">• Napájení (J5, F1, D12, U32): celý blok doplněn – Na předloze není – vstupní napětí 9–12 V DC a hodnoty kondenzátorů jsou typické pro 7805, ověřit na desce/adaptéru</text>
+<text x="560.00" y="346.40" font-size="1.524" fill="#008">• Napájení (J5, F1, D12, U32): celý blok doplněn – Na předloze není – 9 V nestabilizovaných + 7805 odpovídá servisnímu manuálu ZX Spectrum 128 (zdroj ZX power pack); u Gamy ověřit na adaptéru</text>
 <text x="560.00" y="350.60" font-size="1.524" fill="#008">• C20–C61: blokování napájení – Doplněno: 100n u každého IC (u napájecích pinů), 47u u bank 4164 a 2118</text>
 <rect x="45.72" y="66.04" width="20.32" height="58.42" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
 <text x="55.88" y="65.04" font-size="1.8" text-anchor="middle" fill="#066">U1</text>

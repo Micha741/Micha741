@@ -264,7 +264,7 @@ add("C15", "CP", "10u/16V", "Capacitor_THT:CP_Radial_D5.0mm_P2.00mm", {1: "+5V",
 add("D13", "LED", "LED zelená", "LED_THT:LED_D5.0mm", {1: "LED_K", 2: "+5V"})
 R("R45", "470", "LED_K", "GND")
 verify.append(("Napájení (J5, F1, D12, U32)", "celý blok doplněn",
-               "Na předloze není – vstupní napětí 9–12 V DC a hodnoty kondenzátorů jsou typické pro 7805, ověřit na desce/adaptéru"))
+               "Na předloze není – 9 V nestabilizovaných + 7805 odpovídá servisnímu manuálu ZX Spectrum 128 (zdroj ZX power pack); u Gamy ověřit na adaptéru"))
 
 # blokovací kondenzátory 100n u každého IC
 _ics = [r for r in parts if parts[r]["sym"] in

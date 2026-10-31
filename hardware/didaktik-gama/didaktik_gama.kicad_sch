@@ -12308,7 +12308,7 @@
       (font
         (size 1.27 1.27)))
     (uuid "f5f6ac32-b8c9-543c-bc9e-cb5885c594d0"))
-  (text "• Napájení (J5, F1, D12, U32): celý blok doplněn – Na předloze není – vstupní napětí 9–12 V DC a hodnoty kondenzátorů jsou typické pro 7805, ověřit na desce/adaptéru"
+  (text "• Napájení (J5, F1, D12, U32): celý blok doplněn – Na předloze není – 9 V nestabilizovaných + 7805 odpovídá servisnímu manuálu ZX Spectrum 128 (zdroj ZX power pack); u Gamy ověřit na adaptéru"
     (at 560.00 346.40 0)
     (effects
       (font
