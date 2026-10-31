@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul
 setlocal
 rem Najde Python dodávaný s KiCadem (obsahuje modul pcbnew) – KiCad 9, 8 nebo 7
 set "KPY="
