@@ -89,6 +89,14 @@ ic("LM1889",
    [P(2, "R-Y"), P(4, "B-Y"), P(3, "BIAS"), None, P(17, "OSC"), P(1, "LEAD"), P(18, "LAG"), None, P(12, "VIDEO")],
    [P(13, "CHROMA"), None, P(15, "SND"), P(14, "RF_VCC", PW), P(16, "VCC", PW), P(5, "GND", PW), None]
    + [P(n, "NC", "no_connect") for n in range(6, 12)], w=15.24)
+ic("74HCT244", [P(2, "1A1"), P(4, "1A2"), P(6, "1A3"), P(8, "1A4"), P(11, "2A1"), P(13, "2A2"), P(15, "2A3"),
+                P(17, "2A4"), None, P(1, "~{1OE}"), P(19, "~{2OE}")],
+   [P(18, "1Y1"), P(16, "1Y2"), P(14, "1Y3"), P(12, "1Y4"), P(9, "2Y1"), P(7, "2Y2"), P(5, "2Y3"), P(3, "2Y4"),
+    None, P(20, "VCC", PW), P(10, "GND", PW)], w=12.7)
+ic("74HCT08", [P(1, "1A"), P(2, "1B"), None, P(4, "2A"), P(5, "2B"), None, P(9, "3A"), P(10, "3B"), None,
+               P(12, "4A"), P(13, "4B")],
+   [P(3, "1Y"), None, None, P(6, "2Y"), None, None, P(8, "3Y"), None, None, P(11, "4Y"), None, P(14, "VCC", PW),
+    P(7, "GND", PW)], w=12.7)
 ic("AD8032", [P(3, "+INA"), P(2, "-INA"), None, P(5, "+INB"), P(6, "-INB")],
    [P(1, "OUTA"), None, P(7, "OUTB"), None, P(8, "V+", PW), P(4, "V-", PW)], w=10.16, title="AD8032")
 ic("LM1881", [P(2, "VIDEO_IN"), P(6, "RSET"), P(8, "VCC", PW), P(4, "GND", PW)],
@@ -346,8 +354,9 @@ for i in range(8):
     at(f"U{17 + i}", grid(45 + i * 52), grid(265))
 # kodér/modulátor, konektory
 at("U30", grid(515), grid(70))
-at("U34", grid(570), grid(55))
-at("U35", grid(570), grid(85))
+at("J8", grid(505), grid(70))
+at("U37", grid(543), grid(70))
+at("U38", grid(582), grid(70))
 at("J1", grid(625), grid(80))
 at("J2", grid(670), grid(60))
 at("J4", grid(805), grid(100))
@@ -362,9 +371,8 @@ for i, r in enumerate(VIDEO_BLOCK):
 for i, r in enumerate(CONV_BLOCK):
     at(r, grid(560 + i * 17 + (12 if i >= CONV_BLOCK.index("U33") else 0) + (12 if i > CONV_BLOCK.index("U33") else 0)), grid(414))
 for i, r in enumerate(VGA_BLOCK):
-    at(r, grid(497 + (i % 18) * 16), grid(455 + (i // 18) * 27))
-at("U36", grid(720), grid(520))
-at("J7", grid(790), grid(530))
+    at(r, grid(500 + (i % 14) * 16), grid(130 + (i // 14) * 28))
+at("J7", grid(740), grid(130))
 PASSIVES = [r for r in parts if parts[r]["sym"] in ("R", "C", "CP", "D", "SW", "XTAL", "SPK", "NPN", "PNP", "NPN_ECB", "F", "LED", "L")
             and r not in POWER_BLOCK and r not in VIDEO_BLOCK and r not in CONV_BLOCK and r not in VGA_BLOCK]
 PASSIVES.sort(key=lambda r: (r.rstrip("0123456789"), int("".join(c for c in r if c.isdigit()) or 0)))
@@ -536,10 +544,8 @@ labels = [l for l in labels if "+5V_FLAG" not in l]
 notes = [
     txt("DIDAKTIK GAMA – SCHÉMA ZAPOJENIA (překresleno z tištěné předlohy)", 30, 20, 3),
     txt("Spoje jsou vedeny návěštími (labels) – stejné jméno = stejný net. ~{X} = aktivní v nule.", 30, 26, 1.8),
-    txt("KODÉR PAL LM1889 + KOMPOZITNÍ VÝSTUP", 500, 100, 2),
+    txt("VGA VÝSTUP (digitální RGB z modulu ULA s CPLD, 15 kHz)", 500, 112, 2),
     txt("NAPÁJENÍ (doplněno – na předloze jen +5V)", 500, 270, 2),
-    txt("MĚNIČ +12 V pro kodér (MC34063A, náhrada měniče ze Spectra)", 560, 397, 2),
-    txt("VGA VÝSTUP RGB 15 kHz (matice YUV->RGB + LM1881) – místo modulátoru", 497, 440, 2),
     txt("K OVĚŘENÍ (na předloze nečitelné / odhadnuté):", 560, 312, 2),
 ]
 for i, (where, what, why) in enumerate(verify):
@@ -605,7 +611,7 @@ GROUP = {"UA880D": "CPU", "27128": "ROM", "8255": "I/O", "ULA": "ULA", "4164": "
          "74LS157": "Multiplexer", "7400": "Logika", "7404": "Logika", "7410": "Logika", "7432": "Logika",
          "R": "Rezistor", "C": "Kondenzátor", "CP": "Kondenzátor", "D": "Dioda", "NPN": "Tranzistor",
          "SW": "Ostatní", "XTAL": "Ostatní", "SPK": "Ostatní", "CONN": "Konektor", "KODER": "Video",
-         "MODULATOR": "Video", "COIL1703": "Napájení", "MC34063": "Napájení", "AD8032": "Video", "LM1881": "Video", "VGA": "Konektor", "L": "Napájení", "PNP": "Tranzistor", "NPN_ECB": "Tranzistor", "7805": "Napájení", "LM1889": "Video", "F": "Napájení", "LED": "Napájení"}
+         "MODULATOR": "Video", "COIL1703": "Napájení", "MC34063": "Napájení", "AD8032": "Video", "LM1881": "Video", "VGA": "Konektor", "74HCT244": "Video", "74HCT08": "Video", "L": "Napájení", "PNP": "Tranzistor", "NPN_ECB": "Tranzistor", "7805": "Napájení", "LM1889": "Video", "F": "Napájení", "LED": "Napájení"}
 bom = defaultdict(list)
 for ref, p in parts.items():
     bom[(GROUP[p["sym"]], p["value"], p["fp"])].append(ref)

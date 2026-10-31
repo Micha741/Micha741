@@ -2,14 +2,9 @@ misto,co,proc
 U2 pin 20 (/CE),/ROMCS = ULA pin 34,U pinu 20 je jen kondenzátor 100p; připojení na ULA ROMCS je odhad
 U4 (ULA),pin GND není ve schématu nakreslen,Čísla pinů 36/37 (A14/A15) a 2 (/WR) jsou na předloze rozmazaná – převzato dle zapojení ZX ULA
 "MG / zvuk (D9–D11, LS1, T3)","horní konce reproduktoru, diod a 10n","Na předloze končí bez označení – připojeno na GND; zapojení KC507 přepsáno doslova, ověřit"
-U33 MC34063A (měnič +12 V),náhrada měniče Spectra (TR4/TR5 + cívka 1703),"Zapojení boost podle aplikační poznámky MC34063; Rsc 0R33 = proudové omezení ~0,9 A, Ct 1n5 ~ 30 kHz – ověřit s datasheetem"
-U30 LM1889 + okolí,překresleno ze schématu ZX Spectrum Issue 1/2,"Předloha Gamy má jen blok KÓDER – ověřit, že Gama používá stejné zapojení (typ obvodu na desce)"
-U30 pin 16,chroma supply na +12VA,Ve schématu Spectra není spoj pinu 16 jasně vidět; podle manuálu je to napájení chroma
-"VGA výstup (U34–U36, J7)","RGB 15,6 kHz + CSYNC na pinu 13, VSYNC na pinu 14","Běžný VGA monitor chce 31 kHz – potřeba monitor s 15 kHz nebo převodník (GBS-8200, OSSC, RetroTINK)"
-R76–R97 (matice YUV->RGB),"poměry R = Y+V, B = Y+U, G = Y-(U+V)",Úrovně U/V z ULA nejsou dokumentované – trimry nastavit podle bílé/černé a barevných pruhů; G kanál nejcitlivější
-U36 LM1881,"vstup z Y přes 100n, Rset 680k || 100n","Podle katalogového listu LM1881; ověřit, že Y z ULA má 0,5–2 Vpp"
-U31/J3 modulátor,odstraněn,Nahrazen výstupem VGA; zůstává kompozitní cinch J6
-"T4, R46, C62, R47, J6",kompozitní video výstup,"Doplněno (na předloze není) – přímý výstup CVBS pro monitor/TV se vstupem AV, obchází modulátor"
+U4 patice ULA,"osadit modul s CPLD (XC95144XL + firmware zx_ula, GPL) místo originální ULA","Modul je samostatná deska (40 vývodů do patice + výstup RGB na J8) – zatím nenakreslen; piny 15–17 (U, V, Y) nezapojeny"
+J8 / VGA výstup,"digitální RGB + BRIGHT + CSYNC/VSYNC z modulu, 15,6 kHz","Běžný VGA monitor chce 31 kHz – potřeba monitor s 15 kHz nebo převodník (GBS-8200, OSSC, RetroTINK)"
+R76–R81 (převodník),"680R + 1k5 do 75R monitoru: 0,50 V normální, 0,69 V jas",Vypočteno pro výstup 74HCT244 při 5 V; přesnost závisí na výstupním odporu hradla
 U7/U8 vstupy,přiřazení A/B vstupů LS157,Na předloze jsou vidět jen odbočky z adresové sběrnice – řádek An / sloupec An+7 je odvozeno funkčně
 U5 pin 10,sloupcový bit RA7 = BANK (PC0 8255),Funkční odhad: horních 32K je 2x32K banka přepínaná PC0
 U27 pin 10,= A15,"Vstup přichází z adresové sběrnice, konkrétní linka nečitelná"
