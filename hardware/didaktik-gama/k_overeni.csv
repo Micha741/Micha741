@@ -3,7 +3,8 @@ U2 pin 20 (/CE),/ROMCS = ULA pin 34,U pinu 20 je jen kondenzátor 100p; připoje
 U4 (ULA),pin GND není ve schématu nakreslen,Čísla pinů 36/37 (A14/A15) a 2 (/WR) jsou na předloze rozmazaná – převzato dle zapojení ZX ULA
 "MG / zvuk (D9–D11, LS1, T3)","horní konce reproduktoru, diod a 10n","Na předloze končí bez označení – připojeno na GND; zapojení KC507 přepsáno doslova, ověřit"
 L1 (cívka 1703),"dvě vinutí: primár VIN–spínač, zpětná vazba R74–báze T8",Počet závitů / indukčnost cívky Sinclair 1703 schéma neuvádí; začátky vinutí (tečky) dle schématu Spectra
-"T7, T8","náhrady ZTX213 -> KF517 (PNP), ZTX651 -> KD139/BD139 (NPN)","Pinout pouzder se liší od ZTX (E-B-C), osadit podle skutečného tranzistoru"
+T7 KF517,náhrada ZTX213 ověřena katalogovým listem TESLA,"PNP, -Uceo 30 V, -Ic 600 mA, Pc 0,8 W, pouzdro K505 (TO-39): vývody E-B-C, výstupek u E; kolektor je spojen s pouzdrem – nesmí se dotýkat okolí"
+T8 KD139,náhrada ZTX651 (NPN),"Pinout pouzdra TO-126 se liší od ZTX, osadit podle skutečného tranzistoru"
 "C80, R73","úprava stability měniče z manuálu (4u7 E–B T5, R60 270R)",Doporučeno servisním manuálem Spectra pro desky Issue 2/3
 U30 LM1889 + okolí,překresleno ze schématu ZX Spectrum Issue 1/2,"Předloha Gamy má jen blok KÓDER – ověřit, že Gama používá stejné zapojení (typ obvodu na desce)"
 U30 pin 16,chroma supply na +12VA,Ve schématu Spectra není spoj pinu 16 jasně vidět; podle manuálu je to napájení chroma

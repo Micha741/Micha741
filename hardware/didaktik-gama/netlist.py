@@ -197,8 +197,9 @@ R("R75", "15R (Sp R61)", "+12V", "+12VA")
 add("C79", "CP", "100u/16V (Sp C45)", "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm", {1: "+12VA", 2: "GND"})
 verify.append(("L1 (cívka 1703)", "dvě vinutí: primár VIN–spínač, zpětná vazba R74–báze T8",
                "Počet závitů / indukčnost cívky Sinclair 1703 schéma neuvádí; začátky vinutí (tečky) dle schématu Spectra"))
-verify.append(("T7, T8", "náhrady ZTX213 -> KF517 (PNP), ZTX651 -> KD139/BD139 (NPN)",
-               "Pinout pouzder se liší od ZTX (E-B-C), osadit podle skutečného tranzistoru"))
+verify.append(("T7 KF517", "náhrada ZTX213 ověřena katalogovým listem TESLA",
+               "PNP, -Uceo 30 V, -Ic 600 mA, Pc 0,8 W, pouzdro K505 (TO-39): vývody E-B-C, výstupek u E; kolektor je spojen s pouzdrem – nesmí se dotýkat okolí"))
+verify.append(("T8 KD139", "náhrada ZTX651 (NPN)", "Pinout pouzdra TO-126 se liší od ZTX, osadit podle skutečného tranzistoru"))
 verify.append(("C80, R73", "úprava stability měniče z manuálu (4u7 E–B T5, R60 270R)",
                "Doporučeno servisním manuálem Spectra pro desky Issue 2/3"))
 

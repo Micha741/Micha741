@@ -13924,90 +13924,96 @@
       (font
         (size 1.27 1.27)))
     (uuid "813ff522-76ed-5141-a02b-68ea3ad87c29"))
-  (text "• T7, T8: náhrady ZTX213 -> KF517 (PNP), ZTX651 -> KD139/BD139 (NPN) – Pinout pouzder se liší od ZTX (E-B-C), osadit podle skutečného tranzistoru"
+  (text "• T7 KF517: náhrada ZTX213 ověřena katalogovým listem TESLA – PNP, -Uceo 30 V, -Ic 600 mA, Pc 0,8 W, pouzdro K505 (TO-39): vývody E-B-C, výstupek u E; kolektor je spojen s pouzdrem – nesmí se dotýkat okolí"
     (at 560.00 334.80 0)
     (effects
       (font
         (size 1.27 1.27)))
     (uuid "b4d9dbb4-afbd-5632-b296-81c05cdb8c9c"))
-  (text "• C80, R73: úprava stability měniče z manuálu (4u7 E–B T5, R60 270R) – Doporučeno servisním manuálem Spectra pro desky Issue 2/3"
+  (text "• T8 KD139: náhrada ZTX651 (NPN) – Pinout pouzdra TO-126 se liší od ZTX, osadit podle skutečného tranzistoru"
     (at 560.00 339.00 0)
     (effects
       (font
         (size 1.27 1.27)))
     (uuid "6fee67f1-6cf0-5f75-ba10-9d1d6982b0fb"))
-  (text "• U30 LM1889 + okolí: překresleno ze schématu ZX Spectrum Issue 1/2 – Předloha Gamy má jen blok KÓDER – ověřit, že Gama používá stejné zapojení (typ obvodu na desce)"
+  (text "• C80, R73: úprava stability měniče z manuálu (4u7 E–B T5, R60 270R) – Doporučeno servisním manuálem Spectra pro desky Issue 2/3"
     (at 560.00 343.20 0)
     (effects
       (font
         (size 1.27 1.27)))
     (uuid "ed00c242-25bc-5256-b0b0-dd8807bdbc45"))
-  (text "• U30 pin 16: chroma supply na +12VA – Ve schématu Spectra není spoj pinu 16 jasně vidět; podle manuálu je to napájení chroma"
+  (text "• U30 LM1889 + okolí: překresleno ze schématu ZX Spectrum Issue 1/2 – Předloha Gamy má jen blok KÓDER – ověřit, že Gama používá stejné zapojení (typ obvodu na desce)"
     (at 560.00 347.40 0)
     (effects
       (font
         (size 1.27 1.27)))
     (uuid "413b807f-e03c-574e-9bbc-3c8eacd1ccf4"))
-  (text "• U31 (modulátor): vývody modulu +5V / VIDEO / GND / VF – Modul je na předloze jen blok; pořadí vývodů podle konkrétního modulu"
+  (text "• U30 pin 16: chroma supply na +12VA – Ve schématu Spectra není spoj pinu 16 jasně vidět; podle manuálu je to napájení chroma"
     (at 560.00 351.60 0)
     (effects
       (font
         (size 1.27 1.27)))
     (uuid "fc82e83b-eb51-5c66-9c12-c64e052ac4d7"))
-  (text "• T4, R46, C62, R47, J6: kompozitní video výstup – Doplněno (na předloze není) – přímý výstup CVBS pro monitor/TV se vstupem AV, obchází modulátor"
+  (text "• U31 (modulátor): vývody modulu +5V / VIDEO / GND / VF – Modul je na předloze jen blok; pořadí vývodů podle konkrétního modulu"
     (at 560.00 355.80 0)
     (effects
       (font
         (size 1.27 1.27)))
     (uuid "903a5cde-2f1c-5119-80db-994a4ab0f42d"))
-  (text "• U7/U8 vstupy: přiřazení A/B vstupů LS157 – Na předloze jsou vidět jen odbočky z adresové sběrnice – řádek An / sloupec An+7 je odvozeno funkčně"
+  (text "• T4, R46, C62, R47, J6: kompozitní video výstup – Doplněno (na předloze není) – přímý výstup CVBS pro monitor/TV se vstupem AV, obchází modulátor"
     (at 560.00 360.00 0)
     (effects
       (font
         (size 1.27 1.27)))
     (uuid "8284b74a-d4c9-5695-b765-adf0058a9c14"))
-  (text "• U5 pin 10: sloupcový bit RA7 = BANK (PC0 8255) – Funkční odhad: horních 32K je 2x32K banka přepínaná PC0"
+  (text "• U7/U8 vstupy: přiřazení A/B vstupů LS157 – Na předloze jsou vidět jen odbočky z adresové sběrnice – řádek An / sloupec An+7 je odvozeno funkčně"
     (at 560.00 364.20 0)
     (effects
       (font
         (size 1.27 1.27)))
     (uuid "e3b3165c-68c5-5013-812c-63339254a896"))
-  (text "• U27 pin 10: = A15 – Vstup přichází z adresové sběrnice, konkrétní linka nečitelná"
+  (text "• U5 pin 10: sloupcový bit RA7 = BANK (PC0 8255) – Funkční odhad: horních 32K je 2x32K banka přepínaná PC0"
     (at 560.00 368.40 0)
     (effects
       (font
         (size 1.27 1.27)))
     (uuid "81431fb8-0654-5a1b-8924-d93da2dfdae5"))
-  (text "• U28 (CS 8255): 3vstupé NAND: ~A7, IORQ, /M1 – Typ hradla a třetí vstup (/M1) odhadnuty; port 8255 = A7=0 (1Fh/3Fh/5Fh/7Fh)"
+  (text "• U27 pin 10: = A15 – Vstup přichází z adresové sběrnice, konkrétní linka nečitelná"
     (at 560.00 372.60 0)
     (effects
       (font
         (size 1.27 1.27)))
     (uuid "37a694e8-9752-5de9-a28e-0dd5b0fc6ea8"))
-  (text "• U29D (/WE64): vstupy 12 = /WR, 13 = /MREQ – Výstup 11 jde na /WE 4164 – vstupy na předloze nejasné"
+  (text "• U28 (CS 8255): 3vstupé NAND: ~A7, IORQ, /M1 – Typ hradla a třetí vstup (/M1) odhadnuty; port 8255 = A7=0 (1Fh/3Fh/5Fh/7Fh)"
     (at 560.00 376.80 0)
     (effects
       (font
         (size 1.27 1.27)))
     (uuid "108c62f5-bf0e-5929-8ea4-35c5bf0f2035"))
-  (text "• C9: 100p z MUX2_D na GND – Druhý konec kondenzátoru na předloze nejasný"
+  (text "• U29D (/WE64): vstupy 12 = /WR, 13 = /MREQ – Výstup 11 jde na /WE 4164 – vstupy na předloze nejasné"
     (at 560.00 381.00 0)
     (effects
       (font
         (size 1.27 1.27)))
     (uuid "f3d1df44-23ac-5871-a41d-e30d12c31971"))
-  (text "• Napájení (J5, F1, D12, U32): celý blok doplněn – Na předloze není – 9 V nestabilizovaných + 7805 odpovídá servisnímu manuálu ZX Spectrum 128 (zdroj ZX power pack); u Gamy ověřit na adaptéru"
+  (text "• C9: 100p z MUX2_D na GND – Druhý konec kondenzátoru na předloze nejasný"
     (at 560.00 385.20 0)
     (effects
       (font
         (size 1.27 1.27)))
     (uuid "55e14f70-c5fa-5f5b-b3f5-d0bc15ca46de"))
-  (text "• C20–C61: blokování napájení – Doplněno: 100n u každého IC (u napájecích pinů), 47u u bank 4164 a 2118"
+  (text "• Napájení (J5, F1, D12, U32): celý blok doplněn – Na předloze není – 9 V nestabilizovaných + 7805 odpovídá servisnímu manuálu ZX Spectrum 128 (zdroj ZX power pack); u Gamy ověřit na adaptéru"
     (at 560.00 389.40 0)
     (effects
       (font
         (size 1.27 1.27)))
     (uuid "234b19b8-8342-5ad5-a049-b142855dfe10"))
+  (text "• C20–C61: blokování napájení – Doplněno: 100n u každého IC (u napájecích pinů), 47u u bank 4164 a 2118"
+    (at 560.00 393.60 0)
+    (effects
+      (font
+        (size 1.27 1.27)))
+    (uuid "5d7a07b0-5e95-5f5c-9d92-32b42de41f8e"))
   (symbol
     (lib_id "gama:UA880D")
     (at 55.88 93.98 0)

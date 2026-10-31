@@ -11,20 +11,21 @@
 <text x="560.00" y="322.20" font-size="1.524" fill="#008">• U4 (ULA): pin GND není ve schématu nakreslen – Čísla pinů 36/37 (A14/A15) a 2 (/WR) jsou na předloze rozmazaná – převzato dle zapojení ZX ULA</text>
 <text x="560.00" y="326.40" font-size="1.524" fill="#008">• MG / zvuk (D9–D11, LS1, T3): horní konce reproduktoru, diod a 10n – Na předloze končí bez označení – připojeno na GND; zapojení KC507 přepsáno doslova, ověřit</text>
 <text x="560.00" y="330.60" font-size="1.524" fill="#008">• L1 (cívka 1703): dvě vinutí: primár VIN–spínač, zpětná vazba R74–báze T8 – Počet závitů / indukčnost cívky Sinclair 1703 schéma neuvádí; začátky vinutí (tečky) dle schématu Spectra</text>
-<text x="560.00" y="334.80" font-size="1.524" fill="#008">• T7, T8: náhrady ZTX213 -&gt; KF517 (PNP), ZTX651 -&gt; KD139/BD139 (NPN) – Pinout pouzder se liší od ZTX (E-B-C), osadit podle skutečného tranzistoru</text>
-<text x="560.00" y="339.00" font-size="1.524" fill="#008">• C80, R73: úprava stability měniče z manuálu (4u7 E–B T5, R60 270R) – Doporučeno servisním manuálem Spectra pro desky Issue 2/3</text>
-<text x="560.00" y="343.20" font-size="1.524" fill="#008">• U30 LM1889 + okolí: překresleno ze schématu ZX Spectrum Issue 1/2 – Předloha Gamy má jen blok KÓDER – ověřit, že Gama používá stejné zapojení (typ obvodu na desce)</text>
-<text x="560.00" y="347.40" font-size="1.524" fill="#008">• U30 pin 16: chroma supply na +12VA – Ve schématu Spectra není spoj pinu 16 jasně vidět; podle manuálu je to napájení chroma</text>
-<text x="560.00" y="351.60" font-size="1.524" fill="#008">• U31 (modulátor): vývody modulu +5V / VIDEO / GND / VF – Modul je na předloze jen blok; pořadí vývodů podle konkrétního modulu</text>
-<text x="560.00" y="355.80" font-size="1.524" fill="#008">• T4, R46, C62, R47, J6: kompozitní video výstup – Doplněno (na předloze není) – přímý výstup CVBS pro monitor/TV se vstupem AV, obchází modulátor</text>
-<text x="560.00" y="360.00" font-size="1.524" fill="#008">• U7/U8 vstupy: přiřazení A/B vstupů LS157 – Na předloze jsou vidět jen odbočky z adresové sběrnice – řádek An / sloupec An+7 je odvozeno funkčně</text>
-<text x="560.00" y="364.20" font-size="1.524" fill="#008">• U5 pin 10: sloupcový bit RA7 = BANK (PC0 8255) – Funkční odhad: horních 32K je 2x32K banka přepínaná PC0</text>
-<text x="560.00" y="368.40" font-size="1.524" fill="#008">• U27 pin 10: = A15 – Vstup přichází z adresové sběrnice, konkrétní linka nečitelná</text>
-<text x="560.00" y="372.60" font-size="1.524" fill="#008">• U28 (CS 8255): 3vstupé NAND: ~A7, IORQ, /M1 – Typ hradla a třetí vstup (/M1) odhadnuty; port 8255 = A7=0 (1Fh/3Fh/5Fh/7Fh)</text>
-<text x="560.00" y="376.80" font-size="1.524" fill="#008">• U29D (/WE64): vstupy 12 = /WR, 13 = /MREQ – Výstup 11 jde na /WE 4164 – vstupy na předloze nejasné</text>
-<text x="560.00" y="381.00" font-size="1.524" fill="#008">• C9: 100p z MUX2_D na GND – Druhý konec kondenzátoru na předloze nejasný</text>
-<text x="560.00" y="385.20" font-size="1.524" fill="#008">• Napájení (J5, F1, D12, U32): celý blok doplněn – Na předloze není – 9 V nestabilizovaných + 7805 odpovídá servisnímu manuálu ZX Spectrum 128 (zdroj ZX power pack); u Gamy ověřit na adaptéru</text>
-<text x="560.00" y="389.40" font-size="1.524" fill="#008">• C20–C61: blokování napájení – Doplněno: 100n u každého IC (u napájecích pinů), 47u u bank 4164 a 2118</text>
+<text x="560.00" y="334.80" font-size="1.524" fill="#008">• T7 KF517: náhrada ZTX213 ověřena katalogovým listem TESLA – PNP, -Uceo 30 V, -Ic 600 mA, Pc 0,8 W, pouzdro K505 (TO-39): vývody E-B-C, výstupek u E; kolektor je spojen s pouzdrem – nesmí se dotýkat okolí</text>
+<text x="560.00" y="339.00" font-size="1.524" fill="#008">• T8 KD139: náhrada ZTX651 (NPN) – Pinout pouzdra TO-126 se liší od ZTX, osadit podle skutečného tranzistoru</text>
+<text x="560.00" y="343.20" font-size="1.524" fill="#008">• C80, R73: úprava stability měniče z manuálu (4u7 E–B T5, R60 270R) – Doporučeno servisním manuálem Spectra pro desky Issue 2/3</text>
+<text x="560.00" y="347.40" font-size="1.524" fill="#008">• U30 LM1889 + okolí: překresleno ze schématu ZX Spectrum Issue 1/2 – Předloha Gamy má jen blok KÓDER – ověřit, že Gama používá stejné zapojení (typ obvodu na desce)</text>
+<text x="560.00" y="351.60" font-size="1.524" fill="#008">• U30 pin 16: chroma supply na +12VA – Ve schématu Spectra není spoj pinu 16 jasně vidět; podle manuálu je to napájení chroma</text>
+<text x="560.00" y="355.80" font-size="1.524" fill="#008">• U31 (modulátor): vývody modulu +5V / VIDEO / GND / VF – Modul je na předloze jen blok; pořadí vývodů podle konkrétního modulu</text>
+<text x="560.00" y="360.00" font-size="1.524" fill="#008">• T4, R46, C62, R47, J6: kompozitní video výstup – Doplněno (na předloze není) – přímý výstup CVBS pro monitor/TV se vstupem AV, obchází modulátor</text>
+<text x="560.00" y="364.20" font-size="1.524" fill="#008">• U7/U8 vstupy: přiřazení A/B vstupů LS157 – Na předloze jsou vidět jen odbočky z adresové sběrnice – řádek An / sloupec An+7 je odvozeno funkčně</text>
+<text x="560.00" y="368.40" font-size="1.524" fill="#008">• U5 pin 10: sloupcový bit RA7 = BANK (PC0 8255) – Funkční odhad: horních 32K je 2x32K banka přepínaná PC0</text>
+<text x="560.00" y="372.60" font-size="1.524" fill="#008">• U27 pin 10: = A15 – Vstup přichází z adresové sběrnice, konkrétní linka nečitelná</text>
+<text x="560.00" y="376.80" font-size="1.524" fill="#008">• U28 (CS 8255): 3vstupé NAND: ~A7, IORQ, /M1 – Typ hradla a třetí vstup (/M1) odhadnuty; port 8255 = A7=0 (1Fh/3Fh/5Fh/7Fh)</text>
+<text x="560.00" y="381.00" font-size="1.524" fill="#008">• U29D (/WE64): vstupy 12 = /WR, 13 = /MREQ – Výstup 11 jde na /WE 4164 – vstupy na předloze nejasné</text>
+<text x="560.00" y="385.20" font-size="1.524" fill="#008">• C9: 100p z MUX2_D na GND – Druhý konec kondenzátoru na předloze nejasný</text>
+<text x="560.00" y="389.40" font-size="1.524" fill="#008">• Napájení (J5, F1, D12, U32): celý blok doplněn – Na předloze není – 9 V nestabilizovaných + 7805 odpovídá servisnímu manuálu ZX Spectrum 128 (zdroj ZX power pack); u Gamy ověřit na adaptéru</text>
+<text x="560.00" y="393.60" font-size="1.524" fill="#008">• C20–C61: blokování napájení – Doplněno: 100n u každého IC (u napájecích pinů), 47u u bank 4164 a 2118</text>
 <rect x="45.72" y="66.04" width="20.32" height="58.42" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
 <text x="55.88" y="65.04" font-size="1.8" text-anchor="middle" fill="#066">U1</text>
 <text x="55.88" y="126.76" font-size="1.5" text-anchor="middle" fill="#066">UA880D (Z80)</text>
