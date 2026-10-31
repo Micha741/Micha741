@@ -5,7 +5,7 @@ import csv, os, sys, uuid
 from collections import defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from netlist import parts, verify, POWER_BLOCK, VIDEO_BLOCK, CONV_BLOCK, VGA_BLOCK  # noqa: E402
+from netlist import parts, verify, POWER_BLOCK, VIDEO_BLOCK, CONV_BLOCK, VGA_BLOCK, USB_BLOCK  # noqa: E402
 
 OUT = os.path.dirname(os.path.abspath(__file__))
 G = 2.54
@@ -89,6 +89,21 @@ ic("LM1889",
    [P(2, "R-Y"), P(4, "B-Y"), P(3, "BIAS"), None, P(17, "OSC"), P(1, "LEAD"), P(18, "LAG"), None, P(12, "VIDEO")],
    [P(13, "CHROMA"), None, P(15, "SND"), P(14, "RF_VCC", PW), P(16, "VCC", PW), P(5, "GND", PW), None]
    + [P(n, "NC", "no_connect") for n in range(6, 12)], w=15.24)
+ic("PICO",
+   [P(1, "GP0"), P(2, "GP1"), P(4, "GP2"), P(5, "GP3"), P(6, "GP4"), P(7, "GP5"), P(9, "GP6"), P(10, "GP7"),
+    P(11, "GP8"), P(12, "GP9"), P(14, "GP10"), P(15, "GP11"), P(16, "GP12"), P(17, "GP13"), P(19, "GP14"),
+    P(20, "GP15"), None, P(3, "GND", PW), P(8, "GND", PW), P(13, "GND", PW), P(18, "GND", PW)],
+   [P(40, "VBUS", PW), P(39, "VSYS", PW), P(37, "3V3_EN"), P(36, "3V3_OUT", PW), P(35, "ADC_VREF"), P(34, "GP28"),
+    P(32, "GP27"), P(31, "GP26"), P(30, "RUN"), P(29, "GP22"), P(27, "GP21"), P(26, "GP20"), P(25, "GP19"),
+    P(24, "GP18"), P(22, "GP17"), P(21, "GP16"), None, P(23, "GND", PW), P(28, "GND", PW), P(33, "GND", PW),
+    P(38, "GND", PW)], w=20.32, title="RPi Pico")
+ic("74LVC245", [P(2, "A1"), P(3, "A2"), P(4, "A3"), P(5, "A4"), P(6, "A5"), P(7, "A6"), P(8, "A7"), P(9, "A8"),
+                None, P(1, "DIR"), P(19, "~{OE}")],
+   [P(18, "B1"), P(17, "B2"), P(16, "B3"), P(15, "B4"), P(14, "B5"), P(13, "B6"), P(12, "B7"), P(11, "B8"),
+    None, P(20, "VCC", PW), P(10, "GND", PW)], w=12.7)
+ic("74LVC07", [P(1, "1A"), P(3, "2A"), P(5, "3A"), P(9, "4A"), P(11, "5A"), P(13, "6A")],
+   [P(2, "1Y"), P(4, "2Y"), P(6, "3Y"), P(8, "4Y"), P(10, "5Y"), P(12, "6Y"), None, P(14, "VCC", PW),
+    P(7, "GND", PW)], w=12.7)
 ic("74HCT244", [P(2, "1A1"), P(4, "1A2"), P(6, "1A3"), P(8, "1A4"), P(11, "2A1"), P(13, "2A2"), P(15, "2A3"),
                 P(17, "2A4"), None, P(1, "~{1OE}"), P(19, "~{2OE}")],
    [P(18, "1Y1"), P(16, "1Y2"), P(14, "1Y3"), P(12, "1Y4"), P(9, "2Y1"), P(7, "2Y2"), P(5, "2Y3"), P(3, "2Y4"),
@@ -373,8 +388,13 @@ for i, r in enumerate(CONV_BLOCK):
 for i, r in enumerate(VGA_BLOCK):
     at(r, grid(500 + (i % 14) * 16), grid(130 + (i // 14) * 28))
 at("J7", grid(740), grid(130))
+at("U39", grid(560), grid(470))
+at("U40", grid(650), grid(462))
+at("U41", grid(730), grid(462))
+for i, r in enumerate(USB_BLOCK):
+    at(r, grid(630 + i * 16), grid(530))
 PASSIVES = [r for r in parts if parts[r]["sym"] in ("R", "C", "CP", "D", "SW", "XTAL", "SPK", "NPN", "PNP", "NPN_ECB", "F", "LED", "L")
-            and r not in POWER_BLOCK and r not in VIDEO_BLOCK and r not in CONV_BLOCK and r not in VGA_BLOCK]
+            and r not in POWER_BLOCK and r not in VIDEO_BLOCK and r not in CONV_BLOCK and r not in VGA_BLOCK and r not in USB_BLOCK]
 PASSIVES.sort(key=lambda r: (r.rstrip("0123456789"), int("".join(c for c in r if c.isdigit()) or 0)))
 col, row = 0, 0
 for r in PASSIVES:
@@ -546,6 +566,7 @@ notes = [
     txt("Spoje jsou vedeny návěštími (labels) – stejné jméno = stejný net. ~{X} = aktivní v nule.", 30, 26, 1.8),
     txt("VGA VÝSTUP (digitální RGB z modulu ULA s CPLD, 15 kHz)", 500, 112, 2),
     txt("NAPÁJENÍ (doplněno – na předloze jen +5V)", 500, 270, 2),
+    txt("USB KLÁVESNICE (RPi Pico jako USB host, emulace matice A8–A15 / KB1–KB5)", 520, 412, 2),
     txt("K OVĚŘENÍ (na předloze nečitelné / odhadnuté):", 560, 312, 2),
 ]
 for i, (where, what, why) in enumerate(verify):
@@ -611,7 +632,7 @@ GROUP = {"UA880D": "CPU", "27128": "ROM", "8255": "I/O", "ULA": "ULA", "4164": "
          "74LS157": "Multiplexer", "7400": "Logika", "7404": "Logika", "7410": "Logika", "7432": "Logika",
          "R": "Rezistor", "C": "Kondenzátor", "CP": "Kondenzátor", "D": "Dioda", "NPN": "Tranzistor",
          "SW": "Ostatní", "XTAL": "Ostatní", "SPK": "Ostatní", "CONN": "Konektor", "KODER": "Video",
-         "MODULATOR": "Video", "COIL1703": "Napájení", "MC34063": "Napájení", "AD8032": "Video", "LM1881": "Video", "VGA": "Konektor", "74HCT244": "Video", "74HCT08": "Video", "L": "Napájení", "PNP": "Tranzistor", "NPN_ECB": "Tranzistor", "7805": "Napájení", "LM1889": "Video", "F": "Napájení", "LED": "Napájení"}
+         "MODULATOR": "Video", "COIL1703": "Napájení", "MC34063": "Napájení", "AD8032": "Video", "LM1881": "Video", "VGA": "Konektor", "PICO": "Klávesnice USB", "74LVC245": "Klávesnice USB", "74LVC07": "Klávesnice USB", "74HCT244": "Video", "74HCT08": "Video", "L": "Napájení", "PNP": "Tranzistor", "NPN_ECB": "Tranzistor", "7805": "Napájení", "LM1889": "Video", "F": "Napájení", "LED": "Napájení"}
 bom = defaultdict(list)
 for ref, p in parts.items():
     bom[(GROUP[p["sym"]], p["value"], p["fp"])].append(ref)

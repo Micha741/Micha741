@@ -170,6 +170,43 @@ verify.append(("J8 / VGA výstup", "digitální RGB + BRIGHT + CSYNC/VSYNC z mod
 verify.append(("R76–R81 (převodník)", "680R + 1k5 do 75R monitoru: 0,50 V normální, 0,69 V jas",
                "Vypočteno pro výstup 74HCT244 při 5 V; přesnost závisí na výstupním odporu hradla"))
 
+# ---------------------------------------------------------------- USB klávesnice (doplněno)
+# Raspberry Pi Pico jako USB host (redukce OTG) emuluje matici klávesnice: čte A8–A15 přes 74LVC245
+# (5 V -> 3,3 V) a stahuje KB1–KB5 přes 74LVC07 (otevřený kolektor, paralelně s původní klávesnicí).
+USB_BLOCK = []
+def uR(ref, val, a_, b_):
+    R(ref, val, a_, b_); USB_BLOCK.append(ref)
+def uC(ref, val, a_, b_):
+    C(ref, val, a_, b_); USB_BLOCK.append(ref)
+pico = {3: "GND", 8: "GND", 13: "GND", 18: "GND", 23: "GND", 28: "GND", 33: "GND", 38: "GND",
+        36: "+3V3_KBD", 37: None, 39: None, 40: "+5V", 30: None, 35: None}
+gp_pin = {0: 1, 1: 2, 2: 4, 3: 5, 4: 6, 5: 7, 6: 9, 7: 10, 8: 11, 9: 12, 10: 14, 11: 15, 12: 16,
+          13: 17, 14: 19, 15: 20, 16: 21, 17: 22, 18: 24, 19: 25, 20: 26, 21: 27, 22: 29,
+          26: 31, 27: 32, 28: 34}
+for g, pn in gp_pin.items():
+    pico[pn] = None
+for i in range(8):
+    pico[gp_pin[i]] = f"KBD_A{8 + i}"          # GP0..GP7 = A8..A15 (3,3 V)
+for i in range(5):
+    pico[gp_pin[8 + i]] = f"KBD_KB{i + 1}"     # GP8..GP12 -> KB1..KB5 (přes 74LVC07)
+pico[gp_pin[13]] = "KBD_RST"                   # GP13 -> /RESET (Ctrl+Alt+Del)
+add("U39", "PICO", "Raspberry Pi Pico (USB host)", "", pico)
+add("U40", "74LVC245", "74LVC245", "Package_SO:SOIC-20W_7.5x12.8mm_P1.27mm", {
+    1: "+3V3_KBD", 19: "GND", 10: "GND", 20: "+3V3_KBD",
+    **{2 + i: f"A{8 + i}" for i in range(8)},
+    **{18 - i: f"KBD_A{8 + i}" for i in range(8)}})
+add("U41", "74LVC07", "74LVC07", "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm", {
+    1: "KBD_KB1", 2: "KB1", 3: "KBD_KB2", 4: "KB2", 5: "KBD_KB3", 6: "KB3",
+    9: "KBD_KB4", 8: "KB4", 11: "KBD_KB5", 10: "KB5", 13: "KBD_RST", 12: "/RESET",
+    7: "GND", 14: "+3V3_KBD"})
+for i in range(6):
+    uR(f"R{90 + i}", "10k", "+3V3_KBD", ["KBD_KB1", "KBD_KB2", "KBD_KB3", "KBD_KB4", "KBD_KB5", "KBD_RST"][i])
+uC("C83", "100n", "+3V3_KBD", "GND"); uC("C84", "100n", "+3V3_KBD", "GND")
+verify.append(("U39 Raspberry Pi Pico", "USB host přes micro-USB a redukci OTG, napájení +5V do VBUS (pin 40)",
+               "Potřebuje firmware (TinyUSB host HID + emulace matice 8x5); pull-upy 10k drží KB1–5 a /RESET uvolněné, dokud Pico nenaběhne"))
+verify.append(("U40/U41 74LVC245, 74LVC07", "převod úrovní 5 V <-> 3,3 V",
+               "Vstupy LVC snesou 5 V při napájení 3,3 V; 74LVC07 má otevřený kolektor – KB linky dál táhnou původní pull-upy 10k na +5V"))
+
 # ---------------------------------------------------------------- video RAM 8x2118 (16K)
 # piny 2118 podle čísel u vodičů na předloze
 p2118_addr = {"VA3": 13, "VA4": 12, "VA5": 10, "VA6": 6, "VA0": 5, "VA1": 11, "VA2": 7}
