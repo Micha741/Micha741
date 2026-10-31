@@ -3,9 +3,6 @@
 <rect x="10" y="10" width="821" height="574" fill="none" stroke="#800" stroke-width="0.3"/>
 <text x="30.00" y="20.00" font-size="3.5999999999999996" fill="#008">DIDAKTIK GAMA – SCHÉMA ZAPOJENIA (překresleno z tištěné předlohy)</text>
 <text x="30.00" y="26.00" font-size="2.16" fill="#008">Spoje jsou vedeny návěštími (labels) – stejné jméno = stejný net. X = aktivní v nule.</text>
-<text x="500.00" y="112.00" font-size="2.4" fill="#008">VGA VÝSTUP (digitální RGB z modulu ULA s CPLD, 15 kHz)</text>
-<text x="500.00" y="270.00" font-size="2.4" fill="#008">NAPÁJENÍ (doplněno – na předloze jen +5V)</text>
-<text x="520.00" y="412.00" font-size="2.4" fill="#008">USB KLÁVESNICE (RPi Pico jako USB host, emulace matice A8–A15 / KB1–KB5)</text>
 <text x="560.00" y="312.00" font-size="2.4" fill="#008">K OVĚŘENÍ (na předloze nečitelné / odhadnuté):</text>
 <text x="560.00" y="318.00" font-size="1.38" fill="#008">• U2 pin 20 (/CE): /ROMCS = ULA pin 34 – U pinu 20 je jen kondenzátor 100p; připojení na ULA ROMCS je odhad</text>
 <text x="560.00" y="321.40" font-size="1.38" fill="#008">• U4 (ULA): pin GND není ve schématu nakreslen – Čísla pinů 36/37 (A14/A15) a 2 (/WR) jsou na předloze rozmazaná – převzato dle zapojení ZX ULA</text>
@@ -24,6 +21,9 @@
 <text x="560.00" y="365.60" font-size="1.38" fill="#008">• U32 spínaný stabilizátor: R-78E5.0-1.0 místo MA7805 (stejné vývody IN-GND-OUT) – Méně tepla (účinnost ~90 %); při rušení obrazu lze vrátit MA7805 na chladiči</text>
 <text x="560.00" y="369.00" font-size="1.38" fill="#008">• Napájení (J5, F1, D12, U32): celý blok doplněn – Na předloze není – 9 V nestabilizovaných + 7805 odpovídá servisnímu manuálu ZX Spectrum 128 (zdroj ZX power pack); u Gamy ověřit na adaptéru</text>
 <text x="560.00" y="372.40" font-size="1.38" fill="#008">• C20–C61: blokování napájení – Doplněno: 100n u každého IC (u napájecích pinů), 47u u bank 4164 a 2118</text>
+<text x="500.00" y="112.00" font-size="2.4" fill="#008">VGA VÝSTUP (digitální RGB z modulu ULA s CPLD, 15 kHz)</text>
+<text x="500.00" y="270.00" font-size="2.4" fill="#008">NAPÁJENÍ (doplněno – na předloze jen +5V)</text>
+<text x="520.00" y="412.00" font-size="2.4" fill="#008">USB KLÁVESNICE (RPi Pico jako USB host, emulace matice A8–A15 / KB1–KB5)</text>
 <rect x="45.72" y="66.04" width="20.32" height="58.42" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
 <text x="55.88" y="65.04" font-size="1.8" text-anchor="middle" fill="#066">U1</text>
 <text x="55.88" y="126.76" font-size="1.5" text-anchor="middle" fill="#066">UA880D (Z80)</text>

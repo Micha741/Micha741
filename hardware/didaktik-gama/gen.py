@@ -5,7 +5,13 @@ import csv, os, sys, uuid
 from collections import defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from netlist import parts, verify, POWER_BLOCK, VIDEO_BLOCK, CONV_BLOCK, VGA_BLOCK, USB_BLOCK  # noqa: E402
+MOD = len(sys.argv) > 1 and sys.argv[1] == "modul"
+if MOD:
+    from netlist_modul import parts, verify, LAYOUT_M, TITLE, PROJ, PAPER, IO, SPECIAL, VCCINT, VCCIO, GND_PINS, JTAG  # noqa
+    POWER_BLOCK = VIDEO_BLOCK = CONV_BLOCK = VGA_BLOCK = USB_BLOCK = []
+else:
+    from netlist import parts, verify, POWER_BLOCK, VIDEO_BLOCK, CONV_BLOCK, VGA_BLOCK, USB_BLOCK  # noqa: E402
+    TITLE, PROJ, PAPER = "Didaktik Gama – schéma zapojení", "didaktik_gama", ("A1", 841, 594)
 
 OUT = os.path.dirname(os.path.abspath(__file__))
 G = 2.54
@@ -89,6 +95,25 @@ ic("LM1889",
    [P(2, "R-Y"), P(4, "B-Y"), P(3, "BIAS"), None, P(17, "OSC"), P(1, "LEAD"), P(18, "LAG"), None, P(12, "VIDEO")],
    [P(13, "CHROMA"), None, P(15, "SND"), P(14, "RF_VCC", PW), P(16, "VCC", PW), P(5, "GND", PW), None]
    + [P(n, "NC", "no_connect") for n in range(6, 12)], w=15.24)
+if MOD:
+    _l, _r = [], []
+    for fb in (1, 2, 3, 4):
+        _l += [P(p, f"FB{fb}_{'/'.join(filter(None, [str(p), SPECIAL.get(p)]))}") for p in IO[fb]] + [None]
+    for fb in (5, 6, 7, 8):
+        _r += [P(p, f"FB{fb}_{'/'.join(filter(None, [str(p), SPECIAL.get(p)]))}") for p in IO[fb]] + [None]
+    _l += [P(n, nm) for n, nm in JTAG.items()]
+    _r += [P(p, "VCCINT", PW) for p in VCCINT] + [P(p, "VCCIO", PW) for p in VCCIO] + [None] + \
+          [P(p, "GND", PW) for p in GND_PINS]
+    ic("XC95144XL", _l, _r, w=25.4, title="XC95144XL")
+    _u = {1: "~{CAS}", 2: "~{WR}", 3: "~{RD}", 4: "~{WE}", 5: "DRAM_P5", 6: "DRAM_P6", 7: "DRAM_P7", 8: "DRAM_P8",
+          9: "DRAM_P9", 10: "DRAM_P10", 11: "DRAM_P11", 12: "~{INT}", 13: "UPE", 14: "VCC", 15: "U", 16: "V",
+          17: "Y", 18: "D0", 19: "KB5", 20: "KB4", 21: "D1", 22: "D2", 23: "KB3", 24: "KB2", 25: "D3", 26: "KB1",
+          27: "D4", 28: "MG", 29: "D5", 30: "D6", 31: "D7", 32: "Φ", 33: "~{IORQGE}", 34: "~{ROMCS}",
+          35: "~{RAS}", 36: "A14", 37: "A15", 38: "~{MREQ}", 39: "XTAL1", 40: "XTAL2"}
+    ic("ULA40", [P(n, _u[n]) for n in range(1, 21)], [P(n, _u[n]) for n in range(40, 20, -1)], w=15.24,
+       title="ULA patice")
+    ic("OSC4", [P(1, "EN"), P(4, "VDD", PW)], [P(3, "OUT"), P(2, "GND", PW)], w=10.16, title="OSC")
+    ic("LDO", [P(3, "VIN")], [P(2, "VOUT"), P(1, "GND", PW)], w=10.16, title="LDO")
 ic("PICO",
    [P(1, "GP0"), P(2, "GP1"), P(4, "GP2"), P(5, "GP3"), P(6, "GP4"), P(7, "GP5"), P(9, "GP6"), P(10, "GP7"),
     P(11, "GP8"), P(12, "GP9"), P(14, "GP10"), P(15, "GP11"), P(16, "GP12"), P(17, "GP13"), P(19, "GP14"),
@@ -405,6 +430,8 @@ for r in PASSIVES:
 
 gx, gy = 0, 0
 for ref in ("U25", "U26", "U27", "U28", "U29"):
+    if ref not in parts:
+        continue
     sym = parts[ref]["sym"]
     units, _, _ = GATES[sym]
     pins = parts[ref]["pins"]
@@ -417,6 +444,11 @@ for ref in ("U25", "U26", "U27", "U28", "U29"):
             gx, gy = 0, gy + 1
     GATE_UNITS[ref] = lst
 
+if MOD:
+    LAYOUT.update({k: (grid(x), grid(y)) for k, (x, y) in LAYOUT_M.items()})
+    _pas = [r for r in parts if r not in LAYOUT_M]
+    for i, r in enumerate(sorted(_pas, key=lambda r: (r[0], int(r[1:])))):
+        LAYOUT[r] = (grid(400 + (i % 10) * 16), grid(350 + (i // 10) * 30))
 # ----------------------------------------------------------- generování
 out_syms, wires, labels, ncs, pwr_syms = [], [], [], [], []
 svg = []
@@ -440,7 +472,7 @@ def place_label(net, x, y, dx, dy):
             f"(property \"Footprint\" \"\" (at {ex:.2f} {ey:.2f} 0) {eff(hide=True)})"
             f"(property \"Datasheet\" \"\" (at {ex:.2f} {ey:.2f} 0) {eff(hide=True)})"
             f"(pin \"1\" (uuid {q(uid())}))"
-            f"(instances (project \"didaktik_gama\" (path {q('/' + ROOT)} (reference {q(ref)}) (unit 1)))))")
+            f"(instances (project {q(PROJ)} (path {q('/' + ROOT)} (reference {q(ref)}) (unit 1)))))")
         svg.append(("pwr", ex, ey, net))
         return
     ang, just = {(1, 0): (0, "left bottom"), (-1, 0): (180, "right bottom"),
@@ -459,7 +491,7 @@ def emit_symbol(ref, libname, X, Y, unit, value, fp, pinlist, ref_xy, val_xy, hi
         f"(property \"Value\" {q(value)} (at {val_xy[0]:.2f} {val_xy[1]:.2f} 0) {eff(1.27, hide_val)})"
         f"(property \"Footprint\" {q(fp)} (at {X:.2f} {Y:.2f} 0) {eff(hide=True)})"
         f"(property \"Datasheet\" \"\" (at {X:.2f} {Y:.2f} 0) {eff(hide=True)})"
-        f" {pl} (instances (project \"didaktik_gama\" (path {q('/' + ROOT)} (reference {q(ref)}) (unit {unit})))))")
+        f" {pl} (instances (project {q(PROJ)} (path {q('/' + ROOT)} (reference {q(ref)}) (unit {unit})))))")
 
 
 def connect_pin(ref, num, name, X, Y, lx, ly, ang):
@@ -544,7 +576,7 @@ for i, net in enumerate(("+5V", "GND")):
         f"(property \"Footprint\" \"\" (at {X:.2f} {Y:.2f} 0) {eff(hide=True)})"
         f"(property \"Datasheet\" \"\" (at {X:.2f} {Y:.2f} 0) {eff(hide=True)})"
         f"(pin \"1\" (uuid {q(uid())}))"
-        f"(instances (project \"didaktik_gama\" (path {q('/' + ROOT)} (reference \"#FLG0{i + 1}\") (unit 1)))))")
+        f"(instances (project {q(PROJ)} (path {q('/' + ROOT)} (reference \"#FLG0{i + 1}\") (unit 1)))))")
     wires.append(f"(wire (pts (xy {X:.2f} {Y:.2f}) (xy {X:.2f} {Y + G:.2f})) (stroke (width 0) (type default)) (uuid {q(uid())}))")
     if net == "+5V":
         labels.append(f"(label \"+5V_FLAG\" (at {X:.2f} {Y + G:.2f} 0) {eff(hide=True)} (uuid {q(uid())}))")
@@ -557,26 +589,27 @@ for i, net in enumerate(("+5V", "GND")):
         f"(property \"Footprint\" \"\" (at {X:.2f} {Y:.2f} 0) {eff(hide=True)})"
         f"(property \"Datasheet\" \"\" (at {X:.2f} {Y:.2f} 0) {eff(hide=True)})"
         f"(pin \"1\" (uuid {q(uid())}))"
-        f"(instances (project \"didaktik_gama\" (path {q('/' + ROOT)} (reference \"#PWR{pwr_n[0]:03d}\") (unit 1)))))")
+        f"(instances (project {q(PROJ)} (path {q('/' + ROOT)} (reference \"#PWR{pwr_n[0]:03d}\") (unit 1)))))")
 labels = [l for l in labels if "+5V_FLAG" not in l]
 
 # poznámky na výkresu
 notes = [
-    txt("DIDAKTIK GAMA – SCHÉMA ZAPOJENIA (překresleno z tištěné předlohy)", 30, 20, 3),
+    txt(TITLE.upper() if MOD else "DIDAKTIK GAMA – SCHÉMA ZAPOJENIA (překresleno z tištěné předlohy)", 30, 20, 3),
     txt("Spoje jsou vedeny návěštími (labels) – stejné jméno = stejný net. ~{X} = aktivní v nule.", 30, 26, 1.8),
-    txt("VGA VÝSTUP (digitální RGB z modulu ULA s CPLD, 15 kHz)", 500, 112, 2),
-    txt("NAPÁJENÍ (doplněno – na předloze jen +5V)", 500, 270, 2),
-    txt("USB KLÁVESNICE (RPi Pico jako USB host, emulace matice A8–A15 / KB1–KB5)", 520, 412, 2),
-    txt("K OVĚŘENÍ (na předloze nečitelné / odhadnuté):", 560, 312, 2),
+    txt("K OVĚŘENÍ (na předloze nečitelné / odhadnuté):", *((400, 40) if MOD else (560, 312)), 2),
 ]
 for i, (where, what, why) in enumerate(verify):
-    notes.append(txt(f"• {where}: {what} – {why}", 560, 318 + i * 3.4, 1.15))
+    notes.append(txt(f"• {where}: {what} – {why}", *((400, 46 + i * 4) if MOD else (560, 318 + i * 3.4)), 1.15))
+if not MOD:
+    notes += [txt("VGA VÝSTUP (digitální RGB z modulu ULA s CPLD, 15 kHz)", 500, 112, 2),
+              txt("NAPÁJENÍ (doplněno – na předloze jen +5V)", 500, 270, 2),
+              txt("USB KLÁVESNICE (RPi Pico jako USB host, emulace matice A8–A15 / KB1–KB5)", 520, 412, 2)]
 notes_s = [n.replace("(text ", "(text ", 1)[:-1] + f" (uuid {q(uid())}))" for n in notes]
 
 lib = [lib_symbol(s) for s in sorted(used_lib)] + list(POWER_LIB.values())
 sch = (f"(kicad_sch (version 20231120) (generator \"eeschema\") (generator_version \"8.0\") (uuid {q(ROOT)})"
-       f" (paper \"A1\")"
-       f" (title_block (title \"Didaktik Gama – schéma zapojení\") (date \"2026-10-31\") (rev \"1\")"
+       f" (paper {q(PAPER[0])})"
+       f" (title_block (title {q(TITLE)}) (date \"2026-10-31\") (rev \"1\")"
        f" (company \"Překresleno z originální předlohy (Didaktik Skalica)\")"
        f" (comment 1 \"Zmeny zapojenia vyhradené\") (comment 2 \"Nety v seznamu K OVĚŘENÍ zkontrolovat na desce\"))"
        f" (lib_symbols {' '.join(lib)})\n"
@@ -613,16 +646,16 @@ def pretty(s):
     return "\n".join(l for l in out if l.strip()) + "\n"
 
 
-with open(os.path.join(OUT, "didaktik_gama.kicad_sch"), "w") as f:
+with open(os.path.join(OUT, PROJ + ".kicad_sch"), "w") as f:
     f.write(pretty(sch))
-with open(os.path.join(OUT, "didaktik_gama.kicad_pro"), "w") as f:
-    f.write('{\n  "meta": {"filename": "didaktik_gama.kicad_pro", "version": 1},\n  "sheets": [["' + ROOT + '", ""]]\n}\n')
+with open(os.path.join(OUT, PROJ + ".kicad_pro"), "w") as f:
+    f.write('{\n  "meta": {"filename": "' + PROJ + '.kicad_pro", "version": 1},\n  "sheets": [["' + ROOT + '", ""]]\n}\n')
 
 # ----------------------------------------------------------- CSV výstupy
 nets = defaultdict(list)
 for net, ref, num, nm in pin_net:
     nets[net].append(f"{ref}.{num}")
-with open(os.path.join(OUT, "netlist.csv"), "w", newline="") as f:
+with open(os.path.join(OUT, "netlist" + ("" if not MOD else "_modul") + ".csv"), "w", newline="") as f:
     w = csv.writer(f)
     w.writerow(["net", "pocet_pinu", "piny"])
     for net in sorted(nets, key=lambda n: (n.lstrip("/~?").rstrip("0123456789"), len(n), n)):
@@ -632,7 +665,7 @@ GROUP = {"UA880D": "CPU", "27128": "ROM", "8255": "I/O", "ULA": "ULA", "4164": "
          "74LS157": "Multiplexer", "7400": "Logika", "7404": "Logika", "7410": "Logika", "7432": "Logika",
          "R": "Rezistor", "C": "Kondenzátor", "CP": "Kondenzátor", "D": "Dioda", "NPN": "Tranzistor",
          "SW": "Ostatní", "XTAL": "Ostatní", "SPK": "Ostatní", "CONN": "Konektor", "KODER": "Video",
-         "MODULATOR": "Video", "COIL1703": "Napájení", "MC34063": "Napájení", "AD8032": "Video", "LM1881": "Video", "VGA": "Konektor", "PICO": "Klávesnice USB", "74LVC245": "Klávesnice USB", "74LVC07": "Klávesnice USB", "74HCT244": "Video", "74HCT08": "Video", "L": "Napájení", "PNP": "Tranzistor", "NPN_ECB": "Tranzistor", "7805": "Napájení", "LM1889": "Video", "F": "Napájení", "LED": "Napájení"}
+         "MODULATOR": "Video", "COIL1703": "Napájení", "MC34063": "Napájení", "AD8032": "Video", "LM1881": "Video", "VGA": "Konektor", "XC95144XL": "CPLD", "ULA40": "Konektor", "OSC4": "Ostatní", "LDO": "Napájení", "PICO": "Klávesnice USB", "74LVC245": "Klávesnice USB", "74LVC07": "Klávesnice USB", "74HCT244": "Video", "74HCT08": "Video", "L": "Napájení", "PNP": "Tranzistor", "NPN_ECB": "Tranzistor", "7805": "Napájení", "LM1889": "Video", "F": "Napájení", "LED": "Napájení"}
 bom = defaultdict(list)
 for ref, p in parts.items():
     bom[(GROUP[p["sym"]], p["value"], p["fp"])].append(ref)
@@ -642,19 +675,26 @@ def refkey(r):
     return (r.rstrip("0123456789"), int("".join(c for c in r if c.isdigit()) or 0))
 
 
-with open(os.path.join(OUT, "bom.csv"), "w", newline="") as f:
+with open(os.path.join(OUT, "bom" + ("" if not MOD else "_modul") + ".csv"), "w", newline="") as f:
     w = csv.writer(f)
     w.writerow(["skupina", "hodnota", "pocet", "reference", "pouzdro"])
     for (g, v, fp), refs in sorted(bom.items()):
         refs.sort(key=refkey)
         w.writerow([g, v, len(refs), " ".join(refs), fp])
-with open(os.path.join(OUT, "k_overeni.csv"), "w", newline="") as f:
+with open(os.path.join(OUT, "k_overeni" + ("" if not MOD else "_modul") + ".csv"), "w", newline="") as f:
     w = csv.writer(f)
     w.writerow(["misto", "co", "proc"])
     w.writerows(verify)
 
+if MOD:
+    with open(os.path.join(OUT, "ula_cpld_modul.ucf"), "w") as f:
+        f.write("# Didaktik Gama – modul náhrady ULA, XC95144XL-10TQ100 (generováno gen.py)\n")
+        for p_, net in sorted(parts["U1"]["pins"].items()):
+            if net and net not in ("+3V3", "GND", "TCK", "TDI", "TDO", "TMS"):
+                f.write(f'NET "{net}" LOC = "P{p_}";\n')
+        f.write('NET "CLK14" TNM_NET = "CLK14";\nTIMESPEC "TS_CLK14" = PERIOD "CLK14" 71.4 ns HIGH 50%;\n')
 # ----------------------------------------------------------- SVG náhled
-W_, H_ = 841, 594
+W_, H_ = PAPER[1], PAPER[2]
 o = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W_} {H_}" width="{W_ * 4}" height="{H_ * 4}"'
      ' font-family="DejaVu Sans, Arial, sans-serif">',
      f'<rect width="{W_}" height="{H_}" fill="#fff"/>',
@@ -758,7 +798,7 @@ for e in svg:
         o.append(f'<text x="{x + 3.6}" y="{y - 0.3}" font-size="1.3" fill="#066">{esc(ref)}</text>')
         o.append(f'<text x="{x + 3.6}" y="{y + 1.4}" font-size="1.1" fill="#066">{esc(val)}</text>')
 o.append("</svg>")
-with open(os.path.join(OUT, "didaktik_gama_nahled.svg"), "w") as f:
+with open(os.path.join(OUT, PROJ + "_nahled.svg"), "w") as f:
     f.write("\n".join(o))
 
 print(f"součástek: {len(parts)}, netů: {len(nets)}, spojů pinů: {len(pin_net)}, k ověření: {len(verify)}")

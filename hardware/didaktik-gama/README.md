@@ -10,7 +10,10 @@ Překresleno z tištěné předlohy „DIDAKTIK GAMA – SCHÉMA ZAPOJENIA“.
 | `bom.csv` | soupis součástek |
 | `k_overeni.csv` | místa, která jsou na předloze nečitelná nebo odhadnutá |
 | `netlist.py` | **zdroj pravdy** – netlist ručně přepsaný z předlohy |
-| `gen.py` | generátor: `python3 gen.py` vše znovu vytvoří |
+| `gen.py` | generátor: `python3 gen.py` vše znovu vytvoří, `python3 gen.py modul` vytvoří modul ULA |
+| `ula_cpld_modul.kicad_sch` / `.kicad_pro` / `_nahled.pdf` | modul náhrady ULA s CPLD XC95144XL (TQ100) do patice U4 |
+| `ula_cpld_modul.ucf` | přiřazení pinů CPLD pro firmware (Xilinx ISE) |
+| `netlist_modul.py`, `*_modul.csv` | netlist, soupis a body k ověření modulu |
 
 Spoje jsou vedeny návěštími (labels): stejné jméno = stejný net. `/X` v netlistu
 (v KiCadu `~{X}`) znamená signál aktivní v nule. Oprava spoje = změna jména netu

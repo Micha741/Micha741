@@ -14306,131 +14306,131 @@
       (font
         (size 1.8 1.8)))
     (uuid "6898a297-cde3-59fa-a136-969ca143cf5e"))
-  (text "VGA VÝSTUP (digitální RGB z modulu ULA s CPLD, 15 kHz)"
-    (at 500.00 112.00 0)
-    (effects
-      (font
-        (size 2 2)))
-    (uuid "ad35efec-b17f-5c71-809d-acc19823c302"))
-  (text "NAPÁJENÍ (doplněno – na předloze jen +5V)"
-    (at 500.00 270.00 0)
-    (effects
-      (font
-        (size 2 2)))
-    (uuid "a3de4d9d-c3c3-5f1f-998d-4d9c6f594985"))
-  (text "USB KLÁVESNICE (RPi Pico jako USB host, emulace matice A8–A15 / KB1–KB5)"
-    (at 520.00 412.00 0)
-    (effects
-      (font
-        (size 2 2)))
-    (uuid "2174a3f5-e3a8-5672-92ab-328dcd8fea71"))
   (text "K OVĚŘENÍ (na předloze nečitelné / odhadnuté):"
     (at 560.00 312.00 0)
     (effects
       (font
         (size 2 2)))
-    (uuid "1cc416ce-af8e-5087-bf45-7b20910d7544"))
+    (uuid "ad35efec-b17f-5c71-809d-acc19823c302"))
   (text "• U2 pin 20 (/CE): /ROMCS = ULA pin 34 – U pinu 20 je jen kondenzátor 100p; připojení na ULA ROMCS je odhad"
     (at 560.00 318.00 0)
     (effects
       (font
         (size 1.15 1.15)))
-    (uuid "16e19b51-873a-55fd-b618-6b7fb9b806f7"))
+    (uuid "a3de4d9d-c3c3-5f1f-998d-4d9c6f594985"))
   (text "• U4 (ULA): pin GND není ve schématu nakreslen – Čísla pinů 36/37 (A14/A15) a 2 (/WR) jsou na předloze rozmazaná – převzato dle zapojení ZX ULA"
     (at 560.00 321.40 0)
     (effects
       (font
         (size 1.15 1.15)))
-    (uuid "111bd345-651e-5ad4-a9d9-f393970823b4"))
+    (uuid "2174a3f5-e3a8-5672-92ab-328dcd8fea71"))
   (text "• MG / zvuk (D9–D11, LS1, T3): horní konce reproduktoru, diod a 10n – Na předloze končí bez označení – připojeno na GND; zapojení KC507 přepsáno doslova, ověřit"
     (at 560.00 324.80 0)
     (effects
       (font
         (size 1.15 1.15)))
-    (uuid "45b3e4c0-3904-5c59-820d-a16de28e8aeb"))
+    (uuid "1cc416ce-af8e-5087-bf45-7b20910d7544"))
   (text "• U4 patice ULA: osadit modul s CPLD (XC95144XL + firmware zx_ula, GPL) místo originální ULA – Modul je samostatná deska (40 vývodů do patice + výstup RGB na J8) – zatím nenakreslen; piny 15–17 (U, V, Y) nezapojeny"
     (at 560.00 328.20 0)
     (effects
       (font
         (size 1.15 1.15)))
-    (uuid "ce00519f-dea7-5bcf-87d5-facc0e0cc59d"))
+    (uuid "16e19b51-873a-55fd-b618-6b7fb9b806f7"))
   (text "• J8 / VGA výstup: digitální RGB + BRIGHT + CSYNC/VSYNC z modulu, 15,6 kHz – Běžný VGA monitor chce 31 kHz – potřeba monitor s 15 kHz nebo převodník (GBS-8200, OSSC, RetroTINK)"
     (at 560.00 331.60 0)
     (effects
       (font
         (size 1.15 1.15)))
-    (uuid "85e21078-5d6f-51fb-a704-15700ee69533"))
+    (uuid "111bd345-651e-5ad4-a9d9-f393970823b4"))
   (text "• R76–R81 (převodník): 680R + 1k5 do 75R monitoru: 0,50 V normální, 0,69 V jas – Vypočteno pro výstup 74HCT244 při 5 V; přesnost závisí na výstupním odporu hradla"
     (at 560.00 335.00 0)
     (effects
       (font
         (size 1.15 1.15)))
-    (uuid "79d588ea-8149-5f11-b036-2607cb9b1f20"))
+    (uuid "45b3e4c0-3904-5c59-820d-a16de28e8aeb"))
   (text "• U39 Raspberry Pi Pico: USB host přes micro-USB a redukci OTG, napájení +5V do VBUS (pin 40) – Potřebuje firmware (TinyUSB host HID + emulace matice 8x5); pull-upy 10k drží KB1–5 a /RESET uvolněné, dokud Pico nenaběhne"
     (at 560.00 338.40 0)
     (effects
       (font
         (size 1.15 1.15)))
-    (uuid "d43545b2-e717-5886-b503-4a90523386cd"))
+    (uuid "ce00519f-dea7-5bcf-87d5-facc0e0cc59d"))
   (text "• U40/U41 74LVC245, 74LVC07: převod úrovní 5 V <-> 3,3 V – Vstupy LVC snesou 5 V při napájení 3,3 V; 74LVC07 má otevřený kolektor – KB linky dál táhnou původní pull-upy 10k na +5V"
     (at 560.00 341.80 0)
     (effects
       (font
         (size 1.15 1.15)))
-    (uuid "0168a25f-d8bb-52d2-b30a-d6f583a3d17b"))
+    (uuid "85e21078-5d6f-51fb-a704-15700ee69533"))
   (text "• U7/U8 vstupy: přiřazení A/B vstupů LS157 – Na předloze jsou vidět jen odbočky z adresové sběrnice – řádek An / sloupec An+7 je odvozeno funkčně"
     (at 560.00 345.20 0)
     (effects
       (font
         (size 1.15 1.15)))
-    (uuid "2fe93515-1899-5229-ae8d-dbea1bac54e2"))
+    (uuid "79d588ea-8149-5f11-b036-2607cb9b1f20"))
   (text "• U5 pin 10: sloupcový bit RA7 = BANK (PC0 8255) – Funkční odhad: horních 32K je 2x32K banka přepínaná PC0"
     (at 560.00 348.60 0)
     (effects
       (font
         (size 1.15 1.15)))
-    (uuid "f013de96-c742-5e38-8f69-ac8aeb796c33"))
+    (uuid "d43545b2-e717-5886-b503-4a90523386cd"))
   (text "• U27 pin 10: = A15 – Vstup přichází z adresové sběrnice, konkrétní linka nečitelná"
     (at 560.00 352.00 0)
     (effects
       (font
         (size 1.15 1.15)))
-    (uuid "5d060e31-8b94-553a-b86d-4eff24ecffbc"))
+    (uuid "0168a25f-d8bb-52d2-b30a-d6f583a3d17b"))
   (text "• U28 (CS 8255): 3vstupé NAND: ~A7, IORQ, /M1 – Typ hradla a třetí vstup (/M1) odhadnuty; port 8255 = A7=0 (1Fh/3Fh/5Fh/7Fh)"
     (at 560.00 355.40 0)
     (effects
       (font
         (size 1.15 1.15)))
-    (uuid "8ef6e2b8-efe8-576d-8527-98278373df61"))
+    (uuid "2fe93515-1899-5229-ae8d-dbea1bac54e2"))
   (text "• U29D (/WE64): vstupy 12 = /WR, 13 = /MREQ – Výstup 11 jde na /WE 4164 – vstupy na předloze nejasné"
     (at 560.00 358.80 0)
     (effects
       (font
         (size 1.15 1.15)))
-    (uuid "7271b17d-1758-5010-8a44-ace442524e55"))
+    (uuid "f013de96-c742-5e38-8f69-ac8aeb796c33"))
   (text "• C9: 100p z MUX2_D na GND – Druhý konec kondenzátoru na předloze nejasný"
     (at 560.00 362.20 0)
     (effects
       (font
         (size 1.15 1.15)))
-    (uuid "de28fbe5-ba75-5461-8c81-0afe3dd85706"))
+    (uuid "5d060e31-8b94-553a-b86d-4eff24ecffbc"))
   (text "• U32 spínaný stabilizátor: R-78E5.0-1.0 místo MA7805 (stejné vývody IN-GND-OUT) – Méně tepla (účinnost ~90 %); při rušení obrazu lze vrátit MA7805 na chladiči"
     (at 560.00 365.60 0)
     (effects
       (font
         (size 1.15 1.15)))
-    (uuid "539677e9-f87f-5537-9861-28404216055f"))
+    (uuid "8ef6e2b8-efe8-576d-8527-98278373df61"))
   (text "• Napájení (J5, F1, D12, U32): celý blok doplněn – Na předloze není – 9 V nestabilizovaných + 7805 odpovídá servisnímu manuálu ZX Spectrum 128 (zdroj ZX power pack); u Gamy ověřit na adaptéru"
     (at 560.00 369.00 0)
     (effects
       (font
         (size 1.15 1.15)))
-    (uuid "2c959272-db99-5cd2-ab67-0ddd73389aaf"))
+    (uuid "7271b17d-1758-5010-8a44-ace442524e55"))
   (text "• C20–C61: blokování napájení – Doplněno: 100n u každého IC (u napájecích pinů), 47u u bank 4164 a 2118"
     (at 560.00 372.40 0)
     (effects
       (font
         (size 1.15 1.15)))
+    (uuid "de28fbe5-ba75-5461-8c81-0afe3dd85706"))
+  (text "VGA VÝSTUP (digitální RGB z modulu ULA s CPLD, 15 kHz)"
+    (at 500.00 112.00 0)
+    (effects
+      (font
+        (size 2 2)))
+    (uuid "539677e9-f87f-5537-9861-28404216055f"))
+  (text "NAPÁJENÍ (doplněno – na předloze jen +5V)"
+    (at 500.00 270.00 0)
+    (effects
+      (font
+        (size 2 2)))
+    (uuid "2c959272-db99-5cd2-ab67-0ddd73389aaf"))
+  (text "USB KLÁVESNICE (RPi Pico jako USB host, emulace matice A8–A15 / KB1–KB5)"
+    (at 520.00 412.00 0)
+    (effects
+      (font
+        (size 2 2)))
     (uuid "f56e2362-ffbf-5b33-b0c5-d99903ce2543"))
   (symbol
     (lib_id "gama:UA880D")

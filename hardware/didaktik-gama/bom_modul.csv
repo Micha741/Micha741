@@ -1,0 +1,12 @@
+skupina,hodnota,pocet,reference,pouzdro
+CPLD,XC95144XL-10TQG100C,1,U1,Package_QFP:TQFP-100_14x14mm_P0.5mm
+Kondenzátor,100n,8,C1 C4 C5 C6 C7 C8 C9 C10,Capacitor_SMD:C_0805_2012Metric
+Kondenzátor,10u,1,C2,Capacitor_SMD:C_1206_3216Metric
+Kondenzátor,22u,1,C3,Capacitor_SMD:C_1206_3216Metric
+Konektor,JTAG,1,J3,Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical
+Konektor,RGB + napájení (na J8 hlavní desky),1,J2,Connector_PinHeader_2.54mm:PinHeader_1x08_P2.54mm_Vertical
+Konektor,do patice ULA (precizní kolíky),1,J1,Package_DIP:DIP-40_W15.24mm
+Napájení,AMS1117-3.3,1,U2,Package_TO_SOT_SMD:SOT-223-3_TabPin2
+Ostatní,"14.000 MHz 3,3V",1,X1,Oscillator:Oscillator_SMD_Abracon_ASE-4Pin_3.2x2.5mm
+Rezistor,10k,4,R2 R3 R4 R5,Resistor_SMD:R_0805_2012Metric
+Rezistor,1k,1,R1,Resistor_SMD:R_0805_2012Metric
