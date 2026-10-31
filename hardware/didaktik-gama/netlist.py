@@ -228,3 +228,37 @@ pins.update({9 + i: f"PB{i}" for i in range(8)})
 pins.update({17 + i: f"PC{i}" for i in range(8)})
 pins.update({25: "+5V", 26: "GND"})
 add("J4", "CONN", "Porty 8255", "Connector_PinHeader_2.54mm:PinHeader_2x13_P2.54mm_Vertical", pins)
+
+# ---------------------------------------------------------------- napájení (doplněno)
+# Předloha ukazuje jen "+5V". Doplněn běžný lineární zdroj s MA7805 (Tesla ekvivalent 7805)
+# a blokovací kondenzátory u každého IC.
+POWER_BLOCK = ["J5", "F1", "D12", "C11", "C12", "U32", "C13", "C14", "C15", "D13", "R45"]
+add("J5", "CONN", "Napájení 9–12V DC", "Connector_BarrelJack:BarrelJack_Horizontal",
+    {1: "VIN_RAW", 2: "GND"})
+add("F1", "F", "1A T", "Fuse:Fuseholder_Cylinder-5x20mm_Stelvio-Kontek_PTF78_Horizontal_Open",
+    {1: "VIN_RAW", 2: "VIN_F"})
+add("D12", "D", "KY132/80 (1N4007)", "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal",
+    {1: "VIN", 2: "VIN_F"})                              # ochrana proti přepólování
+add("C11", "CP", "1000u/25V", "Capacitor_THT:CP_Radial_D10.0mm_P5.00mm", {1: "VIN", 2: "GND"})
+C("C12", "100n", "VIN", "GND")
+add("U32", "7805", "MA7805", "Package_TO_SOT_THT:TO-220-3_Vertical",
+    {1: "VIN", 2: "GND", 3: "+5V"})
+C("C13", "100n", "+5V", "GND")
+add("C14", "CP", "220u/10V", "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm", {1: "+5V", 2: "GND"})
+add("C15", "CP", "10u/16V", "Capacitor_THT:CP_Radial_D5.0mm_P2.00mm", {1: "+5V", 2: "GND"})
+add("D13", "LED", "LED zelená", "LED_THT:LED_D5.0mm", {1: "LED_K", 2: "+5V"})
+R("R45", "470", "LED_K", "GND")
+verify.append(("Napájení (J5, F1, D12, U32)", "celý blok doplněn",
+               "Na předloze není – vstupní napětí 9–12 V DC a hodnoty kondenzátorů jsou typické pro 7805, ověřit na desce/adaptéru"))
+
+# blokovací kondenzátory 100n u každého IC
+_ics = [r for r in parts if parts[r]["sym"] in
+        ("UA880D", "27128", "8255", "ULA", "4164", "2118", "74LS157", "7400", "7404", "7410", "7432")]
+_ics.sort(key=lambda r: int(r[1:]))
+for i, r in enumerate(_ics):
+    C(f"C{20 + i}", "100n", "+5V", "GND")
+# objemové kondenzátory u bank DRAM
+add("C60", "CP", "47u/10V", "Capacitor_THT:CP_Radial_D5.0mm_P2.00mm", {1: "+5V", 2: "GND"})
+add("C61", "CP", "47u/10V", "Capacitor_THT:CP_Radial_D5.0mm_P2.00mm", {1: "+5V", 2: "GND"})
+verify.append(("C20–C61", "blokování napájení",
+               "Doplněno: 100n u každého IC (u napájecích pinů), 47u u bank 4164 a 2118"))

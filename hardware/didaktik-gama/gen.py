@@ -5,7 +5,7 @@ import csv, os, sys, uuid
 from collections import defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from netlist import parts, verify  # noqa: E402
+from netlist import parts, verify, POWER_BLOCK  # noqa: E402
 
 OUT = os.path.dirname(os.path.abspath(__file__))
 G = 2.54
@@ -84,6 +84,7 @@ ic("2118",
    [P(5, "A0"), P(7, "A1"), P(6, "A2"), P(12, "A3"), P(11, "A4"), P(10, "A5"), P(13, "A6"), None, P(2, "D")],
    [P(4, "~{RAS}"), P(15, "~{CAS}"), P(3, "~{WE}"), P(14, "Q"), None, P(8, "VCC", PW), P(9, "VCC", PW),
     P(16, "GND", PW), P(1, "NC", "no_connect")], w=12.7)
+ic("7805", [P(1, "IN")], [P(3, "OUT"), P(2, "GND", PW)], w=10.16, title="7805")
 ic("KODER", [P(1, "U"), P(2, "V"), P(3, "Y")], [P(4, "CVBS")], w=12.7, title="KODER")
 ic("MODULATOR", [P(1, "IN")], [P(2, "RF")], w=12.7, title="MODULÁTOR")
 
@@ -97,7 +98,7 @@ GATES = {
 for g, (units, fn, neg) in GATES.items():
     SYM[g] = dict(kind="gate", units=units, fn=fn, neg=neg)
 
-for t in ("R", "C", "CP", "D", "SW", "XTAL", "SPK"):
+for t in ("R", "C", "CP", "D", "SW", "XTAL", "SPK", "F", "LED"):
     SYM[t] = dict(kind="two", t=t)
 SYM["NPN"] = dict(kind="npn")
 
@@ -221,7 +222,7 @@ def lib_symbol(name):
         return " ".join(out) + ")"
     if s["kind"] == "two":
         t = s["t"]
-        refc = {"R": "R", "C": "C", "CP": "C", "D": "D", "SW": "SW", "XTAL": "Y", "SPK": "LS"}[t]
+        refc = {"R": "R", "C": "C", "CP": "C", "D": "D", "SW": "SW", "XTAL": "Y", "SPK": "LS", "F": "F", "LED": "D"}[t]
         out = [head + " (pin_names (offset 0) hide) (exclude_from_sim no) (in_bom yes) (on_board yes)",
                f"(property \"Reference\" {q(refc)} (at 2.54 0.8 0) {eff(justify='left')})"
                f"(property \"Value\" {q(t)} (at 2.54 -1.2 0) {eff(justify='left')})"
@@ -235,6 +236,12 @@ def lib_symbol(name):
                   poly([(0, 2.54), (0, 0.635)]), poly([(0, -0.635), (0, -2.54)])]
             if t == "CP":
                 g.append(txt("+", -1.5, 1.6))
+        elif t == "F":
+            g += [rect(-1.016, 2.54, 1.016, -2.54, "none"), poly([(0, 2.54), (0, -2.54)])]
+        elif t == "LED":
+            g += [poly([(-1.27, -0.762), (1.27, -0.762), (0, 0.762), (-1.27, -0.762)], "outline"),
+                  poly([(-1.27, 0.762), (1.27, 0.762)]), poly([(0, 2.54), (0, -2.54)]),
+                  poly([(1.5, 0), (2.5, 1)]), poly([(1.5, -1), (2.5, 0)])]
         elif t == "D":   # pin1 = katoda nahoře
             g += [poly([(-1.27, -0.762), (1.27, -0.762), (0, 0.762), (-1.27, -0.762)], "outline"),
                   poly([(-1.27, 0.762), (1.27, 0.762)]), poly([(0, 2.54), (0, -2.54)])]
@@ -326,11 +333,15 @@ at("J4", grid(720), grid(100))
 
 GATE_UNITS = {}   # ref -> seznam (unit, x, y)
 
-PASSIVES = [r for r in parts if parts[r]["sym"] in ("R", "C", "CP", "D", "SW", "XTAL", "SPK", "NPN")]
+# blok napájení
+for i, r in enumerate(POWER_BLOCK):
+    at(r, grid(505 + i * 17 + (8 if r == "U32" else 0) + (16 if i > POWER_BLOCK.index("U32") else 0)), grid(262))
+PASSIVES = [r for r in parts if parts[r]["sym"] in ("R", "C", "CP", "D", "SW", "XTAL", "SPK", "NPN", "F", "LED")
+            and r not in POWER_BLOCK]
 PASSIVES.sort(key=lambda r: (r.rstrip("0123456789"), int("".join(c for c in r if c.isdigit()) or 0)))
 col, row = 0, 0
 for r in PASSIVES:
-    at(r, grid(40 + col * 21), grid(325 + row * 38))
+    at(r, grid(40 + col * 21), grid(318 + row * 34))
     col += 1
     if col >= 22:
         col, row = 0, row + 1
@@ -495,6 +506,7 @@ labels = [l for l in labels if "+5V_FLAG" not in l]
 notes = [
     txt("DIDAKTIK GAMA – SCHÉMA ZAPOJENIA (překresleno z tištěné předlohy)", 30, 20, 3),
     txt("Spoje jsou vedeny návěštími (labels) – stejné jméno = stejný net. ~{X} = aktivní v nule.", 30, 26, 1.8),
+    txt("NAPÁJENÍ (doplněno – na předloze jen +5V)", 500, 245, 2),
     txt("K OVĚŘENÍ (na předloze nečitelné / odhadnuté):", 560, 290, 2),
 ]
 for i, (where, what, why) in enumerate(verify):
@@ -560,7 +572,7 @@ GROUP = {"UA880D": "CPU", "27128": "ROM", "8255": "I/O", "ULA": "ULA", "4164": "
          "74LS157": "Multiplexer", "7400": "Logika", "7404": "Logika", "7410": "Logika", "7432": "Logika",
          "R": "Rezistor", "C": "Kondenzátor", "CP": "Kondenzátor", "D": "Dioda", "NPN": "Tranzistor",
          "SW": "Ostatní", "XTAL": "Ostatní", "SPK": "Ostatní", "CONN": "Konektor", "KODER": "Video",
-         "MODULATOR": "Video"}
+         "MODULATOR": "Video", "7805": "Napájení", "F": "Napájení", "LED": "Napájení"}
 bom = defaultdict(list)
 for ref, p in parts.items():
     bom[(GROUP[p["sym"]], p["value"], p["fp"])].append(ref)
@@ -665,8 +677,11 @@ for e in svg:
         elif t in ("C", "CP"):
             o.append(f'<rect x="{x - 2}" y="{y - 0.63}" width="4" height="1.27" fill="#fff" stroke="none"/>'
                      f'<path d="M{x - 2},{y - 0.63} h4 M{x - 2},{y + 0.63} h4" stroke="#800" stroke-width="0.4"/>')
-        elif t == "D":
+        elif t in ("D", "LED"):
             o.append(f'<path d="M{x - 1.27},{y + 0.76} h2.54 L{x},{y - 0.76} Z M{x - 1.27},{y - 0.76} h2.54" fill="#800" stroke="#800" stroke-width="0.2"/>')
+        elif t == "F":
+            o.append(f'<rect x="{x - 1.0}" y="{y - 2.54}" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>'
+                     f'<line x1="{x}" y1="{y - 2.54}" x2="{x}" y2="{y + 2.54}" stroke="#800" stroke-width="0.2"/>')
         elif t == "XTAL":
             o.append(f'<rect x="{x - 1.27}" y="{y - 0.76}" width="2.54" height="1.52" fill="#fff" stroke="#800" stroke-width="0.25"/>')
         else:

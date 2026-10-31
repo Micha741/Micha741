@@ -16,5 +16,8 @@ Spoje jsou vedeny návěštími (labels): stejné jméno = stejný net. `/X` v n
 (v KiCadu `~{X}`) znamená signál aktivní v nule. Oprava spoje = změna jména netu
 v `netlist.py` a nové spuštění `gen.py`, nebo přejmenování návěští přímo v KiCadu.
 
+Napájení (konektor J5, pojistka F1, ochranná dioda D12, MA7805 U32, filtrace a blokovací
+kondenzátory 100n u každého IC) na předloze není – je doplněno a vedeno v `k_overeni.csv`.
+
 Pinouty UA880D, 27128, 8255, 4164, 2118 a 74LS157 odpovídají katalogovým listům
 a souhlasí s čísly na předloze. ULA je očíslovaná podle předlohy (shodné se ZX ULA).
