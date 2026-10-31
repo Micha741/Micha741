@@ -5,7 +5,10 @@ U4 (ULA),pin GND není ve schématu nakreslen,Čísla pinů 36/37 (A14/A15) a 2 
 U33 MC34063A (měnič +12 V),náhrada měniče Spectra (TR4/TR5 + cívka 1703),"Zapojení boost podle aplikační poznámky MC34063; Rsc 0R33 = proudové omezení ~0,9 A, Ct 1n5 ~ 30 kHz – ověřit s datasheetem"
 U30 LM1889 + okolí,překresleno ze schématu ZX Spectrum Issue 1/2,"Předloha Gamy má jen blok KÓDER – ověřit, že Gama používá stejné zapojení (typ obvodu na desce)"
 U30 pin 16,chroma supply na +12VA,Ve schématu Spectra není spoj pinu 16 jasně vidět; podle manuálu je to napájení chroma
-U31 (modulátor),vývody modulu +5V / VIDEO / GND / VF,Modul je na předloze jen blok; pořadí vývodů podle konkrétního modulu
+"VGA výstup (U34–U36, J7)","RGB 15,6 kHz + CSYNC na pinu 13, VSYNC na pinu 14","Běžný VGA monitor chce 31 kHz – potřeba monitor s 15 kHz nebo převodník (GBS-8200, OSSC, RetroTINK)"
+R76–R97 (matice YUV->RGB),"poměry R = Y+V, B = Y+U, G = Y-(U+V)",Úrovně U/V z ULA nejsou dokumentované – trimry nastavit podle bílé/černé a barevných pruhů; G kanál nejcitlivější
+U36 LM1881,"vstup z Y přes 100n, Rset 680k || 100n","Podle katalogového listu LM1881; ověřit, že Y z ULA má 0,5–2 Vpp"
+U31/J3 modulátor,odstraněn,Nahrazen výstupem VGA; zůstává kompozitní cinch J6
 "T4, R46, C62, R47, J6",kompozitní video výstup,"Doplněno (na předloze není) – přímý výstup CVBS pro monitor/TV se vstupem AV, obchází modulátor"
 U7/U8 vstupy,přiřazení A/B vstupů LS157,Na předloze jsou vidět jen odbočky z adresové sběrnice – řádek An / sloupec An+7 je odvozeno funkčně
 U5 pin 10,sloupcový bit RA7 = BANK (PC0 8255),Funkční odhad: horních 32K je 2x32K banka přepínaná PC0

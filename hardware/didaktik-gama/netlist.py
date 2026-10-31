@@ -203,16 +203,59 @@ verify.append(("U30 LM1889 + okolí", "překresleno ze schématu ZX Spectrum Iss
 verify.append(("U30 pin 16", "chroma supply na +12VA",
                "Ve schématu Spectra není spoj pinu 16 jasně vidět; podle manuálu je to napájení chroma"))
 
-# modulátor = stíněný modul (UM1233 / tuzemský ekvivalent): +5V, video, GND, VF výstup
-add("U31", "MODULATOR", "VF modulátor (UM1233 nebo ekv.)", "", {1: "CVBS", 2: "+5V_MOD", 3: "TV", 4: "GND"})
-C("C63", "100n", "+5V", "GND")
-verify.append(("U31 (modulátor)", "vývody modulu +5V / VIDEO / GND / VF",
-               "Modul je na předloze jen blok; pořadí vývodů podle konkrétního modulu"))
+# ---------------------------------------------------------------- VGA (RGB 15 kHz) místo modulátoru
+# Y/U/V z ULA -> analogová matice (AD8032, napájení +5 V) -> R, G, B 0,7 V na 75 ohm.
+# R = Y + V, B = Y + U, G = Y - (U + V); černá úroveň trimrem (synchro pod černou ořízne napájecí kolej 0 V).
+# Synchronizace: LM1881 (piny z katalogového listu) -> CSYNC / VSYNC -> 2x 7404 -> 75 ohm.
+VGA_BLOCK = []
+def vR(ref, val, a_, b_):
+    R(ref, val, a_, b_); VGA_BLOCK.append(ref)
+def vC(ref, val, a_, b_):
+    C(ref, val, a_, b_); VGA_BLOCK.append(ref)
+add("U34", "AD8032", "AD8032AN", "Package_DIP:DIP-8_W7.62mm", {
+    3: "R_SUM", 2: "R_FB", 1: "R_OUT", 5: "B_SUM", 6: "B_FB", 7: "B_OUT", 8: "+5V", 4: "GND"})
+add("U35", "AD8032", "AD8032AN", "Package_DIP:DIP-8_W7.62mm", {
+    3: "G_Y", 2: "G_FB", 1: "G_OUT", 5: "GND", 6: "U35B_OUT", 7: "U35B_OUT", 8: "+5V", 4: "GND"})
+# R kanál: (Y + V)/2 na +IN, zesílení 1 + Rf/Rg, Rg na nastavitelnou černou
+vR("R76", "1k", "Y", "R_SUM"); vR("R77", "1k", "V", "R_SUM")
+vR("R78", "2k2 trimr (kontrast R)", "R_OUT", "R_FB"); vR("R79", "1k", "R_FB", "R_BLK")
+vR("R80", "10k", "+5V", "R_BLK"); vR("R81", "10k trimr (černá R)", "R_BLK", "GND"); vC("C81", "100n", "R_BLK", "GND")
+vR("R82", "75", "R_OUT", "VGA_R")
+# B kanál: (Y + U)/2
+vR("R83", "1k", "Y", "B_SUM"); vR("R84", "1k", "U", "B_SUM")
+vR("R85", "2k2 trimr (kontrast B)", "B_OUT", "B_FB"); vR("R86", "1k", "B_FB", "B_BLK")
+vR("R87", "10k", "+5V", "B_BLK"); vR("R88", "10k trimr (černá B)", "B_BLK", "GND"); vC("C82", "100n", "B_BLK", "GND")
+vR("R89", "75", "B_OUT", "VGA_B")
+# G kanál: Y na +IN, U a V odečteny na -IN
+vR("R90", "1k", "Y", "G_Y")
+vR("R91", "2k2", "U", "G_FB"); vR("R92", "2k2", "V", "G_FB")
+vR("R93", "2k2 trimr (kontrast G)", "G_OUT", "G_FB"); vR("R94", "1k", "G_FB", "G_BLK")
+vR("R95", "10k", "+5V", "G_BLK"); vR("R96", "10k trimr (černá G)", "G_BLK", "GND"); vC("C83", "100n", "G_BLK", "GND")
+vR("R97", "75", "G_OUT", "VGA_G")
+vC("C84", "100n", "+5V", "GND"); vC("C85", "100n", "+5V", "GND")
+# synchronizace
+add("U36", "LM1881", "LM1881N", "Package_DIP:DIP-8_W7.62mm", {
+    1: "/CSYNC", 2: "SYNC_IN", 3: "/VSYNC", 4: "GND", 5: None, 6: "SYNC_RSET", 7: None, 8: "+5V"})
+vC("C86", "100n", "Y", "SYNC_IN")
+vR("R98", "680k", "SYNC_RSET", "GND"); vC("C87", "100n", "SYNC_RSET", "GND")
+vC("C88", "100n", "+5V", "GND")
+vR("R99", "75", "/CSYNC_B", "VGA_HS"); vR("R100", "75", "/VSYNC_B", "VGA_VS")
+add("J7", "VGA", "VGA DE-15 (RGB 15 kHz)", "Connector_Dsub:DSUB-15-HD_Female_Horizontal_P2.29x1.98mm_EdgePinOffset3.03mm_Housed_MountingHolesOffset4.94mm",
+    {1: "VGA_R", 2: "VGA_G", 3: "VGA_B", 4: None, 5: "GND", 6: "GND", 7: "GND", 8: "GND", 9: None,
+     10: "GND", 11: None, 12: None, 13: "VGA_HS", 14: "VGA_VS", 15: None})
+verify.append(("VGA výstup (U34–U36, J7)", "RGB 15,6 kHz + CSYNC na pinu 13, VSYNC na pinu 14",
+               "Běžný VGA monitor chce 31 kHz – potřeba monitor s 15 kHz nebo převodník (GBS-8200, OSSC, RetroTINK)"))
+verify.append(("R76–R97 (matice YUV->RGB)", "poměry R = Y+V, B = Y+U, G = Y-(U+V)",
+               "Úrovně U/V z ULA nejsou dokumentované – trimry nastavit podle bílé/černé a barevných pruhů; G kanál nejcitlivější"))
+verify.append(("U36 LM1881", "vstup z Y přes 100n, Rset 680k || 100n",
+               "Podle katalogového listu LM1881; ověřit, že Y z ULA má 0,5–2 Vpp"))
+verify.append(("U31/J3 modulátor", "odstraněn", "Nahrazen výstupem VGA; zůstává kompozitní cinch J6"))
+
 # kompozitní výstup (doplněno): emitorový sledovač + 75R na cinch
 VIDEO_BLOCK = ["R48", "R49", "R50", "R51", "R52", "R53", "C64", "R54", "R55", "C65", "R56", "C66",
                "R58", "R59", "C67", "Y2", "R60", "C68", "C71", "R61", "C72", "R62", "C73",
                "R63", "R64", "R65", "R66", "T5", "R67", "R68", "T6", "R69", "R70", "C74", "C75",
-               "T4", "R46", "C62", "R47", "J6", "C63"]
+               "T4", "R46", "C62", "R47", "J6"]
 add("T4", "NPN", "KC507 (BC547)", "Package_TO_SOT_THT:TO-18-3", {1: "CVBS_E", 2: "CVBS", 3: "+5V"})
 R("R46", "470", "CVBS_E", "GND")
 add("C62", "CP", "220u/10V", "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm", {1: "CVBS_E", 2: "CVBS_C"})
@@ -220,8 +263,6 @@ R("R47", "75", "CVBS_C", "VIDEO_OUT")
 add("J6", "CONN", "Video (cinch)", "Connector_Coaxial:CONN_RCA_Horizontal", {1: "VIDEO_OUT", 2: "GND"})
 verify.append(("T4, R46, C62, R47, J6", "kompozitní video výstup",
                "Doplněno (na předloze není) – přímý výstup CVBS pro monitor/TV se vstupem AV, obchází modulátor"))
-add("J3", "CONN", "TV", "Connector_Coaxial:BNC_Amphenol_B6252HB-NPP3G-50_Horizontal",
-    {1: "TV", 2: "GND"})
 
 # ---------------------------------------------------------------- video RAM 8x2118 (16K)
 # piny 2118 podle čísel u vodičů na předloze
@@ -285,7 +326,8 @@ add("U25", "7404", "74LS04", "Package_DIP:DIP-14_W7.62mm", {
     11: None, 10: None, 7: "GND", 14: "+5V"})
 add("U26", "7404", "74LS04", "Package_DIP:DIP-14_W7.62mm", {
     1: "PC0", 2: "BANK", 11: "BANK", 10: "/BANKSEL",
-    3: None, 4: None, 5: None, 6: None, 9: None, 8: None, 13: None, 12: None,
+    3: "/CSYNC", 4: "CSYNC_I", 5: "CSYNC_I", 6: "/CSYNC_B",       # budiče synchronizace VGA
+    9: "/VSYNC", 8: "VSYNC_I", 13: "VSYNC_I", 12: "/VSYNC_B",
     7: "GND", 14: "+5V"})
 add("U27", "7400", "74LS00", "Package_DIP:DIP-14_W7.62mm", {
     5: "WR_D", 4: "/RD", 6: "RW",
