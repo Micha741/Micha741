@@ -2,6 +2,9 @@ misto,co,proc
 U2 pin 20 (/CE),/ROMCS = ULA pin 34,U pinu 20 je jen kondenzátor 100p; připojení na ULA ROMCS je odhad
 U4 (ULA),pin GND není ve schématu nakreslen,Čísla pinů 36/37 (A14/A15) a 2 (/WR) jsou na předloze rozmazaná – převzato dle zapojení ZX ULA
 "MG / zvuk (D9–D11, LS1, T3)","horní konce reproduktoru, diod a 10n","Na předloze končí bez označení – připojeno na GND; zapojení KC507 přepsáno doslova, ověřit"
+U30 (kodér),vnitřní zapojení kodéru zatím jen jako blok,Předloha kreslí jen blok KÓDER; typ obvodu (pravděpodobně LM1889 jako ve ZX Spectru) a jeho pinout ověřit z datasheetu
+U31 (modulátor),vývody modulu +5V / VIDEO / GND / VF,Modul je na předloze jen blok; pořadí vývodů podle konkrétního modulu
+"T4, R46, C62, R47, J6",kompozitní video výstup,"Doplněno (na předloze není) – přímý výstup CVBS pro monitor/TV se vstupem AV, obchází modulátor"
 U7/U8 vstupy,přiřazení A/B vstupů LS157,Na předloze jsou vidět jen odbočky z adresové sběrnice – řádek An / sloupec An+7 je odvozeno funkčně
 U5 pin 10,sloupcový bit RA7 = BANK (PC0 8255),Funkční odhad: horních 32K je 2x32K banka přepínaná PC0
 U27 pin 10,= A15,"Vstup přichází z adresové sběrnice, konkrétní linka nečitelná"

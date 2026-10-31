@@ -3,19 +3,23 @@
 <rect x="10" y="10" width="821" height="574" fill="none" stroke="#800" stroke-width="0.3"/>
 <text x="30.00" y="20.00" font-size="3.5999999999999996" fill="#008">DIDAKTIK GAMA – SCHÉMA ZAPOJENIA (překresleno z tištěné předlohy)</text>
 <text x="30.00" y="26.00" font-size="2.16" fill="#008">Spoje jsou vedeny návěštími (labels) – stejné jméno = stejný net. X = aktivní v nule.</text>
+<text x="500.00" y="98.00" font-size="2.4" fill="#008">VIDEO VÝSTUP (kompozit doplněn)</text>
 <text x="500.00" y="245.00" font-size="2.4" fill="#008">NAPÁJENÍ (doplněno – na předloze jen +5V)</text>
 <text x="560.00" y="290.00" font-size="2.4" fill="#008">K OVĚŘENÍ (na předloze nečitelné / odhadnuté):</text>
 <text x="560.00" y="296.00" font-size="1.524" fill="#008">• U2 pin 20 (/CE): /ROMCS = ULA pin 34 – U pinu 20 je jen kondenzátor 100p; připojení na ULA ROMCS je odhad</text>
 <text x="560.00" y="300.20" font-size="1.524" fill="#008">• U4 (ULA): pin GND není ve schématu nakreslen – Čísla pinů 36/37 (A14/A15) a 2 (/WR) jsou na předloze rozmazaná – převzato dle zapojení ZX ULA</text>
 <text x="560.00" y="304.40" font-size="1.524" fill="#008">• MG / zvuk (D9–D11, LS1, T3): horní konce reproduktoru, diod a 10n – Na předloze končí bez označení – připojeno na GND; zapojení KC507 přepsáno doslova, ověřit</text>
-<text x="560.00" y="308.60" font-size="1.524" fill="#008">• U7/U8 vstupy: přiřazení A/B vstupů LS157 – Na předloze jsou vidět jen odbočky z adresové sběrnice – řádek An / sloupec An+7 je odvozeno funkčně</text>
-<text x="560.00" y="312.80" font-size="1.524" fill="#008">• U5 pin 10: sloupcový bit RA7 = BANK (PC0 8255) – Funkční odhad: horních 32K je 2x32K banka přepínaná PC0</text>
-<text x="560.00" y="317.00" font-size="1.524" fill="#008">• U27 pin 10: = A15 – Vstup přichází z adresové sběrnice, konkrétní linka nečitelná</text>
-<text x="560.00" y="321.20" font-size="1.524" fill="#008">• U28 (CS 8255): 3vstupé NAND: ~A7, IORQ, /M1 – Typ hradla a třetí vstup (/M1) odhadnuty; port 8255 = A7=0 (1Fh/3Fh/5Fh/7Fh)</text>
-<text x="560.00" y="325.40" font-size="1.524" fill="#008">• U29D (/WE64): vstupy 12 = /WR, 13 = /MREQ – Výstup 11 jde na /WE 4164 – vstupy na předloze nejasné</text>
-<text x="560.00" y="329.60" font-size="1.524" fill="#008">• C9: 100p z MUX2_D na GND – Druhý konec kondenzátoru na předloze nejasný</text>
-<text x="560.00" y="333.80" font-size="1.524" fill="#008">• Napájení (J5, F1, D12, U32): celý blok doplněn – Na předloze není – vstupní napětí 9–12 V DC a hodnoty kondenzátorů jsou typické pro 7805, ověřit na desce/adaptéru</text>
-<text x="560.00" y="338.00" font-size="1.524" fill="#008">• C20–C61: blokování napájení – Doplněno: 100n u každého IC (u napájecích pinů), 47u u bank 4164 a 2118</text>
+<text x="560.00" y="308.60" font-size="1.524" fill="#008">• U30 (kodér): vnitřní zapojení kodéru zatím jen jako blok – Předloha kreslí jen blok KÓDER; typ obvodu (pravděpodobně LM1889 jako ve ZX Spectru) a jeho pinout ověřit z datasheetu</text>
+<text x="560.00" y="312.80" font-size="1.524" fill="#008">• U31 (modulátor): vývody modulu +5V / VIDEO / GND / VF – Modul je na předloze jen blok; pořadí vývodů podle konkrétního modulu</text>
+<text x="560.00" y="317.00" font-size="1.524" fill="#008">• T4, R46, C62, R47, J6: kompozitní video výstup – Doplněno (na předloze není) – přímý výstup CVBS pro monitor/TV se vstupem AV, obchází modulátor</text>
+<text x="560.00" y="321.20" font-size="1.524" fill="#008">• U7/U8 vstupy: přiřazení A/B vstupů LS157 – Na předloze jsou vidět jen odbočky z adresové sběrnice – řádek An / sloupec An+7 je odvozeno funkčně</text>
+<text x="560.00" y="325.40" font-size="1.524" fill="#008">• U5 pin 10: sloupcový bit RA7 = BANK (PC0 8255) – Funkční odhad: horních 32K je 2x32K banka přepínaná PC0</text>
+<text x="560.00" y="329.60" font-size="1.524" fill="#008">• U27 pin 10: = A15 – Vstup přichází z adresové sběrnice, konkrétní linka nečitelná</text>
+<text x="560.00" y="333.80" font-size="1.524" fill="#008">• U28 (CS 8255): 3vstupé NAND: ~A7, IORQ, /M1 – Typ hradla a třetí vstup (/M1) odhadnuty; port 8255 = A7=0 (1Fh/3Fh/5Fh/7Fh)</text>
+<text x="560.00" y="338.00" font-size="1.524" fill="#008">• U29D (/WE64): vstupy 12 = /WR, 13 = /MREQ – Výstup 11 jde na /WE 4164 – vstupy na předloze nejasné</text>
+<text x="560.00" y="342.20" font-size="1.524" fill="#008">• C9: 100p z MUX2_D na GND – Druhý konec kondenzátoru na předloze nejasný</text>
+<text x="560.00" y="346.40" font-size="1.524" fill="#008">• Napájení (J5, F1, D12, U32): celý blok doplněn – Na předloze není – vstupní napětí 9–12 V DC a hodnoty kondenzátorů jsou typické pro 7805, ověřit na desce/adaptéru</text>
+<text x="560.00" y="350.60" font-size="1.524" fill="#008">• C20–C61: blokování napájení – Doplněno: 100n u každého IC (u napájecích pinů), 47u u bank 4164 a 2118</text>
 <rect x="45.72" y="66.04" width="20.32" height="58.42" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
 <text x="55.88" y="65.04" font-size="1.8" text-anchor="middle" fill="#066">U1</text>
 <text x="55.88" y="126.76" font-size="1.5" text-anchor="middle" fill="#066">UA880D (Z80)</text>
@@ -1223,19 +1227,85 @@
 <text x="521.37" y="69.03" font-size="1.15" text-anchor="end" fill="#066">CVBS</text>
 <line x1="524.51" y1="68.58" x2="527.05" y2="68.58" stroke="#080" stroke-width="0.15"/>
 <text x="527.45" y="68.28" font-size="1.2" text-anchor="start" fill="#000">CVBS</text>
-<rect x="552.45" y="68.58" width="12.70" height="5.08" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
-<text x="558.80" y="67.58" font-size="1.8" text-anchor="middle" fill="#066">U31</text>
-<text x="558.80" y="75.96" font-size="1.5" text-anchor="middle" fill="#066">Modulátor</text>
-<line x1="549.91" y1="71.12" x2="552.45" y2="71.12" stroke="#800" stroke-width="0.2"/>
-<text x="551.18" y="70.72" font-size="0.9" text-anchor="middle" fill="#800">1</text>
-<text x="553.05" y="71.57" font-size="1.15" text-anchor="start" fill="#066">IN</text>
-<line x1="549.91" y1="71.12" x2="547.37" y2="71.12" stroke="#080" stroke-width="0.15"/>
-<text x="546.97" y="70.82" font-size="1.2" text-anchor="end" fill="#000">CVBS</text>
-<line x1="567.69" y1="71.12" x2="565.15" y2="71.12" stroke="#800" stroke-width="0.2"/>
-<text x="566.42" y="70.72" font-size="0.9" text-anchor="middle" fill="#800">2</text>
-<text x="564.55" y="71.57" font-size="1.15" text-anchor="end" fill="#066">RF</text>
-<line x1="567.69" y1="71.12" x2="570.23" y2="71.12" stroke="#080" stroke-width="0.15"/>
-<text x="570.63" y="70.82" font-size="1.2" text-anchor="start" fill="#000">TV</text>
+<rect x="552.45" y="66.04" width="12.70" height="10.16" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="558.80" y="65.04" font-size="1.8" text-anchor="middle" fill="#066">U31</text>
+<text x="558.80" y="78.50" font-size="1.5" text-anchor="middle" fill="#066">VF modulátor (UM1233 nebo ekv.)</text>
+<line x1="549.91" y1="68.58" x2="552.45" y2="68.58" stroke="#800" stroke-width="0.2"/>
+<text x="551.18" y="68.18" font-size="0.9" text-anchor="middle" fill="#800">1</text>
+<text x="553.05" y="69.03" font-size="1.15" text-anchor="start" fill="#066">VIDEO</text>
+<line x1="549.91" y1="68.58" x2="547.37" y2="68.58" stroke="#080" stroke-width="0.15"/>
+<text x="546.97" y="68.28" font-size="1.2" text-anchor="end" fill="#000">CVBS</text>
+<line x1="549.91" y1="73.66" x2="552.45" y2="73.66" stroke="#800" stroke-width="0.2"/>
+<text x="551.18" y="73.26" font-size="0.9" text-anchor="middle" fill="#800">2</text>
+<text x="553.05" y="74.11" font-size="1.15" text-anchor="start" fill="#066">+5V</text>
+<line x1="549.91" y1="73.66" x2="547.37" y2="73.66" stroke="#080" stroke-width="0.15"/>
+<path d="M546.61,72.39000000000001 L547.37,71.12 L548.13,72.39000000000001 M547.37,73.66000000000001 L547.37,71.12" stroke="#800" stroke-width="0.2" fill="none"/>
+<text x="547.37" y="70.66" font-size="1" text-anchor="middle">+5V</text>
+<line x1="567.69" y1="68.58" x2="565.15" y2="68.58" stroke="#800" stroke-width="0.2"/>
+<text x="566.42" y="68.18" font-size="0.9" text-anchor="middle" fill="#800">3</text>
+<text x="564.55" y="69.03" font-size="1.15" text-anchor="end" fill="#066">RF</text>
+<line x1="567.69" y1="68.58" x2="570.23" y2="68.58" stroke="#080" stroke-width="0.15"/>
+<text x="570.63" y="68.28" font-size="1.2" text-anchor="start" fill="#000">TV</text>
+<line x1="567.69" y1="73.66" x2="565.15" y2="73.66" stroke="#800" stroke-width="0.2"/>
+<text x="566.42" y="73.26" font-size="0.9" text-anchor="middle" fill="#800">4</text>
+<text x="564.55" y="74.11" font-size="1.15" text-anchor="end" fill="#066">GND</text>
+<line x1="567.69" y1="73.66" x2="570.23" y2="73.66" stroke="#080" stroke-width="0.15"/>
+<path d="M570.2299999999999,73.66000000000001 L570.2299999999999,74.93 L568.9599999999999,74.93 L570.2299999999999,76.20000000000002 L571.4999999999999,74.93 L570.2299999999999,74.93" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="614.6800000000001" y1="106.68" x2="614.6800000000001" y2="116.84" stroke="#800" stroke-width="0.2"/>
+<rect x="612.6800000000001" y="111.13000000000001" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M612.6800000000001,111.13000000000001 h4 M612.6800000000001,112.39 h4" stroke="#800" stroke-width="0.4"/>
+<text x="616.8800000000001" y="111.46000000000001" font-size="1.3" fill="#066">C63</text>
+<text x="616.8800000000001" y="113.16000000000001" font-size="1.1" fill="#066">100n</text>
+<line x1="614.68" y1="106.68" x2="614.68" y2="104.14" stroke="#080" stroke-width="0.15"/>
+<path d="M613.9200000000001,102.87 L614.6800000000001,101.6 L615.44,102.87 M614.6800000000001,104.14 L614.6800000000001,101.6" stroke="#800" stroke-width="0.2" fill="none"/>
+<text x="614.68" y="101.14" font-size="1" text-anchor="middle">+5V</text>
+<line x1="614.68" y1="116.84" x2="614.68" y2="119.38" stroke="#080" stroke-width="0.15"/>
+<path d="M614.6800000000001,119.38000000000001 L614.6800000000001,120.65 L613.4100000000001,120.65 L614.6800000000001,121.92000000000002 L615.95,120.65 L614.6800000000001,120.65" stroke="#800" stroke-width="0.2" fill="none"/>
+<path d="M501.65,111.76 H504.96 M504.96,109.86 V113.66000000000001 M504.96,111.13000000000001 L506.72999999999996,109.22 V106.68 M504.96,112.39 L506.72999999999996,114.30000000000001 V116.84" stroke="#800" stroke-width="0.25" fill="none"/>
+<circle cx="505.76" cy="111.76" r="3" fill="none" stroke="#800" stroke-width="0.2"/>
+<text x="509.06" y="111.46000000000001" font-size="1.3" fill="#066">T4</text>
+<text x="509.06" y="113.16000000000001" font-size="1.1" fill="#066">KC507 (BC547)</text>
+<line x1="506.73" y1="116.84" x2="506.73" y2="119.38" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(506.43,119.78) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">CVBS_E</text>
+<line x1="501.65" y1="111.76" x2="499.11" y2="111.76" stroke="#080" stroke-width="0.15"/>
+<text x="498.71" y="111.46" font-size="1.2" text-anchor="end" fill="#000">CVBS</text>
+<line x1="506.73" y1="106.68" x2="506.73" y2="104.14" stroke="#080" stroke-width="0.15"/>
+<path d="M505.96999999999997,102.87 L506.72999999999996,101.6 L507.48999999999995,102.87 M506.72999999999996,104.14 L506.72999999999996,101.6" stroke="#800" stroke-width="0.2" fill="none"/>
+<text x="506.73" y="101.14" font-size="1" text-anchor="middle">+5V</text>
+<line x1="525.78" y1="106.68" x2="525.78" y2="116.84" stroke="#800" stroke-width="0.2"/>
+<rect x="524.78" y="109.22" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="527.98" y="111.46000000000001" font-size="1.3" fill="#066">R46</text>
+<text x="527.98" y="113.16000000000001" font-size="1.1" fill="#066">470</text>
+<line x1="525.78" y1="106.68" x2="525.78" y2="104.14" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(525.48,103.74) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CVBS_E</text>
+<line x1="525.78" y1="116.84" x2="525.78" y2="119.38" stroke="#080" stroke-width="0.15"/>
+<path d="M525.78,119.38000000000001 L525.78,120.65 L524.51,120.65 L525.78,121.92000000000002 L527.05,120.65 L525.78,120.65" stroke="#800" stroke-width="0.2" fill="none"/>
+<line x1="548.64" y1="106.68" x2="548.64" y2="116.84" stroke="#800" stroke-width="0.2"/>
+<rect x="546.64" y="111.13000000000001" width="4" height="1.27" fill="#fff" stroke="none"/><path d="M546.64,111.13000000000001 h4 M546.64,112.39 h4" stroke="#800" stroke-width="0.4"/>
+<text x="550.84" y="111.46000000000001" font-size="1.3" fill="#066">C62</text>
+<text x="550.84" y="113.16000000000001" font-size="1.1" fill="#066">220u/10V</text>
+<line x1="548.64" y1="106.68" x2="548.64" y2="104.14" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(548.34,103.74) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CVBS_E</text>
+<line x1="548.64" y1="116.84" x2="548.64" y2="119.38" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(548.34,119.78) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">CVBS_C</text>
+<line x1="571.5" y1="106.68" x2="571.5" y2="116.84" stroke="#800" stroke-width="0.2"/>
+<rect x="570.5" y="109.22" width="2.03" height="5.08" fill="#fff" stroke="#800" stroke-width="0.25"/>
+<text x="573.7" y="111.46000000000001" font-size="1.3" fill="#066">R47</text>
+<text x="573.7" y="113.16000000000001" font-size="1.1" fill="#066">75</text>
+<line x1="571.50" y1="106.68" x2="571.50" y2="104.14" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(571.20,103.74) rotate(-90)" font-size="1.2" text-anchor="start" fill="#000">CVBS_C</text>
+<line x1="571.50" y1="116.84" x2="571.50" y2="119.38" stroke="#080" stroke-width="0.15"/>
+<text transform="translate(571.20,119.78) rotate(-90)" font-size="1.2" text-anchor="end" fill="#000">VIDEO_OUT</text>
+<rect x="589.28" y="109.22" width="5.08" height="7.62" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
+<text x="591.82" y="108.22" font-size="1.8" text-anchor="middle" fill="#066">J6</text>
+<text x="591.82" y="119.14" font-size="1.5" text-anchor="middle" fill="#066">Video (cinch)</text>
+<line x1="586.74" y1="111.76" x2="589.28" y2="111.76" stroke="#800" stroke-width="0.2"/>
+<text x="588.01" y="111.36" font-size="0.9" text-anchor="middle" fill="#800">1</text>
+<line x1="586.74" y1="111.76" x2="584.20" y2="111.76" stroke="#080" stroke-width="0.15"/>
+<text x="583.80" y="111.46" font-size="1.2" text-anchor="end" fill="#000">VIDEO_OUT</text>
+<line x1="586.74" y1="114.30" x2="589.28" y2="114.30" stroke="#800" stroke-width="0.2"/>
+<text x="588.01" y="113.90" font-size="0.9" text-anchor="middle" fill="#800">2</text>
+<line x1="586.74" y1="114.30" x2="584.20" y2="114.30" stroke="#080" stroke-width="0.15"/>
+<path d="M584.2,114.30000000000001 L584.2,115.57000000000001 L582.9300000000001,115.57000000000001 L584.2,116.84000000000002 L585.47,115.57000000000001 L584.2,115.57000000000001" stroke="#800" stroke-width="0.2" fill="none"/>
 <rect x="607.06" y="68.58" width="5.08" height="7.62" fill="#ffffc8" stroke="#800" stroke-width="0.25"/>
 <text x="609.60" y="67.58" font-size="1.8" text-anchor="middle" fill="#066">J3</text>
 <text x="609.60" y="78.50" font-size="1.5" text-anchor="middle" fill="#066">TV</text>

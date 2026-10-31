@@ -128,7 +128,22 @@ verify.append(("MG / zvuk (D9–D11, LS1, T3)", "horní konce reproduktoru, diod
 
 # Video výstup
 add("U30", "KODER", "Kodér PAL", "", {1: "U", 2: "V", 3: "Y", 4: "CVBS"})
-add("U31", "MODULATOR", "Modulátor", "", {1: "CVBS", 2: "TV"})
+verify.append(("U30 (kodér)", "vnitřní zapojení kodéru zatím jen jako blok",
+               "Předloha kreslí jen blok KÓDER; typ obvodu (pravděpodobně LM1889 jako ve ZX Spectru) a jeho pinout ověřit z datasheetu"))
+# modulátor = stíněný modul (UM1233 / tuzemský ekvivalent): +5V, video, GND, VF výstup
+add("U31", "MODULATOR", "VF modulátor (UM1233 nebo ekv.)", "", {1: "CVBS", 2: "+5V", 3: "TV", 4: "GND"})
+C("C63", "100n", "+5V", "GND")
+verify.append(("U31 (modulátor)", "vývody modulu +5V / VIDEO / GND / VF",
+               "Modul je na předloze jen blok; pořadí vývodů podle konkrétního modulu"))
+# kompozitní výstup (doplněno): emitorový sledovač + 75R na cinch
+VIDEO_BLOCK = ["T4", "R46", "C62", "R47", "J6", "C63"]
+add("T4", "NPN", "KC507 (BC547)", "Package_TO_SOT_THT:TO-18-3", {1: "CVBS_E", 2: "CVBS", 3: "+5V"})
+R("R46", "470", "CVBS_E", "GND")
+add("C62", "CP", "220u/10V", "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm", {1: "CVBS_E", 2: "CVBS_C"})
+R("R47", "75", "CVBS_C", "VIDEO_OUT")
+add("J6", "CONN", "Video (cinch)", "Connector_Coaxial:CONN_RCA_Horizontal", {1: "VIDEO_OUT", 2: "GND"})
+verify.append(("T4, R46, C62, R47, J6", "kompozitní video výstup",
+               "Doplněno (na předloze není) – přímý výstup CVBS pro monitor/TV se vstupem AV, obchází modulátor"))
 add("J3", "CONN", "TV", "Connector_Coaxial:BNC_Amphenol_B6252HB-NPP3G-50_Horizontal",
     {1: "TV", 2: "GND"})
 

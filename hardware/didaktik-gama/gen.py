@@ -5,7 +5,7 @@ import csv, os, sys, uuid
 from collections import defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from netlist import parts, verify, POWER_BLOCK  # noqa: E402
+from netlist import parts, verify, POWER_BLOCK, VIDEO_BLOCK  # noqa: E402
 
 OUT = os.path.dirname(os.path.abspath(__file__))
 G = 2.54
@@ -86,7 +86,7 @@ ic("2118",
     P(16, "GND", PW), P(1, "NC", "no_connect")], w=12.7)
 ic("7805", [P(1, "IN")], [P(3, "OUT"), P(2, "GND", PW)], w=10.16, title="7805")
 ic("KODER", [P(1, "U"), P(2, "V"), P(3, "Y")], [P(4, "CVBS")], w=12.7, title="KODER")
-ic("MODULATOR", [P(1, "IN")], [P(2, "RF")], w=12.7, title="MODULÁTOR")
+ic("MODULATOR", [P(1, "VIDEO"), None, P(2, "+5V", PW)], [P(3, "RF"), None, P(4, "GND", PW)], w=12.7, title="MODULÁTOR")
 
 # hradla: (typ, [(vstupy, výstup)], power (vcc,gnd), symbol funkce, negace)
 GATES = {
@@ -336,8 +336,10 @@ GATE_UNITS = {}   # ref -> seznam (unit, x, y)
 # blok napájení
 for i, r in enumerate(POWER_BLOCK):
     at(r, grid(505 + i * 17 + (8 if r == "U32" else 0) + (16 if i > POWER_BLOCK.index("U32") else 0)), grid(262))
+for i, r in enumerate(VIDEO_BLOCK):
+    at(r, grid(505 + i * 22), grid(112))
 PASSIVES = [r for r in parts if parts[r]["sym"] in ("R", "C", "CP", "D", "SW", "XTAL", "SPK", "NPN", "F", "LED")
-            and r not in POWER_BLOCK]
+            and r not in POWER_BLOCK and r not in VIDEO_BLOCK]
 PASSIVES.sort(key=lambda r: (r.rstrip("0123456789"), int("".join(c for c in r if c.isdigit()) or 0)))
 col, row = 0, 0
 for r in PASSIVES:
@@ -506,6 +508,7 @@ labels = [l for l in labels if "+5V_FLAG" not in l]
 notes = [
     txt("DIDAKTIK GAMA – SCHÉMA ZAPOJENIA (překresleno z tištěné předlohy)", 30, 20, 3),
     txt("Spoje jsou vedeny návěštími (labels) – stejné jméno = stejný net. ~{X} = aktivní v nule.", 30, 26, 1.8),
+    txt("VIDEO VÝSTUP (kompozit doplněn)", 500, 98, 2),
     txt("NAPÁJENÍ (doplněno – na předloze jen +5V)", 500, 245, 2),
     txt("K OVĚŘENÍ (na předloze nečitelné / odhadnuté):", 560, 290, 2),
 ]

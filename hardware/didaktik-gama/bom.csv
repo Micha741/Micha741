@@ -4,11 +4,11 @@ Dioda,KA136,11,D1 D2 D3 D4 D5 D6 D7 D8 D9 D10 D11,Diode_THT:D_DO-35_SOD27_P7.62m
 Dioda,KY132/80 (1N4007),1,D12,Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal
 I/O,8255 (MHB8255),1,U3,Package_DIP:DIP-40_W15.24mm
 Kondenzátor,1000u/25V,1,C11,Capacitor_THT:CP_Radial_D10.0mm_P5.00mm
-Kondenzátor,100n,34,C5 C6 C7 C12 C13 C20 C21 C22 C23 C24 C25 C26 C27 C28 C29 C30 C31 C32 C33 C34 C35 C36 C37 C38 C39 C40 C41 C42 C43 C44 C45 C46 C47 C48,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm
+Kondenzátor,100n,35,C5 C6 C7 C12 C13 C20 C21 C22 C23 C24 C25 C26 C27 C28 C29 C30 C31 C32 C33 C34 C35 C36 C37 C38 C39 C40 C41 C42 C43 C44 C45 C46 C47 C48 C63,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm
 Kondenzátor,100p,3,C2 C9 C10,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm
 Kondenzátor,10n,1,C4,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm
 Kondenzátor,10u/16V,1,C15,Capacitor_THT:CP_Radial_D5.0mm_P2.00mm
-Kondenzátor,220u/10V,1,C14,Capacitor_THT:CP_Radial_D6.3mm_P2.50mm
+Kondenzátor,220u/10V,2,C14 C62,Capacitor_THT:CP_Radial_D6.3mm_P2.50mm
 Kondenzátor,2u,1,C1,Capacitor_THT:CP_Radial_D5.0mm_P2.50mm
 Kondenzátor,47p,2,C3 C8,Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm
 Kondenzátor,47u/10V,2,C60 C61,Capacitor_THT:CP_Radial_D5.0mm_P2.00mm
@@ -17,6 +17,7 @@ Konektor,MG,1,J2,Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical
 Konektor,Napájení 9–12V DC,1,J5,Connector_BarrelJack:BarrelJack_Horizontal
 Konektor,Porty 8255,1,J4,Connector_PinHeader_2.54mm:PinHeader_2x13_P2.54mm_Vertical
 Konektor,TV,1,J3,Connector_Coaxial:BNC_Amphenol_B6252HB-NPP3G-50_Horizontal
+Konektor,Video (cinch),1,J6,Connector_Coaxial:CONN_RCA_Horizontal
 Logika,74LS00,1,U27,Package_DIP:DIP-14_W7.62mm
 Logika,74LS04,2,U25 U26,Package_DIP:DIP-14_W7.62mm
 Logika,74LS10,1,U28,Package_DIP:DIP-14_W7.62mm
@@ -39,12 +40,14 @@ Rezistor,220,2,R43 R44,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horiz
 Rezistor,220k,1,R4,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
 Rezistor,330,7,R27 R28 R29 R30 R31 R32 R33,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
 Rezistor,330k,1,R18,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
-Rezistor,470,11,R5 R6 R19 R20 R21 R22 R23 R24 R25 R26 R45,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
+Rezistor,470,12,R5 R6 R19 R20 R21 R22 R23 R24 R25 R26 R45 R46,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
 Rezistor,680,1,R16,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
+Rezistor,75,1,R47,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
 Rezistor,8k2,8,R35 R36 R37 R38 R39 R40 R41 R42,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
 Tranzistor,KC507,1,T3,Package_TO_SOT_THT:TO-18-3
+Tranzistor,KC507 (BC547),1,T4,Package_TO_SOT_THT:TO-18-3
 Tranzistor,KSY72,2,T1 T2,Package_TO_SOT_THT:TO-18-3
 ULA,ULA,1,U4,Package_DIP:DIP-40_W15.24mm
 Video,Kodér PAL,1,U30,
-Video,Modulátor,1,U31,
+Video,VF modulátor (UM1233 nebo ekv.),1,U31,
 Video RAM 2118,2118,8,U17 U18 U19 U20 U21 U22 U23 U24,Package_DIP:DIP-16_W7.62mm
