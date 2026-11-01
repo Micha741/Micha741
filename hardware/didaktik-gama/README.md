@@ -88,6 +88,7 @@ vrstvy, mapy vrtání PDF, job soubor), `<deska>_bom.csv` (soupis ve formátu Co
 | **KiCad 10** (stabilní; případně 9) | schéma, desky, trasování, gerbery; obsahuje i Python s modulem `pcbnew`. **Ne vývojovou verzi 10.99** – ta Python/`pcbnew` nemá | https://www.kicad.org/download/windows/ |
 | Git for Windows (volitelně) | stažení repozitáře, Git Bash pro skripty `.sh` | https://git-scm.com/download/win |
 | Freerouting (volitelně) | automatické vedení cest – v KiCadu *Plugin and Content Manager* → „Freerouting“ | správce doplňků KiCadu |
+| **Java 25+** (pro Freerouting) | Temurin JRE 25, Windows x64 .msi; v instalátoru zapnout *Set JAVA_HOME* a *Add to PATH*, pak restartovat KiCad (`java -version` musí ukázat 25+) | https://adoptium.net/temurin/releases/?version=25 |
 
 Repozitář stáhněte přes *Code → Download ZIP* na GitHubu (nebo `git clone`) a rozbalte například do
 `C:\gama`. Dále se pracuje ve složce `C:\gama\hardware\didaktik-gama`.
