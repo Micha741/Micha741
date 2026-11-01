@@ -32,6 +32,14 @@ DO_RENDER = "--render" in argv
 DO_GLB = "--glb" in argv
 PREVIEW = "--preview" in argv
 
+# Která scéna se má postavit:
+#   "pozy"       – sestava póz: ruce nad hlavu, otočka bokem/zády, ruce do V, dřep (kamera shora)
+#   "rozcvicka"  – protažení, panák, otočka, mávání
+SCENA = "pozy"
+for a in argv:
+    if a.startswith("--scena="):
+        SCENA = a.split("=", 1)[1]
+
 # barvy (R, G, B od 0 do 1) – tady si postavu snadno přebarvíš
 SKIN = (0.93, 0.70, 0.55)
 HAIR = (0.95, 0.75, 0.35)
@@ -353,6 +361,114 @@ def animate(r):
             key(eye, "scale", f + 3, (1, 0.6, 1.3))
 
 
+# ---------------------------------------------------------------- scéna "pozy"
+def build_camera_pozy():
+    """Kamera zepředu, při dřepu vyjede nahoru a dívá se shora."""
+    target = empty("Cil_kamery", loc=(0, 0, 1.5))
+    bpy.ops.object.camera_add(location=(0, -7.5, 1.8))
+    cam = bpy.context.active_object
+    cam.data.lens = 40
+    con = cam.constraints.new("TRACK_TO")
+    con.target = target
+    con.track_axis = "TRACK_NEGATIVE_Z"
+    con.up_axis = "UP_Y"
+    bpy.context.scene.camera = cam
+
+    key(cam, "location", 1, (0, -8, 1.7))
+    key(cam, "location", 60, (-0.6, -7.4, 1.8))
+    key(cam, "location", 140, (0.6, -7.2, 1.8))
+    key(cam, "location", 158, (0.4, -6.5, 2.4))
+    key(cam, "location", 182, (0, -2.6, 5.6))       # záběr shora na dřep
+    key(cam, "location", 212, (0, -2.4, 5.4))
+    key(cam, "location", 240, (0, -7.2, 1.9))
+    key(target, "location", 1, (0, 0, 1.5))
+    key(target, "location", 140, (0, 0, 1.55))
+    key(target, "location", 182, (0, 0.3, 0.6))
+    key(target, "location", 212, (0, 0.3, 0.6))
+    key(target, "location", 240, (0, 0, 1.4))
+    return cam
+
+
+def animate_pozy(r):
+    root, body, head, pony = r["root"], r["body"], r["head"], r["pony"]
+    rest_arms = (0, 8, 0)
+    rest_elb = (-10, 0, 0)
+    up = (-178, -6, 0)           # ruce vztyčené nad hlavu (lehce od sebe)
+    v_arms = (0, 140, 0)         # ruce do „V“
+    hold = dict(elbows=(0, 0, 0))
+
+    # 1) klid 1–20
+    pose(r, 1, rest_arms, elbows=rest_elb)
+    pose(r, 20, rest_arms, elbows=rest_elb)
+    key(root, "location", 1, (0, 0, 0))
+    key(root, "rotation_euler", 1, (0, 0, 0))
+    key(body, "rotation_euler", 1, (0, 0, 0))
+    key(head, "rotation_euler", 1, (0, 0, 0))
+    key(pony, "rotation_euler", 1, (0, 0, 0))
+    for f, z in ((1, 1.0), (12, 1.02), (24, 1.0)):
+        key(body, "location", f, (0, 0, z))
+
+    # 2) ruce nad hlavu a pohled vzhůru 20–60
+    pose(r, 40, up, **hold)
+    key(head, "rotation_euler", 26, (0, 0, 0))
+    key(head, "rotation_euler", 44, (-22, 0, 0))
+    pose(r, 60, up, **hold)
+    key(head, "rotation_euler", 60, (-18, 0, 0))
+
+    # 3) pomalá otočka bokem (84) a zády (110), váha na jedné noze
+    key(root, "rotation_euler", 60, (0, 0, 0))
+    key(root, "rotation_euler", 84, (0, 0, 90))
+    key(root, "rotation_euler", 96, (0, 0, 90))
+    key(root, "rotation_euler", 112, (0, 0, 180))
+    pose(r, 84, up, **hold, legs=(-8, 2, 0), knees=(15, 0, 0),
+         legs_r=(0, -2, 0), knees_r=(0, 0, 0))
+    key(body, "rotation_euler", 84, (0, -3, 0))        # lehké prohnutí v boku
+    key(head, "rotation_euler", 84, (-10, 0, 0))
+    pose(r, 112, up, **hold)
+    key(body, "rotation_euler", 112, (0, 0, 0))
+    key(head, "rotation_euler", 112, (-5, 0, 0))
+
+    # 4) zády ke kameře – ruce do V 112–140
+    pose(r, 126, v_arms, **hold)
+    key(head, "rotation_euler", 126, (-5, 0, 20))      # ohlédnutí přes rameno
+    pose(r, 140, v_arms, **hold)
+    key(head, "rotation_euler", 140, (-5, 0, 15))
+
+    # 5) otočení zpět čelem 140–160 a dřep s rukama nahoře 160–212
+    key(root, "rotation_euler", 140, (0, 0, 180))
+    key(root, "rotation_euler", 160, (0, 0, 360))
+    key(head, "rotation_euler", 158, (0, 0, 0))
+    pose(r, 160, v_arms, **hold)
+    key(root, "location", 160, (0, 0, 0))
+    key(body, "rotation_euler", 160, (0, 0, 0))
+    # stehna vodorovně (-90°), kolena ven, bérce svisle -> chodidla zůstanou na zemi
+    squat = dict(legs=(-88, 0, -14), knees=(92, 0, 0))
+    pose(r, 180, (-150, -30, 0), elbows=(-35, 0, 0), **squat)
+    key(root, "location", 180, (0, 0.46, -0.5))         # pánev dolů a dozadu
+    key(body, "rotation_euler", 180, (-22, 0, 0))       # předklon trupu
+    key(head, "rotation_euler", 180, (-35, 0, 0))       # pohled nahoru do kamery
+    key(pony, "rotation_euler", 176, (-30, 0, 0))
+    key(pony, "rotation_euler", 186, (10, 0, 0))
+    key(pony, "rotation_euler", 194, (0, 0, 0))
+    pose(r, 210, (-150, -30, 0), elbows=(-35, 0, 0), **squat)
+    key(root, "location", 210, (0, 0.46, -0.5))
+    key(body, "rotation_euler", 210, (-22, 0, 0))
+    key(head, "rotation_euler", 210, (-35, 0, 0))
+
+    # 6) zvednutí a návrat do klidu 210–240
+    pose(r, 228, rest_arms, elbows=rest_elb)
+    key(root, "location", 228, (0, 0, 0))
+    key(body, "rotation_euler", 226, (0, 0, 0))
+    key(head, "rotation_euler", 230, (0, 8, 0))
+    pose(r, 240, rest_arms, elbows=rest_elb)
+
+    for eye in r["eyes"]:
+        for f in (16, 100, 150, 236):
+            key(eye, "scale", f - 2, (1, 0.6, 1.3))
+            key(eye, "scale", f, (1, 0.6, 0.1))
+            key(eye, "scale", f + 3, (1, 0.6, 1.3))
+
+
 # ---------------------------------------------------------------- render
 def setup_render():
     scene = bpy.context.scene
@@ -394,8 +510,12 @@ def main():
     clear_scene()
     character = build_character()
     build_world()
-    build_camera()
-    animate(character)
+    if SCENA == "pozy":
+        build_camera_pozy()
+        animate_pozy(character)
+    else:
+        build_camera()
+        animate(character)
     setup_render()
     bpy.context.scene.frame_set(1)
 
