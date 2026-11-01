@@ -224,6 +224,9 @@ def build_camera(robot_root):
     # kamera sleduje příchod a pak pomalu najíždí
     key(target, "location", 1, (-4, 0, 1.4))
     key(target, "location", 96, (0, 0, 1.6))
+    key(target, "location", 176, (0, 0, 1.7))
+    key(target, "location", 196, (0, 0, 2.5))       # kamera se zvedne se skokem
+    key(target, "location", 212, (0, 0, 1.75))
     key(target, "location", 240, (0, 0, 1.8))
     key(cam, "location", 1, (-2, -11, 3.2))
     key(cam, "location", 120, (0, -9, 2.6))
@@ -278,7 +281,7 @@ def animate(r):
     key(root, "scale", 182, (1.12, 1.12, 0.8))         # squash
     key(root, "location", 182, (0, 0, 0))
     key(root, "scale", 188, (0.9, 0.9, 1.15))          # stretch
-    key(root, "location", 196, (0, 0, 1.8))            # vrchol skoku
+    key(root, "location", 196, (0, 0, 1.3))            # vrchol skoku
     key(root, "scale", 196, (1, 1, 1))
     for side in (-1, 1):
         key(arms[side], "rotation_euler", 182, (40, 0, 0))
@@ -337,6 +340,10 @@ def setup_render():
         scene.view_settings.view_transform = "AgX"
     except TypeError:
         scene.view_settings.view_transform = "Filmic"
+    try:
+        scene.view_settings.look = "AgX - Punchy"   # sytější barvy
+    except TypeError:
+        pass
 
     os.makedirs(OUT_DIR, exist_ok=True)
     img = scene.render.image_settings
