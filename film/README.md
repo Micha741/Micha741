@@ -43,3 +43,15 @@ do `bzuk.glb`, který otevřeš v jiných programech (Unity, Unreal, three.js…
 - **Délka a načasování:** v `animate()` jsou čísla snímků (24 snímků = 1 sekunda).
 - **Rychlost chůze:** proměnná `step` (menší číslo znamená rychlejší kroky).
 - Celou scénu můžeš po spuštění skriptu dál ručně upravovat přímo v Blenderu.
+
+## Postavička Ela (`postava_film.py`)
+
+Stejný styl a stejné spouštění jako u robota. Výchozí nastavení `SCENA = "film"` postaví
+**20sekundový film** ze dvou scén, mezi kterými se přestřihne kamera:
+
+1. **Rozcvička (0–10 s):** protažení, dvakrát panák, otočka dokola, rozkročení a mávání.
+2. **Pózy (10–20 s):** ruce nad hlavu, pomalá otočka bokem a zády, ruce do V, dřep s rukama
+   nahoře v záběru shora a návrat do klidu.
+
+Jen jednu scénu dostaneš, když na začátku souboru nastavíš `SCENA = "rozcvicka"` nebo
+`SCENA = "pozy"`. Barvy oblečení a vlasů se mění hned pod tím.

@@ -8,13 +8,23 @@ Použití:
   Náhled:  blender -b -P postava_film.py -- --render --preview
   Export:  blender -b -P postava_film.py -- --glb             (film/render/ela.glb)
 
-Děj (10 s, 24 fps):
+Výchozí je celý film (20 s) = rozcvička + pózy, mezi nimi střih kamery.
+Jednotlivou scénu postavíš přepnutím SCENA níže (nebo -- --scena=pozy).
+
+Rozcvička (10 s, 24 fps):
   0–1.2 s   stojí, dýchá, mrkne
   1.2–3.3 s protáhne se – zvedne obě ruce nad hlavu, stoupne na špičky
   3.5–5.5 s dvakrát skočí panáka (ruce nahoru, nohy od sebe)
   5.7–7.7 s otočí se dokola s rozpaženýma rukama
   7.8–9.2 s rozkročí se a zamává
   9.2–10 s  vrátí se do klidu a nakloní hlavu
+
+Pózy (10 s):
+  0–2.5 s   ruce vztyčené nad hlavu, pohled vzhůru
+  2.5–4.7 s pomalá otočka bokem a zády s rukama nahoře
+  4.7–5.8 s zády ke kameře ruce do V, ohlédnutí
+  5.8–8.8 s otočka zpět a dřep s rukama nahoře (kamera shora)
+  8.8–10 s  zvednutí a návrat do klidu
 """
 
 import math
@@ -33,9 +43,10 @@ DO_GLB = "--glb" in argv
 PREVIEW = "--preview" in argv
 
 # Která scéna se má postavit:
+#   "film"       – obě scény za sebou (rozcvička, pak pózy), 20 s
 #   "pozy"       – sestava póz: ruce nad hlavu, otočka bokem/zády, ruce do V, dřep (kamera shora)
 #   "rozcvicka"  – protažení, panák, otočka, mávání
-SCENA = "pozy"
+SCENA = "film"
 for a in argv:
     if a.startswith("--scena="):
         SCENA = a.split("=", 1)[1]
@@ -123,12 +134,26 @@ def empty(name, parent=None, loc=(0, 0, 0)):
     return obj
 
 
+OFFSET = 0   # posun všech klíčových snímků – díky němu jde řadit scény za sebe
+
+
 def key(obj, path, frame, value):
     """Klíčový snímek. Úhly (rotation_euler) se zadávají ve stupních."""
     if path == "rotation_euler":
         value = [math.radians(v) for v in value]
     setattr(obj, path, value)
-    obj.keyframe_insert(data_path=path, frame=frame)
+    obj.keyframe_insert(data_path=path, frame=frame + OFFSET)
+
+
+def hold_all(frame):
+    """Zamkne pózu všech animovaných objektů na daném snímku, aby další scéna
+    navazovala čistým střihem a mezi scénami nic „neujíždělo“."""
+    scene = bpy.context.scene
+    scene.frame_set(frame)
+    for obj in scene.objects:
+        if obj.animation_data and obj.animation_data.action:
+            for path in ("location", "rotation_euler", "scale"):
+                obj.keyframe_insert(data_path=path, frame=frame)
 
 
 # ---------------------------------------------------------------- model
@@ -474,7 +499,7 @@ def setup_render():
     scene = bpy.context.scene
     scene.render.fps = FPS
     scene.frame_start = 1
-    scene.frame_end = END
+    scene.frame_end = END * 2 if SCENA == "film" else END
     for engine in ("BLENDER_EEVEE_NEXT", "BLENDER_EEVEE"):
         try:
             scene.render.engine = engine
@@ -510,7 +535,22 @@ def main():
     clear_scene()
     character = build_character()
     build_world()
-    if SCENA == "pozy":
+    global OFFSET
+    if SCENA == "film":
+        scene = bpy.context.scene
+        OFFSET = 0
+        cam1 = build_camera()
+        animate(character)                   # 1–240: rozcvička
+        hold_all(END)
+        OFFSET = END
+        cam2 = build_camera_pozy()
+        animate_pozy(character)              # 241–480: pózy
+        OFFSET = 0
+        # střih: každá kamera má svůj úsek časové osy
+        scene.timeline_markers.new("Rozcvicka", frame=1).camera = cam1
+        scene.timeline_markers.new("Pozy", frame=END + 1).camera = cam2
+        scene.camera = cam1
+    elif SCENA == "pozy":
         build_camera_pozy()
         animate_pozy(character)
     else:
