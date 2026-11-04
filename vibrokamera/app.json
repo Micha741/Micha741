@@ -7,12 +7,26 @@
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
     "backgroundColor": "#0b0f14",
-    "platforms": ["android"],
+    "platforms": [
+      "android"
+    ],
     "android": {
       "package": "com.micha741.vibrokamera",
-      "permissions": ["android.permission.CAMERA"],
-      "blockedPermissions": ["android.permission.RECORD_AUDIO"]
+      "permissions": [
+        "android.permission.CAMERA"
+      ],
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
-    "plugins": ["expo-dev-client", "expo-video"]
+    "plugins": [
+      "expo-dev-client",
+      "expo-video"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "5b2df014-96af-46bd-bb00-26e6964165ad"
+      }
+    }
   }
 }
