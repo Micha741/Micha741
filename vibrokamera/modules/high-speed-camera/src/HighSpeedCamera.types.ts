@@ -64,3 +64,10 @@ export type HighSpeedCameraViewRef = {
   startRecording(): Promise<string>;
   stopRecording(): Promise<RecordingFinishedEvent>;
 };
+
+export type StorageInfo = {
+  recordingsDir: string;
+  recordingsCount: number;
+  recordingsBytes: number;
+  freeBytes: number;
+};

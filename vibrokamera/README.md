@@ -16,6 +16,22 @@ a umožňuje ho zpomaleně přehrát, krokovat po snímcích a změřit otáčky
 - **Záznamy:** seznam se skutečnou naměřenou fps (z metadat videa),
   uložení do galerie (`Movies/VibroKamera`), mazání.
 
+- **Nastavení motoru:** AC (max. 3 600 ot/min), DC (až ~15 000 ot/min) nebo
+  vlastní limit, volitelně jmenovité otáčky ze štítku. Kamera ukáže, kolik
+  snímků připadne na otáčku. Nad limitem (stroboskopický efekt) přehrávač
+  nabídne možné skutečné otáčky `k·fps ± zdánlivá frekvence`.
+- **Výsledky:** uložení měření s poznámkou, přehled všech výsledků, export
+  CSV (středníky, desetinná čárka) do `Stažené/VibroKamera`.
+
+## Úložiště
+
+| Co | Kde | Po odinstalaci |
+|---|---|---|
+| Videa | `Android/data/com.micha741.vibrokamera/files/Movies/recordings` | smaže se |
+| Výsledky a nastavení | interní úložiště aplikace (`files/vibrokamera/*.json`) | smaže se |
+| Kopie videa („Do galerie“) | `Filmy/VibroKamera` | zůstane |
+| Export výsledků (CSV) | `Stažené/VibroKamera` | zůstane |
+
 Videa se ukládají v reálném čase (240 fps soubor = 240 fps), takže časová osa
 odpovídá skutečnosti. Zpomalení dělá přehrávač.
 

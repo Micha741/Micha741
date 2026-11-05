@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import HighSpeedCamera, { type RecordingFile } from '../../modules/high-speed-camera';
 import Chip from '../components/Chip';
 import { formatBytes, formatDate, formatDuration, formatNumber, measuredFps, nominalFps } from '../lib/format';
+import { deleteMeasurementsForRecording } from '../lib/storage';
 import { colors } from '../lib/theme';
 
 type Props = {
@@ -28,13 +29,20 @@ export default function RecordingsScreen({ onBack, onOpen }: Props) {
   useEffect(reload, [reload]);
 
   const remove = (item: RecordingFile) => {
-    Alert.alert('Smazat záznam?', item.name, [
+    Alert.alert('Smazat záznam?', `${item.name}\n\nSmažou se i výsledky měření z tohoto videa.`, [
       { text: 'Zrušit', style: 'cancel' },
       {
         text: 'Smazat',
         style: 'destructive',
         onPress: async () => {
-          await HighSpeedCamera.deleteRecordingAsync(item.path).catch(() => false);
+          const deleted = await HighSpeedCamera.deleteRecordingAsync(item.path).catch(() => false);
+          if (deleted) {
+            try {
+              deleteMeasurementsForRecording(item.path);
+            } catch {
+              // Výsledky zůstanou – nevadí.
+            }
+          }
           reload();
         },
       },

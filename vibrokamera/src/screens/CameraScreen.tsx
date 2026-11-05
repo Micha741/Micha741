@@ -22,16 +22,20 @@ import HighSpeedCamera, {
 import Chip from '../components/Chip';
 import { formatDuration, formatNumber, nyquistHz } from '../lib/format';
 import { buildModes, cameraLabel, maxFps, resolutionLabel, type CaptureMode } from '../lib/modes';
+import { coverage, MOTOR_PRESETS } from '../lib/motor';
+import { useSettings } from '../lib/settings';
 import { colors } from '../lib/theme';
 
 type Props = {
   onOpenRecordings: () => void;
+  onOpenSettings: () => void;
   onRecordingFinished: (event: RecordingFinishedEvent) => void;
 };
 
 type PermissionState = 'checking' | 'granted' | 'denied';
 
-export default function CameraScreen({ onOpenRecordings, onRecordingFinished }: Props) {
+export default function CameraScreen({ onOpenRecordings, onOpenSettings, onRecordingFinished }: Props) {
+  const { settings } = useSettings();
   const insets = useSafeAreaInsets();
   const cameraRef = useRef<HighSpeedCameraViewRef>(null);
 
@@ -172,6 +176,7 @@ export default function CameraScreen({ onOpenRecordings, onRecordingFinished }: 
   }
 
   const nyquist = nyquistHz(mode.fps);
+  const cov = coverage(mode.fps, settings.motor);
   const evStep = camera.evStep || 0;
   const anyHighSpeed = cameras.some((c) => c.highSpeedSupported && c.highSpeedModes.length > 0);
 
@@ -203,10 +208,21 @@ export default function CameraScreen({ onOpenRecordings, onRecordingFinished }: 
         ))}
       </ScrollView>
 
-      <Text style={styles.info}>
-        Zachytí kmitání do {formatNumber(nyquist, 0)} Hz ({formatNumber(nyquist * 60, 0)} ot/min)
-        {mode.highSpeed ? ' · high-speed režim' : ''}
-      </Text>
+      <Pressable onPress={onOpenSettings} disabled={recording} style={styles.motorBanner}>
+        <Text
+          style={[
+            styles.motorText,
+            { color: cov.level === 'good' ? colors.success : cov.level === 'ok' ? colors.warning : colors.record },
+          ]}
+        >
+          {cov.level === 'aliasing' ? '⚠ ' : '✓ '}
+          {MOTOR_PRESETS[settings.motor.type].label}: {cov.message}
+        </Text>
+        <Text style={styles.info}>
+          Limit při {mode.fps} fps: {formatNumber(nyquist, 0)} Hz ({formatNumber(nyquist * 60, 0)} ot/min)
+          {mode.highSpeed ? ' · high-speed' : ''} · změnit v Nastavení ›
+        </Text>
+      </Pressable>
       {!anyHighSpeed && (
         <Text style={styles.warning}>
           Telefon nezpřístupňuje aplikacím high-speed záznam. Je k dispozici max. {mode.fps} fps.
@@ -279,7 +295,8 @@ export default function CameraScreen({ onOpenRecordings, onRecordingFinished }: 
       {/* Spoušť */}
       <View style={styles.bottomBar}>
         <View style={styles.sideSlot}>
-          <Chip label="Záznamy" disabled={recording} onPress={onOpenRecordings} />
+          <Chip label="Záznamy" disabled={recording} onPress={onOpenRecordings} style={styles.sideChip} />
+          <Chip label="Nastavení" disabled={recording} onPress={onOpenSettings} style={[styles.sideChip, styles.sideChipGap]} />
         </View>
         <Pressable
           onPress={toggleRecording}
@@ -306,7 +323,11 @@ const styles = StyleSheet.create({
   centered: { alignItems: 'center', justifyContent: 'center', padding: 24 },
   row: { flexGrow: 0, marginTop: 8 },
   rowContent: { paddingHorizontal: 12 },
-  info: { color: colors.textMuted, fontSize: 13, marginHorizontal: 16, marginTop: 8 },
+  info: { color: colors.textMuted, fontSize: 12, marginTop: 2 },
+  motorBanner: { marginHorizontal: 16, marginTop: 8 },
+  motorText: { fontSize: 13, fontWeight: '600' },
+  sideChip: { marginRight: 0 },
+  sideChipGap: { marginTop: 8 },
   warning: { color: colors.warning, fontSize: 13, marginHorizontal: 16, marginTop: 4 },
   previewArea: { flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: 8 },
   overlay: {

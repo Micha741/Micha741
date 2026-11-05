@@ -29,6 +29,14 @@ class HighSpeedCameraModule : Module() {
       Recordings.saveToGallery(context, path)
     }
 
+    AsyncFunction("getStorageInfoAsync") {
+      Recordings.storageInfo(context)
+    }
+
+    AsyncFunction("exportTextAsync") { fileName: String, content: String, mimeType: String ->
+      Recordings.exportText(context, fileName, content, mimeType)
+    }
+
     OnActivityEntersBackground {
       HighSpeedCameraView.forEachLive { it.onHostPause() }
     }

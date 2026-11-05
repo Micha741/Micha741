@@ -3,7 +3,7 @@
     "name": "VibroKamera",
     "slug": "vibrokamera",
     "owner": "micha741",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
     "backgroundColor": "#0b0f14",

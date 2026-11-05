@@ -1,12 +1,15 @@
 import { useEvent, useEventListener } from 'expo';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { useRef, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View, type GestureResponderEvent } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, TextInput, View, type GestureResponderEvent } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { RecordingFile } from '../../modules/high-speed-camera';
 import Chip from '../components/Chip';
 import { analysisFps, formatNumber, nominalFps } from '../lib/format';
+import { aliasCandidates, coverage, MOTOR_PRESETS } from '../lib/motor';
+import { useSettings } from '../lib/settings';
+import { addMeasurement, loadMeasurements } from '../lib/storage';
 import { colors } from '../lib/theme';
 
 type Props = {
@@ -33,6 +36,12 @@ export default function PlayerScreen({ recording, onBack }: Props) {
   const [markA, setMarkA] = useState<number | null>(null);
   const [markB, setMarkB] = useState<number | null>(null);
   const [turns, setTurns] = useState(1);
+  const [candidateIndex, setCandidateIndex] = useState(0);
+  const [note, setNote] = useState('');
+  const [saved, setSaved] = useState(() => loadMeasurements().filter((m) => m.recordingPath === recording.path));
+  const { settings } = useSettings();
+  const motor = settings.motor;
+  const cov = coverage(fps, motor);
 
   const player = useVideoPlayer(recording.uri, (p) => {
     p.loop = true;
@@ -79,14 +88,53 @@ export default function PlayerScreen({ recording, onBack }: Props) {
 
   // --- měření frekvence mezi dvěma značkami ---
   const deltaFrames = markA !== null && markB !== null ? Math.abs(markB - markA) : 0;
-  const measurement =
+  const apparent =
     deltaFrames > 0
       ? (() => {
           const seconds = deltaFrames / fps;
           const hz = turns / seconds;
-          return { seconds, hz, rpm: hz * 60, errorPct: 100 / deltaFrames };
+          // Chyba ±1 snímek → absolutní chyba frekvence.
+          return { seconds, hz, errorHz: hz / deltaFrames };
         })()
       : null;
+
+  // Pokud motor může běžet nad Nyquistovou frekvencí, jsou možné i vyšší skutečné otáčky.
+  const mayAlias = cov.level === 'aliasing';
+  const candidates = apparent && mayAlias ? aliasCandidates(apparent.hz, fps, motor) : [];
+  const chosen = candidates[Math.min(candidateIndex, Math.max(0, candidates.length - 1))];
+  const result = apparent
+    ? (() => {
+        const hz = chosen ? chosen.hz : apparent.hz;
+        return { hz, rpm: hz * 60, errorPct: (100 * apparent.errorHz) / hz, aliased: !!chosen && chosen.k > 0 };
+      })()
+    : null;
+
+  const saveResult = () => {
+    if (!result || !apparent || markA === null || markB === null) return;
+    try {
+      addMeasurement({
+        recordingName: recording.name,
+        recordingPath: recording.path,
+        rpm: result.rpm,
+        hz: result.hz,
+        apparentHz: apparent.hz,
+        aliased: result.aliased,
+        fps,
+        frameA: Math.min(markA, markB),
+        frameB: Math.max(markA, markB),
+        turns,
+        errorPct: result.errorPct,
+        motorType: motor.type,
+        maxRpm: motor.maxRpm,
+        note: note.trim(),
+      });
+      setSaved(loadMeasurements().filter((m) => m.recordingPath === recording.path));
+      setNote('');
+      Alert.alert('Uloženo', `${formatNumber(result.rpm, 0)} ot/min uloženo do výsledků.`);
+    } catch (e) {
+      Alert.alert('Uložení se nezdařilo', (e as Error).message);
+    }
+  };
 
   const progress = totalFrames > 1 ? frame / (totalFrames - 1) : 0;
 
@@ -148,8 +196,8 @@ export default function PlayerScreen({ recording, onBack }: Props) {
           dál přes jednu nebo více otáček (kmitů) → „Značka B“.
         </Text>
         <View style={styles.row}>
-          <Chip label={markA === null ? 'Značka A' : `A: ${markA + 1}`} selected={markA !== null} onPress={() => setMarkA(frame)} />
-          <Chip label={markB === null ? 'Značka B' : `B: ${markB + 1}`} selected={markB !== null} onPress={() => setMarkB(frame)} />
+          <Chip label={markA === null ? 'Značka A' : `A: ${markA + 1}`} selected={markA !== null} onPress={() => { setMarkA(frame); setCandidateIndex(0); }} />
+          <Chip label={markB === null ? 'Značka B' : `B: ${markB + 1}`} selected={markB !== null} onPress={() => { setMarkB(frame); setCandidateIndex(0); }} />
           <Chip
             label="Smazat"
             onPress={() => {
@@ -160,23 +208,71 @@ export default function PlayerScreen({ recording, onBack }: Props) {
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Počet otáček/kmitů mezi A a B:</Text>
-          <Chip label="−" disabled={turns <= 1} onPress={() => setTurns((t) => Math.max(1, t - 1))} />
+          <Chip label="−" disabled={turns <= 1} onPress={() => { setTurns((t) => Math.max(1, t - 1)); setCandidateIndex(0); }} />
           <Text style={styles.turns}>{turns}</Text>
-          <Chip label="+" onPress={() => setTurns((t) => t + 1)} />
+          <Chip label="+" onPress={() => { setTurns((t) => t + 1); setCandidateIndex(0); }} />
         </View>
-        {measurement ? (
+        {result && apparent ? (
           <View style={styles.result}>
-            <Text style={styles.resultMain}>{formatNumber(measurement.rpm, 0)} ot/min</Text>
+            <Text style={styles.resultMain}>{formatNumber(result.rpm, 0)} ot/min</Text>
             <Text style={styles.resultSub}>
-              {formatNumber(measurement.hz, 2)} Hz · {deltaFrames} snímků = {formatNumber(measurement.seconds * 1000, 1)} ms
+              {formatNumber(result.hz, 2)} Hz · {deltaFrames} snímků = {formatNumber(apparent.seconds * 1000, 1)} ms
             </Text>
             <Text style={styles.resultSub}>
-              Přesnost ±{formatNumber(measurement.errorPct, 1)} % (±1 snímek) – pro vyšší přesnost měř přes víc otáček.
+              Přesnost ±{formatNumber(result.errorPct, 1)} % (±1 snímek) – pro vyšší přesnost měř přes víc otáček.
             </Text>
+
+            {mayAlias && candidates.length > 1 && (
+              <>
+                <Text style={styles.aliasTitle}>
+                  ⚠ {MOTOR_PRESETS[motor.type].label} do {motor.maxRpm.toLocaleString('cs-CZ')} ot/min je nad limitem
+                  {' '}{formatNumber(cov.nyquistHz * 60, 0)} ot/min. Na videu je zdánlivá rotace
+                  {' '}{formatNumber(apparent.hz * 60, 0)} ot/min; skutečné otáčky mohou být:
+                </Text>
+                <View style={styles.rowWrap}>
+                  {candidates.map((c, i) => (
+                    <Chip
+                      key={`${c.k}:${c.sign}`}
+                      label={`${formatNumber(c.rpm, 0)}`}
+                      selected={c === chosen}
+                      onPress={() => setCandidateIndex(i)}
+                      style={styles.candidate}
+                    />
+                  ))}
+                </View>
+                <Text style={styles.resultSub}>
+                  {motor.nominalRpm
+                    ? `Předvybráno podle jmenovitých ${motor.nominalRpm.toLocaleString('cs-CZ')} ot/min.`
+                    : 'Vyber podle přibližných otáček (nebo zadej jmenovité otáčky v Nastavení).'}
+                  {' '}Ověř změnou fps: skutečná hodnota vyjde stejně při obou frekvencích.
+                </Text>
+              </>
+            )}
+
+            <TextInput
+              style={styles.noteInput}
+              value={note}
+              onChangeText={setNote}
+              placeholder="Poznámka (např. stroj, místo měření)"
+              placeholderTextColor={colors.textMuted}
+            />
+            <Chip label="Uložit výsledek" selected onPress={saveResult} style={styles.saveButton} />
           </View>
         ) : (
           <Text style={styles.hint}>Výsledek se zobrazí po nastavení obou značek.</Text>
         )}
+
+        {saved.length > 0 && (
+          <>
+            <Text style={styles.sectionTitle}>Uložené výsledky tohoto záznamu</Text>
+            {saved.map((m) => (
+              <Text key={m.id} style={styles.savedLine}>
+                {formatNumber(m.rpm, 0)} ot/min · {formatNumber(m.hz, 2)} Hz{m.note ? ` · ${m.note}` : ''}
+              </Text>
+            ))}
+          </>
+        )}
+
         <Text style={styles.footnote}>
           Výpočet používá {formatNumber(fps, 2)} snímků/s
           {recording.frameCount ? ' (změřeno z metadat videa)' : ''}.
@@ -222,5 +318,21 @@ const styles = StyleSheet.create({
   },
   resultMain: { color: colors.accent, fontSize: 26, fontWeight: '800' },
   resultSub: { color: colors.text, fontSize: 13, marginTop: 4 },
+  aliasTitle: { color: colors.warning, fontSize: 13, marginTop: 10 },
+  rowWrap: { flexDirection: 'row', flexWrap: 'wrap', marginTop: 6 },
+  candidate: { marginBottom: 6 },
+  noteInput: {
+    marginTop: 12,
+    backgroundColor: colors.surfaceRaised,
+    borderColor: colors.border,
+    borderWidth: 1,
+    borderRadius: 10,
+    color: colors.text,
+    fontSize: 14,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+  },
+  saveButton: { alignSelf: 'flex-start', marginTop: 10 },
+  savedLine: { color: colors.text, fontSize: 13, marginTop: 4 },
   footnote: { color: colors.textMuted, fontSize: 12, marginTop: 12 },
 });

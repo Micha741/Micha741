@@ -95,6 +95,45 @@ object Recordings {
     return uri.toString()
   }
 
+  /** Kde a kolik místa zabírají záznamy. */
+  fun storageInfo(context: Context): Map<String, Any?> {
+    val dir = directory(context)
+    val files = dir.listFiles { f -> f.isFile && f.name.endsWith(".mp4") } ?: emptyArray()
+    return mapOf(
+      "recordingsDir" to dir.absolutePath,
+      "recordingsCount" to files.size,
+      "recordingsBytes" to files.sumOf { it.length() }.toDouble(),
+      "freeBytes" to dir.usableSpace.toDouble()
+    )
+  }
+
+  /** Uloží textový soubor (např. CSV s výsledky) do Stažené/VibroKamera. Vyžaduje Android 10+. */
+  fun exportText(context: Context, fileName: String, content: String, mimeType: String): String {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+      throw CodedException("E_UNSUPPORTED", "Export vyžaduje Android 10 nebo novější", null)
+    }
+    val safeName = fileName.replace(Regex("[^A-Za-z0-9._-]"), "_")
+    val resolver = context.contentResolver
+    val values = ContentValues().apply {
+      put(MediaStore.Downloads.DISPLAY_NAME, safeName)
+      put(MediaStore.Downloads.MIME_TYPE, mimeType)
+      put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/VibroKamera")
+    }
+    val uri = resolver.insert(MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY), values)
+      ?: throw CodedException("E_EXPORT", "Nepodařilo se vytvořit soubor ve Stažených", null)
+    try {
+      resolver.openOutputStream(uri)?.use { out ->
+        // BOM, aby Excel správně zobrazil češtinu.
+        out.write(byteArrayOf(0xEF.toByte(), 0xBB.toByte(), 0xBF.toByte()))
+        out.write(content.toByteArray(Charsets.UTF_8))
+      } ?: throw CodedException("E_EXPORT", "Nepodařilo se zapsat soubor", null)
+    } catch (e: Exception) {
+      resolver.delete(uri, null, null)
+      throw e
+    }
+    return "${Environment.DIRECTORY_DOWNLOADS}/VibroKamera/$safeName"
+  }
+
   private fun requireOwnFile(context: Context, path: String): File {
     val dir = directory(context).canonicalFile
     val file = File(path).canonicalFile
