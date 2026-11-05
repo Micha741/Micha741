@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import HighSpeedCamera, { type StorageInfo } from '../../modules/high-speed-camera';
 import Chip from '../components/Chip';
+import Screen from '../components/Screen';
 import { formatBytes } from '../lib/format';
 import { coverage, MOTOR_PRESETS, type MotorType } from '../lib/motor';
-import { useSettings } from '../lib/settings';
+import { useSettings, useStyles } from '../lib/settings';
 import { loadMeasurements, measurementsLocation } from '../lib/storage';
-import { colors } from '../lib/theme';
+import type { ThemeColors, ThemeMode } from '../lib/theme';
 
 type Props = {
   onBack: () => void;
@@ -16,6 +16,11 @@ type Props = {
 };
 
 const FPS_TABLE = [30, 60, 120, 240, 480];
+const THEMES: { mode: ThemeMode; label: string }[] = [
+  { mode: 'system', label: 'Podle systému' },
+  { mode: 'light', label: 'Světlý' },
+  { mode: 'dark', label: 'Tmavý' },
+];
 
 function parseRpm(text: string): number | null {
   const value = Number(text.replace(/\s/g, '').replace(',', '.'));
@@ -23,8 +28,8 @@ function parseRpm(text: string): number | null {
 }
 
 export default function SettingsScreen({ onBack, onOpenResults }: Props) {
-  const insets = useSafeAreaInsets();
-  const { settings, update } = useSettings();
+  const { settings, update, colors } = useSettings();
+  const styles = useStyles(makeStyles);
   const motor = settings.motor;
 
   const [maxText, setMaxText] = useState(String(motor.maxRpm));
@@ -55,13 +60,21 @@ export default function SettingsScreen({ onBack, onOpenResults }: Props) {
   };
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-      <View style={styles.header}>
-        <Chip label="‹ Kamera" onPress={onBack} />
-        <Text style={styles.title}>Nastavení</Text>
-      </View>
-
+    <Screen title="Nastavení" onBack={onBack} backLabel="‹ Kamera">
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+        {/* Vzhled */}
+        <Text style={styles.section}>Vzhled</Text>
+        <View style={styles.row}>
+          {THEMES.map((t) => (
+            <Chip
+              key={t.mode}
+              label={t.label}
+              selected={settings.theme === t.mode}
+              onPress={() => update({ ...settings, theme: t.mode })}
+            />
+          ))}
+        </View>
+
         {/* Typ motoru */}
         <Text style={styles.section}>Typ motoru</Text>
         <View style={styles.row}>
@@ -78,7 +91,6 @@ export default function SettingsScreen({ onBack, onOpenResults }: Props) {
           onChangeText={setMaxText}
           onEndEditing={commitMax}
           keyboardType="number-pad"
-          placeholderTextColor={colors.textMuted}
         />
 
         <Text style={styles.label}>Jmenovité otáčky ze štítku [ot/min] – nepovinné</Text>
@@ -93,6 +105,7 @@ export default function SettingsScreen({ onBack, onOpenResults }: Props) {
         />
         <Text style={styles.hint}>
           Když jsou otáčky nad limitem kamery, aplikace podle nich vybere nejpravděpodobnější výsledek.
+          Ve spektru vibrací se vyznačí 1× a 2× otáčková frekvence.
         </Text>
 
         {/* Tabulka pokrytí */}
@@ -104,9 +117,7 @@ export default function SettingsScreen({ onBack, onOpenResults }: Props) {
             return (
               <View key={fps} style={styles.tableRow}>
                 <Text style={styles.tableFps}>{fps} fps</Text>
-                <Text style={[styles.tableValue, { color }]}>
-                  {c.framesPerRev.toFixed(1)} sn./ot.
-                </Text>
+                <Text style={[styles.tableValue, { color }]}>{c.framesPerRev.toFixed(1)} sn./ot.</Text>
                 <Text style={styles.tableNote}>
                   {c.level === 'good' ? 'výborné' : c.level === 'ok' ? 'použitelné' : 'stroboskopicky'}
                 </Text>
@@ -115,8 +126,9 @@ export default function SettingsScreen({ onBack, onOpenResults }: Props) {
           })}
         </View>
         <Text style={styles.hint}>
-          Pro plynulé sledování je potřeba ≥ 8 snímků na otáčku, minimum jsou 2. Pod tím se rotace
-          zobrazí stroboskopicky – i tak jde změřit, když znáš přibližné otáčky.
+          Vzorkovací frekvence = fps. Pro plynulé sledování je potřeba ≥ 8 snímků na otáčku, minimum
+          jsou 2 (Nyquist). Pod tím se rotace zobrazí stroboskopicky – i tak jde změřit, když znáš
+          přibližné otáčky.
         </Text>
 
         {/* Úložiště */}
@@ -143,45 +155,43 @@ export default function SettingsScreen({ onBack, onOpenResults }: Props) {
           <Chip label="Zobrazit výsledky" selected onPress={onOpenResults} style={styles.cardButton} />
         </View>
       </ScrollView>
-    </View>
+    </Screen>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
-  header: { flexDirection: 'row', alignItems: 'center', padding: 12 },
-  title: { color: colors.text, fontSize: 20, fontWeight: '700', marginLeft: 4 },
-  content: { padding: 16, paddingTop: 0, paddingBottom: 40 },
-  section: { color: colors.text, fontSize: 16, fontWeight: '700', marginTop: 20, marginBottom: 8 },
-  row: { flexDirection: 'row', flexWrap: 'wrap' },
-  hint: { color: colors.textMuted, fontSize: 13, marginTop: 6 },
-  label: { color: colors.text, fontSize: 14, marginTop: 14, marginBottom: 6 },
-  input: {
-    backgroundColor: colors.surfaceRaised,
-    borderColor: colors.border,
-    borderWidth: 1,
-    borderRadius: 10,
-    color: colors.text,
-    fontSize: 18,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-  },
-  table: { backgroundColor: colors.surface, borderRadius: 10, borderWidth: 1, borderColor: colors.border },
-  tableRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.border,
-  },
-  tableFps: { color: colors.text, fontSize: 14, width: 70, fontWeight: '600' },
-  tableValue: { fontSize: 14, width: 100, fontWeight: '700' },
-  tableNote: { color: colors.textMuted, fontSize: 13, flex: 1 },
-  card: { backgroundColor: colors.surface, borderRadius: 10, borderWidth: 1, borderColor: colors.border, padding: 12 },
-  cardTitle: { color: colors.text, fontSize: 14, fontWeight: '700', marginTop: 6 },
-  cardText: { color: colors.text, fontSize: 13, marginTop: 2 },
-  path: { color: colors.textMuted, fontSize: 11, marginTop: 2 },
-  warningText: { color: colors.warning, fontSize: 13, marginTop: 10 },
-  cardButton: { alignSelf: 'flex-start', marginTop: 12 },
-});
+const makeStyles = (c: ThemeColors) =>
+  ({
+    content: { padding: 16, paddingTop: 0, paddingBottom: 40 },
+    section: { color: c.text, fontSize: 16, fontWeight: '700', marginTop: 20, marginBottom: 8 },
+    row: { flexDirection: 'row', flexWrap: 'wrap', rowGap: 8 },
+    hint: { color: c.textMuted, fontSize: 13, marginTop: 6 },
+    label: { color: c.text, fontSize: 14, marginTop: 14, marginBottom: 6 },
+    input: {
+      backgroundColor: c.surfaceRaised,
+      borderColor: c.border,
+      borderWidth: 1,
+      borderRadius: 10,
+      color: c.text,
+      fontSize: 18,
+      paddingHorizontal: 12,
+      paddingVertical: 10,
+    },
+    table: { backgroundColor: c.surface, borderRadius: 10, borderWidth: 1, borderColor: c.border },
+    tableRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: c.border,
+    },
+    tableFps: { color: c.text, fontSize: 14, width: 70, fontWeight: '600' },
+    tableValue: { fontSize: 14, width: 100, fontWeight: '700' },
+    tableNote: { color: c.textMuted, fontSize: 13, flex: 1 },
+    card: { backgroundColor: c.surface, borderRadius: 10, borderWidth: 1, borderColor: c.border, padding: 12 },
+    cardTitle: { color: c.text, fontSize: 14, fontWeight: '700', marginTop: 6 },
+    cardText: { color: c.text, fontSize: 13, marginTop: 2 },
+    path: { color: c.textMuted, fontSize: 11, marginTop: 2 },
+    warningText: { color: c.warning, fontSize: 13, marginTop: 10 },
+    cardButton: { alignSelf: 'flex-start', marginTop: 12 },
+  }) as const;

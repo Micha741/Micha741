@@ -5,13 +5,69 @@ import expo.modules.kotlin.Promise
 import expo.modules.kotlin.exception.Exceptions
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
+import expo.modules.kotlin.records.Field
+import expo.modules.kotlin.records.Record
+import java.util.concurrent.atomic.AtomicBoolean
+
+class TrackOptions : Record {
+  @Field val path: String = ""
+  @Field val centerX: Double = 0.5
+  @Field val centerY: Double = 0.5
+  @Field val roiSize: Double = 0.08
+  @Field val searchRadius: Int = 8
+  @Field val startMs: Double = 0.0
+  @Field val durationMs: Double = 2000.0
+}
 
 class HighSpeedCameraModule : Module() {
+  private var trackingCancel: AtomicBoolean? = null
+
   private val context: Context
     get() = appContext.reactContext ?: throw Exceptions.ReactContextLost()
 
   override fun definition() = ModuleDefinition {
     Name("HighSpeedCamera")
+
+    Events("onTrackingProgress")
+
+    AsyncFunction("trackMotionAsync") { options: TrackOptions, promise: Promise ->
+      Recordings.requireOwnFile(context, options.path)
+      trackingCancel?.set(true)
+      val cancel = AtomicBoolean(false)
+      trackingCancel = cancel
+      Thread {
+        try {
+          val result = MotionTracker(
+            path = options.path,
+            centerX = options.centerX,
+            centerY = options.centerY,
+            roiSize = options.roiSize,
+            searchRadius = options.searchRadius,
+            startMs = options.startMs,
+            durationMs = options.durationMs,
+            cancelled = cancel
+          ) { progress -> sendEvent("onTrackingProgress", mapOf("progress" to progress)) }.run()
+          promise.resolve(
+            mapOf(
+              "timesMs" to result.timesMs,
+              "dx" to result.dx,
+              "dy" to result.dy,
+              "score" to result.score,
+              "displayWidth" to result.displayWidth,
+              "displayHeight" to result.displayHeight,
+              "roiPx" to result.roiPx
+            )
+          )
+        } catch (e: Throwable) {
+          promise.reject("E_TRACKING", e.message ?: "Analýza selhala", e)
+        }
+      }.apply { name = "MotionTracker" }.start()
+    }
+
+    Function("cancelTracking") {
+      trackingCancel?.set(true)
+      true
+    }
 
     AsyncFunction("getCamerasAsync") {
       CameraCapabilities.query(context)

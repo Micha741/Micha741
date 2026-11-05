@@ -134,7 +134,7 @@ object Recordings {
     return "${Environment.DIRECTORY_DOWNLOADS}/VibroKamera/$safeName"
   }
 
-  private fun requireOwnFile(context: Context, path: String): File {
+  fun requireOwnFile(context: Context, path: String): File {
     val dir = directory(context).canonicalFile
     val file = File(path).canonicalFile
     if (file.parentFile != dir) {

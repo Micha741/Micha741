@@ -71,3 +71,29 @@ export type StorageInfo = {
   recordingsBytes: number;
   freeBytes: number;
 };
+
+export type TrackOptions = {
+  path: string;
+  /** Střed sledované oblasti, normalizovaně 0..1 v zobrazeném videu. */
+  centerX: number;
+  centerY: number;
+  /** Velikost oblasti jako podíl kratší strany videa (např. 0.08). */
+  roiSize: number;
+  /** Max. posun mezi snímky v px. */
+  searchRadius: number;
+  startMs: number;
+  durationMs: number;
+};
+
+export type TrackResult = {
+  /** Čas každého snímku od začátku úseku [ms] (skutečné časové značky videa). */
+  timesMs: number[];
+  /** Posun vůči prvnímu snímku [px], osy zobrazeného videa (x doprava, y dolů). */
+  dx: number[];
+  dy: number[];
+  /** Průměrná odchylka vzoru (nižší = lepší shoda). */
+  score: number[];
+  displayWidth: number;
+  displayHeight: number;
+  roiPx: number;
+};

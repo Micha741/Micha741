@@ -3,9 +3,9 @@
     "name": "VibroKamera",
     "slug": "vibrokamera",
     "owner": "micha741",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "orientation": "portrait",
-    "userInterfaceStyle": "dark",
+    "userInterfaceStyle": "automatic",
     "backgroundColor": "#0b0f14",
     "platforms": [
       "android"
@@ -17,7 +17,12 @@
       ],
       "blockedPermissions": [
         "android.permission.RECORD_AUDIO"
-      ]
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "monochromeImage": "./assets/monochrome-icon.png",
+        "backgroundColor": "#0E2A4C"
+      }
     },
     "plugins": [
       "expo-dev-client",
@@ -27,6 +32,7 @@
       "eas": {
         "projectId": "5b2df014-96af-46bd-bb00-26e6964165ad"
       }
-    }
+    },
+    "icon": "./assets/icon.png"
   }
 }

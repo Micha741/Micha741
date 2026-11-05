@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   Alert,
   Linking,
+  Modal,
   PermissionsAndroid,
   Pressable,
   ScrollView,
@@ -19,25 +20,31 @@ import HighSpeedCamera, {
   type HighSpeedCameraViewRef,
   type RecordingFinishedEvent,
 } from '../../modules/high-speed-camera';
+import BottomSheet from '../components/BottomSheet';
 import Chip from '../components/Chip';
 import { formatDuration, formatNumber, nyquistHz } from '../lib/format';
 import { buildModes, cameraLabel, maxFps, resolutionLabel, type CaptureMode } from '../lib/modes';
 import { coverage, MOTOR_PRESETS } from '../lib/motor';
-import { useSettings } from '../lib/settings';
-import { colors } from '../lib/theme';
+import { useSettings, useStyles } from '../lib/settings';
+import { TABULAR_NUMS } from '../lib/theme';
 
 type Props = {
   onOpenRecordings: () => void;
+  onOpenResults: () => void;
   onOpenSettings: () => void;
   onRecordingFinished: (event: RecordingFinishedEvent) => void;
 };
 
 type PermissionState = 'checking' | 'granted' | 'denied';
 
-export default function CameraScreen({ onOpenRecordings, onOpenSettings, onRecordingFinished }: Props) {
-  const { settings } = useSettings();
+/** Výška stálé spodní části (úchyt + spoušť) bez systémového okraje. */
+const PEEK_HEIGHT = 136;
+
+export default function CameraScreen({ onOpenRecordings, onOpenResults, onOpenSettings, onRecordingFinished }: Props) {
+  const { settings, colors } = useSettings();
   const insets = useSafeAreaInsets();
   const cameraRef = useRef<HighSpeedCameraViewRef>(null);
+  const styles = useStyles(makeStyles);
 
   const [permission, setPermission] = useState<PermissionState>('checking');
   const [cameras, setCameras] = useState<CameraInfo[] | null>(null);
@@ -52,6 +59,8 @@ export default function CameraScreen({ onOpenRecordings, onOpenSettings, onRecor
   const [elapsed, setElapsed] = useState(0);
   const [busy, setBusy] = useState(false);
   const [previewBox, setPreviewBox] = useState<{ width: number; height: number } | null>(null);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // --- oprávnění + seznam kamer ---
   const requestPermission = useCallback(async () => {
@@ -71,8 +80,7 @@ export default function CameraScreen({ onOpenRecordings, onOpenSettings, onRecor
         setCameras(usable);
         // Výchozí: zadní kamera s nejvyšší dostupnou snímkovou frekvencí.
         const best = [...usable].sort(
-          (a, b) =>
-            Number(b.facing === 'back') - Number(a.facing === 'back') || maxFps(b) - maxFps(a)
+          (a, b) => Number(b.facing === 'back') - Number(a.facing === 'back') || maxFps(b) - maxFps(a)
         )[0];
         if (best) {
           setCameraId(best.id);
@@ -96,7 +104,7 @@ export default function CameraScreen({ onOpenRecordings, onOpenSettings, onRecor
 
   const selectCamera = (id: string) => {
     const next = cameras?.find((c) => c.id === id);
-    if (!next) return;
+    if (!next || id === cameraId) return;
     setReady(false);
     setError(null);
     setCameraId(id);
@@ -118,9 +126,10 @@ export default function CameraScreen({ onOpenRecordings, onOpenSettings, onRecor
     setBusy(true);
     try {
       if (recording) {
-        // Výsledek přijde i v události onRecordingFinished.
+        // Výsledek přijde v události onRecordingFinished.
         await ref.stopRecording();
       } else {
+        setSheetOpen(false);
         await ref.startRecording();
         setElapsed(0);
         setRecordingSince(Date.now());
@@ -153,7 +162,11 @@ export default function CameraScreen({ onOpenRecordings, onOpenSettings, onRecor
 
   // --- obrazovky bez kamery ---
   if (permission === 'checking') {
-    return <Centered><ActivityIndicator color={colors.accent} /></Centered>;
+    return (
+      <Centered>
+        <ActivityIndicator color={colors.accent} />
+      </Centered>
+    );
   }
   if (permission === 'denied') {
     return (
@@ -172,214 +185,306 @@ export default function CameraScreen({ onOpenRecordings, onOpenSettings, onRecor
     );
   }
   if (!camera || !mode) {
-    return <Centered><Text style={styles.message}>Nenalezena žádná použitelná kamera.</Text></Centered>;
+    return (
+      <Centered>
+        <Text style={styles.message}>Nenalezena žádná použitelná kamera.</Text>
+      </Centered>
+    );
   }
 
   const nyquist = nyquistHz(mode.fps);
   const cov = coverage(mode.fps, settings.motor);
+  const covColor = cov.level === 'good' ? colors.success : cov.level === 'ok' ? colors.warning : colors.record;
   const evStep = camera.evStep || 0;
   const anyHighSpeed = cameras.some((c) => c.highSpeedSupported && c.highSpeedModes.length > 0);
 
+  const menuItems: { label: string; onPress: () => void }[] = [
+    { label: 'Záznamy', onPress: onOpenRecordings },
+    { label: 'Výsledky měření', onPress: onOpenResults },
+    { label: 'Nastavení', onPress: onOpenSettings },
+  ];
+
   return (
-    <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-      {/* Výběr kamery */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.row} contentContainerStyle={styles.rowContent}>
-        {cameras.map((c, i) => (
-          <Chip
-            key={c.id}
-            label={`${cameraLabel(c, i, cameras)} · max ${maxFps(c)} fps`}
-            selected={c.id === camera.id}
-            disabled={recording}
-            onPress={() => selectCamera(c.id)}
-          />
-        ))}
-      </ScrollView>
-
-      {/* Výběr režimu */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.row} contentContainerStyle={styles.rowContent}>
-        {modes.map((m) => (
-          <Chip
-            key={m.key}
-            label={`${m.fps} fps · ${resolutionLabel(m.width, m.height)}${m.highSpeed ? ' ⚡' : ''}`}
-            selected={m.key === mode.key}
-            disabled={recording}
-            onPress={() => selectMode(m.key)}
-          />
-        ))}
-      </ScrollView>
-
-      <Pressable onPress={onOpenSettings} disabled={recording} style={styles.motorBanner}>
-        <Text
-          style={[
-            styles.motorText,
-            { color: cov.level === 'good' ? colors.success : cov.level === 'ok' ? colors.warning : colors.record },
-          ]}
-        >
-          {cov.level === 'aliasing' ? '⚠ ' : '✓ '}
-          {MOTOR_PRESETS[settings.motor.type].label}: {cov.message}
-        </Text>
-        <Text style={styles.info}>
-          Limit při {mode.fps} fps: {formatNumber(nyquist, 0)} Hz ({formatNumber(nyquist * 60, 0)} ot/min)
-          {mode.highSpeed ? ' · high-speed' : ''} · změnit v Nastavení ›
-        </Text>
-      </Pressable>
-      {!anyHighSpeed && (
-        <Text style={styles.warning}>
-          Telefon nezpřístupňuje aplikacím high-speed záznam. Je k dispozici max. {mode.fps} fps.
-        </Text>
-      )}
-
-      {/* Náhled */}
-      <View style={styles.previewArea} onLayout={onPreviewLayout}>
-        {previewSize && (
-          <View style={previewSize}>
-            <HighSpeedCameraView
-              ref={cameraRef}
-              style={StyleSheet.absoluteFill}
-              cameraId={camera.id}
-              videoWidth={mode.width}
-              videoHeight={mode.height}
-              fps={mode.fps}
-              highSpeed={mode.highSpeed}
-              torch={torch}
-              exposureCompensation={ev}
-              aeLock={aeLock}
-              onCameraReady={() => {
-                setReady(true);
-                setError(null);
-              }}
-              onCameraError={(e) => {
-                setReady(false);
-                setRecordingSince(null);
-                setError(e.nativeEvent.message);
-              }}
-              onRecordingFinished={(e) => {
-                setRecordingSince(null);
-                onRecordingFinished(e.nativeEvent);
-              }}
-            />
-            {!ready && !error && (
-              <View style={styles.overlay}>
-                <ActivityIndicator color={colors.accent} />
-              </View>
-            )}
-            {error && (
-              <View style={styles.overlay}>
-                <Text style={styles.message}>{error}</Text>
-              </View>
-            )}
-            {recording && (
-              <View style={styles.recBadge}>
-                <View style={styles.recDot} />
-                <Text style={styles.recText}>{formatDuration(elapsed)}</Text>
-              </View>
-            )}
-          </View>
-        )}
-      </View>
-
-      {/* Ovládání expozice */}
-      <View style={styles.controls}>
-        <Chip
-          label={torch ? 'Světlo zap.' : 'Světlo vyp.'}
-          selected={torch}
-          disabled={!camera.flashAvailable}
-          onPress={() => setTorch((t) => !t)}
-        />
-        <Chip label="−" disabled={ev <= camera.evMin} onPress={() => setEv((v) => Math.max(camera.evMin, v - 1))} />
-        <Text style={styles.evText}>EV {ev * evStep >= 0 ? '+' : ''}{formatNumber(ev * evStep, 1)}</Text>
-        <Chip label="+" disabled={ev >= camera.evMax} onPress={() => setEv((v) => Math.min(camera.evMax, v + 1))} />
-        <Chip label="AE zámek" selected={aeLock} onPress={() => setAeLock((l) => !l)} />
-      </View>
-
-      {/* Spoušť */}
-      <View style={styles.bottomBar}>
-        <View style={styles.sideSlot}>
-          <Chip label="Záznamy" disabled={recording} onPress={onOpenRecordings} style={styles.sideChip} />
-          <Chip label="Nastavení" disabled={recording} onPress={onOpenSettings} style={[styles.sideChip, styles.sideChipGap]} />
+    <View style={styles.container}>
+      {/* Náhled přes celou plochu nad stálou spodní částí */}
+      <View style={[styles.previewArea, { paddingTop: insets.top + 52, paddingBottom: PEEK_HEIGHT + insets.bottom }]}>
+        <View style={styles.previewInner} onLayout={onPreviewLayout}>
+          {previewSize && (
+            <View style={previewSize}>
+              <HighSpeedCameraView
+                ref={cameraRef}
+                style={StyleSheet.absoluteFill}
+                cameraId={camera.id}
+                videoWidth={mode.width}
+                videoHeight={mode.height}
+                fps={mode.fps}
+                highSpeed={mode.highSpeed}
+                torch={torch}
+                exposureCompensation={ev}
+                aeLock={aeLock}
+                onCameraReady={() => {
+                  setReady(true);
+                  setError(null);
+                }}
+                onCameraError={(e) => {
+                  setReady(false);
+                  setRecordingSince(null);
+                  setError(e.nativeEvent.message);
+                }}
+                onRecordingFinished={(e) => {
+                  setRecordingSince(null);
+                  onRecordingFinished(e.nativeEvent);
+                }}
+              />
+              {!ready && !error && (
+                <View style={styles.overlay}>
+                  <ActivityIndicator color="#fff" />
+                </View>
+              )}
+              {error && (
+                <View style={styles.overlay}>
+                  <Text style={styles.overlayText}>{error}</Text>
+                </View>
+              )}
+            </View>
+          )}
         </View>
-        <Pressable
-          onPress={toggleRecording}
-          disabled={!ready || busy}
-          style={[styles.shutter, (!ready || busy) && styles.shutterDisabled]}
-        >
-          <View style={recording ? styles.shutterStop : styles.shutterRecord} />
+      </View>
+
+      {/* Horní lišta: stav + menu */}
+      <View style={[styles.topBar, { paddingTop: insets.top + 6 }]}>
+        <Pressable style={styles.statusPill} onPress={() => !recording && setSheetOpen(true)}>
+          <View style={[styles.dot, { backgroundColor: covColor }]} />
+          <Text style={styles.statusText}>
+            {mode.fps} fps · {resolutionLabel(mode.width, mode.height)}
+            {mode.highSpeed ? ' ⚡' : ''}
+          </Text>
         </Pressable>
-        <View style={styles.sideSlot}>
-          <Text style={styles.modeText}>{mode.fps} fps</Text>
-          <Text style={styles.modeSub}>{mode.width}×{mode.height}</Text>
-        </View>
+        {recording ? (
+          <View style={styles.recBadge}>
+            <View style={styles.recDot} />
+            <Text style={styles.recText}>{formatDuration(elapsed)}</Text>
+          </View>
+        ) : (
+          <View style={styles.flex} />
+        )}
+        <Pressable style={styles.menuButton} onPress={() => setMenuOpen(true)} disabled={recording} hitSlop={8}>
+          <Text style={[styles.menuIcon, recording && styles.dim]}>☰</Text>
+        </Pressable>
       </View>
+
+      {/* Spodní zasouvací lišta s nastavením kamery */}
+      <View style={styles.sheetWrap}>
+        <BottomSheet
+          open={sheetOpen && !recording}
+          onOpenChange={(o) => !recording && setSheetOpen(o)}
+          title="Nastavení kamery"
+          bottomInset={insets.bottom}
+          peek={
+            <View style={styles.peek}>
+              <Pressable style={styles.sideButton} onPress={onOpenRecordings} disabled={recording}>
+                <Text style={[styles.sideIcon, recording && styles.dim]}>▤</Text>
+                <Text style={[styles.sideLabel, recording && styles.dim]}>Záznamy</Text>
+              </Pressable>
+              <Pressable
+                onPress={toggleRecording}
+                disabled={!ready || busy}
+                style={[styles.shutter, (!ready || busy) && styles.dim]}
+              >
+                <View style={recording ? styles.shutterStop : styles.shutterRecord} />
+              </Pressable>
+              <Pressable
+                style={styles.sideButton}
+                onPress={() => setTorch((t) => !t)}
+                disabled={!camera.flashAvailable}
+              >
+                <Text style={[styles.sideIcon, torch && { color: colors.warning }, !camera.flashAvailable && styles.dim]}>
+                  ϟ
+                </Text>
+                <Text style={[styles.sideLabel, !camera.flashAvailable && styles.dim]}>
+                  {torch ? 'Světlo zap.' : 'Světlo'}
+                </Text>
+              </Pressable>
+            </View>
+          }
+        >
+          <View style={styles.sheetContent}>
+            <Text style={[styles.coverage, { color: covColor }]}>
+              {cov.level === 'aliasing' ? '⚠ ' : '✓ '}
+              {MOTOR_PRESETS[settings.motor.type].label}: {cov.message}
+            </Text>
+            <Text style={styles.muted}>
+              Limit při {mode.fps} fps: {formatNumber(nyquist, 0)} Hz ({formatNumber(nyquist * 60, 0)} ot/min)
+            </Text>
+            {!anyHighSpeed && (
+              <Text style={styles.warning}>
+                Telefon nezpřístupňuje aplikacím high-speed záznam – max. {maxFps(camera)} fps.
+              </Text>
+            )}
+
+            <Text style={styles.section}>Objektiv</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {cameras.map((c, i) => (
+                <Chip
+                  key={c.id}
+                  label={`${cameraLabel(c, i, cameras)} · ${maxFps(c)} fps`}
+                  selected={c.id === camera.id}
+                  onPress={() => selectCamera(c.id)}
+                />
+              ))}
+            </ScrollView>
+
+            <Text style={styles.section}>Snímková frekvence a rozlišení</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {modes.map((m) => (
+                <Chip
+                  key={m.key}
+                  label={`${m.fps} fps · ${resolutionLabel(m.width, m.height)}${m.highSpeed ? ' ⚡' : ''}`}
+                  selected={m.key === mode.key}
+                  onPress={() => selectMode(m.key)}
+                />
+              ))}
+            </ScrollView>
+
+            <Text style={styles.section}>Expozice</Text>
+            <View style={styles.row}>
+              <Chip label="−" disabled={ev <= camera.evMin} onPress={() => setEv((v) => Math.max(camera.evMin, v - 1))} />
+              <Text style={styles.evText}>
+                EV {ev * evStep >= 0 ? '+' : ''}
+                {formatNumber(ev * evStep, 1)}
+              </Text>
+              <Chip label="+" disabled={ev >= camera.evMax} onPress={() => setEv((v) => Math.min(camera.evMax, v + 1))} />
+              <Chip label="AE zámek" selected={aeLock} onPress={() => setAeLock((l) => !l)} />
+            </View>
+            <Text style={styles.muted}>
+              Záporná EV zkrátí expozici → méně rozmazaný pohyb (potřebuje víc světla).
+            </Text>
+          </View>
+        </BottomSheet>
+      </View>
+
+      {/* Menu */}
+      <Modal visible={menuOpen} transparent animationType="fade" onRequestClose={() => setMenuOpen(false)}>
+        <Pressable style={styles.menuBackdrop} onPress={() => setMenuOpen(false)}>
+          <View style={[styles.menu, { marginTop: insets.top + 52 }]}>
+            {menuItems.map((item) => (
+              <Pressable
+                key={item.label}
+                style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
+                onPress={() => {
+                  setMenuOpen(false);
+                  item.onPress();
+                }}
+              >
+                <Text style={styles.menuItemText}>{item.label}</Text>
+              </Pressable>
+            ))}
+          </View>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
 
 function Centered({ children }: { children: React.ReactNode }) {
+  const styles = useStyles(makeStyles);
   return <View style={[styles.container, styles.centered]}>{children}</View>;
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
-  centered: { alignItems: 'center', justifyContent: 'center', padding: 24 },
-  row: { flexGrow: 0, marginTop: 8 },
-  rowContent: { paddingHorizontal: 12 },
-  info: { color: colors.textMuted, fontSize: 12, marginTop: 2 },
-  motorBanner: { marginHorizontal: 16, marginTop: 8 },
-  motorText: { fontSize: 13, fontWeight: '600' },
-  sideChip: { marginRight: 0 },
-  sideChipGap: { marginTop: 8 },
-  warning: { color: colors.warning, fontSize: 13, marginHorizontal: 16, marginTop: 4 },
-  previewArea: { flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: 8 },
-  overlay: {
-    ...StyleSheet.absoluteFill,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    padding: 16,
-  },
-  message: { color: colors.text, fontSize: 15, textAlign: 'center' },
-  messageButton: { marginTop: 12, marginRight: 0 },
-  recBadge: {
-    position: 'absolute',
-    top: 12,
-    alignSelf: 'center',
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 14,
-  },
-  recDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.record, marginRight: 8 },
-  recText: { color: '#fff', fontSize: 16, fontWeight: '700', fontVariant: ['tabular-nums'] },
-  controls: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 12,
-    paddingTop: 12,
-  },
-  evText: { color: colors.text, fontSize: 14, minWidth: 64, textAlign: 'center', marginRight: 8 },
-  bottomBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-  },
-  sideSlot: { width: 110, alignItems: 'center' },
-  shutter: {
-    width: 76,
-    height: 76,
-    borderRadius: 38,
-    borderWidth: 4,
-    borderColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  shutterDisabled: { opacity: 0.4 },
-  shutterRecord: { width: 58, height: 58, borderRadius: 29, backgroundColor: colors.record },
-  shutterStop: { width: 30, height: 30, borderRadius: 6, backgroundColor: colors.record },
-  modeText: { color: colors.text, fontSize: 18, fontWeight: '700' },
-  modeSub: { color: colors.textMuted, fontSize: 12 },
-});
+const makeStyles = (c: import('../lib/theme').ThemeColors) =>
+  ({
+    container: { flex: 1, backgroundColor: '#000' },
+    centered: { alignItems: 'center', justifyContent: 'center', padding: 24, backgroundColor: c.background },
+    flex: { flex: 1 },
+    dim: { opacity: 0.35 },
+    message: { color: c.text, fontSize: 15, textAlign: 'center' },
+    messageButton: { marginTop: 12, marginRight: 0 },
+    previewArea: { ...StyleSheet.absoluteFill },
+    previewInner: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+    overlay: {
+      ...StyleSheet.absoluteFill,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      padding: 16,
+    },
+    overlayText: { color: '#fff', fontSize: 15, textAlign: 'center' },
+    topBar: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 12,
+    },
+    statusPill: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0,0,0,0.55)',
+      borderRadius: 16,
+      paddingHorizontal: 12,
+      paddingVertical: 7,
+    },
+    dot: { width: 9, height: 9, borderRadius: 5, marginRight: 8 },
+    statusText: { color: '#fff', fontSize: 14, fontWeight: '700' },
+    recBadge: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    recDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: '#ff453a', marginRight: 8 },
+    recText: { color: '#fff', fontSize: 16, fontWeight: '700', fontVariant: TABULAR_NUMS },
+    menuButton: {
+      width: 42,
+      height: 42,
+      borderRadius: 21,
+      backgroundColor: 'rgba(0,0,0,0.55)',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    menuIcon: { color: '#fff', fontSize: 22 },
+    sheetWrap: { position: 'absolute', left: 0, right: 0, bottom: 0 },
+    peek: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 28,
+      paddingTop: 4,
+      paddingBottom: 14,
+    },
+    sideButton: { width: 80, alignItems: 'center' },
+    sideIcon: { color: c.text, fontSize: 24 },
+    sideLabel: { color: c.textMuted, fontSize: 12, marginTop: 2 },
+    shutter: {
+      width: 76,
+      height: 76,
+      borderRadius: 38,
+      borderWidth: 4,
+      borderColor: c.text,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    shutterRecord: { width: 58, height: 58, borderRadius: 29, backgroundColor: c.record },
+    shutterStop: { width: 30, height: 30, borderRadius: 6, backgroundColor: c.record },
+    sheetContent: { paddingHorizontal: 16, paddingBottom: 12 },
+    coverage: { fontSize: 13, fontWeight: '600' },
+    muted: { color: c.textMuted, fontSize: 12, marginTop: 4 },
+    warning: { color: c.warning, fontSize: 12, marginTop: 4 },
+    section: { color: c.text, fontSize: 14, fontWeight: '700', marginTop: 14, marginBottom: 8 },
+    row: { flexDirection: 'row', alignItems: 'center' },
+    evText: { color: c.text, fontSize: 14, minWidth: 64, textAlign: 'center', marginRight: 8 },
+    menuBackdrop: { flex: 1, backgroundColor: c.overlay, alignItems: 'flex-end', paddingRight: 12 },
+    menu: {
+      backgroundColor: c.surface,
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: c.border,
+      minWidth: 210,
+      paddingVertical: 6,
+    },
+    menuItem: { paddingHorizontal: 18, paddingVertical: 14 },
+    menuItemPressed: { backgroundColor: c.surfaceRaised },
+    menuItemText: { color: c.text, fontSize: 16 },
+  }) as const;

@@ -23,12 +23,22 @@ a umožňuje ho zpomaleně přehrát, krokovat po snímcích a změřit otáčky
 - **Výsledky:** uložení měření s poznámkou, přehled všech výsledků, export
   CSV (středníky, desetinná čárka) do `Stažené/VibroKamera`.
 
+- **Analýza vibrací (časový záznam):** v přehrávači vybereš kontrastní bod
+  na stroji, aplikace ho sleduje snímek po snímku (MediaCodec + porovnávání
+  vzoru se subpixelovou přesností) a z výchylky spočítá **0-P, P-P,
+  AVG = Σ|y|/N, RMS = √(Σy²/N)**, crest faktor, tvar signálu (sinus / obdélník /
+  rázy podle poměrů 0,64 a 0,71), dominantní frekvenci, periodu a spektrum
+  (FFT). Grafy ukazují signál, |signál| (AVG) a signál² (RMS). Volitelná
+  kalibrace na mm dvěma body se známou vzdáleností.
+- **Vzhled:** světlý / tmavý / podle systému. Nastavení kamery je ve spodní
+  zasouvací liště, ostatní v menu ☰ → Nastavení.
+
 ## Úložiště
 
 | Co | Kde | Po odinstalaci |
 |---|---|---|
 | Videa | `Android/data/com.micha741.vibrokamera/files/Movies/recordings` | smaže se |
-| Výsledky a nastavení | interní úložiště aplikace (`files/vibrokamera/*.json`) | smaže se |
+| Výsledky, kalibrace a nastavení | interní úložiště aplikace (`files/vibrokamera/*.json`) | smaže se |
 | Kopie videa („Do galerie“) | `Filmy/VibroKamera` | zůstane |
 | Export výsledků (CSV) | `Stažené/VibroKamera` | zůstane |
 
