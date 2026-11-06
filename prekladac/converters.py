@@ -579,7 +579,7 @@ def process_file(
         # --- obrázky a PDF: Claude přečte (a přeloží) obsah → DOCX
         if ext in IMAGE_EXT or (ext == ".pdf" and (translate or fmt == "docx")):
             if tr is None:
-                raise ValueError("Pro obrázky a PDF je potřeba Claude API klíč.")
+                raise ValueError("Pro obrázky a PDF je potřeba nastavit OCR (Tesseract, Gemini nebo Claude).")
             produced = tmpfile("vystup.docx")
             if ext in IMAGE_EXT:
                 images_to_docx([src], produced, tr, translate, log, progress)
