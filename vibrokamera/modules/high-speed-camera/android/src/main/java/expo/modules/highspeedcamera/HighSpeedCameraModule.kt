@@ -85,6 +85,17 @@ class HighSpeedCameraModule : Module() {
       Recordings.saveToGallery(context, path)
     }
 
+    AsyncFunction("getDeviceInfoAsync") {
+      mapOf(
+        "manufacturer" to android.os.Build.MANUFACTURER,
+        "brand" to android.os.Build.BRAND,
+        "model" to android.os.Build.MODEL,
+        "device" to android.os.Build.DEVICE,
+        "androidVersion" to android.os.Build.VERSION.RELEASE,
+        "sdk" to android.os.Build.VERSION.SDK_INT
+      )
+    }
+
     AsyncFunction("getStorageInfoAsync") {
       Recordings.storageInfo(context)
     }
@@ -113,6 +124,7 @@ class HighSpeedCameraModule : Module() {
       Prop("exposureCompensation") { view: HighSpeedCameraView, value: Int -> view.exposureCompensation = value }
       Prop("aeLock") { view: HighSpeedCameraView, value: Boolean -> view.aeLock = value }
       Prop("bitRate") { view: HighSpeedCameraView, value: Int -> view.bitRate = value }
+      Prop("maxDurationMs") { view: HighSpeedCameraView, value: Int -> view.maxDurationMs = value }
 
       OnViewDidUpdateProps { view -> view.applyProps() }
       OnViewDestroys { view -> view.release() }

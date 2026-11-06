@@ -32,7 +32,9 @@ export type RecordingFile = {
 };
 
 export type CameraReadyEvent = VideoMode & { cameraId: string; highSpeed: boolean };
-export type CameraErrorEvent = { message: string };
+/** CONFIG = režim (fps/rozlišení) na tomto telefonu nefunguje → zkusit jiný. */
+export type CameraErrorCode = 'CONFIG' | 'OPEN' | 'DISCONNECTED' | 'DEVICE' | 'PERMISSION' | 'RECORDER' | 'OTHER';
+export type CameraErrorEvent = { message: string; code?: CameraErrorCode };
 /** Hotový záznam: metadata souboru + parametry, se kterými se nahrávalo. */
 export type RecordingFinishedEvent = Omit<RecordingFile, 'durationMs' | 'frameCount' | 'rotation'> & {
   durationMs: number;
@@ -40,6 +42,8 @@ export type RecordingFinishedEvent = Omit<RecordingFile, 'durationMs' | 'frameCo
   rotation?: number;
   fps: number;
   highSpeed: boolean;
+  /** user = zastaveno uživatelem, maxDuration / maxFileSize = limit, error = chyba enkodéru. */
+  stoppedReason?: 'user' | 'maxDuration' | 'maxFileSize' | 'error';
 };
 
 export type HighSpeedCameraViewProps = {
@@ -54,6 +58,8 @@ export type HighSpeedCameraViewProps = {
   aeLock?: boolean;
   /** Datový tok v bit/s, 0 = automaticky. */
   bitRate?: number;
+  /** Max. délka záznamu v ms (výchozí 60 000). */
+  maxDurationMs?: number;
   onCameraReady?: (event: { nativeEvent: CameraReadyEvent }) => void;
   onCameraError?: (event: { nativeEvent: CameraErrorEvent }) => void;
   onRecordingFinished?: (event: { nativeEvent: RecordingFinishedEvent }) => void;
@@ -96,4 +102,13 @@ export type TrackResult = {
   displayWidth: number;
   displayHeight: number;
   roiPx: number;
+};
+
+export type DeviceInfo = {
+  manufacturer: string;
+  brand: string;
+  model: string;
+  device: string;
+  androidVersion: string;
+  sdk: number;
 };

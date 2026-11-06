@@ -33,6 +33,25 @@ a umožňuje ho zpomaleně přehrát, krokovat po snímcích a změřit otáčky
 - **Vzhled:** světlý / tmavý / podle systému. Nastavení kamery je ve spodní
   zasouvací liště, ostatní v menu ☰ → Nastavení.
 
+- **Vyrovnání kamery:** mřížka a vodováha v náhledu (akcelerometr), ukazatel
+  kolmosti (svisle, nebo vůči referenci „telefon přiložený zády na stroj“)
+  a hlídání otřesů telefonu; obojí se uloží k záznamu.
+- **Směr otáčení:** v přehrávači 3 klepnutí (střed hřídele, značka, značka
+  o pár snímků dál) → CW/CCW při pohledu kamery + pohled DE/NDE, ukládá se
+  k záznamu i do výsledků.
+
+## Kompatibilita (Samsung, Motorola, Xiaomi…)
+
+- Režim, který telefon nabídne, ale nezvládne (chyba konfigurace kamery
+  nebo enkodéru), se zapamatuje a aplikace automaticky přepne na další.
+- Datový tok se omezí na maximum H.264 enkodéru telefonu.
+- Záznam max. 60 s a podle volného místa (ochrana proti přehřátí / plnému
+  úložišti), displej se při natáčení nevypíná.
+- Pokud telefon ukládá high-speed video se „zpomalenými“ časovými značkami,
+  přehrávač i analýza to rozpoznají a použijí skutečnou snímkovou frekvenci.
+- Nastavení → Diagnostika telefonu ukazuje model, kamery, high-speed režimy
+  a režimy, které selhaly.
+
 ## Úložiště
 
 | Co | Kde | Po odinstalaci |

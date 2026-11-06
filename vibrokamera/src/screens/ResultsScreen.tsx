@@ -7,7 +7,14 @@ import Screen from '../components/Screen';
 import { formatDate, formatNumber } from '../lib/format';
 import { MOTOR_PRESETS } from '../lib/motor';
 import { useStyles } from '../lib/settings';
-import { deleteMeasurement, loadMeasurements, measurementsToCsv, type Measurement } from '../lib/storage';
+import {
+  deleteMeasurement,
+  DIRECTION_LABELS,
+  loadMeasurements,
+  measurementsToCsv,
+  VIEW_LABELS,
+  type Measurement,
+} from '../lib/storage';
 import type { ThemeColors } from '../lib/theme';
 
 type Props = { onBack: () => void };
@@ -91,6 +98,12 @@ export default function ResultsScreen({ onBack }: Props) {
                   {item.turns}× otáčka, snímky {item.frameA + 1}–{item.frameB + 1} · ±{formatNumber(item.errorPct, 1)} %
                   {item.aliased ? ' · stroboskopicky' : ''}
                 </Text>
+                {item.direction && (
+                  <Text style={styles.meta}>
+                    Směr: {DIRECTION_LABELS[item.direction]}
+                    {item.viewFrom ? `, pohled ${VIEW_LABELS[item.viewFrom]}` : ''}
+                  </Text>
+                )}
               </>
             )}
             {item.note ? <Text style={styles.note}>{item.note}</Text> : null}

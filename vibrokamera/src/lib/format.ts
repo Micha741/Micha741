@@ -46,6 +46,14 @@ export function analysisFps(recording: RecordingFile): number {
   return nominal ?? measured ?? 30;
 }
 
+/**
+ * Snímky za sekundu na časové ose souboru (pro krokování přehrávače). Liší se od
+ * analysisFps u telefonů, které ukládají high-speed video se „zpomalenými“ časy.
+ */
+export function timelineFps(recording: RecordingFile): number {
+  return measuredFps(recording) ?? nominalFps(recording) ?? 30;
+}
+
 /** Nejvyšší frekvence kmitání zachytitelná při dané snímkové frekvenci (Nyquist). */
 export function nyquistHz(fps: number): number {
   return fps / 2;

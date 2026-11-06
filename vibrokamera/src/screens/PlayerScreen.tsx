@@ -15,10 +15,22 @@ import {
 import HighSpeedCamera, { type RecordingFile, type TrackResult } from '../../modules/high-speed-camera';
 import Chip from '../components/Chip';
 import Screen from '../components/Screen';
-import { analysisFps, formatNumber, nominalFps } from '../lib/format';
+import { analysisFps, formatNumber, nominalFps, timelineFps } from '../lib/format';
 import { aliasCandidates, coverage, MOTOR_PRESETS } from '../lib/motor';
 import { useSettings, useStyles } from '../lib/settings';
-import { addMeasurement, getCalibration, loadMeasurements, setCalibration, type Calibration } from '../lib/storage';
+import {
+  addMeasurement,
+  DIRECTION_LABELS,
+  getCalibration,
+  getRecordingMeta,
+  loadMeasurements,
+  setCalibration,
+  updateRecordingMeta,
+  VIEW_LABELS,
+  type Calibration,
+  type RotationDirection,
+  type ViewFrom,
+} from '../lib/storage';
 import { TABULAR_NUMS, type ThemeColors } from '../lib/theme';
 
 export type AnalysisRequest = {
@@ -52,12 +64,17 @@ const ROI_SIZES = [
 
 const LENGTHS = [1, 2, 5, 10];
 
-type PickMode = 'none' | 'roi' | 'cal1' | 'cal2';
+type PickMode = 'none' | 'roi' | 'cal1' | 'cal2' | 'dirCenter' | 'dirP1' | 'dirP2';
+
+type Pt = { x: number; y: number };
 
 export default function PlayerScreen({ recording, onBack, onAnalyzed }: Props) {
   const { settings, colors } = useSettings();
   const styles = useStyles(makeStyles);
+  /** Skutečná snímková frekvence (fyzika: otáčky, frekvence). */
   const fps = analysisFps(recording);
+  /** Snímky za sekundu na časové ose souboru (krokování přehrávače). */
+  const tfps = timelineFps(recording);
   const recordedFps = nominalFps(recording) ?? Math.round(fps);
   const motor = settings.motor;
   const cov = coverage(fps, motor);
@@ -90,6 +107,14 @@ export default function PlayerScreen({ recording, onBack, onAnalyzed }: Props) {
   const [progress, setProgress] = useState(0);
   const [videoBox, setVideoBox] = useState({ width: 1, height: 1 });
 
+  // --- směr otáčení ---
+  const meta = useState(() => getRecordingMeta(recording.path))[0];
+  const [dirCenter, setDirCenter] = useState<Pt | null>(null);
+  const [dirP1, setDirP1] = useState<(Pt & { frame: number }) | null>(null);
+  const [dirP2, setDirP2] = useState<(Pt & { frame: number }) | null>(null);
+  const [savedDirection, setSavedDirection] = useState<RotationDirection | undefined>(meta.direction);
+  const [viewFrom, setViewFrom] = useState<ViewFrom>(meta.viewFrom ?? 'DE');
+
   const player = useVideoPlayer(recording.uri, (p) => {
     p.loop = true;
     p.muted = true;
@@ -112,15 +137,15 @@ export default function PlayerScreen({ recording, onBack, onAnalyzed }: Props) {
 
   const duration =
     status === 'readyToPlay' && player.duration > 0 ? player.duration : (recording.durationMs ?? 0) / 1000;
-  const totalFrames = recording.frameCount ?? Math.max(1, Math.round(duration * fps));
-  const frame = Math.min(totalFrames - 1, Math.max(0, Math.round(time * fps)));
+  const totalFrames = recording.frameCount ?? Math.max(1, Math.round(duration * tfps));
+  const frame = Math.min(totalFrames - 1, Math.max(0, Math.round(time * tfps)));
 
   const seekToFrame = (target: number) => {
     const clamped = Math.min(totalFrames - 1, Math.max(0, target));
     // ExoPlayer při přesném seeku zobrazí první snímek s časem >= cíl.
     player.pause();
-    player.currentTime = Math.max(0, clamped / fps - 0.0005);
-    setTime(clamped / fps);
+    player.currentTime = Math.max(0, clamped / tfps - 0.0005);
+    setTime(clamped / tfps);
   };
 
   const changeRate = (value: number) => {
@@ -164,7 +189,47 @@ export default function PlayerScreen({ recording, onBack, onAnalyzed }: Props) {
     } else if (pickMode === 'cal2') {
       setCalPoints((pts) => [pts[0], p]);
       setPickMode('none');
+    } else if (pickMode === 'dirCenter') {
+      setDirCenter(p);
+      setDirP1(null);
+      setDirP2(null);
+      setPickMode('dirP1');
+    } else if (pickMode === 'dirP1') {
+      setDirP1({ ...p, frame });
+      setDirP2(null);
+      setPickMode('none');
+    } else if (pickMode === 'dirP2') {
+      setDirP2({ ...p, frame });
+      setPickMode('none');
     }
+  };
+
+  // Úhel otočení značky kolem středu hřídele (osa y obrazu míří dolů → kladný = po směru hodin).
+  const rotation = (() => {
+    if (!dirCenter || !dirP1 || !dirP2) return null;
+    const ax = (dirP1.x - dirCenter.x) * dispW;
+    const ay = (dirP1.y - dirCenter.y) * dispH;
+    const bx = (dirP2.x - dirCenter.x) * dispW;
+    const by = (dirP2.y - dirCenter.y) * dispH;
+    const frames = dirP2.frame - dirP1.frame;
+    if (frames === 0 || Math.hypot(ax, ay) < 3 || Math.hypot(bx, by) < 3) return null;
+    let angle = Math.atan2(ax * by - ay * bx, ax * bx + ay * by);
+    if (frames < 0) angle = -angle;
+    const direction: RotationDirection = angle > 0 ? 'cw' : 'ccw';
+    const degPerFrame = (Math.abs(angle) * 180) / Math.PI / Math.abs(frames);
+    const rpmEstimate = ((Math.abs(angle) / (2 * Math.PI)) * fps * 60) / Math.abs(frames);
+    return { direction, angleDeg: (angle * 180) / Math.PI, frames: Math.abs(frames), degPerFrame, rpmEstimate };
+  })();
+
+  const saveDirection = () => {
+    if (!rotation) return;
+    try {
+      updateRecordingMeta(recording.path, { direction: rotation.direction, viewFrom });
+    } catch {
+      // nevadí
+    }
+    setSavedDirection(rotation.direction);
+    Alert.alert('Uloženo', `Směr otáčení: ${DIRECTION_LABELS[rotation.direction]}, pohled ${VIEW_LABELS[viewFrom]}.`);
   };
 
   const calDistancePx =
@@ -204,7 +269,8 @@ export default function PlayerScreen({ recording, onBack, onAnalyzed }: Props) {
 
   const runAnalysis = async () => {
     if (!roiCenter) return;
-    const lengthMs = lengthS * 1000;
+    // Délka je ve skutečném čase; na časové ose souboru může být „natažená“.
+    const lengthMs = (lengthS * 1000 * fps) / tfps;
     const totalMs = duration * 1000;
     let startMs = time * 1000;
     if (startMs + lengthMs > totalMs) startMs = Math.max(0, totalMs - lengthMs);
@@ -266,6 +332,8 @@ export default function PlayerScreen({ recording, onBack, onAnalyzed }: Props) {
         frameB: Math.max(markA, markB),
         turns,
         errorPct: result.errorPct,
+        direction: savedDirection ?? rotation?.direction,
+        viewFrom: savedDirection || rotation ? viewFrom : undefined,
         motorType: motor.type,
         maxRpm: motor.maxRpm,
         note: note.trim(),
@@ -288,7 +356,13 @@ export default function PlayerScreen({ recording, onBack, onAnalyzed }: Props) {
         ? 'Klepni na 1. bod se známou vzdáleností'
         : pickMode === 'cal2'
           ? 'Klepni na 2. bod'
-          : null;
+          : pickMode === 'dirCenter'
+            ? 'Klepni na střed hřídele'
+            : pickMode === 'dirP1'
+              ? 'Klepni na značku na hřídeli'
+              : pickMode === 'dirP2'
+                ? 'Klepni na značku v novém snímku'
+                : null;
 
   return (
     <Screen title={`${recordedFps} fps · zpomaleno ${formatNumber(1 / rate, 0)}×`} onBack={onBack}>
@@ -325,6 +399,18 @@ export default function PlayerScreen({ recording, onBack, onAnalyzed }: Props) {
               style={[styles.calPoint, { left: rect.left + p.x * rect.width - 6, top: rect.top + p.y * rect.height - 6 }]}
             />
           ))}
+          {[dirCenter, dirP1, dirP2].map((p, i) =>
+            p ? (
+              <View
+                key={`d${i}`}
+                style={[
+                  styles.dirPoint,
+                  i === 0 ? styles.dirCenter : i === 1 ? styles.dirFirst : styles.dirSecond,
+                  { left: rect.left + p.x * rect.width - 7, top: rect.top + p.y * rect.height - 7 },
+                ]}
+              />
+            ) : null
+          )}
           {pickHint && (
             <View style={styles.pickBanner}>
               <Text style={styles.pickText}>{pickHint}</Text>
@@ -334,9 +420,17 @@ export default function PlayerScreen({ recording, onBack, onAnalyzed }: Props) {
       </View>
 
       <ScrollView style={styles.panel} contentContainerStyle={styles.panelContent} keyboardShouldPersistTaps="handled">
+        {(meta.tiltDeg !== undefined || meta.shakeG !== undefined) && (
+          <Text style={[styles.metaLine, (meta.tiltDeg ?? 0) > 5 || (meta.shakeG ?? 0) > 0.035 ? { color: colors.warning } : null]}>
+            Při natáčení: kolmost {meta.tiltDeg !== undefined ? `${formatNumber(meta.tiltDeg, 1)}°` : '–'}
+            {meta.referenceUsed ? ' (dle stroje)' : ''} · otřesy{' '}
+            {meta.shakeG !== undefined ? `${formatNumber(meta.shakeG * 1000, 0)} mg` : '–'}
+            {(meta.shakeG ?? 0) > 0.035 ? ' – telefon se hýbal, výsledky vibrací můžou být zkreslené' : ''}
+          </Text>
+        )}
         {/* Pozice */}
         <Text style={styles.position}>
-          Snímek {frame + 1} / {totalFrames} · {formatNumber(time * 1000, 1)} ms
+          Snímek {frame + 1} / {totalFrames} · {formatNumber((frame / fps) * 1000, 1)} ms
         </Text>
         <View
           style={styles.bar}
@@ -375,7 +469,7 @@ export default function PlayerScreen({ recording, onBack, onAnalyzed }: Props) {
           ))}
         </ScrollView>
         <Text style={styles.hint}>
-          Na obrazovce {formatNumber(fps * rate, 1)} snímků/s – 1 s děje trvá {formatNumber(1 / rate, 0)} s.
+          Na obrazovce {formatNumber(tfps * rate, 1)} snímků/s – 1 s děje trvá {formatNumber(fps / (tfps * rate), 0)} s.
         </Text>
 
         {/* ---------------- Analýza vibrací ---------------- */}
@@ -467,6 +561,61 @@ export default function PlayerScreen({ recording, onBack, onAnalyzed }: Props) {
         ) : (
           <Chip label="2. Analyzovat vibrace" selected disabled={!roiCenter} onPress={runAnalysis} style={styles.analyzeButton} />
         )}
+
+        {/* ---------------- Směr otáčení ---------------- */}
+        <Text style={styles.sectionTitle}>Směr otáčení</Text>
+        <Text style={styles.hint}>
+          Kamera musí vidět čelo hřídele (nebo řemenici, ventilátor) se značkou. 1) klepni na střed hřídele, 2) na
+          značku, 3) posuň se o pár snímků (méně než půl otáčky) a klepni na značku znovu.
+        </Text>
+        <View style={styles.row}>
+          <Chip
+            label={dirCenter ? 'Střed ✓' : '1. Střed'}
+            selected={pickMode === 'dirCenter' || !!dirCenter}
+            onPress={() => setPickMode(pickMode === 'dirCenter' ? 'none' : 'dirCenter')}
+          />
+          <Chip
+            label={dirP1 ? `2. Značka ✓ (${dirP1.frame + 1})` : '2. Značka'}
+            selected={pickMode === 'dirP1' || !!dirP1}
+            disabled={!dirCenter}
+            onPress={() => setPickMode(pickMode === 'dirP1' ? 'none' : 'dirP1')}
+          />
+          <Chip label="+5 snímků" disabled={!dirP1} onPress={() => seekToFrame(frame + 5)} />
+          <Chip
+            label={dirP2 ? `3. Značka ✓ (${dirP2.frame + 1})` : '3. Značka znovu'}
+            selected={pickMode === 'dirP2' || !!dirP2}
+            disabled={!dirP1}
+            onPress={() => setPickMode(pickMode === 'dirP2' ? 'none' : 'dirP2')}
+          />
+        </View>
+        {rotation ? (
+          <View style={styles.card}>
+            <Text style={styles.resultMain}>{rotation.direction === 'cw' ? '↻ CW' : '↺ CCW'}</Text>
+            <Text style={styles.cardText}>{DIRECTION_LABELS[rotation.direction]} – při pohledu kamery</Text>
+            <Text style={styles.cardText}>
+              Otočení {formatNumber(Math.abs(rotation.angleDeg), 1)}° za {rotation.frames} sn. (
+              {formatNumber(rotation.degPerFrame, 1)}°/snímek) → odhad {formatNumber(rotation.rpmEstimate, 0)} ot/min
+            </Text>
+            {(rotation.degPerFrame > 90 || cov.level === 'aliasing') && (
+              <Text style={styles.aliasTitle}>
+                ⚠ Při stroboskopickém efektu (otáčky nad limitem {formatNumber(cov.nyquistHz * 60, 0)} ot/min) se může
+                zdánlivý směr na videu obrátit. Spolehlivé je to jen při méně než 180° na snímek – ověř při jiné fps nebo
+                pouhým okem za chodu stroje.
+              </Text>
+            )}
+            <Text style={[styles.label, styles.topGapText]}>Pohled kamery:</Text>
+            <View style={styles.row}>
+              {(Object.keys(VIEW_LABELS) as ViewFrom[]).map((v) => (
+                <Chip key={v} label={VIEW_LABELS[v]} selected={viewFrom === v} onPress={() => setViewFrom(v)} />
+              ))}
+            </View>
+            <Chip label="Uložit směr k záznamu" selected onPress={saveDirection} style={styles.topGap} />
+          </View>
+        ) : savedDirection ? (
+          <Text style={styles.hint}>
+            Uloženo: {DIRECTION_LABELS[savedDirection]}, pohled {VIEW_LABELS[viewFrom]}.
+          </Text>
+        ) : null}
 
         {/* ---------------- Měření otáček ---------------- */}
         <Text style={styles.sectionTitle}>Měření otáček ručně</Text>
@@ -658,4 +807,10 @@ const makeStyles = (c: ThemeColors) =>
     progressFill: { height: 8, backgroundColor: c.accent },
     savedLine: { color: c.text, fontSize: 13, marginTop: 4 },
     footnote: { color: c.textMuted, fontSize: 12, marginTop: 16 },
+    metaLine: { color: c.textMuted, fontSize: 12, marginBottom: 6 },
+    topGapText: { marginTop: 10 },
+    dirPoint: { position: 'absolute', width: 14, height: 14, borderRadius: 7, borderWidth: 2, borderColor: '#000' },
+    dirCenter: { backgroundColor: '#ffffff' },
+    dirFirst: { backgroundColor: '#32d74b' },
+    dirSecond: { backgroundColor: '#ff453a' },
   }) as const;

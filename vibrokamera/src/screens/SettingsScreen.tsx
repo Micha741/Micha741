@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
-import HighSpeedCamera, { type StorageInfo } from '../../modules/high-speed-camera';
+import HighSpeedCamera, { type CameraInfo, type DeviceInfo, type StorageInfo } from '../../modules/high-speed-camera';
 import Chip from '../components/Chip';
 import Screen from '../components/Screen';
 import { formatBytes } from '../lib/format';
 import { coverage, MOTOR_PRESETS, type MotorType } from '../lib/motor';
 import { useSettings, useStyles } from '../lib/settings';
-import { loadMeasurements, measurementsLocation } from '../lib/storage';
+import { loadFailedModes, loadMeasurements, measurementsLocation, saveFailedModes } from '../lib/storage';
+import { maxFps } from '../lib/modes';
 import type { ThemeColors, ThemeMode } from '../lib/theme';
 
 type Props = {
@@ -35,10 +36,15 @@ export default function SettingsScreen({ onBack, onOpenResults }: Props) {
   const [maxText, setMaxText] = useState(String(motor.maxRpm));
   const [nominalText, setNominalText] = useState(motor.nominalRpm ? String(motor.nominalRpm) : '');
   const [storage, setStorage] = useState<StorageInfo | null>(null);
+  const [device, setDevice] = useState<DeviceInfo | null>(null);
+  const [cameras, setCameras] = useState<CameraInfo[]>([]);
+  const [failedModes, setFailedModes] = useState<string[]>(() => loadFailedModes());
   const measurementCount = loadMeasurements().length;
 
   useEffect(() => {
     HighSpeedCamera.getStorageInfoAsync().then(setStorage).catch(() => setStorage(null));
+    HighSpeedCamera.getDeviceInfoAsync().then(setDevice).catch(() => setDevice(null));
+    HighSpeedCamera.getCamerasAsync().then(setCameras).catch(() => setCameras([]));
   }, []);
 
   const selectType = (type: MotorType) => {
@@ -153,6 +159,38 @@ export default function SettingsScreen({ onBack, onOpenResults }: Props) {
             „Do galerie“ (Filmy/VibroKamera), výsledky exportem CSV (Stažené/VibroKamera).
           </Text>
           <Chip label="Zobrazit výsledky" selected onPress={onOpenResults} style={styles.cardButton} />
+        </View>
+        {/* Diagnostika */}
+        <Text style={styles.section}>Diagnostika telefonu</Text>
+        <View style={styles.card}>
+          <Text style={styles.cardText} selectable>
+            {device
+              ? `${device.manufacturer} ${device.model} (${device.device}) · Android ${device.androidVersion} (API ${device.sdk})`
+              : '–'}
+          </Text>
+          {cameras.map((c) => (
+            <Text key={c.id} style={styles.path} selectable>
+              Kamera {c.id} · {c.facing} · {c.hardwareLevel} · max {maxFps(c)} fps · high-speed{' '}
+              {c.highSpeedSupported && c.highSpeedModes.length > 0
+                ? c.highSpeedModes.map((m) => `${m.fps}@${Math.min(m.width, m.height)}p`).join(', ')
+                : 'ne'}
+            </Text>
+          ))}
+          <Text style={styles.cardTitle}>Režimy, které na tomto telefonu selhaly</Text>
+          <Text style={styles.cardText}>{failedModes.length ? failedModes.join(', ') : 'žádné'}</Text>
+          {failedModes.length > 0 && (
+            <Chip
+              label="Zkusit znovu všechny režimy"
+              onPress={() => {
+                saveFailedModes([]);
+                setFailedModes([]);
+              }}
+              style={styles.cardButton}
+            />
+          )}
+          <Text style={styles.path}>
+            Když něco nefunguje, pošli screenshot této sekce – je v ní vše potřebné k opravě pro konkrétní telefon.
+          </Text>
         </View>
       </ScrollView>
     </Screen>

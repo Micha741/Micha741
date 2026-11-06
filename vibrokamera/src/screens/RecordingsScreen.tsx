@@ -6,7 +6,7 @@ import Chip from '../components/Chip';
 import Screen from '../components/Screen';
 import { formatBytes, formatDate, formatDuration, formatNumber, measuredFps, nominalFps } from '../lib/format';
 import { useSettings, useStyles } from '../lib/settings';
-import { deleteMeasurementsForRecording } from '../lib/storage';
+import { deleteMeasurementsForRecording, DIRECTION_LABELS, loadAllRecordingMeta } from '../lib/storage';
 import type { ThemeColors } from '../lib/theme';
 
 type Props = {
@@ -18,6 +18,13 @@ export default function RecordingsScreen({ onBack, onOpen }: Props) {
   const { colors } = useSettings();
   const styles = useStyles(makeStyles);
   const [items, setItems] = useState<RecordingFile[] | null>(null);
+  const [meta] = useState(() => {
+    try {
+      return loadAllRecordingMeta();
+    } catch {
+      return {};
+    }
+  });
 
   const reload = useCallback(() => {
     HighSpeedCamera.listRecordingsAsync()
@@ -82,6 +89,15 @@ export default function RecordingsScreen({ onBack, onOpen }: Props) {
                   {item.durationMs ? ` · ${formatDuration(item.durationMs)}` : ''}
                   {` · ${formatBytes(item.sizeBytes)}`}
                 </Text>
+                {meta[item.path] && (
+                  <Text style={styles.cardMuted}>
+                    {meta[item.path].tiltDeg !== undefined ? `Kolmost ${formatNumber(meta[item.path].tiltDeg ?? 0, 1)}°` : ''}
+                    {meta[item.path].shakeG !== undefined
+                      ? ` · otřesy ${formatNumber((meta[item.path].shakeG ?? 0) * 1000, 0)} mg`
+                      : ''}
+                    {meta[item.path].direction ? ` · ${DIRECTION_LABELS[meta[item.path].direction!]}` : ''}
+                  </Text>
+                )}
                 {measured !== null && (
                   <Text style={styles.cardMuted}>
                     Skutečně {formatNumber(measured, 1)} fps ({item.frameCount} snímků)

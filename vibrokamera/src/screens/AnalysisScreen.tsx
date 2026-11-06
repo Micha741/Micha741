@@ -32,9 +32,22 @@ export default function AnalysisScreen({ request, onBack }: Props) {
   const unit = calibration ? 'mm' : 'px';
   const scale = calibration ? calibration.mmPerPx : 1;
 
+  // Některé telefony zapisují do high-speed videa „zpomalené“ časové značky (např. 30 fps
+  // místo 240). Když frekvence z časových značek nesedí s nominální, použijeme nominální.
+  const timing = useMemo(() => {
+    const n = track.timesMs.length;
+    const span = track.timesMs[n - 1] - track.timesMs[0];
+    const ptsFps = span > 0 ? ((n - 1) * 1000) / span : 0;
+    const nominal = request.fps;
+    if (nominal > 0 && (ptsFps <= 0 || Math.abs(ptsFps - nominal) / nominal > 0.15)) {
+      return { timesMs: track.timesMs.map((_, i) => (i * 1000) / nominal), corrected: true, ptsFps };
+    }
+    return { timesMs: track.timesMs, corrected: false, ptsFps };
+  }, [track, request.fps]);
+
   const result = useMemo(
-    () => analyze(track.timesMs, track.dx, track.dy, axis, scale),
-    [track, axis, scale]
+    () => analyze(timing.timesMs, track.dx, track.dy, axis, scale),
+    [timing, track, axis, scale]
   );
   const { stats, dominant } = result;
 
@@ -121,6 +134,12 @@ export default function AnalysisScreen({ request, onBack }: Props) {
           Vzorkovací frekvence {formatNumber(stats.sampleRate, 1)} Hz (Δt = {formatNumber(1000 / stats.sampleRate, 2)} ms) ·{' '}
           {stats.n} vzorků · {formatNumber(stats.durationS, 2)} s · od {formatNumber(request.startMs / 1000, 2)} s videa
         </Text>
+        {timing.corrected && (
+          <Text style={styles.warning}>
+            Časové značky videa odpovídají {formatNumber(timing.ptsFps, 1)} fps místo {formatNumber(request.fps, 1)} fps
+            (telefon ukládá zpomalené video) – použita nominální snímková frekvence.
+          </Text>
+        )}
         {!calibration && (
           <Text style={styles.warning}>Bez kalibrace – hodnoty jsou v pixelech (pro porovnání měření stejného místa).</Text>
         )}

@@ -10,6 +10,7 @@ import android.hardware.camera2.CameraDevice
 import android.hardware.camera2.CameraManager
 import android.hardware.camera2.CaptureRequest
 import android.media.MediaCodec
+import android.media.MediaCodecList
 import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Build
@@ -25,6 +26,7 @@ import expo.modules.kotlin.Promise
 import expo.modules.kotlin.viewevent.EventDispatcher
 import expo.modules.kotlin.views.ExpoView
 import java.io.File
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Collections
 import java.util.Date
@@ -75,6 +77,8 @@ class HighSpeedCameraView(context: Context, appContext: AppContext) :
   var exposureCompensation: Int = 0
   var aeLock: Boolean = false
   var bitRate: Int = 0
+  /** Max. délka záznamu (ochrana proti přehřátí a zaplnění úložiště). */
+  var maxDurationMs: Int = 60_000
 
   private val textureView = TextureView(context)
   private var cameraThread: HandlerThread? = null
@@ -222,6 +226,7 @@ class HighSpeedCameraView(context: Context, appContext: AppContext) :
           "VIB_${stamp}_${config.fps}fps_${config.width}x${config.height}.mp4"
         )
         newRecorder = buildRecorder(surface, config, file, orientationHint())
+        applyLimits(newRecorder, file)
         newRecorder.prepare()
         newRecorder.start()
         recorder = newRecorder
@@ -251,7 +256,32 @@ class HighSpeedCameraView(context: Context, appContext: AppContext) :
     }
   }
 
-  private fun finishRecording(): Map<String, Any>? {
+  /** Limity délky a velikosti + reakce na chyby enkodéru. */
+  private fun applyLimits(r: MediaRecorder, file: File) {
+    if (maxDurationMs > 0) r.setMaxDuration(maxDurationMs)
+    val free = file.parentFile?.usableSpace ?: 0L
+    val maxBytes = (free - 300L * 1024 * 1024).coerceAtMost(3_900_000_000L)
+    if (maxBytes < 50L * 1024 * 1024) throw IOException("Málo volného místa v úložišti")
+    r.setMaxFileSize(maxBytes)
+    r.setOnInfoListener { _, what, _ ->
+      val reason = when (what) {
+        MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED -> "maxDuration"
+        MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED -> "maxFileSize"
+        else -> null
+      }
+      if (reason != null) onCamera { if (recorder === r) finishRecording(reason) }
+    }
+    r.setOnErrorListener { _, what, extra ->
+      onCamera {
+        if (recorder === r) {
+          finishRecording("error")
+          emitError("Chyba enkodéru při záznamu ($what/$extra)", "RECORDER")
+        }
+      }
+    }
+  }
+
+  private fun finishRecording(reason: String? = null): Map<String, Any>? {
     val r = recorder ?: return null
     val file = recordingFile
     val config = recordingConfig
@@ -263,14 +293,15 @@ class HighSpeedCameraView(context: Context, appContext: AppContext) :
     try {
       r.stop()
     } catch (e: RuntimeException) {
-      // stop() hází, pokud nebyl zapsán žádný snímek.
-      ok = false
+      // stop() hází, pokud nebyl zapsán žádný snímek – nebo když se záznam
+      // už sám ukončil po dosažení limitu (pak je soubor v pořádku).
+      ok = reason != null && file != null && file.length() > 64 * 1024
     }
     r.release()
 
     if (!ok || file == null || config == null) {
       file?.delete()
-      emitError("Záznam se nepodařilo uložit (byl příliš krátký?)")
+      emitError("Záznam se nepodařilo uložit (byl příliš krátký?)", "RECORDER")
       return null
     }
 
@@ -287,6 +318,7 @@ class HighSpeedCameraView(context: Context, appContext: AppContext) :
       Recordings.describe(file).forEach { (key, value) -> if (value != null) put(key, value) }
       put("fps", config.fps)
       put("highSpeed", config.highSpeed)
+      put("stoppedReason", reason ?: "user")
     }
     post { onRecordingFinished(result) }
     return result
@@ -318,7 +350,16 @@ class HighSpeedCameraView(context: Context, appContext: AppContext) :
       characteristics = manager.getCameraCharacteristics(config.cameraId)
       surfaceTexture.setDefaultBufferSize(config.width, config.height)
       previewSurface = Surface(surfaceTexture)
-      recorderSurface = createRecorderSurface(config)
+      recorderSurface = try {
+        createRecorderSurface(config)
+      } catch (e: Exception) {
+        // Enkodér nezvládá toto rozlišení/fps – režim na tomto telefonu nefunguje.
+        previewSurface?.release()
+        previewSurface = null
+        appliedConfig = null
+        emitError("Enkodér nepodporuje ${config.width}×${config.height} @ ${config.fps} fps", "CONFIG")
+        return
+      }
       appliedConfig = config
 
       val gen = ++generation
@@ -336,7 +377,7 @@ class HighSpeedCameraView(context: Context, appContext: AppContext) :
           camera.close()
           if (gen == generation) {
             device = null
-            if (!hostPaused) emitError("Kamera byla odpojena – používá ji jiná aplikace?")
+            if (!hostPaused) emitError("Kamera byla odpojena – používá ji jiná aplikace?", "DISCONNECTED")
           }
         }
 
@@ -344,14 +385,14 @@ class HighSpeedCameraView(context: Context, appContext: AppContext) :
           camera.close()
           if (gen == generation) {
             device = null
-            emitError("Chyba kamery (kód $error)")
+            emitError("Chyba kamery (kód $error)", "DEVICE")
           }
         }
       }, handler)
     } catch (e: SecurityException) {
-      emitError("Aplikace nemá oprávnění ke kameře")
+      emitError("Aplikace nemá oprávnění ke kameře", "PERMISSION")
     } catch (e: Exception) {
-      emitError("Kameru se nepodařilo otevřít: ${e.message}")
+      emitError("Kameru se nepodařilo otevřít: ${e.message}", "OPEN")
     }
   }
 
@@ -380,7 +421,7 @@ class HighSpeedCameraView(context: Context, appContext: AppContext) :
 
       override fun onConfigureFailed(s: CameraCaptureSession) {
         if (gen == generation) {
-          emitError("Kamera odmítla režim ${config.width}×${config.height} @ ${config.fps} fps")
+          emitError("Kamera odmítla režim ${config.width}×${config.height} @ ${config.fps} fps", "CONFIG")
         }
       }
     }
@@ -392,7 +433,7 @@ class HighSpeedCameraView(context: Context, appContext: AppContext) :
         camera.createCaptureSession(targets, callback, handler)
       }
     } catch (e: Exception) {
-      emitError("Nepodařilo se vytvořit session kamery: ${e.message}")
+      emitError("Nepodařilo se vytvořit session kamery: ${e.message}", "CONFIG")
     }
   }
 
@@ -437,7 +478,7 @@ class HighSpeedCameraView(context: Context, appContext: AppContext) :
         s.setRepeatingRequest(builder.build(), null, cameraHandler)
       }
     } catch (e: Exception) {
-      emitError("Nepodařilo se nastavit kameru: ${e.message}")
+      emitError("Nepodařilo se nastavit kameru: ${e.message}", "CONFIG")
     }
   }
 
@@ -498,7 +539,8 @@ class HighSpeedCameraView(context: Context, appContext: AppContext) :
     r.setVideoSource(MediaRecorder.VideoSource.SURFACE)
     r.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
     r.setOutputFile(file.absolutePath)
-    r.setVideoEncodingBitRate(if (config.bitRate > 0) config.bitRate else defaultBitRate(config))
+    val wanted = if (config.bitRate > 0) config.bitRate else defaultBitRate(config)
+    r.setVideoEncodingBitRate(maxEncoderBitRate?.let { wanted.coerceAtMost(it) } ?: wanted)
     r.setVideoFrameRate(config.fps)
     r.setVideoSize(config.width, config.height)
     r.setVideoEncoder(MediaRecorder.VideoEncoder.H264)
@@ -521,11 +563,23 @@ class HighSpeedCameraView(context: Context, appContext: AppContext) :
     return (sensor + device + 360) % 360
   }
 
-  private fun emitError(message: String) {
-    post { onCameraError(mapOf("message" to message)) }
+  private fun emitError(message: String, code: String = "OTHER") {
+    post { onCameraError(mapOf("message" to message, "code" to code)) }
   }
 
   companion object {
+    /** Nejvyšší datový tok H.264 enkodéru (některé telefony odmítnou vyšší a záznam selže). */
+    private val maxEncoderBitRate: Int? by lazy {
+      try {
+        MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
+          .filter { it.isEncoder && it.supportedTypes.any { t -> t.equals("video/avc", ignoreCase = true) } }
+          .mapNotNull { it.getCapabilitiesForType("video/avc").videoCapabilities?.bitrateRange?.upper }
+          .maxOrNull()
+      } catch (_: Exception) {
+        null
+      }
+    }
+
     private val liveViews: MutableSet<HighSpeedCameraView> =
       Collections.synchronizedSet(Collections.newSetFromMap(WeakHashMap()))
 
