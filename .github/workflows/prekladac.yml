@@ -39,7 +39,8 @@ jobs:
         shell: pwsh
         run: |
           python -c "import docx; d = docx.Document(); d.add_paragraph('test'); d.save('smoke.docx')"
-          $p = Start-Process -FilePath dist\Prekladac.exe -ArgumentList 'smoke.docx','--convert-only','--out-dir','smoke_out' -Wait -PassThru
+          $p = Start-Process -FilePath dist\Prekladac.exe -ArgumentList 'smoke.docx','--convert-only','--out-dir','smoke_out','--log','smoke.log' -Wait -PassThru
+          if (Test-Path smoke.log) { Get-Content smoke.log -Encoding utf8 }
           if ($p.ExitCode -ne 0) { throw "Prekladac.exe skončil s kódem $($p.ExitCode)" }
           if ((Get-ChildItem smoke_out -Filter *.docx).Count -ne 1) { throw 'Výstupní soubor nevznikl' }
 

@@ -540,6 +540,7 @@ def default_output_format(ext: str) -> str:
 def output_path(src: str, out_dir: str | None, fmt: str, suffix: str) -> str:
     p = Path(src)
     folder = Path(out_dir) if out_dir else p.parent
+    folder.mkdir(parents=True, exist_ok=True)
     candidate = folder / f"{p.stem}{suffix}.{fmt}"
     n = 2
     while candidate.exists():

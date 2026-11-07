@@ -812,7 +812,16 @@ def run_cli(argv: list[str]) -> int:
     ap.add_argument("--merge-images", action="store_true", help="více obrázků do jednoho DOCX")
     ap.add_argument("--calibre", help="cesta k ebook-convert")
     ap.add_argument("--tesseract", help="cesta k tesseract")
+    ap.add_argument("--log", help="výpis uložit i do tohoto souboru")
     a = ap.parse_args(argv)
+
+    log_file = open(a.log, "w", encoding="utf-8") if a.log else None
+
+    def out(text: str) -> None:
+        print(text)
+        if log_file:
+            log_file.write(text + "\n")
+            log_file.flush()
 
     saved = load_config()
     engines = saved.get("engines", {})
@@ -827,11 +836,11 @@ def run_cli(argv: list[str]) -> int:
     cancel = threading.Event()
     translate = not a.convert_only
     try:
-        tr = build_translator(s, translate, files_need_ocr(a.files, a.fmt, translate, a.engine), print, cancel)
+        tr = build_translator(s, translate, files_need_ocr(a.files, a.fmt, translate, a.engine), out, cancel)
     except EngineError as e:
-        print(e)
+        out(str(e))
         return 2
-    res = run_jobs(a.files, translate, a.fmt, tr, a.out_dir, a.merge_images, print, lambda f: None,
+    res = run_jobs(a.files, translate, a.fmt, tr, a.out_dir, a.merge_images, out, lambda f: None,
                    a.calibre or paths.get("ebook_convert"), cancel)
     return 0 if len(res) == len(a.files) or (a.merge_images and res) else 1
 
