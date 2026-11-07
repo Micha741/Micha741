@@ -1,8 +1,8 @@
 """Překladač e-knih a dokumentů – okno pro Windows (a příkazová řádka).
 
 Spuštění bez parametrů otevře okno. Příklady z příkazové řádky:
-    python app.py kniha.epub --to azw3 --engine google
-    python app.py strana.jpg --engine deepl --ocr tesseract --ocr-lang eng
+    Prekladac.exe kniha.epub --to azw3 --engine google
+    Prekladac.exe strana.jpg --engine deepl --ocr tesseract --ocr-lang eng
 """
 
 from __future__ import annotations
@@ -14,15 +14,18 @@ import queue
 import sys
 import threading
 import traceback
+import webbrowser
 from pathlib import Path
 
+import components
 from converters import (
-    IMAGE_EXT, OUTPUT_FORMATS, SUPPORTED_EXT, CalibreMissing, find_ebook_convert, process_file,
+    DOC_ONLY_EXT, IMAGE_EXT, OUTPUT_FORMATS, SUPPORTED_EXT, CalibreMissing, find_ebook_convert, process_file,
     process_images_together,
 )
 from free_engines import (
     ENGINE_LABELS, OCR_LABELS, DeepLEngine, EngineError, EngineTranslator, GeminiEngine, GoogleFreeEngine,
-    LibreTranslateEngine, MicrosoftEngine, OllamaEngine, Pipeline, TesseractOCR, find_tesseract,
+    LibreTranslateEngine, MicrosoftDocumentTranslator, MicrosoftEngine, OllamaEngine, Pipeline, TesseractOCR,
+    find_tesseract,
 )
 
 APP_NAME = "Překladač knih a dokumentů"
@@ -32,37 +35,51 @@ LANGUAGES = [
 ]
 SAME_FORMAT = "stejný jako vstup"
 
-# Nastavení jednotlivých služeb: (klíč, popisek, tajné, výchozí hodnota, nabídka hodnot nebo None)
-ENGINE_FIELDS = {
-    "claude": [("api_key", "Claude API klíč", True, "", None), ("model", "Claude model", False, "", "claude_models")],
-    "deepl": [("api_key", "DeepL API klíč", True, "", None)],
-    "google": [],
-    "microsoft": [("api_key", "Microsoft klíč", True, "", None),
-                  ("region", "Oblast Azure (např. westeurope)", False, "", None)],
-    "gemini": [("api_key", "Gemini API klíč", True, "", None),
-               ("model", "Gemini model", False, GeminiEngine.DEFAULT_MODEL, None)],
-    "ollama": [("url", "Adresa Ollama", False, "http://localhost:11434", None),
-               ("model", "Ollama model", False, OllamaEngine.DEFAULT_MODEL, None)],
-    "libre": [("url", "Adresa serveru", False, "http://localhost:5000", None),
-              ("api_key", "API klíč (nepovinný)", True, "", None)],
+# Služby a jejich nastavení: (klíč, popisek, tajné, výchozí hodnota, nabídka hodnot nebo None)
+SERVICES = {
+    "claude": ("Claude (Anthropic)", [("api_key", "API klíč", True, "", None),
+                                      ("model", "Model", False, "", "claude_models")]),
+    "deepl": ("DeepL", [("api_key", "API klíč (končí „:fx“)", True, "", None)]),
+    "google": ("Google Překladač", []),
+    "microsoft": ("Microsoft Azure Translator", [
+        ("api_key", "KLÍČ 1", True, "", None),
+        ("region", "Umístění/oblast (např. westeurope)", False, "", None),
+        ("endpoint", "Překlad dokumentu – adresa (nepovinné)", False, "", None),
+    ]),
+    "gemini": ("Google Gemini", [("api_key", "API klíč", True, "", None),
+                                 ("model", "Model", False, GeminiEngine.DEFAULT_MODEL, None)]),
+    "ollama": ("Ollama (AI v počítači)", [("url", "Adresa", False, "http://localhost:11434", None),
+                                          ("model", "Model", False, OllamaEngine.DEFAULT_MODEL, None)]),
+    "libre": ("LibreTranslate", [("url", "Adresa serveru", False, "http://localhost:5000", None),
+                                 ("api_key", "API klíč (nepovinný)", True, "", None)]),
 }
+ENGINE_SERVICE = {"microsoft_doc": "microsoft"}  # překladač → služba, jejíž nastavení používá
 ENV_KEYS = {"claude": "ANTHROPIC_API_KEY", "deepl": "DEEPL_API_KEY", "gemini": "GEMINI_API_KEY",
             "microsoft": "AZURE_TRANSLATOR_KEY"}
-ENGINE_HELP = {
-    "claude": "Klíč: platform.claude.com → API Keys (placené podle spotřeby).",
-    "deepl": "Klíč zdarma: deepl.com → API → DeepL API Free (500 000 znaků měsíčně).",
-    "google": "Bez registrace. Při velkém množství textu může Google dočasně omezit přístup.",
-    "microsoft": "Klíč zdarma: portal.azure.com → Translator, cenová úroveň F0 (2 mil. znaků měsíčně).",
-    "gemini": "Klíč zdarma: aistudio.google.com → Get API key. Bezplatná úroveň má limit požadavků za minutu.",
-    "ollama": "Nainstalujte ollama.com, pak v příkazovém řádku: ollama pull gemma3:12b. Běží offline.",
-    "libre": "Vlastní server LibreTranslate (např. přes Docker) nebo veřejná instance s klíčem.",
+SERVICE_HELP = {
+    "claude": ("Placené podle spotřeby. Klíč: platform.claude.com → API Keys.", "https://platform.claude.com"),
+    "deepl": ("Zdarma 500 000 znaků/měsíc. Klíč: deepl.com → účet → API Keys.",
+              "https://www.deepl.com/your-account/keys"),
+    "google": ("Bez registrace. Při velkém množství textu může Google dočasně omezit přístup.", None),
+    "microsoft": ("Zdarma 2 mil. znaků/měsíc (úroveň F0). Azure → Translator → Klíče a koncový bod. "
+                  "„Překlad dokumentu“ je druhé API – přeloží celý DOCX/PDF/PPTX a zachová vzhled.",
+                  "https://portal.azure.com"),
+    "gemini": ("Bezplatná úroveň s limity. Klíč: aistudio.google.com → Get API key.",
+               "https://aistudio.google.com/apikey"),
+    "ollama": ("Offline, zdarma. Nainstalujte Ollama a stáhněte model: ollama pull gemma3:12b", "https://ollama.com"),
+    "libre": ("Vlastní server LibreTranslate nebo veřejná instance s klíčem.", "https://libretranslate.com"),
 }
+TESSERACT_URL = "https://github.com/UB-Mannheim/tesseract/releases"
+CALIBRE_URL = "https://calibre-ebook.com/download_windows"
+
+
+def service_of(engine: str) -> str:
+    return ENGINE_SERVICE.get(engine, engine)
 
 
 # --------------------------------------------------------------- nastavení
 def config_path() -> Path:
-    base = os.environ.get("APPDATA") or os.path.expanduser("~")
-    return Path(base) / "Prekladac" / "config.json"
+    return components.app_dir() / "config.json"
 
 
 def load_config() -> dict:
@@ -71,18 +88,38 @@ def load_config() -> dict:
     except Exception:
         cfg = {}
     engines = cfg.setdefault("engines", {})
-    # převod nastavení ze starší verze
-    if cfg.get("api_key") or cfg.get("model"):
+    if cfg.get("api_key") or cfg.get("model"):  # převod ze první verze
         c = engines.setdefault("claude", {})
         c.setdefault("api_key", cfg.pop("api_key", ""))
         c.setdefault("model", cfg.pop("model", ""))
+    for name, (_t, fields) in SERVICES.items():
+        sect = engines.setdefault(name, {})
+        for key, _l, secret, _d, _c in fields:
+            if secret:
+                sect[key] = components.unprotect_secret(sect.get(key, ""))
     return cfg
 
 
 def save_config(cfg: dict) -> None:
-    p = config_path()
-    p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(json.dumps(cfg, ensure_ascii=False, indent=2), encoding="utf-8")
+    data = json.loads(json.dumps(cfg))
+    for name, (_t, fields) in SERVICES.items():
+        sect = data.get("engines", {}).get(name, {})
+        for key, _l, secret, _d, _c in fields:
+            if secret and sect.get(key):
+                sect[key] = components.protect_secret(sect[key])
+    data.pop("remember_keys", None)
+    config_path().write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def service_ready(cfg: dict, service: str) -> tuple[bool, str]:
+    """Je služba nastavená? Vrátí (ok, popis) pro stavový řádek v hlavním okně."""
+    sect = cfg.get("engines", {}).get(service, {})
+    if service in ("google",):
+        return True, "připraveno, klíč není potřeba"
+    if service in ("ollama", "libre"):
+        return True, f"adresa {sect.get('url') or 'výchozí'}"
+    key = sect.get("api_key") or os.environ.get(ENV_KEYS.get(service, ""), "")
+    return (True, "klíč nastaven") if key else (False, "chybí klíč – otevřete ⚙ Nastavení")
 
 
 # ----------------------------------------------------- sestavení překladače
@@ -117,15 +154,21 @@ def build_translator(s: dict, translate: bool, needs_ocr: bool, log, cancel_even
             c = engines.get("claude", {})
             key = c.get("api_key") or os.environ.get("ANTHROPIC_API_KEY")
             if not key:
-                raise EngineError("Chybí Claude API klíč (platform.claude.com → API Keys).")
+                raise EngineError("Chybí Claude API klíč (⚙ Nastavení → Služby a klíče).")
             claude = ClaudeTranslator(api_key=key, model=c.get("model") or DEFAULT_MODEL, target_lang=lang,
                                       notes=notes, log=log, cancel_event=cancel_event)
         return claude
 
-    segs = None
+    segs, doc = None, None
     if translate:
         if engine == "claude":
             segs = get_claude()
+        elif engine == "microsoft_doc":
+            m = engines.get("microsoft", {})
+            key = m.get("api_key") or os.environ.get("AZURE_TRANSLATOR_KEY", "")
+            doc = MicrosoftDocumentTranslator(lang, key, m.get("endpoint", ""))
+            # e-knihy a TXT tato služba neumí → překlad textu stejným klíčem
+            segs = EngineTranslator(MicrosoftEngine(lang, key, m.get("region", "")), log, cancel_event)
         else:
             segs = EngineTranslator(make_engine(engine, lang, engines.get(engine, {}), notes), log, cancel_event)
 
@@ -139,21 +182,23 @@ def build_translator(s: dict, translate: bool, needs_ocr: bool, log, cancel_even
         elif o == "gemini":
             ocr = make_engine("gemini", lang, engines.get("gemini", {}), notes)
         else:
-            ocr = TesseractOCR(s.get("ocr_lang") or "eng", s.get("tesseract") or None, log)
+            ocr = TesseractOCR(s.get("ocr_lang") or "eng", s.get("paths", {}).get("tesseract") or None, log)
 
     if segs is None and ocr is None:
         return None
-    if ocr is None and engine == "claude":
+    if ocr is None and doc is None and engine == "claude":
         return segs
-    return Pipeline(segs, ocr, lang)
+    return Pipeline(segs, ocr, lang, document_translator=doc)
 
 
-def files_need_ocr(files: list[str], out_fmt: str | None, translate: bool) -> bool:
+def files_need_ocr(files: list[str], out_fmt: str | None, translate: bool, engine: str = "") -> bool:
     """Obrázky vždy; PDF při překladu nebo převodu do DOCX (stejná logika jako process_file)."""
     for f in files:
         ext = Path(f).suffix.lower()
         if ext in IMAGE_EXT:
             return True
+        if ext == ".pdf" and engine == "microsoft_doc" and translate:
+            continue  # PDF přeloží Microsoft celé
         if ext == ".pdf" and (translate or out_fmt in (None, SAME_FORMAT, "docx")):
             return True
     return False
@@ -204,6 +249,31 @@ def run_jobs(files, translate, out_fmt, tr, out_dir, merge_images, log, progress
     return results
 
 
+def test_service(service: str, cfg: dict, lang: str) -> str:
+    """Zkusí krátký překlad, aby uživatel hned viděl, jestli klíč funguje."""
+    sample = "Hello, this is a test of the translation service."
+    sect = cfg.get("engines", {}).get(service, {})
+    if service == "claude":
+        s = {"engine": "claude", "lang": lang, "engines": cfg.get("engines", {})}
+        tr = build_translator(s, True, False, lambda *_: None, threading.Event())
+        return tr.translate_segments([sample], markup=False)[0]
+    eng = make_engine(service, lang, sect, "")
+    out = EngineTranslator(eng, log=lambda *_: None).translate_segments([sample], markup=False)[0]
+    if out == sample:
+        raise EngineError("Služba vrátila nepřeložený text.")
+    result = f"Překlad textu: {out}"
+    if service == "microsoft" and sect.get("endpoint"):
+        import tempfile
+
+        doc = MicrosoftDocumentTranslator(lang, sect.get("api_key", ""), sect["endpoint"])
+        with tempfile.TemporaryDirectory() as tmp:
+            src, dst = os.path.join(tmp, "test.txt"), os.path.join(tmp, "out.txt")
+            Path(src).write_text(sample, encoding="utf-8")
+            doc.translate_document(src, dst, lambda *_: None)
+            result += f"\nPřeklad dokumentu: {Path(dst).read_text(encoding='utf-8', errors='replace').strip()}"
+    return result
+
+
 # -------------------------------------------------------------------- GUI
 def run_gui() -> None:
     import tkinter as tk
@@ -221,15 +291,41 @@ def run_gui() -> None:
         dnd = False
 
     cfg = load_config()
+    cfg.setdefault("paths", {})
+    for old in ("ebook_convert", "tesseract"):  # převod ze starší verze
+        if cfg.get(old) and not cfg["paths"].get(old):
+            cfg["paths"][old] = cfg.pop(old)
+    if not cfg["paths"].get("ebook_convert"):
+        cfg["paths"]["ebook_convert"] = find_ebook_convert() or ""
+    if not cfg["paths"].get("tesseract"):
+        cfg["paths"]["tesseract"] = find_tesseract() or ""
+
     root.title(APP_NAME)
-    root.geometry("900x820")
-    root.minsize(760, 640)
+    root.geometry("900x760")
+    root.minsize(760, 600)
 
     msgs: queue.Queue = queue.Queue()
     cancel_event = threading.Event()
     files: list[str] = []
-
     pad = {"padx": 8, "pady": 3}
+
+    def log(text: str):
+        msgs.put(("log", text))
+
+    def progress(f: float):
+        msgs.put(("progress", f))
+
+    def in_thread(fn, done=None):
+        """Spustí pomalou akci mimo okno; výsledek předá funkci done(výsledek, chyba) v hlavním vlákně."""
+        def run():
+            try:
+                res, err = fn(), None
+            except Exception as e:  # noqa: BLE001
+                res, err = None, e
+            if done:
+                msgs.put(("call", lambda: done(res, err)))
+        threading.Thread(target=run, daemon=True).start()
+
     main = ttk.Frame(root, padding=10)
     main.pack(fill="both", expand=True)
     main.columnconfigure(0, weight=1)
@@ -269,8 +365,8 @@ def run_gui() -> None:
         listbox.dnd_bind("<<Drop>>", lambda e: add_files(root.tk.splitlist(e.data)))
         ttk.Label(box, text="(soubory sem můžete přetáhnout)").grid(row=3, column=1, padx=6)
 
-    # --- obecné volby
-    opts = ttk.LabelFrame(main, text="Nastavení")
+    # --- hlavní volby
+    opts = ttk.LabelFrame(main, text="Překlad")
     opts.grid(row=1, column=0, sticky="ew", **pad)
     for c in (1, 3):
         opts.columnconfigure(c, weight=1)
@@ -283,7 +379,6 @@ def run_gui() -> None:
     ttk.Label(opts, text="Cílový jazyk:").grid(row=1, column=0, sticky="w", **pad)
     lang = tk.StringVar(value=cfg.get("lang", "čeština"))
     ttk.Combobox(opts, textvariable=lang, values=LANGUAGES).grid(row=1, column=1, sticky="ew", **pad)
-
     ttk.Label(opts, text="Výstupní formát:").grid(row=1, column=2, sticky="w", **pad)
     out_fmt = tk.StringVar(value=cfg.get("out_fmt", SAME_FORMAT))
     ttk.Combobox(opts, textvariable=out_fmt, values=[SAME_FORMAT] + OUTPUT_FORMATS, state="readonly").grid(
@@ -295,119 +390,44 @@ def run_gui() -> None:
     engine = tk.StringVar(value=ENGINE_LABELS.get(cfg.get("engine", "google"), ENGINE_LABELS["google"]))
     engine_cb = ttk.Combobox(opts, textvariable=engine, values=list(ENGINE_LABELS.values()), state="readonly")
     engine_cb.grid(row=2, column=1, columnspan=3, sticky="ew", **pad)
+    status = ttk.Label(opts, text="")
+    status.grid(row=3, column=1, columnspan=3, sticky="w", padx=8)
 
-    ttk.Label(opts, text="Text z obrázků/skenů:").grid(row=3, column=0, sticky="w", **pad)
+    ttk.Label(opts, text="Text z obrázků/skenů:").grid(row=4, column=0, sticky="w", **pad)
     ocr = tk.StringVar(value=OCR_LABELS.get(cfg.get("ocr", "tesseract"), OCR_LABELS["tesseract"]))
     ocr_cb = ttk.Combobox(opts, textvariable=ocr, values=list(OCR_LABELS.values()), state="readonly")
-    ocr_cb.grid(row=3, column=1, columnspan=3, sticky="ew", **pad)
-
-    # --- nastavení vybraných služeb (mění se podle výběru)
-    svc = ttk.LabelFrame(main, text="Nastavení služby")
-    svc.grid(row=2, column=0, sticky="ew", **pad)
-    svc.columnconfigure(1, weight=1)
-
-    saved_engines = cfg.get("engines", {})
-    engine_vars: dict[str, dict[str, tk.StringVar]] = {}
-    for name, fields in ENGINE_FIELDS.items():
-        engine_vars[name] = {}
-        for key, _label, _secret, default, _choices in fields:
-            val = saved_engines.get(name, {}).get(key) or default
-            if name == "claude" and key == "model":
-                val = next((n for n, m in MODELS.items() if m == (val or DEFAULT_MODEL)), list(MODELS)[0])
-            engine_vars[name][key] = tk.StringVar(value=val)
+    ocr_cb.grid(row=4, column=1, sticky="ew", **pad)
+    ttk.Label(opts, text="Jazyk originálu (OCR):").grid(row=4, column=2, sticky="w", **pad)
     ocr_lang = tk.StringVar(value=cfg.get("ocr_lang", "eng"))
-    tesseract = tk.StringVar(value=cfg.get("tesseract", "") or (find_tesseract() or ""))
-    remember = tk.BooleanVar(value=cfg.get("remember_keys", False))
+    ttk.Combobox(opts, textvariable=ocr_lang, values=list(components.OCR_LANGUAGES) + ["eng+ces", "eng+deu"]).grid(
+        row=4, column=3, sticky="ew", **pad)
 
-    def rebuild_service_frame(*_):
-        for w in svc.winfo_children():
-            w.destroy()
-        e = engine_names[engine.get()]
-        o = ocr_names[ocr.get()]
-        shown = [e] if mode.get() == "translate" else []
-        if o in ("claude", "gemini") and o not in shown:
-            shown.append(o)
-        row = 0
-        for name in shown:
-            ttk.Label(svc, text=ENGINE_HELP[name], foreground="#555").grid(
-                row=row, column=0, columnspan=3, sticky="w", **pad)
-            row += 1
-            for key, label, secret, _d, choices in ENGINE_FIELDS[name]:
-                ttk.Label(svc, text=label + ":").grid(row=row, column=0, sticky="w", **pad)
-                var = engine_vars[name][key]
-                if choices == "claude_models":
-                    ttk.Combobox(svc, textvariable=var, values=list(MODELS), state="readonly").grid(
-                        row=row, column=1, sticky="ew", **pad)
-                else:
-                    ttk.Entry(svc, textvariable=var, show="•" if secret else "").grid(
-                        row=row, column=1, sticky="ew", **pad)
-                row += 1
-        if o == "tesseract":
-            ttk.Label(svc, text="Jazyk textu na obrázcích (Tesseract, např. eng, ces, deu, eng+deu):").grid(
-                row=row, column=0, sticky="w", **pad)
-            ttk.Entry(svc, textvariable=ocr_lang, width=20).grid(row=row, column=1, sticky="w", **pad)
-            row += 1
-            ttk.Label(svc, text="Tesseract:").grid(row=row, column=0, sticky="w", **pad)
-            ttk.Entry(svc, textvariable=tesseract).grid(row=row, column=1, sticky="ew", **pad)
-
-            def pick_tess():
-                f = filedialog.askopenfilename(title="Najděte tesseract.exe",
-                                               filetypes=[("tesseract", "tesseract*"), ("Vše", "*.*")])
-                if f:
-                    tesseract.set(f)
-
-            ttk.Button(svc, text="Najít…", command=pick_tess).grid(row=row, column=2, **pad)
-            row += 1
-        if any(f[2] for n in shown for f in ENGINE_FIELDS[n]):
-            ttk.Checkbutton(svc, text="Zapamatovat klíče (uloží se do %APPDATA%\\Prekladac)",
-                            variable=remember).grid(row=row, column=0, columnspan=2, sticky="w", **pad)
-        if not svc.winfo_children():
-            ttk.Label(svc, text="Žádné další nastavení není potřeba.").grid(row=0, column=0, sticky="w", **pad)
-
-    engine_cb.bind("<<ComboboxSelected>>", rebuild_service_frame)
-    ocr_cb.bind("<<ComboboxSelected>>", rebuild_service_frame)
-    mode.trace_add("write", rebuild_service_frame)
-    rebuild_service_frame()
-
-    # --- další volby
-    more = ttk.LabelFrame(main, text="Další")
-    more.grid(row=3, column=0, sticky="ew", **pad)
-    more.columnconfigure(1, weight=1)
-    merge = tk.BooleanVar(value=cfg.get("merge_images", True))
-    ttk.Checkbutton(more, text="Více obrázků spojit do jednoho DOCX", variable=merge).grid(
-        row=0, column=0, columnspan=2, sticky="w", **pad)
-
-    ttk.Label(more, text="Výstupní složka:").grid(row=1, column=0, sticky="w", **pad)
-    out_dir = tk.StringVar(value=cfg.get("out_dir", ""))
-    ttk.Entry(more, textvariable=out_dir).grid(row=1, column=1, sticky="ew", **pad)
-
-    def pick_dir():
-        d = filedialog.askdirectory()
-        if d:
-            out_dir.set(d)
-
-    ttk.Button(more, text="Vybrat… (prázdné = vedle originálu)", command=pick_dir).grid(row=1, column=2, **pad)
-
-    ttk.Label(more, text="Calibre:").grid(row=2, column=0, sticky="w", **pad)
-    calibre = tk.StringVar(value=cfg.get("ebook_convert", "") or (find_ebook_convert() or ""))
-    ttk.Entry(more, textvariable=calibre).grid(row=2, column=1, sticky="ew", **pad)
-
-    def pick_calibre():
-        f = filedialog.askopenfilename(title="Najděte ebook-convert.exe",
-                                       filetypes=[("ebook-convert", "ebook-convert*"), ("Vše", "*.*")])
-        if f:
-            calibre.set(f)
-
-    ttk.Button(more, text="Najít ebook-convert…", command=pick_calibre).grid(row=2, column=2, **pad)
-
-    ttk.Label(more, text="Pokyny pro překlad\n(Claude, Gemini, Ollama):").grid(row=3, column=0, sticky="nw", **pad)
-    notes = tk.Text(more, height=2, wrap="word")
-    notes.grid(row=3, column=1, columnspan=2, sticky="ew", **pad)
+    ttk.Label(opts, text="Pokyny pro překlad\n(Claude, Gemini, Ollama):").grid(row=5, column=0, sticky="nw", **pad)
+    notes = tk.Text(opts, height=2, wrap="word")
+    notes.grid(row=5, column=1, columnspan=3, sticky="ew", **pad)
     notes.insert("1.0", cfg.get("notes", ""))
+    merge = tk.BooleanVar(value=cfg.get("merge_images", True))
+    ttk.Checkbutton(opts, text="Více obrázků spojit do jednoho DOCX", variable=merge).grid(
+        row=6, column=1, columnspan=3, sticky="w", **pad)
 
-    # --- průběh
+    def refresh_status(*_):
+        e = engine_names[engine.get()]
+        ok, text = service_ready(cfg, service_of(e))
+        if e == "microsoft_doc" and ok and not cfg["engines"].get("microsoft", {}).get("endpoint"):
+            ok, text = False, "chybí adresa „Překlad dokumentu“ – otevřete ⚙ Nastavení"
+        o = ocr_names[ocr.get()]
+        if o == "tesseract" and not cfg["paths"].get("tesseract"):
+            text += " · Tesseract chybí (⚙ Nastavení → Součásti)"
+        elif o in ("gemini", "claude") and not service_ready(cfg, o)[0]:
+            text += f" · OCR {o}: chybí klíč"
+        status.configure(text=("✓ " if ok else "⚠ ") + text, foreground="#1a7f37" if ok else "#b35900")
+
+    engine_cb.bind("<<ComboboxSelected>>", refresh_status)
+    ocr_cb.bind("<<ComboboxSelected>>", refresh_status)
+
+    # --- spuštění
     run_box = ttk.Frame(main)
-    run_box.grid(row=4, column=0, sticky="ew", **pad)
+    run_box.grid(row=2, column=0, sticky="ew", **pad)
     run_box.columnconfigure(0, weight=1)
     bar = ttk.Progressbar(run_box, maximum=1.0)
     bar.grid(row=0, column=0, sticky="ew", padx=(0, 8))
@@ -415,16 +435,12 @@ def run_gui() -> None:
     start_btn.grid(row=0, column=1)
     stop_btn = ttk.Button(run_box, text="Zastavit", state="disabled", command=lambda: cancel_event.set())
     stop_btn.grid(row=0, column=2, padx=(8, 0))
+    settings_btn = ttk.Button(run_box, text="⚙ Nastavení")
+    settings_btn.grid(row=0, column=3, padx=(8, 0))
 
-    log_box = ScrolledText(main, height=9, state="disabled", wrap="word")
-    log_box.grid(row=5, column=0, sticky="nsew", **pad)
-    main.rowconfigure(5, weight=1)
-
-    def log(text: str):
-        msgs.put(("log", text))
-
-    def progress(f: float):
-        msgs.put(("progress", f))
+    log_box = ScrolledText(main, height=10, state="disabled", wrap="word")
+    log_box.grid(row=3, column=0, sticky="nsew", **pad)
+    main.rowconfigure(3, weight=1)
 
     def poll():
         try:
@@ -437,6 +453,8 @@ def run_gui() -> None:
                     log_box.configure(state="disabled")
                 elif kind == "progress":
                     bar["value"] = val
+                elif kind == "call":
+                    val()
                 elif kind == "done":
                     start_btn.configure(state="normal")
                     stop_btn.configure(state="disabled")
@@ -446,45 +464,304 @@ def run_gui() -> None:
             pass
         root.after(100, poll)
 
-    def collect_settings() -> dict:
-        engines = {}
-        for name, fields in ENGINE_FIELDS.items():
-            engines[name] = {}
-            for key, _l, _secret, _d, _c in fields:
-                val = engine_vars[name][key].get().strip()
-                if name == "claude" and key == "model":
-                    val = MODELS.get(val, DEFAULT_MODEL)
-                engines[name][key] = val
-        return {
+    def remember_main():
+        cfg.update({
             "mode": mode.get(), "lang": lang.get().strip() or "čeština", "out_fmt": out_fmt.get(),
-            "engine": engine_names[engine.get()], "ocr": ocr_names[ocr.get()], "engines": engines,
-            "ocr_lang": ocr_lang.get().strip(), "tesseract": tesseract.get().strip(),
-            "merge_images": merge.get(), "out_dir": out_dir.get(), "ebook_convert": calibre.get(),
-            "notes": notes.get("1.0", "end").strip(), "remember_keys": remember.get(),
-        }
+            "engine": engine_names[engine.get()], "ocr": ocr_names[ocr.get()], "ocr_lang": ocr_lang.get().strip(),
+            "merge_images": merge.get(), "notes": notes.get("1.0", "end").strip(),
+        })
+        try:
+            save_config(cfg)
+        except Exception as e:  # noqa: BLE001
+            log(f"Nastavení se nepodařilo uložit: {e}")
 
+    # ============================================== okno Nastavení
+    def open_settings():
+        win = tk.Toplevel(root)
+        win.title("Nastavení")
+        win.geometry("760x620")
+        win.transient(root)
+        bottom = ttk.Frame(win)
+        bottom.pack(side="bottom", fill="x", padx=8, pady=(0, 8))
+        nb = ttk.Notebook(win)
+        nb.pack(fill="both", expand=True, padx=8, pady=8)
+
+        # --- Služby a klíče
+        tab_s = ttk.Frame(nb, padding=8)
+        nb.add(tab_s, text="Služby a klíče")
+        canvas = tk.Canvas(tab_s, highlightthickness=0)
+        scroll = ttk.Scrollbar(tab_s, orient="vertical", command=canvas.yview)
+        inner = ttk.Frame(canvas)
+        inner.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+        win_id = canvas.create_window((0, 0), window=inner, anchor="nw")
+        canvas.bind("<Configure>", lambda e: canvas.itemconfigure(win_id, width=e.width))
+        canvas.configure(yscrollcommand=scroll.set)
+        canvas.pack(side="left", fill="both", expand=True)
+        scroll.pack(side="right", fill="y")
+
+        def wheel(event):
+            if str(event.widget).startswith(str(tab_s)):
+                canvas.yview_scroll(-1 if (event.delta > 0 or event.num == 4) else 1, "units")
+
+        for seq in ("<MouseWheel>", "<Button-4>", "<Button-5>"):
+            win.bind_all(seq, wheel, add="+")
+        inner.columnconfigure(1, weight=1)
+
+        svc_vars: dict[str, dict[str, tk.StringVar]] = {}
+        row = 0
+        for name, (title, fields) in SERVICES.items():
+            frame = ttk.LabelFrame(inner, text=title)
+            frame.grid(row=row, column=0, columnspan=3, sticky="ew", pady=4)
+            frame.columnconfigure(1, weight=1)
+            row += 1
+            help_text, url = SERVICE_HELP[name]
+            ttk.Label(frame, text=help_text, foreground="#555", wraplength=640).grid(
+                row=0, column=0, columnspan=3, sticky="w", **pad)
+            svc_vars[name] = {}
+            r = 1
+            for key, label, secret, default, choices in fields:
+                val = cfg["engines"].get(name, {}).get(key) or default
+                if choices == "claude_models":
+                    val = next((n for n, m in MODELS.items() if m == (val or DEFAULT_MODEL)), list(MODELS)[0])
+                var = tk.StringVar(value=val)
+                svc_vars[name][key] = var
+                ttk.Label(frame, text=label + ":").grid(row=r, column=0, sticky="w", **pad)
+                if choices == "claude_models":
+                    ttk.Combobox(frame, textvariable=var, values=list(MODELS), state="readonly").grid(
+                        row=r, column=1, sticky="ew", **pad)
+                else:
+                    entry = ttk.Entry(frame, textvariable=var, show="•" if secret else "")
+                    entry.grid(row=r, column=1, sticky="ew", **pad)
+                    if secret:
+                        def toggle(e=entry):
+                            e.configure(show="" if e.cget("show") else "•")
+                        ttk.Button(frame, text="👁", width=3, command=toggle).grid(row=r, column=2, **pad)
+                r += 1
+            btns = ttk.Frame(frame)
+            btns.grid(row=r, column=0, columnspan=3, sticky="w", **pad)
+            if url:
+                ttk.Button(btns, text="Získat klíč / web", command=lambda u=url: webbrowser.open(u)).pack(side="left")
+
+            def do_test(n=name, b=btns):
+                collect_services()
+                test_lbl = ttk.Label(b, text="Testuji…")
+                test_lbl.pack(side="left", padx=8)
+
+                def done(res, err):
+                    test_lbl.destroy()
+                    if err:
+                        messagebox.showerror(f"Test – {SERVICES[n][0]}", str(err), parent=win)
+                    else:
+                        messagebox.showinfo(f"Test – {SERVICES[n][0]}", f"Funguje ✓\n\n{res}", parent=win)
+
+                in_thread(lambda: test_service(n, cfg, lang.get().strip() or "čeština"), done)
+
+            ttk.Button(btns, text="Otestovat", command=do_test).pack(side="left", padx=(8, 0))
+        ttk.Label(inner, text="Klíče se ukládají zašifrovaně (Windows DPAPI) jen pro váš účet ve Windows.",
+                  foreground="#555").grid(row=row, column=0, columnspan=3, sticky="w", **pad)
+
+        def collect_services():
+            for n, vars_ in svc_vars.items():
+                sect = cfg["engines"].setdefault(n, {})
+                for k, var in vars_.items():
+                    v = var.get().strip()
+                    if n == "claude" and k == "model":
+                        v = MODELS.get(v, DEFAULT_MODEL)
+                    sect[k] = v
+
+        # --- Součásti
+        tab_c = ttk.Frame(nb, padding=8)
+        nb.add(tab_c, text="Součásti")
+        tab_c.columnconfigure(1, weight=1)
+        calibre_path = tk.StringVar(value=cfg["paths"].get("ebook_convert", ""))
+        tess_path = tk.StringVar(value=cfg["paths"].get("tesseract", ""))
+
+        cal = ttk.LabelFrame(tab_c, text="Calibre – převody e-knih (AZW3, KFX, MOBI, RTF…)")
+        cal.grid(row=0, column=0, columnspan=3, sticky="ew", pady=4)
+        cal.columnconfigure(1, weight=1)
+        cal_status = ttk.Label(cal, text="Zjišťuji…")
+        cal_status.grid(row=0, column=0, columnspan=3, sticky="w", **pad)
+        ttk.Label(cal, text="ebook-convert.exe:").grid(row=1, column=0, sticky="w", **pad)
+        ttk.Entry(cal, textvariable=calibre_path).grid(row=1, column=1, sticky="ew", **pad)
+
+        def pick(var, title, pattern):
+            f = filedialog.askopenfilename(title=title, parent=win, filetypes=[(pattern, pattern + "*"), ("Vše", "*.*")])
+            if f:
+                var.set(f)
+                refresh_components()
+
+        ttk.Button(cal, text="Najít…", command=lambda: pick(calibre_path, "Najděte ebook-convert.exe",
+                                                             "ebook-convert")).grid(row=1, column=2, **pad)
+        cal_btns = ttk.Frame(cal)
+        cal_btns.grid(row=2, column=0, columnspan=3, sticky="w", **pad)
+
+        tes = ttk.LabelFrame(tab_c, text="Tesseract – čtení textu z obrázků a skenů (OCR)")
+        tes.grid(row=1, column=0, columnspan=3, sticky="ew", pady=4)
+        tes.columnconfigure(1, weight=1)
+        tes_status = ttk.Label(tes, text="Zjišťuji…", wraplength=640)
+        tes_status.grid(row=0, column=0, columnspan=3, sticky="w", **pad)
+        ttk.Label(tes, text="tesseract.exe:").grid(row=1, column=0, sticky="w", **pad)
+        ttk.Entry(tes, textvariable=tess_path).grid(row=1, column=1, sticky="ew", **pad)
+        ttk.Button(tes, text="Najít…", command=lambda: pick(tess_path, "Najděte tesseract.exe",
+                                                             "tesseract")).grid(row=1, column=2, **pad)
+        tes_btns = ttk.Frame(tes)
+        tes_btns.grid(row=2, column=0, columnspan=3, sticky="w", **pad)
+
+        langs_frame = ttk.LabelFrame(tab_c, text="Jazyky pro OCR (stáhnou se do složky programu, bez práv správce)")
+        langs_frame.grid(row=2, column=0, columnspan=3, sticky="ew", pady=4)
+        lang_vars: dict[str, tk.BooleanVar] = {}
+        lang_checks: dict[str, ttk.Checkbutton] = {}
+        for i, (code, name) in enumerate(components.OCR_LANGUAGES.items()):
+            var = tk.BooleanVar(value=False)
+            cb = ttk.Checkbutton(langs_frame, text=f"{name} ({code})", variable=var)
+            cb.grid(row=i // 3, column=i % 3, sticky="w", padx=8, pady=1)
+            lang_vars[code], lang_checks[code] = var, cb
+        comp_log = ScrolledText(tab_c, height=6, state="disabled", wrap="word")
+        comp_log.grid(row=4, column=0, columnspan=3, sticky="nsew", pady=4)
+        tab_c.rowconfigure(4, weight=1)
+
+        def clog(text):
+            def add():
+                comp_log.configure(state="normal")
+                comp_log.insert("end", text + "\n")
+                comp_log.see("end")
+                comp_log.configure(state="disabled")
+            msgs.put(("call", add))
+
+        def refresh_components():
+            cp = find_ebook_convert(calibre_path.get() or None)
+            tp = find_tesseract(tess_path.get() or None)
+            if cp and not calibre_path.get():
+                calibre_path.set(cp)
+            if tp and not tess_path.get():
+                tess_path.set(tp)
+
+            def check():
+                return components.calibre_kfx_plugin(cp), sorted(components.tesseract_languages(tp))
+
+            def done(res, err):
+                kfx, langs = res if res else (None, [])
+                if cp:
+                    kfx_txt = {True: "plugin KFX Input je nainstalovaný ✓",
+                               False: "⚠ chybí plugin KFX Input (Calibre → Předvolby → Moduly → Získat nové "
+                                      "moduly → KFX Input)",
+                               None: "plugin KFX Input nelze ověřit"}[kfx]
+                    cal_status.configure(text=f"✓ Calibre nalezeno · {kfx_txt}")
+                else:
+                    cal_status.configure(text="⚠ Calibre není nainstalované")
+                if tp:
+                    tes_status.configure(text=f"✓ Tesseract nalezen · jazyky: {', '.join(langs) or 'žádné'}")
+                else:
+                    tes_status.configure(text="⚠ Tesseract není nainstalovaný (potřebný jen pro obrázky a skeny)")
+                for code, cb in lang_checks.items():
+                    have = code in langs
+                    cb.configure(text=f"{components.OCR_LANGUAGES[code]} ({code}){' ✓' if have else ''}")
+
+            in_thread(check, done)
+
+        def install(name):
+            def job():
+                ok = components.winget_install(name, clog)
+                return ok
+
+            def done(ok, err):
+                if err or not ok:
+                    clog(f"Instalace se nepovedla{': ' + str(err) if err else ''}. Můžete ji provést ručně "
+                         f"tlačítkem „Stáhnout ručně“.")
+                else:
+                    clog("✓ Hotovo.")
+                    if name == "tesseract":
+                        tess_path.set(find_tesseract() or "")
+                    else:
+                        calibre_path.set(find_ebook_convert() or "")
+                refresh_components()
+
+            in_thread(job, done)
+
+        ttk.Button(cal_btns, text="Nainstalovat Calibre", command=lambda: install("calibre")).pack(side="left")
+        ttk.Button(cal_btns, text="Stáhnout ručně", command=lambda: webbrowser.open(CALIBRE_URL)).pack(
+            side="left", padx=8)
+        ttk.Button(tes_btns, text="Nainstalovat Tesseract", command=lambda: install("tesseract")).pack(side="left")
+        ttk.Button(tes_btns, text="Stáhnout ručně", command=lambda: webbrowser.open(TESSERACT_URL)).pack(
+            side="left", padx=8)
+
+        def download_langs():
+            chosen = [c for c, v in lang_vars.items() if v.get()]
+            if not chosen:
+                messagebox.showinfo("Jazyky OCR", "Zaškrtněte jazyky, které chcete stáhnout.", parent=win)
+                return
+
+            def job():
+                for c in chosen:
+                    components.download_tessdata(c, clog)
+
+            in_thread(job, lambda res, err: (clog(f"✗ {err}") if err else clog("✓ Jazyky staženy."),
+                                             refresh_components()))
+
+        ttk.Button(tab_c, text="Stáhnout zaškrtnuté jazyky OCR", command=download_langs).grid(
+            row=3, column=0, sticky="w", pady=4)
+        ttk.Label(tab_c, text="Chybějící jazyk se při OCR stáhne i automaticky.", foreground="#555").grid(
+            row=3, column=1, sticky="w", padx=8)
+        refresh_components()
+
+        # --- Obecné
+        tab_g = ttk.Frame(nb, padding=8)
+        nb.add(tab_g, text="Obecné")
+        tab_g.columnconfigure(1, weight=1)
+        out_dir = tk.StringVar(value=cfg.get("out_dir", ""))
+        ttk.Label(tab_g, text="Výstupní složka:").grid(row=0, column=0, sticky="w", **pad)
+        ttk.Entry(tab_g, textvariable=out_dir).grid(row=0, column=1, sticky="ew", **pad)
+
+        def pick_dir():
+            d = filedialog.askdirectory(parent=win)
+            if d:
+                out_dir.set(d)
+
+        ttk.Button(tab_g, text="Vybrat…", command=pick_dir).grid(row=0, column=2, **pad)
+        ttk.Label(tab_g, text="Prázdné = výsledek se uloží vedle originálu.", foreground="#555").grid(
+            row=1, column=1, sticky="w", **pad)
+        ttk.Label(tab_g, text=f"Nastavení programu: {config_path()}", foreground="#555").grid(
+            row=2, column=0, columnspan=3, sticky="w", **pad)
+
+        # --- tlačítka (rámeček „bottom“ je vytvořený nahoře, aby se vždy vešel)
+
+        def save_and_close():
+            collect_services()
+            cfg["paths"]["ebook_convert"] = calibre_path.get().strip()
+            cfg["paths"]["tesseract"] = tess_path.get().strip()
+            cfg["out_dir"] = out_dir.get().strip()
+            try:
+                save_config(cfg)
+            except Exception as e:  # noqa: BLE001
+                messagebox.showerror("Nastavení", f"Nepodařilo se uložit: {e}", parent=win)
+                return
+            refresh_status()
+            win.destroy()
+
+        ttk.Button(bottom, text="Uložit", command=save_and_close).pack(side="right")
+        ttk.Button(bottom, text="Zrušit", command=win.destroy).pack(side="right", padx=8)
+
+    settings_btn.configure(command=open_settings)
+
+    # ============================================== spuštění překladu
     def start():
         if not files:
             messagebox.showwarning(APP_NAME, "Nejdřív přidejte soubory.")
             return
-        s = collect_settings()
-        to_save = json.loads(json.dumps(s))
-        if not s["remember_keys"]:
-            for name, fields in ENGINE_FIELDS.items():
-                for key, _l, secret, _d, _c in fields:
-                    if secret:
-                        to_save["engines"][name][key] = ""
-        try:
-            save_config(to_save)
-        except Exception:
-            pass
-
-        translate = s["mode"] == "translate"
+        remember_main()
+        translate = cfg["mode"] == "translate"
+        e = cfg["engine"]
+        if any(Path(f).suffix.lower() in DOC_ONLY_EXT for f in files) and (e != "microsoft_doc" or not translate):
+            messagebox.showwarning(APP_NAME, "PPTX, XLSX a MD umí přeložit jen překladač "
+                                             "„Microsoft – překlad celých dokumentů“.")
+            return
+        s = dict(cfg)
         cancel_event.clear()
         try:
-            tr = build_translator(s, translate, files_need_ocr(files, s["out_fmt"], translate), log, cancel_event)
-        except Exception as e:
-            messagebox.showerror(APP_NAME, str(e))
+            tr = build_translator(s, translate, files_need_ocr(files, cfg["out_fmt"], translate, e), log,
+                                  cancel_event)
+        except Exception as ex:  # noqa: BLE001
+            messagebox.showerror(APP_NAME, str(ex))
             return
 
         start_btn.configure(state="disabled")
@@ -494,18 +771,23 @@ def run_gui() -> None:
         def worker():
             res = []
             try:
-                res = run_jobs(list(files), translate, s["out_fmt"], tr, s["out_dir"] or None, s["merge_images"],
-                               log, progress, s["ebook_convert"] or None, cancel_event)
-            except Exception as e:  # noqa: BLE001
-                log(f"Neočekávaná chyba: {e}")
+                res = run_jobs(list(files), translate, cfg["out_fmt"], tr, cfg.get("out_dir") or None,
+                               cfg["merge_images"], log, progress, cfg["paths"].get("ebook_convert") or None,
+                               cancel_event)
+            except Exception as ex:  # noqa: BLE001
+                log(f"Neočekávaná chyba: {ex}")
             msgs.put(("done", res))
 
         threading.Thread(target=worker, daemon=True).start()
 
     start_btn.configure(command=start)
-    if not find_ebook_convert(calibre.get() or None):
-        log("Upozornění: Calibre nebylo nalezeno. Bez něj nepůjdou e-knihy (AZW3, KFX, MOBI, RTF) "
-            "ani převody mezi formáty. DOCX, TXT, EPUB, PDF a obrázky fungují i bez něj.")
+    refresh_status()
+    if not cfg["paths"].get("ebook_convert"):
+        log("Upozornění: Calibre nebylo nalezeno – bez něj nepůjdou AZW3, KFX, MOBI a RTF. "
+            "Nainstalujete ho v ⚙ Nastavení → Součásti.")
+    if not cfg["paths"].get("tesseract"):
+        log("Tip: pro text z obrázků a skenů nainstalujte Tesseract v ⚙ Nastavení → Součásti "
+            "(nebo zvolte OCR přes Gemini či Claude).")
     poll()
     root.mainloop()
 
@@ -519,33 +801,69 @@ def run_cli(argv: list[str]) -> int:
     ap.add_argument("--engine", default="google", choices=list(ENGINE_LABELS), help="překladač (výchozí: google)")
     ap.add_argument("--ocr", default="tesseract", choices=list(OCR_LABELS), help="OCR pro obrázky a skeny")
     ap.add_argument("--ocr-lang", default="eng", help="jazyk textu pro Tesseract, např. eng, ces, eng+deu")
-    ap.add_argument("--key", default="", help="API klíč pro zvolený překladač (jinak z proměnné prostředí)")
+    ap.add_argument("--key", default="", help="API klíč (jinak z Nastavení programu nebo proměnné prostředí)")
     ap.add_argument("--model", default="", help="model (Claude, Gemini, Ollama)")
     ap.add_argument("--url", default="", help="adresa serveru (Ollama, LibreTranslate)")
+    ap.add_argument("--region", default="", help="oblast Azure (Microsoft)")
+    ap.add_argument("--endpoint", default="", help="adresa „Překlad dokumentu“ (Microsoft)")
     ap.add_argument("--convert-only", action="store_true", help="jen převést / přepsat, nepřekládat")
     ap.add_argument("--out-dir")
     ap.add_argument("--notes", default="", help="pokyny pro překlad (glosář, styl)")
     ap.add_argument("--merge-images", action="store_true", help="více obrázků do jednoho DOCX")
     ap.add_argument("--calibre", help="cesta k ebook-convert")
     ap.add_argument("--tesseract", help="cesta k tesseract")
+    ap.add_argument("--log", help="výpis uložit i do tohoto souboru")
     a = ap.parse_args(argv)
 
-    cfg = {k: v for k, v in (("api_key", a.key), ("model", a.model), ("url", a.url)) if v}
+    log_file = open(a.log, "w", encoding="utf-8") if a.log else None
+
+    def out(text: str) -> None:
+        print(text)
+        if log_file:
+            log_file.write(text + "\n")
+            log_file.flush()
+
+    saved = load_config()
+    engines = saved.get("engines", {})
+    sect = engines.setdefault(service_of(a.engine), {})
+    for key, val in (("api_key", a.key), ("model", a.model), ("url", a.url), ("region", a.region),
+                     ("endpoint", a.endpoint)):
+        if val:
+            sect[key] = val
+    paths = saved.get("paths", {})
     s = {"engine": a.engine, "ocr": a.ocr, "lang": a.lang, "notes": a.notes, "ocr_lang": a.ocr_lang,
-         "tesseract": a.tesseract or "", "engines": {a.engine: cfg}}
+         "paths": {"tesseract": a.tesseract or paths.get("tesseract", "")}, "engines": engines}
     cancel = threading.Event()
     translate = not a.convert_only
     try:
-        tr = build_translator(s, translate, files_need_ocr(a.files, a.fmt, translate), print, cancel)
+        tr = build_translator(s, translate, files_need_ocr(a.files, a.fmt, translate, a.engine), out, cancel)
     except EngineError as e:
-        print(e)
+        out(str(e))
         return 2
-    res = run_jobs(a.files, translate, a.fmt, tr, a.out_dir, a.merge_images, print, lambda f: None, a.calibre,
-                   cancel)
+    res = run_jobs(a.files, translate, a.fmt, tr, a.out_dir, a.merge_images, out, lambda f: None,
+                   a.calibre or paths.get("ebook_convert"), cancel)
     return 0 if len(res) == len(a.files) or (a.merge_images and res) else 1
 
 
+def _setup_streams(cli: bool) -> None:
+    """Prekladac.exe nemá vlastní konzoli: v režimu příkazové řádky se připojí ke konzoli, ze které byl spuštěn."""
+    if cli and sys.platform == "win32" and sys.stdout is None:
+        try:
+            import ctypes
+
+            if ctypes.windll.kernel32.AttachConsole(-1):  # -1 = konzole rodičovského procesu
+                sys.stdout = open("CONOUT$", "w", encoding="utf-8", buffering=1)
+                sys.stderr = sys.stdout
+        except Exception:
+            pass
+    if sys.stdout is None:
+        sys.stdout = open(os.devnull, "w", encoding="utf-8")
+    if sys.stderr is None:
+        sys.stderr = sys.stdout
+
+
 if __name__ == "__main__":
+    _setup_streams(len(sys.argv) > 1)
     if len(sys.argv) > 1:
         sys.exit(run_cli(sys.argv[1:]))
     run_gui()

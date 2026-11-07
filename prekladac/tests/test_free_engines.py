@@ -99,6 +99,17 @@ def test_microsoft_libre(monkeypatch):
     assert "to=cs" in url and "textType=html" in url
     assert kw["headers"]["Ocp-Apim-Subscription-Region"] == "westeurope"
 
+    assert MicrosoftEngine.normalize_region("West Europe") == "westeurope"
+    assert MicrosoftEngine.normalize_region("Global") == ""
+    assert MicrosoftEngine("čeština", " ab c ").key == "abc"
+
+    def unauthorized(url, **kw):
+        raise EngineError("Microsoft Translator: neplatný nebo chybějící klíč (HTTP 401).")
+
+    monkeypatch.setattr(fe, "http_json", unauthorized)
+    with pytest.raises(EngineError, match="Location/Region"):
+        MicrosoftEngine("čeština", "k", "West Europe").translate_batch(["a"], False, "")
+
     fake2 = FakeHTTP(lambda url, kw: {"translatedText": [t + "?" for t in kw["data"]["q"]]})
     monkeypatch.setattr(fe, "http_json", fake2)
     assert LibreTranslateEngine("čeština", "http://x:5000/").translate_batch(["a"], False, "") == ["a?"]
@@ -209,3 +220,39 @@ def test_google_live():
         ["Hello <i>dear</i> reader.", "The book is on the table."], markup=True)
     print(out)
     assert "<i>" in out[0] and out[1] != "The book is on the table."
+
+
+def test_http_request_falls_back_on_certificate_error(monkeypatch):
+    import ssl
+    import urllib.error
+
+    used = []
+
+    class Resp:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+        def read(self):
+            return b"ok"
+
+    def fake_urlopen(req, timeout, context):
+        used.append(context)
+        if len(used) == 1:
+            raise urllib.error.URLError(ssl.SSLCertVerificationError("unable to get issuer certificate"))
+        return Resp()
+
+    monkeypatch.setattr(fe, "_SSL_CONTEXTS", ["windows", "certifi"])
+    monkeypatch.setattr(fe.urllib.request, "urlopen", fake_urlopen)
+    monkeypatch.setattr(fe.time, "sleep", lambda s: None)
+    assert fe.http_request("https://x", service="Test", retries=0) == b"ok"
+    assert used == ["windows", "certifi"]
+
+    def always_bad(req, timeout, context):
+        raise urllib.error.URLError(ssl.SSLCertVerificationError("bad"))
+
+    monkeypatch.setattr(fe.urllib.request, "urlopen", always_bad)
+    with pytest.raises(EngineError, match="antivirus"):
+        fe.http_request("https://x", service="Test")

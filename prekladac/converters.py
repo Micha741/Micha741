@@ -19,7 +19,9 @@ from typing import Callable, Protocol
 EBOOK_EXT = {".epub", ".azw3", ".azw", ".kfx", ".mobi", ".fb2", ".rtf", ".odt", ".htmlz", ".lit", ".pdb"}
 IMAGE_EXT = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tif", ".tiff", ".gif"}
 DOC_EXT = {".docx", ".txt", ".pdf"}
-SUPPORTED_EXT = EBOOK_EXT | IMAGE_EXT | DOC_EXT
+# tyto formáty umí jen „Microsoft – překlad celých dokumentů“
+DOC_ONLY_EXT = {".pptx", ".xlsx", ".md"}
+SUPPORTED_EXT = EBOOK_EXT | IMAGE_EXT | DOC_EXT | DOC_ONLY_EXT
 OUTPUT_FORMATS = ["epub", "azw3", "docx", "pdf", "txt", "rtf", "mobi"]
 
 LANG_CODES = {
@@ -538,6 +540,7 @@ def default_output_format(ext: str) -> str:
 def output_path(src: str, out_dir: str | None, fmt: str, suffix: str) -> str:
     p = Path(src)
     folder = Path(out_dir) if out_dir else p.parent
+    folder.mkdir(parents=True, exist_ok=True)
     candidate = folder / f"{p.stem}{suffix}.{fmt}"
     n = 2
     while candidate.exists():
@@ -560,7 +563,9 @@ def process_file(
     ext = Path(src).suffix.lower()
     if ext not in SUPPORTED_EXT:
         raise ValueError(f"Nepodporovaný formát: {ext}")
-    fmt = (out_fmt or default_output_format(ext)).lower()
+    doc_tr = getattr(tr, "document_translator", None) if translate and tr is not None else None
+    use_doc = doc_tr is not None and ext in doc_tr.SUPPORTED
+    fmt = (out_fmt or (ext.lstrip(".") if use_doc else default_output_format(ext))).lower()
     suffix = f" ({tr.target_lang})" if translate and tr else ""
     dst = output_path(src, out_dir, fmt, suffix if translate else " (převod)")
     conv = lambda a, b: calibre_convert(a, b, log, ebook_convert)  # noqa: E731
@@ -576,7 +581,17 @@ def process_file(
                 conv(produced, dst)
             return dst
 
-        # --- obrázky a PDF: Claude přečte (a přeloží) obsah → DOCX
+        # --- celý dokument přeloží služba najednou (Microsoft – překlad dokumentů)
+        if use_doc:
+            produced = tmpfile("vystup" + ext)
+            doc_tr.translate_document(src, produced, log)
+            progress(1.0)
+            return finish(produced)
+
+        if ext in DOC_ONLY_EXT:
+            raise ValueError(f"Formát {ext} umí přeložit jen překladač „Microsoft – překlad celých dokumentů“.")
+
+        # --- obrázky a PDF: OCR / text z PDF (a překlad) → DOCX
         if ext in IMAGE_EXT or (ext == ".pdf" and (translate or fmt == "docx")):
             if tr is None:
                 raise ValueError("Pro obrázky a PDF je potřeba nastavit OCR (Tesseract, Gemini nebo Claude).")
