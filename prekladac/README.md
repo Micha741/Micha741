@@ -68,6 +68,15 @@ Výsledek se uloží vedle originálu jako `název (čeština).přípona`.
    Číslo verze je v záhlaví okna a v *⚙ Nastavení → Obecné*.
    Klíče se ukládají **zašifrovaně** (Windows DPAPI) jen pro váš účet ve Windows.
 
+### Aktualizace na novou verzi
+
+Při spuštění se program (nejvýš jednou, na pozadí) podívá na GitHub. Pokud je venku novější verze, zobrazí okno
+**Je k dispozici nová verze** s tlačítky *Stáhnout novou verzi*, *Později* a *Tuto verzi přeskočit*.
+Instalátor se stáhne v prohlížeči. Program ho záměrně sám nespouští, protože antivirus by to vyhodnotil
+jako podezřelé chování. Zavřete Překladač a stažený `Prekladac-Setup.exe` spusťte: nainstaluje se přes
+stávající verzi a nastavení, klíče i rozepsané knihy zůstanou zachované. Odinstalovávat není potřeba.
+Ručně lze kontrolu spustit v *⚙ Nastavení → Obecné → Zkontrolovat novou verzi*, kde ji jde i vypnout.
+
 ## Použití
 
 1. Přidejte soubory tlačítkem nebo je přetáhněte myší do seznamu.
@@ -105,6 +114,10 @@ Když program zavřete, přijdete nanejvýš o právě psanou kapitolu – po sp
   lupa), uložit a exportovat.
 - **Kniha** – název a autor, výchozí písmo knihy, obsah s odkazy, formáty exportu, přidání/mazání/přesun kapitol.
 - Vlevo seznam kapitol, dole počet slov a odstavců kapitoly i celé knihy.
+
+**Automatické ukládání v editoru** (⚙ Nastavení → Obecné): po každé větě (výchozí), po každém slově, po zadaném
+počtu znaků, každých N sekund, nebo vypnuto. Na disk se zapisuje nejvýš jednou za 2 s a předchozí verze zůstává
+jako záloha `Název.kniha.json.bak`. Dokud je kniha otevřená v editoru, AI do ní nepíše (nepřepíšou se navzájem).
 
 Formátování z editoru (tučné, barvy, zarovnání, odrážky, nadpisy…) se zachová v DOCX, EPUB, PDF i AZW3.
 Export vloží na začátek **obsah s odkazy** na kapitoly.

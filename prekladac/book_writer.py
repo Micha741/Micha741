@@ -94,9 +94,17 @@ def safe_name(title: str) -> str:
 
 
 # ---------------------------------------------------------------- projekt
-def save_project(path: Path, project: dict) -> None:
+def save_project(path: Path, project: dict, backup: bool = True) -> None:
+    """Uloží projekt bezpečně (přes dočasný soubor); předchozí verze zůstane jako *.bak."""
+    path = Path(path)
     tmp = path.with_suffix(".tmp")
     tmp.write_text(json.dumps(project, ensure_ascii=False, indent=2), encoding="utf-8")
+    if backup and path.exists():
+        bak = path.with_name(path.name + ".bak")
+        try:
+            path.replace(bak)
+        except OSError:
+            pass
     tmp.replace(path)
 
 

@@ -271,3 +271,24 @@ def test_libretranslate_live():
     html_out = tr.translate_segments(["The <i>old</i> man walked to the river."], markup=True)
     print(html_out)
     assert "<i>" in html_out[0] and "</i>" in html_out[0] and not html_out[0].startswith("•")
+
+
+def test_openai_compat_detects_provider_from_key(monkeypatch):
+    from free_engines import EngineError, OpenAICompatEngine
+    e = OpenAICompatEngine("cs", "https://api.openai.com/v1", "sk-or-v1-abc", "deepseek/deepseek-chat")
+    assert e.url == "https://openrouter.ai/api/v1" and e.name == "OpenRouter"
+    assert OpenAICompatEngine("cs", "", "gsk_abc", "m").url == "https://api.groq.com/openai/v1"
+    # vlastní adresa se nepřepisuje, ale chyba 401 poradí
+    e = OpenAICompatEngine("cs", "https://api.deepseek.com/v1", "sk-or-v1-abc", "m")
+    assert e.url == "https://api.deepseek.com/v1"
+    import free_engines
+
+    def deny(*a, **k):
+        raise EngineError("DeepSeek: neplatný nebo chybějící klíč (HTTP 401).")
+    monkeypatch.setattr(free_engines, "http_json", deny)
+    try:
+        e._complete_json("s", [{"text": "t"}], {"type": "object"})
+    except EngineError as err:
+        assert "OpenRouter" in str(err) and "openrouter.ai/api/v1" in str(err)
+    else:
+        raise AssertionError("expected EngineError")

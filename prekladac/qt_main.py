@@ -19,6 +19,7 @@ from converters import DOC_ONLY_EXT, OUTPUT_FORMATS, SUPPORTED_EXT, find_ebook_c
 from free_engines import ENGINE_LABELS, OCR_LABELS, EngineError, GeminiEngine, OllamaEngine, find_tesseract
 from guides import GUIDES
 from qt_common import STYLESHEET, bridge, emoji_icon, label, run_bg, set_status
+import updater
 from version import VERSION
 
 Qt = QtCore.Qt
@@ -464,6 +465,10 @@ class BookPage(QtWidgets.QWidget):
         has_text = bool(self.project and self.project["chapters"])
         self.b_outline.setEnabled(not self.busy)
         self.b_write.setEnabled(not self.busy and has_outline)
+        if self.path and self.open_editor_for(self.path):
+            self.b_write.setToolTip("Kniha je otevřená v editoru – nejdřív ho zavřete.")
+        else:
+            self.b_write.setToolTip("")
         self.b_stop.setEnabled(self.busy)
         self.b_load.setEnabled(not self.busy)
         self.b_edit.setEnabled(not self.busy and has_text)
@@ -528,6 +533,11 @@ class BookPage(QtWidgets.QWidget):
             QtWidgets.QMessageBox.critical(self, "Napsat knihu", str(e))
             return
         formats = [f for f, c in self.fmts.items() if c.isChecked()] or ["docx"]
+        if self.path and self.open_editor_for(self.path):
+            QtWidgets.QMessageBox.warning(
+                self, "Napsat knihu", "Kniha je otevřená v editoru. Nejdřív editor uložte a zavřete – "
+                                      "jinak by se psaní AI a vaše úpravy navzájem přepsaly.")
+            return
         proj = self.project
         if proj is None or proj["outline"] != outline:
             if proj is not None and proj["chapters"]:
@@ -617,14 +627,34 @@ class BookPage(QtWidgets.QWidget):
         self.update_buttons()
         self.logv.log(f"Načteno: {len(proj['chapters'])} z {len(proj['outline']['chapters'])} kapitol hotovo.")
 
+    def open_editor_for(self, path):
+        """Otevřený editor této knihy (nebo None)."""
+        alive = []
+        for ed in self.editors:
+            try:
+                ed.isVisible()
+            except RuntimeError:  # okno už bylo zavřeno a smazáno
+                continue
+            alive.append(ed)
+        self.editors = alive
+        return next((ed for ed in alive if ed.isVisible() and path and ed.path == Path(path)), None)
+
     def open_editor(self):
         from qt_editor import BookEditor
 
         if not self.project or not self.project["chapters"]:
             QtWidgets.QMessageBox.information(self, "Upravit knihu", "Kniha zatím nemá napsanou žádnou kapitolu.")
             return
-        ed = BookEditor(self.project, self.path, self.win.cfg["paths"].get("ebook_convert") or None)
+        if self.open_editor_for(self.path):
+            ed = self.open_editor_for(self.path)
+            ed.showMaximized()
+            ed.raise_()
+            ed.activateWindow()
+            return
+        ed = BookEditor(self.project, self.path, self.win.cfg["paths"].get("ebook_convert") or None,
+                        autosave=self.win.cfg.get("autosave"))
         self.editors.append(ed)
+        ed.destroyed.connect(lambda *_: self.update_buttons())
         ed.showMaximized()
 
 
@@ -855,12 +885,50 @@ class SettingsPage(QtWidgets.QWidget):
         g.addWidget(QtWidgets.QLabel("Výstupní složka:"), 0, 0)
         g.addWidget(self.out_dir, 0, 1)
         g.addWidget(b, 0, 2)
-        g.addWidget(QtWidgets.QLabel(f"Verze programu: {VERSION}"), 1, 0, 1, 2)
-        upd = QtWidgets.QPushButton("🌐 Zkontrolovat novou verzi")
-        upd.clicked.connect(lambda: webbrowser.open(core.RELEASES_URL))
-        g.addWidget(upd, 1, 2)
-        g.addWidget(label(f"Nastavení programu: {core.config_path()}", "Hint"), 2, 0, 1, 3)
-        g.setRowStretch(3, 1)
+        from qt_editor import AUTOSAVE_DEFAULT, AUTOSAVE_MODES
+
+        auto = {**AUTOSAVE_DEFAULT, **cfg.get("autosave", {})}
+        abox = QtWidgets.QGroupBox("Automatické ukládání v editoru knihy")
+        ag = QtWidgets.QGridLayout(abox)
+        self.auto_mode = QtWidgets.QComboBox()
+        for key, text in AUTOSAVE_MODES.items():
+            self.auto_mode.addItem(text, key)
+        self.auto_mode.setCurrentIndex(max(0, self.auto_mode.findData(auto["mode"])))
+        self.auto_seconds = QtWidgets.QSpinBox()
+        self.auto_seconds.setRange(5, 3600)
+        self.auto_seconds.setSuffix(" s")
+        self.auto_seconds.setValue(int(auto["seconds"]))
+        self.auto_chars = QtWidgets.QSpinBox()
+        self.auto_chars.setRange(10, 100000)
+        self.auto_chars.setSuffix(" znaků")
+        self.auto_chars.setValue(int(auto["chars"]))
+        ag.addWidget(QtWidgets.QLabel("Ukládat:"), 0, 0)
+        ag.addWidget(self.auto_mode, 0, 1)
+        ag.addWidget(QtWidgets.QLabel("Interval:"), 1, 0)
+        ag.addWidget(self.auto_seconds, 1, 1)
+        ag.addWidget(QtWidgets.QLabel("Počet znaků:"), 2, 0)
+        ag.addWidget(self.auto_chars, 2, 1)
+        ag.addWidget(label("Na disk se zapisuje nejvýš jednou za 2 sekundy, i když píšete rychle. Předchozí verze "
+                           "zůstává jako záloha „*.kniha.json.bak“. Psaní knihy přes AI ukládá samo po každé "
+                           "kapitole; dokud je kniha otevřená v editoru, AI do ní nepíše.", "Hint"), 3, 0, 1, 2)
+
+        def auto_visibility(*_):
+            m = self.auto_mode.currentData()
+            self.auto_seconds.setEnabled(m == "time")
+            self.auto_chars.setEnabled(m == "chars")
+
+        self.auto_mode.currentIndexChanged.connect(auto_visibility)
+        auto_visibility()
+        g.addWidget(abox, 1, 0, 1, 3)
+        g.addWidget(QtWidgets.QLabel(f"Verze programu: {VERSION}"), 2, 0, 1, 2)
+        self.upd_btn = QtWidgets.QPushButton("🌐 Zkontrolovat novou verzi")
+        self.upd_btn.clicked.connect(lambda: self.win.check_updates(manual=True))
+        g.addWidget(self.upd_btn, 2, 2)
+        self.check_updates = QtWidgets.QCheckBox("Při spuštění zkontrolovat, zda je k dispozici nová verze")
+        self.check_updates.setChecked(cfg.get("check_updates", True))
+        g.addWidget(self.check_updates, 3, 0, 1, 3)
+        g.addWidget(label(f"Nastavení programu: {core.config_path()}", "Hint"), 4, 0, 1, 3)
+        g.setRowStretch(5, 1)
         g.setColumnStretch(1, 1)
         return w
 
@@ -870,6 +938,9 @@ class SettingsPage(QtWidgets.QWidget):
         cfg["paths"]["ebook_convert"] = self.cal_path.text().strip()
         cfg["paths"]["tesseract"] = self.tes_path.text().strip()
         cfg["out_dir"] = self.out_dir.text().strip()
+        cfg["autosave"] = {"mode": self.auto_mode.currentData(), "seconds": self.auto_seconds.value(),
+                           "chars": self.auto_chars.value()}
+        cfg["check_updates"] = self.check_updates.isChecked()
         self.win.save_cfg()
         self.win.refresh_statuses()
         QtWidgets.QMessageBox.information(self, "Nastavení", "Nastavení uloženo.")
@@ -928,6 +999,46 @@ class MainWindow(QtWidgets.QMainWindow):
         if not paths["ebook_convert"]:
             self.translate.logv.log("Upozornění: Calibre nebylo nalezeno – bez něj nepůjdou AZW3, KFX, MOBI a RTF. "
                                     "Je součástí instalátoru Prekladac-Setup.exe.")
+        if self.cfg.get("check_updates", True):
+            QtCore.QTimer.singleShot(3000, self.check_updates)
+
+    def check_updates(self, manual: bool = False):
+        """Zjistí na GitHubu novou verzi; při automatické kontrole mlčí, když žádná není."""
+        skip = "" if manual else self.cfg.get("skip_version", "")
+
+        def done(info, err):
+            if err:
+                if manual:
+                    QtWidgets.QMessageBox.warning(self, "Nová verze",
+                                                  f"Novou verzi se nepodařilo zjistit:\n{err}")
+                return
+            if info:
+                self.offer_update(info)
+            elif manual:
+                QtWidgets.QMessageBox.information(
+                    self, "Nová verze", f"Máte nejnovější verzi ({VERSION})." if VERSION[:1].isdigit()
+                    else "Vývojová verze (spuštěná z Pythonu) se neaktualizuje.")
+
+        run_bg(lambda: updater.check(VERSION, skip), done)
+
+    def offer_update(self, info: dict):
+        box = QtWidgets.QMessageBox(self)
+        box.setWindowTitle("Nová verze")
+        box.setIcon(QtWidgets.QMessageBox.Icon.Information)
+        box.setText(f"<b>Je k dispozici nová verze {info['version']}</b> (máte {VERSION}).")
+        box.setInformativeText(
+            "Stáhněte Prekladac-Setup.exe a spusťte ho – nainstaluje se přes stávající verzi. "
+            "Nastavení, klíče i rozepsané knihy zůstanou zachované. Před instalací program zavřete.")
+        dl = box.addButton("⬇ Stáhnout novou verzi", QtWidgets.QMessageBox.ButtonRole.AcceptRole)
+        skip = box.addButton("Tuto verzi přeskočit", QtWidgets.QMessageBox.ButtonRole.RejectRole)
+        box.addButton("Později", QtWidgets.QMessageBox.ButtonRole.RejectRole)
+        box.setDefaultButton(dl)
+        box.exec()
+        if box.clickedButton() is dl:
+            webbrowser.open(info["setup_url"])
+        elif box.clickedButton() is skip:
+            self.cfg["skip_version"] = info["version"]
+            self.save_cfg()
 
     def save_cfg(self):
         try:

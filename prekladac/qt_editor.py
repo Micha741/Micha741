@@ -11,6 +11,15 @@ from html_docx import PAGE_BREAK, plain_to_html
 from qt_common import emoji_icon, label, lines_icon, run_bg, text_icon
 
 Qt = QtCore.Qt
+AUTOSAVE_MODES = {  # klíč: popis v Nastavení
+    "sentence": "Po každé větě",
+    "word": "Po každém slově",
+    "chars": "Po zadaném počtu znaků",
+    "time": "Každých N sekund",
+    "off": "Vypnuto (jen ručně Ctrl+S)",
+}
+AUTOSAVE_DEFAULT = {"mode": "sentence", "seconds": 30, "chars": 200}
+MIN_SAVE_GAP = 2.0  # sekundy – častěji se na disk nezapisuje, i když píšete rychle
 SIZES = ["8", "9", "10", "10.5", "11", "12", "14", "16", "18", "20", "24", "28", "36", "48", "72"]
 TEXT_COLORS = ["#000000", "#c00000", "#e36c09", "#2e7d32", "#1565c0", "#6a1b9a", "#7f7f7f", "#ffffff"]
 HIGHLIGHTS = ["#ffff00", "#00ff00", "#00ffff", "#ff66ff", "#ffc000", "#d9d9d9", None]
@@ -137,8 +146,12 @@ class FindDialog(QtWidgets.QDialog):
 
 
 class BookEditor(QtWidgets.QMainWindow):
-    def __init__(self, project: dict, path: Path, ebook_convert: str | None, parent=None):
+    def __init__(self, project: dict, path: Path, ebook_convert: str | None, parent=None,
+                 autosave: dict | None = None):
         super().__init__(parent)
+        self.autosave = {**AUTOSAVE_DEFAULT, **(autosave or {})}
+        self._chars_since_save = 0
+        self._last_save = 0.0
         self.project = project
         self.path = Path(path)
         self.ebook_convert = ebook_convert
@@ -177,6 +190,14 @@ class BookEditor(QtWidgets.QMainWindow):
         self._shortcuts()
 
         self.text.document().contentsChanged.connect(self._changed)
+        self.text.installEventFilter(self)
+        self._auto_timer = QtCore.QTimer(self)  # „každých N sekund“
+        self._auto_timer.timeout.connect(self._autosave_now)
+        if self.autosave["mode"] == "time":
+            self._auto_timer.start(max(5, int(self.autosave["seconds"])) * 1000)
+        self._pending_timer = QtCore.QTimer(self)  # odložené uložení, když se ukládalo před chvílí
+        self._pending_timer.setSingleShot(True)
+        self._pending_timer.timeout.connect(self._autosave_now)
         self.text.cursorPositionChanged.connect(self._sync_toolbar)
         self.text.selectionChanged.connect(self._apply_painter)
         self.refresh_list()
@@ -713,7 +734,48 @@ class BookEditor(QtWidgets.QMainWindow):
         self.setWindowTitle(f"{'● ' if self.dirty else ''}{self.title_edit.text() or self.outline['title']}"
                             " – Upravit knihu")
 
+    # ------------------------------------------------------- automatické ukládání
+    def eventFilter(self, obj, ev):
+        if obj is self.text and ev.type() == QtCore.QEvent.KeyPress and not self.loading:
+            ch = ev.text()
+            mode = self.autosave["mode"]
+            if ch:
+                self._chars_since_save += 1
+            if mode == "sentence" and ch in (".", "!", "?", "…", "\r", "\n"):
+                self.request_autosave()
+            elif mode == "word" and ch in (" ", "\r", "\n", "\t", ".", ",", "!", "?", ";", ":"):
+                self.request_autosave()
+            elif mode == "chars" and self._chars_since_save >= max(1, int(self.autosave["chars"])):
+                self.request_autosave()
+        return super().eventFilter(obj, ev)
+
+    def request_autosave(self):
+        import time
+
+        if self.autosave["mode"] == "off":
+            return
+        wait = MIN_SAVE_GAP - (time.monotonic() - self._last_save)
+        if wait > 0:
+            if not self._pending_timer.isActive():
+                self._pending_timer.start(int(wait * 1000) + 50)
+            return
+        QtCore.QTimer.singleShot(0, self._autosave_now)  # až po vložení znaku do textu
+
+    def _autosave_now(self):
+        if not self.dirty:
+            return
+        try:
+            self.save()
+        except Exception as e:  # noqa: BLE001 – automatické uložení nesmí shodit editor
+            self.statusBar().showMessage(f"Automatické uložení se nepovedlo: {e}", 8000)
+            return
+        self.statusBar().showMessage(f"Automaticky uloženo {QtCore.QTime.currentTime().toString('HH:mm:ss')}", 4000)
+
     def save(self):
+        import time
+
+        self._last_save = time.monotonic()
+        self._chars_since_save = 0
         self.store_current()
         self.outline["title"] = self.title_edit.text().strip() or self.outline["title"]
         self.project["author"] = self.author_edit.text().strip()

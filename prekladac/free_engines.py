@@ -633,13 +633,25 @@ class OpenAICompatEngine(_LLMEngine):
         "OpenRouter": "https://openrouter.ai/api/v1",
         "Groq": "https://api.groq.com/openai/v1",
     }
+    # Klíče, podle kterých jde poznat službu (DeepSeek i OpenAI mají obojí „sk-…“, ty poznat nejdou).
+    KEY_PREFIXES = {"sk-or-": "OpenRouter", "gsk_": "Groq"}
+
+    @classmethod
+    def provider_for_key(cls, api_key: str) -> str | None:
+        key = (api_key or "").strip()
+        return next((n for p, n in cls.KEY_PREFIXES.items() if key.startswith(p)), None)
 
     def __init__(self, target_lang: str, url: str, api_key: str, model: str, notes: str = ""):
         super().__init__(target_lang, notes)
-        self.url = (url or self.PRESETS["OpenAI"]).strip().rstrip("/")
-        if self.url.endswith("/chat/completions"):
-            self.url = self.url[: -len("/chat/completions")]
         self.key = (api_key or "").strip()
+        url = (url or "").strip().rstrip("/")
+        if url.endswith("/chat/completions"):
+            url = url[: -len("/chat/completions")]
+        detected = self.provider_for_key(self.key)
+        # Prázdná adresa nebo výchozí adresa OpenAI s klíčem jiné služby → použij adresu té služby.
+        if detected and (not url or url == self.PRESETS["OpenAI"]):
+            url = self.PRESETS[detected]
+        self.url = url or self.PRESETS["OpenAI"]
         self.model = (model or "").strip()
         if not self.model:
             raise EngineError("OpenAI-kompatibilní služba: zadejte v Nastavení název modelu (např. deepseek-chat).")
@@ -647,6 +659,14 @@ class OpenAICompatEngine(_LLMEngine):
             raise EngineError("OpenAI-kompatibilní služba: chybí API klíč.")
         host = urllib.parse.urlparse(self.url).hostname or ""
         self.name = next((n for n, u in self.PRESETS.items() if host and host in u), host or self.name)
+
+    def key_hint(self) -> str:
+        detected = self.provider_for_key(self.key)
+        if detected and detected != self.name:
+            return (f"Klíč vypadá jako klíč služby {detected}, ale posílá se na {self.name}. "
+                    f"V Nastavení vyplňte Adresu API: {self.PRESETS[detected]}")
+        return (f"Zkontrolujte, že klíč patří službě {self.name} ({self.url}). Klíč z jiné služby "
+                "(např. OpenRouter, DeepSeek) vyžaduje i její Adresu API – viz tlačítko Návod.")
 
     def _complete_json(self, system, user_parts, schema, max_tokens: int | None = None, temperature=None):
         user = "".join(p.get("text", "") for p in user_parts)
@@ -659,8 +679,13 @@ class OpenAICompatEngine(_LLMEngine):
         if temperature is not None:
             body["temperature"] = temperature
         headers = {"Authorization": f"Bearer {self.key}"} if self.key else {}
-        data = http_json(f"{self.url}/chat/completions", data=body, headers=headers, service=self.name,
-                         timeout=900, retries=4, backoff=(10, 20, 40, 60))
+        try:
+            data = http_json(f"{self.url}/chat/completions", data=body, headers=headers, service=self.name,
+                             timeout=900, retries=4, backoff=(10, 20, 40, 60))
+        except EngineError as e:
+            if "HTTP 401" in str(e):
+                raise EngineError(f"{e}\n\n{self.key_hint()}") from e
+            raise
         usage = data.get("usage") or {}
         self._add_usage(usage.get("prompt_tokens"), usage.get("completion_tokens"))
         choice = (data.get("choices") or [{}])[0]
