@@ -1,0 +1,118 @@
+name: Překladač – instalátor pro Windows
+
+on:
+  push:
+    branches: [main]
+    paths: ["prekladac/**", ".github/workflows/prekladac.yml"]
+  pull_request:
+    paths: ["prekladac/**", ".github/workflows/prekladac.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  PYTHONUTF8: "1"
+  PYTHONIOENCODING: utf-8
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: prekladac
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalace závislostí
+        run: python -m pip install -r requirements.txt pyinstaller pytest
+
+      - name: Testy
+        run: python -m pytest tests -q -p no:cacheprovider
+
+      - name: Sestavení programu (složka, bez rozbalování do Temp)
+        run: |
+          python -m PyInstaller --noconfirm --onedir --windowed --name Prekladac `
+            --collect-all tkinterdnd2 --collect-all pypdfium2 --collect-all pypdfium2_raw `
+            --distpath build\dist --workpath build\work --specpath build app.py
+          Move-Item build\dist\Prekladac build\app
+
+      - name: Calibre, Tesseract a Inno Setup
+        run: |
+          choco install calibre tesseract innosetup -y --no-progress
+          if ($LASTEXITCODE -ne 0) { throw "choco install selhal ($LASTEXITCODE)" }
+
+      - name: Přibalení Calibre a Tesseractu
+        run: |
+          function Find-Exe($name, $preferred) {
+            if (Test-Path $preferred) { return $preferred }
+            $hit = Get-ChildItem $env:ProgramFiles, ${env:ProgramFiles(x86)} -Recurse -Filter $name -ErrorAction SilentlyContinue | Select-Object -First 1
+            if (-not $hit) { throw "$name nenalezen" }
+            return $hit.FullName
+          }
+          $cal = Find-Exe 'ebook-convert.exe' "$env:ProgramFiles\Calibre2\ebook-convert.exe"
+          $tes = Find-Exe 'tesseract.exe' "$env:ProgramFiles\Tesseract-OCR\tesseract.exe"
+          Copy-Item (Split-Path $cal) build\Calibre2 -Recurse
+          Copy-Item (Split-Path $tes) build\Tesseract-OCR -Recurse
+          New-Item -ItemType Directory -Force build\Tesseract-OCR\tessdata | Out-Null
+          foreach ($l in 'eng','ces','slk','deu','pol','fra','spa','ita','rus','ukr','hun') {
+            $out = "build\Tesseract-OCR\tessdata\$l.traineddata"
+            if (-not (Test-Path $out)) {
+              Invoke-WebRequest "https://github.com/tesseract-ocr/tessdata_fast/raw/main/$l.traineddata" -OutFile $out
+            }
+          }
+          "Calibre: $cal"; "Tesseract: $tes"
+          & build\Tesseract-OCR\tesseract.exe --list-langs
+          # systémové instalace odstraníme, aby zkouška níže používala jen přibalené součásti
+          choco uninstall calibre tesseract -y --no-progress
+
+      - name: Sestavení instalátoru Prekladac-Setup.exe
+        run: |
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /DAppVersion=1.0.$env:GITHUB_RUN_NUMBER installer.iss
+          if ($LASTEXITCODE -ne 0) { throw "ISCC selhal ($LASTEXITCODE)" }
+          Get-Item dist\Prekladac-Setup.exe | Select-Object Name, Length
+
+      - name: Zkouška nainstalovaného programu
+        run: |
+          $dir = "$env:RUNNER_TEMP\Prekladac"
+          $p = Start-Process dist\Prekladac-Setup.exe -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/CURRENTUSER',"/DIR=$dir" -Wait -PassThru
+          if ($p.ExitCode -ne 0) { throw "Instalace skončila s kódem $($p.ExitCode)" }
+          $exe = "$dir\Prekladac.exe"
+          python -c "import docx; d = docx.Document(); d.add_paragraph('Hello world'); d.save('smoke.docx')"
+          python -c "from PIL import Image, ImageDraw, ImageFont; im = Image.new('RGB', (1400, 220), 'white'); ImageDraw.Draw(im).text((40, 60), 'The quick brown fox jumps.', fill='black', font=ImageFont.truetype('arial.ttf', 64)); im.save('smoke.png')"
+          function Run($argsList, $log) {
+            $p = Start-Process $exe -ArgumentList ($argsList + @('--log', $log)) -Wait -PassThru
+            if (Test-Path $log) { Get-Content $log -Encoding utf8 }
+            if ($p.ExitCode -ne 0) { throw "Prekladac.exe $argsList skončil s kódem $($p.ExitCode)" }
+          }
+          # 1) převod přes přibalené Calibre (DOCX -> EPUB)
+          Run @('smoke.docx', '--convert-only', '--to', 'epub', '--out-dir', 'smoke_out') 'smoke1.log'
+          if (-not (Get-ChildItem smoke_out -Filter *.epub)) { throw 'EPUB nevznikl' }
+          # 2) OCR přes přibalený Tesseract (obrázek -> DOCX)
+          Run @('smoke.png', '--convert-only', '--ocr', 'tesseract', '--ocr-lang', 'eng', '--out-dir', 'smoke_out') 'smoke2.log'
+          python -c "import docx, glob; t = ' '.join(p.text for f in glob.glob('smoke_out/smoke*.docx') for p in docx.Document(f).paragraphs); print(t); assert 'brown fox' in t"
+          # 3) stažení a instalace pluginu KFX Input do přibaleného Calibre
+          python -c "import sys; sys.path.insert(0, '.'); import components; c = r'$dir\Calibre2\ebook-convert.exe'; print('CA:', components.calibre_ca_file(c)); components.install_kfx_plugin(c, print); assert components.calibre_kfx_plugin(c) is True, 'plugin chybí'"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Prekladac-Setup
+          path: prekladac/dist/Prekladac-Setup.exe
+
+      - name: Zveřejnění v Releases (jen po sloučení do main)
+        if: github.event_name != 'pull_request'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete prekladac-latest --yes --cleanup-tag || true
+          gh release create prekladac-latest dist/Prekladac-Setup.exe \
+            --title "Překladač – nejnovější verze" \
+            --target "$GITHUB_SHA" \
+            --notes "Stáhněte Prekladac-Setup.exe a nainstalujte. Obsahuje Calibre i Tesseract, Python není potřeba. Návod: https://github.com/${{ github.repository }}/tree/main/prekladac#readme"

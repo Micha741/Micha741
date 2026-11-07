@@ -5,5 +5,7 @@ lxml>=5.0
 pypdf>=5.0
 pillow>=10.0
 pypdfium2>=4.30
+truststore>=0.10
+certifi>=2024.0
 # volitelné: přetahování souborů myší do okna
 tkinterdnd2>=0.4

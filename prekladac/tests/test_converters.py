@@ -198,6 +198,13 @@ def test_process_epub_and_naming(tmp_path):
     assert out1.endswith("b (čeština).epub") and out2.endswith("b (čeština) (2).epub")
 
 
+def test_out_dir_is_created(tmp_path):
+    src = tmp_path / "a.txt"
+    src.write_text("x", encoding="utf-8")
+    out = converters.process_file(str(src), None, False, None, str(tmp_path / "nova" / "slozka"))
+    assert Path(out).read_text(encoding="utf-8") == "x"
+
+
 def test_default_formats():
     assert converters.default_output_format(".kfx") == "azw3"
     assert converters.default_output_format(".jpg") == "docx"

@@ -11,6 +11,7 @@ přes **Claude API** (nejlepší kvalita). Umí také jen převádět formáty a
 | **Google Překladač** (výchozí) | zdarma | dobrá | nic, bez registrace (při velkém množství textu může Google dočasně omezit přístup) |
 | **DeepL API Free** | zdarma 500 000 znaků/měsíc (≈ 1 kniha) | velmi dobrá | klíč z deepl.com → API → DeepL API Free (ověřují kartu, nic se nestrhává) |
 | **Microsoft Translator** | zdarma 2 mil. znaků/měsíc | dobrá | klíč z portal.azure.com → Translator, cenová úroveň F0 |
+| **Microsoft – celé dokumenty** | podle cenové úrovně Azure | dobrá, **zachová vzhled** DOCX/PDF/PPTX | stejný klíč + adresa „Překlad dokumentu“ (viz níže) |
 | **Google Gemini** | bezplatná úroveň s limity | velmi dobrá | klíč z aistudio.google.com → Get API key |
 | **Ollama** | zdarma, offline | podle modelu (menší modely slabší) | ollama.com + `ollama pull gemma3:12b`, výkonnější počítač |
 | **LibreTranslate** | zdarma | slabší | vlastní server nebo instance s klíčem |
@@ -20,7 +21,7 @@ přes **Claude API** (nejlepší kvalita). Umí také jen převádět formáty a
 
 | OCR | Cena | Poznámka |
 |---|---|---|
-| **Tesseract** (výchozí) | zdarma, offline | Instalátor: https://github.com/UB-Mannheim/tesseract/wiki. Při instalaci zaškrtněte jazyky (např. Czech). V programu zadejte jazyk textu na obrázku (`eng`, `ces`, `deu`, `eng+deu`). |
+| **Tesseract** (výchozí) | zdarma, offline | Je součástí instalátoru. V hlavním okně zadejte jazyk originálu (`eng`, `ces`, `deu`, `eng+deu`). |
 | **Google Gemini** | bezplatná úroveň | Lépe zvládne fotky, sloupce a tabulky. Použije klíč Gemini. |
 | **Claude** | placený | Nejlepší; s překladačem Claude přečte a přeloží v jednom kroku. |
 
@@ -41,44 +42,77 @@ U PDF s textovou vrstvou (ne sken) Tesseract není potřeba, text se vezme pří
 Výstupní formát jde změnit, například KFX → EPUB, PDF → EPUB nebo DOCX → PDF.
 Výsledek se uloží vedle originálu jako `název (čeština).přípona`.
 
-## Instalace
+## Stažení a instalace
 
-1. **Python 3.10 nebo novější** stáhněte z <https://www.python.org/downloads/>. Při instalaci zaškrtněte *Add python.exe to PATH*.
-2. **Calibre** stáhněte z <https://calibre-ebook.com/download_windows>. Je potřeba na AZW3, KFX, MOBI, RTF a na převody mezi formáty.
-   Pro **KFX** přidejte do Calibre plugin **KFX Input**: *Předvolby → Moduly → Získat nové moduly → KFX Input*.
-3. Ve složce `prekladac` spusťte v příkazovém řádku:
-   ```bat
-   python -m pip install -r requirements.txt
-   ```
-4. Pro obrázky a skeny nainstalujte **Tesseract** (viz výše), nebo v programu zvolte OCR přes Gemini či Claude.
-5. Klíče (DeepL, Microsoft, Gemini, Claude) se zadávají v okně programu. Lze je nastavit i jako proměnné prostředí
-   `DEEPL_API_KEY`, `AZURE_TRANSLATOR_KEY`, `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`.
+1. Stáhněte instalátor **Prekladac-Setup.exe**:
+   **https://github.com/Micha741/Micha741/releases/download/prekladac-latest/Prekladac-Setup.exe**
+   (vždy nejnovější verze, sestavuje ho GitHub automaticky; Python není potřeba).
+2. Spusťte ho a projděte instalací. Instaluje se bez práv správce (do `%LOCALAPPDATA%\Programs\Prekladac`),
+   vytvoří zástupce v nabídce Start a případně na ploše. Odinstalace: *Nastavení Windows → Aplikace*.
+   - Instalátor **obsahuje Calibre** (`Calibre2\ebook-convert.exe`) i **Tesseract** (`Tesseract-OCR\tesseract.exe`)
+     s jazyky OCR (angličtina, čeština, slovenština, němčina, polština, francouzština, španělština, italština,
+     ruština, ukrajinština, maďarština). Nic dalšího se instalovat nemusí.
+   - **Plugin KFX Input** program stáhne a nainstaluje do Calibre sám při prvním souboru KFX
+     (nebo tlačítkem v *⚙ Nastavení → Součásti*). Pokud už máte Calibre s pluginem, použije se váš.
+3. Windows SmartScreen může u nového nepodepsaného programu ukázat „Systém Windows ochránil váš počítač“ →
+   *Další informace → Přesto spustit*. Pokud antivirus (např. Avast) program zablokuje jako `IDP.Generic`,
+   jde o falešný poplach u neznámého programu – viz *Antivirus* níže.
+4. V **⚙ Nastavení → Služby a klíče** vyplňte klíče služeb, které chcete používat, a ověřte je tlačítkem **Otestovat**.
+   Klíče se ukládají **zašifrovaně** (Windows DPAPI) jen pro váš účet ve Windows.
 
-## Spuštění
-
-Dvakrát klikněte na `spustit.bat`. Případně spusťte `python app.py`.
+## Použití
 
 1. Přidejte soubory tlačítkem nebo je přetáhněte myší do seznamu.
-2. Zvolte cílový jazyk, výstupní formát, překladač a OCR. V rámečku *Nastavení služby* vyplňte klíč, pokud ho služba potřebuje.
+2. Zvolte cílový jazyk, výstupní formát, překladač a OCR. Pod překladačem je vidět, jestli je služba připravená.
 3. Klikněte na **Spustit**. V okně uvidíte průběh a na konci spotřebu (u Claude cenu, u DeepL zbývající měsíční limit).
 
 Do pole **Pokyny pro překlad** (platí pro Claude, Gemini a Ollama) můžete napsat například:
 `Jména postav nepřekládej. „Ranger“ překládej jako „hraničář“. Tykání mezi postavami zachovej.`
 
-### Samostatný .exe
+### Microsoft: dvě API
 
-Spusťte `build_exe.bat`. Vznikne `dist\Prekladac.exe`, který jde spustit bez instalace Pythonu.
-Calibre (a Tesseract pro obrázky) ale musí být nainstalované i tak.
+Služba Translator v Azure má v *Klíče a koncový bod* dvě adresy a oba používají stejný **KLÍČ 1**:
+
+| API | Volba v programu | Co umí |
+|---|---|---|
+| **Překlad textu** (`api.cognitive.microsofttranslator.com`) | *Microsoft Translator* | text po odstavcích, všechny formáty včetně e-knih; potřebuje **oblast** (např. `westeurope`) |
+| **Překlad dokumentu** (`https://<název>.cognitiveservices.azure.com/`) | *Microsoft – překlad celých dokumentů* | pošle celý soubor (DOCX, PDF, PPTX, XLSX, TXT, HTML, ODT, RTF, MD; do 10 MB) a vrátí ho přeložený **se zachovaným vzhledem** – PDF zůstane PDF; e-knihy a obrázky se přeloží přes Překlad textu |
+
+Adresu „Překlad dokumentu“ zkopírujte do *⚙ Nastavení → Microsoft Azure Translator*. Pokud Microsoft hlásí, že tato funkce
+na vaší cenové úrovni není dostupná, použijte Překlad textu (ten na F0 funguje vždy).
 
 ### Příkazová řádka
 
 ```bat
-python app.py kniha.kfx --to epub --engine google
-python app.py dokument.docx --engine deepl --key VAS-KLIC:fx
-python app.py strana1.jpg strana2.jpg --merge-images --ocr tesseract --ocr-lang eng
-python app.py kniha.epub --engine ollama --model gemma3:12b
-python app.py kniha.azw3 --to epub --convert-only
+Prekladac.exe kniha.kfx --to epub --engine google
+Prekladac.exe dokument.docx --engine deepl
+Prekladac.exe zprava.pdf --engine microsoft_doc
+Prekladac.exe strana1.jpg strana2.jpg --merge-images --ocr tesseract --ocr-lang eng
+Prekladac.exe kniha.azw3 --to epub --convert-only
 ```
+Klíče se berou z Nastavení programu (nebo z parametru `--key`, případně z proměnných prostředí
+`DEEPL_API_KEY`, `AZURE_TRANSLATOR_KEY`, `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`).
+
+### Pro vývojáře: spuštění ze zdrojového kódu
+
+```bat
+python -m pip install -r requirements.txt
+python app.py
+```
+Instalátor (`installer.iss`, Inno Setup) i s přibaleným Calibre a Tesseractem sestavuje na GitHubu workflow
+`.github/workflows/prekladac.yml`, který ho po instalaci i vyzkouší. `build_exe.bat` sestaví jen samotný program.
+
+## Antivirus
+
+Program není digitálně podepsaný (podpisový certifikát je placený), proto ho SmartScreen a některé antiviry
+zpočátku považují za neznámý. Když ho Avast zablokuje jako `IDP.Generic`:
+1. V Avastu přidejte výjimku pro složku `%LOCALAPPDATA%\Programs\Prekladac` (v nastavení Avastu hledejte
+   *Výjimky*), případně soubor obnovte z karantény.
+2. Nahlaste falešný poplach na <https://www.avast.com/false-positive-file-form.php>, aby se program přestal blokovat
+   i ostatním.
+
+Instalátor program rozbaluje do vlastní složky (ne do Temp) a nic dalšího přes internet neinstaluje, což antiviry
+vidí mnohem méně podezřele než samostatné `.exe`. Licence přibalených programů jsou v `THIRD_PARTY.txt`.
 
 ## Claude: modely a cena
 
@@ -107,7 +141,7 @@ Ceny jsou jen orientační. Program před každým souborem vypíše odhad a na 
 - **Zápis do KFX** se nepodporuje. Pro Kindle použijte AZW3 nebo EPUB (Send to Kindle umí EPUB).
 - U **PDF** se zachová obsah, nadpisy, seznamy a tabulky, ale ne přesné rozvržení stránky.
 - V **DOCX** se zachovají styly odstavců, tučné písmo, kurzíva a podtržení. Jiné formátování uvnitř odstavce (barva nebo velikost jednotlivých slov) se sjednotí podle začátku odstavce. Text odkazů se přesune do běžného textu. Poznámky pod čarou se nepřekládají.
-- Zapamatované klíče se ukládají jako prostý text do `%APPDATA%\Prekladac\config.json`. Pokud to nechcete, nechte políčko *Zapamatovat klíče* nezaškrtnuté a použijte proměnné prostředí.
+- Klíče jsou v `%APPDATA%\Prekladac\config.json` zašifrované pro váš účet ve Windows. Do samotného `.exe` se nevkládají, kdokoli s programem by je jinak mohl vytáhnout.
 - Google Překladač bez klíče je neoficiální přístup; Google ho může kdykoli omezit. Pro celé knihy je spolehlivější DeepL Free nebo Gemini.
 - Tesseract nerozpozná nadpisy ani tabulky – vše uloží jako odstavce. Gemini a Claude je rozpoznají.
 

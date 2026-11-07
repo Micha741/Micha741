@@ -19,7 +19,9 @@ from typing import Callable, Protocol
 EBOOK_EXT = {".epub", ".azw3", ".azw", ".kfx", ".mobi", ".fb2", ".rtf", ".odt", ".htmlz", ".lit", ".pdb"}
 IMAGE_EXT = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tif", ".tiff", ".gif"}
 DOC_EXT = {".docx", ".txt", ".pdf"}
-SUPPORTED_EXT = EBOOK_EXT | IMAGE_EXT | DOC_EXT
+# tyto formáty umí jen „Microsoft – překlad celých dokumentů“
+DOC_ONLY_EXT = {".pptx", ".xlsx", ".md"}
+SUPPORTED_EXT = EBOOK_EXT | IMAGE_EXT | DOC_EXT | DOC_ONLY_EXT
 OUTPUT_FORMATS = ["epub", "azw3", "docx", "pdf", "txt", "rtf", "mobi"]
 
 LANG_CODES = {
@@ -48,6 +50,9 @@ def _noop(*_a, **_k):
 
 # ------------------------------------------------------------- Calibre
 def find_ebook_convert(custom: str | None = None) -> str | None:
+    """Nastavená cesta → nainstalované Calibre → Calibre přibalené k programu."""
+    from components import bundled_exe
+
     candidates = [custom] if custom else []
     candidates.append(shutil.which("ebook-convert"))
     for base in (os.environ.get("ProgramFiles", r"C:\Program Files"), os.environ.get("ProgramFiles(x86)", "")):
@@ -55,6 +60,7 @@ def find_ebook_convert(custom: str | None = None) -> str | None:
             candidates.append(os.path.join(base, "Calibre2", "ebook-convert.exe"))
             candidates.append(os.path.join(base, "Calibre", "ebook-convert.exe"))
     candidates.append("/Applications/calibre.app/Contents/MacOS/ebook-convert")
+    candidates.append(bundled_exe("Calibre2", "ebook-convert"))
     for c in candidates:
         if c and os.path.isfile(c):
             return c
@@ -72,6 +78,8 @@ def calibre_convert(src: str, dst: str, log: Log = _noop, ebook_convert: str | N
             "Pro tento převod je potřeba Calibre (https://calibre-ebook.com). "
             "Nainstalujte ho, případně nastavte cestu k ebook-convert.exe."
         )
+    if src.lower().endswith(".kfx"):
+        _ensure_kfx_plugin(exe, log)
     log(f"  Calibre: {Path(src).suffix} → {Path(dst).suffix}")
     flags = subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0
     proc = subprocess.run([exe, src, dst], capture_output=True, text=True, errors="replace", creationflags=flags)
@@ -81,6 +89,18 @@ def calibre_convert(src: str, dst: str, log: Log = _noop, ebook_convert: str | N
         if src.lower().endswith(".kfx"):
             hint = "\nPro KFX nainstalujte do Calibre plugin „KFX Input“ (Předvolby → Moduly → Získat nové moduly)."
         raise RuntimeError(f"Calibre převod selhal:\n{tail}{hint}")
+
+
+def _ensure_kfx_plugin(exe: str, log: Log) -> None:
+    """Pro KFX je potřeba plugin KFX Input – když chybí, stáhne a nainstaluje ho."""
+    import components
+
+    if components.calibre_kfx_plugin(exe) is False:
+        log("  Plugin KFX Input v Calibre chybí, instaluji ho…")
+        try:
+            components.install_kfx_plugin(exe, log)
+        except Exception as e:  # noqa: BLE001 – převod se i tak zkusí, chyba se vypíše
+            log(f"  ! {e}")
 
 
 # ----------------------------------------------------------------- EPUB
@@ -538,6 +558,7 @@ def default_output_format(ext: str) -> str:
 def output_path(src: str, out_dir: str | None, fmt: str, suffix: str) -> str:
     p = Path(src)
     folder = Path(out_dir) if out_dir else p.parent
+    folder.mkdir(parents=True, exist_ok=True)
     candidate = folder / f"{p.stem}{suffix}.{fmt}"
     n = 2
     while candidate.exists():
@@ -560,7 +581,9 @@ def process_file(
     ext = Path(src).suffix.lower()
     if ext not in SUPPORTED_EXT:
         raise ValueError(f"Nepodporovaný formát: {ext}")
-    fmt = (out_fmt or default_output_format(ext)).lower()
+    doc_tr = getattr(tr, "document_translator", None) if translate and tr is not None else None
+    use_doc = doc_tr is not None and ext in doc_tr.SUPPORTED
+    fmt = (out_fmt or (ext.lstrip(".") if use_doc else default_output_format(ext))).lower()
     suffix = f" ({tr.target_lang})" if translate and tr else ""
     dst = output_path(src, out_dir, fmt, suffix if translate else " (převod)")
     conv = lambda a, b: calibre_convert(a, b, log, ebook_convert)  # noqa: E731
@@ -576,7 +599,17 @@ def process_file(
                 conv(produced, dst)
             return dst
 
-        # --- obrázky a PDF: Claude přečte (a přeloží) obsah → DOCX
+        # --- celý dokument přeloží služba najednou (Microsoft – překlad dokumentů)
+        if use_doc:
+            produced = tmpfile("vystup" + ext)
+            doc_tr.translate_document(src, produced, log)
+            progress(1.0)
+            return finish(produced)
+
+        if ext in DOC_ONLY_EXT:
+            raise ValueError(f"Formát {ext} umí přeložit jen překladač „Microsoft – překlad celých dokumentů“.")
+
+        # --- obrázky a PDF: OCR / text z PDF (a překlad) → DOCX
         if ext in IMAGE_EXT or (ext == ".pdf" and (translate or fmt == "docx")):
             if tr is None:
                 raise ValueError("Pro obrázky a PDF je potřeba nastavit OCR (Tesseract, Gemini nebo Claude).")
