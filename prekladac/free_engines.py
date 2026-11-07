@@ -330,6 +330,69 @@ class MicrosoftEngine(Engine):
         return out
 
 
+class MicrosoftDocumentTranslator:
+    """Druhé API Azure Translatoru: přeloží celý soubor najednou a zachová jeho vzhled (synchronní režim)."""
+
+    API_VERSION = "2024-05-01"
+    MAX_BYTES = 10 * 1024 * 1024
+    CONTENT_TYPES = {
+        ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        ".pdf": "application/pdf",
+        ".txt": "text/plain",
+        ".html": "text/html",
+        ".htm": "text/html",
+        ".odt": "application/vnd.oasis.opendocument.text",
+        ".rtf": "application/rtf",
+        ".md": "text/markdown",
+    }
+    SUPPORTED = set(CONTENT_TYPES)
+
+    def __init__(self, target_lang: str, api_key: str, endpoint: str):
+        if not api_key:
+            raise EngineError("Microsoft: chybí klíč (Azure → Translator → Klíče a koncový bod).")
+        if not endpoint:
+            raise EngineError("Microsoft – překlad dokumentů: chybí adresa „Překlad dokumentu“ "
+                              "(Azure → Translator → Klíče a koncový bod, např. https://nazev.cognitiveservices.azure.com/).")
+        endpoint = endpoint.strip().rstrip("/")
+        if not endpoint.startswith("https://"):
+            endpoint = "https://" + endpoint.split("://")[-1]
+        self.endpoint = endpoint
+        self.key = re.sub(r"\s+", "", api_key)
+        self.iso, _ = lang_codes(target_lang)
+        self.target_lang = target_lang
+        self.chars_files = 0
+
+    def translate_document(self, src: str, dst: str, log: Callable[[str], None] = print) -> None:
+        ext = os.path.splitext(src)[1].lower()
+        data = open(src, "rb").read()
+        if len(data) > self.MAX_BYTES:
+            raise EngineError("Microsoft – překlad dokumentů: soubor je větší než 10 MB.")
+        boundary = "----Prekladac" + os.urandom(8).hex()
+        name = os.path.basename(src).replace('"', "")
+        body = (
+            f"--{boundary}\r\nContent-Disposition: form-data; name=\"document\"; filename=\"{name}\"\r\n"
+            f"Content-Type: {self.CONTENT_TYPES[ext]}\r\n\r\n"
+        ).encode("utf-8") + data + f"\r\n--{boundary}--\r\n".encode("ascii")
+        params = urllib.parse.urlencode({"targetLanguage": self.iso, "api-version": self.API_VERSION})
+        log("  Microsoft: překládám celý dokument…")
+        result = http_request(
+            f"{self.endpoint}/translator/document:translate?{params}", data=body, timeout=900,
+            headers={"Ocp-Apim-Subscription-Key": self.key,
+                     "Content-Type": f"multipart/form-data; boundary={boundary}"},
+            service="Microsoft – překlad dokumentů",
+        )
+        if not result:
+            raise EngineError("Microsoft – překlad dokumentů: služba vrátila prázdný soubor.")
+        with open(dst, "wb") as f:
+            f.write(result)
+        self.chars_files += 1
+
+    def cost_summary(self) -> str:
+        return f"Microsoft – překlad dokumentů: přeloženo souborů: {self.chars_files}" if self.chars_files else ""
+
+
 class LibreTranslateEngine(Engine):
     name = "LibreTranslate"
     max_chars = 5000
@@ -465,6 +528,7 @@ ENGINE_LABELS = {
     "deepl": "DeepL API Free – zdarma 500 000 znaků/měsíc",
     "google": "Google Překladač – zdarma, bez klíče",
     "microsoft": "Microsoft Translator – zdarma 2 mil. znaků/měsíc",
+    "microsoft_doc": "Microsoft – překlad celých dokumentů se zachováním vzhledu (DOCX, PDF, PPTX…)",
     "gemini": "Google Gemini – bezplatná úroveň s limity",
     "ollama": "Ollama – AI v počítači, offline, zdarma",
     "libre": "LibreTranslate – vlastní server, zdarma",
@@ -588,21 +652,37 @@ class TesseractOCR:
         self.exe = find_tesseract(exe)
         if not self.exe:
             raise EngineError(
-                "Tesseract nebyl nalezen. Nainstalujte ho (https://github.com/UB-Mannheim/tesseract/wiki) "
-                "a při instalaci vyberte jazyky, které potřebujete, nebo nastavte cestu k tesseract.exe."
+                "Tesseract nebyl nalezen. Nainstalujte ho v programu: Nastavení → Součásti → Nainstalovat Tesseract "
+                "(nebo ručně z https://github.com/UB-Mannheim/tesseract/releases)."
             )
         self.lang = (lang or "eng").strip().replace(",", "+").replace(" ", "")
         self.log = log
+        self._tessdata: str | None = None
+        self._prepared = False
+        self._lock = threading.Lock()
+
+    def _prepare(self):
+        """Chybějící jazyky stáhne do složky programu (jen jednou)."""
+        with self._lock:
+            if self._prepared:
+                return
+            from components import ensure_ocr_languages
+
+            folder = ensure_ocr_languages(self.lang.split("+"), self.exe, self.log)
+            self._tessdata = str(folder) if folder else None
+            self._prepared = True
 
     def _ocr_png(self, png_path: str) -> str:
+        self._prepare()
         flags = subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0
-        proc = subprocess.run([self.exe, png_path, "stdout", "-l", self.lang, "--psm", "3"],
-                              capture_output=True, creationflags=flags)
+        cmd = [self.exe, png_path, "stdout", "-l", self.lang, "--psm", "3"]
+        if self._tessdata:
+            cmd += ["--tessdata-dir", self._tessdata]
+        proc = subprocess.run(cmd, capture_output=True, creationflags=flags)
         err = proc.stderr.decode("utf-8", errors="replace")
         if proc.returncode != 0:
             if "Failed loading language" in err or "Error opening data file" in err:
-                raise EngineError(f"Tesseract nemá nainstalovaný jazyk „{self.lang}“. Doinstalujte ho "
-                                  "(instalátor Tesseractu → Additional language data).")
+                raise EngineError(f"Tesseract nemá jazyk „{self.lang}“. Stáhněte ho v Nastavení → Součásti.")
             raise EngineError(f"Tesseract selhal: {err[-500:]}")
         return proc.stdout.decode("utf-8", errors="replace")
 
@@ -644,9 +724,10 @@ class TesseractOCR:
 class Pipeline:
     """Spojí OCR (Tesseract/Gemini/Claude) s libovolným překladačem."""
 
-    def __init__(self, segs, ocr, target_lang: str):
+    def __init__(self, segs, ocr, target_lang: str, document_translator=None):
         self.segs = segs  # může být None, když se jen přepisuje text bez překladu
         self.ocr = ocr
+        self.document_translator = document_translator  # celé soubory (Microsoft), jinak None
         self.target_lang = target_lang
         self.workers = getattr(ocr, "workers", 2) if ocr is not None else getattr(segs, "workers", 2)
 
@@ -683,7 +764,7 @@ class Pipeline:
 
     def cost_summary(self) -> str:
         parts = []
-        for obj in (self.segs, self.ocr):
+        for obj in (self.document_translator, self.segs, self.ocr):
             if obj is not None and hasattr(obj, "cost_summary"):
                 s = obj.cost_summary()
                 if s and s not in parts:
