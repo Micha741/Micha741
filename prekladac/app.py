@@ -777,10 +777,12 @@ def run_gui() -> None:
             "Ollama (zdarma, v počítači)": "ollama",
         }
 
-        w = tk.Toplevel(root)
-        w.title("Napsat knihu (Claude)")
-        w.geometry("900x780")
-        w.transient(root)
+        import book_options as bo
+
+        w = tk.Toplevel(root)  # bez transient(): okno jde maximalizovat a minimalizovat
+        w.title("Napsat knihu")
+        w.geometry("1000x900")
+        w.minsize(760, 600)
         frm = ttk.Frame(w, padding=8)
         frm.pack(fill="both", expand=True)
         frm.columnconfigure(1, weight=1)
@@ -792,11 +794,35 @@ def run_gui() -> None:
         desc = tk.Text(frm, height=7, wrap="word")
         desc.grid(row=1, column=0, columnspan=4, sticky="nsew", pady=(2, 6))
 
-        ttk.Label(frm, text="Žánr a styl:").grid(row=2, column=0, sticky="w")
-        style = tk.StringVar(value="")
-        ttk.Entry(frm, textvariable=style).grid(row=2, column=1, columnspan=3, sticky="ew", pady=2)
-        ttk.Label(frm, text="např. napínavá fantasy pro dospívající, ich-forma, vtipné dialogy",
-                  foreground="#555").grid(row=3, column=1, columnspan=3, sticky="w")
+        cat_frame = ttk.LabelFrame(frm, text="Žánr a styl (vyberte nebo napište vlastní)")
+        cat_frame.grid(row=2, column=0, columnspan=4, sticky="ew", pady=2)
+        for c in (1, 3, 5):
+            cat_frame.columnconfigure(c, weight=1)
+        cat_vars: dict[str, tk.StringVar] = {}
+        for k, (key, label, values) in enumerate(bo.CATEGORIES):
+            r, c = divmod(k, 3)
+            ttk.Label(cat_frame, text=label + ":").grid(row=r, column=c * 2, sticky="w", padx=(6, 2), pady=2)
+            var = tk.StringVar(value="")
+            ttk.Combobox(cat_frame, textvariable=var, values=values, height=20).grid(
+                row=r, column=c * 2 + 1, sticky="ew", padx=(0, 6), pady=2)
+            cat_vars[key] = var
+        ttk.Label(cat_frame, text="Další přání:").grid(row=3, column=0, sticky="w", padx=(6, 2), pady=2)
+        style = tk.StringVar(value="")  # vlastní doplnění stylu
+        ttk.Entry(cat_frame, textvariable=style).grid(row=3, column=1, columnspan=5, sticky="ew", padx=(0, 6), pady=2)
+        mature_lbl = ttk.Label(frm, text="", foreground="#b35900", wraplength=900)
+        mature_lbl.grid(row=3, column=0, columnspan=4, sticky="w")
+
+        def style_parts():
+            return {k: v.get() for k, v in cat_vars.items()}
+
+        def full_style():
+            return bo.compose_style(style_parts(), style.get())
+
+        def on_category(*_):
+            mature_lbl.configure(text=bo.MATURE_NOTE if bo.is_mature(style_parts()) else "")
+
+        for var in cat_vars.values():
+            var.trace_add("write", on_category)
 
         ttk.Label(frm, text="Jazyk knihy:").grid(row=4, column=0, sticky="w", pady=2)
         blang = tk.StringVar(value=cfg.get("lang", "čeština"))
@@ -856,6 +882,26 @@ def run_gui() -> None:
         b_stop.pack(side="left")
         b_load = ttk.Button(btns, text="Pokračovat v rozepsané…")
         b_load.pack(side="right")
+        b_edit = ttk.Button(btns, text="📖 Upravit knihu", state="disabled")
+        b_edit.pack(side="right", padx=8)
+        big = tk.BooleanVar(value=False)
+
+        def toggle_big():
+            w.attributes("-fullscreen", big.get())
+
+        ttk.Checkbutton(btns, text="Celá obrazovka (Esc)", variable=big, command=toggle_big).pack(side="right")
+        w.bind("<Escape>", lambda e: (big.set(False), toggle_big()))
+
+        def open_book_editor():
+            import book_editor
+
+            if not state["project"] or not state["project"]["chapters"]:
+                messagebox.showinfo("Upravit knihu", "Kniha zatím nemá napsanou žádnou kapitolu.", parent=w)
+                return
+            book_editor.open_editor(root, state["project"], state["path"],
+                                    cfg["paths"].get("ebook_convert") or None, in_thread)
+
+        b_edit.configure(command=open_book_editor)
         bbar = ttk.Progressbar(frm, maximum=1.0)
         bbar.grid(row=14, column=0, columnspan=4, sticky="ew")
         blog = ScrolledText(frm, height=7, state="disabled", wrap="word")
@@ -913,6 +959,8 @@ def run_gui() -> None:
             b_load.configure(state="disabled" if on else "normal")
             b_write.configure(state="disabled" if on or not outline_box.get("1.0", "end").strip() else "normal")
             b_stop.configure(state="normal" if on else "disabled")
+            has_text = bool(state["project"] and state["project"]["chapters"])
+            b_edit.configure(state="normal" if has_text and not on else "disabled")
 
         def do_outline():
             text = desc.get("1.0", "end").strip()
@@ -930,10 +978,35 @@ def run_gui() -> None:
                     return
                 outline_box.delete("1.0", "end")
                 outline_box.insert("1.0", bw.outline_to_text(o))
+                state["path"] = None
+                try:
+                    new_project(o)
+                except Exception as e:  # noqa: BLE001
+                    wlog(f"! Osnovu se nepodařilo uložit: {e}")
                 busy(False)
                 wlog("✓ Osnova je hotová. Projděte ji, případně upravte, a klikněte na „2. Napsat knihu“.")
 
-            in_thread(lambda: writer().make_outline(text, int(nchap.get()), int(nwords.get()), style.get()), done)
+            in_thread(lambda: writer().make_outline(text, int(nchap.get()), int(nwords.get()), full_style()), done)
+
+        def book_dir() -> Path:
+            d = Path(bdir.get().strip() or Path.home() / "Documents" / "Knihy")
+            d.mkdir(parents=True, exist_ok=True)
+            return d
+
+        def new_project(outline: dict) -> None:
+            """Založí projekt a hned ho uloží – osnova se neztratí ani při zavření programu."""
+            proj = {"description": desc.get("1.0", "end").strip(), "style": full_style(),
+                    "style_parts": style_parts(), "style_extra": style.get().strip(),
+                    "language": blang.get().strip() or "čeština", "service": BOOK_SERVICES[bservice.get()],
+                    "model": MODELS[bmodel.get()], "words": int(nwords.get()), "outline": outline, "chapters": []}
+            path = book_dir() / (bw.safe_name(outline["title"]) + bw.PROJECT_SUFFIX)
+            n = 2
+            while path.exists() and (state["path"] != path):
+                path = book_dir() / f"{bw.safe_name(outline['title'])} ({n}){bw.PROJECT_SUFFIX}"
+                n += 1
+            state.update(project=proj, path=path)
+            bw.save_project(path, proj)
+            wlog(f"Osnova uložena: {path}")
 
         def do_write():
             try:
@@ -942,20 +1015,24 @@ def run_gui() -> None:
                 messagebox.showerror("Napsat knihu", str(e), parent=w)
                 return
             formats = [f for f, v in fmt_vars.items() if v.get()] or ["docx"]
-            out_dir = Path(bdir.get().strip() or Path.home() / "Documents" / "Knihy")
-            out_dir.mkdir(parents=True, exist_ok=True)
             proj = state["project"]
             if proj is None or proj["outline"] != outline:
                 if proj is not None and proj["chapters"]:
                     if not messagebox.askyesno("Napsat knihu", "Osnova se změnila – začít psát od první kapitoly?",
                                                parent=w):
                         return
-                proj = {"description": desc.get("1.0", "end").strip(), "style": style.get().strip(),
-                        "language": blang.get().strip() or "čeština", "service": BOOK_SERVICES[bservice.get()],
-                        "model": MODELS[bmodel.get()],
-                        "words": int(nwords.get()), "outline": outline, "chapters": []}
-                state["path"] = out_dir / (bw.safe_name(outline["title"]) + bw.PROJECT_SUFFIX)
-            state["project"] = proj
+                if proj is not None and not proj["chapters"]:
+                    # zatím nic nenapsáno: převezmeme upravenou osnovu i aktuální nastavení
+                    proj.update(outline=outline, words=int(nwords.get()), style=full_style(),
+                                style_parts=style_parts(), style_extra=style.get().strip(),
+                                description=desc.get("1.0", "end").strip(),
+                                language=blang.get().strip() or "čeština")
+                    bw.save_project(state["path"], proj)
+                else:
+                    state["path"] = None
+                    new_project(outline)
+            proj = state["project"]
+            out_dir = state["path"].parent
             path = state["path"]
             n = len(outline["chapters"])
             try:
@@ -997,7 +1074,9 @@ def run_gui() -> None:
                     return
                 for f in files:
                     wlog(f"✓ Uloženo: {f}")
-                messagebox.showinfo("Napsat knihu", "Kniha je hotová.\n\n" + "\n".join(files), parent=w)
+                if messagebox.askyesno("Napsat knihu", "Kniha je hotová.\n\n" + "\n".join(files)
+                                       + "\n\nOtevřít ji v editoru (úpravy, písmo, hledání, obsah)?", parent=w):
+                    open_book_editor()
 
             in_thread(job, done)
 
@@ -1014,7 +1093,10 @@ def run_gui() -> None:
             state.update(project=proj, path=Path(f))
             desc.delete("1.0", "end")
             desc.insert("1.0", proj.get("description", ""))
-            style.set(proj.get("style", ""))
+            parts = proj.get("style_parts") or {}
+            for key, var in cat_vars.items():
+                var.set(parts.get(key, ""))
+            style.set(proj.get("style_extra", "") if parts else proj.get("style", ""))
             blang.set(proj.get("language", "čeština"))
             nwords.set(proj.get("words", 2500))
             nchap.set(len(proj["outline"]["chapters"]))

@@ -89,8 +89,17 @@ DeepSeek nebo bezplatné modely na OpenRouteru) nebo **Ollama** (zdarma ve vaše
 3. **2. Napsat knihu** – Claude píše kapitolu po kapitole; každá dostane osnovu, shrnutí předchozích kapitol
    a konec předchozí kapitoly, aby děj i postavy navazovaly. Hotová kniha se uloží jako EPUB, DOCX, PDF nebo AZW3.
 
-Rozepsaná kniha se po každé kapitole ukládá (`Název.kniha.json`), takže psaní jde **Zastavit** a později
-**Pokračovat v rozepsané…**. Orientačně: 12 kapitol × 2 500 slov (≈ 100 stran) stojí s Opus 5.5 asi 3–5 USD,
+Žánr a styl se vybírá ze seznamů (přes 40 žánrů včetně erotiky, pro koho, vypravěč, tón, tempo, prostředí,
+jazyk) a lze dopsat vlastní přání. Okno jde maximalizovat nebo přepnout na celou obrazovku.
+
+**Ukládání:** osnova se uloží hned po vytvoření a rozepsaná kniha po každé kapitole (`Název.kniha.json`).
+Když program zavřete, přijdete nanejvýš o právě psanou kapitolu – po spuštění klikněte na
+**Pokračovat v rozepsané…** a psaní pokračuje od další kapitoly (nezačíná znovu).
+
+**📖 Upravit knihu** otevře editor: seznam kapitol, úprava textu a názvů kapitol, název a autor knihy, volba písma
+a velikosti, zalomení řádku (Enter), nový odstavec (prázdný řádek), zalomení stránky (`[[STRANA]]`), hledání
+(Ctrl+F) a nahrazení v celé knize, počet slov a odstavců kapitoly i celé knihy. Export vloží na začátek
+**obsah s odkazy** na kapitoly (v DOCX, EPUB i PDF). Orientačně: 12 kapitol × 2 500 slov (≈ 100 stran) stojí s Opus 5.5 asi 3–5 USD,
 se Sonnet 5.5 asi polovinu. Text je souvislý a čtivý, ale počítejte s vlastním přečtením a úpravami.
 
 ### Microsoft: dvě API

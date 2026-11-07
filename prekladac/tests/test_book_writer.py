@@ -90,16 +90,37 @@ def test_outline_and_write_with_resume(monkeypatch, tmp_path):
 
 def test_export_docx(tmp_path):
     import docx
+    from docx.oxml.ns import qn
 
-    project = {"language": "čeština", "outline": OUTLINE,
-               "chapters": [{"text": "První odstavec.\n\nDruhý\nodstavec.", "summary": ""}] * 3}
+    text = "První odstavec.\n\nDruhý\nřádek.\n\n[[STRANA]]\n\nTřetí odstavec."
+    project = {"language": "čeština", "outline": OUTLINE, "format": {"font": "Arial", "size": 14, "toc": True},
+               "chapters": [{"text": text, "summary": ""}] * 3}
     files = bw.export(project, tmp_path / "out", ["docx"], log=lambda *_: None)
     assert len(files) == 1 and files[0].endswith("Strážce majáku.docx")
     d = docx.Document(files[0])
     heads = [p.text for p in d.paragraphs if p.style.name.startswith("Heading")]
-    assert heads == ["1. Bouře", "2. Mapa", "3. Návrat"]
-    assert "Druhý odstavec." in [p.text for p in d.paragraphs]
+    assert heads == ["Obsah", "1. Bouře", "2. Mapa", "3. Návrat"]
+    texts = [p.text for p in d.paragraphs]
+    assert "Druhý\nřádek." in texts  # zalomení řádku uvnitř odstavce
+    assert "Třetí odstavec." in texts
+    links = d.element.body.findall(".//" + qn("w:hyperlink"))
+    assert [ln.get(qn("w:anchor")) for ln in links] == ["kapitola_1", "kapitola_2", "kapitola_3"]
+    marks = [b.get(qn("w:name")) for b in d.element.body.findall(".//" + qn("w:bookmarkStart"))]
+    assert marks == ["kapitola_1", "kapitola_2", "kapitola_3"]
+    assert d.styles["Normal"].font.name == "Arial" and d.styles["Normal"].font.size.pt == 14
+    breaks = d.element.body.findall(".//" + qn("w:br"))
+    assert sum(1 for b in breaks if b.get(qn("w:type")) == "page") == 1 + 3 + 3  # obsah + kapitoly + [[STRANA]]
     assert d.core_properties.title == "Strážce majáku" and d.core_properties.language == "cs"
+
+    project["format"]["toc"] = False
+    d2 = docx.Document(bw.export(project, tmp_path / "out2", ["docx"], log=lambda *_: None)[0])
+    assert [p.text for p in d2.paragraphs if p.style.name.startswith("Heading")][0] == "1. Bouře"
+
+
+def test_text_and_book_stats():
+    text = "Jedna dvě tři.\n\n[[STRANA]]\n\nČtyři pět.\nŠest."
+    assert bw.text_stats(text) == (6, 2)
+    assert bw.book_stats({"chapters": [{"text": text}, {"text": "Sedm."}]}) == (7, 3, 2)
 
 
 def test_estimate_and_safe_name():
@@ -146,3 +167,14 @@ def test_engine_backends_write_a_book(monkeypatch, tmp_path):
     assert sent[0][0] == "https://api.deepseek.com/v1/chat/completions"
     assert sent[0][1]["data"]["response_format"] == {"type": "json_object"}
     assert sent[0][1]["headers"]["Authorization"] == "Bearer k"
+
+
+def test_style_options():
+    import book_options as bo
+
+    assert len(bo.GENRES) >= 30 and "Erotika" in bo.GENRES
+    parts = {"genre": "Fantasy", "audience": "Mládež (young adult)", "narrator": "", "tone": "Napínavý"}
+    assert bo.compose_style(parts, "hodně dialogů") == \
+        "Žánr: Fantasy; Pro koho: Mládež (young adult); Tón / atmosféra: Napínavý; Další přání: hodně dialogů"
+    assert bo.is_mature({"genre": "Erotika"}) and bo.is_mature({"audience": "Dospělí 18+"})
+    assert not bo.is_mature(parts)

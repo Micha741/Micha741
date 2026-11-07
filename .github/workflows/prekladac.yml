@@ -102,7 +102,9 @@ jobs:
           # 2) OCR přes přibalený Tesseract (obrázek -> DOCX)
           Run @('smoke.png', '--convert-only', '--ocr', 'tesseract', '--ocr-lang', 'eng', '--out-dir', 'smoke_out') 'smoke2.log'
           python -c "import docx, glob; t = ' '.join(p.text for f in glob.glob('smoke_out/smoke*.docx') for p in docx.Document(f).paragraphs); print(t); assert 'brown fox' in t"
-          # 3) stažení a instalace pluginu KFX Input do přibaleného Calibre
+          # 3) kniha s obsahem a odkazy -> EPUB přes přibalené Calibre; odkazy musí zůstat
+          python tests\ci_check_epub_links.py "$dir\Calibre2\ebook-convert.exe"
+          # 4) stažení a instalace pluginu KFX Input do přibaleného Calibre
           python -c "import sys; sys.path.insert(0, '.'); import components; c = r'$dir\Calibre2\ebook-convert.exe'; print('CA:', components.calibre_ca_file(c)); components.install_kfx_plugin(c, print); assert components.calibre_kfx_plugin(c) is True, 'plugin chybí'"
 
       - uses: actions/upload-artifact@v4
