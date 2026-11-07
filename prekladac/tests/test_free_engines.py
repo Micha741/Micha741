@@ -103,7 +103,7 @@ def test_microsoft_libre(monkeypatch):
     assert MicrosoftEngine.normalize_region("Global") == ""
     assert MicrosoftEngine("čeština", " ab c ").key == "abc"
 
-    def unauthorized(url, kw):
+    def unauthorized(url, **kw):
         raise EngineError("Microsoft Translator: neplatný nebo chybějící klíč (HTTP 401).")
 
     monkeypatch.setattr(fe, "http_json", unauthorized)
