@@ -467,7 +467,8 @@ class LibreTranslateEngine(Engine):
             out = [out]
         if not isinstance(out, list) or len(out) != len(texts):
             raise BadResponse("LibreTranslate vrátil jiný počet úseků")
-        return out
+        # LibreTranslate u HTML někdy přidá na začátek odrážku „• “, která v originále není
+        return [re.sub(r"^\s*•\s*", "", t) if not src.lstrip().startswith("•") else t for src, t in zip(texts, out)]
 
 
 class _LLMEngine(Engine):

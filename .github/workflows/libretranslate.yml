@@ -1,0 +1,50 @@
+name: Překladač – test s LibreTranslate
+
+# Nainstaluje LibreTranslate (pip install libretranslate), spustí ho s modely angličtina ↔ čeština
+# a ověří, že překladač „LibreTranslate“ v programu s ním funguje.
+on:
+  push:
+    paths: ["prekladac/free_engines.py", "prekladac/tests/test_free_engines.py", ".github/workflows/libretranslate.yml"]
+  workflow_dispatch:
+
+jobs:
+  libretranslate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalace LibreTranslate (jen CPU verze PyTorch)
+        run: python -m pip install libretranslate --extra-index-url https://download.pytorch.org/whl/cpu
+
+      - name: Spuštění LibreTranslate (modely en, cs)
+        run: |
+          nohup libretranslate --host 127.0.0.1 --port 5000 --load-only en,cs > libretranslate.log 2>&1 &
+          for i in $(seq 1 120); do
+            if curl -sf http://localhost:5000/languages > /dev/null; then echo "LibreTranslate běží"; break; fi
+            sleep 10
+          done
+          curl -sf http://localhost:5000/languages || { tail -50 libretranslate.log; exit 1; }
+
+      - name: Zkouška podle návodu (curl)
+        run: |
+          curl -sS -X POST http://localhost:5000/translate -d q="Hello" -d source=en -d target=cs
+          echo
+
+      - name: Test překladače v programu
+        working-directory: prekladac
+        env:
+          PREKLADAC_LIBRE_URL: http://localhost:5000
+        run: |
+          python -m pip install -r requirements.txt pytest
+          python -m pytest tests/test_free_engines.py -k libretranslate_live -s -q -p no:cacheprovider
+
+      - name: Výpis LibreTranslate při chybě
+        if: failure()
+        run: tail -100 libretranslate.log || true

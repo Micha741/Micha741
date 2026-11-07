@@ -113,6 +113,8 @@ def test_microsoft_libre(monkeypatch):
     fake2 = FakeHTTP(lambda url, kw: {"translatedText": [t + "?" for t in kw["data"]["q"]]})
     monkeypatch.setattr(fe, "http_json", fake2)
     assert LibreTranslateEngine("čeština", "http://x:5000/").translate_batch(["a"], False, "") == ["a?"]
+    monkeypatch.setattr(fe, "http_json", FakeHTTP(lambda url, kw: {"translatedText": ["• <i>x</i>", "• y"]}))
+    assert LibreTranslateEngine("čeština", "").translate_batch(["<i>a</i>", "• b"], True, "") == ["<i>x</i>", "• y"]
     assert fake2.calls[0][0] == "http://x:5000/translate"
 
 
@@ -256,3 +258,16 @@ def test_http_request_falls_back_on_certificate_error(monkeypatch):
     monkeypatch.setattr(fe.urllib.request, "urlopen", always_bad)
     with pytest.raises(EngineError, match="antivirus"):
         fe.http_request("https://x", service="Test")
+
+
+@pytest.mark.skipif(not os.environ.get("PREKLADAC_LIBRE_URL"), reason="nastavte PREKLADAC_LIBRE_URL=http://localhost:5000")
+def test_libretranslate_live():
+    """Živý test proti běžícímu serveru LibreTranslate (spouští ho workflow libretranslate.yml)."""
+    url = os.environ["PREKLADAC_LIBRE_URL"]
+    tr = EngineTranslator(LibreTranslateEngine("čeština", url), log=print)
+    plain = tr.translate_segments(["Hello, how are you?", "The book is on the table."], markup=False)
+    print(plain)
+    assert plain[0] != "Hello, how are you?" and plain[1] != "The book is on the table."
+    html_out = tr.translate_segments(["The <i>old</i> man walked to the river."], markup=True)
+    print(html_out)
+    assert "<i>" in html_out[0] and "</i>" in html_out[0] and not html_out[0].startswith("•")
