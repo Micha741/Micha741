@@ -536,7 +536,7 @@ def to_gemini_schema(schema: dict) -> dict:
 class GeminiEngine(_LLMEngine):
     name = "Google Gemini"
     workers = 1  # bezplatná úroveň má nízký limit požadavků za minutu
-    DEFAULT_MODEL = "gemini-2.5-flash"
+    DEFAULT_MODEL = "gemini-3.8-flash"
 
     def __init__(self, target_lang: str, api_key: str, model: str = "", notes: str = ""):
         super().__init__(target_lang, notes)
@@ -556,9 +556,7 @@ class GeminiEngine(_LLMEngine):
             "contents": [{"role": "user", "parts": user_parts}],
             "generationConfig": config,
         }
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{urllib.parse.quote(self.model)}:generateContent"
-        data = http_json(url, data=body, headers={"x-goog-api-key": self.key}, service="Gemini", timeout=600,
-                         retries=5, backoff=(15, 30, 60, 60, 90))
+        data = self._generate(body)
         cands = data.get("candidates") or []
         if not cands:
             raise BadResponse(f"Gemini nevrátil odpověď ({data.get('promptFeedback', '')})")
@@ -568,6 +566,23 @@ class GeminiEngine(_LLMEngine):
             raise BadResponse("Gemini: odpověď byla useknuta (příliš dlouhá)")
         text = "".join(p.get("text", "") for p in cands[0].get("content", {}).get("parts", []))
         return json.loads(text)
+
+    _REPLACEMENT_RE = re.compile(r"use models/([\w.\-]+)")
+
+    def _generate(self, body: dict) -> dict:
+        """generateContent; když Google model vyřadil a v chybě doporučí nástupce, přejde na něj sám."""
+        for attempt in range(2):
+            url = (f"https://generativelanguage.googleapis.com/v1beta/models/"
+                   f"{urllib.parse.quote(self.model)}:generateContent")
+            try:
+                return http_json(url, data=body, headers={"x-goog-api-key": self.key}, service="Gemini",
+                                 timeout=600, retries=5, backoff=(15, 30, 60, 60, 90))
+            except EngineError as e:
+                m = self._REPLACEMENT_RE.search(str(e)) if "HTTP 404" in str(e) else None
+                if attempt or not m or m.group(1) == self.model:
+                    raise
+                self.model = m.group(1)
+        raise AssertionError("unreachable")
 
     # --- OCR přes Gemini
     def _blocks(self, part: dict) -> list[dict]:

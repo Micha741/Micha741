@@ -129,7 +129,7 @@ def test_gemini_and_ollama(monkeypatch):
     g = GeminiEngine("čeština", "key", notes="jména nepřekládej")
     assert g.translate_batch(["a", "b"], False, "") == ["a CZ", "b CZ"]
     url, kw = fake.calls[0]
-    assert url.endswith("/models/gemini-2.5-flash:generateContent")
+    assert url.endswith("/models/gemini-3.8-flash:generateContent")
     assert kw["headers"]["x-goog-api-key"] == "key"
     assert "jména nepřekládej" in kw["data"]["systemInstruction"]["parts"][0]["text"]
 
@@ -292,3 +292,22 @@ def test_openai_compat_detects_provider_from_key(monkeypatch):
         assert "OpenRouter" in str(err) and "openrouter.ai/api/v1" in str(err)
     else:
         raise AssertionError("expected EngineError")
+
+
+def test_gemini_switches_to_recommended_model(monkeypatch):
+    import free_engines
+    from free_engines import EngineError, GeminiEngine
+    calls = []
+
+    def fake(url, **k):
+        calls.append(url)
+        if "gemini-2.5-flash" in url:
+            raise EngineError('Gemini: adresa nebo model nenalezen (HTTP 404). {"message": "This model '
+                              'models/gemini-2.5-flash is no longer available to new users. Please update '
+                              'your code to use models/gemini-3.8-flash for the latest features."}')
+        return {"candidates": [{"content": {"parts": [{"text": '{"ok": true}'}]}}], "usageMetadata": {}}
+    monkeypatch.setattr(free_engines, "http_json", fake)
+    e = GeminiEngine("cs", "key", "gemini-2.5-flash")
+    assert e._complete_json("s", [{"text": "t"}], {"type": "object"}) == {"ok": True}
+    assert e.model == "gemini-3.8-flash" and len(calls) == 2
+    assert GeminiEngine.DEFAULT_MODEL == "gemini-3.8-flash"
