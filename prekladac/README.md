@@ -15,7 +15,11 @@ přes **Claude API** (nejlepší kvalita). Umí také jen převádět formáty a
 | **Google Gemini** | bezplatná úroveň s limity | velmi dobrá | klíč z aistudio.google.com → Get API key |
 | **Ollama** | zdarma, offline | podle modelu (menší modely slabší) | ollama.com + `ollama pull gemma3:12b`, výkonnější počítač |
 | **LibreTranslate** | zdarma | slabší | vlastní server nebo instance s klíčem |
+| **OpenAI-kompatibilní** (DeepSeek, OpenAI, Mistral, OpenRouter, Groq) | podle služby; DeepSeek velmi levný, OpenRouter má modely zdarma | podle modelu | adresa API, klíč a název modelu (viz Návod v Nastavení) |
 | **Claude API** | placený podle spotřeby | nejlepší | klíč z platform.claude.com |
+
+API služby (Claude, DeepSeek, OpenAI…) **nemají měsíční paušál** – dobíjí se kredit předem a platí se podle
+spotřebovaných tokenů (1 token ≈ 0,4 českého slova). Předplatné Claude Pro/Max na claude.ai se na API nevztahuje.
 
 ## Text z obrázků a skenů (OCR)
 
@@ -74,7 +78,9 @@ Do pole **Pokyny pro překlad** (platí pro Claude, Gemini a Ollama) můžete na
 
 ### ✍ Napsat knihu (Claude API)
 
-Tlačítko **✍ Napsat knihu** v hlavním okně napíše celou knihu podle vašeho popisu:
+Tlačítko **✍ Napsat knihu** v hlavním okně napíše celou knihu podle vašeho popisu. Psát může **Claude**
+(nejlepší kvalita), **Google Gemini** (bezplatná úroveň s limity), **OpenAI-kompatibilní služba** (např. levný
+DeepSeek nebo bezplatné modely na OpenRouteru) nebo **Ollama** (zdarma ve vašem počítači, pomalé):
 
 1. Napište **popis** (o čem kniha je, postavy, prostředí, pro koho je, jak má skončit – stačí kolem 20 vět),
    případně žánr a styl, jazyk, počet kapitol a délku kapitoly. Program ukáže orientační cenu.

@@ -26,8 +26,8 @@ from converters import (
 )
 from free_engines import (
     ENGINE_LABELS, OCR_LABELS, DeepLEngine, EngineError, EngineTranslator, GeminiEngine, GoogleFreeEngine,
-    LibreTranslateEngine, MicrosoftDocumentTranslator, MicrosoftEngine, OllamaEngine, Pipeline, TesseractOCR,
-    find_tesseract,
+    LibreTranslateEngine, MicrosoftDocumentTranslator, MicrosoftEngine, OllamaEngine, OpenAICompatEngine, Pipeline,
+    TesseractOCR, find_tesseract,
 )
 
 APP_NAME = "Překladač knih a dokumentů"
@@ -54,10 +54,15 @@ SERVICES = {
                                           ("model", "Model", False, OllamaEngine.DEFAULT_MODEL, None)]),
     "libre": ("LibreTranslate", [("url", "Adresa serveru", False, "http://localhost:5000", None),
                                  ("api_key", "API klíč (nepovinný)", True, "", None)]),
+    "openai": ("OpenAI-kompatibilní (OpenAI, DeepSeek, Mistral, OpenRouter, Groq…)", [
+        ("url", "Adresa API", False, "https://api.openai.com/v1", None),
+        ("api_key", "API klíč", True, "", None),
+        ("model", "Model", False, "", None),
+    ]),
 }
 ENGINE_SERVICE = {"microsoft_doc": "microsoft"}  # překladač → služba, jejíž nastavení používá
 ENV_KEYS = {"claude": "ANTHROPIC_API_KEY", "deepl": "DEEPL_API_KEY", "gemini": "GEMINI_API_KEY",
-            "microsoft": "AZURE_TRANSLATOR_KEY"}
+            "microsoft": "AZURE_TRANSLATOR_KEY", "openai": "OPENAI_API_KEY"}
 SERVICE_HELP = {
     "claude": ("Placené podle spotřeby. Klíč: platform.claude.com → API Keys.", "https://platform.claude.com"),
     "deepl": ("Zdarma 500 000 znaků/měsíc. Klíč: deepl.com → účet → API Keys.",
@@ -70,6 +75,8 @@ SERVICE_HELP = {
                "https://aistudio.google.com/apikey"),
     "ollama": ("Offline, zdarma. Nainstalujte Ollama a stáhněte model: ollama pull gemma3:12b", "https://ollama.com"),
     "libre": ("Vlastní server LibreTranslate nebo veřejná instance s klíčem.", "https://libretranslate.com"),
+    "openai": ("Placené podle spotřeby (DeepSeek je velmi levný, OpenRouter má i modely zdarma). "
+               "Adresu API a název modelu najdete v Návodu.", None),
 }
 TESSERACT_URL = "https://github.com/UB-Mannheim/tesseract/releases"
 RELEASES_URL = "https://github.com/Micha741/Micha741/releases/tag/prekladac-latest"
@@ -121,6 +128,8 @@ def service_ready(cfg: dict, service: str) -> tuple[bool, str]:
         return True, "připraveno, klíč není potřeba"
     if service in ("ollama", "libre"):
         return True, f"adresa {sect.get('url') or 'výchozí'}"
+    if service == "openai" and not sect.get("model"):
+        return False, "chybí název modelu – otevřete ⚙ Nastavení"
     key = sect.get("api_key") or os.environ.get(ENV_KEYS.get(service, ""), "")
     return (True, "klíč nastaven") if key else (False, "chybí klíč – otevřete ⚙ Nastavení")
 
@@ -140,6 +149,8 @@ def make_engine(name: str, lang: str, cfg: dict, notes: str):
         return OllamaEngine(lang, cfg.get("url", ""), cfg.get("model", ""), notes)
     if name == "libre":
         return LibreTranslateEngine(lang, cfg.get("url", ""), key)
+    if name == "openai":
+        return OpenAICompatEngine(lang, cfg.get("url", ""), key, cfg.get("model", ""), notes)
     raise EngineError(f"Neznámý překladač: {name}")
 
 
@@ -405,7 +416,7 @@ def run_gui() -> None:
     ttk.Combobox(opts, textvariable=ocr_lang, values=list(components.OCR_LANGUAGES) + ["eng+ces", "eng+deu"]).grid(
         row=4, column=3, sticky="ew", **pad)
 
-    ttk.Label(opts, text="Pokyny pro překlad\n(Claude, Gemini, Ollama):").grid(row=5, column=0, sticky="nw", **pad)
+    ttk.Label(opts, text="Pokyny pro překlad\n(Claude, Gemini, Ollama, OpenAI…):").grid(row=5, column=0, sticky="nw", **pad)
     notes = tk.Text(opts, height=2, wrap="word")
     notes.grid(row=5, column=1, columnspan=3, sticky="ew", **pad)
     notes.insert("1.0", cfg.get("notes", ""))
@@ -759,12 +770,12 @@ def run_gui() -> None:
     def open_book_window():
         import book_writer as bw
 
-        key = cfg["engines"].get("claude", {}).get("api_key") or os.environ.get("ANTHROPIC_API_KEY")
-        if not key:
-            if messagebox.askyesno(APP_NAME, "Psaní knihy používá Claude API a zatím nemáte zadaný klíč.\n\n"
-                                             "Otevřít Nastavení, kde ho zadáte (je tam i Návod)?"):
-                open_settings()
-            return
+        BOOK_SERVICES = {
+            "Claude (placené, nejlepší kvalita)": "claude",
+            "Google Gemini (bezplatná úroveň s limity)": "gemini",
+            "OpenAI-kompatibilní (DeepSeek, OpenAI, Mistral, OpenRouter…)": "openai",
+            "Ollama (zdarma, v počítači)": "ollama",
+        }
 
         w = tk.Toplevel(root)
         w.title("Napsat knihu (Claude)")
@@ -790,46 +801,53 @@ def run_gui() -> None:
         ttk.Label(frm, text="Jazyk knihy:").grid(row=4, column=0, sticky="w", pady=2)
         blang = tk.StringVar(value=cfg.get("lang", "čeština"))
         ttk.Combobox(frm, textvariable=blang, values=LANGUAGES).grid(row=4, column=1, sticky="ew", pady=2)
-        ttk.Label(frm, text="Model:").grid(row=4, column=2, sticky="w", padx=(8, 0))
-        bmodel = tk.StringVar(value=list(MODELS)[0])
-        ttk.Combobox(frm, textvariable=bmodel, values=list(MODELS), state="readonly").grid(
+        ttk.Label(frm, text="Služba:").grid(row=4, column=2, sticky="w", padx=(8, 0))
+        bservice = tk.StringVar(value=next((k for k, v in BOOK_SERVICES.items() if v == cfg.get("book_service")),
+                                           list(BOOK_SERVICES)[0]))
+        ttk.Combobox(frm, textvariable=bservice, values=list(BOOK_SERVICES), state="readonly").grid(
             row=4, column=3, sticky="ew", pady=2)
+        ttk.Label(frm, text="Claude model:").grid(row=5, column=2, sticky="w", padx=(8, 0))
+        bmodel = tk.StringVar(value=list(MODELS)[0])
+        model_cb = ttk.Combobox(frm, textvariable=bmodel, values=list(MODELS), state="readonly")
+        model_cb.grid(row=5, column=3, sticky="ew", pady=2)
+        svc_status = ttk.Label(frm, text="", foreground="#555", wraplength=860)
+        svc_status.grid(row=6, column=0, columnspan=4, sticky="w")
 
-        ttk.Label(frm, text="Počet kapitol:").grid(row=5, column=0, sticky="w", pady=2)
+        ttk.Label(frm, text="Počet kapitol:").grid(row=7, column=0, sticky="w", pady=2)
         nchap = tk.IntVar(value=12)
-        ttk.Spinbox(frm, from_=3, to=40, textvariable=nchap, width=6).grid(row=5, column=1, sticky="w")
-        ttk.Label(frm, text="Slov na kapitolu:").grid(row=5, column=2, sticky="w", padx=(8, 0))
+        ttk.Spinbox(frm, from_=3, to=40, textvariable=nchap, width=6).grid(row=7, column=1, sticky="w")
+        ttk.Label(frm, text="Slov na kapitolu:").grid(row=7, column=2, sticky="w", padx=(8, 0))
         nwords = tk.IntVar(value=2500)
         ttk.Spinbox(frm, from_=800, to=6000, increment=100, textvariable=nwords, width=7).grid(
-            row=5, column=3, sticky="w")
+            row=7, column=3, sticky="w")
         est = ttk.Label(frm, text="", foreground="#555", wraplength=860)
-        est.grid(row=6, column=0, columnspan=4, sticky="w", pady=(2, 6))
+        est.grid(row=8, column=0, columnspan=4, sticky="w", pady=(2, 6))
 
         fmt_frame = ttk.Frame(frm)
-        fmt_frame.grid(row=7, column=0, columnspan=4, sticky="w")
+        fmt_frame.grid(row=9, column=0, columnspan=4, sticky="w")
         ttk.Label(fmt_frame, text="Uložit jako:").pack(side="left")
         fmt_vars = {f: tk.BooleanVar(value=f in ("epub", "docx")) for f in ("epub", "docx", "pdf", "azw3")}
         for f, v in fmt_vars.items():
             ttk.Checkbutton(fmt_frame, text=f.upper(), variable=v).pack(side="left", padx=4)
         bdir = tk.StringVar(value=cfg.get("out_dir") or str(Path.home() / "Documents" / "Knihy"))
-        ttk.Label(frm, text="Složka:").grid(row=8, column=0, sticky="w", pady=2)
-        ttk.Entry(frm, textvariable=bdir).grid(row=8, column=1, columnspan=2, sticky="ew", pady=2)
+        ttk.Label(frm, text="Složka:").grid(row=10, column=0, sticky="w", pady=2)
+        ttk.Entry(frm, textvariable=bdir).grid(row=10, column=1, columnspan=2, sticky="ew", pady=2)
 
         def pick_bdir():
             d = filedialog.askdirectory(parent=w)
             if d:
                 bdir.set(d)
 
-        ttk.Button(frm, text="Vybrat…", command=pick_bdir).grid(row=8, column=3, sticky="w")
+        ttk.Button(frm, text="Vybrat…", command=pick_bdir).grid(row=10, column=3, sticky="w")
 
         ttk.Label(frm, text="Osnova (můžete ji upravit – kapitoly ve tvaru „1. Název — obsah“):").grid(
-            row=9, column=0, columnspan=4, sticky="w", pady=(8, 0))
+            row=11, column=0, columnspan=4, sticky="w", pady=(8, 0))
         outline_box = tk.Text(frm, height=12, wrap="word")
-        outline_box.grid(row=10, column=0, columnspan=4, sticky="nsew", pady=2)
-        frm.rowconfigure(10, weight=2)
+        outline_box.grid(row=12, column=0, columnspan=4, sticky="nsew", pady=2)
+        frm.rowconfigure(12, weight=2)
 
         btns = ttk.Frame(frm)
-        btns.grid(row=11, column=0, columnspan=4, sticky="ew", pady=6)
+        btns.grid(row=13, column=0, columnspan=4, sticky="ew", pady=6)
         b_outline = ttk.Button(btns, text="1. Navrhnout osnovu")
         b_outline.pack(side="left")
         b_write = ttk.Button(btns, text="2. Napsat knihu", state="disabled")
@@ -839,10 +857,10 @@ def run_gui() -> None:
         b_load = ttk.Button(btns, text="Pokračovat v rozepsané…")
         b_load.pack(side="right")
         bbar = ttk.Progressbar(frm, maximum=1.0)
-        bbar.grid(row=12, column=0, columnspan=4, sticky="ew")
+        bbar.grid(row=14, column=0, columnspan=4, sticky="ew")
         blog = ScrolledText(frm, height=7, state="disabled", wrap="word")
-        blog.grid(row=13, column=0, columnspan=4, sticky="nsew", pady=(4, 0))
-        frm.rowconfigure(13, weight=1)
+        blog.grid(row=15, column=0, columnspan=4, sticky="nsew", pady=(4, 0))
+        frm.rowconfigure(15, weight=1)
 
         def wlog(text):
             def add():
@@ -853,19 +871,41 @@ def run_gui() -> None:
             msgs.put(("call", add))
 
         def writer():
-            return bw.BookWriter(key, MODELS[bmodel.get()], blang.get().strip() or "čeština", wlog, state["cancel"])
+            svc = BOOK_SERVICES[bservice.get()]
+            language = blang.get().strip() or "čeština"
+            if svc == "claude":
+                c = cfg["engines"].get("claude", {})
+                key = c.get("api_key") or os.environ.get("ANTHROPIC_API_KEY")
+                if not key:
+                    raise EngineError("Chybí Claude API klíč – zadejte ho v ⚙ Nastavení (je tam i Návod).")
+                backend = bw.ClaudeBackend(key, MODELS[bmodel.get()], language, wlog, state["cancel"])
+            else:
+                eng = make_engine(svc, language, cfg["engines"].get(svc, {}), "")
+                backend = bw.EngineBackend(eng, state["cancel"])
+            return bw.BookWriter(backend, language, wlog)
+
+        def on_service(*_):
+            svc = BOOK_SERVICES[bservice.get()]
+            model_cb.configure(state="readonly" if svc == "claude" else "disabled")
+            ok, text = service_ready(cfg, svc)
+            sect = cfg["engines"].get(svc, {})
+            model = MODELS[bmodel.get()] if svc == "claude" else (sect.get("model") or {
+                "gemini": GeminiEngine.DEFAULT_MODEL, "ollama": OllamaEngine.DEFAULT_MODEL}.get(svc, "?"))
+            svc_status.configure(text=("✓ " if ok else "⚠ ") + f"{text} · model: {model}"
+                                 + ("" if ok else "  (⚙ Nastavení → Služby a klíče → Návod)"),
+                                 foreground="#1a7f37" if ok else "#b35900")
+            update_est()
 
         def update_est(*_):
             try:
-                est.configure(text=writer().estimate(int(nchap.get()), int(nwords.get())) +
-                              " Cena se platí z kreditu Claude API; přesná částka se vypíše během psaní.")
-            except Exception:
-                pass
+                est.configure(text=writer().estimate(int(nchap.get()), int(nwords.get())))
+            except Exception as e:  # noqa: BLE001 – např. chybí klíč; vypíše se ve stavovém řádku
+                est.configure(text=str(e))
 
         nchap.trace_add("write", update_est)
         nwords.trace_add("write", update_est)
-        bmodel.trace_add("write", update_est)
-        update_est()
+        bmodel.trace_add("write", lambda *_: on_service())
+        bservice.trace_add("write", lambda *_: on_service())
 
         def busy(on):
             state["busy"] = on
@@ -911,15 +951,22 @@ def run_gui() -> None:
                                                parent=w):
                         return
                 proj = {"description": desc.get("1.0", "end").strip(), "style": style.get().strip(),
-                        "language": blang.get().strip() or "čeština", "model": MODELS[bmodel.get()],
+                        "language": blang.get().strip() or "čeština", "service": BOOK_SERVICES[bservice.get()],
+                        "model": MODELS[bmodel.get()],
                         "words": int(nwords.get()), "outline": outline, "chapters": []}
                 state["path"] = out_dir / (bw.safe_name(outline["title"]) + bw.PROJECT_SUFFIX)
             state["project"] = proj
             path = state["path"]
             n = len(outline["chapters"])
+            try:
+                estimate_text = writer().estimate(n, proj["words"])
+            except Exception as e:  # noqa: BLE001
+                messagebox.showerror("Napsat knihu", str(e), parent=w)
+                return
+            cfg["book_service"] = BOOK_SERVICES[bservice.get()]
             if not messagebox.askyesno(
                     "Napsat knihu", f"Napsat {n - len(proj['chapters'])} kapitol?\n\n"
-                                    f"{writer().estimate(n, proj['words'])}\n\n"
+                                    f"{estimate_text}\n\n"
                                     f"Rozepsaná kniha se průběžně ukládá do:\n{path}", parent=w):
                 return
             state["cancel"].clear()
@@ -943,7 +990,7 @@ def run_gui() -> None:
                     wlog(f"✗ {err}")
                     return
                 files, wr = res
-                wlog(wr.claude.cost_summary())
+                wlog(wr.backend.cost_summary())
                 if files == "stopped":
                     wlog("Zastaveno. Rozepsaná kniha je uložená – pokračujte tlačítkem „2. Napsat knihu“ "
                          "nebo později přes „Pokračovat v rozepsané…“.")
@@ -972,12 +1019,15 @@ def run_gui() -> None:
             nwords.set(proj.get("words", 2500))
             nchap.set(len(proj["outline"]["chapters"]))
             bmodel.set(next((k for k, v in MODELS.items() if v == proj.get("model")), list(MODELS)[0]))
+            bservice.set(next((k for k, v in BOOK_SERVICES.items() if v == proj.get("service", "claude")),
+                              list(BOOK_SERVICES)[0]))
             bdir.set(str(Path(f).parent))
             outline_box.delete("1.0", "end")
             outline_box.insert("1.0", bw.outline_to_text(proj["outline"]))
             busy(False)
             wlog(f"Načteno: {len(proj['chapters'])} z {len(proj['outline']['chapters'])} kapitol hotovo.")
 
+        on_service()
         b_outline.configure(command=do_outline)
         b_write.configure(command=do_write)
         b_load.configure(command=do_load)

@@ -17,7 +17,7 @@ import threading
 from pathlib import Path
 from typing import Callable
 
-from claude_client import PRICES, ClaudeTranslator, ModelError
+from claude_client import PRICES, Cancelled, ClaudeTranslator, ModelError
 
 OUTLINE_SCHEMA = {
     "type": "object",
@@ -107,24 +107,74 @@ def load_project(path: str | Path) -> dict:
     return data
 
 
-class BookWriter:
-    def __init__(self, api_key: str, model: str, language: str = "čeština",
-                 log: Callable[[str], None] = print, cancel_event: threading.Event | None = None,
-                 effort: str = "high"):
-        self.language = language
+class ClaudeBackend:
+    """Claude API: začátek zadání (osnova) se ukládá do mezipaměti, takže se neplatí u každé kapitoly znovu."""
+
+    name = "Claude"
+
+    def __init__(self, api_key: str, model: str, language: str, log, cancel_event, effort: str = "high"):
         self.model = model
-        self.log = log
         self.claude = ClaudeTranslator(api_key=api_key, model=model, target_lang=language, log=log,
                                        cancel_event=cancel_event, effort=effort)
+
+    def complete(self, system: str, user: str, schema: dict, max_tokens: int, cache: bool = False) -> dict:
+        sys_blocks = [{"type": "text", "text": system, **({"cache_control": {"type": "ephemeral"}} if cache else {})}]
+        return self.claude._call(sys_blocks, [{"type": "text", "text": user}], schema, max_tokens=max_tokens)
+
+    def price_note(self, in_tokens: float, out_tokens: float) -> str:
+        p_in, p_out = PRICES.get(self.model, (4.0, 20.0))
+        low = in_tokens * p_in / 1e6 + out_tokens * p_out / 1e6
+        return f"Orientační cena: ${low:.0f}–{low * 1.6:.0f} (platí se z kreditu Claude API)."
+
+    def cost_summary(self) -> str:
+        return self.claude.cost_summary()
+
+
+class EngineBackend:
+    """Gemini, Ollama nebo služba kompatibilní s OpenAI (DeepSeek, Mistral, OpenRouter…)."""
+
+    def __init__(self, engine, cancel_event: threading.Event | None = None):
+        self.engine = engine
+        self.name = engine.name
+        self.cancel_event = cancel_event or threading.Event()
+
+    def complete(self, system: str, user: str, schema: dict, max_tokens: int, cache: bool = False) -> dict:
+        from free_engines import BadResponse
+
+        if self.cancel_event.is_set():
+            raise Cancelled()
+        try:
+            return self.engine._complete_json(system, [{"text": user}], schema, max_tokens=max_tokens,
+                                              temperature=0.8)
+        except (BadResponse, json.JSONDecodeError, KeyError, TypeError) as e:
+            raise ModelError(str(e)) from e
+
+    def price_note(self, in_tokens: float, out_tokens: float) -> str:
+        from free_engines import GeminiEngine, OllamaEngine
+
+        if isinstance(self.engine, OllamaEngine):
+            return "Zdarma (běží ve vašem počítači; psaní může trvat hodiny)."
+        if isinstance(self.engine, GeminiEngine):
+            return "V bezplatné úrovni Gemini zdarma, ale s limity požadavků (psaní může trvat déle)."
+        return (f"Cena podle ceníku služby {self.name}: zhruba {in_tokens / 1e6:.2f} mil. vstupních "
+                f"a {out_tokens / 1e6:.2f} mil. výstupních tokenů.")
+
+    def cost_summary(self) -> str:
+        return self.engine.usage_info() or f"{self.name}: hotovo"
+
+
+class BookWriter:
+    def __init__(self, backend, language: str = "čeština", log: Callable[[str], None] = print):
+        self.backend = backend
+        self.language = language
+        self.log = log
 
     # ------------------------------------------------------------ odhad
     def estimate(self, chapters: int, words: int) -> str:
         out_tokens = chapters * words * TOKENS_PER_WORD * 1.6  # + přemýšlení modelu
         in_tokens = chapters * (4000 + TAIL_WORDS * TOKENS_PER_WORD + chapters * 120)
-        p_in, p_out = PRICES.get(self.model, (4.0, 20.0))
-        low = in_tokens * p_in / 1e6 + out_tokens * p_out / 1e6
         return (f"{chapters} kapitol × ~{words} slov ≈ {chapters * words:,} slov (asi {chapters * words // 300} stran). "
-                f"Orientační cena: ${low:.0f}–{low * 1.6:.0f}.").replace(",", " ")
+                .replace(",", " ") + self.backend.price_note(in_tokens, out_tokens))
 
     # ------------------------------------------------------------ osnova
     def make_outline(self, description: str, chapters: int, words: int, style: str = "") -> dict:
@@ -140,13 +190,13 @@ class BookWriter:
         if style.strip():
             user += f"\nŽánr a styl: {style.strip()}"
         self.log("Navrhuji osnovu…")
-        outline = self.claude._call(system, [{"type": "text", "text": user}], OUTLINE_SCHEMA, max_tokens=16000)
+        outline = self.backend.complete(system, user, OUTLINE_SCHEMA, max_tokens=16000)
         if not outline.get("chapters"):
             raise BookError("Model nevrátil žádné kapitoly.")
         return outline
 
     # ----------------------------------------------------------- kapitoly
-    def _chapter_system(self, project: dict) -> list[dict]:
+    def _chapter_system(self, project: dict) -> str:
         o = project["outline"]
         text = (
             f"Jsi zkušený spisovatel. Píšeš knihu v jazyce: {self.language}. Piš čtivě, přirozeně a s citem "
@@ -161,7 +211,7 @@ class BookWriter:
             text += f"\n\nŽánr a styl: {project['style']}"
         text += "\n\nPŮVODNÍ ZADÁNÍ:\n" + project.get("description", "").strip()
         text += "\n\nOSNOVA KNIHY:\n" + outline_to_text(o)
-        return [{"type": "text", "text": text, "cache_control": {"type": "ephemeral"}}]
+        return text
 
     def _chapter_prompt(self, project: dict, idx: int) -> str:
         chapters = project["outline"]["chapters"]
@@ -191,15 +241,14 @@ class BookWriter:
             # text + přemýšlení modelu; rezerva, aby se kapitola neusekla
             max_tokens = min(64000, int(project["words"] * TOKENS_PER_WORD * 4) + 16000)
             try:
-                res = self.claude._call(system, [{"type": "text", "text": prompt}], CHAPTER_SCHEMA,
-                                        max_tokens=max_tokens)
+                res = self.backend.complete(system, prompt, CHAPTER_SCHEMA, max_tokens=max_tokens, cache=True)
             except ModelError as e:
                 raise BookError(f"Kapitolu {idx + 1} se nepodařilo napsat ({e}). Rozepsaná kniha je uložená, "
                                 "můžete pokračovat později.") from e
             text = res["text"].strip()
             project["chapters"].append({"text": text, "summary": res["summary"].strip()})
             save_project(project_path, project)
-            self.log(f"  ✓ hotovo ({len(text.split()):,} slov) – {self.claude.cost_summary()}".replace(",", " "))
+            self.log(f"  ✓ hotovo ({len(text.split()):,} slov) – {self.backend.cost_summary()}".replace(",", " "))
             progress(len(project["chapters"]) / len(chapters))
         return project
 

@@ -51,9 +51,9 @@ class FakeClaude:
 
 
 def make_writer(monkeypatch, fake):
-    w = bw.BookWriter("sk-test", "claude-opus-5-5", "čeština", log=lambda *_: None)
-    monkeypatch.setattr(w.claude, "_call", fake)
-    return w
+    backend = bw.ClaudeBackend("sk-test", "claude-opus-5-5", "čeština", lambda *_: None, None)
+    monkeypatch.setattr(backend.claude, "_call", fake)
+    return bw.BookWriter(backend, "čeština", log=lambda *_: None)
 
 
 def test_outline_and_write_with_resume(monkeypatch, tmp_path):
@@ -103,6 +103,46 @@ def test_export_docx(tmp_path):
 
 
 def test_estimate_and_safe_name():
-    w = bw.BookWriter("sk-test", "claude-sonnet-5-5")
+    w = bw.BookWriter(bw.ClaudeBackend("sk-test", "claude-sonnet-5-5", "čeština", print, None))
     assert "12 kapitol" in w.estimate(12, 2500) and "$" in w.estimate(12, 2500)
     assert bw.safe_name('Kniha: "Ano/Ne"?') == "Kniha AnoNe"
+
+
+def test_engine_backends_write_a_book(monkeypatch, tmp_path):
+    import free_engines as fe
+
+    sent = []
+
+    def fake_http(url, **kw):
+        sent.append((url, kw))
+        body = kw["data"]
+        if "chat/completions" in url:  # OpenAI-kompatibilní
+            schema_props = body["messages"][1]["content"]
+            out = OUTLINE if '"synopsis"' in schema_props else {"text": "Kapitola.", "summary": "S."}
+            return {"choices": [{"message": {"content": "```json\n" + json.dumps(out) + "\n```"},
+                                 "finish_reason": "stop"}], "usage": {"prompt_tokens": 100, "completion_tokens": 50}}
+        if "generateContent" in url:  # Gemini
+            props = body["generationConfig"]["responseSchema"]["properties"]
+            assert body["generationConfig"]["responseSchema"]["type"] == "OBJECT"
+            out = OUTLINE if "synopsis" in props else {"text": "Kapitola.", "summary": "S."}
+            return {"candidates": [{"content": {"parts": [{"text": json.dumps(out)}]}, "finishReason": "STOP"}],
+                    "usageMetadata": {"promptTokenCount": 10, "candidatesTokenCount": 5}}
+        # Ollama
+        assert body["options"]["num_ctx"] >= 16384
+        out = OUTLINE if "synopsis" in body["format"]["properties"] else {"text": "Kapitola.", "summary": "S."}
+        return {"message": {"content": json.dumps(out)}, "prompt_eval_count": 7, "eval_count": 3}
+
+    monkeypatch.setattr(fe, "http_json", fake_http)
+    engines = [fe.OpenAICompatEngine("čeština", "https://api.deepseek.com/v1/", "k", "deepseek-chat"),
+               fe.GeminiEngine("čeština", "k"), fe.OllamaEngine("čeština")]
+    for eng in engines:
+        w = bw.BookWriter(bw.EngineBackend(eng), "čeština", log=lambda *_: None)
+        o = w.make_outline("Popis knihy o majáku.", 3, 1000)
+        proj = {"description": "x", "words": 1000, "outline": o, "chapters": []}
+        w.write(proj, tmp_path / f"{eng.name}.kniha.json")
+        assert len(proj["chapters"]) == 3
+        assert "tokenů" in w.backend.cost_summary()
+    assert engines[0].name == "DeepSeek"
+    assert sent[0][0] == "https://api.deepseek.com/v1/chat/completions"
+    assert sent[0][1]["data"]["response_format"] == {"type": "json_object"}
+    assert sent[0][1]["headers"]["Authorization"] == "Bearer k"

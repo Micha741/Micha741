@@ -83,4 +83,25 @@ Potřebuje výkonnější počítač (ideálně s grafickou kartou); překlad kn
 4. Sem do pole „Adresa serveru“ nechte http://localhost:5000, Uložit → Otestovat.
 
 Kvalita češtiny je slabší než u DeepL, Gemini nebo Claude; výhodou je, že text neopouští počítač.""",
+
+    "openai": """OpenAI-kompatibilní služby – OpenAI, DeepSeek, Mistral, OpenRouter, Groq…
+
+Všechny tyto služby mají stejné rozhraní; vyplníte jen Adresu API, API klíč a Model:
+
+  Služba       Adresa API                          Příklad modelu         Cena
+  DeepSeek     https://api.deepseek.com/v1         deepseek-chat          velmi levné
+  OpenAI       https://api.openai.com/v1           (aktuální model z webu) placené
+  Mistral      https://api.mistral.ai/v1           mistral-large-latest   placené, má i bezplatnou zkušební úroveň
+  OpenRouter   https://openrouter.ai/api/v1        modely končící „:free“ zdarma s limity
+  Groq         https://api.groq.com/openai/v1      (model z jejich webu)  bezplatná úroveň s limity
+
+1. Zaregistrujte se u vybrané služby a vytvořte si API klíč (v účtu obvykle „API Keys“).
+   DeepSeek: platform.deepseek.com · OpenAI: platform.openai.com · Mistral: console.mistral.ai ·
+   OpenRouter: openrouter.ai/keys · Groq: console.groq.com/keys
+2. Placené služby se dobíjejí kreditem předem (stejně jako Claude API) – žádný měsíční paušál.
+3. Sem vyplňte Adresu API, API klíč a přesný název modelu (najdete ho v dokumentaci služby).
+4. Uložit → Otestovat.
+
+Hodí se pro překlad i pro „Napsat knihu“. Kvalita češtiny se liší podle modelu – vyzkoušejte
+nejdřív krátký text nebo knihu o 3 kratších kapitolách.""",
 }
