@@ -38,6 +38,7 @@ jobs:
 
       - name: Sestavení programu (složka, bez rozbalování do Temp)
         run: |
+          "VERSION = `"1.0.$env:GITHUB_RUN_NUMBER`"" | Set-Content -Encoding utf8 version.py
           python -m PyInstaller --noconfirm --onedir --windowed --name Prekladac `
             --collect-all tkinterdnd2 --collect-all pypdfium2 --collect-all pypdfium2_raw `
             --distpath build\dist --workpath build\work --specpath build app.py
@@ -80,10 +81,14 @@ jobs:
 
       - name: Zkouška nainstalovaného programu
         run: |
-          $dir = "$env:RUNNER_TEMP\Prekladac"
-          $p = Start-Process dist\Prekladac-Setup.exe -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/CURRENTUSER',"/DIR=$dir" -Wait -PassThru
+          # instalace pro všechny do výchozí složky C:\Program Files\Prekladac (jako u uživatele)
+          $dir = "$env:ProgramFiles\Prekladac"
+          $p = Start-Process dist\Prekladac-Setup.exe -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/ALLUSERS' -Wait -PassThru
           if ($p.ExitCode -ne 0) { throw "Instalace skončila s kódem $($p.ExitCode)" }
           $exe = "$dir\Prekladac.exe"
+          if (-not (Test-Path $exe)) { throw "Program se nenainstaloval do $dir" }
+          $v = Start-Process $exe -ArgumentList '--version-file','version.txt' -Wait -PassThru
+          Get-Content version.txt
           python -c "import docx; d = docx.Document(); d.add_paragraph('Hello world'); d.save('smoke.docx')"
           python -c "from PIL import Image, ImageDraw, ImageFont; im = Image.new('RGB', (1400, 220), 'white'); ImageDraw.Draw(im).text((40, 60), 'The quick brown fox jumps.', fill='black', font=ImageFont.truetype('arial.ttf', 64)); im.save('smoke.png')"
           function Run($argsList, $log) {

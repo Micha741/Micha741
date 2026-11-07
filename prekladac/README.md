@@ -15,7 +15,11 @@ přes **Claude API** (nejlepší kvalita). Umí také jen převádět formáty a
 | **Google Gemini** | bezplatná úroveň s limity | velmi dobrá | klíč z aistudio.google.com → Get API key |
 | **Ollama** | zdarma, offline | podle modelu (menší modely slabší) | ollama.com + `ollama pull gemma3:12b`, výkonnější počítač |
 | **LibreTranslate** | zdarma | slabší | vlastní server nebo instance s klíčem |
+| **OpenAI-kompatibilní** (DeepSeek, OpenAI, Mistral, OpenRouter, Groq) | podle služby; DeepSeek velmi levný, OpenRouter má modely zdarma | podle modelu | adresa API, klíč a název modelu (viz Návod v Nastavení) |
 | **Claude API** | placený podle spotřeby | nejlepší | klíč z platform.claude.com |
+
+API služby (Claude, DeepSeek, OpenAI…) **nemají měsíční paušál** – dobíjí se kredit předem a platí se podle
+spotřebovaných tokenů (1 token ≈ 0,4 českého slova). Předplatné Claude Pro/Max na claude.ai se na API nevztahuje.
 
 ## Text z obrázků a skenů (OCR)
 
@@ -47,8 +51,9 @@ Výsledek se uloží vedle originálu jako `název (čeština).přípona`.
 1. Stáhněte instalátor **Prekladac-Setup.exe**:
    **https://github.com/Micha741/Micha741/releases/download/prekladac-latest/Prekladac-Setup.exe**
    (vždy nejnovější verze, sestavuje ho GitHub automaticky; Python není potřeba).
-2. Spusťte ho a projděte instalací. Instaluje se bez práv správce (do `%LOCALAPPDATA%\Programs\Prekladac`),
-   vytvoří zástupce v nabídce Start a případně na ploše. Odinstalace: *Nastavení Windows → Aplikace*.
+2. Spusťte ho a projděte instalací. Standardně se instaluje do `C:\Program Files\Prekladac` a Windows se zeptá
+   na práva správce. V úvodu instalátoru můžete zvolit instalaci jen pro sebe (bez práv správce, do
+   `%LOCALAPPDATA%\Programs\Prekladac`). Odinstalace: *Nastavení Windows → Aplikace*.
    - Instalátor **obsahuje Calibre** (`Calibre2\ebook-convert.exe`) i **Tesseract** (`Tesseract-OCR\tesseract.exe`)
      s jazyky OCR (angličtina, čeština, slovenština, němčina, polština, francouzština, španělština, italština,
      ruština, ukrajinština, maďarština). Nic dalšího se instalovat nemusí.
@@ -57,7 +62,9 @@ Výsledek se uloží vedle originálu jako `název (čeština).přípona`.
 3. Windows SmartScreen může u nového nepodepsaného programu ukázat „Systém Windows ochránil váš počítač“ →
    *Další informace → Přesto spustit*. Pokud antivirus (např. Avast) program zablokuje jako `IDP.Generic`,
    jde o falešný poplach u neznámého programu – viz *Antivirus* níže.
-4. V **⚙ Nastavení → Služby a klíče** vyplňte klíče služeb, které chcete používat, a ověřte je tlačítkem **Otestovat**.
+4. V **⚙ Nastavení → Služby a klíče** vyplňte klíče služeb, které chcete používat (u každé služby je tlačítko
+   **Návod** s postupem krok za krokem), a ověřte je tlačítkem **Otestovat**.
+   Číslo verze je v záhlaví okna a v *⚙ Nastavení → Obecné*.
    Klíče se ukládají **zašifrovaně** (Windows DPAPI) jen pro váš účet ve Windows.
 
 ## Použití
@@ -68,6 +75,23 @@ Výsledek se uloží vedle originálu jako `název (čeština).přípona`.
 
 Do pole **Pokyny pro překlad** (platí pro Claude, Gemini a Ollama) můžete napsat například:
 `Jména postav nepřekládej. „Ranger“ překládej jako „hraničář“. Tykání mezi postavami zachovej.`
+
+### ✍ Napsat knihu (Claude API)
+
+Tlačítko **✍ Napsat knihu** v hlavním okně napíše celou knihu podle vašeho popisu. Psát může **Claude**
+(nejlepší kvalita), **Google Gemini** (bezplatná úroveň s limity), **OpenAI-kompatibilní služba** (např. levný
+DeepSeek nebo bezplatné modely na OpenRouteru) nebo **Ollama** (zdarma ve vašem počítači, pomalé):
+
+1. Napište **popis** (o čem kniha je, postavy, prostředí, pro koho je, jak má skončit – stačí kolem 20 vět),
+   případně žánr a styl, jazyk, počet kapitol a délku kapitoly. Program ukáže orientační cenu.
+2. **1. Navrhnout osnovu** – Claude navrhne název, shrnutí, postavy a obsah kapitol. Osnovu můžete upravit
+   (kapitoly ve tvaru `1. Název — obsah`), přidat nebo ubrat kapitoly.
+3. **2. Napsat knihu** – Claude píše kapitolu po kapitole; každá dostane osnovu, shrnutí předchozích kapitol
+   a konec předchozí kapitoly, aby děj i postavy navazovaly. Hotová kniha se uloží jako EPUB, DOCX, PDF nebo AZW3.
+
+Rozepsaná kniha se po každé kapitole ukládá (`Název.kniha.json`), takže psaní jde **Zastavit** a později
+**Pokračovat v rozepsané…**. Orientačně: 12 kapitol × 2 500 slov (≈ 100 stran) stojí s Opus 5.5 asi 3–5 USD,
+se Sonnet 5.5 asi polovinu. Text je souvislý a čtivý, ale počítejte s vlastním přečtením a úpravami.
 
 ### Microsoft: dvě API
 
@@ -106,7 +130,7 @@ Instalátor (`installer.iss`, Inno Setup) i s přibaleným Calibre a Tesseractem
 
 Program není digitálně podepsaný (podpisový certifikát je placený), proto ho SmartScreen a některé antiviry
 zpočátku považují za neznámý. Když ho Avast zablokuje jako `IDP.Generic`:
-1. V Avastu přidejte výjimku pro složku `%LOCALAPPDATA%\Programs\Prekladac` (v nastavení Avastu hledejte
+1. V Avastu přidejte výjimku pro složku programu (`C:\Program Files\Prekladac`) (v nastavení Avastu hledejte
    *Výjimky*), případně soubor obnovte z karantény.
 2. Nahlaste falešný poplach na <https://www.avast.com/false-positive-file-form.php>, aby se program přestal blokovat
    i ostatním.

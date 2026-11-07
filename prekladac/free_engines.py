@@ -479,6 +479,19 @@ class _LLMEngine(Engine):
     def __init__(self, target_lang: str, notes: str = ""):
         super().__init__(target_lang)
         self.notes = notes.strip()
+        self.tokens_in = 0
+        self.tokens_out = 0
+        self._usage_lock = threading.Lock()
+
+    def _add_usage(self, tokens_in, tokens_out) -> None:
+        with self._usage_lock:
+            self.tokens_in += int(tokens_in or 0)
+            self.tokens_out += int(tokens_out or 0)
+
+    def usage_info(self) -> str:
+        if not (self.tokens_in or self.tokens_out):
+            return ""
+        return f"{self.name}: {self.tokens_in:,} vstupních + {self.tokens_out:,} výstupních tokenů".replace(",", " ")
 
     def _complete_json(self, system: str, user_parts: list, schema: dict) -> dict:
         raise NotImplementedError
@@ -497,11 +510,27 @@ class _LLMEngine(Engine):
 
 
 def _translation_schema(engine) -> dict:
-    if isinstance(engine, GeminiEngine):
-        return {"type": "OBJECT", "properties": {"translations": {"type": "ARRAY", "items": {"type": "STRING"}}},
-                "required": ["translations"]}
     return {"type": "object", "properties": {"translations": {"type": "array", "items": {"type": "string"}}},
             "required": ["translations"]}
+
+
+def to_gemini_schema(schema: dict) -> dict:
+    """JSON Schema → formát responseSchema pro Gemini (typy velkými písmeny, bez additionalProperties)."""
+    if not isinstance(schema, dict):
+        return schema
+    out = {}
+    for k, v in schema.items():
+        if k == "additionalProperties":
+            continue
+        if k == "type" and isinstance(v, str):
+            out[k] = v.upper()
+        elif k == "properties":
+            out[k] = {name: to_gemini_schema(sub) for name, sub in v.items()}
+        elif k == "items":
+            out[k] = to_gemini_schema(v)
+        else:
+            out[k] = v
+    return out
 
 
 class GeminiEngine(_LLMEngine):
@@ -516,11 +545,16 @@ class GeminiEngine(_LLMEngine):
         self.key = api_key.strip()
         self.model = (model or self.DEFAULT_MODEL).strip()
 
-    def _complete_json(self, system, user_parts, schema):
+    def _complete_json(self, system, user_parts, schema, max_tokens: int | None = None, temperature=None):
+        config = {"responseMimeType": "application/json", "responseSchema": to_gemini_schema(schema)}
+        if max_tokens:
+            config["maxOutputTokens"] = max_tokens
+        if temperature is not None:
+            config["temperature"] = temperature
         body = {
             "systemInstruction": {"parts": [{"text": system}]},
             "contents": [{"role": "user", "parts": user_parts}],
-            "generationConfig": {"responseMimeType": "application/json", "responseSchema": schema},
+            "generationConfig": config,
         }
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{urllib.parse.quote(self.model)}:generateContent"
         data = http_json(url, data=body, headers={"x-goog-api-key": self.key}, service="Gemini", timeout=600,
@@ -528,6 +562,10 @@ class GeminiEngine(_LLMEngine):
         cands = data.get("candidates") or []
         if not cands:
             raise BadResponse(f"Gemini nevrátil odpověď ({data.get('promptFeedback', '')})")
+        meta = data.get("usageMetadata", {})
+        self._add_usage(meta.get("promptTokenCount"), meta.get("candidatesTokenCount"))
+        if cands[0].get("finishReason") == "MAX_TOKENS":
+            raise BadResponse("Gemini: odpověď byla useknuta (příliš dlouhá)")
         text = "".join(p.get("text", "") for p in cands[0].get("content", {}).get("parts", []))
         return json.loads(text)
 
@@ -564,9 +602,14 @@ class OllamaEngine(_LLMEngine):
         self.url = (url or "http://localhost:11434").rstrip("/")
         self.model = (model or self.DEFAULT_MODEL).strip()
 
-    def _complete_json(self, system, user_parts, schema):
+    def _complete_json(self, system, user_parts, schema, max_tokens: int | None = None, temperature=None):
+        # Ollama má výchozí kontext jen pár tisíc tokenů – delší zadání by bez num_ctx tiše ořízla
+        options = {"temperature": 0.2 if temperature is None else temperature,
+                   "num_ctx": 32768 if max_tokens else 16384}
+        if max_tokens:
+            options["num_predict"] = max_tokens
         body = {
-            "model": self.model, "stream": False, "format": schema, "options": {"temperature": 0.2},
+            "model": self.model, "stream": False, "format": schema, "options": options,
             "messages": [{"role": "system", "content": system},
                          {"role": "user", "content": "".join(p.get("text", "") for p in user_parts)}],
         }
@@ -574,7 +617,58 @@ class OllamaEngine(_LLMEngine):
             data = http_json(f"{self.url}/api/chat", data=body, service="Ollama", timeout=1800, retries=1)
         except EngineError as e:
             raise EngineError(f"{e} Běží Ollama a je stažený model „{self.model}“ (ollama pull {self.model})?") from e
+        self._add_usage(data.get("prompt_eval_count"), data.get("eval_count"))
         return json.loads(data["message"]["content"])
+
+
+class OpenAICompatEngine(_LLMEngine):
+    """Služby s rozhraním kompatibilním s OpenAI: OpenAI, DeepSeek, Mistral, OpenRouter, Groq…"""
+
+    name = "OpenAI-kompatibilní"
+    workers = 2
+    PRESETS = {
+        "OpenAI": "https://api.openai.com/v1",
+        "DeepSeek": "https://api.deepseek.com/v1",
+        "Mistral": "https://api.mistral.ai/v1",
+        "OpenRouter": "https://openrouter.ai/api/v1",
+        "Groq": "https://api.groq.com/openai/v1",
+    }
+
+    def __init__(self, target_lang: str, url: str, api_key: str, model: str, notes: str = ""):
+        super().__init__(target_lang, notes)
+        self.url = (url or self.PRESETS["OpenAI"]).strip().rstrip("/")
+        if self.url.endswith("/chat/completions"):
+            self.url = self.url[: -len("/chat/completions")]
+        self.key = (api_key or "").strip()
+        self.model = (model or "").strip()
+        if not self.model:
+            raise EngineError("OpenAI-kompatibilní služba: zadejte v Nastavení název modelu (např. deepseek-chat).")
+        if not self.key and "localhost" not in self.url and "127.0.0.1" not in self.url:
+            raise EngineError("OpenAI-kompatibilní služba: chybí API klíč.")
+        host = urllib.parse.urlparse(self.url).hostname or ""
+        self.name = next((n for n, u in self.PRESETS.items() if host and host in u), host or self.name)
+
+    def _complete_json(self, system, user_parts, schema, max_tokens: int | None = None, temperature=None):
+        user = "".join(p.get("text", "") for p in user_parts)
+        user += ("\n\nOdpověz pouze platným JSON objektem (bez dalšího textu) přesně podle tohoto JSON Schema:\n"
+                 + json.dumps(schema, ensure_ascii=False))
+        body = {"model": self.model, "response_format": {"type": "json_object"},
+                "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}]}
+        if max_tokens:
+            body["max_tokens"] = max_tokens
+        if temperature is not None:
+            body["temperature"] = temperature
+        headers = {"Authorization": f"Bearer {self.key}"} if self.key else {}
+        data = http_json(f"{self.url}/chat/completions", data=body, headers=headers, service=self.name,
+                         timeout=900, retries=4, backoff=(10, 20, 40, 60))
+        usage = data.get("usage") or {}
+        self._add_usage(usage.get("prompt_tokens"), usage.get("completion_tokens"))
+        choice = (data.get("choices") or [{}])[0]
+        if choice.get("finish_reason") == "length":
+            raise BadResponse(f"{self.name}: odpověď byla useknuta (příliš dlouhá)")
+        content = (choice.get("message") or {}).get("content") or ""
+        content = re.sub(r"^```(?:json)?\s*|\s*```$", "", content.strip())
+        return json.loads(content)
 
 
 ENGINE_LABELS = {
@@ -585,6 +679,7 @@ ENGINE_LABELS = {
     "microsoft_doc": "Microsoft – překlad celých dokumentů se zachováním vzhledu (DOCX, PDF, PPTX…)",
     "gemini": "Google Gemini – bezplatná úroveň s limity",
     "ollama": "Ollama – AI v počítači, offline, zdarma",
+    "openai": "OpenAI-kompatibilní – OpenAI, DeepSeek, Mistral, OpenRouter, Groq…",
     "libre": "LibreTranslate – vlastní server, zdarma",
 }
 
