@@ -256,3 +256,16 @@ def test_http_request_falls_back_on_certificate_error(monkeypatch):
     monkeypatch.setattr(fe.urllib.request, "urlopen", always_bad)
     with pytest.raises(EngineError, match="antivirus"):
         fe.http_request("https://x", service="Test")
+
+
+@pytest.mark.skipif(not os.environ.get("PREKLADAC_LIBRE_URL"), reason="nastavte PREKLADAC_LIBRE_URL=http://localhost:5000")
+def test_libretranslate_live():
+    """Živý test proti běžícímu serveru LibreTranslate (spouští ho workflow libretranslate.yml)."""
+    url = os.environ["PREKLADAC_LIBRE_URL"]
+    tr = EngineTranslator(LibreTranslateEngine("čeština", url), log=print)
+    plain = tr.translate_segments(["Hello, how are you?", "The book is on the table."], markup=False)
+    print(plain)
+    assert plain[0] != "Hello, how are you?" and plain[1] != "The book is on the table."
+    html_out = tr.translate_segments(["The <i>old</i> man walked to the river."], markup=True)
+    print(html_out)
+    assert "<i>" in html_out[0] and "</i>" in html_out[0]
