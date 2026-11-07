@@ -91,7 +91,8 @@ def _is_cert_error(e: BaseException) -> bool:
 
 
 def http_request(url: str, *, data=None, headers: dict | None = None, method: str | None = None,
-                 timeout: float = 120, retries: int = 4, backoff: tuple = (3, 8, 20, 45), service: str = "") -> bytes:
+                 timeout: float = 120, retries: int = 4, backoff: tuple = (3, 8, 20, 45), service: str = "",
+                 cafile: str | None = None) -> bytes:
     """HTTP požadavek s opakováním při přetížení (429/5xx) a výpadku spojení."""
     hdrs = {"User-Agent": USER_AGENT}
     hdrs.update(headers or {})
@@ -100,6 +101,8 @@ def http_request(url: str, *, data=None, headers: dict | None = None, method: st
         hdrs.setdefault("Content-Type", "application/json")
     last = None
     ctxs = ssl_contexts()
+    if cafile:  # server s vlastním kořenovým certifikátem (např. rejstřík pluginů Calibre)
+        ctxs = [ssl.create_default_context(cafile=cafile)] + ctxs
     ctx_i = 0
     attempt = 0
     while attempt <= retries:

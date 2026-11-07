@@ -153,3 +153,13 @@ def test_kfx_conversion_installs_missing_plugin(monkeypatch, tmp_path):
     monkeypatch.setattr(components, "calibre_kfx_plugin", lambda exe: True)
     converters._ensure_kfx_plugin("/x/ebook-convert", lambda *_: None)
     assert calls == ["/x/ebook-convert"]  # nainstalovaný plugin se znovu neinstaluje
+
+
+def test_calibre_ca_file_found(tmp_path):
+    exe = tmp_path / "Calibre2" / "ebook-convert.exe"
+    ca = tmp_path / "Calibre2" / "app" / "resources" / "calibre-ebook-root-CA.crt"
+    ca.parent.mkdir(parents=True)
+    ca.write_text("cert")
+    exe.write_text("")
+    assert components.calibre_ca_file(str(exe)) == str(ca)
+    assert components.calibre_ca_file(None) is None

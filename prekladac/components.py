@@ -142,15 +142,33 @@ def kfx_plugin_urls(index: dict) -> list[str]:
     return []
 
 
-def download_kfx_plugin(log: Callable[[str], None]) -> bytes:
+def calibre_ca_file(ebook_convert: str | None) -> str | None:
+    """Kořenový certifikát, kterým Calibre podepisuje svůj server s pluginy (je přibalený v instalaci Calibre)."""
+    if not ebook_convert:
+        return None
+    base = Path(ebook_convert).parent
+    name = "calibre-ebook-root-CA.crt"
+    for cand in (base / "app" / "resources" / name, base / "resources" / name,
+                 base.parent / "resources" / name, base.parent / "share" / "calibre" / name):
+        if cand.is_file():
+            return str(cand)
+    try:
+        return str(next(base.rglob(name)))
+    except (StopIteration, OSError):
+        return None
+
+
+def download_kfx_plugin(log: Callable[[str], None], ebook_convert: str | None = None) -> bytes:
     """Stáhne plugin KFX Input z oficiálního rejstříku pluginů Calibre."""
     import bz2
     import json
 
     from free_engines import EngineError, http_request
 
+    cafile = calibre_ca_file(ebook_convert)
     log("Stahuji rejstřík pluginů Calibre…")
-    raw = http_request(CALIBRE_PLUGIN_INDEX, timeout=120, service="Rejstřík pluginů Calibre", retries=2)
+    raw = http_request(CALIBRE_PLUGIN_INDEX, timeout=120, service="Rejstřík pluginů Calibre", retries=2,
+                       cafile=cafile)
     index = json.loads(bz2.decompress(raw))
     urls = kfx_plugin_urls(index)
     if not urls:
@@ -158,7 +176,7 @@ def download_kfx_plugin(log: Callable[[str], None]) -> bytes:
     last: Exception | None = None
     for url in urls:
         try:
-            data = http_request(url, timeout=300, service="Plugin KFX Input", retries=1)
+            data = http_request(url, timeout=300, service="Plugin KFX Input", retries=1, cafile=cafile)
             if data[:2] == b"PK":
                 return data
         except EngineError as e:
@@ -175,7 +193,7 @@ def install_kfx_plugin(ebook_convert: str | None, log: Callable[[str], None]) ->
     customize = _calibre_customize(ebook_convert)
     if not customize:
         raise EngineError("Calibre nebylo nalezeno, plugin KFX Input nelze nainstalovat.")
-    data = download_kfx_plugin(log)
+    data = download_kfx_plugin(log, ebook_convert)
     with tempfile.TemporaryDirectory(prefix="prekladac_kfx_") as tmp:
         zip_path = os.path.join(tmp, "KFX Input.zip")
         Path(zip_path).write_bytes(data)
