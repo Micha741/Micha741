@@ -851,6 +851,11 @@ def _setup_streams(cli: bool) -> None:
         sys.stdout = open(os.devnull, "w", encoding="utf-8")
     if sys.stderr is None:
         sys.stderr = sys.stdout
+    for stream in (sys.stdout, sys.stderr):  # české znaky i v konzoli s jiným kódováním (např. cp1252)
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
 
 
 if __name__ == "__main__":
