@@ -100,6 +100,10 @@ Všechny tyto služby mají stejné rozhraní; vyplníte jen Adresu API, API kl�
    OpenRouter: openrouter.ai/keys · Groq: console.groq.com/keys
 2. Placené služby se dobíjejí kreditem předem (stejně jako Claude API) – žádný měsíční paušál.
 3. Sem vyplňte Adresu API, API klíč a přesný název modelu (najdete ho v dokumentaci služby).
+   Adresa API musí patřit ke stejné službě jako klíč – klíč OpenRouteru na adrese OpenAI skončí
+   chybou 401. Klíče OpenRouteru („sk-or-…“) a Groq („gsk_…“) program pozná a při prázdné adrese
+   použije správnou sám. U OpenRouteru má model tvar „výrobce/model“, např. deepseek/deepseek-chat
+   nebo model končící „:free“ (seznam na openrouter.ai/models).
 4. Uložit → Otestovat.
 
 Hodí se pro překlad i pro „Napsat knihu“. Kvalita češtiny se liší podle modelu – vyzkoušejte
