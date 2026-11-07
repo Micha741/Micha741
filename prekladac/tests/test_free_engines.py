@@ -113,6 +113,8 @@ def test_microsoft_libre(monkeypatch):
     fake2 = FakeHTTP(lambda url, kw: {"translatedText": [t + "?" for t in kw["data"]["q"]]})
     monkeypatch.setattr(fe, "http_json", fake2)
     assert LibreTranslateEngine("čeština", "http://x:5000/").translate_batch(["a"], False, "") == ["a?"]
+    monkeypatch.setattr(fe, "http_json", FakeHTTP(lambda url, kw: {"translatedText": ["• <i>x</i>", "• y"]}))
+    assert LibreTranslateEngine("čeština", "").translate_batch(["<i>a</i>", "• b"], True, "") == ["<i>x</i>", "• y"]
     assert fake2.calls[0][0] == "http://x:5000/translate"
 
 
@@ -268,4 +270,4 @@ def test_libretranslate_live():
     assert plain[0] != "Hello, how are you?" and plain[1] != "The book is on the table."
     html_out = tr.translate_segments(["The <i>old</i> man walked to the river."], markup=True)
     print(html_out)
-    assert "<i>" in html_out[0] and "</i>" in html_out[0]
+    assert "<i>" in html_out[0] and "</i>" in html_out[0] and not html_out[0].startswith("•")
