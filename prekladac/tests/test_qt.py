@@ -105,3 +105,56 @@ def test_main_window_builds(qapp):
     assert w.stack.currentIndex() == 2
     w.book.desc.setPlainText("krátce")
     w.close()
+
+
+def _editor_with(tmp_path, autosave):
+    from qt_editor import BookEditor
+
+    proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000,
+            "chapters": [{"text": "Začátek.", "summary": ""}]}
+    path = tmp_path / "a.kniha.json"
+    bw.save_project(path, proj)
+    ed = BookEditor(proj, path, None, autosave=autosave)
+    ed.show()  # psaní z klávesnice jde jen do zobrazeného okna
+    ed.text.setFocus()
+    ed.text.moveCursor(QtGui.QTextCursor.End)
+    return ed, path
+
+
+def _type(qapp, ed, text):
+    from PySide6 import QtCore, QtTest
+
+    QtTest.QTest.keyClicks(ed.text, text)
+    for _ in range(5):
+        qapp.processEvents()
+        QtCore.QThread.msleep(20)
+
+
+@pytest.mark.parametrize("mode,typed,saved", [
+    ("sentence", " Ahoj svete.", True),
+    ("sentence", " Ahoj svete", False),   # věta ještě neskončila
+    ("word", " Ahoj ", True),
+    ("chars", " abcdefghij", True),       # 11 znaků ≥ limit 10
+    ("off", " Ahoj svete.", False),
+])
+def test_autosave_modes(qapp, tmp_path, mode, typed, saved):
+    ed, path = _editor_with(tmp_path, {"mode": mode, "chars": 10})
+    _type(qapp, ed, typed)
+    on_disk = bw.load_project(path)["chapters"][0]["text"]
+    assert (typed.strip() in on_disk) is saved
+    if saved:
+        assert (tmp_path / "a.kniha.json.bak").exists()  # předchozí verze zůstala jako záloha
+        assert not ed.dirty
+    ed.dirty = False
+    ed.close()
+
+
+def test_autosave_is_throttled(qapp, tmp_path):
+    ed, path = _editor_with(tmp_path, {"mode": "word"})
+    _type(qapp, ed, " jedna ")
+    first = path.stat().st_mtime_ns
+    _type(qapp, ed, "dva ")  # do 2 s se znovu neukládá, jen se naplánuje
+    assert path.stat().st_mtime_ns == first and ed._pending_timer.isActive()
+    ed.dirty = False
+    ed._pending_timer.stop()
+    ed.close()

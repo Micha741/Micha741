@@ -106,6 +106,10 @@ Když program zavřete, přijdete nanejvýš o právě psanou kapitolu – po sp
 - **Kniha** – název a autor, výchozí písmo knihy, obsah s odkazy, formáty exportu, přidání/mazání/přesun kapitol.
 - Vlevo seznam kapitol, dole počet slov a odstavců kapitoly i celé knihy.
 
+**Automatické ukládání v editoru** (⚙ Nastavení → Obecné): po každé větě (výchozí), po každém slově, po zadaném
+počtu znaků, každých N sekund, nebo vypnuto. Na disk se zapisuje nejvýš jednou za 2 s a předchozí verze zůstává
+jako záloha `Název.kniha.json.bak`. Dokud je kniha otevřená v editoru, AI do ní nepíše (nepřepíšou se navzájem).
+
 Formátování z editoru (tučné, barvy, zarovnání, odrážky, nadpisy…) se zachová v DOCX, EPUB, PDF i AZW3.
 Export vloží na začátek **obsah s odkazy** na kapitoly.
 

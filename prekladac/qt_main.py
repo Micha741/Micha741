@@ -464,6 +464,10 @@ class BookPage(QtWidgets.QWidget):
         has_text = bool(self.project and self.project["chapters"])
         self.b_outline.setEnabled(not self.busy)
         self.b_write.setEnabled(not self.busy and has_outline)
+        if self.path and self.open_editor_for(self.path):
+            self.b_write.setToolTip("Kniha je otevřená v editoru – nejdřív ho zavřete.")
+        else:
+            self.b_write.setToolTip("")
         self.b_stop.setEnabled(self.busy)
         self.b_load.setEnabled(not self.busy)
         self.b_edit.setEnabled(not self.busy and has_text)
@@ -528,6 +532,11 @@ class BookPage(QtWidgets.QWidget):
             QtWidgets.QMessageBox.critical(self, "Napsat knihu", str(e))
             return
         formats = [f for f, c in self.fmts.items() if c.isChecked()] or ["docx"]
+        if self.path and self.open_editor_for(self.path):
+            QtWidgets.QMessageBox.warning(
+                self, "Napsat knihu", "Kniha je otevřená v editoru. Nejdřív editor uložte a zavřete – "
+                                      "jinak by se psaní AI a vaše úpravy navzájem přepsaly.")
+            return
         proj = self.project
         if proj is None or proj["outline"] != outline:
             if proj is not None and proj["chapters"]:
@@ -617,14 +626,34 @@ class BookPage(QtWidgets.QWidget):
         self.update_buttons()
         self.logv.log(f"Načteno: {len(proj['chapters'])} z {len(proj['outline']['chapters'])} kapitol hotovo.")
 
+    def open_editor_for(self, path):
+        """Otevřený editor této knihy (nebo None)."""
+        alive = []
+        for ed in self.editors:
+            try:
+                ed.isVisible()
+            except RuntimeError:  # okno už bylo zavřeno a smazáno
+                continue
+            alive.append(ed)
+        self.editors = alive
+        return next((ed for ed in alive if ed.isVisible() and path and ed.path == Path(path)), None)
+
     def open_editor(self):
         from qt_editor import BookEditor
 
         if not self.project or not self.project["chapters"]:
             QtWidgets.QMessageBox.information(self, "Upravit knihu", "Kniha zatím nemá napsanou žádnou kapitolu.")
             return
-        ed = BookEditor(self.project, self.path, self.win.cfg["paths"].get("ebook_convert") or None)
+        if self.open_editor_for(self.path):
+            ed = self.open_editor_for(self.path)
+            ed.showMaximized()
+            ed.raise_()
+            ed.activateWindow()
+            return
+        ed = BookEditor(self.project, self.path, self.win.cfg["paths"].get("ebook_convert") or None,
+                        autosave=self.win.cfg.get("autosave"))
         self.editors.append(ed)
+        ed.destroyed.connect(lambda *_: self.update_buttons())
         ed.showMaximized()
 
 
@@ -855,12 +884,47 @@ class SettingsPage(QtWidgets.QWidget):
         g.addWidget(QtWidgets.QLabel("Výstupní složka:"), 0, 0)
         g.addWidget(self.out_dir, 0, 1)
         g.addWidget(b, 0, 2)
-        g.addWidget(QtWidgets.QLabel(f"Verze programu: {VERSION}"), 1, 0, 1, 2)
+        from qt_editor import AUTOSAVE_DEFAULT, AUTOSAVE_MODES
+
+        auto = {**AUTOSAVE_DEFAULT, **cfg.get("autosave", {})}
+        abox = QtWidgets.QGroupBox("Automatické ukládání v editoru knihy")
+        ag = QtWidgets.QGridLayout(abox)
+        self.auto_mode = QtWidgets.QComboBox()
+        for key, text in AUTOSAVE_MODES.items():
+            self.auto_mode.addItem(text, key)
+        self.auto_mode.setCurrentIndex(max(0, self.auto_mode.findData(auto["mode"])))
+        self.auto_seconds = QtWidgets.QSpinBox()
+        self.auto_seconds.setRange(5, 3600)
+        self.auto_seconds.setSuffix(" s")
+        self.auto_seconds.setValue(int(auto["seconds"]))
+        self.auto_chars = QtWidgets.QSpinBox()
+        self.auto_chars.setRange(10, 100000)
+        self.auto_chars.setSuffix(" znaků")
+        self.auto_chars.setValue(int(auto["chars"]))
+        ag.addWidget(QtWidgets.QLabel("Ukládat:"), 0, 0)
+        ag.addWidget(self.auto_mode, 0, 1)
+        ag.addWidget(QtWidgets.QLabel("Interval:"), 1, 0)
+        ag.addWidget(self.auto_seconds, 1, 1)
+        ag.addWidget(QtWidgets.QLabel("Počet znaků:"), 2, 0)
+        ag.addWidget(self.auto_chars, 2, 1)
+        ag.addWidget(label("Na disk se zapisuje nejvýš jednou za 2 sekundy, i když píšete rychle. Předchozí verze "
+                           "zůstává jako záloha „*.kniha.json.bak“. Psaní knihy přes AI ukládá samo po každé "
+                           "kapitole; dokud je kniha otevřená v editoru, AI do ní nepíše.", "Hint"), 3, 0, 1, 2)
+
+        def auto_visibility(*_):
+            m = self.auto_mode.currentData()
+            self.auto_seconds.setEnabled(m == "time")
+            self.auto_chars.setEnabled(m == "chars")
+
+        self.auto_mode.currentIndexChanged.connect(auto_visibility)
+        auto_visibility()
+        g.addWidget(abox, 1, 0, 1, 3)
+        g.addWidget(QtWidgets.QLabel(f"Verze programu: {VERSION}"), 2, 0, 1, 2)
         upd = QtWidgets.QPushButton("🌐 Zkontrolovat novou verzi")
         upd.clicked.connect(lambda: webbrowser.open(core.RELEASES_URL))
-        g.addWidget(upd, 1, 2)
-        g.addWidget(label(f"Nastavení programu: {core.config_path()}", "Hint"), 2, 0, 1, 3)
-        g.setRowStretch(3, 1)
+        g.addWidget(upd, 2, 2)
+        g.addWidget(label(f"Nastavení programu: {core.config_path()}", "Hint"), 3, 0, 1, 3)
+        g.setRowStretch(4, 1)
         g.setColumnStretch(1, 1)
         return w
 
@@ -870,6 +934,8 @@ class SettingsPage(QtWidgets.QWidget):
         cfg["paths"]["ebook_convert"] = self.cal_path.text().strip()
         cfg["paths"]["tesseract"] = self.tes_path.text().strip()
         cfg["out_dir"] = self.out_dir.text().strip()
+        cfg["autosave"] = {"mode": self.auto_mode.currentData(), "seconds": self.auto_seconds.value(),
+                           "chars": self.auto_chars.value()}
         self.win.save_cfg()
         self.win.refresh_statuses()
         QtWidgets.QMessageBox.information(self, "Nastavení", "Nastavení uloženo.")
