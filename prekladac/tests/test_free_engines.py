@@ -99,6 +99,17 @@ def test_microsoft_libre(monkeypatch):
     assert "to=cs" in url and "textType=html" in url
     assert kw["headers"]["Ocp-Apim-Subscription-Region"] == "westeurope"
 
+    assert MicrosoftEngine.normalize_region("West Europe") == "westeurope"
+    assert MicrosoftEngine.normalize_region("Global") == ""
+    assert MicrosoftEngine("čeština", " ab c ").key == "abc"
+
+    def unauthorized(url, kw):
+        raise EngineError("Microsoft Translator: neplatný nebo chybějící klíč (HTTP 401).")
+
+    monkeypatch.setattr(fe, "http_json", unauthorized)
+    with pytest.raises(EngineError, match="Location/Region"):
+        MicrosoftEngine("čeština", "k", "West Europe").translate_batch(["a"], False, "")
+
     fake2 = FakeHTTP(lambda url, kw: {"translatedText": [t + "?" for t in kw["data"]["q"]]})
     monkeypatch.setattr(fe, "http_json", fake2)
     assert LibreTranslateEngine("čeština", "http://x:5000/").translate_batch(["a"], False, "") == ["a?"]

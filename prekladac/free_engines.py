@@ -296,7 +296,14 @@ class MicrosoftEngine(Engine):
         super().__init__(target_lang)
         if not api_key:
             raise EngineError("Microsoft Translator: chybí klíč (Azure → Translator, cenová úroveň F0 je zdarma).")
-        self.key, self.region = api_key.strip(), region.strip()
+        self.key = re.sub(r"\s+", "", api_key)
+        self.region = self.normalize_region(region)
+
+    @staticmethod
+    def normalize_region(region: str) -> str:
+        """„West Europe“ → „westeurope“; „Global“ znamená bez oblasti."""
+        r = re.sub(r"[\s_-]+", "", (region or "").lower())
+        return "" if r in ("", "global") else r
 
     def translate_batch(self, texts, markup, context):
         params = urllib.parse.urlencode({"api-version": "3.0", "to": self.iso,
@@ -304,8 +311,19 @@ class MicrosoftEngine(Engine):
         headers = {"Ocp-Apim-Subscription-Key": self.key}
         if self.region:
             headers["Ocp-Apim-Subscription-Region"] = self.region
-        data = http_json(f"https://api.cognitive.microsofttranslator.com/translate?{params}",
-                         data=[{"Text": t} for t in texts], headers=headers, service="Microsoft Translator")
+        try:
+            data = http_json(f"https://api.cognitive.microsofttranslator.com/translate?{params}",
+                             data=[{"Text": t} for t in texts], headers=headers, service="Microsoft Translator")
+        except EngineError as e:
+            if "HTTP 401" in str(e):
+                region = f"„{self.region}“" if self.region else "prázdná"
+                raise EngineError(
+                    f"{e}\nZkontrolujte v portálu Azure → váš Translator → Keys and Endpoint: "
+                    f"1) klíč je KEY 1 přímo ze služby Translator (ne z jiné služby), "
+                    f"2) pole Oblast odpovídá údaji „Location/Region“ (teď: {region}; u oblasti Global nechte prázdné), "
+                    f"3) nová služba se může aktivovat až několik minut."
+                ) from e
+            raise
         out = [item["translations"][0]["text"] for item in data]
         if len(out) != len(texts):
             raise BadResponse("Microsoft vrátil jiný počet úseků")
