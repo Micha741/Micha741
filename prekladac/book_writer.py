@@ -255,22 +255,107 @@ class BookWriter:
 
 # ------------------------------------------------------------------ export
 LANG_CODES = {"čeština": "cs", "slovenština": "sk", "angličtina": "en", "němčina": "de", "polština": "pl"}
+PAGE_BREAK = "[[STRANA]]"  # samostatný řádek v textu kapitoly = zalomení stránky
+DEFAULT_FORMAT = {"font": "Georgia", "size": 12, "toc": True}
+TOC_TITLES = {"cs": "Obsah", "sk": "Obsah", "en": "Contents", "de": "Inhalt", "pl": "Spis treści"}
+
+
+def split_paragraphs(text: str) -> list[str]:
+    """Odstavce oddělené prázdným řádkem; samostatný řádek [[STRANA]] je zalomení stránky."""
+    text = re.sub(r"[ \t]*" + re.escape(PAGE_BREAK) + r"[ \t]*", "\n\n" + PAGE_BREAK + "\n\n", text)
+    return [p.strip() for p in re.split(r"\n\s*\n", text) if p.strip()]
+
+
+def text_stats(text: str) -> tuple[int, int]:
+    """(počet slov, počet odstavců) – bez značek zalomení stránky."""
+    paras = [p for p in split_paragraphs(text) if p != PAGE_BREAK]
+    return sum(len(p.split()) for p in paras), len(paras)
+
+
+def book_stats(project: dict) -> tuple[int, int, int]:
+    """(slova, odstavce, napsané kapitoly) celé knihy."""
+    words = paras = 0
+    for ch in project["chapters"]:
+        w, p = text_stats(ch["text"])
+        words += w
+        paras += p
+    return words, paras, len(project["chapters"])
+
+
+def _bookmark(paragraph, name: str, bid: int) -> None:
+    from docx.oxml import OxmlElement
+    from docx.oxml.ns import qn
+
+    start = OxmlElement("w:bookmarkStart")
+    start.set(qn("w:id"), str(bid))
+    start.set(qn("w:name"), name)
+    end = OxmlElement("w:bookmarkEnd")
+    end.set(qn("w:id"), str(bid))
+    paragraph._p.insert(1 if paragraph._p.pPr is not None else 0, start)
+    paragraph._p.append(end)
+
+
+def _internal_link(paragraph, text: str, anchor: str) -> None:
+    from docx.oxml import OxmlElement
+    from docx.oxml.ns import qn
+
+    link = OxmlElement("w:hyperlink")
+    link.set(qn("w:anchor"), anchor)
+    link.set(qn("w:history"), "1")
+    run = OxmlElement("w:r")
+    rpr = OxmlElement("w:rPr")
+    color = OxmlElement("w:color")
+    color.set(qn("w:val"), "1F4E99")
+    rpr.append(color)
+    run.append(rpr)
+    t = OxmlElement("w:t")
+    t.text = text
+    t.set(qn("xml:space"), "preserve")
+    run.append(t)
+    link.append(run)
+    paragraph._p.append(link)
+
+
+def _set_fonts(document, font: str, size: int) -> None:
+    from docx.oxml.ns import qn
+    from docx.shared import Pt
+
+    for name in ("Normal", "Title", "Heading 1", "Heading 2"):
+        try:
+            st = document.styles[name]
+        except KeyError:
+            continue
+        st.font.name = font
+        rpr = st.element.get_or_add_rPr()
+        rfonts = rpr.find(qn("w:rFonts"))
+        if rfonts is None:
+            rfonts = rpr.makeelement(qn("w:rFonts"), {})
+            rpr.append(rfonts)
+        for attr in ("w:ascii", "w:hAnsi", "w:cs", "w:eastAsia"):
+            rfonts.set(qn(attr), font)
+        for theme_attr in ("w:asciiTheme", "w:hAnsiTheme", "w:cstheme", "w:eastAsiaTheme"):
+            rfonts.attrib.pop(qn(theme_attr), None)
+        if name == "Normal":
+            st.font.size = Pt(size)
 
 
 def export(project: dict, out_dir: str | Path, formats: list[str], log: Callable[[str], None] = print,
            ebook_convert: str | None = None) -> list[str]:
-    """Uloží hotovou knihu: vždy DOCX, z něj přes Calibre EPUB/PDF/AZW3."""
+    """Uloží knihu: vždy DOCX (písmo, obsah s odkazy, zalomení stránek), z něj přes Calibre EPUB/PDF/AZW3."""
     import docx
     from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK
 
     from converters import calibre_convert, output_path
 
     o = project["outline"]
+    fmt_cfg = {**DEFAULT_FORMAT, **project.get("format", {})}
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     base = out_dir / safe_name(o["title"])
+    written = list(zip(o["chapters"], project["chapters"]))
 
     d = docx.Document()
+    _set_fonts(d, fmt_cfg["font"], int(fmt_cfg["size"]))
     d.core_properties.title = o["title"]
     d.core_properties.author = project.get("author", "")
     code = LANG_CODES.get(project.get("language", "").lower())
@@ -278,13 +363,35 @@ def export(project: dict, out_dir: str | Path, formats: list[str], log: Callable
         d.core_properties.language = code
     t = d.add_paragraph(o["title"], style="Title")
     t.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    for i, (ch_plan, ch) in enumerate(zip(o["chapters"], project["chapters"]), 1):
+    if project.get("author"):
+        a = d.add_paragraph(project["author"])
+        a.alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+    if fmt_cfg.get("toc") and written:
         d.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
-        d.add_heading(f"{i}. {ch_plan['title']}", level=1)
-        for para in re.split(r"\n\s*\n", ch["text"]):
-            para = " ".join(para.split())
-            if para:
-                d.add_paragraph(para)
+        d.add_heading(TOC_TITLES.get(code or "cs", "Obsah"), level=1)
+        for i, (ch_plan, _ch) in enumerate(written, 1):
+            _internal_link(d.add_paragraph(), f"{i}. {ch_plan['title']}", f"kapitola_{i}")
+
+    for i, (ch_plan, ch) in enumerate(written, 1):
+        d.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
+        h = d.add_heading(f"{i}. {ch_plan['title']}", level=1)
+        _bookmark(h, f"kapitola_{i}", i)
+        if ch.get("html"):  # kapitola upravená v editoru – s formátováním
+            from html_docx import add_html
+
+            add_html(d, ch["html"])
+            continue
+        for para in split_paragraphs(ch["text"]):
+            if para == PAGE_BREAK:
+                d.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
+                continue
+            p = d.add_paragraph()
+            lines = [" ".join(line.split()) for line in para.split("\n")]
+            for li, line in enumerate(lines):
+                run = p.add_run(line)
+                if li < len(lines) - 1:
+                    run.add_break()  # zalomení řádku uvnitř odstavce
     docx_path = output_path(str(base) + ".docx", None, "docx", "")
     d.save(docx_path)
     results = []

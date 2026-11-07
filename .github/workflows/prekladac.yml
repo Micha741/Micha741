@@ -40,7 +40,7 @@ jobs:
         run: |
           "VERSION = `"1.0.$env:GITHUB_RUN_NUMBER`"" | Set-Content -Encoding utf8 version.py
           python -m PyInstaller --noconfirm --onedir --windowed --name Prekladac `
-            --collect-all tkinterdnd2 --collect-all pypdfium2 --collect-all pypdfium2_raw `
+            --collect-all pypdfium2 --collect-all pypdfium2_raw --exclude-module tkinter `
             --distpath build\dist --workpath build\work --specpath build app.py
           Move-Item build\dist\Prekladac build\app
 
@@ -89,6 +89,9 @@ jobs:
           if (-not (Test-Path $exe)) { throw "Program se nenainstaloval do $dir" }
           $v = Start-Process $exe -ArgumentList '--version-file','version.txt' -Wait -PassThru
           Get-Content version.txt
+          $g = Start-Process $exe -ArgumentList '--gui-selftest','gui.txt' -Wait -PassThru
+          Get-Content gui.txt
+          if ($g.ExitCode -ne 0) { throw "Okno programu (Qt) se nepodařilo sestavit" }
           python -c "import docx; d = docx.Document(); d.add_paragraph('Hello world'); d.save('smoke.docx')"
           python -c "from PIL import Image, ImageDraw, ImageFont; im = Image.new('RGB', (1400, 220), 'white'); ImageDraw.Draw(im).text((40, 60), 'The quick brown fox jumps.', fill='black', font=ImageFont.truetype('arial.ttf', 64)); im.save('smoke.png')"
           function Run($argsList, $log) {
@@ -102,7 +105,9 @@ jobs:
           # 2) OCR přes přibalený Tesseract (obrázek -> DOCX)
           Run @('smoke.png', '--convert-only', '--ocr', 'tesseract', '--ocr-lang', 'eng', '--out-dir', 'smoke_out') 'smoke2.log'
           python -c "import docx, glob; t = ' '.join(p.text for f in glob.glob('smoke_out/smoke*.docx') for p in docx.Document(f).paragraphs); print(t); assert 'brown fox' in t"
-          # 3) stažení a instalace pluginu KFX Input do přibaleného Calibre
+          # 3) kniha s obsahem a odkazy -> EPUB přes přibalené Calibre; odkazy musí zůstat
+          python tests\ci_check_epub_links.py "$dir\Calibre2\ebook-convert.exe"
+          # 4) stažení a instalace pluginu KFX Input do přibaleného Calibre
           python -c "import sys; sys.path.insert(0, '.'); import components; c = r'$dir\Calibre2\ebook-convert.exe'; print('CA:', components.calibre_ca_file(c)); components.install_kfx_plugin(c, print); assert components.calibre_kfx_plugin(c) is True, 'plugin chybí'"
 
       - uses: actions/upload-artifact@v4
