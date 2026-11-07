@@ -11,6 +11,7 @@ import json
 import os
 import re
 import shutil
+import ssl
 import subprocess
 import sys
 import tempfile
@@ -53,6 +54,42 @@ def lang_codes(name: str) -> tuple[str, str]:
 
 
 # ------------------------------------------------------------------ HTTP
+_SSL_CONTEXTS: list | None = None
+
+
+def ssl_contexts() -> list:
+    """Způsoby ověření certifikátů, od nejlepšího: úložiště Windows (truststore), sada certifi, výchozí Python.
+
+    Python v .exe jinak nevidí kořenové certifikáty, které si Windows stahují až při potřebě,
+    ani certifikát antiviru, který kontroluje HTTPS – stahování pak končí CERTIFICATE_VERIFY_FAILED.
+    """
+    global _SSL_CONTEXTS
+    if _SSL_CONTEXTS is None:
+        ctxs = []
+        if os.environ.get("SSL_CERT_FILE"):
+            ctxs.append(ssl.create_default_context())
+        try:
+            import truststore
+
+            ctxs.append(truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT))
+        except Exception:
+            pass
+        try:
+            import certifi
+
+            ctxs.append(ssl.create_default_context(cafile=certifi.where()))
+        except Exception:
+            pass
+        ctxs.append(ssl.create_default_context())
+        _SSL_CONTEXTS = ctxs
+    return _SSL_CONTEXTS
+
+
+def _is_cert_error(e: BaseException) -> bool:
+    reason = getattr(e, "reason", e)
+    return isinstance(reason, ssl.SSLCertVerificationError) or "CERTIFICATE_VERIFY_FAILED" in str(reason)
+
+
 def http_request(url: str, *, data=None, headers: dict | None = None, method: str | None = None,
                  timeout: float = 120, retries: int = 4, backoff: tuple = (3, 8, 20, 45), service: str = "") -> bytes:
     """HTTP požadavek s opakováním při přetížení (429/5xx) a výpadku spojení."""
@@ -62,10 +99,13 @@ def http_request(url: str, *, data=None, headers: dict | None = None, method: st
         data = json.dumps(data, ensure_ascii=False).encode("utf-8")
         hdrs.setdefault("Content-Type", "application/json")
     last = None
-    for attempt in range(retries + 1):
+    ctxs = ssl_contexts()
+    ctx_i = 0
+    attempt = 0
+    while attempt <= retries:
         req = urllib.request.Request(url, data=data, headers=hdrs, method=method)
         try:
-            with urllib.request.urlopen(req, timeout=timeout) as resp:
+            with urllib.request.urlopen(req, timeout=timeout, context=ctxs[ctx_i]) as resp:
                 return resp.read()
         except urllib.error.HTTPError as e:
             body = e.read().decode("utf-8", errors="replace")[:500]
@@ -82,9 +122,19 @@ def http_request(url: str, *, data=None, headers: dict | None = None, method: st
             else:
                 raise EngineError(f"{service}: chyba HTTP {e.code}: {body}") from e
         except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
+            if _is_cert_error(e):
+                if ctx_i + 1 < len(ctxs):
+                    ctx_i += 1  # zkusit jiný způsob ověření certifikátu, bez čekání a bez započtení pokusu
+                    continue
+                raise EngineError(
+                    f"{service}: nepodařilo se ověřit certifikát serveru ({getattr(e, 'reason', e)}). "
+                    "Častou příčinou je antivirus, který kontroluje HTTPS spojení, nebo firemní proxy. "
+                    "Zkuste v antiviru vypnout kontrolu HTTPS pro Prekladac.exe."
+                ) from e
             last = str(getattr(e, "reason", e))
             delay = backoff[min(attempt, len(backoff) - 1)]
-        if attempt < retries:
+        attempt += 1
+        if attempt <= retries:
             time.sleep(delay)
     raise EngineError(f"{service}: služba neodpovídá ({last}).")
 

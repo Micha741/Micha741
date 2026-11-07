@@ -220,3 +220,39 @@ def test_google_live():
         ["Hello <i>dear</i> reader.", "The book is on the table."], markup=True)
     print(out)
     assert "<i>" in out[0] and out[1] != "The book is on the table."
+
+
+def test_http_request_falls_back_on_certificate_error(monkeypatch):
+    import ssl
+    import urllib.error
+
+    used = []
+
+    class Resp:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+        def read(self):
+            return b"ok"
+
+    def fake_urlopen(req, timeout, context):
+        used.append(context)
+        if len(used) == 1:
+            raise urllib.error.URLError(ssl.SSLCertVerificationError("unable to get issuer certificate"))
+        return Resp()
+
+    monkeypatch.setattr(fe, "_SSL_CONTEXTS", ["windows", "certifi"])
+    monkeypatch.setattr(fe.urllib.request, "urlopen", fake_urlopen)
+    monkeypatch.setattr(fe.time, "sleep", lambda s: None)
+    assert fe.http_request("https://x", service="Test", retries=0) == b"ok"
+    assert used == ["windows", "certifi"]
+
+    def always_bad(req, timeout, context):
+        raise urllib.error.URLError(ssl.SSLCertVerificationError("bad"))
+
+    monkeypatch.setattr(fe.urllib.request, "urlopen", always_bad)
+    with pytest.raises(EngineError, match="antivirus"):
+        fe.http_request("https://x", service="Test")
