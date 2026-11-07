@@ -23,9 +23,10 @@ SolidCompression=yes
 WizardStyle=modern
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
-; instalace bez práv správce (do %LOCALAPPDATA%\Programs); správce si může zvolit instalaci pro všechny
-PrivilegesRequired=lowest
-PrivilegesRequiredOverridesAllowed=dialog
+; výchozí instalace pro všechny do C:\Program Files\Prekladac (Windows se zeptá na práva správce);
+; v úvodním dialogu lze zvolit instalaci jen pro sebe bez práv správce (do %LOCALAPPDATA%\Programs)
+PrivilegesRequired=admin
+PrivilegesRequiredOverridesAllowed=commandline dialog
 UninstallDisplayIcon={app}\Prekladac.exe
 UninstallDisplayName=Překladač knih a dokumentů
 LicenseFile=THIRD_PARTY.txt

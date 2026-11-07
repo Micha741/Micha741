@@ -18,6 +18,8 @@ import webbrowser
 from pathlib import Path
 
 import components
+from guides import GUIDES
+from version import VERSION
 from converters import (
     DOC_ONLY_EXT, IMAGE_EXT, OUTPUT_FORMATS, SUPPORTED_EXT, CalibreMissing, find_ebook_convert, process_file,
     process_images_together,
@@ -70,6 +72,7 @@ SERVICE_HELP = {
     "libre": ("Vlastní server LibreTranslate nebo veřejná instance s klíčem.", "https://libretranslate.com"),
 }
 TESSERACT_URL = "https://github.com/UB-Mannheim/tesseract/releases"
+RELEASES_URL = "https://github.com/Micha741/Micha741/releases/tag/prekladac-latest"
 CALIBRE_URL = "https://calibre-ebook.com/download_windows"
 
 
@@ -300,7 +303,7 @@ def run_gui() -> None:
     if not cfg["paths"].get("tesseract"):
         cfg["paths"]["tesseract"] = find_tesseract() or ""
 
-    root.title(APP_NAME)
+    root.title(f"{APP_NAME} – verze {VERSION}")
     root.geometry("900x760")
     root.minsize(760, 600)
 
@@ -507,6 +510,17 @@ def run_gui() -> None:
             win.bind_all(seq, wheel, add="+")
         inner.columnconfigure(1, weight=1)
 
+        def show_guide(name):
+            g = tk.Toplevel(win)
+            g.title(f"Návod – {SERVICES[name][0]}")
+            g.geometry("720x480")
+            g.transient(win)
+            txt = ScrolledText(g, wrap="word", font=("Segoe UI", 10))
+            txt.pack(fill="both", expand=True, padx=8, pady=8)
+            txt.insert("1.0", GUIDES.get(name, "Návod není k dispozici."))
+            txt.configure(state="disabled")  # text jde označit a zkopírovat (Ctrl+C)
+            ttk.Button(g, text="Zavřít", command=g.destroy).pack(pady=(0, 8))
+
         svc_vars: dict[str, dict[str, tk.StringVar]] = {}
         row = 0
         for name, (title, fields) in SERVICES.items():
@@ -539,8 +553,10 @@ def run_gui() -> None:
                 r += 1
             btns = ttk.Frame(frame)
             btns.grid(row=r, column=0, columnspan=3, sticky="w", **pad)
+            ttk.Button(btns, text="Návod", command=lambda n=name: show_guide(n)).pack(side="left")
             if url:
-                ttk.Button(btns, text="Získat klíč / web", command=lambda u=url: webbrowser.open(u)).pack(side="left")
+                ttk.Button(btns, text="Získat klíč / web", command=lambda u=url: webbrowser.open(u)).pack(
+                    side="left", padx=(8, 0))
 
             def do_test(n=name, b=btns):
                 collect_services()
@@ -713,6 +729,9 @@ def run_gui() -> None:
             row=1, column=1, sticky="w", **pad)
         ttk.Label(tab_g, text=f"Nastavení programu: {config_path()}", foreground="#555").grid(
             row=2, column=0, columnspan=3, sticky="w", **pad)
+        ttk.Label(tab_g, text=f"Verze programu: {VERSION}").grid(row=3, column=0, columnspan=2, sticky="w", **pad)
+        ttk.Button(tab_g, text="Zkontrolovat novou verzi", command=lambda: webbrowser.open(RELEASES_URL)).grid(
+            row=3, column=2, **pad)
 
         # --- tlačítka (rámeček „bottom“ je vytvořený nahoře, aby se vždy vešel)
 
@@ -860,6 +879,12 @@ def _setup_streams(cli: bool) -> None:
 
 if __name__ == "__main__":
     _setup_streams(len(sys.argv) > 1)
+    if sys.argv[1:2] == ["--version"]:
+        print(VERSION)
+        sys.exit(0)
+    if sys.argv[1:2] == ["--version-file"] and len(sys.argv) > 2:  # pro kontrolu v CI (okenní .exe nemá konzoli)
+        Path(sys.argv[2]).write_text(VERSION, encoding="utf-8")
+        sys.exit(0)
     if len(sys.argv) > 1:
         sys.exit(run_cli(sys.argv[1:]))
     run_gui()

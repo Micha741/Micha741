@@ -163,3 +163,11 @@ def test_calibre_ca_file_found(tmp_path):
     exe.write_text("")
     assert components.calibre_ca_file(str(exe)) == str(ca)
     assert components.calibre_ca_file(None) is None
+
+
+def test_every_service_has_a_guide():
+    import app
+    from guides import GUIDES
+
+    assert set(app.SERVICES) <= set(GUIDES)
+    assert all(len(GUIDES[s]) > 100 for s in app.SERVICES)
