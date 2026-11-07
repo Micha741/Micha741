@@ -440,6 +440,8 @@ def run_gui() -> None:
     stop_btn.grid(row=0, column=2, padx=(8, 0))
     settings_btn = ttk.Button(run_box, text="⚙ Nastavení")
     settings_btn.grid(row=0, column=3, padx=(8, 0))
+    book_btn = ttk.Button(run_box, text="✍ Napsat knihu")
+    book_btn.grid(row=0, column=4, padx=(8, 0))
 
     log_box = ScrolledText(main, height=10, state="disabled", wrap="word")
     log_box.grid(row=3, column=0, sticky="nsew", **pad)
@@ -752,6 +754,236 @@ def run_gui() -> None:
         ttk.Button(bottom, text="Zrušit", command=win.destroy).pack(side="right", padx=8)
 
     settings_btn.configure(command=open_settings)
+
+    # ============================================== okno Napsat knihu
+    def open_book_window():
+        import book_writer as bw
+
+        key = cfg["engines"].get("claude", {}).get("api_key") or os.environ.get("ANTHROPIC_API_KEY")
+        if not key:
+            if messagebox.askyesno(APP_NAME, "Psaní knihy používá Claude API a zatím nemáte zadaný klíč.\n\n"
+                                             "Otevřít Nastavení, kde ho zadáte (je tam i Návod)?"):
+                open_settings()
+            return
+
+        w = tk.Toplevel(root)
+        w.title("Napsat knihu (Claude)")
+        w.geometry("900x780")
+        w.transient(root)
+        frm = ttk.Frame(w, padding=8)
+        frm.pack(fill="both", expand=True)
+        frm.columnconfigure(1, weight=1)
+        frm.columnconfigure(3, weight=1)
+        state: dict = {"project": None, "path": None, "cancel": threading.Event(), "busy": False}
+
+        ttk.Label(frm, text="Popis knihy (o čem je, postavy, prostředí, pro koho, jak má skončit…):").grid(
+            row=0, column=0, columnspan=4, sticky="w")
+        desc = tk.Text(frm, height=7, wrap="word")
+        desc.grid(row=1, column=0, columnspan=4, sticky="nsew", pady=(2, 6))
+
+        ttk.Label(frm, text="Žánr a styl:").grid(row=2, column=0, sticky="w")
+        style = tk.StringVar(value="")
+        ttk.Entry(frm, textvariable=style).grid(row=2, column=1, columnspan=3, sticky="ew", pady=2)
+        ttk.Label(frm, text="např. napínavá fantasy pro dospívající, ich-forma, vtipné dialogy",
+                  foreground="#555").grid(row=3, column=1, columnspan=3, sticky="w")
+
+        ttk.Label(frm, text="Jazyk knihy:").grid(row=4, column=0, sticky="w", pady=2)
+        blang = tk.StringVar(value=cfg.get("lang", "čeština"))
+        ttk.Combobox(frm, textvariable=blang, values=LANGUAGES).grid(row=4, column=1, sticky="ew", pady=2)
+        ttk.Label(frm, text="Model:").grid(row=4, column=2, sticky="w", padx=(8, 0))
+        bmodel = tk.StringVar(value=list(MODELS)[0])
+        ttk.Combobox(frm, textvariable=bmodel, values=list(MODELS), state="readonly").grid(
+            row=4, column=3, sticky="ew", pady=2)
+
+        ttk.Label(frm, text="Počet kapitol:").grid(row=5, column=0, sticky="w", pady=2)
+        nchap = tk.IntVar(value=12)
+        ttk.Spinbox(frm, from_=3, to=40, textvariable=nchap, width=6).grid(row=5, column=1, sticky="w")
+        ttk.Label(frm, text="Slov na kapitolu:").grid(row=5, column=2, sticky="w", padx=(8, 0))
+        nwords = tk.IntVar(value=2500)
+        ttk.Spinbox(frm, from_=800, to=6000, increment=100, textvariable=nwords, width=7).grid(
+            row=5, column=3, sticky="w")
+        est = ttk.Label(frm, text="", foreground="#555", wraplength=860)
+        est.grid(row=6, column=0, columnspan=4, sticky="w", pady=(2, 6))
+
+        fmt_frame = ttk.Frame(frm)
+        fmt_frame.grid(row=7, column=0, columnspan=4, sticky="w")
+        ttk.Label(fmt_frame, text="Uložit jako:").pack(side="left")
+        fmt_vars = {f: tk.BooleanVar(value=f in ("epub", "docx")) for f in ("epub", "docx", "pdf", "azw3")}
+        for f, v in fmt_vars.items():
+            ttk.Checkbutton(fmt_frame, text=f.upper(), variable=v).pack(side="left", padx=4)
+        bdir = tk.StringVar(value=cfg.get("out_dir") or str(Path.home() / "Documents" / "Knihy"))
+        ttk.Label(frm, text="Složka:").grid(row=8, column=0, sticky="w", pady=2)
+        ttk.Entry(frm, textvariable=bdir).grid(row=8, column=1, columnspan=2, sticky="ew", pady=2)
+
+        def pick_bdir():
+            d = filedialog.askdirectory(parent=w)
+            if d:
+                bdir.set(d)
+
+        ttk.Button(frm, text="Vybrat…", command=pick_bdir).grid(row=8, column=3, sticky="w")
+
+        ttk.Label(frm, text="Osnova (můžete ji upravit – kapitoly ve tvaru „1. Název — obsah“):").grid(
+            row=9, column=0, columnspan=4, sticky="w", pady=(8, 0))
+        outline_box = tk.Text(frm, height=12, wrap="word")
+        outline_box.grid(row=10, column=0, columnspan=4, sticky="nsew", pady=2)
+        frm.rowconfigure(10, weight=2)
+
+        btns = ttk.Frame(frm)
+        btns.grid(row=11, column=0, columnspan=4, sticky="ew", pady=6)
+        b_outline = ttk.Button(btns, text="1. Navrhnout osnovu")
+        b_outline.pack(side="left")
+        b_write = ttk.Button(btns, text="2. Napsat knihu", state="disabled")
+        b_write.pack(side="left", padx=8)
+        b_stop = ttk.Button(btns, text="Zastavit", state="disabled", command=lambda: state["cancel"].set())
+        b_stop.pack(side="left")
+        b_load = ttk.Button(btns, text="Pokračovat v rozepsané…")
+        b_load.pack(side="right")
+        bbar = ttk.Progressbar(frm, maximum=1.0)
+        bbar.grid(row=12, column=0, columnspan=4, sticky="ew")
+        blog = ScrolledText(frm, height=7, state="disabled", wrap="word")
+        blog.grid(row=13, column=0, columnspan=4, sticky="nsew", pady=(4, 0))
+        frm.rowconfigure(13, weight=1)
+
+        def wlog(text):
+            def add():
+                blog.configure(state="normal")
+                blog.insert("end", text + "\n")
+                blog.see("end")
+                blog.configure(state="disabled")
+            msgs.put(("call", add))
+
+        def writer():
+            return bw.BookWriter(key, MODELS[bmodel.get()], blang.get().strip() or "čeština", wlog, state["cancel"])
+
+        def update_est(*_):
+            try:
+                est.configure(text=writer().estimate(int(nchap.get()), int(nwords.get())) +
+                              " Cena se platí z kreditu Claude API; přesná částka se vypíše během psaní.")
+            except Exception:
+                pass
+
+        nchap.trace_add("write", update_est)
+        nwords.trace_add("write", update_est)
+        bmodel.trace_add("write", update_est)
+        update_est()
+
+        def busy(on):
+            state["busy"] = on
+            b_outline.configure(state="disabled" if on else "normal")
+            b_load.configure(state="disabled" if on else "normal")
+            b_write.configure(state="disabled" if on or not outline_box.get("1.0", "end").strip() else "normal")
+            b_stop.configure(state="normal" if on else "disabled")
+
+        def do_outline():
+            text = desc.get("1.0", "end").strip()
+            if len(text) < 30:
+                messagebox.showwarning("Napsat knihu", "Napište popis knihy (aspoň pár vět).", parent=w)
+                return
+            state["cancel"].clear()
+            state["project"] = None
+            busy(True)
+
+            def done(o, err):
+                busy(False)
+                if err:
+                    wlog(f"✗ {err}")
+                    return
+                outline_box.delete("1.0", "end")
+                outline_box.insert("1.0", bw.outline_to_text(o))
+                busy(False)
+                wlog("✓ Osnova je hotová. Projděte ji, případně upravte, a klikněte na „2. Napsat knihu“.")
+
+            in_thread(lambda: writer().make_outline(text, int(nchap.get()), int(nwords.get()), style.get()), done)
+
+        def do_write():
+            try:
+                outline = bw.text_to_outline(outline_box.get("1.0", "end"))
+            except bw.BookError as e:
+                messagebox.showerror("Napsat knihu", str(e), parent=w)
+                return
+            formats = [f for f, v in fmt_vars.items() if v.get()] or ["docx"]
+            out_dir = Path(bdir.get().strip() or Path.home() / "Documents" / "Knihy")
+            out_dir.mkdir(parents=True, exist_ok=True)
+            proj = state["project"]
+            if proj is None or proj["outline"] != outline:
+                if proj is not None and proj["chapters"]:
+                    if not messagebox.askyesno("Napsat knihu", "Osnova se změnila – začít psát od první kapitoly?",
+                                               parent=w):
+                        return
+                proj = {"description": desc.get("1.0", "end").strip(), "style": style.get().strip(),
+                        "language": blang.get().strip() or "čeština", "model": MODELS[bmodel.get()],
+                        "words": int(nwords.get()), "outline": outline, "chapters": []}
+                state["path"] = out_dir / (bw.safe_name(outline["title"]) + bw.PROJECT_SUFFIX)
+            state["project"] = proj
+            path = state["path"]
+            n = len(outline["chapters"])
+            if not messagebox.askyesno(
+                    "Napsat knihu", f"Napsat {n - len(proj['chapters'])} kapitol?\n\n"
+                                    f"{writer().estimate(n, proj['words'])}\n\n"
+                                    f"Rozepsaná kniha se průběžně ukládá do:\n{path}", parent=w):
+                return
+            state["cancel"].clear()
+            busy(True)
+            bbar["value"] = len(proj["chapters"]) / n
+
+            def job():
+                from claude_client import Cancelled
+
+                wr = writer()
+                try:
+                    wr.write(proj, path, lambda f: msgs.put(("call", lambda: bbar.configure(value=f))))
+                except Cancelled:
+                    return "stopped", wr
+                files = bw.export(proj, out_dir, formats, wlog, cfg["paths"].get("ebook_convert") or None)
+                return files, wr
+
+            def done(res, err):
+                busy(False)
+                if err:
+                    wlog(f"✗ {err}")
+                    return
+                files, wr = res
+                wlog(wr.claude.cost_summary())
+                if files == "stopped":
+                    wlog("Zastaveno. Rozepsaná kniha je uložená – pokračujte tlačítkem „2. Napsat knihu“ "
+                         "nebo později přes „Pokračovat v rozepsané…“.")
+                    return
+                for f in files:
+                    wlog(f"✓ Uloženo: {f}")
+                messagebox.showinfo("Napsat knihu", "Kniha je hotová.\n\n" + "\n".join(files), parent=w)
+
+            in_thread(job, done)
+
+        def do_load():
+            f = filedialog.askopenfilename(parent=w, title="Rozepsaná kniha",
+                                           filetypes=[("Rozepsaná kniha", "*" + bw.PROJECT_SUFFIX), ("Vše", "*.*")])
+            if not f:
+                return
+            try:
+                proj = bw.load_project(f)
+            except Exception as e:  # noqa: BLE001
+                messagebox.showerror("Napsat knihu", str(e), parent=w)
+                return
+            state.update(project=proj, path=Path(f))
+            desc.delete("1.0", "end")
+            desc.insert("1.0", proj.get("description", ""))
+            style.set(proj.get("style", ""))
+            blang.set(proj.get("language", "čeština"))
+            nwords.set(proj.get("words", 2500))
+            nchap.set(len(proj["outline"]["chapters"]))
+            bmodel.set(next((k for k, v in MODELS.items() if v == proj.get("model")), list(MODELS)[0]))
+            bdir.set(str(Path(f).parent))
+            outline_box.delete("1.0", "end")
+            outline_box.insert("1.0", bw.outline_to_text(proj["outline"]))
+            busy(False)
+            wlog(f"Načteno: {len(proj['chapters'])} z {len(proj['outline']['chapters'])} kapitol hotovo.")
+
+        b_outline.configure(command=do_outline)
+        b_write.configure(command=do_write)
+        b_load.configure(command=do_load)
+        outline_box.bind("<KeyRelease>", lambda e: busy(state["busy"]))
+
+    book_btn.configure(command=open_book_window)
 
     # ============================================== spuštění překladu
     def start():

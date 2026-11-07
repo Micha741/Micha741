@@ -143,15 +143,18 @@ class ClaudeTranslator:
         self.cancel_event = cancel_event or threading.Event()
         self.usage_in = 0
         self.usage_out = 0
+        self.usage_cache_write = 0
+        self.usage_cache_read = 0
         self._lock = threading.Lock()
 
     # ------------------------------------------------------------------ API
-    def _call(self, system: str, content: list[dict], schema: dict) -> dict:
+    def _call(self, system, content: list[dict], schema: dict, max_tokens: int = 32000) -> dict:
+        """system = text nebo seznam bloků (lze s cache_control pro opakovaně posílaný začátek)."""
         if self.cancel_event.is_set():
             raise Cancelled()
         kwargs: dict = dict(
             model=self.model,
-            max_tokens=32000,
+            max_tokens=max_tokens,
             system=system,
             messages=[{"role": "user", "content": content}],
             output_config={"effort": self.effort, "format": {"type": "json_schema", "schema": schema}},
@@ -165,6 +168,8 @@ class ClaudeTranslator:
         with self._lock:
             self.usage_in += message.usage.input_tokens or 0
             self.usage_out += message.usage.output_tokens or 0
+            self.usage_cache_write += getattr(message.usage, "cache_creation_input_tokens", 0) or 0
+            self.usage_cache_read += getattr(message.usage, "cache_read_input_tokens", 0) or 0
 
         if message.stop_reason == "refusal":
             raise ModelError("model požadavek odmítl")
@@ -295,5 +300,7 @@ class ClaudeTranslator:
 
     def cost_summary(self) -> str:
         p_in, p_out = PRICES.get(self.model, (4.0, 20.0))
-        cost = self.usage_in * p_in / 1e6 + self.usage_out * p_out / 1e6
-        return f"Spotřeba: {_n(self.usage_in)} vstupních + {_n(self.usage_out)} výstupních tokenů ≈ ${cost:.2f}"
+        cost = (self.usage_in + 1.25 * self.usage_cache_write + 0.1 * self.usage_cache_read) * p_in / 1e6 \
+            + self.usage_out * p_out / 1e6
+        total_in = self.usage_in + self.usage_cache_write + self.usage_cache_read
+        return f"Spotřeba: {_n(total_in)} vstupních + {_n(self.usage_out)} výstupních tokenů ≈ ${cost:.2f}"

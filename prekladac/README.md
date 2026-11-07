@@ -72,6 +72,21 @@ Výsledek se uloží vedle originálu jako `název (čeština).přípona`.
 Do pole **Pokyny pro překlad** (platí pro Claude, Gemini a Ollama) můžete napsat například:
 `Jména postav nepřekládej. „Ranger“ překládej jako „hraničář“. Tykání mezi postavami zachovej.`
 
+### ✍ Napsat knihu (Claude API)
+
+Tlačítko **✍ Napsat knihu** v hlavním okně napíše celou knihu podle vašeho popisu:
+
+1. Napište **popis** (o čem kniha je, postavy, prostředí, pro koho je, jak má skončit – stačí kolem 20 vět),
+   případně žánr a styl, jazyk, počet kapitol a délku kapitoly. Program ukáže orientační cenu.
+2. **1. Navrhnout osnovu** – Claude navrhne název, shrnutí, postavy a obsah kapitol. Osnovu můžete upravit
+   (kapitoly ve tvaru `1. Název — obsah`), přidat nebo ubrat kapitoly.
+3. **2. Napsat knihu** – Claude píše kapitolu po kapitole; každá dostane osnovu, shrnutí předchozích kapitol
+   a konec předchozí kapitoly, aby děj i postavy navazovaly. Hotová kniha se uloží jako EPUB, DOCX, PDF nebo AZW3.
+
+Rozepsaná kniha se po každé kapitole ukládá (`Název.kniha.json`), takže psaní jde **Zastavit** a později
+**Pokračovat v rozepsané…**. Orientačně: 12 kapitol × 2 500 slov (≈ 100 stran) stojí s Opus 5.5 asi 3–5 USD,
+se Sonnet 5.5 asi polovinu. Text je souvislý a čtivý, ale počítejte s vlastním přečtením a úpravami.
+
 ### Microsoft: dvě API
 
 Služba Translator v Azure má v *Klíče a koncový bod* dvě adresy a oba používají stejný **KLÍČ 1**:
