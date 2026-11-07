@@ -1,6 +1,7 @@
 # Překladač knih a dokumentů
 
 Program pro Windows, který přeloží e-knihy a dokumenty do češtiny (nebo jiného jazyka) a zachová formátování.
+Má moderní okno (Qt) s postranní nabídkou **Překlad · Napsat knihu · Nastavení**.
 Překládat umí **zdarma** (Google Překladač, DeepL Free, Microsoft, Gemini, Ollama, LibreTranslate) i placeně
 přes **Claude API** (nejlepší kvalita). Umí také jen převádět formáty a přepisovat text z fotek a skenů do DOCX.
 
@@ -96,11 +97,17 @@ jazyk) a lze dopsat vlastní přání. Okno jde maximalizovat nebo přepnout na 
 Když program zavřete, přijdete nanejvýš o právě psanou kapitolu – po spuštění klikněte na
 **Pokračovat v rozepsané…** a psaní pokračuje od další kapitoly (nezačíná znovu).
 
-**📖 Upravit knihu** otevře editor: seznam kapitol, úprava textu a názvů kapitol, název a autor knihy, volba písma
-a velikosti, zalomení řádku (Enter), nový odstavec (prázdný řádek), zalomení stránky (`[[STRANA]]`), hledání
-(Ctrl+F) a nahrazení v celé knize, počet slov a odstavců kapitoly i celé knihy. Export vloží na začátek
-**obsah s odkazy** na kapitoly (v DOCX, EPUB i PDF). Orientačně: 12 kapitol × 2 500 slov (≈ 100 stran) stojí s Opus 5.5 asi 3–5 USD,
-se Sonnet 5.5 asi polovinu. Text je souvislý a čtivý, ale počítejte s vlastním přečtením a úpravami.
+**📖 Upravit knihu** otevře editor ve stylu Wordu s pásem karet:
+- **Domů** – schránka (vložit, vyjmout, kopírovat, kopírovat formát), **písmo** (druh, velikost, tučné, kurzíva,
+  podtržení, přeškrtnutí, horní/dolní index, barva písma, zvýraznění, zvětšit/zmenšit, vymazat formátování),
+  **odstavec** (odrážky, číslování, odsazení, řádkování, zarovnání vlevo/na střed/vpravo/do bloku, zalomení
+  stránky), **styly** (Normální, Nadpis, Podnadpis, Citace), **úpravy** (najít a nahradit v celé knize, zpět/znovu,
+  lupa), uložit a exportovat.
+- **Kniha** – název a autor, výchozí písmo knihy, obsah s odkazy, formáty exportu, přidání/mazání/přesun kapitol.
+- Vlevo seznam kapitol, dole počet slov a odstavců kapitoly i celé knihy.
+
+Formátování z editoru (tučné, barvy, zarovnání, odrážky, nadpisy…) se zachová v DOCX, EPUB, PDF i AZW3.
+Export vloží na začátek **obsah s odkazy** na kapitoly.
 
 ### Microsoft: dvě API
 

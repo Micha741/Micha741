@@ -377,6 +377,11 @@ def export(project: dict, out_dir: str | Path, formats: list[str], log: Callable
         d.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
         h = d.add_heading(f"{i}. {ch_plan['title']}", level=1)
         _bookmark(h, f"kapitola_{i}", i)
+        if ch.get("html"):  # kapitola upravená v editoru – s formátováním
+            from html_docx import add_html
+
+            add_html(d, ch["html"])
+            continue
         for para in split_paragraphs(ch["text"]):
             if para == PAGE_BREAK:
                 d.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
