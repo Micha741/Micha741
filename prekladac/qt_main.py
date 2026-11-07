@@ -19,6 +19,7 @@ from converters import DOC_ONLY_EXT, OUTPUT_FORMATS, SUPPORTED_EXT, find_ebook_c
 from free_engines import ENGINE_LABELS, OCR_LABELS, EngineError, GeminiEngine, OllamaEngine, find_tesseract
 from guides import GUIDES
 from qt_common import STYLESHEET, bridge, emoji_icon, label, run_bg, set_status
+import updater
 from version import VERSION
 
 Qt = QtCore.Qt
@@ -920,11 +921,14 @@ class SettingsPage(QtWidgets.QWidget):
         auto_visibility()
         g.addWidget(abox, 1, 0, 1, 3)
         g.addWidget(QtWidgets.QLabel(f"Verze programu: {VERSION}"), 2, 0, 1, 2)
-        upd = QtWidgets.QPushButton("🌐 Zkontrolovat novou verzi")
-        upd.clicked.connect(lambda: webbrowser.open(core.RELEASES_URL))
-        g.addWidget(upd, 2, 2)
-        g.addWidget(label(f"Nastavení programu: {core.config_path()}", "Hint"), 3, 0, 1, 3)
-        g.setRowStretch(4, 1)
+        self.upd_btn = QtWidgets.QPushButton("🌐 Zkontrolovat novou verzi")
+        self.upd_btn.clicked.connect(lambda: self.win.check_updates(manual=True))
+        g.addWidget(self.upd_btn, 2, 2)
+        self.check_updates = QtWidgets.QCheckBox("Při spuštění zkontrolovat, zda je k dispozici nová verze")
+        self.check_updates.setChecked(cfg.get("check_updates", True))
+        g.addWidget(self.check_updates, 3, 0, 1, 3)
+        g.addWidget(label(f"Nastavení programu: {core.config_path()}", "Hint"), 4, 0, 1, 3)
+        g.setRowStretch(5, 1)
         g.setColumnStretch(1, 1)
         return w
 
@@ -936,6 +940,7 @@ class SettingsPage(QtWidgets.QWidget):
         cfg["out_dir"] = self.out_dir.text().strip()
         cfg["autosave"] = {"mode": self.auto_mode.currentData(), "seconds": self.auto_seconds.value(),
                            "chars": self.auto_chars.value()}
+        cfg["check_updates"] = self.check_updates.isChecked()
         self.win.save_cfg()
         self.win.refresh_statuses()
         QtWidgets.QMessageBox.information(self, "Nastavení", "Nastavení uloženo.")
@@ -994,6 +999,46 @@ class MainWindow(QtWidgets.QMainWindow):
         if not paths["ebook_convert"]:
             self.translate.logv.log("Upozornění: Calibre nebylo nalezeno – bez něj nepůjdou AZW3, KFX, MOBI a RTF. "
                                     "Je součástí instalátoru Prekladac-Setup.exe.")
+        if self.cfg.get("check_updates", True):
+            QtCore.QTimer.singleShot(3000, self.check_updates)
+
+    def check_updates(self, manual: bool = False):
+        """Zjistí na GitHubu novou verzi; při automatické kontrole mlčí, když žádná není."""
+        skip = "" if manual else self.cfg.get("skip_version", "")
+
+        def done(info, err):
+            if err:
+                if manual:
+                    QtWidgets.QMessageBox.warning(self, "Nová verze",
+                                                  f"Novou verzi se nepodařilo zjistit:\n{err}")
+                return
+            if info:
+                self.offer_update(info)
+            elif manual:
+                QtWidgets.QMessageBox.information(
+                    self, "Nová verze", f"Máte nejnovější verzi ({VERSION})." if VERSION[:1].isdigit()
+                    else "Vývojová verze (spuštěná z Pythonu) se neaktualizuje.")
+
+        run_bg(lambda: updater.check(VERSION, skip), done)
+
+    def offer_update(self, info: dict):
+        box = QtWidgets.QMessageBox(self)
+        box.setWindowTitle("Nová verze")
+        box.setIcon(QtWidgets.QMessageBox.Icon.Information)
+        box.setText(f"<b>Je k dispozici nová verze {info['version']}</b> (máte {VERSION}).")
+        box.setInformativeText(
+            "Stáhněte Prekladac-Setup.exe a spusťte ho – nainstaluje se přes stávající verzi. "
+            "Nastavení, klíče i rozepsané knihy zůstanou zachované. Před instalací program zavřete.")
+        dl = box.addButton("⬇ Stáhnout novou verzi", QtWidgets.QMessageBox.ButtonRole.AcceptRole)
+        skip = box.addButton("Tuto verzi přeskočit", QtWidgets.QMessageBox.ButtonRole.RejectRole)
+        box.addButton("Později", QtWidgets.QMessageBox.ButtonRole.RejectRole)
+        box.setDefaultButton(dl)
+        box.exec()
+        if box.clickedButton() is dl:
+            webbrowser.open(info["setup_url"])
+        elif box.clickedButton() is skip:
+            self.cfg["skip_version"] = info["version"]
+            self.save_cfg()
 
     def save_cfg(self):
         try:

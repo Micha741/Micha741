@@ -158,3 +158,31 @@ def test_autosave_is_throttled(qapp, tmp_path):
     ed.dirty = False
     ed._pending_timer.stop()
     ed.close()
+
+
+def test_update_dialog_and_setting(qapp, monkeypatch):
+    import qt_main
+    from PySide6 import QtWidgets
+    opened = []
+    monkeypatch.setattr(qt_main.webbrowser, "open", opened.append)
+    win = qt_main.MainWindow()
+    assert win.settings.check_updates.isChecked()
+
+    def fake_exec(box):
+        box.button = [b for b in box.buttons() if "Stáhnout" in b.text()][0]
+        return 0
+    monkeypatch.setattr(QtWidgets.QMessageBox, "exec", fake_exec)
+    monkeypatch.setattr(QtWidgets.QMessageBox, "clickedButton", lambda box: box.button)
+    win.offer_update({"version": "1.0.99", "setup_url": "https://example/setup.exe"})
+    assert opened == ["https://example/setup.exe"]
+
+    monkeypatch.setattr(QtWidgets.QMessageBox, "exec",
+                        lambda box: setattr(box, "button", [b for b in box.buttons()
+                                                            if "přeskočit" in b.text()][0]))
+    win.offer_update({"version": "1.0.99", "setup_url": "x"})
+    assert win.cfg["skip_version"] == "1.0.99"
+    win.settings.check_updates.setChecked(False)
+    monkeypatch.setattr(QtWidgets.QMessageBox, "information", lambda *a, **k: None)
+    win.settings.save()
+    assert win.cfg["check_updates"] is False
+    win.close()

@@ -68,6 +68,15 @@ Výsledek se uloží vedle originálu jako `název (čeština).přípona`.
    Číslo verze je v záhlaví okna a v *⚙ Nastavení → Obecné*.
    Klíče se ukládají **zašifrovaně** (Windows DPAPI) jen pro váš účet ve Windows.
 
+### Aktualizace na novou verzi
+
+Při spuštění se program (nejvýš jednou, na pozadí) podívá na GitHub. Pokud je venku novější verze, zobrazí okno
+**Je k dispozici nová verze** s tlačítky *Stáhnout novou verzi*, *Později* a *Tuto verzi přeskočit*.
+Instalátor se stáhne v prohlížeči. Program ho záměrně sám nespouští, protože antivirus by to vyhodnotil
+jako podezřelé chování. Zavřete Překladač a stažený `Prekladac-Setup.exe` spusťte: nainstaluje se přes
+stávající verzi a nastavení, klíče i rozepsané knihy zůstanou zachované. Odinstalovávat není potřeba.
+Ručně lze kontrolu spustit v *⚙ Nastavení → Obecné → Zkontrolovat novou verzi*, kde ji jde i vypnout.
+
 ## Použití
 
 1. Přidejte soubory tlačítkem nebo je přetáhněte myší do seznamu.
