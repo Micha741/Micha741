@@ -1,0 +1,22 @@
+﻿Překladač knih a dokumentů – přibalené programy třetích stran
+===========================================================
+
+Instalátor obsahuje kromě samotného Překladače tyto programy. Překladač je spouští jako
+samostatné programy a nijak je nemění. Instalací souhlasíte s jejich licencemi.
+
+calibre (složka Calibre2)
+  Autor: Kovid Goyal a přispěvatelé, https://calibre-ebook.com
+  Licence: GNU General Public License v3 (plné znění: Calibre2\COPYRIGHT a https://www.gnu.org/licenses/gpl-3.0.html)
+  Zdrojový kód: https://github.com/kovidgoyal/calibre (verze odpovídá souboru Calibre2\VERSION.txt, pokud je přítomen)
+
+Tesseract OCR (složka Tesseract-OCR)
+  Autor: Tesseract OCR contributors, sestavení pro Windows UB Mannheim
+  Licence: Apache License 2.0, https://www.apache.org/licenses/LICENSE-2.0
+  Zdrojový kód: https://github.com/tesseract-ocr/tesseract
+  Jazyková data: https://github.com/tesseract-ocr/tessdata_fast (Apache License 2.0)
+
+Plugin KFX Input pro calibre se nepřibaluje. Na vaši žádost (nebo při prvním otevření souboru KFX)
+ho Překladač stáhne z oficiálního rejstříku pluginů calibre a nainstaluje do calibre.
+
+Překladač sám používá knihovny Pythonu (anthropic, python-docx, beautifulsoup4, lxml, pypdf, pillow,
+pypdfium2, truststore, certifi, tkinterdnd2) pod jejich vlastními licencemi (MIT, BSD, Apache 2.0, HPND, MPL 2.0).

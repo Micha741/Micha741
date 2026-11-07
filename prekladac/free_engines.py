@@ -665,6 +665,9 @@ def find_tesseract(custom: str | None = None) -> str | None:
                  os.path.join(os.environ.get("LOCALAPPDATA", ""), "Programs")):
         if base:
             cands.append(os.path.join(base, "Tesseract-OCR", "tesseract.exe"))
+    from components import bundled_exe
+
+    cands.append(bundled_exe("Tesseract-OCR", "tesseract"))  # přibalený k programu
     for c in cands:
         if c and os.path.isfile(c):
             return c

@@ -115,3 +115,41 @@ def test_ensure_ocr_languages_downloads_missing(monkeypatch):
     got.clear()
     components.ensure_ocr_languages(["eng", "ces"], None, lambda *_: None)
     assert got == []  # podruhé už se nestahuje
+
+
+def test_kfx_plugin_urls():
+    index = {
+        "Other": {"name": "Other", "file": "1.zip", "thread_id": 1},
+        "KFX Input": {"name": "KFX Input", "file": "staging_291290.zip", "thread_id": 291290},
+    }
+    assert components.kfx_plugin_urls(index) == [
+        "https://code.calibre-ebook.com/plugins/staging_291290.zip",
+        "https://code.calibre-ebook.com/plugins/291290.zip",
+    ]
+    assert components.kfx_plugin_urls({"x": {"name": "Nothing"}}) == []
+
+
+def test_bundled_exe_found_next_to_program(tmp_path, monkeypatch):
+    import converters
+
+    monkeypatch.setattr(components, "bundled_dir", lambda: tmp_path)
+    monkeypatch.setattr(converters.shutil, "which", lambda name: None)
+    monkeypatch.setenv("ProgramFiles", str(tmp_path / "nic"))
+    monkeypatch.setenv("ProgramFiles(x86)", str(tmp_path / "nic"))
+    exe = "ebook-convert" + (".exe" if sys.platform == "win32" else "")
+    (tmp_path / "Calibre2").mkdir()
+    (tmp_path / "Calibre2" / exe).write_text("")
+    assert converters.find_ebook_convert() == str(tmp_path / "Calibre2" / exe)
+
+
+def test_kfx_conversion_installs_missing_plugin(monkeypatch, tmp_path):
+    import converters
+
+    calls = []
+    monkeypatch.setattr(components, "calibre_kfx_plugin", lambda exe: False)
+    monkeypatch.setattr(components, "install_kfx_plugin", lambda exe, log: calls.append(exe))
+    converters._ensure_kfx_plugin("/x/ebook-convert", lambda *_: None)
+    assert calls == ["/x/ebook-convert"]
+    monkeypatch.setattr(components, "calibre_kfx_plugin", lambda exe: True)
+    converters._ensure_kfx_plugin("/x/ebook-convert", lambda *_: None)
+    assert calls == ["/x/ebook-convert"]  # nainstalovaný plugin se znovu neinstaluje

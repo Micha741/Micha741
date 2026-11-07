@@ -643,47 +643,38 @@ def run_gui() -> None:
                 kfx, langs = res if res else (None, [])
                 if cp:
                     kfx_txt = {True: "plugin KFX Input je nainstalovaný ✓",
-                               False: "⚠ chybí plugin KFX Input (Calibre → Předvolby → Moduly → Získat nové "
-                                      "moduly → KFX Input)",
+                               False: "⚠ chybí plugin KFX Input – klikněte na „Nainstalovat plugin KFX Input“ "
+                                      "(nainstaluje se i sám při prvním KFX)",
                                None: "plugin KFX Input nelze ověřit"}[kfx]
-                    cal_status.configure(text=f"✓ Calibre nalezeno · {kfx_txt}")
+                    where = "přibalené k programu" if cp == components.bundled_exe("Calibre2", "ebook-convert") \
+                        else "nalezeno"
+                    cal_status.configure(text=f"✓ Calibre {where} · {kfx_txt}")
                 else:
-                    cal_status.configure(text="⚠ Calibre není nainstalované")
+                    cal_status.configure(text="⚠ Calibre nebylo nalezeno – nainstalujte Prekladac pomocí "
+                                              "Prekladac-Setup.exe, který ho obsahuje, nebo zadejte cestu.")
                 if tp:
                     tes_status.configure(text=f"✓ Tesseract nalezen · jazyky: {', '.join(langs) or 'žádné'}")
                 else:
-                    tes_status.configure(text="⚠ Tesseract není nainstalovaný (potřebný jen pro obrázky a skeny)")
+                    tes_status.configure(text="⚠ Tesseract nebyl nalezen – je součástí Prekladac-Setup.exe "
+                                              "(potřebný jen pro obrázky a skeny)")
                 for code, cb in lang_checks.items():
                     have = code in langs
                     cb.configure(text=f"{components.OCR_LANGUAGES[code]} ({code}){' ✓' if have else ''}")
 
             in_thread(check, done)
 
-        def install(name):
-            def job():
-                ok = components.winget_install(name, clog)
-                return ok
-
-            def done(ok, err):
-                if err or not ok:
-                    clog(f"Instalace se nepovedla{': ' + str(err) if err else ''}. Můžete ji provést ručně "
-                         f"tlačítkem „Stáhnout ručně“.")
-                else:
-                    clog("✓ Hotovo.")
-                    if name == "tesseract":
-                        tess_path.set(find_tesseract() or "")
-                    else:
-                        calibre_path.set(find_ebook_convert() or "")
+        def install_kfx():
+            def done(_res, err):
+                clog(f"✗ {err}" if err else "✓ Hotovo.")
                 refresh_components()
 
-            in_thread(job, done)
+            in_thread(lambda: components.install_kfx_plugin(find_ebook_convert(calibre_path.get() or None), clog),
+                      done)
 
-        ttk.Button(cal_btns, text="Nainstalovat Calibre", command=lambda: install("calibre")).pack(side="left")
-        ttk.Button(cal_btns, text="Stáhnout ručně", command=lambda: webbrowser.open(CALIBRE_URL)).pack(
+        ttk.Button(cal_btns, text="Nainstalovat plugin KFX Input", command=install_kfx).pack(side="left")
+        ttk.Button(cal_btns, text="Web Calibre", command=lambda: webbrowser.open(CALIBRE_URL)).pack(
             side="left", padx=8)
-        ttk.Button(tes_btns, text="Nainstalovat Tesseract", command=lambda: install("tesseract")).pack(side="left")
-        ttk.Button(tes_btns, text="Stáhnout ručně", command=lambda: webbrowser.open(TESSERACT_URL)).pack(
-            side="left", padx=8)
+        ttk.Button(tes_btns, text="Web Tesseract", command=lambda: webbrowser.open(TESSERACT_URL)).pack(side="left")
 
         def download_langs():
             chosen = [c for c, v in lang_vars.items() if v.get()]
@@ -784,9 +775,9 @@ def run_gui() -> None:
     refresh_status()
     if not cfg["paths"].get("ebook_convert"):
         log("Upozornění: Calibre nebylo nalezeno – bez něj nepůjdou AZW3, KFX, MOBI a RTF. "
-            "Nainstalujete ho v ⚙ Nastavení → Součásti.")
+            "Je součástí instalátoru Prekladac-Setup.exe (nebo zadejte cestu v ⚙ Nastavení → Součásti).")
     if not cfg["paths"].get("tesseract"):
-        log("Tip: pro text z obrázků a skenů nainstalujte Tesseract v ⚙ Nastavení → Součásti "
+        log("Tip: Tesseract pro text z obrázků je součástí instalátoru Prekladac-Setup.exe "
             "(nebo zvolte OCR přes Gemini či Claude).")
     poll()
     root.mainloop()

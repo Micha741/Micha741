@@ -21,7 +21,7 @@ přes **Claude API** (nejlepší kvalita). Umí také jen převádět formáty a
 
 | OCR | Cena | Poznámka |
 |---|---|---|
-| **Tesseract** (výchozí) | zdarma, offline | Instaluje se v ⚙ Nastavení → Součásti. V hlavním okně zadejte jazyk originálu (`eng`, `ces`, `deu`, `eng+deu`). |
+| **Tesseract** (výchozí) | zdarma, offline | Je součástí instalátoru. V hlavním okně zadejte jazyk originálu (`eng`, `ces`, `deu`, `eng+deu`). |
 | **Google Gemini** | bezplatná úroveň | Lépe zvládne fotky, sloupce a tabulky. Použije klíč Gemini. |
 | **Claude** | placený | Nejlepší; s překladačem Claude přečte a přeloží v jednom kroku. |
 
@@ -44,16 +44,19 @@ Výsledek se uloží vedle originálu jako `název (čeština).přípona`.
 
 ## Stažení a instalace
 
-1. Stáhněte **Prekladac.exe**:
-   **https://github.com/Micha741/Micha741/releases/download/prekladac-latest/Prekladac.exe**
-   (vždy nejnovější verze, sestavuje ji GitHub automaticky; Python není potřeba).
-2. Spusťte ho. Windows SmartScreen může varovat u nepodepsaného programu → *Další informace → Přesto spustit*.
-3. Klikněte na **⚙ Nastavení → Součásti**:
-   - **Nainstalovat Calibre** – potřeba pro AZW3, KFX, MOBI, RTF a převody mezi formáty.
-     Pro **KFX** pak v Calibre přidejte plugin **KFX Input** (*Předvolby → Moduly → Získat nové moduly*).
-   - **Nainstalovat Tesseract** – potřeba jen pro text z obrázků a skenů.
-   - **Jazyky OCR** – zaškrtněte a stáhněte (chybějící jazyk se stáhne i automaticky při OCR).
-   Instalace probíhá přes *winget* (součást Windows 10/11); bez něj použijte tlačítko *Stáhnout ručně*.
+1. Stáhněte instalátor **Prekladac-Setup.exe**:
+   **https://github.com/Micha741/Micha741/releases/download/prekladac-latest/Prekladac-Setup.exe**
+   (vždy nejnovější verze, sestavuje ho GitHub automaticky; Python není potřeba).
+2. Spusťte ho a projděte instalací. Instaluje se bez práv správce (do `%LOCALAPPDATA%\Programs\Prekladac`),
+   vytvoří zástupce v nabídce Start a případně na ploše. Odinstalace: *Nastavení Windows → Aplikace*.
+   - Instalátor **obsahuje Calibre** (`Calibre2\ebook-convert.exe`) i **Tesseract** (`Tesseract-OCR\tesseract.exe`)
+     s jazyky OCR (angličtina, čeština, slovenština, němčina, polština, francouzština, španělština, italština,
+     ruština, ukrajinština, maďarština). Nic dalšího se instalovat nemusí.
+   - **Plugin KFX Input** program stáhne a nainstaluje do Calibre sám při prvním souboru KFX
+     (nebo tlačítkem v *⚙ Nastavení → Součásti*). Pokud už máte Calibre s pluginem, použije se váš.
+3. Windows SmartScreen může u nového nepodepsaného programu ukázat „Systém Windows ochránil váš počítač“ →
+   *Další informace → Přesto spustit*. Pokud antivirus (např. Avast) program zablokuje jako `IDP.Generic`,
+   jde o falešný poplach u neznámého programu – viz *Antivirus* níže.
 4. V **⚙ Nastavení → Služby a klíče** vyplňte klíče služeb, které chcete používat, a ověřte je tlačítkem **Otestovat**.
    Klíče se ukládají **zašifrovaně** (Windows DPAPI) jen pro váš účet ve Windows.
 
@@ -96,7 +99,20 @@ Klíče se berou z Nastavení programu (nebo z parametru `--key`, případně z 
 python -m pip install -r requirements.txt
 python app.py
 ```
-Vlastní `.exe` sestaví `build_exe.bat`; na GitHubu to dělá workflow `.github/workflows/prekladac.yml`.
+Instalátor (`installer.iss`, Inno Setup) i s přibaleným Calibre a Tesseractem sestavuje na GitHubu workflow
+`.github/workflows/prekladac.yml`, který ho po instalaci i vyzkouší. `build_exe.bat` sestaví jen samotný program.
+
+## Antivirus
+
+Program není digitálně podepsaný (podpisový certifikát je placený), proto ho SmartScreen a některé antiviry
+zpočátku považují za neznámý. Když ho Avast zablokuje jako `IDP.Generic`:
+1. V Avastu přidejte výjimku pro složku `%LOCALAPPDATA%\Programs\Prekladac` (v nastavení Avastu hledejte
+   *Výjimky*), případně soubor obnovte z karantény.
+2. Nahlaste falešný poplach na <https://www.avast.com/false-positive-file-form.php>, aby se program přestal blokovat
+   i ostatním.
+
+Instalátor program rozbaluje do vlastní složky (ne do Temp) a nic dalšího přes internet neinstaluje, což antiviry
+vidí mnohem méně podezřele než samostatné `.exe`. Licence přibalených programů jsou v `THIRD_PARTY.txt`.
 
 ## Claude: modely a cena
 

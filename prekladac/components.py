@@ -12,7 +12,9 @@ from pathlib import Path
 from typing import Callable
 
 TESSDATA_URL = "https://github.com/tesseract-ocr/tessdata/raw/main/{lang}.traineddata"
-WINGET_IDS = {"tesseract": "UB-Mannheim.TesseractOCR", "calibre": "calibre.calibre"}
+CALIBRE_PLUGIN_INDEX = "https://code.calibre-ebook.com/plugins/plugins.json.bz2"
+CALIBRE_PLUGIN_SERVER = "https://code.calibre-ebook.com/plugins/"
+KFX_PLUGIN_NAME = "KFX Input"
 
 # kód Tesseractu -> název jazyka
 OCR_LANGUAGES = {
@@ -85,28 +87,18 @@ def unprotect_secret(value: str) -> str:
     return value  # starší verze ukládala prostý text
 
 
-# ----------------------------------------------------------------- winget
-def winget_available() -> bool:
-    return sys.platform == "win32" and shutil.which("winget") is not None
+# ------------------------------------------------- součásti v instalaci
+def bundled_dir() -> Path:
+    """Složka nainstalovaného programu (u Prekladac.exe) – tam jsou přibalené Calibre2 a Tesseract-OCR."""
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent
+    return Path(__file__).resolve().parent
 
 
-def winget_install(name: str, log: Callable[[str], None]) -> bool:
-    """Nainstaluje Tesseract nebo Calibre přes winget (Windows 10/11). Vrátí True při úspěchu."""
-    if not winget_available():
-        log("winget není k dispozici. Nainstalujte „Instalační služba aplikace“ z Microsoft Store, "
-            "nebo součást stáhněte ručně (odkaz je v Nastavení).")
-        return False
-    pkg = WINGET_IDS[name]
-    log(f"Instaluji {pkg} přes winget… (Windows se může zeptat na oprávnění)")
-    proc = subprocess.run(
-        ["winget", "install", "-e", "--id", pkg, "--accept-package-agreements", "--accept-source-agreements"],
-        capture_output=True, text=True, errors="replace", creationflags=_NO_WINDOW,
-    )
-    out = (proc.stdout or "") + (proc.stderr or "")
-    tail = "\n".join(line for line in out.splitlines() if line.strip() and not re.match(r"^[\s\-\\|/█▒]+$", line))
-    log(tail[-1200:])
-    already = "already installed" in out.lower() or "již nainstal" in out.lower()
-    return proc.returncode == 0 or already
+def bundled_exe(folder: str, name: str) -> str | None:
+    exe = name + (".exe" if sys.platform == "win32" else "")
+    p = bundled_dir() / folder / exe
+    return str(p) if p.is_file() else None
 
 
 # ---------------------------------------------------------------- Calibre
@@ -114,18 +106,85 @@ def calibre_kfx_plugin(ebook_convert: str | None) -> bool | None:
     """True/False = je/není nainstalovaný plugin KFX Input; None = nelze zjistit."""
     if not ebook_convert:
         return None
-    folder = Path(ebook_convert).parent
-    exe = folder / ("calibre-customize.exe" if sys.platform == "win32" else "calibre-customize")
-    if not exe.exists():
-        exe = shutil.which("calibre-customize")
-        if not exe:
-            return None
+    exe = _calibre_customize(ebook_convert)
+    if not exe:
+        return None
     try:
         proc = subprocess.run([str(exe), "-l"], capture_output=True, text=True, errors="replace", timeout=60,
                               creationflags=_NO_WINDOW)
     except Exception:
         return None
     return "kfx input" in proc.stdout.lower()
+
+
+def _calibre_customize(ebook_convert: str | None) -> str | None:
+    if not ebook_convert:
+        return None
+    exe = Path(ebook_convert).parent / ("calibre-customize.exe" if sys.platform == "win32" else "calibre-customize")
+    return str(exe) if exe.exists() else shutil.which("calibre-customize")
+
+
+def kfx_plugin_urls(index: dict) -> list[str]:
+    """Z rejstříku pluginů Calibre vybere adresy ke stažení pluginu KFX Input."""
+    entries = index.values() if isinstance(index, dict) else index
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        if str(entry.get("name", "")).strip().lower() != KFX_PLUGIN_NAME.lower():
+            continue
+        urls = []
+        file = entry.get("file")
+        if file:
+            urls.append(file if str(file).startswith("http") else CALIBRE_PLUGIN_SERVER + str(file).lstrip("/"))
+        if entry.get("thread_id"):
+            urls.append(f"{CALIBRE_PLUGIN_SERVER}{entry['thread_id']}.zip")
+        return urls
+    return []
+
+
+def download_kfx_plugin(log: Callable[[str], None]) -> bytes:
+    """Stáhne plugin KFX Input z oficiálního rejstříku pluginů Calibre."""
+    import bz2
+    import json
+
+    from free_engines import EngineError, http_request
+
+    log("Stahuji rejstřík pluginů Calibre…")
+    raw = http_request(CALIBRE_PLUGIN_INDEX, timeout=120, service="Rejstřík pluginů Calibre", retries=2)
+    index = json.loads(bz2.decompress(raw))
+    urls = kfx_plugin_urls(index)
+    if not urls:
+        raise EngineError("Plugin KFX Input se v rejstříku pluginů Calibre nenašel.")
+    last: Exception | None = None
+    for url in urls:
+        try:
+            data = http_request(url, timeout=300, service="Plugin KFX Input", retries=1)
+            if data[:2] == b"PK":
+                return data
+        except EngineError as e:
+            last = e
+    raise EngineError(f"Plugin KFX Input se nepodařilo stáhnout ({last or 'neplatný soubor'}).")
+
+
+def install_kfx_plugin(ebook_convert: str | None, log: Callable[[str], None]) -> None:
+    """Stáhne a nainstaluje plugin KFX Input do Calibre (bez práv správce)."""
+    import tempfile
+
+    from free_engines import EngineError
+
+    customize = _calibre_customize(ebook_convert)
+    if not customize:
+        raise EngineError("Calibre nebylo nalezeno, plugin KFX Input nelze nainstalovat.")
+    data = download_kfx_plugin(log)
+    with tempfile.TemporaryDirectory(prefix="prekladac_kfx_") as tmp:
+        zip_path = os.path.join(tmp, "KFX Input.zip")
+        Path(zip_path).write_bytes(data)
+        log("Instaluji plugin KFX Input do Calibre…")
+        proc = subprocess.run([customize, "-a", zip_path], capture_output=True, text=True, errors="replace",
+                              timeout=300, creationflags=_NO_WINDOW)
+    if proc.returncode != 0:
+        raise EngineError(f"Instalace pluginu selhala: {(proc.stderr or proc.stdout)[-800:]}")
+    log("  ✓ Plugin KFX Input nainstalován.")
 
 
 # -------------------------------------------------------------- Tesseract
