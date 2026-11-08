@@ -19,6 +19,7 @@ from converters import DOC_ONLY_EXT, OUTPUT_FORMATS, SUPPORTED_EXT, find_ebook_c
 from free_engines import ENGINE_LABELS, OCR_LABELS, EngineError, GeminiEngine, OllamaEngine, find_tesseract
 from guides import GUIDES
 from qt_common import STYLESHEET, app_icon, bridge, emoji_icon, label, run_bg, set_status
+import i18n
 import updater
 from qt_editor import RibbonGroup, vline
 from qt_textassist import TextAssist
@@ -55,6 +56,7 @@ class LogView(QtWidgets.QPlainTextEdit):
 
     def log(self, text: str) -> None:
         """Bezpečné volání i z vlákna."""
+        text = i18n.tr_lines(text)
         bridge().later(lambda: (self.appendPlainText(text), self.ensureCursorVisible()))
 
 
@@ -201,8 +203,9 @@ class TranslatePage(QtWidgets.QWidget):
         self.lang.addItems(core.LANGUAGES)
         self.lang.setCurrentText(cfg.get("lang", "čeština"))
         self.out_fmt = QtWidgets.QComboBox()
-        self.out_fmt.addItems([core.SAME_FORMAT] + OUTPUT_FORMATS)
-        self.out_fmt.setCurrentText(cfg.get("out_fmt", core.SAME_FORMAT))
+        for f in [core.SAME_FORMAT] + OUTPUT_FORMATS:  # hodnota v data – text se může přeložit
+            self.out_fmt.addItem(f, f)
+        self.out_fmt.setCurrentIndex(max(0, self.out_fmt.findData(cfg.get("out_fmt", core.SAME_FORMAT))))
         g.addWidget(QtWidgets.QLabel("Cílový jazyk:"), 1, 0)
         g.addWidget(self.lang, 1, 1)
         g.addWidget(QtWidgets.QLabel("Výstupní formát:"), 1, 2)
@@ -332,7 +335,7 @@ class TranslatePage(QtWidgets.QWidget):
     def remember(self):
         cfg = self.win.cfg
         cfg.update(mode="translate" if self.mode_translate.isChecked() else "convert",
-                   lang=self.lang.currentText().strip() or "čeština", out_fmt=self.out_fmt.currentText(),
+                   lang=self.lang.currentText().strip() or "čeština", out_fmt=self.out_fmt.currentData(),
                    engine=self.engine.currentData(), ocr=self.ocr.currentData(),
                    ocr_lang=self.ocr_lang.currentText().strip(), merge_images=self.merge.isChecked(),
                    notes=self.notes.toPlainText().strip())
@@ -915,7 +918,7 @@ class BookPage(QtWidgets.QWidget):
                 return
             if files == "stopped":
                 self.logv.log("Zastaveno. Rozepsaná kniha je uložená – pokračujte tlačítkem „2. Napsat knihu“ "
-                              "nebo později přes „Pokračovat v rozepsané…“.")
+                              "nebo později přes Soubor → Otevřít.")
                 return
             for f in files:
                 self.logv.log(f"✓ Uloženo: {f}")
@@ -1410,11 +1413,67 @@ class SettingsPage(QtWidgets.QWidget):
                      4, 0, 1, 2)
         tg.setColumnStretch(0, 1)
         g.addWidget(tbox, 4, 0, 1, 3)
-        g.addWidget(label(f"Nastavení programu: {core.config_path()}", "Hint"), 5, 0, 1, 3)
-        g.setRowStretch(6, 1)
+
+        lbox = QtWidgets.QGroupBox("Jazyk programu")
+        lg = QtWidgets.QGridLayout(lbox)
+        self.ui_lang = QtWidgets.QComboBox()
+        self.fill_ui_langs(cfg.get("ui_lang") or i18n.current())
+        self.lang_dl = QtWidgets.QPushButton("⬇ Stáhnout další jazyky…")
+        self.lang_dl.clicked.connect(self.download_ui_lang)
+        lg.addWidget(QtWidgets.QLabel("Jazyk programu:"), 0, 0)
+        lg.addWidget(self.ui_lang, 0, 1)
+        lg.addWidget(self.lang_dl, 0, 2)
+        lg.addWidget(label("Texty programu; návody ke službám a podrobné chybové hlášky zůstávají česky.", "Hint"),
+                     1, 0, 1, 3)
+        lg.setColumnStretch(1, 1)
+        g.addWidget(lbox, 5, 0, 1, 3)
+        g.addWidget(label(f"Nastavení programu: {core.config_path()}", "Hint"), 6, 0, 1, 3)
+        g.setRowStretch(7, 1)
         g.setColumnStretch(1, 1)
         self.refresh_dictionary()
         return w
+
+    def fill_ui_langs(self, select: str):
+        self.ui_lang.blockSignals(True)
+        self.ui_lang.clear()
+        for code, name in i18n.installed().items():
+            self.ui_lang.addItem(name, code)  # názvy jazyků se nepřekládají (každý ve svém jazyce)
+            self.ui_lang.setItemText(self.ui_lang.count() - 1, name)
+        self.ui_lang.setCurrentIndex(max(0, self.ui_lang.findData(select)))
+        self.ui_lang.blockSignals(False)
+
+    def download_ui_lang(self):
+        self.lang_dl.setEnabled(False)
+
+        def got(online, err):
+            self.lang_dl.setEnabled(True)
+            if err:
+                QtWidgets.QMessageBox.warning(self, "Jazyk programu", f"Jazyky se nepodařilo stáhnout:\n{err}")
+                return
+            have = i18n.installed()
+            new = {c: n for c, n in online.items() if c not in have}
+            if not new:
+                QtWidgets.QMessageBox.information(self, "Jazyk programu", "Žádné další jazyky ke stažení nejsou.")
+                return
+            names = list(new.values())
+            name, ok = QtWidgets.QInputDialog.getItem(self, "Jazyk programu", "Vyberte jazyk ke stažení:",
+                                                      names, 0, False)
+            if not ok:
+                return
+            code = next(c for c, n in new.items() if n == name)
+            self.lang_dl.setEnabled(False)
+
+            def done(_r, e):
+                self.lang_dl.setEnabled(True)
+                if e:
+                    QtWidgets.QMessageBox.warning(self, "Jazyk programu", f"Jazyky se nepodařilo stáhnout:\n{e}")
+                    return
+                self.fill_ui_langs(code)
+                QtWidgets.QMessageBox.information(self, "Jazyk programu", f"✓ Jazyk {name} je nainstalovaný.")
+
+            run_bg(lambda: i18n.download(code), done)
+
+        run_bg(i18n.available_online, got)
 
     def refresh_dictionary(self):
         import spell
@@ -1458,8 +1517,16 @@ class SettingsPage(QtWidgets.QWidget):
         ta["capitalize"] = self.ta_caps.isChecked()
         for a in (self.win.book.desc_assist, self.win.book.outline_assist):
             a.on_dictionary_ready() if ta["spell"] else a.rehighlight()
+        new_lang = self.ui_lang.currentData() or "cs"
+        lang_changed = new_lang != (cfg.get("ui_lang") or i18n.current())
+        cfg["ui_lang"] = new_lang
         self.win.save_cfg()
         self.win.refresh_statuses()
+        if lang_changed:
+            if QtWidgets.QMessageBox.question(self, "Jazyk programu", "Jazyk se změní po restartu programu. "
+                                                                     "Restartovat teď?") == QtWidgets.QMessageBox.Yes:
+                restart_app()
+            return
         QtWidgets.QMessageBox.information(self, "Nastavení", "Nastavení uloženo.")
 
 
@@ -1615,6 +1682,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.book.on_service()
 
 
+def restart_app() -> None:
+    """Spustí program znovu (po změně jazyka) a tento zavře."""
+    args = sys.argv[1:] if getattr(sys, "frozen", False) else sys.argv
+    QtCore.QProcess.startDetached(sys.executable, args)
+    QtWidgets.QApplication.quit()
+
+
 def main() -> int:
     QtWidgets.QApplication.setHighDpiScaleFactorRoundingPolicy(
         QtCore.Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
@@ -1631,6 +1705,13 @@ def main() -> int:
     qapp.setStyle("Fusion")
     qapp.setStyleSheet(STYLESHEET)
     bridge()
+    try:  # jazyk programu (čeština = beze změny)
+        cfg = core.load_config()
+        if not i18n.load(cfg.get("ui_lang") or i18n.system_language()):
+            i18n.load("cs")
+        i18n.install(qapp)
+    except Exception:  # noqa: BLE001 – chyba jazyka nesmí zabránit spuštění
+        i18n.load("cs")
     win = MainWindow()
     win.show()
     return qapp.exec()

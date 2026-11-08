@@ -8,6 +8,7 @@ from PySide6 import QtCore, QtGui, QtPrintSupport, QtWidgets
 
 import book_writer as bw
 from html_docx import PAGE_BREAK, plain_to_html
+from i18n import tr
 from qt_common import emoji_icon, label, lines_icon, run_bg, text_icon
 from qt_ruler import HRuler, VRuler
 from qt_textassist import TextAssist
@@ -230,7 +231,7 @@ class BookEditor(QtWidgets.QMainWindow):
         b = QtWidgets.QToolButton()
         b.setIcon(icon)
         b.setIconSize(QtCore.QSize(22, 22))
-        b.setToolTip(tip + (f" ({shortcut})" if shortcut else ""))
+        b.setToolTip(tr(tip) + (f" ({shortcut})" if shortcut else ""))
         b.setCheckable(checkable)
         b.setAutoRaise(True)
         if fn:
@@ -906,8 +907,8 @@ class BookEditor(QtWidgets.QMainWindow):
         if self.project["chapters"]:
             cw, cp = bw.text_stats(self.project["chapters"][self.cur]["text"])
             cur = f"Kapitola {self.cur + 1}: {num(cw)} slov, {num(cp)} odstavců     "
-        self.stats.setText(cur + f"Kniha: {n} kapitol · {num(words)} slov · {num(paras)} odstavců · "
-                                 f"asi {num(max(1, words // 300))} stran")
+        self.stats.setText(tr(cur) + tr(f"Kniha: {n} kapitol · {num(words)} slov · {num(paras)} odstavců · "
+                                        f"asi {num(max(1, words // 300))} stran"))
         self.saved.setText("● neuloženo" if self.dirty else "✓ uloženo")
         self._update_title()
 
