@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 from PySide6 import QtCore, QtGui, QtPrintSupport, QtWidgets
@@ -204,6 +205,7 @@ class BookEditor(QtWidgets.QMainWindow):
         cl.addWidget(page, 1)
         self.setCentralWidget(central)
         self._build_chapters_dock()
+        self.set_chapters_panel(bool(self.view_opts.get("chapters_panel", True)), save=False)
         self._build_status()
         self._shortcuts()
 
@@ -252,11 +254,69 @@ class BookEditor(QtWidgets.QMainWindow):
         tabs = QtWidgets.QTabWidget()
         tabs.setObjectName("Ribbon")
         tabs.setDocumentMode(True)
+        tabs.addTab(self._file_tab(), "Soubor")
         tabs.addTab(self._home_tab(), "Domů")
         tabs.addTab(self._book_tab(), "Kniha")
         tabs.addTab(self._view_tab(), "Zobrazení")
+        tabs.setCurrentIndex(1)
         tabs.setMaximumHeight(150)
+        self.ribbon = tabs
         return tabs
+
+    def _file_tab(self) -> QtWidgets.QWidget:
+        """Karta Soubor jako ve Wordu: uložit, uložit jako (DOCX, PDF, MOBI, ODT, TXT…), export, tisk."""
+        f = RibbonGroup("Soubor")
+        f.grid.addWidget(self._big(emoji_icon("💾"), "Uložit", self.save), 0, 0)
+        self.b_saveas = self._big(emoji_icon("🗂️"), "Uložit jako…", self.save_as)
+        self.b_saveas.setToolTip("Uložit knihu do jednoho souboru: DOCX, PDF, MOBI, EPUB, AZW3, ODT, TXT, "
+                                 "nebo jako projekt *.kniha.json (Ctrl+Shift+S)")
+        f.grid.addWidget(self.b_saveas, 0, 1)
+        f.grid.addWidget(self._big(emoji_icon("📤"), "Exportovat", self.export), 0, 2)
+        pr = RibbonGroup("Tisk")
+        pr.grid.addWidget(self._big(emoji_icon("🖨️"), "Tisk", lambda: self.print_book(True)), 0, 0)
+        pr.grid.addWidget(self._big(emoji_icon("🔍"), "Náhled tisku", lambda: self.print_preview(True)), 0, 1)
+        win = RibbonGroup("Okno")
+        win.grid.addWidget(self._big(emoji_icon("✖️"), "Zavřít", self.close), 0, 0)
+        return self._row(f, pr, win)
+
+    def save_as(self):
+        """Uložit jako: formát podle zvoleného typu souboru; projekt *.kniha.json přepne editor na nový soubor."""
+        self.store_current()
+        filters = [f"Projekt knihy (*{bw.PROJECT_SUFFIX})"] + list(bw.SAVE_FORMATS.values())
+        start = str(self.path.parent / bw.safe_name(self.title_edit.text().strip() or self.outline["title"]))
+        f, chosen = QtWidgets.QFileDialog.getSaveFileName(self, "Uložit jako", start, ";;".join(filters),
+                                                          bw.SAVE_FORMATS["docx"])
+        if not f:
+            return
+        ext = {v: k for k, v in bw.SAVE_FORMATS.items()}.get(chosen)
+        if chosen.startswith("Projekt") or f.endswith(bw.PROJECT_SUFFIX):
+            if not f.endswith(bw.PROJECT_SUFFIX):
+                f = re.sub(r"\.(kniha|json)$", "", f) + bw.PROJECT_SUFFIX
+            self.path = Path(f)
+            self.save()
+            self._update_title()
+            self.statusBar().showMessage(f"Uloženo jako {f}", 6000)
+            return
+        if ext and not f.lower().endswith("." + ext):
+            f += "." + ext
+        self.save()
+        self.statusBar().showMessage("Ukládám…")
+
+        def done(path, err):
+            self.statusBar().clearMessage()
+            if err:
+                QtWidgets.QMessageBox.critical(self, "Uložit jako", str(err))
+            else:
+                self.statusBar().showMessage(f"Uloženo: {path}", 8000)
+                QtWidgets.QMessageBox.information(self, "Uložit jako", f"Uloženo:\n\n{path}")
+
+        if f.lower().endswith(".odt"):  # ODT zapisuje Qt – v okenním vlákně
+            try:
+                done(bw.save_as(self.project, f, lambda *_: None, self.ebook_convert), None)
+            except Exception as e:  # noqa: BLE001
+                done(None, e)
+            return
+        run_bg(lambda: bw.save_as(self.project, f, lambda *_: None, self.ebook_convert), done)
 
     def _row(self, *groups) -> QtWidgets.QWidget:
         w = QtWidgets.QWidget()
@@ -380,68 +440,12 @@ class BookEditor(QtWidgets.QMainWindow):
     # ================================================================ tisk
     def print_document(self, whole: bool = True) -> QtGui.QTextDocument:
         """Dokument k tisku: titulní strana a kapitoly (každá od nové stránky) nebo jen aktuální kapitola."""
+        from qt_bookdoc import book_document
+
         self.store_current()
-        doc = QtGui.QTextDocument()
-        base = QtGui.QFont(self.fmt.get("font") or "Georgia")
-        base.setPointSizeF(float(self.fmt.get("size") or 12))
-        doc.setDefaultFont(base)
-        cur = QtGui.QTextCursor(doc)
-        title = self.title_edit.text().strip() or self.outline.get("title", "")
-        chapters = list(enumerate(self.project["chapters"]))
-        if not whole:
-            chapters = [chapters[self.cur]] if chapters else []
-        first = True
-
-        def block(page_break: bool, align=Qt.AlignLeft, top=0.0, bottom=0.0):
-            nonlocal first
-            f = QtGui.QTextBlockFormat()
-            f.setAlignment(align)
-            f.setTopMargin(top)
-            f.setBottomMargin(bottom)
-            if page_break and not first:
-                f.setPageBreakPolicy(QtGui.QTextFormat.PageBreak_AlwaysBefore)
-            if first:
-                cur.setBlockFormat(f)
-                first = False
-            else:
-                cur.insertBlock(f)
-
-        def text(t: str, size: float, bold=True):
-            cf = QtGui.QTextCharFormat()
-            cf.setFont(base)
-            cf.setFontPointSize(size)
-            cf.setFontWeight(QtGui.QFont.Bold if bold else QtGui.QFont.Normal)
-            cur.insertText(t, cf)
-
-        if whole:  # titulní strana
-            block(False, Qt.AlignHCenter, top=220)
-            text(title, 26)
-            author = self.author_edit.text().strip()
-            if author:
-                block(False, Qt.AlignHCenter, top=24)
-                text(author, 15, bold=False)
-        titles = self.outline.get("chapters", [])
-        for i, ch in chapters:
-            name = ch.get("title") or (titles[i]["title"] if i < len(titles) else f"Kapitola {i + 1}")
-            block(True, top=12, bottom=18)
-            text(f"{i + 1}. {name}", 18)
-            block(False)
-            cur.setCharFormat(QtGui.QTextCharFormat())
-            cur.insertFragment(QtGui.QTextDocumentFragment.fromHtml(ch.get("html") or plain_to_html(ch["text"])))
-        # značky [[STRANA]] z editoru → skutečné zalomení stránky
-        b = doc.begin()
-        while b.isValid():
-            nxt = b.next()
-            if b.text().strip() == PAGE_BREAK and nxt.isValid():
-                c = QtGui.QTextCursor(nxt)
-                f = nxt.blockFormat()
-                f.setPageBreakPolicy(QtGui.QTextFormat.PageBreak_AlwaysBefore)
-                c.setBlockFormat(f)
-                c = QtGui.QTextCursor(b)
-                c.select(QtGui.QTextCursor.BlockUnderCursor)
-                c.removeSelectedText()
-            b = nxt
-        return doc
+        return book_document(self.project, None if whole else self.cur,
+                             title=self.title_edit.text().strip() or self.outline.get("title", ""),
+                             author=self.author_edit.text().strip())
 
     def _printer(self) -> QtPrintSupport.QPrinter:
         pr = QtPrintSupport.QPrinter(QtPrintSupport.QPrinter.HighResolution)
@@ -482,10 +486,23 @@ class BookEditor(QtWidgets.QMainWindow):
         self.b_ruler.setToolTip("Pravítka nad a vlevo od stránky. Na vodorovném jde myší posouvat odsazení "
                                 "odstavce (▽ první řádek, △ levé a pravé odsazení); dvojklik ho zruší.")
         show.grid.addWidget(self.b_ruler, 0, 0)
+        self.b_panel = self._big(emoji_icon("📑"), "Panel kapitol", lambda: self.set_chapters_panel(
+            self.b_panel.isChecked()))
+        self.b_panel.setCheckable(True)
+        self.b_panel.setToolTip("Zobrazit / skrýt seznam kapitol vlevo (F9)")
+        show.grid.addWidget(self.b_panel, 0, 1)
         on = bool(self.view_opts.get("ruler", True))
         self.b_ruler.setChecked(on)
         self.set_ruler(on, save=False)
         return self._row(show)
+
+    def set_chapters_panel(self, on: bool, save: bool = True):
+        """Skrytí panelu kapitol dá stránce celou šířku okna; stav se pamatuje."""
+        self.chapters_dock.setVisible(on)
+        self.b_panel.setChecked(on)
+        if save:
+            self.view_opts["chapters_panel"] = on
+            self._save_view()
 
     def set_ruler(self, on: bool, save: bool = True):
         for w in (self.hruler, self.vruler, self.ruler_corner):
@@ -523,12 +540,12 @@ class BookEditor(QtWidgets.QMainWindow):
 
         exp = RibbonGroup("Export")
         self.fmt_checks = {}
-        for i, f in enumerate(("epub", "docx", "pdf", "azw3")):
+        for i, f in enumerate(("epub", "docx", "pdf", "azw3", "mobi", "odt", "rtf", "txt")):
             cb = QtWidgets.QCheckBox(f.upper())
             cb.setChecked(f in ("epub", "docx"))
             self.fmt_checks[f] = cb
-            exp.grid.addWidget(cb, i // 2, i % 2)
-        exp.grid.addWidget(self._big(emoji_icon("📤"), "Exportovat", self.export), 0, 2, 2, 1)
+            exp.grid.addWidget(cb, i % 2, i // 2)
+        exp.grid.addWidget(self._big(emoji_icon("📤"), "Exportovat", self.export), 0, 4, 2, 1)
 
         chap = RibbonGroup("Kapitoly")
         chap.grid.addWidget(self._big(emoji_icon("➕"), "Nová kapitola", self.add_chapter), 0, 0, 2, 1)
@@ -563,7 +580,10 @@ class BookEditor(QtWidgets.QMainWindow):
     # ============================================================ kapitoly
     def _build_chapters_dock(self):
         dock = QtWidgets.QDockWidget("Kapitoly", self)
-        dock.setFeatures(QtWidgets.QDockWidget.DockWidgetMovable)
+        dock.setFeatures(QtWidgets.QDockWidget.DockWidgetMovable | QtWidgets.QDockWidget.DockWidgetClosable)
+        dock.visibilityChanged.connect(lambda v: hasattr(self, "b_panel") and self.b_panel.setChecked(
+            v or self.isMinimized()))
+        self.chapters_dock = dock
         w = QtWidgets.QWidget()
         lay = QtWidgets.QVBoxLayout(w)
         self.chapters = QtWidgets.QListWidget()
@@ -881,7 +901,8 @@ class BookEditor(QtWidgets.QMainWindow):
         for seq, fn in (("Ctrl+S", self.save), ("Ctrl+F", self.open_find), ("Ctrl+H", self.open_find),
                         ("Ctrl+B", lambda: self.b_bold.click()), ("Ctrl+I", lambda: self.b_italic.click()),
                         ("Ctrl+U", lambda: self.b_under.click()), ("Ctrl+Return", self._page_break),
-                        ("Ctrl+P", lambda: self.print_book(True))):
+                        ("Ctrl+P", lambda: self.print_book(True)), ("Ctrl+Shift+S", self.save_as),
+                        ("F9", lambda: self.set_chapters_panel(not self.chapters_dock.isVisible()))):
             QtGui.QShortcut(QtGui.QKeySequence(seq), self, activated=fn)
 
     def _doc_changed(self):

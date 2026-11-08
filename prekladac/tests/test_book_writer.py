@@ -233,3 +233,28 @@ def test_per_chapter_words_roundtrip_and_prompt(tmp_path):
     bw.BookWriter(be, "čeština", log=lambda *_: None).write(proj, tmp_path / "k.kniha.json")
     first = [p for p in be.prompts if "POZOR" not in p]
     assert "přibližně 1000 slov" in first[0] and "přibližně 4000 slov" in first[1]
+
+
+def test_save_as_formats(tmp_path):
+    import os
+    os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+    from PySide6 import QtWidgets
+    QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
+    import docx
+    proj = {"description": "x", "words": 100, "author": "Miky",
+            "outline": {"title": "Kniha", "chapters": [{"title": "Prvni", "summary": ""},
+                                                       {"title": "Druha", "summary": ""}]},
+            "chapters": [{"text": "Odstavec jedna.\n\n[[STRANA]]\n\nOdstavec dva.", "summary": ""},
+                         {"text": "Konec.", "summary": ""}]}
+    t = bw.save_as(proj, tmp_path / "k.txt", lambda *_: None)
+    txt = Path(t).read_text(encoding="utf-8")
+    assert txt.startswith("Kniha\nMiky") and "1. Prvni" in txt and "2. Druha" in txt and "[[STRANA]]" not in txt
+    o = bw.save_as(proj, tmp_path / "k.odt", lambda *_: None)
+    import zipfile
+    content = zipfile.ZipFile(o).read("content.xml").decode("utf-8")
+    assert "Odstavec dva" in content and "2. Druha" in content
+    d = bw.save_as(proj, tmp_path / "sub" / "k.docx", lambda *_: None)
+    assert any("Konec" in p.text for p in docx.Document(d).paragraphs)
+    with pytest.raises(bw.BookError):
+        bw.save_as(proj, tmp_path / "k.xyz", lambda *_: None)
+    assert set(bw.SAVE_FORMATS) >= {"docx", "mobi", "txt", "pdf", "odt", "rtf", "epub", "azw3"}

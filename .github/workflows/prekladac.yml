@@ -141,6 +141,8 @@ jobs:
           python tests\ci_check_epub_links.py "$dir\Calibre2\ebook-convert.exe"
           # 4) stažení a instalace pluginu KFX Input do přibaleného Calibre
           python -c "import sys; sys.path.insert(0, '.'); import components; c = r'$dir\Calibre2\ebook-convert.exe'; print('CA:', components.calibre_ca_file(c)); components.install_kfx_plugin(c, print); assert components.calibre_kfx_plugin(c) is True, 'plugin chybí'"
+          # 5a) Uložit jako z editoru knihy: MOBI, RTF, PDF přes přibalené Calibre (TXT/ODT/DOCX bez Calibre)
+          python -c "import sys, pathlib; sys.path.insert(0, '.'); import book_writer as bw; p = {'description': 'x', 'words': 100, 'outline': {'title': 'Kniha', 'chapters': [{'title': 'Jedna', 'summary': ''}]}, 'chapters': [{'text': 'Ahoj svete.', 'summary': ''}]}; out = [bw.save_as(p, f'saveas_out/kniha.{e}', print, r'$dir\Calibre2\ebook-convert.exe') for e in ('mobi', 'rtf', 'pdf', 'docx', 'txt')]; print(out); assert all(pathlib.Path(f).stat().st_size > 100 for f in out)"
           # 5) offline překlad (Argos): stažení balíčků jako volba v instalátoru, překlad EN→CS a DE→(EN)→CS
           $o = Start-Process $exe -ArgumentList '--install-offline','en_cs,de_en','offline.txt' -Wait -PassThru
           Get-Content offline.txt -Encoding utf8

@@ -554,3 +554,52 @@ def test_version_info_resource():
     assert "filevers=(1, 0, 38, 0)" in out and "'FileVersion', '1.0.38.0'" in out
     assert "LegalCopyright" in out and "Micha741" in out
     assert m.version_tuple("vývojová verze") == (0, 0, 0, 0)
+
+
+def test_editor_file_tab_save_as_and_panel(qapp, tmp_path, monkeypatch):
+    import book_writer as bw
+    from PySide6 import QtWidgets
+    from qt_editor import BookEditor
+    proj = {"title": "T", "language": "čeština", "words": 100,
+            "outline": {"title": "T", "chapters": [{"title": "K1", "summary": ""}]},
+            "chapters": [{"title": "K1", "text": "Text kapitoly."}]}
+    p = tmp_path / "t.kniha.json"
+    bw.save_project(p, proj)
+    opts = {}
+    ed = BookEditor(proj, p, None, text_assist=opts, save_options=lambda: None)
+    ed.show()
+    assert [ed.ribbon.tabText(i) for i in range(ed.ribbon.count())] == ["Soubor", "Domů", "Kniha", "Zobrazení"]
+    assert ed.ribbon.currentIndex() == 1
+    # panel kapitol
+    assert ed.chapters_dock.isVisible()
+    ed.b_panel.click()
+    assert not ed.chapters_dock.isVisible() and opts["chapters_panel"] is False
+    ed2 = BookEditor(proj, p, None, text_assist=opts, save_options=lambda: None)
+    ed2.show()
+    assert not ed2.chapters_dock.isVisible()
+    ed2.set_chapters_panel(True)
+    # uložit jako TXT (bez přípony – doplní se podle typu)
+    monkeypatch.setattr(QtWidgets.QFileDialog, "getSaveFileName",
+                        lambda *a, **k: (str(tmp_path / "vystup"), bw.SAVE_FORMATS["txt"]))
+    monkeypatch.setattr(QtWidgets.QMessageBox, "information", lambda *a, **k: None)
+    ed.save_as()
+    for _ in range(200):
+        qapp.processEvents()
+        if (tmp_path / "vystup.txt").exists():
+            break
+        import time
+        time.sleep(0.02)
+    assert "Text kapitoly." in (tmp_path / "vystup.txt").read_text(encoding="utf-8")
+    # uložit jako ODT (v okenním vlákně)
+    monkeypatch.setattr(QtWidgets.QFileDialog, "getSaveFileName",
+                        lambda *a, **k: (str(tmp_path / "kniha.odt"), bw.SAVE_FORMATS["odt"]))
+    ed.save_as()
+    assert (tmp_path / "kniha.odt").exists()
+    # uložit jako projekt → editor pracuje s novým souborem
+    monkeypatch.setattr(QtWidgets.QFileDialog, "getSaveFileName",
+                        lambda *a, **k: (str(tmp_path / "kopie"), f"Projekt knihy (*{bw.PROJECT_SUFFIX})"))
+    ed.save_as()
+    assert ed.path == tmp_path / "kopie.kniha.json" and ed.path.exists()
+    for e in (ed, ed2):
+        e.dirty = False
+        e.close()

@@ -162,7 +162,10 @@ Když program zavřete, přijdete nanejvýš o právě psanou kapitolu – po sp
 - **🖨 Tisk** (Domů → Soubor, nebo Ctrl+P) – vytiskne celou knihu (titulní strana, každá kapitola od nové
   stránky, čísla stran, zalomení stránek z editoru) nebo jen otevřenou kapitolu; je i **náhled tisku**.
   V okně tisku jde zvolit tiskárnu, počet kopií a stránky; „Microsoft Print to PDF“ uloží tisk jako PDF.
-- **Zobrazení** – **📏 Pravítko** (zapnout/vypnout, program si volbu pamatuje): vodorovné pravítko nad stránkou
+- **Soubor** – Uložit, **Uložit jako…** (jeden soubor ve formátu **DOCX, PDF, EPUB, MOBI, AZW3, ODT, RTF, TXT**,
+  nebo kopie projektu `*.kniha.json`, Ctrl+Shift+S), Exportovat (víc formátů najednou), Tisk, Náhled tisku, Zavřít.
+  ODT (LibreOffice) a TXT zapisuje program sám, ostatní formáty z DOCX přes přibalené Calibre.
+- **Zobrazení** – **📑 Panel kapitol** skryje/zobrazí seznam kapitol vlevo (F9, pamatuje se), **📏 Pravítko** (zapnout/vypnout, program si volbu pamatuje): vodorovné pravítko nad stránkou
   v centimetrech a svislé vlevo. Na vodorovném jde myší táhnout odsazení odstavce jako ve Wordu – ▽ nahoře
   první řádek, △ dole levé odsazení, △ vpravo pravé odsazení (po čtvrt centimetru); dvojklik odsazení zruší.
   Odsazení se zachová i v exportu.

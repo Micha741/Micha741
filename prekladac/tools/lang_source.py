@@ -666,6 +666,28 @@ E += [
      "Offline-Paket fehlt – ⚙ Einstellungen → Komponenten → Offline-Übersetzung"),
     ("offline: {}", "offline: {}", "offline: {}", "offline: {}"),
     ("{} → {}", "{} → {}", "{} → {}", "{} → {}"),
+    # editor – karta Soubor
+    ("Uložit jako…", "Save as…", "Uložiť ako…", "Speichern unter…"),
+    ("Uložit knihu do jednoho souboru: DOCX, PDF, MOBI, EPUB, AZW3, ODT, TXT, nebo jako projekt *.kniha.json "
+     "(Ctrl+Shift+S)", "Save the book to one file: DOCX, PDF, MOBI, EPUB, AZW3, ODT, TXT, or as a *.kniha.json "
+     "project (Ctrl+Shift+S)", "Uložiť knihu do jedného súboru: DOCX, PDF, MOBI, EPUB, AZW3, ODT, TXT, alebo ako "
+     "projekt *.kniha.json (Ctrl+Shift+S)", "Buch in eine Datei speichern: DOCX, PDF, MOBI, EPUB, AZW3, ODT, TXT "
+     "oder als Projekt *.kniha.json (Strg+Umschalt+S)"),
+    ("Náhled tisku", "Print preview", "Náhľad tlače", "Druckvorschau"),
+    ("Okno", "Window", "Okno", "Fenster"),
+    ("Panel kapitol", "Chapters panel", "Panel kapitol", "Kapitelleiste"),
+    ("Zobrazit / skrýt seznam kapitol vlevo (F9)", "Show / hide the chapter list on the left (F9)",
+     "Zobraziť / skryť zoznam kapitol vľavo (F9)", "Kapitelliste links ein-/ausblenden (F9)"),
+    ("Projekt knihy (*{})", "Book project (*{})", "Projekt knihy (*{})", "Buchprojekt (*{})"),
+    ("Word (*.docx)", "Word (*.docx)", "Word (*.docx)", "Word (*.docx)"),
+    ("EPUB – e-kniha (*.epub)", "EPUB – e-book (*.epub)", "EPUB – e-kniha (*.epub)", "EPUB – E-Book (*.epub)"),
+    ("OpenDocument – LibreOffice (*.odt)", "OpenDocument – LibreOffice (*.odt)", "OpenDocument – LibreOffice (*.odt)",
+     "OpenDocument – LibreOffice (*.odt)"),
+    ("Prostý text (*.txt)", "Plain text (*.txt)", "Obyčajný text (*.txt)", "Reiner Text (*.txt)"),
+    ("Ukládám…", "Saving…", "Ukladám…", "Speichere…"),
+    ("Uloženo jako {}", "Saved as {}", "Uložené ako {}", "Gespeichert als {}"),
+    ("Uloženo: {}", "Saved: {}", "Uložené: {}", "Gespeichert: {}"),
+    ("Uložit jako…", "Save as…", "Uložiť ako…", "Speichern unter…"),
     # Info
     ("🌐 Stránka programu", "🌐 Program website", "🌐 Stránka programu", "🌐 Programm-Website"),
     ("© 2026 Micha741 · zdarma pro osobní použití", "© 2026 Micha741 · free for personal use",

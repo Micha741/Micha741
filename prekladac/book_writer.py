@@ -470,8 +470,75 @@ def export(project: dict, out_dir: str | Path, formats: list[str], log: Callable
         if fmt == "docx":
             continue
         dst = output_path(str(base) + "." + fmt, None, fmt, "")
-        calibre_convert(docx_path, dst, log, ebook_convert)
+        write_format(project, docx_path, dst, fmt, log, ebook_convert)
         results.append(dst)
     if "docx" not in formats:
         Path(docx_path).unlink(missing_ok=True)
     return results
+
+
+# formáty, do kterých jde knihu uložit (Uložit jako / Export); popisky pro dialog
+SAVE_FORMATS = {
+    "docx": "Word (*.docx)",
+    "pdf": "PDF (*.pdf)",
+    "epub": "EPUB – e-kniha (*.epub)",
+    "mobi": "MOBI – Kindle (*.mobi)",
+    "azw3": "AZW3 – Kindle (*.azw3)",
+    "odt": "OpenDocument – LibreOffice (*.odt)",
+    "rtf": "RTF – Rich Text (*.rtf)",
+    "txt": "Prostý text (*.txt)",
+}
+
+
+def book_plain_text(project: dict) -> str:
+    """Kniha jako prostý text: název, autor, kapitoly s nadpisy (zalomení stránek se vynechají)."""
+    o = project["outline"]
+    lines = [o.get("title", "")]
+    if project.get("author"):
+        lines.append(project["author"])
+    for i, (plan, ch) in enumerate(zip(o["chapters"], project["chapters"]), 1):
+        lines += ["", "", f"{i}. {ch.get('title') or plan['title']}", ""]
+        paras = [p for p in split_paragraphs(ch.get("text", "")) if p.strip() != PAGE_BREAK]
+        lines.append("\n\n".join(paras))
+    return "\n".join(lines).strip() + "\n"
+
+
+def write_format(project: dict, docx_path: str, dst: str, fmt: str, log: Callable[[str], None] = print,
+                 ebook_convert: str | None = None) -> None:
+    """Jeden výstupní formát: TXT a ODT přímo, ostatní z DOCX přes Calibre."""
+    if fmt == "txt":
+        Path(dst).write_text(book_plain_text(project), encoding="utf-8")
+    elif fmt == "odt":
+        from qt_bookdoc import write_odt  # Calibre do ODT neukládá – zapíše ho Qt
+
+        write_odt(project, dst)
+    else:
+        from converters import calibre_convert
+
+        calibre_convert(docx_path, dst, log, ebook_convert)
+
+
+def save_as(project: dict, dst: str | Path, log: Callable[[str], None] = print,
+            ebook_convert: str | None = None) -> str:
+    """Uloží knihu do jednoho souboru přesně pod zadaným jménem; formát podle přípony."""
+    import shutil
+    import tempfile
+
+    dst = Path(dst)
+    fmt = dst.suffix.lower().lstrip(".")
+    if fmt not in SAVE_FORMATS:
+        raise BookError(f"Formát .{fmt} neumím uložit (podporované: {', '.join(SAVE_FORMATS)}).")
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    if fmt in ("txt", "odt"):
+        write_format(project, "", str(dst), fmt, log, ebook_convert)
+        return str(dst)
+    tmp = Path(tempfile.mkdtemp(prefix="prekladac_"))
+    try:
+        docx_path = export(project, tmp, ["docx"], log, ebook_convert)[0]
+        if fmt == "docx":
+            shutil.copyfile(docx_path, dst)
+        else:
+            write_format(project, docx_path, str(dst), fmt, log, ebook_convert)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    return str(dst)

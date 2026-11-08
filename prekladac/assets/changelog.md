@@ -11,7 +11,7 @@
 - Popis kolem 20 vět, žánr a styl (přes 40 žánrů a další kategorie), osnova, psaní kapitolu po kapitole.
 - Délka každé kapitoly zvlášť, úpravy osnovy i během psaní, pokračování v rozepsané knize.
 - Karta Soubor jako ve Wordu (nová, otevřít, uložit, uložit jako, naposledy otevřené).
-- Export do EPUB, DOCX, PDF, AZW3 s obsahem a odkazy na kapitoly.
+- Export do EPUB, DOCX, PDF, AZW3, MOBI, ODT, RTF a TXT s obsahem a odkazy na kapitoly.
 
 **Editor knihy (jako Word)**
 - Pás karet (písmo, odstavec, styly, úpravy), kapitoly, najít a nahradit v celé knize, statistiky.
@@ -25,13 +25,18 @@
 
 # Historie verzí
 
-**1.0.38 a novější**
+**1.0.38 – 1.0.41**
 - Údaje souboru u instalátoru i Prekladac.exe (verze souboru, autorská práva, popis).
 - Nastavení → Info: co program umí, historie verzí, plány a vlastní poznámky.
 - Stránka Překlad ve stylu Wordu: pás karet Soubory / Překlad / Obrázky a OCR, velká tlačítka Spustit,
   Zastavit a Výstupní složka, stránka se seznamem souborů a pokyny.
 - Offline překlad v počítači bez internetu (Argos Translate): balíčky v Nastavení → Součásti nebo volitelně
   v instalátoru, němčina a další jazyky přes angličtinu, jazyk originálu se pozná sám.
+
+**1.0.42 a novější**
+- Editor knihy: karta Soubor (Uložit, Uložit jako, Exportovat, Tisk, Náhled tisku, Zavřít).
+- Uložit jako / Export do DOCX, PDF, EPUB, MOBI, AZW3, ODT, RTF a TXT (i jako projekt *.kniha.json).
+- Skrývání panelu kapitol v editoru (Zobrazení → Panel kapitol, F9), stav se pamatuje.
 
 **1.0.37**
 - Jazyk programu (EN/SK/DE) s možností doinstalovat další jazyky.
