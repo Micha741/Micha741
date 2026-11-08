@@ -149,6 +149,42 @@ E: list[tuple[str, str, str, str]] = [
      "Tesseract sa nenašiel (Nastavenia → Súčasti)", "Tesseract nicht gefunden (Einstellungen → Komponenten)"),
     ("OCR {}: chybí klíč", "OCR {}: key missing", "OCR {}: chýba kľúč", "OCR {}: Schlüssel fehlt"),
     ("model: {}", "model: {}", "model: {}", "Modell: {}"),
+    ("Přidat\nsoubory…", "Add\nfiles…", "Pridať\nsúbory…", "Dateien\nhinzufügen…"),
+    ("Přidat\nsložku…", "Add\nfolder…", "Pridať\npriečinok…", "Ordner\nhinzufügen…"),
+    ("Přidat", "Add", "Pridať", "Hinzufügen"),
+    ("Výběr", "Selection", "Výber", "Auswahl"),
+    ("Režim", "Mode", "Režim", "Modus"),
+    ("Jazyk a formát", "Language and format", "Jazyk a formát", "Sprache und Format"),
+    ("Obrázky a OCR", "Images and OCR", "Obrázky a OCR", "Bilder und OCR"),
+    ("Text z obrázků a skenů (OCR)", "Text from images and scans (OCR)", "Text z obrázkov a skenov (OCR)",
+     "Text aus Bildern und Scans (OCR)"),
+    ("Rozpoznávání:", "Recognition:", "Rozpoznávanie:", "Erkennung:"),
+    ("Jazyk originálu:", "Source language:", "Jazyk originálu:", "Originalsprache:"),
+    ("Obrázky", "Images", "Obrázky", "Bilder"),
+    ("Spustit", "Start", "Spustiť", "Starten"),
+    ("Spustí překlad / převod všech souborů v seznamu", "Starts translating / converting all files in the list",
+     "Spustí preklad / prevod všetkých súborov v zozname", "Startet Übersetzen / Umwandeln aller Dateien der Liste"),
+    ("Zastaví po dokončení rozpracovaného souboru", "Stops after the current file is finished",
+     "Zastaví po dokončení rozpracovaného súboru", "Stoppt nach der aktuellen Datei"),
+    ("Výstupní\nsložka", "Output\nfolder", "Výstupný\npriečinok", "Ausgabe-\nordner"),
+    ("Otevře složku s výsledky", "Opens the folder with results", "Otvorí priečinok s výsledkami",
+     "Öffnet den Ordner mit den Ergebnissen"),
+    ("Přetáhněte sem soubory, nebo je přidejte na kartě Soubory. Pravé tlačítko a klávesa Delete fungují i "
+     "v seznamu.", "Drag files here or add them on the Files tab. Right-click and the Delete key also work in the "
+     "list.", "Pretiahnite sem súbory alebo ich pridajte na karte Súbory. Pravé tlačidlo a kláves Delete fungujú aj "
+     "v zozname.", "Dateien hierher ziehen oder auf der Registerkarte Dateien hinzufügen. Rechtsklick und Entf "
+     "funktionieren auch in der Liste."),
+    ("Pokyny pro překlad", "Translation instructions", "Pokyny pre preklad", "Übersetzungsanweisungen"),
+    ("Nepovinné – glosář, jména, tykání/vykání, styl. Platí pro Claude, Gemini, Ollama a OpenAI-kompatibilní "
+     "služby.", "Optional – glossary, names, formal/informal address, style. Applies to Claude, Gemini, Ollama and "
+     "OpenAI-compatible services.", "Nepovinné – glosár, mená, tykanie/vykanie, štýl. Platí pre Claude, Gemini, "
+     "Ollama a OpenAI-kompatibilné služby.", "Optional – Glossar, Namen, Du/Sie, Stil. Gilt für Claude, Gemini, "
+     "Ollama und OpenAI-kompatible Dienste."),
+    ("Výsledky se ukládají vedle originálů. Nejdřív přidejte soubory, nebo nastavte výstupní složku v Nastavení → "
+     "Obecné.", "Results are saved next to the originals. Add files first, or set an output folder in Settings → "
+     "General.", "Výsledky sa ukladajú vedľa originálov. Najprv pridajte súbory alebo nastavte výstupný priečinok "
+     "v Nastaveniach → Všeobecné.", "Ergebnisse werden neben den Originalen gespeichert. Fügen Sie zuerst Dateien "
+     "hinzu oder legen Sie unter Einstellungen → Allgemein einen Ausgabeordner fest."),
     # ------------------------------------------------------------ stránka Napsat knihu
     ("Soubor", "File", "Súbor", "Datei"),
     ("Žánr a styl", "Genre and style", "Žáner a štýl", "Genre und Stil"),

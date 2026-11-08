@@ -95,6 +95,11 @@ Ručně lze kontrolu spustit v *⚙ Nastavení → Obecné → Zkontrolovat novo
 
 ## Použití
 
+Stránka **Překlad** vypadá jako Word: nahoře pás karet **Soubory** (přidat soubory či složku, vybrat, odebrat),
+**Překlad** (přeložit / jen převést, cílový jazyk, výstupní formát, překladač a jeho stav) a **Obrázky a OCR**;
+vpravo velká tlačítka **▶ Spustit**, **Zastavit** a **Výstupní složka**; uprostřed stránka se seznamem souborů
+a pokyny pro překlad, dole průběh.
+
 1. Přidejte soubory tlačítkem **Přidat soubory** (v okně jde vybrat víc souborů najednou – Ctrl+klik,
    Shift+klik, Ctrl+A), **Přidat složku** (všechny podporované soubory včetně podsložek), nebo je přetáhněte
    myší do seznamu. V seznamu se vybírá stejně (Ctrl, Shift, Ctrl+A / **Vybrat vše**); **Odebrat vybrané**

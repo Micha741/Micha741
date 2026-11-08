@@ -28,6 +28,8 @@
 **1.0.38 a novější**
 - Údaje souboru u instalátoru i Prekladac.exe (verze souboru, autorská práva, popis).
 - Nastavení → Info: co program umí, historie verzí, plány a vlastní poznámky.
+- Stránka Překlad ve stylu Wordu: pás karet Soubory / Překlad / Obrázky a OCR, velká tlačítka Spustit,
+  Zastavit a Výstupní složka, stránka se seznamem souborů a pokyny.
 
 **1.0.37**
 - Jazyk programu (EN/SK/DE) s možností doinstalovat další jazyky.

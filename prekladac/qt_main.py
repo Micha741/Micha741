@@ -41,6 +41,81 @@ def scrolled(w: QtWidgets.QWidget) -> QtWidgets.QScrollArea:
     return sa
 
 
+def big_button(icon: str, text: str, tip: str = "", obj: str = "BigAction") -> QtWidgets.QToolButton:
+    """Velké tlačítko pásu karet (ikona nad textem) jako ve Wordu."""
+    b = QtWidgets.QToolButton()
+    b.setObjectName(obj)
+    b.setIcon(emoji_icon(icon))
+    b.setIconSize(QtCore.QSize(28, 28))
+    b.setText(text)
+    b.setToolTip(tip)
+    b.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+    b.setMinimumWidth(92)
+    return b
+
+
+def ribbon_group(title: str, rows) -> "RibbonGroup":
+    """Skupina pásu karet: řádky (popisek, prvek); prázdný popisek = prvek přes celou šířku."""
+    g = RibbonGroup(title)
+    for r, (text, w) in enumerate(rows):
+        if text:
+            g.grid.addWidget(QtWidgets.QLabel(text), r, 0)
+            g.grid.addWidget(w, r, 1)
+        else:
+            g.grid.addWidget(w, r, 0, 1, 2)
+    g.grid.setHorizontalSpacing(6)
+    g.grid.setVerticalSpacing(4)
+    return g
+
+
+def ribbon_row(*groups) -> QtWidgets.QWidget:
+    w = QtWidgets.QWidget()
+    hl = QtWidgets.QHBoxLayout(w)
+    hl.setContentsMargins(4, 6, 4, 2)
+    hl.setSpacing(6)
+    for i, g in enumerate(groups):
+        if i:
+            hl.addWidget(vline())
+        hl.addWidget(g)
+    hl.addStretch(1)
+    return w
+
+
+def doc_heading(text: str, hint: str) -> QtWidgets.QWidget:
+    w = QtWidgets.QWidget()
+    v = QtWidgets.QVBoxLayout(w)
+    v.setContentsMargins(0, 8, 0, 2)
+    v.setSpacing(0)
+    v.addWidget(label(text, "DocHeading", wrap=False))
+    v.addWidget(label(hint, "Hint"))
+    return w
+
+
+def paper_canvas(widgets) -> QtWidgets.QScrollArea:
+    """Bílá „stránka“ na šedém pozadí (jako ve Wordu) s posuvníkem."""
+    paper = QtWidgets.QFrame()
+    paper.setObjectName("Paper")
+    paper.setMaximumWidth(980)
+    pl = QtWidgets.QVBoxLayout(paper)
+    pl.setContentsMargins(56, 30, 56, 36)
+    pl.setSpacing(6)
+    for w in widgets:
+        pl.addWidget(w)
+    canvas = QtWidgets.QWidget()
+    canvas.setObjectName("Canvas")
+    cl = QtWidgets.QHBoxLayout(canvas)
+    cl.setContentsMargins(24, 20, 24, 24)
+    cl.addStretch(1)
+    cl.addWidget(paper, 30)
+    cl.addStretch(1)
+    scroll = QtWidgets.QScrollArea()
+    scroll.setObjectName("CanvasScroll")
+    scroll.setWidgetResizable(True)
+    scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+    scroll.setWidget(canvas)
+    return scroll
+
+
 def primary(text: str) -> QtWidgets.QPushButton:
     b = QtWidgets.QPushButton(text)
     b.setObjectName("Primary")
@@ -154,19 +229,16 @@ class TranslatePage(QtWidgets.QWidget):
         self.win = win
         cfg = win.cfg
         self.cancel = threading.Event()
-        lay = QtWidgets.QVBoxLayout(self)
-        lay.addWidget(h_title("Překlad a převod souborů"))
-
-        files_box = QtWidgets.QGroupBox("Soubory")
-        fl = QtWidgets.QHBoxLayout(files_box)
+        # ---------- prvky
         self.files = FileList()
-        fl.addWidget(self.files, 1)
-        btns = QtWidgets.QVBoxLayout()
-        b_add = QtWidgets.QPushButton("➕ Přidat soubory…")
-        b_add.setToolTip("V okně můžete vybrat víc souborů najednou (Ctrl+klik, Shift+klik, Ctrl+A).")
+        self.files.setMinimumHeight(220)
+        self.files.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.files.customContextMenuRequested.connect(self.files_menu)
+        self.files.changed.connect(self.update_file_buttons)
+        b_add = big_button("➕", "Přidat\nsoubory…", "V okně můžete vybrat víc souborů najednou (Ctrl+klik, "
+                                                     "Shift+klik, Ctrl+A).")
         b_add.clicked.connect(self.pick)
-        b_dir = QtWidgets.QPushButton("📁 Přidat složku…")
-        b_dir.setToolTip("Přidá všechny podporované soubory ze složky včetně podsložek.")
+        b_dir = big_button("📁", "Přidat\nsložku…", "Přidá všechny podporované soubory ze složky včetně podsložek.")
         b_dir.clicked.connect(self.pick_dir)
         self.b_selall = QtWidgets.QPushButton("☑ Vybrat vše")
         self.b_selall.setToolTip("Ctrl+A")
@@ -174,95 +246,141 @@ class TranslatePage(QtWidgets.QWidget):
         self.b_remove = QtWidgets.QPushButton("➖ Odebrat vybrané")
         self.b_remove.setToolTip("Klávesa Delete")
         self.b_remove.clicked.connect(self.remove_files)
-        for b in (b_add, b_dir, self.b_selall, self.b_remove):
+        for b in (self.b_selall, self.b_remove):
             b.setFixedWidth(190)  # šířka se nemění, když se text tlačítka přepne
-            btns.addWidget(b)
-        btns.addStretch(1)
         self.files_info = label("", "Hint", wrap=False)
-        btns.addWidget(self.files_info)
-        fl.addLayout(btns)
-        lay.addWidget(files_box, 2)
-        self.files.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.files.customContextMenuRequested.connect(self.files_menu)
-        self.files.changed.connect(self.update_file_buttons)
-        self.update_file_buttons()
 
-        opts = QtWidgets.QGroupBox("Nastavení překladu")
-        g = QtWidgets.QGridLayout(opts)
         self.mode_translate = QtWidgets.QRadioButton("Přeložit")
         self.mode_convert = QtWidgets.QRadioButton("Jen převést formát / přepsat text z obrázku")
         (self.mode_convert if cfg.get("mode") == "convert" else self.mode_translate).setChecked(True)
-        mrow = QtWidgets.QHBoxLayout()
-        mrow.addWidget(self.mode_translate)
-        mrow.addWidget(self.mode_convert)
-        mrow.addStretch(1)
-        g.addLayout(mrow, 0, 0, 1, 4)
-
         self.lang = QtWidgets.QComboBox()
         self.lang.setEditable(True)
         self.lang.addItems(core.LANGUAGES)
         self.lang.setCurrentText(cfg.get("lang", "čeština"))
+        self.lang.setMinimumWidth(170)
         self.out_fmt = QtWidgets.QComboBox()
         for f in [core.SAME_FORMAT] + OUTPUT_FORMATS:  # hodnota v data – text se může přeložit
             self.out_fmt.addItem(f, f)
         self.out_fmt.setCurrentIndex(max(0, self.out_fmt.findData(cfg.get("out_fmt", core.SAME_FORMAT))))
-        g.addWidget(QtWidgets.QLabel("Cílový jazyk:"), 1, 0)
-        g.addWidget(self.lang, 1, 1)
-        g.addWidget(QtWidgets.QLabel("Výstupní formát:"), 1, 2)
-        g.addWidget(self.out_fmt, 1, 3)
-
+        self.out_fmt.setMinimumWidth(170)
         self.engine = QtWidgets.QComboBox()
         for key, text in ENGINE_LABELS.items():
             self.engine.addItem(text, key)
         self.engine.setCurrentIndex(max(0, self.engine.findData(cfg.get("engine", "google"))))
-        g.addWidget(QtWidgets.QLabel("Překladač:"), 2, 0)
-        g.addWidget(self.engine, 2, 1, 1, 3)
-        self.status = label("")
-        g.addWidget(self.status, 3, 1, 1, 3)
-
+        self.engine.setMinimumWidth(360)
+        self.status = label("", wrap=False)
         self.ocr = QtWidgets.QComboBox()
         for key, text in OCR_LABELS.items():
             self.ocr.addItem(text, key)
         self.ocr.setCurrentIndex(max(0, self.ocr.findData(cfg.get("ocr", "tesseract"))))
+        self.ocr.setMinimumWidth(230)
         self.ocr_lang = QtWidgets.QComboBox()
         self.ocr_lang.setEditable(True)
         self.ocr_lang.addItems(list(components.OCR_LANGUAGES) + ["eng+ces", "eng+deu"])
         self.ocr_lang.setCurrentText(cfg.get("ocr_lang", "eng"))
-        g.addWidget(QtWidgets.QLabel("Text z obrázků/skenů:"), 4, 0)
-        g.addWidget(self.ocr, 4, 1)
-        g.addWidget(QtWidgets.QLabel("Jazyk originálu (OCR):"), 4, 2)
-        g.addWidget(self.ocr_lang, 4, 3)
-
-        self.notes = QtWidgets.QPlainTextEdit(cfg.get("notes", ""))
-        self.notes.setPlaceholderText("Pokyny pro překlad – glosář, styl (Claude, Gemini, Ollama, OpenAI…)")
-        self.notes.setMaximumHeight(60)
-        g.addWidget(QtWidgets.QLabel("Pokyny:"), 5, 0)
-        g.addWidget(self.notes, 5, 1, 1, 3)
         self.merge = QtWidgets.QCheckBox("Více obrázků spojit do jednoho dokumentu (DOCX, nebo vícestránkové PDF)")
         self.merge.setChecked(cfg.get("merge_images", True))
-        g.addWidget(self.merge, 6, 1, 1, 3)
-        g.setColumnStretch(1, 1)
-        g.setColumnStretch(3, 1)
-        lay.addWidget(opts)
-
-        run = QtWidgets.QHBoxLayout()
-        self.bar = QtWidgets.QProgressBar()
-        self.bar.setRange(0, 1000)
-        self.start_btn = primary("▶  Spustit")
-        self.stop_btn = QtWidgets.QPushButton("■ Zastavit")
+        self.notes = QtWidgets.QPlainTextEdit(cfg.get("notes", ""))
+        self.notes.setObjectName("DocText")
+        self.notes.setPlaceholderText("Pokyny pro překlad – glosář, styl (Claude, Gemini, Ollama, OpenAI…)")
+        self.notes.setMinimumHeight(110)
+        self.start_btn = big_button("▶️", "Spustit", "Spustí překlad / převod všech souborů v seznamu", "BigPrimary")
+        self.stop_btn = big_button("⏹️", "Zastavit", "Zastaví po dokončení rozpracovaného souboru")
         self.stop_btn.setEnabled(False)
         self.start_btn.clicked.connect(self.start)
         self.stop_btn.clicked.connect(self.cancel.set)
-        run.addWidget(self.bar, 1)
-        run.addWidget(self.start_btn)
-        run.addWidget(self.stop_btn)
-        lay.addLayout(run)
+        b_out = big_button("📂", "Výstupní\nsložka", "Otevře složku s výsledky")
+        b_out.clicked.connect(self.open_output)
+
+        # ---------- pás karet
+        mode_w = QtWidgets.QWidget()
+        ml = QtWidgets.QVBoxLayout(mode_w)
+        ml.setContentsMargins(0, 0, 0, 0)
+        ml.addWidget(self.mode_translate)
+        ml.addWidget(self.mode_convert)
+        sel = RibbonGroup("Výběr")
+        sel.grid.addWidget(self.b_selall, 0, 0)
+        sel.grid.addWidget(self.b_remove, 1, 0)
+        sel.grid.addWidget(self.files_info, 2, 0)
+        add = RibbonGroup("Přidat")
+        add.grid.addWidget(b_add, 0, 0)
+        add.grid.addWidget(b_dir, 0, 1)
+        files_tab = ribbon_row(add, sel)
+        tr_tab = ribbon_row(
+            ribbon_group("Režim", [("", mode_w)]),
+            ribbon_group("Jazyk a formát", [("Cílový jazyk:", self.lang), ("Výstupní formát:", self.out_fmt)]),
+            ribbon_group("Překladač", [("", self.engine), ("", self.status)]))
+        ocr_tab = ribbon_row(
+            ribbon_group("Text z obrázků a skenů (OCR)", [("Rozpoznávání:", self.ocr),
+                                                          ("Jazyk originálu:", self.ocr_lang)]),
+            ribbon_group("Obrázky", [("", self.merge)]))
+        ribbon = QtWidgets.QTabWidget()
+        ribbon.setObjectName("Ribbon")
+        ribbon.setDocumentMode(True)
+        ribbon.addTab(files_tab, "Soubory")
+        ribbon.addTab(tr_tab, "Překlad")
+        ribbon.addTab(ocr_tab, "Obrázky a OCR")
+        ribbon.setCurrentIndex(1)
+        self.ribbon = ribbon
+        actions = RibbonGroup("Spustit")
+        for i, b in enumerate((self.start_btn, self.stop_btn, b_out)):
+            actions.grid.addWidget(b, 0, i)
+        top = QtWidgets.QFrame()
+        top.setObjectName("RibbonBar")
+        tl = QtWidgets.QHBoxLayout(top)
+        tl.setContentsMargins(0, 0, 8, 0)
+        tl.addWidget(ribbon, 1)
+        tl.addWidget(vline())
+        tl.addWidget(actions)
+
+        # ---------- stránka: soubory a pokyny
+        canvas = paper_canvas([
+            doc_heading("Soubory", "Přetáhněte sem soubory, nebo je přidejte na kartě Soubory. Pravé tlačítko "
+                                   "a klávesa Delete fungují i v seznamu."),
+            self.files,
+            doc_heading("Pokyny pro překlad", "Nepovinné – glosář, jména, tykání/vykání, styl. Platí pro Claude, "
+                                              "Gemini, Ollama a OpenAI-kompatibilní služby."),
+            self.notes,
+        ])
+
+        # ---------- průběh a záznam dole
+        bottom = QtWidgets.QWidget()
+        bl = QtWidgets.QVBoxLayout(bottom)
+        bl.setContentsMargins(8, 4, 8, 6)
+        bl.setSpacing(4)
+        self.bar = QtWidgets.QProgressBar()
+        self.bar.setRange(0, 1000)
         self.logv = LogView()
-        lay.addWidget(self.logv, 2)
+        self.logv.setMinimumHeight(60)
+        bl.addWidget(self.bar)
+        bl.addWidget(self.logv)
+        split = QtWidgets.QSplitter(Qt.Vertical)
+        split.addWidget(canvas)
+        split.addWidget(bottom)
+        split.setStretchFactor(0, 5)
+        split.setStretchFactor(1, 2)
+        split.setSizes([560, 170])
+
+        outer = QtWidgets.QVBoxLayout(self)
+        outer.setContentsMargins(0, 0, 0, 0)
+        outer.setSpacing(0)
+        outer.addWidget(top)
+        outer.addWidget(split, 1)
+        self.update_file_buttons()
 
         self.engine.currentIndexChanged.connect(self.refresh_status)
         self.ocr.currentIndexChanged.connect(self.refresh_status)
         self.refresh_status()
+
+    def open_output(self):
+        """Otevře výstupní složku (z Nastavení), jinak složku prvního souboru v seznamu."""
+        d = self.win.cfg.get("out_dir") or (str(Path(self.files.files[0]).parent) if self.files.files else "")
+        if d and Path(d).is_dir():
+            QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(d))
+        else:
+            QtWidgets.QMessageBox.information(self, "Výstupní složka", "Výsledky se ukládají vedle originálů. "
+                                                                     "Nejdřív přidejte soubory, nebo nastavte "
+                                                                     "výstupní složku v Nastavení → Obecné.")
 
     def pick(self):
         exts = " ".join(f"*{e}" for e in sorted(SUPPORTED_EXT))
@@ -1640,10 +1758,9 @@ class MainWindow(QtWidgets.QMainWindow):
         for page in (self.translate, self.book, self.settings):
             wrap = QtWidgets.QWidget()
             wl = QtWidgets.QVBoxLayout(wrap)
-            wl.setContentsMargins(*((0, 0, 0, 0) if page is self.book else (20, 12, 20, 12)))
+            wl.setContentsMargins(*((20, 12, 20, 12) if page is self.settings else (0, 0, 0, 0)))
             wl.addWidget(page)
-            # stránka Překlad se na malé obrazovce posouvá; Nastavení a Kniha mají posuvníky uvnitř
-            self.stack.addWidget(scrolled(wrap) if page is self.translate else wrap)
+            self.stack.addWidget(wrap)  # posuvníky mají stránky uvnitř
         h.addWidget(self.stack, 1)
         self.setCentralWidget(central)
         self.nav.currentRowChanged.connect(self.stack.setCurrentIndex)
