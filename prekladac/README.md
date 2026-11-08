@@ -116,6 +116,10 @@ Když program zavřete, přijdete nanejvýš o právě psanou kapitolu – po sp
   stránky), **styly** (Normální, Nadpis, Podnadpis, Citace), **úpravy** (najít a nahradit v celé knize, zpět/znovu,
   lupa), uložit a exportovat.
 - **Kniha** – název a autor, výchozí písmo knihy, obsah s odkazy, formáty exportu, přidání/mazání/přesun kapitol.
+- **Zobrazení** – **📏 Pravítko** (zapnout/vypnout, program si volbu pamatuje): vodorovné pravítko nad stránkou
+  v centimetrech a svislé vlevo. Na vodorovném jde myší táhnout odsazení odstavce jako ve Wordu – ▽ nahoře
+  první řádek, △ dole levé odsazení, △ vpravo pravé odsazení (po čtvrt centimetru); dvojklik odsazení zruší.
+  Odsazení se zachová i v exportu.
 - Vlevo seznam kapitol, dole počet slov a odstavců kapitoly i celé knihy.
 
 **Automatické ukládání v editoru** (⚙ Nastavení → Obecné): po každé větě (výchozí), po každém slově, po zadaném

@@ -373,3 +373,43 @@ def test_book_scope_is_remembered_and_applied(qapp, tmp_path, monkeypatch):
     assert "Osnova má 20 kapitol" in asked[0]
     win.close()
     win2.close()
+
+
+def test_rulers_toggle_and_indent(qapp, tmp_path):
+    import book_writer as bw
+    import docx
+    from html_docx import add_html
+    from qt_editor import BookEditor
+    proj = {"title": "T", "language": "čeština",
+            "outline": {"title": "T", "chapters": [{"title": "K1", "summary": ""}]},
+            "chapters": [{"title": "K1", "text": "Prvni odstavec.\n\nDruhy odstavec."}]}
+    p = tmp_path / "t.kniha.json"
+    bw.save_project(p, proj)
+    opts, saved = {}, []
+    ed = BookEditor(proj, p, None, text_assist=opts, save_options=lambda: saved.append(1))
+    ed.resize(1200, 800)
+    ed.show()
+    qapp.processEvents()
+    assert ed.hruler.isVisible() and ed.vruler.isVisible()     # výchozí: zapnuto
+    cm = ed.hruler.logicalDpiX() / 2.54
+    m = ed.hruler.markers()
+    ed.hruler.apply("left", m["left"] + 2 * cm + 3)              # posun o 2 cm (přichytí se)
+    f = ed.text.textCursor().blockFormat()
+    assert abs(f.leftMargin() - 2 * cm) < 0.5 and abs(f.textIndent() + 2 * cm) < 0.5  # první řádek zůstal
+    ed.hruler.apply("first", ed.hruler.markers()["left"] + 1 * cm)
+    assert abs(ed.text.textCursor().blockFormat().textIndent() - 1 * cm) < 0.5
+    ed.hruler.apply("right", ed.hruler.markers()["right"] - 1.5 * cm)
+    assert abs(ed.text.textCursor().blockFormat().rightMargin() - 1.5 * cm) < 0.5
+    # odsazení se přenese do DOCX
+    d = docx.Document()
+    add_html(d, ed.text.toHtml())
+    pf = d.paragraphs[0].paragraph_format
+    assert pf.left_indent and pf.first_line_indent and pf.right_indent
+    ed.b_ruler.click()
+    assert not ed.hruler.isVisible() and opts["ruler"] is False and saved
+    ed2 = BookEditor(proj, p, None, text_assist=opts, save_options=lambda: None)
+    ed2.show()
+    assert not ed2.hruler.isVisible() and not ed2.b_ruler.isChecked()
+    for e in (ed, ed2):
+        e.dirty = False
+        e.close()

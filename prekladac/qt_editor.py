@@ -9,6 +9,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 import book_writer as bw
 from html_docx import PAGE_BREAK, plain_to_html
 from qt_common import emoji_icon, label, lines_icon, run_bg, text_icon
+from qt_ruler import HRuler, VRuler
 from qt_textassist import TextAssist
 
 Qt = QtCore.Qt
@@ -172,12 +173,27 @@ class BookEditor(QtWidgets.QMainWindow):
         self.text.setTabStopDistance(40)
         self.text.document().setDocumentMargin(48)
         self.text.setStyleSheet("QTextEdit { border: none; background: white; }")
+        self.view_opts = text_assist if text_assist is not None else {}
+        self._save_view = save_options or (lambda: None)
         page = QtWidgets.QFrame()
         page.setStyleSheet("background: #e8ebf0;")
         pl = QtWidgets.QHBoxLayout(page)
         pl.setContentsMargins(24, 16, 24, 16)
-        self.text.setMaximumWidth(980)
-        pl.addWidget(self.text)
+        sheet = QtWidgets.QWidget()  # stránka s pravítky: [roh][vodorovné] / [svislé][text]
+        sheet.setMaximumWidth(980 + 22)
+        sg = QtWidgets.QGridLayout(sheet)
+        sg.setContentsMargins(0, 0, 0, 0)
+        sg.setSpacing(0)
+        self.hruler = HRuler(self.text)
+        self.vruler = VRuler(self.text)
+        self.ruler_corner = QtWidgets.QWidget()
+        self.ruler_corner.setFixedSize(22, 22)
+        self.ruler_corner.setStyleSheet("background: #f1f5f9;")
+        sg.addWidget(self.ruler_corner, 0, 0)
+        sg.addWidget(self.hruler, 0, 1)
+        sg.addWidget(self.vruler, 1, 0)
+        sg.addWidget(self.text, 1, 1)
+        pl.addWidget(sheet)
 
         central = QtWidgets.QWidget()
         cl = QtWidgets.QVBoxLayout(central)
@@ -237,6 +253,7 @@ class BookEditor(QtWidgets.QMainWindow):
         tabs.setDocumentMode(True)
         tabs.addTab(self._home_tab(), "Domů")
         tabs.addTab(self._book_tab(), "Kniha")
+        tabs.addTab(self._view_tab(), "Zobrazení")
         tabs.setMaximumHeight(150)
         return tabs
 
@@ -347,6 +364,25 @@ class BookEditor(QtWidgets.QMainWindow):
         save.grid.addWidget(self._big(emoji_icon("💾"), "Uložit", self.save), 0, 0, 2, 1)
         save.grid.addWidget(self._big(emoji_icon("📤"), "Exportovat", self.export), 0, 1, 2, 1)
         return self._row(clip, font, para, styles, edit, save)
+
+    def _view_tab(self) -> QtWidgets.QWidget:
+        show = RibbonGroup("Zobrazit")
+        self.b_ruler = self._big(emoji_icon("📏"), "Pravítko", lambda: self.set_ruler(self.b_ruler.isChecked()))
+        self.b_ruler.setCheckable(True)
+        self.b_ruler.setToolTip("Pravítka nad a vlevo od stránky. Na vodorovném jde myší posouvat odsazení "
+                                "odstavce (▽ první řádek, △ levé a pravé odsazení); dvojklik ho zruší.")
+        show.grid.addWidget(self.b_ruler, 0, 0)
+        on = bool(self.view_opts.get("ruler", True))
+        self.b_ruler.setChecked(on)
+        self.set_ruler(on, save=False)
+        return self._row(show)
+
+    def set_ruler(self, on: bool, save: bool = True):
+        for w in (self.hruler, self.vruler, self.ruler_corner):
+            w.setVisible(on)
+        if save:
+            self.view_opts["ruler"] = on
+            self._save_view()
 
     def _book_tab(self) -> QtWidgets.QWidget:
         info = RibbonGroup("Kniha")
