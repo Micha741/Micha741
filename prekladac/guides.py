@@ -102,8 +102,17 @@ Všechny tyto služby mají stejné rozhraní; vyplníte jen Adresu API, API kl�
 3. Sem vyplňte Adresu API, API klíč a přesný název modelu (najdete ho v dokumentaci služby).
    Adresa API musí patřit ke stejné službě jako klíč – klíč OpenRouteru na adrese OpenAI skončí
    chybou 401. Klíče OpenRouteru („sk-or-…“) a Groq („gsk_…“) program pozná a při prázdné adrese
-   použije správnou sám. U OpenRouteru má model tvar „výrobce/model“, např. deepseek/deepseek-chat
-   nebo model končící „:free“ (seznam na openrouter.ai/models).
+   použije správnou sám. U OpenRouteru má model tvar „výrobce/model“, např. deepseek/deepseek-chat.
+
+OpenRouter – jeden klíč na stovky modelů (DeepSeek, Llama, Gemma, Qwen, Mistral…):
+  a) openrouter.ai → přihlásit → Keys → Create Key → klíč „sk-or-v1-…“ zkopírujte sem do API klíče.
+  b) openrouter.ai/models → vlevo filtr „Prompt pricing“ nastavte na FREE → vyberte model
+     (pro češtinu zkuste nejdřív DeepSeek, Gemma nebo Llama) → ikonou vedle názvu zkopírujte jeho ID.
+     Modely zdarma končí na „:free“ – jen ty fungují bez kreditu (mají denní limit požadavků).
+  c) ID vložte do pole Model, Adresu API nechte prázdnou (program ji podle klíče doplní sám).
+  Chyba 402 = vybraný model je placený a na účtu není kredit → použijte „:free“ model nebo dobijte.
+  DeepSeek má i vlastní API (platform.deepseek.com, adresa https://api.deepseek.com/v1) – placené,
+  ale velmi levné; přes OpenRouter ho máte s jedním klíčem i v bezplatné variantě, pokud je nabízena.
 4. Uložit → Otestovat.
 
 Hodí se pro překlad i pro „Napsat knihu“. Kvalita češtiny se liší podle modelu – vyzkoušejte

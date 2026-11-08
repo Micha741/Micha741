@@ -689,8 +689,9 @@ class OpenAICompatEngine(_LLMEngine):
                  + json.dumps(schema, ensure_ascii=False))
         body = {"model": self.model, "response_format": {"type": "json_object"},
                 "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}]}
-        if max_tokens:
-            body["max_tokens"] = max_tokens
+        # Bez limitu si OpenRouter dosadí maximum modelu (např. 16 384 tokenů) a předem na ně chce kredit.
+        # Odpověď (překlad) je zhruba stejně dlouhá jako vstup: 1 token ≈ 2–3 znaky češtiny + rezerva.
+        body["max_tokens"] = max_tokens or min(16384, max(1024, len(user) // 2 + 1024))
         if temperature is not None:
             body["temperature"] = temperature
         headers = {"Authorization": f"Bearer {self.key}"} if self.key else {}
@@ -700,6 +701,11 @@ class OpenAICompatEngine(_LLMEngine):
         except EngineError as e:
             if "HTTP 401" in str(e):
                 raise EngineError(f"{e}\n\n{self.key_hint()}") from e
+            if "HTTP 402" in str(e):
+                raise EngineError(
+                    f"{self.name}: na účtu není dost kreditu pro model „{self.model}“ (HTTP 402).\n\n"
+                    "Model je placený. Buď v Nastavení zadejte model zdarma – u OpenRouteru končí na „:free“ "
+                    "(openrouter.ai/models → filtr Prompt pricing: FREE) –, nebo si dobijte kredit.") from e
             raise
         usage = data.get("usage") or {}
         self._add_usage(usage.get("prompt_tokens"), usage.get("completion_tokens"))

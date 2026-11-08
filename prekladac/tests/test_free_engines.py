@@ -311,3 +311,22 @@ def test_gemini_switches_to_recommended_model(monkeypatch):
     assert e._complete_json("s", [{"text": "t"}], {"type": "object"}) == {"ok": True}
     assert e.model == "gemini-3.8-flash" and len(calls) == 2
     assert GeminiEngine.DEFAULT_MODEL == "gemini-3.8-flash"
+
+
+def test_openai_compat_caps_max_tokens_and_explains_402(monkeypatch):
+    import free_engines
+    from free_engines import EngineError, OpenAICompatEngine
+    sent = []
+
+    def fake(url, data=None, **k):
+        sent.append(data)
+        raise EngineError('OpenRouter: chyba HTTP 402: {"error":{"message":"This request requires more credits"}}')
+    monkeypatch.setattr(free_engines, "http_json", fake)
+    e = OpenAICompatEngine("cs", "", "sk-or-v1-abc", "deepseek/deepseek-chat")
+    try:
+        e._complete_json("s", [{"text": "Ahoj světe."}], {"type": "object"})
+    except EngineError as err:
+        assert ":free" in str(err) and "kredit" in str(err)
+    else:
+        raise AssertionError("expected EngineError")
+    assert 1024 <= sent[0]["max_tokens"] < 4000  # krátký text = malá rezervace, ne 16 384
