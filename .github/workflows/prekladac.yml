@@ -40,7 +40,11 @@ jobs:
         run: |
           "VERSION = `"1.0.$env:GITHUB_RUN_NUMBER`"" | Set-Content -Encoding utf8 version.py
           python tools/make_version_info.py build/version_info.txt
+          # DLL knihovny sentencepiece leží vedle balíčku ve složce sentencepiece.libs (delvewheel) – přibalit ručně
+          $spl = python -c "import sentencepiece, os; print(os.path.normpath(os.path.join(os.path.dirname(sentencepiece.__file__), os.pardir, 'sentencepiece.libs')))"
+          "sentencepiece.libs: $spl"; Get-ChildItem $spl
           python -m PyInstaller --noconfirm --onedir --windowed --name Prekladac `
+            --add-binary "$spl;sentencepiece.libs" `
             --version-file "$PWD\build\version_info.txt" `
             --collect-all ctranslate2 --collect-all sentencepiece --collect-data sacremoses `
             --collect-all pypdfium2 --collect-all pypdfium2_raw --exclude-module tkinter `
