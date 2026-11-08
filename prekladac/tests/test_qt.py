@@ -114,7 +114,7 @@ def _editor_with(tmp_path, autosave):
             "chapters": [{"text": "Začátek.", "summary": ""}]}
     path = tmp_path / "a.kniha.json"
     bw.save_project(path, proj)
-    ed = BookEditor(proj, path, None, autosave=autosave)
+    ed = BookEditor(proj, path, None, autosave=autosave, text_assist={"capitalize": False})
     ed.show()  # psaní z klávesnice jde jen do zobrazeného okna
     ed.text.setFocus()
     ed.text.moveCursor(QtGui.QTextCursor.End)
@@ -203,7 +203,7 @@ def test_text_assist_menu_and_completion(qapp, tiny_speller):
     from qt_textassist import TextAssist
     edit = QtWidgets.QTextEdit()
     edit.setPlainText("Drak knyha přijel. ")
-    opts = {}
+    opts = {"capitalize": False}
     saved = []
     assist = TextAssist(edit, opts, lambda: saved.append(1))
     edit.show()
@@ -273,9 +273,9 @@ def test_sidebar_collapse_and_section_order(qapp):
     assert win2.sidebar_collapsed
     win2.set_sidebar_collapsed(False)
     assert win2.nav.item(0).text() == "Překlad"
-    boxes = [b.title() for b in win.book.findChildren(qt_main.QtWidgets.QGroupBox)]
-    assert boxes.index(next(b for b in boxes if b.startswith("1. Žánr"))) < \
-        boxes.index(next(b for b in boxes if b.startswith("2. Popis")))
+    ribbon = win.book.findChild(qt_main.QtWidgets.QTabWidget, "Ribbon")
+    assert [ribbon.tabText(i) for i in range(ribbon.count())] == ["Žánr a styl", "Rozsah a služba"]
+    assert win.book.cats["genre"].isVisibleTo(ribbon.widget(0)) and win.book.desc.objectName() == "DocText"
     assert not win.windowIcon().isNull()
     win.close()
     win2.close()
@@ -309,3 +309,28 @@ def test_file_list_select_add_remove(qapp, tmp_path):
     page.b_remove.click()
     assert page.files.count() == 0 and page.files.files == [] and page.files_info.text() == ""
     win.close()
+
+
+@pytest.mark.parametrize("before,expected", [
+    ("", True), ("Ahoj světe. ", True), ("Kde je? ", True), ("Pozor! ", True), ("Řekl: „Jdu.“ ", True),
+    ("Ahoj světe.", False), ("Ahoj ", False), ("Viz např. ", False), ("Bylo to 5. ", False),
+    ("1. ", True), ("Tzv. ", False), ("A pak... ", False),
+])
+def test_should_capitalize(before, expected):
+    from qt_textassist import should_capitalize
+    assert should_capitalize(before) is expected
+
+
+def test_auto_capitalize_typing(qapp):
+    from PySide6 import QtTest, QtWidgets
+    from qt_textassist import TextAssist
+    edit = QtWidgets.QPlainTextEdit()
+    opts = {"complete": False}
+    TextAssist(edit, opts, lambda: None)
+    edit.show()
+    QtTest.QTest.keyClicks(edit, "drak letel. pak spal atd. tady. konec")
+    assert edit.toPlainText() == "Drak letel. Pak spal atd. tady. Konec"
+    edit.clear()
+    opts["capitalize"] = False
+    QtTest.QTest.keyClicks(edit, "drak. pes")
+    assert edit.toPlainText() == "drak. pes"

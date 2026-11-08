@@ -133,6 +133,14 @@ jako záloha `Název.kniha.json.bak`. Dokud je kniha otevřená v editoru, AI do
 - Obojí jde vypnout v ⚙ Nastavení → Obecné nebo v menu pravého tlačítka. Používá se český slovník Hunspell
   z LibreOffice (součást instalátoru); kontrola pravopisu se zapíná jen u knih v češtině.
 
+- **Velké písmeno na začátku věty** – po tečce, otazníku či vykřičníku a na začátku odstavce se první písmeno
+  napíše velké samo (jako ve Wordu); po zkratkách („např.“, „tzv.“, „atd.“) a pořadových číslech („5. května“)
+  ne. Vypnout jde v ⚙ Nastavení → Obecné.
+
+Stránka **Napsat knihu** vypadá jako Word: nahoře pás karet *Žánr a styl* a *Rozsah a služba*, vpravo velká
+tlačítka (Navrhnout osnovu, Napsat knihu, Zastavit, Upravit, Otevřít rozepsanou), pod nimi stav služby a odhad
+rozsahu a uprostřed bílá stránka s popisem knihy a osnovou. Průběh psaní je dole (oddělovač jde posunout).
+
 **Postranní panel** jde tlačítkem ☰ vedle názvu programu sbalit na úzký proužek s ikonami (a zase rozbalit).
 
 Formátování z editoru (tučné, barvy, zarovnání, odrážky, nadpisy…) se zachová v DOCX, EPUB, PDF i AZW3.
