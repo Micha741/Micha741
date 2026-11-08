@@ -186,3 +186,96 @@ def test_update_dialog_and_setting(qapp, monkeypatch):
     win.settings.save()
     assert win.cfg["check_updates"] is False
     win.close()
+
+
+@pytest.fixture
+def tiny_speller(tmp_path, monkeypatch):
+    import spell
+    from test_spell import make_dict
+    base = make_dict(tmp_path / "dict")
+    sp = spell.Speller(base)
+    monkeypatch.setitem(spell._state, "speller", sp)
+    return sp
+
+
+def test_text_assist_menu_and_completion(qapp, tiny_speller):
+    from PySide6 import QtCore, QtGui, QtTest, QtWidgets
+    from qt_textassist import TextAssist
+    edit = QtWidgets.QTextEdit()
+    edit.setPlainText("Drak knyha přijel. ")
+    opts = {}
+    saved = []
+    assist = TextAssist(edit, opts, lambda: saved.append(1))
+    edit.show()
+    assist.highlighter.rehighlight()
+    # pravé tlačítko na chybném slově nabídne opravu
+    cur = edit.document().find("knyha")
+    menu = assist.build_menu(edit.cursorRect(cur).center())
+    texts = [a.text() for a in menu.actions()]
+    assert "kniha" in texts and "➕ Přidat do slovníku" in texts and "↶ Zpět" in texts
+    next(a for a in menu.actions() if a.text() == "kniha").trigger()
+    assert "Drak kniha přijel." in edit.toPlainText()
+    # T9: po 3 písmenech nabídka, Tab vloží první návrh
+    edit.activateWindow()
+    edit.setFocus()
+    qapp.processEvents()
+    c = edit.textCursor()
+    c.movePosition(QtGui.QTextCursor.End)
+    edit.setTextCursor(c)
+    QtTest.QTest.keyClicks(edit, "knihov")
+    assist.update_completion()
+    popup = assist.completer.popup()
+    assert popup.isVisible() and assist.model.stringList()[0] == "knihovna"
+    QtTest.QTest.keyClick(popup, QtCore.Qt.Key_Tab)
+    assert edit.toPlainText().endswith("knihovna")
+    # Enter bez vybraného návrhu = nový řádek, ne doplnění
+    QtTest.QTest.keyClicks(edit, " knih")
+    assist.update_completion()
+    assert popup.isVisible()
+    QtTest.QTest.keyClick(popup, QtCore.Qt.Key_Return)
+    assert edit.toPlainText().endswith("knih\n") or edit.toPlainText().endswith("knih ")
+    # vypnutí v menu se uloží
+    assist.set_option("complete", False)
+    assert opts["complete"] is False and saved
+
+
+def test_editor_spellcheck_does_not_mark_dirty(qapp, tiny_speller, tmp_path):
+    import book_writer as bw
+    from qt_editor import BookEditor
+    proj = {"title": "T", "language": "čeština",
+            "outline": {"title": "T", "chapters": [{"title": "K1", "summary": ""}]},
+            "chapters": [{"title": "K1", "text": "Drak knyha přijel."}]}
+    p = tmp_path / "t.kniha.json"
+    bw.save_project(p, proj)
+    ed = BookEditor(proj, p, None, text_assist={}, save_options=lambda: None)
+    ed.assist.on_dictionary_ready()
+    ed.assist.highlighter.rehighlight()
+    qapp.processEvents()
+    assert not ed.dirty
+    menu = ed.assist.build_menu(ed.text.cursorRect(ed.text.document().find("knyha")).center())
+    assert any("Formát písma" in a.text() for a in menu.actions())
+    # kniha v angličtině: bez kontroly pravopisu
+    proj2 = dict(proj, language="angličtina")
+    ed2 = BookEditor(proj2, p, None, text_assist={}, save_options=lambda: None)
+    assert not ed2.assist.spell_on()
+    ed.dirty = ed2.dirty = False
+    ed.close()
+    ed2.close()
+
+
+def test_sidebar_collapse_and_section_order(qapp):
+    import qt_main
+    win = qt_main.MainWindow()
+    win.set_sidebar_collapsed(True)
+    assert win.side.width() == 72 and win.nav.item(0).text() == "" and win.nav.item(0).toolTip() == "Překlad"
+    assert win.cfg["sidebar_collapsed"] is True
+    win2 = qt_main.MainWindow()  # stav se pamatuje
+    assert win2.sidebar_collapsed
+    win2.set_sidebar_collapsed(False)
+    assert win2.nav.item(0).text() == "Překlad"
+    boxes = [b.title() for b in win.book.findChildren(qt_main.QtWidgets.QGroupBox)]
+    assert boxes.index(next(b for b in boxes if b.startswith("1. Žánr"))) < \
+        boxes.index(next(b for b in boxes if b.startswith("2. Popis")))
+    assert not win.windowIcon().isNull()
+    win.close()
+    win2.close()

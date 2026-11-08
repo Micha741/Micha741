@@ -11,7 +11,10 @@ import sys
 from pathlib import Path
 from typing import Callable
 
-TESSDATA_URL = "https://github.com/tesseract-ocr/tessdata/raw/main/{lang}.traineddata"
+# přímo z raw.githubusercontent.com (přesměrování přes github.com/…/raw občas vrací 504); github.com jako záloha
+TESSDATA_URLS = ("https://raw.githubusercontent.com/tesseract-ocr/tessdata/main/{lang}.traineddata",
+                 "https://github.com/tesseract-ocr/tessdata/raw/main/{lang}.traineddata")
+TESSDATA_URL = TESSDATA_URLS[0]
 CALIBRE_PLUGIN_INDEX = "https://code.calibre-ebook.com/plugins/plugins.json.bz2"
 CALIBRE_PLUGIN_SERVER = "https://code.calibre-ebook.com/plugins/"
 KFX_PLUGIN_NAME = "KFX Input"
@@ -229,7 +232,15 @@ def download_tessdata(lang: str, log: Callable[[str], None]) -> Path:
         raise EngineError(f"Neplatný kód jazyka: {lang}")
     dest = tessdata_dir() / f"{lang}.traineddata"
     log(f"Stahuji jazyk OCR „{lang}“…")
-    data = http_request(TESSDATA_URL.format(lang=lang), timeout=300, service="Stažení jazyka OCR", retries=2)
+    data, err = b"", None
+    for url in TESSDATA_URLS:
+        try:
+            data = http_request(url.format(lang=lang), timeout=300, service="Stažení jazyka OCR", retries=2)
+            break
+        except EngineError as e:
+            err = e
+    if not data and err:
+        raise err
     if len(data) < 100_000:
         raise EngineError(f"Jazyk „{lang}“ se nepodařilo stáhnout (soubor je příliš malý).")
     tmp = dest.with_suffix(".part")

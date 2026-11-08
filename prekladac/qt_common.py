@@ -2,12 +2,30 @@
 
 from __future__ import annotations
 
+import sys
 import threading
 import traceback
+from pathlib import Path
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
 ACCENT = "#2563eb"
+
+
+def asset(name: str) -> str:
+    """Cesta k souboru ve složce assets (ve spuštěném .exe je přibalená PyInstallerem)."""
+    base = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent))
+    return str(base / "assets" / name)
+
+
+def app_icon() -> QtGui.QIcon:
+    """Ikona programu: v záhlaví okna (16–32 px) zjednodušená, jinde podrobná."""
+    icon = QtGui.QIcon()
+    for n in (16, 24, 32):
+        icon.addFile(asset(f"icon-{n}.png"), QtCore.QSize(n, n))
+    icon.addFile(asset("icon.png"), QtCore.QSize(256, 256))
+    return icon
+
 SIDEBAR = "#1e293b"
 
 STYLESHEET = f"""
@@ -18,7 +36,13 @@ QMainWindow, QDialog {{ background: #f4f6fa; }}
 #Sidebar::item:selected {{ background: {ACCENT}; color: white; }}
 #Sidebar::item:hover:!selected {{ background: #334155; }}
 #AppTitle {{ color: white; font-size: 13pt; font-weight: 600; padding: 16px 16px 4px 16px; background: {SIDEBAR}; }}
-#AppVersion {{ color: #94a3b8; padding: 0 16px 12px 16px; background: {SIDEBAR}; }}
+#AppVersion {{ color: #94a3b8; padding: 0; background: {SIDEBAR}; font-size: 8.5pt; }}
+#SideHeader {{ background: {SIDEBAR}; }}
+#SideHeader QLabel {{ background: transparent; }}
+#AppName {{ color: white; font-size: 13pt; font-weight: 600; }}
+QToolButton#SideToggle {{ color: #cbd5e1; background: transparent; border: none; border-radius: 6px;
+    font-size: 15pt; padding: 2px 8px; }}
+QToolButton#SideToggle:hover {{ background: #334155; color: white; }}
 #PageTitle {{ font-size: 16pt; font-weight: 600; color: #0f172a; padding: 4px 0 8px 0; }}
 QGroupBox {{ background: white; border: 1px solid #e2e8f0; border-radius: 10px; margin-top: 14px; padding: 12px 10px 10px 10px; }}
 QGroupBox::title {{ subcontrol-origin: margin; left: 12px; padding: 0 4px; color: #334155; font-weight: 600; }}

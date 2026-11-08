@@ -9,6 +9,15 @@ calibre (složka Calibre2)
   Licence: GNU General Public License v3 (plné znění: Calibre2\COPYRIGHT a https://www.gnu.org/licenses/gpl-3.0.html)
   Zdrojový kód: https://github.com/kovidgoyal/calibre (verze odpovídá souboru Calibre2\VERSION.txt, pokud je přítomen)
 
+Český slovník Hunspell (složka dict)
+  Autoři: Petr Kolář a přispěvatelé, aktualizace Miroslav Pošta; distribuováno s LibreOffice
+  Licence: GNU General Public License, https://www.gnu.org/licenses/gpl.html
+  Zdroj: https://github.com/LibreOffice/dictionaries/tree/master/cs_CZ
+
+spylls (knihovna pro kontrolu pravopisu, součást Prekladac.exe)
+  Autor: Victor Shepelev, https://github.com/zverok/spylls
+  Licence: MPL 2.0 (soubor LICENSE v balíčku spylls), https://www.mozilla.org/MPL/2.0/
+
 Tesseract OCR (složka Tesseract-OCR)
   Autor: Tesseract OCR contributors, sestavení pro Windows UB Mannheim
   Licence: Apache License 2.0, https://www.apache.org/licenses/LICENSE-2.0

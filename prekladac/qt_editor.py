@@ -9,6 +9,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 import book_writer as bw
 from html_docx import PAGE_BREAK, plain_to_html
 from qt_common import emoji_icon, label, lines_icon, run_bg, text_icon
+from qt_textassist import TextAssist
 
 Qt = QtCore.Qt
 AUTOSAVE_MODES = {  # klíč: popis v Nastavení
@@ -147,7 +148,7 @@ class FindDialog(QtWidgets.QDialog):
 
 class BookEditor(QtWidgets.QMainWindow):
     def __init__(self, project: dict, path: Path, ebook_convert: str | None, parent=None,
-                 autosave: dict | None = None):
+                 autosave: dict | None = None, text_assist: dict | None = None, save_options=None):
         super().__init__(parent)
         self.autosave = {**AUTOSAVE_DEFAULT, **(autosave or {})}
         self._chars_since_save = 0
@@ -189,8 +190,11 @@ class BookEditor(QtWidgets.QMainWindow):
         self._build_status()
         self._shortcuts()
 
-        self.text.document().contentsChanged.connect(self._changed)
+        self.text.document().contentsChanged.connect(self._doc_changed)
         self.text.installEventFilter(self)
+        lang = str(project.get("language") or "čeština").lower()
+        self.assist = TextAssist(self.text, text_assist, save_options, extra_menu=self._extra_menu,
+                                 spelling=lang.startswith(("češ", "ces", "cz", "cs")))
         self._auto_timer = QtCore.QTimer(self)  # „každých N sekund“
         self._auto_timer.timeout.connect(self._autosave_now)
         if self.autosave["mode"] == "time":
@@ -455,6 +459,7 @@ class BookEditor(QtWidgets.QMainWindow):
         base = QtGui.QFont(self.fmt["font"], int(self.fmt["size"]) + 1)
         self.text.document().setDefaultFont(base)
         self.text.document().clearUndoRedoStacks()
+        self.text.document().setModified(False)
         self.ch_title.setText(self.outline["chapters"][i]["title"])
         self.loading = False
         self.chapters.blockSignals(True)
@@ -655,6 +660,31 @@ class BookEditor(QtWidgets.QMainWindow):
         c.mergeCharFormat(f)
         c.endEditBlock()
 
+    def _extra_menu(self, menu: QtWidgets.QMenu, word_cursor: QtGui.QTextCursor):
+        """Položky editoru knihy v menu pravého tlačítka."""
+        fmt = menu.addMenu("🅰 Formát písma")
+        for b, text, key in ((self.b_bold, "Tučné", "Ctrl+B"), (self.b_italic, "Kurzíva", "Ctrl+I"),
+                             (self.b_under, "Podtržené", "Ctrl+U"), (self.b_strike, "Přeškrtnuté", None)):
+            a = fmt.addAction(text, b.click)
+            a.setCheckable(True)
+            a.setChecked(b.isChecked())
+            if key:
+                a.setShortcut(QtGui.QKeySequence(key))
+        fmt.addSeparator()
+        fmt.addAction("Zvětšit písmo", lambda: self._grow(1))
+        fmt.addAction("Zmenšit písmo", lambda: self._grow(-1))
+        fmt.addSeparator()
+        fmt.addAction("Vymazat formátování", self._clear_format)
+        para = menu.addMenu("¶ Odstavec")
+        for text, al in (("Zarovnat vlevo", Qt.AlignLeft), ("Na střed", Qt.AlignHCenter),
+                         ("Vpravo", Qt.AlignRight), ("Do bloku", Qt.AlignJustify)):
+            para.addAction(text, lambda al=al: self.text.setAlignment(al))
+        menu.addAction("Zalomit řádek", lambda: self.text.textCursor().insertText("\u2028"),
+                       QtGui.QKeySequence("Shift+Return"))
+        menu.addAction("⤓ Zalomit stránku", self._page_break, QtGui.QKeySequence("Ctrl+Return"))
+        menu.addSeparator()
+        menu.addAction("🔍 Najít a nahradit…", self.open_find, QtGui.QKeySequence("Ctrl+F"))
+
     def _page_break(self):
         c = self.text.textCursor()
         if c.hasSelection():  # označený text nemazat – zalomení vložit za něj
@@ -706,6 +736,11 @@ class BookEditor(QtWidgets.QMainWindow):
                         ("Ctrl+B", lambda: self.b_bold.click()), ("Ctrl+I", lambda: self.b_italic.click()),
                         ("Ctrl+U", lambda: self.b_under.click()), ("Ctrl+Return", self._page_break)):
             QtGui.QShortcut(QtGui.QKeySequence(seq), self, activated=fn)
+
+    def _doc_changed(self):
+        # kontrola pravopisu jen překresluje podtržení – to není úprava textu
+        if self.text.document().isModified():
+            self._changed()
 
     def _changed(self, *_):
         if self.loading:
@@ -783,6 +818,7 @@ class BookEditor(QtWidgets.QMainWindow):
                         toc=self.toc.isChecked())
         bw.save_project(self.path, self.project)
         self.dirty = False
+        self.text.document().setModified(False)
         self.update_stats()
 
     def export(self):

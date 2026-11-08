@@ -2,6 +2,7 @@
 ;   build\app\         – Prekladac.exe a jeho knihovny (PyInstaller --onedir)
 ;   build\Calibre2\    – Calibre (ebook-convert.exe, calibre-customize.exe…)
 ;   build\Tesseract-OCR\ – Tesseract a jazyky OCR
+;   build\dict\        – český slovník Hunspell (kontrola pravopisu, návrhy slov)
 
 #ifndef AppVersion
   #define AppVersion "1.0"
@@ -28,6 +29,7 @@ ArchitecturesInstallIn64BitMode=x64compatible
 PrivilegesRequired=admin
 PrivilegesRequiredOverridesAllowed=commandline dialog
 UninstallDisplayIcon={app}\Prekladac.exe
+SetupIconFile=assets\icon.ico
 UninstallDisplayName=Překladač knih a dokumentů
 LicenseFile=THIRD_PARTY.txt
 
@@ -41,6 +43,7 @@ Name: "desktopicon"; Description: "Vytvořit zástupce na ploše"; GroupDescript
 Source: "build\app\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "build\Calibre2\*"; DestDir: "{app}\Calibre2"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "build\Tesseract-OCR\*"; DestDir: "{app}\Tesseract-OCR"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "build\dict\*"; DestDir: "{app}\dict"; Flags: ignoreversion
 Source: "THIRD_PARTY.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README.md"; DestDir: "{app}"; Flags: ignoreversion
 

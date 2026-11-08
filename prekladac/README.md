@@ -92,8 +92,8 @@ Tlačítko **✍ Napsat knihu** v hlavním okně napíše celou knihu podle vaš
 (nejlepší kvalita), **Google Gemini** (bezplatná úroveň s limity), **OpenAI-kompatibilní služba** (např. levný
 DeepSeek nebo bezplatné modely na OpenRouteru) nebo **Ollama** (zdarma ve vašem počítači, pomalé):
 
-1. Napište **popis** (o čem kniha je, postavy, prostředí, pro koho je, jak má skončit – stačí kolem 20 vět),
-   případně žánr a styl, jazyk, počet kapitol a délku kapitoly. Program ukáže orientační cenu.
+1. Vyberte **žánr a styl** a napište **popis** (o čem kniha je, postavy, prostředí, pro koho je, jak má
+   skončit – stačí kolem 20 vět), případně jazyk, počet kapitol a délku kapitoly. Program ukáže orientační cenu.
 2. **1. Navrhnout osnovu** – Claude navrhne název, shrnutí, postavy a obsah kapitol. Osnovu můžete upravit
    (kapitoly ve tvaru `1. Název — obsah`), přidat nebo ubrat kapitoly.
 3. **2. Napsat knihu** – Claude píše kapitolu po kapitole; každá dostane osnovu, shrnutí předchozích kapitol
@@ -118,6 +118,19 @@ Když program zavřete, přijdete nanejvýš o právě psanou kapitolu – po sp
 **Automatické ukládání v editoru** (⚙ Nastavení → Obecné): po každé větě (výchozí), po každém slově, po zadaném
 počtu znaků, každých N sekund, nebo vypnuto. Na disk se zapisuje nejvýš jednou za 2 s a předchozí verze zůstává
 jako záloha `Název.kniha.json.bak`. Dokud je kniha otevřená v editoru, AI do ní nepíše (nepřepíšou se navzájem).
+
+**Psaní textu** (editor knihy, popis i osnova):
+- **Pravé tlačítko myši** – zpět/znovu, vyjmout, kopírovat, vložit (i bez formátu), vybrat vše; v editoru navíc
+  formát písma, zarovnání, zalomení řádku a stránky, najít a nahradit.
+- **Kontrola pravopisu** – chybná slova jsou červeně podtržená; pravým tlačítkem na ně nabídne opravy,
+  „Přidat do slovníku“ si slovo zapamatuje (jména postav) a „Ignorovat všude“ ho přeskočí.
+- **Návrhy slov při psaní (T9)** – od třetího písmene nabídne slova z rozepsané knihy a ze slovníku.
+  **Tab** vloží první návrh, šipkami vyberete jiný (Enter ho potvrdí), Esc nabídku zavře. Enter bez výběru
+  dělá normálně nový řádek.
+- Obojí jde vypnout v ⚙ Nastavení → Obecné nebo v menu pravého tlačítka. Používá se český slovník Hunspell
+  z LibreOffice (součást instalátoru); kontrola pravopisu se zapíná jen u knih v češtině.
+
+**Postranní panel** jde tlačítkem ☰ vedle názvu programu sbalit na úzký proužek s ikonami (a zase rozbalit).
 
 Formátování z editoru (tučné, barvy, zarovnání, odrážky, nadpisy…) se zachová v DOCX, EPUB, PDF i AZW3.
 Export vloží na začátek **obsah s odkazy** na kapitoly.

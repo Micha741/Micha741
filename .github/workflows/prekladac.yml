@@ -41,6 +41,7 @@ jobs:
           "VERSION = `"1.0.$env:GITHUB_RUN_NUMBER`"" | Set-Content -Encoding utf8 version.py
           python -m PyInstaller --noconfirm --onedir --windowed --name Prekladac `
             --collect-all pypdfium2 --collect-all pypdfium2_raw --exclude-module tkinter `
+            --icon "$PWD\assets\icon.ico" --add-data "$PWD\assets;assets" `
             --distpath build\dist --workpath build\work --specpath build app.py
           Move-Item build\dist\Prekladac build\app
 
@@ -57,6 +58,17 @@ jobs:
             if (-not $hit) { throw "$name nenalezen" }
             return $hit.FullName
           }
+          # stahování s opakováním – GitHub občas vrátí 504 nebo spojení spadne
+          function Get-File($url, $out) {
+            for ($i = 1; $i -le 5; $i++) {
+              try { Invoke-WebRequest $url -OutFile $out; return }
+              catch {
+                if ($i -eq 5) { throw }
+                "Pokus $i selhal ($($_.Exception.Message)), zkusím znovu…"
+                Start-Sleep -Seconds (5 * $i)
+              }
+            }
+          }
           $cal = Find-Exe 'ebook-convert.exe' "$env:ProgramFiles\Calibre2\ebook-convert.exe"
           $tes = Find-Exe 'tesseract.exe' "$env:ProgramFiles\Tesseract-OCR\tesseract.exe"
           Copy-Item (Split-Path $cal) build\Calibre2 -Recurse
@@ -65,8 +77,13 @@ jobs:
           foreach ($l in 'eng','ces','slk','deu','pol','fra','spa','ita','rus','ukr','hun') {
             $out = "build\Tesseract-OCR\tessdata\$l.traineddata"
             if (-not (Test-Path $out)) {
-              Invoke-WebRequest "https://github.com/tesseract-ocr/tessdata_fast/raw/main/$l.traineddata" -OutFile $out
+              Get-File "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/main/$l.traineddata" $out
             }
+          }
+          # český slovník pro kontrolu pravopisu a návrhy slov (LibreOffice, GPL)
+          New-Item -ItemType Directory -Force build\dict | Out-Null
+          foreach ($e in 'aff','dic') {
+            Get-File "https://raw.githubusercontent.com/LibreOffice/dictionaries/master/cs_CZ/cs_CZ.$e" "build\dict\cs_CZ.$e"
           }
           "Calibre: $cal"; "Tesseract: $tes"
           & build\Tesseract-OCR\tesseract.exe --list-langs
