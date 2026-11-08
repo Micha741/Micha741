@@ -452,3 +452,41 @@ def test_print_book_to_pdf(qapp, tmp_path):
     assert len(PdfReader(str(one)).pages) == first_only - 1   # bez titulní strany
     ed2.dirty = False
     ed2.close()
+
+
+def test_outline_change_keeps_written_chapters(qapp, tmp_path, monkeypatch):
+    import book_writer as bw
+    import qt_main
+    from PySide6 import QtGui, QtWidgets
+    win = qt_main.MainWindow()
+    b = win.book
+    b.bdir.setText(str(tmp_path))
+    win.cfg.setdefault("engines", {})["gemini"] = {"api_key": "test"}
+    b.service.setCurrentIndex(b.service.findData("gemini"))
+    outline = {"title": "T", "synopsis": "", "characters": [],
+               "chapters": [{"title": f"K{i}", "summary": f"obsah {i}"} for i in range(1, 4)]}
+    b.nchap.setValue(3)
+    b.new_project(outline)
+    b.project["chapters"].append({"text": "napsano", "summary": "s"})   # 1. kapitola už je napsaná
+    text = bw.outline_to_text(outline)
+    b.outline.setPlainText(text)
+    # délka 3. kapitoly přes menu osnovy
+    block = b.outline.document().findBlock(text.index("3. K3"))
+    b.set_chapter_words(block, 5000)
+    assert "3. K3 [5000 slov] — obsah 3" in b.outline.toPlainText()
+    asked = []
+    monkeypatch.setattr(QtWidgets.QMessageBox, "question",
+                        lambda *a, **k: asked.append(a[2]) or QtWidgets.QMessageBox.No)
+    path = b.path
+    b.do_write()                       # změna jen nenapsané kapitoly → pokračuje, nic se nemaže
+    assert b.path == path and len(b.project["chapters"]) == 1
+    assert b.project["outline"]["chapters"][2]["words"] == 5000
+    assert "Napsat 2 kapitol" in asked[-1]
+    qapp.processEvents()
+    assert "Osnova upravena" in b.logv.toPlainText()
+    # menu pravého tlačítka nabízí délku kapitoly
+    menu = QtWidgets.QMenu()
+    c = QtGui.QTextCursor(b.outline.document().findBlock(b.outline.toPlainText().index("2. K2")))
+    b._outline_menu(menu, c)
+    assert any("Délka kapitoly „K2“" in a.text() for a in menu.actions())
+    win.close()

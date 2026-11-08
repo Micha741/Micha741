@@ -210,3 +210,26 @@ def test_chapter_length_is_enforced(tmp_path):
     be2 = LengthBackend()
     bw.BookWriter(be2, "čeština", log=lambda *_: None).write(proj2, tmp_path / "k2.kniha.json")
     assert "přibližně 3000 slov" in be2.prompts[0]
+
+
+def test_per_chapter_words_roundtrip_and_prompt(tmp_path):
+    o = dict(OUTLINE, chapters=[dict(OUTLINE["chapters"][0]), dict(OUTLINE["chapters"][1], words=4000),
+                                dict(OUTLINE["chapters"][2])])
+    text = bw.outline_to_text(o)
+    assert "2. Mapa [4000 slov] — Na půdě" in text
+    back = bw.text_to_outline(text)
+    assert back["chapters"][1] == {"title": "Mapa", "summary": "Na půdě najde mapu.", "words": 4000}
+    assert "words" not in back["chapters"][0]
+    # i ručně psané varianty
+    t2 = text.replace("[4000 slov]", "(1 500 slov)")
+    assert bw.text_to_outline(t2)["chapters"][1]["words"] == 1500
+    assert bw.set_line_words("2. Mapa — Na půdě.", 3000) == "2. Mapa [3000 slov] — Na půdě."
+    assert bw.set_line_words("2. Mapa [3000 slov] — Na půdě.", None) == "2. Mapa — Na půdě."
+    assert bw.set_line_words("SHRNUTÍ:", 100) is None
+    proj = {"description": "x", "words": 1000, "outline": back, "chapters": []}
+    assert [bw.chapter_words(proj, i) for i in range(3)] == [1000, 4000, 1000]
+    assert bw.total_words(proj) == 6000
+    be = LengthBackend()
+    bw.BookWriter(be, "čeština", log=lambda *_: None).write(proj, tmp_path / "k.kniha.json")
+    first = [p for p in be.prompts if "POZOR" not in p]
+    assert "přibližně 1000 slov" in first[0] and "přibližně 4000 slov" in first[1]

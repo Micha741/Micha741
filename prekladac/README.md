@@ -108,6 +108,13 @@ DeepSeek nebo bezplatné modely na OpenRouteru) nebo **Ollama** (zdarma ve vaše
 3. **2. Napsat knihu** – Claude píše kapitolu po kapitole; každá dostane osnovu, shrnutí předchozích kapitol
    a konec předchozí kapitoly, aby děj i postavy navazovaly. Hotová kniha se uloží jako EPUB, DOCX, PDF nebo AZW3.
 
+**Délka kapitol:** „Slov na kapitolu“ je výchozí délka. Jednotlivá kapitola může být delší či kratší – v osnově
+klikněte pravým tlačítkem na její řádek → **📏 Délka kapitoly…** (v osnově se objeví např.
+`3. Bitva u řeky [4000 slov] — …`, jde to napsat i ručně). **Během psaní** můžete kdykoli kliknout na
+*Zastavit*, upravit délky nebo dosud nenapsané kapitoly (i přidat nové na konec) a znovu *Napsat knihu* –
+napsané kapitoly zůstanou a pokračuje se další. Pokud změníte už napsanou kapitolu, program se zeptá, zda ji
+ponechat, nebo začít znovu (jako nový soubor, původní zůstane).
+
 Žánr a styl se vybírá ze seznamů (přes 40 žánrů včetně erotiky, pro koho, vypravěč, tón, tempo, prostředí,
 jazyk) a lze dopsat vlastní přání. Okno jde maximalizovat nebo přepnout na celou obrazovku.
 

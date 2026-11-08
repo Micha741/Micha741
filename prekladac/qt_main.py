@@ -550,7 +550,7 @@ class BookPage(QtWidgets.QWidget):
         self.outline.setPlaceholderText("Sem se vloží osnova po kliknutí na „1. Navrhnout osnovu“. "
                                         "Můžete ji upravit, přidat nebo ubrat kapitoly.")
         self.outline.setMinimumHeight(320)
-        self.outline_assist = TextAssist(self.outline, ta_opts, win.save_cfg)
+        self.outline_assist = TextAssist(self.outline, ta_opts, win.save_cfg, extra_menu=self._outline_menu)
         for ed in (self.desc, self.outline):
             ed.setFont(QtGui.QFont("Georgia", 12))
 
@@ -565,7 +565,8 @@ class BookPage(QtWidgets.QWidget):
         pl.addWidget(self.desc)
         pl.addSpacing(10)
         pl.addWidget(heading("Osnova", "Kapitoly ve tvaru „1. Název — obsah“. Vznikne tlačítkem "
-                                       "„1. Navrhnout osnovu“ a můžete ji upravit."))
+                                       "„1. Navrhnout osnovu“ a můžete ji upravit. Délku jedné kapitoly "
+                                       "změníte pravým tlačítkem na jejím řádku (v osnově pak „[4000 slov]“)."))
         pl.addWidget(self.outline)
         canvas = QtWidgets.QWidget()
         canvas.setObjectName("Canvas")
@@ -648,6 +649,35 @@ class BookPage(QtWidgets.QWidget):
             eng = core.make_engine(svc, language, cfg["engines"].get(svc, {}), "")
             backend = bw.EngineBackend(eng, self.cancel)
         return bw.BookWriter(backend, language, self.logv.log)
+
+    def _outline_menu(self, menu: QtWidgets.QMenu, cursor: QtGui.QTextCursor):
+        """Pravé tlačítko na řádku kapitoly v osnově: délka jen této kapitoly."""
+        block = cursor.block()
+        line = block.text()
+        if not bw.CHAPTER_LINE_RE.match(line) or "KAPITOLY:" not in self.outline.toPlainText()[:cursor.position()]:
+            return
+        title, words = bw.split_words(bw.CHAPTER_LINE_RE.match(line).group(2))
+        menu.addAction(f"📏 Délka kapitoly „{title[:30]}“…", lambda: self.ask_chapter_words(block, words))
+        if words:
+            menu.addAction("Použít výchozí délku (Slov na kapitolu)",
+                           lambda: self.set_chapter_words(block, None))
+
+    def ask_chapter_words(self, block: QtGui.QTextBlock, current: int | None):
+        n, ok = QtWidgets.QInputDialog.getInt(
+            self, "Délka kapitoly", "Kolik slov má mít tato kapitola?\n"
+            "(ostatní kapitoly mají výchozí délku z „Slov na kapitolu“)",
+            current or self.nwords.value(), 100, 20000, 100)
+        if ok:
+            self.set_chapter_words(block, n)
+
+    def set_chapter_words(self, block: QtGui.QTextBlock, words: int | None):
+        new = bw.set_line_words(block.text(), words)
+        if new is None:
+            return
+        c = QtGui.QTextCursor(block)
+        c.movePosition(QtGui.QTextCursor.StartOfBlock)
+        c.movePosition(QtGui.QTextCursor.EndOfBlock, QtGui.QTextCursor.KeepAnchor)
+        c.insertText(new)
 
     def remember_scope(self, *_):
         """Počet kapitol a délka kapitoly zůstanou nastavené i po zavření programu."""
@@ -749,20 +779,50 @@ class BookPage(QtWidgets.QWidget):
                                       "jinak by se psaní AI a vaše úpravy navzájem přepsaly.")
             return
         proj = self.project
-        if proj is None or proj["outline"] != outline:
-            if proj is not None and proj["chapters"]:
-                if QtWidgets.QMessageBox.question(self, "Napsat knihu", "Osnova se změnila – začít psát od první "
-                                                                        "kapitoly?") != QtWidgets.QMessageBox.Yes:
-                    return
-                self.new_project(outline)
-            elif proj is not None:
+        if proj is None:
+            self.new_project(outline)
+        elif proj["outline"] != outline:
+            done = len(proj["chapters"])
+            if not done:
                 proj.update(outline=outline, words=self.nwords.value(), style=self.full_style(),
                             style_parts=self.parts(), style_extra=self.extra.text().strip(),
                             description=self.desc.toPlainText().strip(),
                             language=self.blang.currentText().strip() or "čeština")
                 bw.save_project(self.path, proj)
             else:
-                self.new_project(outline)
+                old = proj["outline"]["chapters"]
+
+                def key(c):
+                    return c["title"].strip(), c.get("summary", "").strip()
+
+                same = done <= len(outline["chapters"]) and all(
+                    key(old[i]) == key(outline["chapters"][i]) for i in range(done))
+                if not same:  # změnila se už napsaná kapitola
+                    box = QtWidgets.QMessageBox(self)
+                    box.setWindowTitle("Napsat knihu")
+                    box.setIcon(QtWidgets.QMessageBox.Icon.Question)
+                    box.setText(f"V osnově jste změnil(a) i kapitoly, které už jsou napsané ({done}).")
+                    box.setInformativeText("Napsané kapitoly můžete ponechat a pokračovat dál, nebo začít psát "
+                                           "celou knihu znovu (jako nový soubor – původní zůstane).")
+                    keep = box.addButton("Ponechat napsané a pokračovat", QtWidgets.QMessageBox.AcceptRole)
+                    restart = box.addButton("Začít znovu od 1. kapitoly", QtWidgets.QMessageBox.DestructiveRole)
+                    box.addButton("Zrušit", QtWidgets.QMessageBox.RejectRole)
+                    box.setDefaultButton(keep)
+                    box.exec()
+                    if box.clickedButton() is restart:
+                        self.new_project(outline)
+                    elif box.clickedButton() is not keep:
+                        return
+                if self.project is proj:
+                    proj["outline"] = outline
+                    bw.save_project(self.path, proj)
+                    self.logv.log(f"Osnova upravena – {done} napsaných kapitol zůstává, pokračuje se "
+                                  f"kapitolou {done + 1}.")
+                    if done >= len(outline["chapters"]):
+                        QtWidgets.QMessageBox.information(
+                            self, "Napsat knihu", "Všechny kapitoly z osnovy už jsou napsané. Pro další "
+                                                  "kapitoly je přidejte na konec osnovy.")
+                        return
         proj, path = self.project, self.path
         n = len(outline["chapters"])
         if n != self.nchap.value() and not proj["chapters"]:
@@ -782,7 +842,7 @@ class BookPage(QtWidgets.QWidget):
                           + (" (platí pro kapitoly, které se teprve napíšou)." if proj["chapters"] else "."))
         try:
             wr = self.writer()
-            estimate = wr.estimate(n, proj["words"])
+            estimate = wr.estimate(n, bw.total_words(proj) // n)
         except Exception as e:  # noqa: BLE001
             QtWidgets.QMessageBox.critical(self, "Napsat knihu", str(e))
             return
