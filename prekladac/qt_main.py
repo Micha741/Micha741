@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import re
 import sys
 import threading
 import webbrowser
@@ -39,6 +40,12 @@ def scrolled(w: QtWidgets.QWidget) -> QtWidgets.QScrollArea:
     sa.setFrameShape(QtWidgets.QFrame.NoFrame)
     sa.setWidget(w)
     return sa
+
+
+# offline balíčky nabízené v Nastavení (nejčastěji z angličtiny a němčiny do češtiny)
+OFFLINE_PAIRS = [("en", "cs"), ("de", "en"), ("cs", "en"), ("en", "de"), ("fr", "en"), ("es", "en"), ("it", "en"),
+                 ("pl", "en"), ("ru", "en"), ("sk", "en"), ("nl", "en"), ("pt", "en"), ("uk", "en"), ("hu", "en"),
+                 ("en", "sk")]
 
 
 def big_button(icon: str, text: str, tip: str = "", obj: str = "BigAction") -> QtWidgets.QToolButton:
@@ -1397,12 +1404,84 @@ class SettingsPage(QtWidgets.QWidget):
         dl.clicked.connect(self.download_langs)
         lg.addWidget(dl, 99, 0, 1, 2)
         lay.addWidget(langs)
+
+        import offline_mt
+
+        off = QtWidgets.QGroupBox("Offline překlad – v počítači, bez internetu (Argos Translate)")
+        og = QtWidgets.QGridLayout(off)
+        og.addWidget(label("Zdarma a bez odesílání textu. Kvalita je nižší než u DeepL nebo Google. Každý balíček má "
+                           "kolem 100 MB. Když přímý pár chybí, překládá se přes angličtinu (např. němčina → "
+                           "angličtina → čeština) – stačí balíčky „… → angličtina“ a „angličtina → čeština“.", "Hint"),
+                     0, 0, 1, 4)
+        self.off_checks = {}
+        for i, (a, b) in enumerate(OFFLINE_PAIRS):
+            c = QtWidgets.QCheckBox(f"{offline_mt.LANG_NAMES[a]} → {offline_mt.LANG_NAMES[b]}")
+            c.setChecked((a, b) in offline_mt.RECOMMENDED and (a, b) not in offline_mt.installed())
+            self.off_checks[(a, b)] = c
+            og.addWidget(c, 1 + i // 4, i % 4)
+        self.off_status = label("", wrap=False)
+        og.addWidget(self.off_status, 90, 0, 1, 4)
+        bdl = QtWidgets.QPushButton("⬇ Stáhnout zaškrtnuté balíčky")
+        bdl.clicked.connect(self.download_offline)
+        brm = QtWidgets.QPushButton("🗑 Odebrat zaškrtnuté")
+        brm.clicked.connect(self.remove_offline)
+        og.addWidget(bdl, 99, 0, 1, 2)
+        og.addWidget(brm, 99, 2)
+        lay.addWidget(off)
+        self.refresh_offline()
         self.comp_log = LogView()
         self.comp_log.setMaximumHeight(140)
         lay.addWidget(self.comp_log)
         lay.addStretch(1)
         QtCore.QTimer.singleShot(300, self.refresh_components)
         return w
+
+    def refresh_offline(self):
+        import offline_mt
+
+        have = offline_mt.installed()
+        for (a, b), c in self.off_checks.items():
+            c.setText(f"{offline_mt.LANG_NAMES[a]} → {offline_mt.LANG_NAMES[b]}" + (" ✓" if (a, b) in have else ""))
+        set_status(self.off_status, bool(have),
+                   ("nainstalováno: " + ", ".join(f"{offline_mt.LANG_NAMES.get(a, a)} → "
+                                                  f"{offline_mt.LANG_NAMES.get(b, b)}" for a, b in sorted(have)))
+                   if have else "zatím žádný balíček – zaškrtněte a stáhněte")
+        if hasattr(self.win, "translate"):
+            self.win.translate.refresh_status()
+
+    def download_offline(self):
+        import offline_mt
+
+        want = [p for p, c in self.off_checks.items() if c.isChecked() and p not in offline_mt.installed()]
+        if not want:
+            QtWidgets.QMessageBox.information(self, "Offline překlad", "Zaškrtněte balíčky, které ještě nemáte.")
+            return
+
+        def job():
+            index = offline_mt.available()
+            for a, b in want:
+                pkgs = [p for p in index if p["from_code"] == a and p["to_code"] == b]
+                if not pkgs:
+                    self.comp_log.log(f"Balíček {a} → {b} není k dispozici.")
+                    continue
+                pkg = max(pkgs, key=lambda p: [int(x) for x in re.findall(r"\d+", str(p.get("package_version")))])
+                offline_mt.install(pkg, self.comp_log.log)
+
+        run_bg(job, lambda _r, err: (self.comp_log.log(f"✗ {err}" if err else "✓ Offline balíčky staženy."),
+                                     self.refresh_offline()))
+
+    def remove_offline(self):
+        import offline_mt
+
+        chosen = [p for p, c in self.off_checks.items() if c.isChecked() and p in offline_mt.installed()]
+        if not chosen:
+            return
+        if QtWidgets.QMessageBox.question(self, "Offline překlad", "Odebrat zaškrtnuté offline balíčky z počítače?") \
+                != QtWidgets.QMessageBox.Yes:
+            return
+        for p in chosen:
+            offline_mt.remove(p)
+        self.refresh_offline()
 
     def pick_exe(self, edit, name):
         f, _ = QtWidgets.QFileDialog.getOpenFileName(self, f"Najděte {name}", "", f"{name} ({name}*);;Vše (*.*)")

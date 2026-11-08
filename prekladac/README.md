@@ -22,6 +22,15 @@ přes **Claude API** (nejlepší kvalita). Umí také jen převádět formáty a
 API služby (Claude, DeepSeek, OpenAI…) **nemají měsíční paušál** – dobíjí se kredit předem a platí se podle
 spotřebovaných tokenů (1 token ≈ 0,4 českého slova). Předplatné Claude Pro/Max na claude.ai se na API nevztahuje.
 
+### Offline překlad (bez internetu)
+
+Překladač **Offline v počítači (Argos)** překládá přímo v počítači – zdarma, bez klíče a bez odesílání textu
+(stejné modely jako LibreTranslate, ale bez serveru). Jazykové balíčky (každý asi 100 MB) se stáhnou v
+*⚙ Nastavení → Součásti → Offline překlad*, nebo zaškrtnutím volby při instalaci. Jazyk originálu program pozná
+sám; když přímý balíček chybí, překládá přes angličtinu (např. němčina → angličtina → čeština – stačí balíčky
+*němčina → angličtina* a *angličtina → čeština*). Kvalita je nižší než u DeepL či Google, běží i na slabším
+počítači (bez grafické karty). Vnitřní formátování odstavců (tučné uvnitř věty) se při offline překladu nezachová.
+
 ## Text z obrázků a skenů (OCR)
 
 | OCR | Cena | Poznámka |

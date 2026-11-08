@@ -47,6 +47,7 @@ Name: "czech"; MessagesFile: "compiler:Languages\Czech.isl"
 
 [Tasks]
 Name: "desktopicon"; Description: "Vytvořit zástupce na ploše"; GroupDescription: "Zástupci:"
+Name: "offlinemt"; Description: "Stáhnout offline překlad – angličtina → čeština a němčina → angličtina (asi 200 MB, překlad bez internetu; jde i později v Nastavení)"; GroupDescription: "Volitelné součásti:"; Flags: unchecked
 
 [Files]
 Source: "build\app\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
@@ -62,4 +63,6 @@ Name: "{group}\Odinstalovat Překladač"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\Překladač"; Filename: "{app}\Prekladac.exe"; Tasks: desktopicon
 
 [Run]
+; volitelné offline balíčky – stahují se do %APPDATA% přihlášeného uživatele (runasoriginaluser)
+Filename: "{app}\Prekladac.exe"; Parameters: "--install-offline en_cs,de_en"; StatusMsg: "Stahuji offline překlad (asi 200 MB)…"; Tasks: offlinemt; Flags: runasoriginaluser waituntilterminated
 Filename: "{app}\Prekladac.exe"; Description: "Spustit Překladač"; Flags: nowait postinstall skipifsilent

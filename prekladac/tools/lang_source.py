@@ -631,6 +631,41 @@ E += [
     ("Texty programu; návody ke službám a podrobné chybové hlášky zůstávají česky.", "Program texts; service guides "
      "and detailed error messages stay in Czech.", "Texty programu; návody k službám a podrobné chybové hlásenia "
      "zostávajú po česky.", "Programmtexte; Dienstanleitungen und detaillierte Fehlermeldungen bleiben tschechisch."),
+    # offline překlad
+    ("Offline v počítači (Argos) – zdarma, bez internetu", "Offline on your computer (Argos) – free, no internet",
+     "Offline v počítači (Argos) – zadarmo, bez internetu", "Offline auf dem Computer (Argos) – kostenlos, ohne "
+     "Internet"),
+    ("Offline překlad – v počítači, bez internetu (Argos Translate)", "Offline translation – on your computer, no "
+     "internet (Argos Translate)", "Offline preklad – v počítači, bez internetu (Argos Translate)",
+     "Offline-Übersetzung – auf dem Computer, ohne Internet (Argos Translate)"),
+    ("Zdarma a bez odesílání textu. Kvalita je nižší než u DeepL nebo Google. Každý balíček má kolem 100 MB. Když "
+     "přímý pár chybí, překládá se přes angličtinu (např. němčina → angličtina → čeština) – stačí balíčky „… → "
+     "angličtina“ a „angličtina → čeština“.", "Free and without sending text anywhere. Quality is lower than DeepL or "
+     "Google. Each package is about 100 MB. If a direct pair is missing, translation goes via English (e.g. German "
+     "→ English → Czech) – the packages „… → English“ and „English → Czech“ are enough.",
+     "Zadarmo a bez odosielania textu. Kvalita je nižšia ako pri DeepL alebo Google. Každý balík má okolo 100 MB. "
+     "Keď priamy pár chýba, prekladá sa cez angličtinu (napr. nemčina → angličtina → čeština) – stačia balíky „… → "
+     "angličtina“ a „angličtina → čeština“.", "Kostenlos und ohne Text zu versenden. Qualität geringer als DeepL "
+     "oder Google. Jedes Paket hat etwa 100 MB. Fehlt ein direktes Paar, wird über Englisch übersetzt (z. B. "
+     "Deutsch → Englisch → Tschechisch) – es genügen „… → Englisch“ und „Englisch → Tschechisch“."),
+    ("⬇ Stáhnout zaškrtnuté balíčky", "⬇ Download checked packages", "⬇ Stiahnuť zaškrtnuté balíky",
+     "⬇ Markierte Pakete herunterladen"),
+    ("🗑 Odebrat zaškrtnuté", "🗑 Remove checked", "🗑 Odobrať zaškrtnuté", "🗑 Markierte entfernen"),
+    ("nainstalováno: {}", "installed: {}", "nainštalované: {}", "installiert: {}"),
+    ("zatím žádný balíček – zaškrtněte a stáhněte", "no package yet – check and download",
+     "zatiaľ žiadny balík – zaškrtnite a stiahnite", "noch kein Paket – markieren und herunterladen"),
+    ("Offline překlad", "Offline translation", "Offline preklad", "Offline-Übersetzung"),
+    ("Zaškrtněte balíčky, které ještě nemáte.", "Check packages you do not have yet.",
+     "Zaškrtnite balíky, ktoré ešte nemáte.", "Markieren Sie Pakete, die noch fehlen."),
+    ("Odebrat zaškrtnuté offline balíčky z počítače?", "Remove the checked offline packages from this computer?",
+     "Odobrať zaškrtnuté offline balíky z počítača?", "Markierte Offline-Pakete vom Computer entfernen?"),
+    ("✓ Offline balíčky staženy.", "✓ Offline packages downloaded.", "✓ Offline balíky stiahnuté.",
+     "✓ Offline-Pakete heruntergeladen."),
+    ("chybí offline balíček – ⚙ Nastavení → Součásti → Offline překlad", "offline package missing – ⚙ Settings → "
+     "Components → Offline translation", "chýba offline balík – ⚙ Nastavenia → Súčasti → Offline preklad",
+     "Offline-Paket fehlt – ⚙ Einstellungen → Komponenten → Offline-Übersetzung"),
+    ("offline: {}", "offline: {}", "offline: {}", "offline: {}"),
+    ("{} → {}", "{} → {}", "{} → {}", "{} → {}"),
     # Info
     ("🌐 Stránka programu", "🌐 Program website", "🌐 Stránka programu", "🌐 Programm-Website"),
     ("© 2026 Micha741 · zdarma pro osobní použití", "© 2026 Micha741 · free for personal use",

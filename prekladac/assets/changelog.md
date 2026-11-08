@@ -2,7 +2,7 @@
 
 **Překlad a převod souborů**
 - Formáty EPUB, AZW3/KF8, KFX, MOBI, PDF (i mnohastránkové), DOCX, TXT, RTF, obrázky JPG/PNG (OCR) a další.
-- Překladače: Google (zdarma), DeepL Free, Microsoft Translator a překlad celých dokumentů Azure, Claude, Google Gemini,
+- Překladače: Google (zdarma), offline v počítači (Argos, bez internetu), DeepL Free, Microsoft Translator a překlad celých dokumentů Azure, Claude, Google Gemini,
   OpenAI‑kompatibilní (OpenRouter, DeepSeek, Mistral, Groq…), Ollama, LibreTranslate.
 - Text z obrázků a skenů (Tesseract, Gemini, Claude), více fotek do jednoho DOCX nebo vícestránkového PDF.
 - Seznam souborů s výběrem více položek, přidáním celé složky a přetahováním myší.
@@ -30,6 +30,8 @@
 - Nastavení → Info: co program umí, historie verzí, plány a vlastní poznámky.
 - Stránka Překlad ve stylu Wordu: pás karet Soubory / Překlad / Obrázky a OCR, velká tlačítka Spustit,
   Zastavit a Výstupní složka, stránka se seznamem souborů a pokyny.
+- Offline překlad v počítači bez internetu (Argos Translate): balíčky v Nastavení → Součásti nebo volitelně
+  v instalátoru, němčina a další jazyky přes angličtinu, jazyk originálu se pozná sám.
 
 **1.0.37**
 - Jazyk programu (EN/SK/DE) s možností doinstalovat další jazyky.

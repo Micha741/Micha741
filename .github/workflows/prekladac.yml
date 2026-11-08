@@ -42,6 +42,7 @@ jobs:
           python tools/make_version_info.py build/version_info.txt
           python -m PyInstaller --noconfirm --onedir --windowed --name Prekladac `
             --version-file "$PWD\build\version_info.txt" `
+            --collect-all ctranslate2 --collect-data sacremoses `
             --collect-all pypdfium2 --collect-all pypdfium2_raw --exclude-module tkinter `
             --icon "$PWD\assets\icon.ico" --add-data "$PWD\assets;assets" `
             --distpath build\dist --workpath build\work --specpath build app.py
@@ -136,6 +137,15 @@ jobs:
           python tests\ci_check_epub_links.py "$dir\Calibre2\ebook-convert.exe"
           # 4) stažení a instalace pluginu KFX Input do přibaleného Calibre
           python -c "import sys; sys.path.insert(0, '.'); import components; c = r'$dir\Calibre2\ebook-convert.exe'; print('CA:', components.calibre_ca_file(c)); components.install_kfx_plugin(c, print); assert components.calibre_kfx_plugin(c) is True, 'plugin chybí'"
+          # 5) offline překlad (Argos): stažení balíčků jako volba v instalátoru, překlad EN→CS a DE→(EN)→CS
+          $o = Start-Process $exe -ArgumentList '--install-offline','en_cs,de_en','offline.txt' -Wait -PassThru
+          Get-Content offline.txt -Encoding utf8
+          if ($o.ExitCode -ne 0) { throw "Offline balíčky se nepodařilo stáhnout" }
+          Set-Content -Encoding utf8 off_en.txt "The quick brown fox jumps over the lazy dog. I would like a cup of tea, please."
+          Set-Content -Encoding utf8 off_de.txt "Der schnelle braune Fuchs springt über den faulen Hund. Ich möchte bitte eine Tasse Tee."
+          Run @('off_en.txt', '--engine', 'offline', '--lang', 'čeština', '--out-dir', 'off_out') 'off1.log'
+          Run @('off_de.txt', '--engine', 'offline', '--lang', 'čeština', '--out-dir', 'off_out') 'off2.log'
+          python -c "import glob, re; fs = sorted(glob.glob('off_out/*.txt')); t = [open(f, encoding='utf-8-sig').read() for f in fs]; print(fs, t); assert len(t) == 2 and all(re.search('[ěščřžýáíéůú]', x) for x in t), 'offline překlad nevrátil češtinu'"
 
       - uses: actions/upload-artifact@v4
         with:
