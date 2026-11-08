@@ -8,3 +8,4 @@ pypdfium2>=4.30
 truststore>=0.10
 certifi>=2024.0
 PySide6-Essentials>=6.7
+spylls>=0.1.7

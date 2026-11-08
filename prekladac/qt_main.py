@@ -18,8 +18,9 @@ from claude_client import DEFAULT_MODEL, MODELS, Cancelled
 from converters import DOC_ONLY_EXT, OUTPUT_FORMATS, SUPPORTED_EXT, find_ebook_convert
 from free_engines import ENGINE_LABELS, OCR_LABELS, EngineError, GeminiEngine, OllamaEngine, find_tesseract
 from guides import GUIDES
-from qt_common import STYLESHEET, bridge, emoji_icon, label, run_bg, set_status
+from qt_common import STYLESHEET, app_icon, bridge, emoji_icon, label, run_bg, set_status
 import updater
+from qt_textassist import TextAssist
 from version import VERSION
 
 Qt = QtCore.Qt
@@ -297,16 +298,16 @@ class BookPage(QtWidgets.QWidget):
         outer.addWidget(scroll)
         lay.addWidget(h_title("Napsat knihu"))
 
-        box = QtWidgets.QGroupBox("1. Popis knihy")
+        box = QtWidgets.QGroupBox("2. Popis knihy")
         bl = QtWidgets.QVBoxLayout(box)
         self.desc = QtWidgets.QPlainTextEdit()
         self.desc.setPlaceholderText("O čem kniha je, hlavní postavy, prostředí, pro koho je, jak má skončit… "
                                      "(stačí kolem 20 vět)")
         self.desc.setMinimumHeight(120)
         bl.addWidget(self.desc)
-        lay.addWidget(box)
+        self.desc_assist = TextAssist(self.desc, win.cfg.setdefault("text_assist", {}), win.save_cfg)
 
-        cat = QtWidgets.QGroupBox("2. Žánr a styl (vyberte ze seznamu nebo napište vlastní)")
+        cat = QtWidgets.QGroupBox("1. Žánr a styl (vyberte ze seznamu nebo napište vlastní)")
         cg = QtWidgets.QGridLayout(cat)
         self.cats: dict[str, QtWidgets.QComboBox] = {}
         for k, (key, text, values) in enumerate(bo.CATEGORIES):
@@ -327,6 +328,7 @@ class BookPage(QtWidgets.QWidget):
         self.mature = label("", "Warn")
         cg.addWidget(self.mature, 4, 0, 1, 6)
         lay.addWidget(cat)
+        lay.addWidget(box)
 
         st = QtWidgets.QGroupBox("3. Rozsah a služba")
         sg = QtWidgets.QGridLayout(st)
@@ -387,6 +389,7 @@ class BookPage(QtWidgets.QWidget):
         ol = QtWidgets.QVBoxLayout(ob)
         self.outline = QtWidgets.QPlainTextEdit()
         self.outline.setMinimumHeight(220)
+        self.outline_assist = TextAssist(self.outline, win.cfg.setdefault("text_assist", {}), win.save_cfg)
         ol.addWidget(self.outline)
         lay.addWidget(ob)
 
@@ -652,7 +655,8 @@ class BookPage(QtWidgets.QWidget):
             ed.activateWindow()
             return
         ed = BookEditor(self.project, self.path, self.win.cfg["paths"].get("ebook_convert") or None,
-                        autosave=self.win.cfg.get("autosave"))
+                        autosave=self.win.cfg.get("autosave"),
+                        text_assist=self.win.cfg.setdefault("text_assist", {}), save_options=self.win.save_cfg)
         self.editors.append(ed)
         ed.destroyed.connect(lambda *_: self.update_buttons())
         ed.showMaximized()
@@ -927,10 +931,58 @@ class SettingsPage(QtWidgets.QWidget):
         self.check_updates = QtWidgets.QCheckBox("Při spuštění zkontrolovat, zda je k dispozici nová verze")
         self.check_updates.setChecked(cfg.get("check_updates", True))
         g.addWidget(self.check_updates, 3, 0, 1, 3)
-        g.addWidget(label(f"Nastavení programu: {core.config_path()}", "Hint"), 4, 0, 1, 3)
-        g.setRowStretch(5, 1)
+
+        tbox = QtWidgets.QGroupBox("Psaní textu (editor knihy, popis a osnova)")
+        tg = QtWidgets.QGridLayout(tbox)
+        ta = cfg.get("text_assist", {})
+        self.ta_spell = QtWidgets.QCheckBox("Kontrola pravopisu – chybná slova červeně podtrhnout")
+        self.ta_spell.setChecked(ta.get("spell", True))
+        self.ta_complete = QtWidgets.QCheckBox("Návrhy slov při psaní (T9) – Tab vloží návrh, šipkami vyberete jiný")
+        self.ta_complete.setChecked(ta.get("complete", True))
+        self.dict_status = label("", "Hint")
+        self.dict_btn = QtWidgets.QPushButton("⬇ Stáhnout český slovník")
+        self.dict_btn.clicked.connect(self.download_dictionary)
+        tg.addWidget(self.ta_spell, 0, 0, 1, 2)
+        tg.addWidget(self.ta_complete, 1, 0, 1, 2)
+        tg.addWidget(self.dict_status, 2, 0)
+        tg.addWidget(self.dict_btn, 2, 1)
+        tg.addWidget(label("Pravým tlačítkem na podtržené slovo nabídne opravy, „Přidat do slovníku“ si slovo "
+                           "zapamatuje (jména postav apod.). Kontrola se zapíná jen u knih v češtině.", "Hint"),
+                     3, 0, 1, 2)
+        tg.setColumnStretch(0, 1)
+        g.addWidget(tbox, 4, 0, 1, 3)
+        g.addWidget(label(f"Nastavení programu: {core.config_path()}", "Hint"), 5, 0, 1, 3)
+        g.setRowStretch(6, 1)
         g.setColumnStretch(1, 1)
+        self.refresh_dictionary()
         return w
+
+    def refresh_dictionary(self):
+        import spell
+
+        st = spell.status()
+        text = {"ready": "✓ Český slovník je načtený.",
+                "loading": "Slovník se načítá…",
+                "idle": "✓ Český slovník je nainstalovaný.",
+                "missing": "Český slovník chybí (je součástí instalátoru, nebo ho stáhněte).",
+                "error": f"✗ Slovník se nepodařilo načíst: {spell.last_error()}"}[st]
+        self.dict_status.setText(text)
+        self.dict_btn.setVisible(st in ("missing", "error"))
+
+    def download_dictionary(self):
+        import spell
+
+        self.dict_btn.setEnabled(False)
+        self.dict_status.setText("Stahuji a načítám slovník…")
+
+        def ready():
+            bridge().later(lambda: (self.dict_btn.setEnabled(True), self.refresh_dictionary()))
+
+        def log(msg):
+            bridge().later(lambda: (self.dict_status.setText(msg), self.dict_btn.setEnabled(True))
+                           if msg.startswith("Slovník se nepodařilo") else self.dict_status.setText(msg))
+
+        spell.load_async(ready, download=True, log=log)
 
     def save(self):
         self.collect()
@@ -941,6 +993,11 @@ class SettingsPage(QtWidgets.QWidget):
         cfg["autosave"] = {"mode": self.auto_mode.currentData(), "seconds": self.auto_seconds.value(),
                            "chars": self.auto_chars.value()}
         cfg["check_updates"] = self.check_updates.isChecked()
+        ta = cfg.setdefault("text_assist", {})  # stejný slovník sdílí otevřená textová pole
+        ta["spell"] = self.ta_spell.isChecked()
+        ta["complete"] = self.ta_complete.isChecked()
+        for a in (self.win.book.desc_assist, self.win.book.outline_assist):
+            a.on_dictionary_ready() if ta["spell"] else a.rehighlight()
         self.win.save_cfg()
         self.win.refresh_statuses()
         QtWidgets.QMessageBox.information(self, "Nastavení", "Nastavení uloženo.")
@@ -965,21 +1022,47 @@ class MainWindow(QtWidgets.QMainWindow):
         h.setContentsMargins(0, 0, 0, 0)
         h.setSpacing(0)
 
-        side = QtWidgets.QWidget()
-        side.setFixedWidth(220)
+        self.setWindowIcon(app_icon())
+        self.side = side = QtWidgets.QWidget()
         side.setStyleSheet("background: #1e293b;")
         sl = QtWidgets.QVBoxLayout(side)
         sl.setContentsMargins(0, 0, 0, 0)
         sl.setSpacing(0)
-        sl.addWidget(label("📚 Překladač", "AppTitle", wrap=False))
-        sl.addWidget(label(f"verze {VERSION}" if VERSION[:1].isdigit() else VERSION, "AppVersion", wrap=False))
+        head = QtWidgets.QWidget()
+        head.setObjectName("SideHeader")
+        hl = QtWidgets.QHBoxLayout(head)
+        hl.setContentsMargins(12, 14, 8, 12)
+        hl.setSpacing(10)
+        self.logo = QtWidgets.QLabel()
+        self.logo.setPixmap(app_icon().pixmap(QtCore.QSize(36, 36)))
+        self.logo.setFixedSize(36, 36)
+        self.brand = QtWidgets.QWidget()
+        bl = QtWidgets.QVBoxLayout(self.brand)
+        bl.setContentsMargins(0, 0, 0, 0)
+        bl.setSpacing(0)
+        bl.addWidget(label("Překladač", "AppName", wrap=False))
+        bl.addWidget(label(f"verze {VERSION}" if VERSION[:1].isdigit() else VERSION, "AppVersion", wrap=False))
+        self.side_toggle = QtWidgets.QToolButton()
+        self.side_toggle.setObjectName("SideToggle")
+        self.side_toggle.setText("☰")
+        self.side_toggle.setCursor(Qt.PointingHandCursor)
+        self.side_toggle.clicked.connect(lambda: self.set_sidebar_collapsed(not self.sidebar_collapsed))
+        hl.addWidget(self.logo)
+        hl.addWidget(self.brand, 1)
+        hl.addWidget(self.side_toggle)
+        sl.addWidget(head)
         self.nav = QtWidgets.QListWidget()
         self.nav.setObjectName("Sidebar")
         self.nav.setIconSize(QtCore.QSize(22, 22))
+        self.nav.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.nav.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         for icon, text in (("🌍", "Překlad"), ("✍️", "Napsat knihu"), ("⚙️", "Nastavení")):
-            self.nav.addItem(QtWidgets.QListWidgetItem(emoji_icon(icon), text))
+            it = QtWidgets.QListWidgetItem(emoji_icon(icon), text)
+            it.setData(Qt.UserRole, text)
+            self.nav.addItem(it)
         sl.addWidget(self.nav, 1)
         h.addWidget(side)
+        self.sidebar_collapsed = False
 
         self.stack = QtWidgets.QStackedWidget()
         self.translate = TranslatePage(self)
@@ -995,12 +1078,29 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setCentralWidget(central)
         self.nav.currentRowChanged.connect(self.stack.setCurrentIndex)
         self.nav.setCurrentRow(0)
+        self.set_sidebar_collapsed(bool(self.cfg.get("sidebar_collapsed")), save=False)
 
         if not paths["ebook_convert"]:
             self.translate.logv.log("Upozornění: Calibre nebylo nalezeno – bez něj nepůjdou AZW3, KFX, MOBI a RTF. "
                                     "Je součástí instalátoru Prekladac-Setup.exe.")
         if self.cfg.get("check_updates", True):
             QtCore.QTimer.singleShot(3000, self.check_updates)
+
+    def set_sidebar_collapsed(self, collapsed: bool, save: bool = True):
+        """Sbalený panel = úzký proužek jen s ikonami; tlačítko ☰ ho zase rozbalí."""
+        self.sidebar_collapsed = collapsed
+        self.side.setFixedWidth(72 if collapsed else 220)
+        self.logo.setVisible(not collapsed)
+        self.brand.setVisible(not collapsed)
+        self.side_toggle.setToolTip("Rozbalit panel" if collapsed else "Skrýt panel")
+        for i in range(self.nav.count()):
+            it = self.nav.item(i)
+            name = it.data(Qt.UserRole)
+            it.setText("" if collapsed else name)
+            it.setToolTip(name if collapsed else "")
+        if save:
+            self.cfg["sidebar_collapsed"] = collapsed
+            self.save_cfg()
 
     def check_updates(self, manual: bool = False):
         """Zjistí na GitHubu novou verzi; při automatické kontrole mlčí, když žádná není."""
@@ -1054,8 +1154,16 @@ class MainWindow(QtWidgets.QMainWindow):
 def main() -> int:
     QtWidgets.QApplication.setHighDpiScaleFactorRoundingPolicy(
         QtCore.Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+    if sys.platform == "win32":  # vlastní ikona na hlavním panelu Windows (ne ikona Pythonu)
+        try:
+            import ctypes
+
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("Micha741.Prekladac")
+        except Exception:  # noqa: BLE001
+            pass
     qapp = QtWidgets.QApplication.instance() or QtWidgets.QApplication(sys.argv)
     qapp.setApplicationName(core.APP_NAME)
+    qapp.setWindowIcon(app_icon())
     qapp.setStyle("Fusion")
     qapp.setStyleSheet(STYLESHEET)
     bridge()

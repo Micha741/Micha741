@@ -366,6 +366,18 @@ def _gui_selftest(report: Path) -> int:
         ed._merge(bold=True)
         ed.save()
         qapp.processEvents()
+        # přibalený český slovník a knihovna spylls (kontrola pravopisu, návrhy slov)
+        import spell
+        from qt_common import asset
+
+        base = spell.find_dictionary()
+        if not base:
+            raise RuntimeError("chybí český slovník (složka dict)")
+        sp = spell.Speller(base)
+        if not sp.check("kniha") or sp.check("knyha") or "kniha" not in sp.suggest("knyha"):
+            raise RuntimeError("slovník nefunguje")
+        if not Path(asset("icon.ico")).is_file():
+            raise RuntimeError("chybí ikona assets/icon.ico")
         report.write_text("ok " + VERSION, encoding="utf-8")
         return 0
     except Exception:  # noqa: BLE001
