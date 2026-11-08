@@ -42,7 +42,7 @@ jobs:
           python tools/make_version_info.py build/version_info.txt
           python -m PyInstaller --noconfirm --onedir --windowed --name Prekladac `
             --version-file "$PWD\build\version_info.txt" `
-            --collect-all ctranslate2 --collect-data sacremoses `
+            --collect-all ctranslate2 --collect-all sentencepiece --collect-data sacremoses `
             --collect-all pypdfium2 --collect-all pypdfium2_raw --exclude-module tkinter `
             --icon "$PWD\assets\icon.ico" --add-data "$PWD\assets;assets" `
             --distpath build\dist --workpath build\work --specpath build app.py
