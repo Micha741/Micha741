@@ -382,6 +382,12 @@ def _gui_selftest(report: Path) -> int:
             raise RuntimeError("slovník nefunguje")
         if not Path(asset("icon.ico")).is_file():
             raise RuntimeError("chybí ikona assets/icon.ico")
+        import i18n
+
+        for code in ("en", "sk", "de"):
+            if not i18n.load(code) or i18n.tr("Uložit") == "Uložit":
+                raise RuntimeError(f"chybí jazyk programu {code} (assets/lang)")
+        i18n.load("cs")
         report.write_text("ok " + VERSION, encoding="utf-8")
         return 0
     except Exception:  # noqa: BLE001

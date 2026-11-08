@@ -9,6 +9,8 @@ from pathlib import Path
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
+from i18n import tr
+
 ACCENT = "#2563eb"
 
 
@@ -71,6 +73,7 @@ QToolButton#BigAction, QToolButton#BigPrimary {{ padding: 4px 6px; font-size: 9p
 QToolButton#BigPrimary {{ background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; font-weight: 600; }}
 QToolButton#BigPrimary:hover {{ background: #dbeafe; border-color: #93c5fd; }}
 QToolButton#BigPrimary:disabled, QToolButton#BigAction:disabled {{ color: #94a3b8; background: transparent; border-color: transparent; }}
+QToolButton#RecentBook {{ text-align: left; padding: 2px 8px; color: #1e3a8a; }}
 #InfoBar {{ background: #f8fafc; border-bottom: 1px solid #e2e8f0; }}
 #Canvas {{ background: #e8ebf0; }}
 QScrollArea#CanvasScroll {{ background: #e8ebf0; }}
@@ -221,7 +224,7 @@ def run_bg(fn, done=None) -> threading.Thread:
 
 
 def label(text: str, name: str | None = None, wrap=True) -> QtWidgets.QLabel:
-    lb = QtWidgets.QLabel(text)
+    lb = QtWidgets.QLabel(tr(text))
     lb.setWordWrap(wrap)
     if name:
         lb.setObjectName(name)
@@ -229,6 +232,7 @@ def label(text: str, name: str | None = None, wrap=True) -> QtWidgets.QLabel:
 
 
 def set_status(lb: QtWidgets.QLabel, ok: bool, text: str) -> None:
+    text = " · ".join(tr(part) for part in text.split(" · "))  # každá část stavu zvlášť (jazyk programu)
     lb.setText(("✓ " if ok else "⚠ ") + text)
     lb.setObjectName("Ok" if ok else "Warn")
     lb.style().unpolish(lb)

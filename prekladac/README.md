@@ -68,6 +68,15 @@ Výsledek se uloží vedle originálu jako `název (čeština).přípona`.
    Číslo verze je v záhlaví okna a v *⚙ Nastavení → Obecné*.
    Klíče se ukládají **zašifrovaně** (Windows DPAPI) jen pro váš účet ve Windows.
 
+### Jazyk programu
+
+Program je česky, anglicky, slovensky a německy: *⚙ Nastavení → Obecné → Jazyk programu*, uložit a restartovat
+(nabídne se samo). Angličtina, slovenština a němčina jsou součástí instalátoru; tlačítkem **⬇ Stáhnout další
+jazyky…** se doinstalují další, jakmile přibudou (stahují se z GitHubu do `%APPDATA%\Prekladac\lang`).
+Při prvním spuštění se jazyk zvolí podle Windows. Přeloženy jsou texty programu; návody ke službám a podrobné
+chybové hlášky zůstávají česky. Překlady jsou v `tools/lang_source.py` (`python tools/lang_source.py`
+vygeneruje `assets/lang/*.json`).
+
 ### Aktualizace na novou verzi
 
 Při spuštění se program (nejvýš jednou, na pozadí) podívá na GitHub. Pokud je venku novější verze, zobrazí okno
@@ -157,7 +166,9 @@ jako záloha `Název.kniha.json.bak`. Dokud je kniha otevřená v editoru, AI do
   napíše velké samo (jako ve Wordu); po zkratkách („např.“, „tzv.“, „atd.“) a pořadových číslech („5. května“)
   ne. Vypnout jde v ⚙ Nastavení → Obecné.
 
-Stránka **Napsat knihu** vypadá jako Word: nahoře pás karet *Žánr a styl* a *Rozsah a služba*, vpravo velká
+Stránka **Napsat knihu** vypadá jako Word: karta **Soubor** (Nová kniha – Ctrl+N, Otevřít – Ctrl+O, Uložit –
+Ctrl+S, Uložit jako – Ctrl+Shift+S, seznam **Naposledy otevřené** a informace o otevřené knize; uložit jde kdykoli,
+i rozepsaný popis a neúplnou osnovu), dále pás karet *Žánr a styl* a *Rozsah a služba*, vpravo velká
 tlačítka (Navrhnout osnovu, Napsat knihu, Zastavit, Upravit, Otevřít rozepsanou), pod nimi stav služby a odhad
 rozsahu a uprostřed bílá stránka s popisem knihy a osnovou. Průběh psaní je dole (oddělovač jde posunout).
 
