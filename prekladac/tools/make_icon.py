@@ -16,6 +16,23 @@ def font(size):
     return ImageFont.load_default()
 
 
+def draw_small() -> Image.Image:
+    """Zjednodušená ikona pro 16–32 px (záhlaví okna): modrý čtverec, bílá kniha, velké Č."""
+    img = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    d.rounded_rectangle([0, 0, S - 1, S - 1], radius=200, fill=(37, 99, 235, 255))
+    cx, top_y, bot_y, w = S // 2, 170, 860, 400
+    d.polygon([(cx, top_y + 50), (cx - w, top_y), (cx - w, bot_y - 50), (cx, bot_y)], fill=(255, 255, 255, 255))
+    d.polygon([(cx, top_y + 50), (cx + w, top_y), (cx + w, bot_y - 50), (cx, bot_y)], fill=(255, 255, 255, 255))
+    d.line([(cx, top_y + 50), (cx, bot_y)], fill=(37, 99, 235, 255), width=40)
+    for i in range(3):
+        y = top_y + 210 + i * 170
+        d.line([(cx - w + 80, y - 20), (cx - 90, y + 25)], fill=(37, 99, 235, 255), width=70)
+    d.text((cx + w // 2 + 10, (top_y + bot_y) // 2 + 30), "Č", font=font(520), fill=(37, 99, 235, 255),
+           anchor="mm")
+    return img
+
+
 def draw() -> Image.Image:
     img = Image.new("RGBA", (S, S), (0, 0, 0, 0))
     # pozadí: zaoblený čtverec s přechodem modré
@@ -56,9 +73,14 @@ def draw() -> Image.Image:
 
 def main():
     OUT.mkdir(exist_ok=True)
-    big = draw()
+    big, small = draw(), draw_small()
     big.resize((256, 256), Image.LANCZOS).save(OUT / "icon.png")
-    big.save(OUT / "icon.ico", sizes=[(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)])
+    for n in (16, 24, 32):
+        small.resize((n, n), Image.LANCZOS).save(OUT / f"icon-{n}.png")
+    # .ico: malé velikosti zjednodušené, velké podrobné
+    frames = [small.resize((n, n), Image.LANCZOS) for n in (16, 24, 32)] + \
+             [big.resize((n, n), Image.LANCZOS) for n in (48, 64, 128, 256)]
+    frames[-1].save(OUT / "icon.ico", format="ICO", sizes=[f.size for f in frames], append_images=frames[:-1])
     print("hotovo:", OUT)
 
 

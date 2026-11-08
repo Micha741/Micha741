@@ -19,7 +19,12 @@ def asset(name: str) -> str:
 
 
 def app_icon() -> QtGui.QIcon:
-    return QtGui.QIcon(asset("icon.ico") if sys.platform == "win32" else asset("icon.png"))
+    """Ikona programu: v záhlaví okna (16–32 px) zjednodušená, jinde podrobná."""
+    icon = QtGui.QIcon()
+    for n in (16, 24, 32):
+        icon.addFile(asset(f"icon-{n}.png"), QtCore.QSize(n, n))
+    icon.addFile(asset("icon.png"), QtCore.QSize(256, 256))
+    return icon
 
 SIDEBAR = "#1e293b"
 
