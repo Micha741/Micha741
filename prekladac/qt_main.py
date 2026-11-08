@@ -31,6 +31,15 @@ def h_title(text: str) -> QtWidgets.QLabel:
     return label(text, "PageTitle", wrap=False)
 
 
+def scrolled(w: QtWidgets.QWidget) -> QtWidgets.QScrollArea:
+    """Obsah s posuvníkem – když se okno zmenší, nic se neschová mimo obrazovku."""
+    sa = QtWidgets.QScrollArea()
+    sa.setWidgetResizable(True)
+    sa.setFrameShape(QtWidgets.QFrame.NoFrame)
+    sa.setWidget(w)
+    return sa
+
+
 def primary(text: str) -> QtWidgets.QPushButton:
     b = QtWidgets.QPushButton(text)
     b.setObjectName("Primary")
@@ -503,13 +512,31 @@ class BookPage(QtWidgets.QWidget):
             group("Kniha", [("Jazyk knihy:", self.blang), ("Kapitol:", self.nchap), ("Slov na kapitolu:", self.nwords)]),
             group("Umělá inteligence", [("Služba:", self.service), ("Model Claude:", self.model)]),
             group("Uložit jako", [("", fmt_w), ("Složka:", dir_w)]))
+        # karta Soubor (jako ve Wordu): nová, otevřít, uložit, uložit jako, naposledy otevřené
+        self.b_new = big("📄", "Nová\nkniha", "Začít novou knihu (Ctrl+N)")
+        self.b_save = big("💾", "Uložit", "Uložit knihu – popis, žánr, rozsah i osnovu (Ctrl+S)")
+        self.b_saveas = big("🗂️", "Uložit\njako…", "Uložit knihu pod jiným názvem nebo jinam (Ctrl+Shift+S)")
+        self.b_load.setText("Otevřít…")
+        self.b_load.setToolTip("Otevřít uloženou nebo rozepsanou knihu *.kniha.json (Ctrl+O)")
+        filegrp = RibbonGroup("Soubor")
+        for i, b in enumerate((self.b_new, self.b_load, self.b_save, self.b_saveas)):
+            filegrp.grid.addWidget(b, 0, i)
+        self.recent_grp = RibbonGroup("Naposledy otevřené")
+        self.recent_grp.setMinimumWidth(320)
+        self.path_info = label("", "Hint")
+        self.path_info.setMaximumWidth(420)
+        cur = RibbonGroup("Otevřená kniha")
+        cur.grid.addWidget(self.path_info, 0, 0)
+        file_tab = ribbon_row(filegrp, self.recent_grp, cur)
         ribbon = QtWidgets.QTabWidget()
         ribbon.setObjectName("Ribbon")
         ribbon.setDocumentMode(True)
+        ribbon.addTab(file_tab, "Soubor")
         ribbon.addTab(style_tab, "Žánr a styl")
         ribbon.addTab(scope_tab, "Rozsah a služba")
+        ribbon.setCurrentIndex(1)
         actions = RibbonGroup("Kniha")
-        for i, b in enumerate((self.b_outline, self.b_write, self.b_stop, self.b_edit, self.b_load)):
+        for i, b in enumerate((self.b_outline, self.b_write, self.b_stop, self.b_edit)):
             actions.grid.addWidget(b, 0, i)
         top = QtWidgets.QFrame()
         top.setObjectName("RibbonBar")
@@ -611,6 +638,15 @@ class BookPage(QtWidgets.QWidget):
         self.b_stop.clicked.connect(self.cancel.set)
         self.b_edit.clicked.connect(self.open_editor)
         self.b_load.clicked.connect(self.do_load)
+        self.b_new.clicked.connect(self.new_book)
+        self.b_save.clicked.connect(lambda: self.save_book(False))
+        self.b_saveas.clicked.connect(lambda: self.save_book(True))
+        for seq, fn in (("Ctrl+S", lambda: self.save_book(False)), ("Ctrl+Shift+S", lambda: self.save_book(True)),
+                        ("Ctrl+O", self.do_load), ("Ctrl+N", self.new_book)):
+            sc = QtGui.QShortcut(QtGui.QKeySequence(seq), self, activated=fn)
+            sc.setContext(Qt.WidgetWithChildrenShortcut)  # jen na stránce Napsat knihu
+        self.rebuild_recent()
+        self.update_path_info()
         self.outline.textChanged.connect(self.update_buttons)
         for sig in (self.service.currentIndexChanged, self.model.currentIndexChanged, self.nchap.valueChanged,
                     self.nwords.valueChanged):
@@ -711,6 +747,8 @@ class BookPage(QtWidgets.QWidget):
             self.b_write.setToolTip("")
         self.b_stop.setEnabled(self.busy)
         self.b_load.setEnabled(not self.busy)
+        for b in (self.b_new, self.b_save, self.b_saveas):
+            b.setEnabled(not self.busy)
         self.b_edit.setEnabled(not self.busy and has_text)
 
     def set_busy(self, on: bool):
@@ -727,13 +765,18 @@ class BookPage(QtWidgets.QWidget):
                 "style_parts": self.parts(), "style_extra": self.extra.text().strip(),
                 "language": self.blang.currentText().strip() or "čeština", "service": self.service.currentData(),
                 "model": self.model.currentData(), "words": self.nwords.value(), "outline": outline, "chapters": []}
-        path = self.book_dir() / (bw.safe_name(outline["title"]) + bw.PROJECT_SUFFIX)
-        n = 2
-        while path.exists():
-            path = self.book_dir() / f"{bw.safe_name(outline['title'])} ({n}){bw.PROJECT_SUFFIX}"
-            n += 1
+        if self.project is not None and self.path and not self.project.get("chapters"):
+            path = self.path  # kniha už je uložená (zatím bez kapitol) – osnova do stejného souboru
+        else:
+            path = self.book_dir() / (bw.safe_name(outline["title"]) + bw.PROJECT_SUFFIX)
+            n = 2
+            while path.exists():
+                path = self.book_dir() / f"{bw.safe_name(outline['title'])} ({n}){bw.PROJECT_SUFFIX}"
+                n += 1
         self.project, self.path = proj, path
         bw.save_project(path, proj)
+        self.remember_recent(path)
+        self.update_path_info()
         self.logv.log(f"Osnova uložena: {path}")
 
     # ------------------------------------------------------------------ akce
@@ -883,15 +926,20 @@ class BookPage(QtWidgets.QWidget):
         run_bg(job, done)
 
     def do_load(self):
-        f, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Rozepsaná kniha", str(self.book_dir()),
-                                                     f"Rozepsaná kniha (*{bw.PROJECT_SUFFIX});;Vše (*.*)")
-        if not f:
-            return
+        f, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Otevřít knihu", str(self.book_dir()),
+                                                     f"Kniha (*{bw.PROJECT_SUFFIX});;Vše (*.*)")
+        if f:
+            self.load_path(f)
+
+    def load_path(self, f) -> bool:
+        if self.busy:
+            return False
         try:
             proj = bw.load_project(f)
         except Exception as e:  # noqa: BLE001
-            QtWidgets.QMessageBox.critical(self, "Napsat knihu", str(e))
-            return
+            QtWidgets.QMessageBox.critical(self, "Otevřít knihu", f"Knihu se nepodařilo otevřít:\n{e}")
+            self.forget_recent(f)
+            return False
         self.project, self.path = proj, Path(f)
         self.desc.setPlainText(proj.get("description", ""))
         parts = proj.get("style_parts") or {}
@@ -900,7 +948,9 @@ class BookPage(QtWidgets.QWidget):
         self.extra.setText(proj.get("style_extra", "") if parts else proj.get("style", ""))
         self.blang.setCurrentText(proj.get("language", "čeština"))
         self.nwords.setValue(int(proj.get("words", 2500)))
-        self.nchap.setValue(len(proj["outline"]["chapters"]))
+        n = len(proj["outline"].get("chapters", []))
+        if n:
+            self.nchap.setValue(n)
         i = self.model.findData(proj.get("model"))
         if i >= 0:
             self.model.setCurrentIndex(i)
@@ -908,9 +958,128 @@ class BookPage(QtWidgets.QWidget):
         if i >= 0:
             self.service.setCurrentIndex(i)
         self.bdir.setText(str(Path(f).parent))
-        self.outline.setPlainText(bw.outline_to_text(proj["outline"]))
+        # rozpracovaná (i neúplná) osnova se ukládá jako text, aby se úpravy neztratily
+        self.outline.setPlainText(proj.get("outline_text") or (bw.outline_to_text(proj["outline"]) if n else ""))
+        self.remember_recent(f)
         self.update_buttons()
-        self.logv.log(f"Načteno: {len(proj['chapters'])} z {len(proj['outline']['chapters'])} kapitol hotovo.")
+        self.update_path_info()
+        self.logv.log(f"Otevřeno: {f} – napsáno {len(proj['chapters'])} z {n} kapitol.")
+        return True
+
+    def new_book(self):
+        if self.busy:
+            return
+        has = self.desc.toPlainText().strip() or self.outline.toPlainText().strip()
+        if has and QtWidgets.QMessageBox.question(
+                self, "Nová kniha", "Začít novou knihu?\n\nPopis a osnova se vyprázdní. Pokud je chcete "
+                                    "zachovat, nejdřív klikněte na Uložit.") != QtWidgets.QMessageBox.Yes:
+            return
+        self.project, self.path = None, None
+        self.desc.clear()
+        self.outline.clear()
+        for cb in self.cats.values():
+            cb.setCurrentText("")
+        self.extra.clear()
+        self.bar.setValue(0)
+        self.update_buttons()
+        self.update_path_info()
+        self.desc.setFocus()
+
+    def gather_project(self) -> dict:
+        """Projekt podle toho, co je právě v okně (popis, žánr, rozsah, služba, osnova)."""
+        proj = dict(self.project) if self.project else {"chapters": [],
+                                                        "outline": {"title": "", "synopsis": "", "characters": [],
+                                                                    "chapters": []}}
+        proj.update(description=self.desc.toPlainText().strip(), style=self.full_style(),
+                    style_parts=self.parts(), style_extra=self.extra.text().strip(),
+                    language=self.blang.currentText().strip() or "čeština", service=self.service.currentData(),
+                    model=self.model.currentData(), words=self.nwords.value())
+        text = self.outline.toPlainText()
+        proj["outline_text"] = text
+        try:
+            outline = bw.text_to_outline(text)
+        except bw.BookError:
+            outline = None
+        done = len(proj.get("chapters", []))
+        if outline and (not done or (done <= len(outline["chapters"]) and all(
+                (outline["chapters"][i]["title"], outline["chapters"][i]["summary"]) ==
+                (proj["outline"]["chapters"][i]["title"], proj["outline"]["chapters"][i].get("summary", ""))
+                for i in range(done)))):
+            proj["outline"] = outline
+        return proj
+
+    def save_book(self, as_new: bool = False) -> bool:
+        if self.busy:
+            return False
+        proj = self.gather_project()
+        path = self.path
+        if as_new or path is None:
+            title = proj["outline"].get("title") or "Nová kniha"
+            start = str((Path(path).parent if path else self.book_dir()) / (bw.safe_name(title) + bw.PROJECT_SUFFIX))
+            f, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Uložit knihu jako", start,
+                                                         f"Kniha (*{bw.PROJECT_SUFFIX})")
+            if not f:
+                return False
+            if not f.endswith(bw.PROJECT_SUFFIX):  # „Kniha“, „Kniha.kniha“ i „Kniha.json“ → „Kniha.kniha.json“
+                for ext in (".json", ".kniha"):
+                    if f.endswith(ext):
+                        f = f[:-len(ext)]
+                f += bw.PROJECT_SUFFIX
+            path = Path(f)
+        try:
+            bw.save_project(path, proj)
+        except OSError as e:
+            QtWidgets.QMessageBox.critical(self, "Uložit knihu", f"Knihu se nepodařilo uložit:\n{e}")
+            return False
+        self.project, self.path = proj, path
+        self.remember_recent(path)
+        self.update_path_info()
+        self.update_buttons()
+        self.logv.log(f"💾 Uloženo: {path}")
+        return True
+
+    # ------------------------------------------------- naposledy otevřené
+    def remember_recent(self, path):
+        lst = [p for p in self.win.cfg.get("recent_books", []) if Path(p) != Path(path)]
+        self.win.cfg["recent_books"] = ([str(path)] + lst)[:8]
+        self.win.save_cfg()
+        self.rebuild_recent()
+
+    def forget_recent(self, path):
+        self.win.cfg["recent_books"] = [p for p in self.win.cfg.get("recent_books", []) if Path(p) != Path(path)]
+        self.win.save_cfg()
+        self.rebuild_recent()
+
+    def rebuild_recent(self):
+        grid = self.recent_grp.grid
+        while grid.count():
+            w = grid.takeAt(0).widget()
+            if w:
+                w.deleteLater()
+        recent = [p for p in self.win.cfg.get("recent_books", []) if Path(p).exists()][:6]
+        if not recent:
+            grid.addWidget(label("Zatím žádné – uložené a otevřené knihy se objeví tady.", "Hint"), 0, 0)
+            return
+        for i, p in enumerate(recent):
+            b = QtWidgets.QToolButton()
+            b.setObjectName("RecentBook")
+            name = Path(p).name[:-len(bw.PROJECT_SUFFIX)] if p.endswith(bw.PROJECT_SUFFIX) else Path(p).name
+            b.setText("📘 " + (name if len(name) <= 34 else name[:33] + "…"))
+            b.setToolTip(p)
+            b.setToolButtonStyle(Qt.ToolButtonTextOnly)
+            b.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+            b.clicked.connect(lambda _=False, p=p: self.load_path(p))
+            grid.addWidget(b, i % 3, i // 3)
+
+    def update_path_info(self):
+        if self.path:
+            done = len(self.project.get("chapters", [])) if self.project else 0
+            total = len(self.project["outline"].get("chapters", [])) if self.project else 0
+            self.path_info.setText(f"<b>{Path(self.path).name}</b><br>{Path(self.path).parent}<br>"
+                                   f"napsáno {done} z {total} kapitol")
+        else:
+            self.path_info.setText("Nová, zatím neuložená kniha.<br>Uloží se sama po návrhu osnovy, "
+                                   "nebo klikněte na Uložit.")
 
     def open_editor_for(self, path):
         """Otevřený editor této knihy (nebo None)."""
@@ -951,19 +1120,24 @@ class SettingsPage(QtWidgets.QWidget):
         self.win = win
         cfg = win.cfg
         lay = QtWidgets.QVBoxLayout(self)
-        lay.addWidget(h_title("Nastavení"))
+        # nadpis a tlačítko Uložit nahoře – na menší obrazovce tak nezmizí pod lištou Windows
+        head = QtWidgets.QHBoxLayout()
+        head.addWidget(h_title("Nastavení"))
+        head.addSpacing(16)
+        head.addWidget(label("Klíče se ukládají zašifrovaně (Windows DPAPI) jen pro váš účet ve Windows.", "Hint"),
+                       1)
+        self.save_btn = primary("💾 Uložit nastavení")
+        self.save_btn.setToolTip("Ctrl+S")
+        self.save_btn.clicked.connect(self.save)
+        head.addWidget(self.save_btn)
+        lay.addLayout(head)
         tabs = QtWidgets.QTabWidget()
         lay.addWidget(tabs, 1)
         tabs.addTab(self._services_tab(cfg), "Služby a klíče")
-        tabs.addTab(self._components_tab(cfg), "Součásti")
-        tabs.addTab(self._general_tab(cfg), "Obecné")
-        row = QtWidgets.QHBoxLayout()
-        row.addWidget(label("Klíče se ukládají zašifrovaně (Windows DPAPI) jen pro váš účet ve Windows.", "Hint"))
-        row.addStretch(1)
-        save = primary("💾 Uložit nastavení")
-        save.clicked.connect(self.save)
-        row.addWidget(save)
-        lay.addLayout(row)
+        tabs.addTab(scrolled(self._components_tab(cfg)), "Součásti")
+        tabs.addTab(scrolled(self._general_tab(cfg)), "Obecné")
+        sc = QtGui.QShortcut(QtGui.QKeySequence("Ctrl+S"), self, activated=self.save)
+        sc.setContext(Qt.WidgetWithChildrenShortcut)
 
     def _services_tab(self, cfg) -> QtWidgets.QWidget:
         scroll = QtWidgets.QScrollArea()
@@ -1302,7 +1476,10 @@ class MainWindow(QtWidgets.QMainWindow):
         paths["tesseract"] = paths.get("tesseract") or find_tesseract() or ""
 
         self.setWindowTitle(f"{core.APP_NAME} – verze {VERSION}")
-        self.resize(1180, 860)
+        # velikost podle obrazovky (např. notebook 1366×768 s lištou Windows)
+        avail = QtGui.QGuiApplication.primaryScreen().availableGeometry()
+        self.resize(min(1180, int(avail.width() * 0.95)), min(860, int(avail.height() * 0.92)))
+        self.move(avail.center() - self.rect().center())
         central = QtWidgets.QWidget()
         h = QtWidgets.QHBoxLayout(central)
         h.setContentsMargins(0, 0, 0, 0)
@@ -1359,7 +1536,8 @@ class MainWindow(QtWidgets.QMainWindow):
             wl = QtWidgets.QVBoxLayout(wrap)
             wl.setContentsMargins(*((0, 0, 0, 0) if page is self.book else (20, 12, 20, 12)))
             wl.addWidget(page)
-            self.stack.addWidget(wrap)
+            # stránka Překlad se na malé obrazovce posouvá; Nastavení a Kniha mají posuvníky uvnitř
+            self.stack.addWidget(scrolled(wrap) if page is self.translate else wrap)
         h.addWidget(self.stack, 1)
         self.setCentralWidget(central)
         self.nav.currentRowChanged.connect(self.stack.setCurrentIndex)

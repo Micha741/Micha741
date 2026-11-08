@@ -71,6 +71,7 @@ QToolButton#BigAction, QToolButton#BigPrimary {{ padding: 4px 6px; font-size: 9p
 QToolButton#BigPrimary {{ background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; font-weight: 600; }}
 QToolButton#BigPrimary:hover {{ background: #dbeafe; border-color: #93c5fd; }}
 QToolButton#BigPrimary:disabled, QToolButton#BigAction:disabled {{ color: #94a3b8; background: transparent; border-color: transparent; }}
+QToolButton#RecentBook {{ text-align: left; padding: 2px 8px; color: #1e3a8a; }}
 #InfoBar {{ background: #f8fafc; border-bottom: 1px solid #e2e8f0; }}
 #Canvas {{ background: #e8ebf0; }}
 QScrollArea#CanvasScroll {{ background: #e8ebf0; }}

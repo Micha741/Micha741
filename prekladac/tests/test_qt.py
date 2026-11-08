@@ -274,8 +274,9 @@ def test_sidebar_collapse_and_section_order(qapp):
     win2.set_sidebar_collapsed(False)
     assert win2.nav.item(0).text() == "Překlad"
     ribbon = win.book.findChild(qt_main.QtWidgets.QTabWidget, "Ribbon")
-    assert [ribbon.tabText(i) for i in range(ribbon.count())] == ["Žánr a styl", "Rozsah a služba"]
-    assert win.book.cats["genre"].isVisibleTo(ribbon.widget(0)) and win.book.desc.objectName() == "DocText"
+    assert [ribbon.tabText(i) for i in range(ribbon.count())] == ["Soubor", "Žánr a styl", "Rozsah a služba"]
+    assert ribbon.currentIndex() == 1
+    assert win.book.cats["genre"].isVisibleTo(ribbon.widget(1)) and win.book.desc.objectName() == "DocText"
     assert not win.windowIcon().isNull()
     win.close()
     win2.close()
@@ -490,3 +491,37 @@ def test_outline_change_keeps_written_chapters(qapp, tmp_path, monkeypatch):
     b._outline_menu(menu, c)
     assert any("Délka kapitoly „K2“" in a.text() for a in menu.actions())
     win.close()
+
+
+
+def test_book_file_tab_save_open_recent(qapp, tmp_path, monkeypatch):
+    import book_writer as bw
+    import qt_main
+    from PySide6 import QtWidgets
+    win = qt_main.MainWindow()
+    b = win.book
+    b.bdir.setText(str(tmp_path))
+    b.desc.setPlainText("Drak Ferda chce byt knihovnikem.")
+    b.cats["genre"].setCurrentText("Pohádka")
+    b.outline.setPlainText("NÁZEV: Ferda\n\nKAPITOLY:\n1. Jeskyně [3000 slov] — Ferda se probudí.\n2. Rozepsán")
+    target = tmp_path / "Ferda.kniha.json"
+    monkeypatch.setattr(QtWidgets.QFileDialog, "getSaveFileName", lambda *a, **k: (str(target)[:-5], ""))
+    assert b.save_book(False)                       # nová kniha → zeptá se na jméno, doplní příponu
+    saved = bw.load_project(target)
+    assert saved["description"].startswith("Drak") and saved["style_parts"]["genre"] == "Pohádka"
+    assert saved["outline"]["chapters"][0]["words"] == 3000
+    assert "Rozepsán" in saved["outline_text"]
+    assert win.cfg["recent_books"][0] == str(target)
+    b.outline.setPlainText(b.outline.toPlainText() + "\n3. Konec — vse dobre dopadne.")
+    assert b.save_book(False) and "3. Konec" in bw.load_project(target)["outline_text"]  # bez dotazu
+    monkeypatch.setattr(QtWidgets.QMessageBox, "question", lambda *a, **k: QtWidgets.QMessageBox.Yes)
+    b.new_book()
+    assert b.project is None and not b.desc.toPlainText() and "neuložená" in b.path_info.text()
+    win2 = qt_main.MainWindow()                     # naposledy otevřené zůstanou
+    btns = win2.book.recent_grp.findChildren(QtWidgets.QToolButton, "RecentBook")
+    assert btns and "Ferda" in btns[0].text()
+    btns[0].click()
+    assert win2.book.path == target and win2.book.desc.toPlainText().startswith("Drak")
+    assert "3. Konec" in win2.book.outline.toPlainText() and win2.book.cats["genre"].currentText() == "Pohádka"
+    win.close()
+    win2.close()
