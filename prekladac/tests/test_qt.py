@@ -432,12 +432,23 @@ def test_print_book_to_pdf(qapp, tmp_path):
     assert "[[STRANA]]" not in doc.toPlainText() and "1. Prvni" in doc.toPlainText()
     out = tmp_path / "tisk.pdf"
     ed.print_to_pdf(out, whole=True)
-    pages = PdfReader(str(out)).pages
-    # titulní strana + dlouhá kapitola (víc stran) + zalomení + druhá kapitola od nové strany
-    assert len(pages) >= 5
-    assert "Druha" in pages[-1].extract_text()
-    one = tmp_path / "kapitola.pdf"
-    ed.print_to_pdf(one, whole=False)
-    assert len(PdfReader(str(one)).pages) < len(pages)
+    whole = len(PdfReader(str(out)).pages)
     ed.dirty = False
     ed.close()
+    # srovnání počtu stran (čtení textu z PDF od Qt není na Windows spolehlivé):
+    # stejná kniha jen s dlouhou kapitolou bez zalomení = titulní strana + kapitola
+    base = dict(proj, chapters=[{"title": "Prvni", "text": long}],
+                outline={"title": "Kniha", "chapters": [{"title": "Prvni", "summary": ""}]})
+    p2 = tmp_path / "base.kniha.json"
+    bw.save_project(p2, base)
+    ed2 = BookEditor(base, p2, None, text_assist={"spell": False})
+    ref = tmp_path / "ref.pdf"
+    ed2.print_to_pdf(ref, whole=True)
+    first_only = len(PdfReader(str(ref)).pages)
+    assert first_only >= 3                       # titulní strana + dlouhá kapitola na víc stran
+    assert whole == first_only + 2               # + strana po [[STRANA]] + druhá kapitola od nové strany
+    one = tmp_path / "kapitola.pdf"
+    ed2.print_to_pdf(one, whole=False)
+    assert len(PdfReader(str(one)).pages) == first_only - 1   # bez titulní strany
+    ed2.dirty = False
+    ed2.close()
