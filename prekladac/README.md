@@ -79,7 +79,10 @@ Ručně lze kontrolu spustit v *⚙ Nastavení → Obecné → Zkontrolovat novo
 
 ## Použití
 
-1. Přidejte soubory tlačítkem nebo je přetáhněte myší do seznamu.
+1. Přidejte soubory tlačítkem **Přidat soubory** (v okně jde vybrat víc souborů najednou – Ctrl+klik,
+   Shift+klik, Ctrl+A), **Přidat složku** (všechny podporované soubory včetně podsložek), nebo je přetáhněte
+   myší do seznamu. V seznamu se vybírá stejně (Ctrl, Shift, Ctrl+A / **Vybrat vše**); **Odebrat vybrané**
+   ukazuje počet a při výběru všech se změní na **Odebrat vše**. Odebírat jde i klávesou Delete.
 2. Zvolte cílový jazyk, výstupní formát, překladač a OCR. Pod překladačem je vidět, jestli je služba připravená.
 3. Klikněte na **Spustit**. V okně uvidíte průběh a na konci spotřebu (u Claude cenu, u DeepL zbývající měsíční limit).
 

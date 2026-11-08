@@ -279,3 +279,33 @@ def test_sidebar_collapse_and_section_order(qapp):
     assert not win.windowIcon().isNull()
     win.close()
     win2.close()
+
+
+def test_file_list_select_add_remove(qapp, tmp_path):
+    import qt_main
+    from PySide6 import QtCore, QtTest
+    for n in ("a.txt", "b.docx", "c.epub", "x.xyz"):
+        (tmp_path / n).write_text("x", encoding="utf-8")
+    (tmp_path / "sub").mkdir()
+    (tmp_path / "sub" / "d.pdf").write_text("x", encoding="utf-8")
+    win = qt_main.MainWindow()
+    page = win.translate
+    assert page.files.add([tmp_path / "a.txt", tmp_path / "x.xyz"]) == 1
+    assert page.files.skipped == ["x.xyz"]
+    assert page.files.add([tmp_path]) == 3          # složka i s podsložkou, bez duplicit a .xyz
+    assert page.files.count() == 4
+    assert not page.b_remove.isEnabled()
+    page.files.item(0).setSelected(True)
+    page.files.item(1).setSelected(True)
+    assert page.b_remove.text() == "➖ Odebrat vybrané (2)" and "vybráno 2" in page.files_info.text()
+    page.files.selectAll()                           # Ctrl+A
+    assert page.b_remove.text() == "🗑 Odebrat vše" and page.b_selall.text() == "☐ Zrušit výběr"
+    page.b_selall.click()
+    assert not page.files.selectedItems()
+    page.files.item(0).setSelected(True)
+    QtTest.QTest.keyClick(page.files, QtCore.Qt.Key_Delete)
+    assert page.files.count() == 3 and len(page.files.files) == 3
+    page.files.selectAll()
+    page.b_remove.click()
+    assert page.files.count() == 0 and page.files.files == [] and page.files_info.text() == ""
+    win.close()

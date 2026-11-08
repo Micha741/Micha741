@@ -49,7 +49,9 @@ class LogView(QtWidgets.QPlainTextEdit):
 
 
 class FileList(QtWidgets.QListWidget):
-    """Seznam souborů s přetahováním myší."""
+    """Seznam souborů: přetahování myší, výběr více souborů (Ctrl, Shift, Ctrl+A), Delete odebere vybrané."""
+
+    changed = QtCore.Signal()
 
     def __init__(self):
         super().__init__()
@@ -57,22 +59,61 @@ class FileList(QtWidgets.QListWidget):
         self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.setMinimumHeight(130)
         self.files: list[str] = []
+        self.skipped: list[str] = []
+        self.itemSelectionChanged.connect(self.changed)
 
-    def add(self, paths):
+    def add(self, paths) -> int:
+        """Přidá podporované soubory (složky projde včetně podsložek). Vrátí počet přidaných."""
+        added = 0
+        self.skipped = []
         for p in paths:
-            p = str(p)
-            if Path(p).suffix.lower() in SUPPORTED_EXT and p not in self.files:
-                self.files.append(p)
-                self.addItem(QtWidgets.QListWidgetItem(emoji_icon("📄"), p))
+            path = Path(str(p))
+            if path.is_dir():
+                items = sorted(f for f in path.rglob("*") if f.is_file())
+            else:
+                items = [path]
+            for f in items:
+                fs = str(f)
+                if f.suffix.lower() not in SUPPORTED_EXT:
+                    if not path.is_dir():
+                        self.skipped.append(f.name)
+                    continue
+                if fs in self.files:
+                    continue
+                self.files.append(fs)
+                it = QtWidgets.QListWidgetItem(emoji_icon("📄"), f"{f.name}   —   {f.parent}")
+                it.setData(Qt.UserRole, fs)
+                it.setToolTip(fs)
+                self.addItem(it)
+                added += 1
+        self.changed.emit()
+        return added
+
+    def all_selected(self) -> bool:
+        return self.count() > 0 and len(self.selectedItems()) == self.count()
 
     def remove_selected(self):
         for item in self.selectedItems():
-            self.files.remove(item.text())
+            self.files.remove(item.data(Qt.UserRole))
             self.takeItem(self.row(item))
+        self.changed.emit()
 
     def clear_all(self):
         self.files.clear()
         self.clear()
+        self.changed.emit()
+
+    def toggle_select_all(self):
+        if self.all_selected():
+            self.clearSelection()
+        else:
+            self.selectAll()
+
+    def keyPressEvent(self, e):
+        if e.key() in (Qt.Key_Delete, Qt.Key_Backspace) and self.selectedItems():
+            self.remove_selected()
+            return
+        super().keyPressEvent(e)
 
     def dragEnterEvent(self, e):
         if e.mimeData().hasUrls():
@@ -109,14 +150,30 @@ class TranslatePage(QtWidgets.QWidget):
         self.files = FileList()
         fl.addWidget(self.files, 1)
         btns = QtWidgets.QVBoxLayout()
-        for text, fn in (("➕ Přidat soubory…", self.pick), ("Odebrat vybrané", self.files.remove_selected),
-                         ("Vyčistit", self.files.clear_all)):
-            b = QtWidgets.QPushButton(text)
-            b.clicked.connect(fn)
+        b_add = QtWidgets.QPushButton("➕ Přidat soubory…")
+        b_add.setToolTip("V okně můžete vybrat víc souborů najednou (Ctrl+klik, Shift+klik, Ctrl+A).")
+        b_add.clicked.connect(self.pick)
+        b_dir = QtWidgets.QPushButton("📁 Přidat složku…")
+        b_dir.setToolTip("Přidá všechny podporované soubory ze složky včetně podsložek.")
+        b_dir.clicked.connect(self.pick_dir)
+        self.b_selall = QtWidgets.QPushButton("☑ Vybrat vše")
+        self.b_selall.setToolTip("Ctrl+A")
+        self.b_selall.clicked.connect(self.files.toggle_select_all)
+        self.b_remove = QtWidgets.QPushButton("➖ Odebrat vybrané")
+        self.b_remove.setToolTip("Klávesa Delete")
+        self.b_remove.clicked.connect(self.remove_files)
+        for b in (b_add, b_dir, self.b_selall, self.b_remove):
+            b.setFixedWidth(190)  # šířka se nemění, když se text tlačítka přepne
             btns.addWidget(b)
         btns.addStretch(1)
+        self.files_info = label("", "Hint", wrap=False)
+        btns.addWidget(self.files_info)
         fl.addLayout(btns)
         lay.addWidget(files_box, 2)
+        self.files.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.files.customContextMenuRequested.connect(self.files_menu)
+        self.files.changed.connect(self.update_file_buttons)
+        self.update_file_buttons()
 
         opts = QtWidgets.QGroupBox("Nastavení překladu")
         g = QtWidgets.QGridLayout(opts)
@@ -196,9 +253,58 @@ class TranslatePage(QtWidgets.QWidget):
 
     def pick(self):
         exts = " ".join(f"*{e}" for e in sorted(SUPPORTED_EXT))
-        files, _ = QtWidgets.QFileDialog.getOpenFileNames(self, "Vyberte soubory", "",
-                                                          f"Podporované soubory ({exts});;Vše (*.*)")
-        self.files.add(files)
+        files, _ = QtWidgets.QFileDialog.getOpenFileNames(
+            self, "Vyberte soubory (víc najednou: Ctrl+klik, Shift+klik nebo Ctrl+A)",
+            self.win.cfg.get("last_dir", ""), f"Podporované soubory ({exts});;Vše (*.*)")
+        if files:
+            self.win.cfg["last_dir"] = str(Path(files[0]).parent)
+            self._added(self.files.add(files))
+
+    def pick_dir(self):
+        d = QtWidgets.QFileDialog.getExistingDirectory(self, "Vyberte složku se soubory",
+                                                       self.win.cfg.get("last_dir", ""))
+        if d:
+            self.win.cfg["last_dir"] = d
+            n = self.files.add([d])
+            self._added(n)
+            if not n:
+                self.logv.log(f"Ve složce {d} nejsou žádné podporované soubory (nebo už jsou v seznamu).")
+
+    def _added(self, n: int):
+        if self.files.skipped:
+            self.logv.log("Nepodporovaný formát, přeskočeno: " + ", ".join(self.files.skipped))
+
+    def remove_files(self):
+        if self.files.all_selected():
+            self.files.clear_all()
+        else:
+            self.files.remove_selected()
+
+    def update_file_buttons(self):
+        total, sel = self.files.count(), len(self.files.selectedItems())
+        allsel = self.files.all_selected()
+        self.b_remove.setText("🗑 Odebrat vše" if allsel and total > 1 else
+                              f"➖ Odebrat vybrané ({sel})" if sel > 1 else "➖ Odebrat vybrané")
+        self.b_remove.setEnabled(sel > 0)
+        self.b_selall.setText("☐ Zrušit výběr" if allsel else "☑ Vybrat vše")
+        self.b_selall.setEnabled(total > 0)
+        word = "soubor" if total == 1 else "soubory" if 2 <= total <= 4 else "souborů"
+        self.files_info.setText(f"{total} {word}" + (f", vybráno {sel}" if sel else "") if total else "")
+
+    def files_menu(self, pos):
+        m = QtWidgets.QMenu(self)
+        m.addAction("➕ Přidat soubory…", self.pick)
+        m.addAction("📁 Přidat složku…", self.pick_dir)
+        m.addSeparator()
+        m.addAction("Vybrat vše", self.files.selectAll, QtGui.QKeySequence.SelectAll).setEnabled(self.files.count() > 0)
+        sel = self.files.selectedItems()
+        m.addAction(self.b_remove.text(), self.remove_files, QtGui.QKeySequence.Delete).setEnabled(bool(sel))
+        if len(sel) == 1:
+            path = sel[0].data(Qt.UserRole)
+            m.addSeparator()
+            m.addAction("📂 Otevřít složku souboru",
+                        lambda: QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(str(Path(path).parent))))
+        m.exec(self.files.viewport().mapToGlobal(pos))
 
     def refresh_status(self):
         cfg = self.win.cfg
