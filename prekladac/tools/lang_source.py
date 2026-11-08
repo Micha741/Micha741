@@ -688,6 +688,42 @@ E += [
     ("Uloženo jako {}", "Saved as {}", "Uložené ako {}", "Gespeichert als {}"),
     ("Uloženo: {}", "Saved: {}", "Uložené: {}", "Gespeichert: {}"),
     ("Uložit jako…", "Save as…", "Uložiť ako…", "Speichern unter…"),
+    # obrázky a obálka
+    ("Vložení", "Insert", "Vloženie", "Einfügen"),
+    ("Obrázek", "Picture", "Obrázok", "Bild"),
+    ("Vložit obrázek ze souboru (JPG, PNG…). Jde i Ctrl+V ze schránky nebo přetažením myší. Velikost a zarovnání "
+     "změníte pravým tlačítkem na obrázku.", "Insert a picture from a file (JPG, PNG…). Ctrl+V from the clipboard "
+     "or drag and drop also works. Right-click the picture to change size and alignment.",
+     "Vložiť obrázok zo súboru (JPG, PNG…). Ide aj Ctrl+V zo schránky alebo pretiahnutím myšou. Veľkosť a "
+     "zarovnanie zmeníte pravým tlačidlom na obrázku.", "Bild aus Datei einfügen (JPG, PNG…). Auch Strg+V aus der "
+     "Zwischenablage oder per Drag & Drop. Größe und Ausrichtung per Rechtsklick auf das Bild."),
+    ("Obálka", "Cover", "Obálka", "Umschlag"),
+    ("Obálka…", "Cover…", "Obálka…", "Umschlag…"),
+    ("Obrázek obálky: v EPUB, MOBI a AZW3 jako obálka e-knihy ve čtečce, v DOCX, PDF a tisku jako první strana.",
+     "Cover picture: in EPUB, MOBI and AZW3 as the e-book cover in the reader, in DOCX, PDF and print as the first "
+     "page.", "Obrázok obálky: v EPUB, MOBI a AZW3 ako obálka e-knihy v čítačke, v DOCX, PDF a tlači ako prvá "
+     "strana.", "Umschlagbild: in EPUB, MOBI und AZW3 als E-Book-Cover im Reader, in DOCX, PDF und Druck als erste "
+     "Seite."),
+    ("Odebrat obálku", "Remove cover", "Odobrať obálku", "Umschlag entfernen"),
+    ("bez\nobálky", "no\ncover", "bez\nobálky", "kein\nUmschlag"),
+    ("Obálka knihy", "Book cover", "Obálka knihy", "Buchumschlag"),
+    ("Obrázek obálky", "Cover picture", "Obrázok obálky", "Umschlagbild"),
+    ("Vložit obrázek", "Insert picture", "Vložiť obrázok", "Bild einfügen"),
+    ("🖼 Vložit obrázek…", "🖼 Insert picture…", "🖼 Vložiť obrázok…", "🖼 Bild einfügen…"),
+    ("🖼 Obrázek", "🖼 Picture", "🖼 Obrázok", "🖼 Bild"),
+    ("Šířka {} %", "Width {} %", "Šírka {} %", "Breite {} %"),
+    ("Vlastní šířka…", "Custom width…", "Vlastná šírka…", "Eigene Breite…"),
+    ("Nahradit obrázek…", "Replace picture…", "Nahradiť obrázok…", "Bild ersetzen…"),
+    ("Nahradit obrázek", "Replace picture", "Nahradiť obrázok", "Bild ersetzen"),
+    ("🗑 Smazat obrázek", "🗑 Delete picture", "🗑 Zmazať obrázok", "🗑 Bild löschen"),
+    ("Velikost obrázku", "Picture size", "Veľkosť obrázka", "Bildgröße"),
+    ("Šířka obrázku v % šířky stránky:", "Picture width in % of the page width:", "Šírka obrázka v % šírky strany:",
+     "Bildbreite in % der Seitenbreite:"),
+    ("Obrázek se nepodařilo načíst:\n{}", "The picture could not be loaded:\n{}", "Obrázok sa nepodarilo načítať:\n{}",
+     "Das Bild konnte nicht geladen werden:\n{}"),
+    ("Obrázky (*.jpg *.jpeg *.png *.gif *.bmp *.webp *.tif *.tiff);;Vše (*.*)", "Pictures (*.jpg *.jpeg *.png *.gif "
+     "*.bmp *.webp *.tif *.tiff);;All (*.*)", "Obrázky (*.jpg *.jpeg *.png *.gif *.bmp *.webp *.tif *.tiff);;Všetko "
+     "(*.*)", "Bilder (*.jpg *.jpeg *.png *.gif *.bmp *.webp *.tif *.tiff);;Alle (*.*)"),
     # Info
     ("🌐 Stránka programu", "🌐 Program website", "🌐 Stránka programu", "🌐 Programm-Website"),
     ("© 2026 Micha741 · zdarma pro osobní použití", "© 2026 Micha741 · free for personal use",

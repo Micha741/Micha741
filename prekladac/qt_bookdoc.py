@@ -21,6 +21,12 @@ def book_document(project: dict, chapter_index: int | None = None, title: str | 
     base = QtGui.QFont(fmt.get("font") or "Georgia")
     base.setPointSizeF(float(fmt.get("size") or 12))
     doc.setDefaultFont(base)
+    import book_images
+
+    for name in project.get("images") or {}:  # obrázky knihy jako zdroje dokumentu (tisk, ODT)
+        img = QtGui.QImage.fromData(book_images.get_image(project, name) or b"")
+        if not img.isNull():
+            doc.addResource(QtGui.QTextDocument.ImageResource, QtCore.QUrl(name), img)
     cur = QtGui.QTextCursor(doc)
     title = (title if title is not None else outline.get("title", "")) or ""
     author = (author if author is not None else project.get("author", "")) or ""
@@ -51,8 +57,17 @@ def book_document(project: dict, chapter_index: int | None = None, title: str | 
         cf.setFontWeight(QtGui.QFont.Bold if bold else QtGui.QFont.Normal)
         cur.insertText(t, cf)
 
-    if whole:  # titulní strana
-        block(False, Qt.AlignHCenter, top=220)
+    cover = project.get("cover")
+    if whole and cover and (project.get("images") or {}).get(cover):  # obálka přes celou stránku
+        img = doc.resource(QtGui.QTextDocument.ImageResource, QtCore.QUrl(cover))
+        block(False, Qt.AlignHCenter)
+        f = QtGui.QTextImageFormat()
+        f.setName(cover)
+        w, h = (img.width(), img.height()) if hasattr(img, "width") else (600, 900)
+        f.setWidth(min(600.0, 860.0 * w / max(1, h)))
+        cur.insertImage(f)
+    if whole:  # titulní strana (po obálce od nové stránky)
+        block(True, Qt.AlignHCenter, top=220)
         text(title, 26)
         if author:
             block(False, Qt.AlignHCenter, top=24)

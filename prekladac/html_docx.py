@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import html as htmllib
 import re
+import threading
 
 from bs4 import BeautifulSoup, NavigableString, Tag
 
@@ -122,6 +123,27 @@ def _apply_run(run, fmt: dict) -> None:
         run._r.get_or_add_rPr().append(shd)
 
 
+_IMAGES = threading.local()  # obrázky knihy pro právě převáděné HTML (název → data)
+
+
+def _add_picture(par, tag: Tag) -> None:
+    import io
+
+    from docx.shared import Inches
+
+    from book_images import docx_width_inches
+
+    data = (getattr(_IMAGES, "map", None) or {}).get(tag.get("src", ""))
+    if not data:
+        par.add_run("[obrázek]")
+        return
+    try:
+        width = float(tag.get("width")) if tag.get("width") else None
+    except ValueError:
+        width = None
+    par.add_run().add_picture(io.BytesIO(data), width=Inches(docx_width_inches(width, data)))
+
+
 def _fill_paragraph(par, node: Tag, fmt: dict) -> None:
     for child in node.children:
         if isinstance(child, NavigableString):
@@ -129,7 +151,9 @@ def _fill_paragraph(par, node: Tag, fmt: dict) -> None:
             if text:
                 _apply_run(par.add_run(text), fmt)
         elif isinstance(child, Tag):
-            if child.name == "br":
+            if child.name == "img":
+                _add_picture(par, child)
+            elif child.name == "br":
                 par.add_run().add_break()
             elif child.name in ("ul", "ol"):
                 continue  # vnořený seznam se zpracuje zvlášť
@@ -171,9 +195,11 @@ def _plain(tag: Tag) -> str:
     return htmllib.unescape(tag.get_text()).strip()
 
 
-def add_html(document, html: str) -> None:
-    """Přidá obsah HTML (z editoru) jako odstavce dokumentu."""
+def add_html(document, html: str, images: dict | None = None) -> None:
+    """Přidá obsah HTML (z editoru) jako odstavce dokumentu; images = název obrázku → data."""
     from docx.enum.text import WD_BREAK
+
+    _IMAGES.map = images or {}
 
     soup = BeautifulSoup(html, "lxml")
     body = soup.body or soup

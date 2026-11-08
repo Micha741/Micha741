@@ -37,6 +37,9 @@
 - Editor knihy: karta Soubor (Uložit, Uložit jako, Exportovat, Tisk, Náhled tisku, Zavřít).
 - Uložit jako / Export do DOCX, PDF, EPUB, MOBI, AZW3, ODT, RTF a TXT (i jako projekt *.kniha.json).
 - Skrývání panelu kapitol v editoru (Zobrazení → Panel kapitol, F9), stav se pamatuje.
+- Obrázky v knize: vložení ze souboru, schránky nebo přetažením (JPG, PNG, GIF, BMP, WEBP, TIFF), velikost
+  a zarovnání pravým tlačítkem; ukládají se přímo do souboru knihy a zůstanou v exportu i tisku.
+- Obálka knihy (karta Kniha): v EPUB/MOBI/AZW3 jako obálka e-knihy, v DOCX/PDF/ODT a tisku jako první strana.
 
 **1.0.37**
 - Jazyk programu (EN/SK/DE) s možností doinstalovat další jazyky.

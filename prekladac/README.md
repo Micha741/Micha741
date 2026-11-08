@@ -165,6 +165,12 @@ Když program zavřete, přijdete nanejvýš o právě psanou kapitolu – po sp
 - **Soubor** – Uložit, **Uložit jako…** (jeden soubor ve formátu **DOCX, PDF, EPUB, MOBI, AZW3, ODT, RTF, TXT**,
   nebo kopie projektu `*.kniha.json`, Ctrl+Shift+S), Exportovat (víc formátů najednou), Tisk, Náhled tisku, Zavřít.
   ODT (LibreOffice) a TXT zapisuje program sám, ostatní formáty z DOCX přes přibalené Calibre.
+- **Obrázky** – Domů → Vložení → **🖼 Obrázek** (JPG, PNG, GIF, BMP, WEBP, TIFF), nebo Ctrl+V ze schránky či
+  přetažení souboru myší. Pravým tlačítkem na obrázku: šířka (25–100 % stránky), zarovnání, nahradit, smazat.
+  Obrázky se ukládají přímo do souboru knihy (velké fotky se zmenší) a zůstanou v DOCX, EPUB, PDF, MOBI, AZW3,
+  RTF, ODT i v tisku (v TXT jako „[obrázek]“).
+- **Obálka** – Kniha → **🖼 Obálka…**: v EPUB, MOBI a AZW3 se zobrazí jako obálka e-knihy ve čtečce
+  (Kindle, Calibre…), v DOCX, PDF, ODT a tisku jako první strana.
 - **Zobrazení** – **📑 Panel kapitol** skryje/zobrazí seznam kapitol vlevo (F9, pamatuje se), **📏 Pravítko** (zapnout/vypnout, program si volbu pamatuje): vodorovné pravítko nad stránkou
   v centimetrech a svislé vlevo. Na vodorovném jde myší táhnout odsazení odstavce jako ve Wordu – ▽ nahoře
   první řádek, △ dole levé odsazení, △ vpravo pravé odsazení (po čtvrt centimetru); dvojklik odsazení zruší.
