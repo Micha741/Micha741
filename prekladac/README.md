@@ -68,6 +68,13 @@ Výsledek se uloží vedle originálu jako `název (čeština).přípona`.
    Číslo verze je v záhlaví okna a v *⚙ Nastavení → Obecné*.
    Klíče se ukládají **zašifrovaně** (Windows DPAPI) jen pro váš účet ve Windows.
 
+### Info o programu
+
+*⚙ Nastavení → Info* ukazuje verzi, co program umí, **historii verzí** (co přibylo kdy) a **plánované nápady**
+(soubor `assets/changelog.md`). Pod tím je pole **Moje poznámky a nápady**, kam si můžete psát vlastní seznam –
+uloží se tlačítkem Uložit nastavení. Instalátor i `Prekladac.exe` mají ve Vlastnostech → Podrobnosti verzi souboru,
+autorská práva a popis.
+
 ### Jazyk programu
 
 Program je česky, anglicky, slovensky a německy: *⚙ Nastavení → Obecné → Jazyk programu*, uložit a restartovat

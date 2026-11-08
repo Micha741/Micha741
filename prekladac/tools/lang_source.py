@@ -595,6 +595,20 @@ E += [
     ("Texty programu; návody ke službám a podrobné chybové hlášky zůstávají česky.", "Program texts; service guides "
      "and detailed error messages stay in Czech.", "Texty programu; návody k službám a podrobné chybové hlásenia "
      "zostávajú po česky.", "Programmtexte; Dienstanleitungen und detaillierte Fehlermeldungen bleiben tschechisch."),
+    # Info
+    ("🌐 Stránka programu", "🌐 Program website", "🌐 Stránka programu", "🌐 Programm-Website"),
+    ("© 2026 Micha741 · zdarma pro osobní použití", "© 2026 Micha741 · free for personal use",
+     "© 2026 Micha741 · zadarmo na osobné použitie", "© 2026 Micha741 · kostenlos für den privaten Gebrauch"),
+    ("Moje poznámky a nápady", "My notes and ideas", "Moje poznámky a nápady", "Meine Notizen und Ideen"),
+    ("Co ještě chcete v programu mít nebo vyzkoušet – uloží se tlačítkem Uložit nastavení.",
+     "What else you want in the program or want to try – saved with Save settings.",
+     "Čo ešte chcete v programe mať alebo vyskúšať – uloží sa tlačidlom Uložiť nastavenia.",
+     "Was Sie sich noch wünschen oder ausprobieren möchten – wird mit Einstellungen speichern gesichert."),
+    ("např. přidat tlačítko Přepsat kapitolu, vyzkoušet DeepL u PDF…", "e.g. add a Rewrite chapter button, try "
+     "DeepL with PDF…", "napr. pridať tlačidlo Prepísať kapitolu, vyskúšať DeepL pri PDF…",
+     "z. B. Schaltfläche Kapitel neu schreiben, DeepL mit PDF testen…"),
+    ("Seznam změn není k dispozici.", "The list of changes is not available.", "Zoznam zmien nie je k dispozícii.",
+     "Änderungsliste nicht verfügbar."),
     # ------------------------------------------------------------ editor knihy
     ("Domů", "Home", "Domov", "Start"),
     ("Zobrazení", "View", "Zobrazenie", "Ansicht"),

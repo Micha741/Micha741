@@ -525,3 +525,32 @@ def test_book_file_tab_save_open_recent(qapp, tmp_path, monkeypatch):
     assert "3. Konec" in win2.book.outline.toPlainText() and win2.book.cats["genre"].currentText() == "Pohádka"
     win.close()
     win2.close()
+
+
+def test_settings_info_tab_and_notes(qapp, monkeypatch):
+    import qt_main
+    from PySide6 import QtWidgets
+    win = qt_main.MainWindow()
+    tabs = win.settings.findChild(QtWidgets.QTabWidget)
+    assert tabs.tabText(tabs.count() - 1) == "Info"
+    text = win.settings.changelog.toPlainText()
+    assert "Co program umí" in text and "Historie verzí" in text and "Plánované a nápady" in text
+    win.settings.my_notes.setPlainText("Přidat přepis kapitoly")
+    monkeypatch.setattr(QtWidgets.QMessageBox, "information", lambda *a, **k: None)
+    win.settings.save()
+    assert win.cfg["my_notes"] == "Přidat přepis kapitoly"
+    win2 = qt_main.MainWindow()
+    assert win2.settings.my_notes.toPlainText() == "Přidat přepis kapitoly"
+    win.close()
+    win2.close()
+
+
+def test_version_info_resource():
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
+    import make_version_info as m
+    out = m.render("1.0.38")
+    assert "filevers=(1, 0, 38, 0)" in out and "'FileVersion', '1.0.38.0'" in out
+    assert "LegalCopyright" in out and "Micha741" in out
+    assert m.version_tuple("vývojová verze") == (0, 0, 0, 0)

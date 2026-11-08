@@ -30,6 +30,15 @@ PrivilegesRequired=admin
 PrivilegesRequiredOverridesAllowed=commandline dialog
 UninstallDisplayIcon={app}\Prekladac.exe
 SetupIconFile=assets\icon.ico
+; údaje souboru Prekladac-Setup.exe (Vlastnosti → Podrobnosti)
+VersionInfoVersion={#AppVersion}
+VersionInfoProductVersion={#AppVersion}
+VersionInfoTextVersion={#AppVersion}
+VersionInfoCompany=Micha741
+VersionInfoCopyright=© 2026 Micha741
+VersionInfoDescription=Překladač knih a dokumentů – instalátor
+VersionInfoProductName=Překladač knih a dokumentů
+VersionInfoProductTextVersion={#AppVersion}
 UninstallDisplayName=Překladač knih a dokumentů
 LicenseFile=THIRD_PARTY.txt
 

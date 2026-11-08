@@ -18,7 +18,7 @@ from claude_client import DEFAULT_MODEL, MODELS, Cancelled
 from converters import DOC_ONLY_EXT, OUTPUT_FORMATS, SUPPORTED_EXT, find_ebook_convert
 from free_engines import ENGINE_LABELS, OCR_LABELS, EngineError, GeminiEngine, OllamaEngine, find_tesseract
 from guides import GUIDES
-from qt_common import STYLESHEET, app_icon, bridge, emoji_icon, label, run_bg, set_status
+from qt_common import STYLESHEET, app_icon, asset, bridge, emoji_icon, label, run_bg, set_status
 import i18n
 import updater
 from qt_editor import RibbonGroup, vline
@@ -1139,6 +1139,7 @@ class SettingsPage(QtWidgets.QWidget):
         tabs.addTab(self._services_tab(cfg), "Služby a klíče")
         tabs.addTab(scrolled(self._components_tab(cfg)), "Součásti")
         tabs.addTab(scrolled(self._general_tab(cfg)), "Obecné")
+        tabs.addTab(self._info_tab(cfg), "Info")
         sc = QtGui.QShortcut(QtGui.QKeySequence("Ctrl+S"), self, activated=self.save)
         sc.setContext(Qt.WidgetWithChildrenShortcut)
 
@@ -1433,6 +1434,43 @@ class SettingsPage(QtWidgets.QWidget):
         self.refresh_dictionary()
         return w
 
+    def _info_tab(self, cfg) -> QtWidgets.QWidget:
+        """O programu: verze, co umí, historie verzí, plány a vlastní poznámky uživatele."""
+        w = QtWidgets.QWidget()
+        lay = QtWidgets.QVBoxLayout(w)
+        head = QtWidgets.QHBoxLayout()
+        logo = QtWidgets.QLabel()
+        logo.setPixmap(app_icon().pixmap(QtCore.QSize(56, 56)))
+        head.addWidget(logo)
+        info = QtWidgets.QVBoxLayout()
+        info.addWidget(label(core.APP_NAME, "PageTitle", wrap=False))
+        info.addWidget(label(f"Verze programu: {VERSION}", wrap=False))
+        info.addWidget(label("© 2026 Micha741 · zdarma pro osobní použití", "Hint", wrap=False))
+        head.addLayout(info, 1)
+        web = QtWidgets.QPushButton("🌐 Stránka programu")
+        web.clicked.connect(lambda: webbrowser.open(updater.RELEASE_URL))
+        head.addWidget(web, 0, Qt.AlignTop)
+        lay.addLayout(head)
+        split = QtWidgets.QSplitter(Qt.Vertical)
+        self.changelog = QtWidgets.QTextBrowser()
+        self.changelog.setOpenExternalLinks(True)
+        try:
+            self.changelog.setMarkdown(Path(asset("changelog.md")).read_text(encoding="utf-8"))
+        except OSError:
+            self.changelog.setPlainText("Seznam změn není k dispozici.")
+        split.addWidget(self.changelog)
+        nbox = QtWidgets.QGroupBox("Moje poznámky a nápady")
+        nl = QtWidgets.QVBoxLayout(nbox)
+        nl.addWidget(label("Co ještě chcete v programu mít nebo vyzkoušet – uloží se tlačítkem Uložit nastavení.",
+                           "Hint"))
+        self.my_notes = QtWidgets.QPlainTextEdit(cfg.get("my_notes", ""))
+        self.my_notes.setPlaceholderText("např. přidat tlačítko Přepsat kapitolu, vyzkoušet DeepL u PDF…")
+        nl.addWidget(self.my_notes)
+        split.addWidget(nbox)
+        split.setSizes([420, 160])
+        lay.addWidget(split, 1)
+        return w
+
     def fill_ui_langs(self, select: str):
         self.ui_lang.blockSignals(True)
         self.ui_lang.clear()
@@ -1515,6 +1553,7 @@ class SettingsPage(QtWidgets.QWidget):
         ta["spell"] = self.ta_spell.isChecked()
         ta["complete"] = self.ta_complete.isChecked()
         ta["capitalize"] = self.ta_caps.isChecked()
+        cfg["my_notes"] = self.my_notes.toPlainText()
         for a in (self.win.book.desc_assist, self.win.book.outline_assist):
             a.on_dictionary_ready() if ta["spell"] else a.rehighlight()
         new_lang = self.ui_lang.currentData() or "cs"
