@@ -234,7 +234,10 @@ class BookWriter:
         parts.append(f"\nNapiš kapitolu {idx + 1} z {len(chapters)}: „{ch['title']}“.")
         if ch.get("summary"):
             parts.append(f"Obsah podle osnovy: {ch['summary']}")
-        parts.append(f"Délka: přibližně {project['words']} slov.")
+        w = int(project["words"])
+        parts.append(f"Délka: přibližně {w} slov – na délce záleží: napiš aspoň {int(w * 0.85)} a nejvýš "
+                     f"{int(w * 1.2)} slov. Když děj z osnovy nevystačí, rozveď scény, dialogy, popisy a prožitky "
+                     "postav; nepřidávej ale děj z dalších kapitol.")
         if idx == len(chapters) - 1:
             parts.append("Je to poslední kapitola – příběh uzavři.")
         return "\n".join(parts)
@@ -254,6 +257,18 @@ class BookWriter:
                 raise BookError(f"Kapitolu {idx + 1} se nepodařilo napsat ({e}). Rozepsaná kniha je uložená, "
                                 "můžete pokračovat později.") from e
             text = res["text"].strip()
+            target = int(project["words"])
+            if len(text.split()) < target * 0.6:  # model psal výrazně kratší – jeden pokus o delší verzi
+                n = len(text.split())
+                self.log(f"  kapitola má jen {n} slov z ~{target}, píšu ji znovu podrobněji…")
+                retry = (prompt + f"\n\nPOZOR: předchozí verze měla jen {n} slov, to je málo. Napiš kapitolu "
+                         f"znovu, mnohem podrobněji – alespoň {int(target * 0.85)} slov.")
+                try:
+                    res2 = self.backend.complete(system, retry, CHAPTER_SCHEMA, max_tokens=max_tokens, cache=True)
+                    if len(res2["text"].split()) > n:
+                        res, text = res2, res2["text"].strip()
+                except ModelError as e:
+                    self.log(f"  delší verze se nepovedla ({e}), ponechávám kratší.")
             project["chapters"].append({"text": text, "summary": res["summary"].strip()})
             save_project(project_path, project)
             self.log(f"  ✓ hotovo ({len(text.split()):,} slov) – {self.backend.cost_summary()}".replace(",", " "))

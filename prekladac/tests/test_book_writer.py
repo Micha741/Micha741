@@ -47,7 +47,9 @@ class FakeClaude:
         n = sum(1 for c in self.calls if c[2] is bw.CHAPTER_SCHEMA)
         if self.stop_after is not None and n > self.stop_after:
             raise Cancelled()
-        return {"text": f"Odstavec jedna kapitoly {n}.\n\nOdstavec dva kapitoly {n}.", "summary": f"Shrnutí {n}."}
+        filler = " ".join(["slovo"] * 1200)  # dost dlouhá kapitola, ať se nepřepisuje
+        return {"text": f"Odstavec jedna kapitoly {n}. {filler}\n\nOdstavec dva kapitoly {n}.",
+                "summary": f"Shrnutí {n}."}
 
 
 def make_writer(monkeypatch, fake):
@@ -178,3 +180,33 @@ def test_style_options():
         "Žánr: Fantasy; Pro koho: Mládež (young adult); Tón / atmosféra: Napínavý; Další přání: hodně dialogů"
     assert bo.is_mature({"genre": "Erotika"}) and bo.is_mature({"audience": "Dospělí 18+"})
     assert not bo.is_mature(parts)
+
+
+class LengthBackend:
+    """Napoprvé vrátí krátkou kapitolu, při opakování delší; zapisuje si zadání."""
+
+    def __init__(self):
+        self.prompts = []
+
+    def complete(self, system, user, schema, max_tokens, cache=False):
+        self.prompts.append(user)
+        n = 900 if "POZOR" in user else 100
+        return {"text": " ".join(["slovo"] * n), "summary": "S."}
+
+    def cost_summary(self):
+        return ""
+
+
+def test_chapter_length_is_enforced(tmp_path):
+    be = LengthBackend()
+    w = bw.BookWriter(be, "čeština", log=lambda *_: None)
+    proj = {"description": "x", "words": 1000, "outline": OUTLINE, "chapters": []}
+    w.write(proj, tmp_path / "k.kniha.json")
+    assert "aspoň 850 a nejvýš 1200 slov" in be.prompts[0]
+    assert len(be.prompts) == 6                     # každá krátká kapitola se jednou přepsala delší
+    assert all(len(c["text"].split()) == 900 for c in proj["chapters"])
+    # změněná délka v projektu se projeví v zadání další kapitoly
+    proj2 = {"description": "x", "words": 3000, "outline": OUTLINE, "chapters": []}
+    be2 = LengthBackend()
+    bw.BookWriter(be2, "čeština", log=lambda *_: None).write(proj2, tmp_path / "k2.kniha.json")
+    assert "přibližně 3000 slov" in be2.prompts[0]

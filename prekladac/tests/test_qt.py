@@ -334,3 +334,42 @@ def test_auto_capitalize_typing(qapp):
     opts["capitalize"] = False
     QtTest.QTest.keyClicks(edit, "drak. pes")
     assert edit.toPlainText() == "drak. pes"
+
+
+def test_book_scope_is_remembered_and_applied(qapp, tmp_path, monkeypatch):
+    import book_writer as bw
+    import qt_main
+    from PySide6 import QtWidgets
+    win = qt_main.MainWindow()
+    b = win.book
+    b.nchap.setValue(20)
+    b.nwords.setValue(1200)
+    b.remember_scope()
+    win2 = qt_main.MainWindow()                       # po novém spuštění zůstane
+    assert (win2.book.nchap.value(), win2.book.nwords.value()) == (20, 1200)
+    # osnova vznikla s 2500 slovy, pak uživatel změní délku na 1200 → při psaní se použije 1200
+    outline = {"title": "T", "synopsis": "", "characters": [],
+               "chapters": [{"title": f"K{i}", "summary": ""} for i in range(20)]}
+    b.bdir.setText(str(tmp_path))
+    win.cfg.setdefault("engines", {})["gemini"] = {"api_key": "test"}
+    b.service.setCurrentIndex(b.service.findData("gemini"))
+    for name in ("critical", "warning", "information"):
+        monkeypatch.setattr(QtWidgets.QMessageBox, name, lambda *a, **k: (_ for _ in ()).throw(
+            AssertionError(f"neočekávané okno: {a[2] if len(a) > 2 else a}")))
+    b.nwords.setValue(2500)
+    b.new_project(outline)
+    b.outline.setPlainText(bw.outline_to_text(outline))
+    b.nwords.setValue(1200)
+    asked = []
+    monkeypatch.setattr(QtWidgets.QMessageBox, "question",
+                        lambda *a, **k: asked.append(a[2]) or QtWidgets.QMessageBox.No)
+    b.do_write()
+    assert b.project["words"] == 1200 and bw.load_project(b.path)["words"] == 1200
+    assert asked and "Napsat 20 kapitol" in asked[-1]
+    # nesoulad počtu kapitol se ohlásí
+    b.nchap.setValue(25)
+    asked.clear()
+    b.do_write()
+    assert "Osnova má 20 kapitol" in asked[0]
+    win.close()
+    win2.close()

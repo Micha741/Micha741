@@ -422,11 +422,11 @@ class BookPage(QtWidgets.QWidget):
             self.model.addItem(text, mid)
         self.nchap = QtWidgets.QSpinBox()
         self.nchap.setRange(1, 60)
-        self.nchap.setValue(12)
+        self.nchap.setValue(int(cfg.get("book_chapters", 12)))
         self.nwords = QtWidgets.QSpinBox()
         self.nwords.setRange(500, 8000)
         self.nwords.setSingleStep(100)
-        self.nwords.setValue(2500)
+        self.nwords.setValue(int(cfg.get("book_words", 2500)))
         self.svc_status = label("", wrap=False)
         self.est = label("", "Hint", wrap=False)
         self.fmts = {}
@@ -614,6 +614,13 @@ class BookPage(QtWidgets.QWidget):
         for sig in (self.service.currentIndexChanged, self.model.currentIndexChanged, self.nchap.valueChanged,
                     self.nwords.valueChanged):
             sig.connect(self.on_service)
+        for ed in (self.nchap, self.nwords):
+            ed.editingFinished.connect(self.remember_scope)
+            ed.valueChanged.connect(lambda *_: self._scope_timer.start())
+        self._scope_timer = QtCore.QTimer(self)  # uložit až chvíli po poslední změně, ne při každém kliknutí
+        self._scope_timer.setSingleShot(True)
+        self._scope_timer.setInterval(800)
+        self._scope_timer.timeout.connect(self.remember_scope)
         self.on_service()
         self.update_buttons()
 
@@ -641,6 +648,13 @@ class BookPage(QtWidgets.QWidget):
             eng = core.make_engine(svc, language, cfg["engines"].get(svc, {}), "")
             backend = bw.EngineBackend(eng, self.cancel)
         return bw.BookWriter(backend, language, self.logv.log)
+
+    def remember_scope(self, *_):
+        """Počet kapitol a délka kapitoly zůstanou nastavené i po zavření programu."""
+        cfg = self.win.cfg
+        if (cfg.get("book_chapters"), cfg.get("book_words")) != (self.nchap.value(), self.nwords.value()):
+            cfg["book_chapters"], cfg["book_words"] = self.nchap.value(), self.nwords.value()
+            self.win.save_cfg()
 
     def on_service(self, *_):
         cfg = self.win.cfg
@@ -751,6 +765,21 @@ class BookPage(QtWidgets.QWidget):
                 self.new_project(outline)
         proj, path = self.project, self.path
         n = len(outline["chapters"])
+        if n != self.nchap.value() and not proj["chapters"]:
+            ans = QtWidgets.QMessageBox.question(
+                self, "Napsat knihu",
+                f"Osnova má {n} kapitol, ale v „Rozsah a služba“ je nastaveno {self.nchap.value()}.\n\n"
+                "Počet kapitol určuje osnova. Pokračovat s osnovou tak, jak je?\n\n"
+                "(Pro jiný počet klikněte na Ne a nechte znovu „1. Navrhnout osnovu“, nebo kapitoly "
+                "v osnově přidejte či smažte.)")
+            if ans != QtWidgets.QMessageBox.Yes:
+                return
+        if int(proj.get("words", 0)) != self.nwords.value():  # délku kapitoly jde změnit i po návrhu osnovy
+            old_words = proj.get("words")
+            proj["words"] = self.nwords.value()
+            bw.save_project(path, proj)
+            self.logv.log(f"Délka kapitoly změněna z {old_words} na {proj['words']} slov"
+                          + (" (platí pro kapitoly, které se teprve napíšou)." if proj["chapters"] else "."))
         try:
             wr = self.writer()
             estimate = wr.estimate(n, proj["words"])
