@@ -77,7 +77,7 @@ jobs:
           foreach ($l in 'eng','ces','slk','deu','pol','fra','spa','ita','rus','ukr','hun') {
             $out = "build\Tesseract-OCR\tessdata\$l.traineddata"
             if (-not (Test-Path $out)) {
-              Get-File "https://github.com/tesseract-ocr/tessdata_fast/raw/main/$l.traineddata" $out
+              Get-File "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/main/$l.traineddata" $out
             }
           }
           # český slovník pro kontrolu pravopisu a návrhy slov (LibreOffice, GPL)
