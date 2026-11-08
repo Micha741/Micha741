@@ -20,6 +20,7 @@ from free_engines import ENGINE_LABELS, OCR_LABELS, EngineError, GeminiEngine, O
 from guides import GUIDES
 from qt_common import STYLESHEET, app_icon, bridge, emoji_icon, label, run_bg, set_status
 import updater
+from qt_editor import RibbonGroup, vline
 from qt_textassist import TextAssist
 from version import VERSION
 
@@ -49,7 +50,9 @@ class LogView(QtWidgets.QPlainTextEdit):
 
 
 class FileList(QtWidgets.QListWidget):
-    """Seznam souborů s přetahováním myší."""
+    """Seznam souborů: přetahování myší, výběr více souborů (Ctrl, Shift, Ctrl+A), Delete odebere vybrané."""
+
+    changed = QtCore.Signal()
 
     def __init__(self):
         super().__init__()
@@ -57,22 +60,61 @@ class FileList(QtWidgets.QListWidget):
         self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.setMinimumHeight(130)
         self.files: list[str] = []
+        self.skipped: list[str] = []
+        self.itemSelectionChanged.connect(self.changed)
 
-    def add(self, paths):
+    def add(self, paths) -> int:
+        """Přidá podporované soubory (složky projde včetně podsložek). Vrátí počet přidaných."""
+        added = 0
+        self.skipped = []
         for p in paths:
-            p = str(p)
-            if Path(p).suffix.lower() in SUPPORTED_EXT and p not in self.files:
-                self.files.append(p)
-                self.addItem(QtWidgets.QListWidgetItem(emoji_icon("📄"), p))
+            path = Path(str(p))
+            if path.is_dir():
+                items = sorted(f for f in path.rglob("*") if f.is_file())
+            else:
+                items = [path]
+            for f in items:
+                fs = str(f)
+                if f.suffix.lower() not in SUPPORTED_EXT:
+                    if not path.is_dir():
+                        self.skipped.append(f.name)
+                    continue
+                if fs in self.files:
+                    continue
+                self.files.append(fs)
+                it = QtWidgets.QListWidgetItem(emoji_icon("📄"), f"{f.name}   —   {f.parent}")
+                it.setData(Qt.UserRole, fs)
+                it.setToolTip(fs)
+                self.addItem(it)
+                added += 1
+        self.changed.emit()
+        return added
+
+    def all_selected(self) -> bool:
+        return self.count() > 0 and len(self.selectedItems()) == self.count()
 
     def remove_selected(self):
         for item in self.selectedItems():
-            self.files.remove(item.text())
+            self.files.remove(item.data(Qt.UserRole))
             self.takeItem(self.row(item))
+        self.changed.emit()
 
     def clear_all(self):
         self.files.clear()
         self.clear()
+        self.changed.emit()
+
+    def toggle_select_all(self):
+        if self.all_selected():
+            self.clearSelection()
+        else:
+            self.selectAll()
+
+    def keyPressEvent(self, e):
+        if e.key() in (Qt.Key_Delete, Qt.Key_Backspace) and self.selectedItems():
+            self.remove_selected()
+            return
+        super().keyPressEvent(e)
 
     def dragEnterEvent(self, e):
         if e.mimeData().hasUrls():
@@ -109,14 +151,30 @@ class TranslatePage(QtWidgets.QWidget):
         self.files = FileList()
         fl.addWidget(self.files, 1)
         btns = QtWidgets.QVBoxLayout()
-        for text, fn in (("➕ Přidat soubory…", self.pick), ("Odebrat vybrané", self.files.remove_selected),
-                         ("Vyčistit", self.files.clear_all)):
-            b = QtWidgets.QPushButton(text)
-            b.clicked.connect(fn)
+        b_add = QtWidgets.QPushButton("➕ Přidat soubory…")
+        b_add.setToolTip("V okně můžete vybrat víc souborů najednou (Ctrl+klik, Shift+klik, Ctrl+A).")
+        b_add.clicked.connect(self.pick)
+        b_dir = QtWidgets.QPushButton("📁 Přidat složku…")
+        b_dir.setToolTip("Přidá všechny podporované soubory ze složky včetně podsložek.")
+        b_dir.clicked.connect(self.pick_dir)
+        self.b_selall = QtWidgets.QPushButton("☑ Vybrat vše")
+        self.b_selall.setToolTip("Ctrl+A")
+        self.b_selall.clicked.connect(self.files.toggle_select_all)
+        self.b_remove = QtWidgets.QPushButton("➖ Odebrat vybrané")
+        self.b_remove.setToolTip("Klávesa Delete")
+        self.b_remove.clicked.connect(self.remove_files)
+        for b in (b_add, b_dir, self.b_selall, self.b_remove):
+            b.setFixedWidth(190)  # šířka se nemění, když se text tlačítka přepne
             btns.addWidget(b)
         btns.addStretch(1)
+        self.files_info = label("", "Hint", wrap=False)
+        btns.addWidget(self.files_info)
         fl.addLayout(btns)
         lay.addWidget(files_box, 2)
+        self.files.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.files.customContextMenuRequested.connect(self.files_menu)
+        self.files.changed.connect(self.update_file_buttons)
+        self.update_file_buttons()
 
         opts = QtWidgets.QGroupBox("Nastavení překladu")
         g = QtWidgets.QGridLayout(opts)
@@ -168,7 +226,7 @@ class TranslatePage(QtWidgets.QWidget):
         self.notes.setMaximumHeight(60)
         g.addWidget(QtWidgets.QLabel("Pokyny:"), 5, 0)
         g.addWidget(self.notes, 5, 1, 1, 3)
-        self.merge = QtWidgets.QCheckBox("Více obrázků spojit do jednoho DOCX")
+        self.merge = QtWidgets.QCheckBox("Více obrázků spojit do jednoho dokumentu (DOCX, nebo vícestránkové PDF)")
         self.merge.setChecked(cfg.get("merge_images", True))
         g.addWidget(self.merge, 6, 1, 1, 3)
         g.setColumnStretch(1, 1)
@@ -196,9 +254,58 @@ class TranslatePage(QtWidgets.QWidget):
 
     def pick(self):
         exts = " ".join(f"*{e}" for e in sorted(SUPPORTED_EXT))
-        files, _ = QtWidgets.QFileDialog.getOpenFileNames(self, "Vyberte soubory", "",
-                                                          f"Podporované soubory ({exts});;Vše (*.*)")
-        self.files.add(files)
+        files, _ = QtWidgets.QFileDialog.getOpenFileNames(
+            self, "Vyberte soubory (víc najednou: Ctrl+klik, Shift+klik nebo Ctrl+A)",
+            self.win.cfg.get("last_dir", ""), f"Podporované soubory ({exts});;Vše (*.*)")
+        if files:
+            self.win.cfg["last_dir"] = str(Path(files[0]).parent)
+            self._added(self.files.add(files))
+
+    def pick_dir(self):
+        d = QtWidgets.QFileDialog.getExistingDirectory(self, "Vyberte složku se soubory",
+                                                       self.win.cfg.get("last_dir", ""))
+        if d:
+            self.win.cfg["last_dir"] = d
+            n = self.files.add([d])
+            self._added(n)
+            if not n:
+                self.logv.log(f"Ve složce {d} nejsou žádné podporované soubory (nebo už jsou v seznamu).")
+
+    def _added(self, n: int):
+        if self.files.skipped:
+            self.logv.log("Nepodporovaný formát, přeskočeno: " + ", ".join(self.files.skipped))
+
+    def remove_files(self):
+        if self.files.all_selected():
+            self.files.clear_all()
+        else:
+            self.files.remove_selected()
+
+    def update_file_buttons(self):
+        total, sel = self.files.count(), len(self.files.selectedItems())
+        allsel = self.files.all_selected()
+        self.b_remove.setText("🗑 Odebrat vše" if allsel and total > 1 else
+                              f"➖ Odebrat vybrané ({sel})" if sel > 1 else "➖ Odebrat vybrané")
+        self.b_remove.setEnabled(sel > 0)
+        self.b_selall.setText("☐ Zrušit výběr" if allsel else "☑ Vybrat vše")
+        self.b_selall.setEnabled(total > 0)
+        word = "soubor" if total == 1 else "soubory" if 2 <= total <= 4 else "souborů"
+        self.files_info.setText(f"{total} {word}" + (f", vybráno {sel}" if sel else "") if total else "")
+
+    def files_menu(self, pos):
+        m = QtWidgets.QMenu(self)
+        m.addAction("➕ Přidat soubory…", self.pick)
+        m.addAction("📁 Přidat složku…", self.pick_dir)
+        m.addSeparator()
+        m.addAction("Vybrat vše", self.files.selectAll, QtGui.QKeySequence.SelectAll).setEnabled(self.files.count() > 0)
+        sel = self.files.selectedItems()
+        m.addAction(self.b_remove.text(), self.remove_files, QtGui.QKeySequence.Delete).setEnabled(bool(sel))
+        if len(sel) == 1:
+            path = sel[0].data(Qt.UserRole)
+            m.addSeparator()
+            m.addAction("📂 Otevřít složku souboru",
+                        lambda: QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(str(Path(path).parent))))
+        m.exec(self.files.viewport().mapToGlobal(pos))
 
     def refresh_status(self):
         cfg = self.win.cfg
@@ -286,52 +393,22 @@ class BookPage(QtWidgets.QWidget):
         self.busy = False
         self.editors = []
 
-        outer = QtWidgets.QVBoxLayout(self)
-        outer.setContentsMargins(0, 0, 0, 0)
-        scroll = QtWidgets.QScrollArea()
-        scroll.setWidgetResizable(True)
-        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        inner = QtWidgets.QWidget()
-        lay = QtWidgets.QVBoxLayout(inner)
-        lay.setContentsMargins(0, 0, 12, 0)
-        scroll.setWidget(inner)
-        outer.addWidget(scroll)
-        lay.addWidget(h_title("Napsat knihu"))
-
-        box = QtWidgets.QGroupBox("2. Popis knihy")
-        bl = QtWidgets.QVBoxLayout(box)
-        self.desc = QtWidgets.QPlainTextEdit()
-        self.desc.setPlaceholderText("O čem kniha je, hlavní postavy, prostředí, pro koho je, jak má skončit… "
-                                     "(stačí kolem 20 vět)")
-        self.desc.setMinimumHeight(120)
-        bl.addWidget(self.desc)
-        self.desc_assist = TextAssist(self.desc, win.cfg.setdefault("text_assist", {}), win.save_cfg)
-
-        cat = QtWidgets.QGroupBox("1. Žánr a styl (vyberte ze seznamu nebo napište vlastní)")
-        cg = QtWidgets.QGridLayout(cat)
+        ta_opts = win.cfg.setdefault("text_assist", {})
+        # ---------- prvky (rozmístí je pás karet a stránka níže)
         self.cats: dict[str, QtWidgets.QComboBox] = {}
-        for k, (key, text, values) in enumerate(bo.CATEGORIES):
-            r, c = divmod(k, 3)
+        for key, text, values in bo.CATEGORIES:
             cb = QtWidgets.QComboBox()
             cb.setEditable(True)
             cb.addItems([""] + values)
             cb.setMaxVisibleItems(25)
+            cb.setMinimumWidth(190)
+            cb.lineEdit().setPlaceholderText("(nevybráno)")
             cb.currentTextChanged.connect(self.on_category)
-            cg.addWidget(QtWidgets.QLabel(text + ":"), r, c * 2)
-            cg.addWidget(cb, r, c * 2 + 1)
-            cg.setColumnStretch(c * 2 + 1, 1)
             self.cats[key] = cb
         self.extra = QtWidgets.QLineEdit()
-        self.extra.setPlaceholderText("Další přání ke stylu (např. hodně dialogů, krátké kapitoly s napínavým koncem)")
-        cg.addWidget(QtWidgets.QLabel("Další přání:"), 3, 0)
-        cg.addWidget(self.extra, 3, 1, 1, 5)
+        self.extra.setMinimumWidth(260)
+        self.extra.setPlaceholderText("např. hodně dialogů, krátké kapitoly s napínavým koncem")
         self.mature = label("", "Warn")
-        cg.addWidget(self.mature, 4, 0, 1, 6)
-        lay.addWidget(cat)
-        lay.addWidget(box)
-
-        st = QtWidgets.QGroupBox("3. Rozsah a služba")
-        sg = QtWidgets.QGridLayout(st)
         self.blang = QtWidgets.QComboBox()
         self.blang.setEditable(True)
         self.blang.addItems(core.LANGUAGES)
@@ -345,72 +422,189 @@ class BookPage(QtWidgets.QWidget):
             self.model.addItem(text, mid)
         self.nchap = QtWidgets.QSpinBox()
         self.nchap.setRange(1, 60)
-        self.nchap.setValue(12)
+        self.nchap.setValue(int(cfg.get("book_chapters", 12)))
         self.nwords = QtWidgets.QSpinBox()
         self.nwords.setRange(500, 8000)
         self.nwords.setSingleStep(100)
-        self.nwords.setValue(2500)
-        self.svc_status = label("")
-        self.est = label("", "Hint")
-        sg.addWidget(QtWidgets.QLabel("Jazyk knihy:"), 0, 0)
-        sg.addWidget(self.blang, 0, 1)
-        sg.addWidget(QtWidgets.QLabel("Služba:"), 0, 2)
-        sg.addWidget(self.service, 0, 3)
-        sg.addWidget(QtWidgets.QLabel("Počet kapitol:"), 1, 0)
-        sg.addWidget(self.nchap, 1, 1)
-        sg.addWidget(QtWidgets.QLabel("Claude model:"), 1, 2)
-        sg.addWidget(self.model, 1, 3)
-        sg.addWidget(QtWidgets.QLabel("Slov na kapitolu:"), 2, 0)
-        sg.addWidget(self.nwords, 2, 1)
-        sg.addWidget(self.svc_status, 3, 0, 1, 4)
-        sg.addWidget(self.est, 4, 0, 1, 4)
-        fmt_row = QtWidgets.QHBoxLayout()
-        fmt_row.addWidget(QtWidgets.QLabel("Uložit jako:"))
+        self.nwords.setValue(int(cfg.get("book_words", 2500)))
+        self.svc_status = label("", wrap=False)
+        self.est = label("", "Hint", wrap=False)
         self.fmts = {}
         for f in ("epub", "docx", "pdf", "azw3"):
             c = QtWidgets.QCheckBox(f.upper())
             c.setChecked(f in ("epub", "docx"))
             self.fmts[f] = c
-            fmt_row.addWidget(c)
-        fmt_row.addStretch(1)
-        sg.addLayout(fmt_row, 5, 0, 1, 4)
         self.bdir = QtWidgets.QLineEdit(cfg.get("out_dir") or str(Path.home() / "Documents" / "Knihy"))
-        pick = QtWidgets.QPushButton("Vybrat…")
+        self.bdir.setMinimumWidth(260)
+        pick = QtWidgets.QPushButton("📁 Vybrat…")
         pick.clicked.connect(lambda: (d := QtWidgets.QFileDialog.getExistingDirectory(self, "Složka knih"))
                              and self.bdir.setText(d))
-        sg.addWidget(QtWidgets.QLabel("Složka:"), 6, 0)
-        sg.addWidget(self.bdir, 6, 1, 1, 2)
-        sg.addWidget(pick, 6, 3)
-        sg.setColumnStretch(1, 1)
-        sg.setColumnStretch(3, 1)
-        lay.addWidget(st)
 
-        ob = QtWidgets.QGroupBox("4. Osnova (můžete ji upravit – kapitoly ve tvaru „1. Název — obsah“)")
-        ol = QtWidgets.QVBoxLayout(ob)
+        def big(icon, text, tip, obj="BigAction"):
+            b = QtWidgets.QToolButton()
+            b.setObjectName(obj)
+            b.setIcon(emoji_icon(icon))
+            b.setIconSize(QtCore.QSize(28, 28))
+            b.setText(text)
+            b.setToolTip(tip)
+            b.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+            b.setMinimumWidth(92)
+            return b
+
+        self.b_outline = big("🧭", "1. Navrhnout\nosnovu", "AI navrhne název, postavy a obsah kapitol", "BigPrimary")
+        self.b_write = big("✍️", "2. Napsat\nknihu", "AI napíše knihu kapitolu po kapitole podle osnovy",
+                           "BigPrimary")
+        self.b_stop = big("⏹️", "Zastavit", "Zastaví psaní (rozepsaná kniha zůstane uložená)")
+        self.b_edit = big("📖", "Upravit\nknihu", "Otevře editor ve stylu Wordu")
+        self.b_load = big("📂", "Otevřít\nrozepsanou", "Pokračovat v rozepsané knize (*.kniha.json)")
+
+        # ---------- pás karet
+        def group(title, rows):
+            g = RibbonGroup(title)
+            for r, (text, w) in enumerate(rows):
+                if text:
+                    g.grid.addWidget(QtWidgets.QLabel(text), r, 0)
+                    g.grid.addWidget(w, r, 1)
+                else:
+                    g.grid.addWidget(w, r, 0, 1, 2)
+            g.grid.setHorizontalSpacing(6)
+            g.grid.setVerticalSpacing(4)
+            return g
+
+        def ribbon_row(*groups):
+            w = QtWidgets.QWidget()
+            hl = QtWidgets.QHBoxLayout(w)
+            hl.setContentsMargins(4, 6, 4, 2)
+            hl.setSpacing(6)
+            for i, g in enumerate(groups):
+                if i:
+                    hl.addWidget(vline())
+                hl.addWidget(g)
+            hl.addStretch(1)
+            return w
+
+        c = self.cats
+        style_tab = ribbon_row(
+            group("Žánr", [("Žánr:", c["genre"]), ("Pro koho:", c["audience"])]),
+            group("Vyprávění", [("Vypravěč:", c["narrator"]), ("Tempo:", c["tempo"])]),
+            group("Atmosféra", [("Tón:", c["tone"]), ("Prostředí:", c["setting"])]),
+            group("Jazyk a přání", [("Jazyk:", c["language_style"]), ("Další přání:", self.extra)]))
+        fmt_w = QtWidgets.QWidget()
+        fg = QtWidgets.QGridLayout(fmt_w)
+        fg.setContentsMargins(0, 0, 0, 0)
+        for i, cb in enumerate(self.fmts.values()):
+            fg.addWidget(cb, i // 2, i % 2)
+        dir_w = QtWidgets.QWidget()
+        dl = QtWidgets.QHBoxLayout(dir_w)
+        dl.setContentsMargins(0, 0, 0, 0)
+        dl.addWidget(self.bdir, 1)
+        dl.addWidget(pick)
+        scope_tab = ribbon_row(
+            group("Kniha", [("Jazyk knihy:", self.blang), ("Kapitol:", self.nchap), ("Slov na kapitolu:", self.nwords)]),
+            group("Umělá inteligence", [("Služba:", self.service), ("Model Claude:", self.model)]),
+            group("Uložit jako", [("", fmt_w), ("Složka:", dir_w)]))
+        ribbon = QtWidgets.QTabWidget()
+        ribbon.setObjectName("Ribbon")
+        ribbon.setDocumentMode(True)
+        ribbon.addTab(style_tab, "Žánr a styl")
+        ribbon.addTab(scope_tab, "Rozsah a služba")
+        actions = RibbonGroup("Kniha")
+        for i, b in enumerate((self.b_outline, self.b_write, self.b_stop, self.b_edit, self.b_load)):
+            actions.grid.addWidget(b, 0, i)
+        top = QtWidgets.QFrame()
+        top.setObjectName("RibbonBar")
+        tl = QtWidgets.QHBoxLayout(top)
+        tl.setContentsMargins(0, 0, 8, 0)
+        tl.addWidget(ribbon, 1)
+        tl.addWidget(vline())
+        tl.addWidget(actions)
+
+        # informační řádek pod pásem (jako ve Wordu)
+        info = QtWidgets.QFrame()
+        info.setObjectName("InfoBar")
+        il = QtWidgets.QHBoxLayout(info)
+        il.setContentsMargins(14, 4, 14, 4)
+        il.addWidget(self.svc_status)
+        il.addWidget(label("·", "Hint", wrap=False))
+        il.addWidget(self.est, 1)
+        il.addWidget(self.mature)
+
+        # ---------- stránka s popisem a osnovou
+        def heading(text, hint):
+            w = QtWidgets.QWidget()
+            v = QtWidgets.QVBoxLayout(w)
+            v.setContentsMargins(0, 8, 0, 2)
+            v.setSpacing(0)
+            v.addWidget(label(text, "DocHeading", wrap=False))
+            v.addWidget(label(hint, "Hint"))
+            return w
+
+        self.desc = QtWidgets.QPlainTextEdit()
+        self.desc.setObjectName("DocText")
+        self.desc.setPlaceholderText("O čem kniha je, hlavní postavy, prostředí, pro koho je, jak má skončit… "
+                                     "(stačí kolem 20 vět)")
+        self.desc.setMinimumHeight(220)
+        self.desc_assist = TextAssist(self.desc, ta_opts, win.save_cfg)
         self.outline = QtWidgets.QPlainTextEdit()
-        self.outline.setMinimumHeight(220)
-        self.outline_assist = TextAssist(self.outline, win.cfg.setdefault("text_assist", {}), win.save_cfg)
-        ol.addWidget(self.outline)
-        lay.addWidget(ob)
+        self.outline.setObjectName("DocText")
+        self.outline.setPlaceholderText("Sem se vloží osnova po kliknutí na „1. Navrhnout osnovu“. "
+                                        "Můžete ji upravit, přidat nebo ubrat kapitoly.")
+        self.outline.setMinimumHeight(320)
+        self.outline_assist = TextAssist(self.outline, ta_opts, win.save_cfg, extra_menu=self._outline_menu)
+        for ed in (self.desc, self.outline):
+            ed.setFont(QtGui.QFont("Georgia", 12))
 
-        row = QtWidgets.QHBoxLayout()
-        self.b_outline = primary("1. Navrhnout osnovu")
-        self.b_write = primary("2. Napsat knihu")
-        self.b_stop = QtWidgets.QPushButton("■ Zastavit")
-        self.b_edit = QtWidgets.QPushButton("📖 Upravit knihu")
-        self.b_load = QtWidgets.QPushButton("📂 Pokračovat v rozepsané…")
-        for b in (self.b_outline, self.b_write, self.b_stop):
-            row.addWidget(b)
-        row.addStretch(1)
-        row.addWidget(self.b_edit)
-        row.addWidget(self.b_load)
-        lay.addLayout(row)
+        paper = QtWidgets.QFrame()
+        paper.setObjectName("Paper")
+        paper.setMaximumWidth(980)
+        pl = QtWidgets.QVBoxLayout(paper)
+        pl.setContentsMargins(56, 36, 56, 40)
+        pl.setSpacing(6)
+        pl.addWidget(heading("Popis knihy", "O čem kniha je – stačí kolem 20 vět. Žánr a styl vyberte nahoře "
+                                            "v pásu karet."))
+        pl.addWidget(self.desc)
+        pl.addSpacing(10)
+        pl.addWidget(heading("Osnova", "Kapitoly ve tvaru „1. Název — obsah“. Vznikne tlačítkem "
+                                       "„1. Navrhnout osnovu“ a můžete ji upravit. Délku jedné kapitoly "
+                                       "změníte pravým tlačítkem na jejím řádku (v osnově pak „[4000 slov]“)."))
+        pl.addWidget(self.outline)
+        canvas = QtWidgets.QWidget()
+        canvas.setObjectName("Canvas")
+        cl = QtWidgets.QHBoxLayout(canvas)
+        cl.setContentsMargins(24, 20, 24, 24)
+        cl.addStretch(1)
+        cl.addWidget(paper, 30)
+        cl.addStretch(1)
+        scroll = QtWidgets.QScrollArea()
+        scroll.setObjectName("CanvasScroll")
+        scroll.setWidgetResizable(True)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.setWidget(canvas)
+
+        # ---------- průběh a záznam dole
+        bottom = QtWidgets.QWidget()
+        bl = QtWidgets.QVBoxLayout(bottom)
+        bl.setContentsMargins(8, 4, 8, 6)
+        bl.setSpacing(4)
         self.bar = QtWidgets.QProgressBar()
         self.bar.setRange(0, 1000)
-        lay.addWidget(self.bar)
         self.logv = LogView()
-        self.logv.setMinimumHeight(140)
-        lay.addWidget(self.logv)
+        self.logv.setMinimumHeight(60)
+        bl.addWidget(self.bar)
+        bl.addWidget(self.logv)
+        split = QtWidgets.QSplitter(Qt.Vertical)
+        split.addWidget(scroll)
+        split.addWidget(bottom)
+        split.setStretchFactor(0, 5)
+        split.setStretchFactor(1, 1)
+        split.setSizes([640, 100])
+
+        outer = QtWidgets.QVBoxLayout(self)
+        outer.setContentsMargins(0, 0, 0, 0)
+        outer.setSpacing(0)
+        outer.addWidget(top)
+        outer.addWidget(info)
+        outer.addWidget(split, 1)
 
         self.b_outline.clicked.connect(self.do_outline)
         self.b_write.clicked.connect(self.do_write)
@@ -421,6 +615,13 @@ class BookPage(QtWidgets.QWidget):
         for sig in (self.service.currentIndexChanged, self.model.currentIndexChanged, self.nchap.valueChanged,
                     self.nwords.valueChanged):
             sig.connect(self.on_service)
+        for ed in (self.nchap, self.nwords):
+            ed.editingFinished.connect(self.remember_scope)
+            ed.valueChanged.connect(lambda *_: self._scope_timer.start())
+        self._scope_timer = QtCore.QTimer(self)  # uložit až chvíli po poslední změně, ne při každém kliknutí
+        self._scope_timer.setSingleShot(True)
+        self._scope_timer.setInterval(800)
+        self._scope_timer.timeout.connect(self.remember_scope)
         self.on_service()
         self.update_buttons()
 
@@ -448,6 +649,42 @@ class BookPage(QtWidgets.QWidget):
             eng = core.make_engine(svc, language, cfg["engines"].get(svc, {}), "")
             backend = bw.EngineBackend(eng, self.cancel)
         return bw.BookWriter(backend, language, self.logv.log)
+
+    def _outline_menu(self, menu: QtWidgets.QMenu, cursor: QtGui.QTextCursor):
+        """Pravé tlačítko na řádku kapitoly v osnově: délka jen této kapitoly."""
+        block = cursor.block()
+        line = block.text()
+        if not bw.CHAPTER_LINE_RE.match(line) or "KAPITOLY:" not in self.outline.toPlainText()[:cursor.position()]:
+            return
+        title, words = bw.split_words(bw.CHAPTER_LINE_RE.match(line).group(2))
+        menu.addAction(f"📏 Délka kapitoly „{title[:30]}“…", lambda: self.ask_chapter_words(block, words))
+        if words:
+            menu.addAction("Použít výchozí délku (Slov na kapitolu)",
+                           lambda: self.set_chapter_words(block, None))
+
+    def ask_chapter_words(self, block: QtGui.QTextBlock, current: int | None):
+        n, ok = QtWidgets.QInputDialog.getInt(
+            self, "Délka kapitoly", "Kolik slov má mít tato kapitola?\n"
+            "(ostatní kapitoly mají výchozí délku z „Slov na kapitolu“)",
+            current or self.nwords.value(), 100, 20000, 100)
+        if ok:
+            self.set_chapter_words(block, n)
+
+    def set_chapter_words(self, block: QtGui.QTextBlock, words: int | None):
+        new = bw.set_line_words(block.text(), words)
+        if new is None:
+            return
+        c = QtGui.QTextCursor(block)
+        c.movePosition(QtGui.QTextCursor.StartOfBlock)
+        c.movePosition(QtGui.QTextCursor.EndOfBlock, QtGui.QTextCursor.KeepAnchor)
+        c.insertText(new)
+
+    def remember_scope(self, *_):
+        """Počet kapitol a délka kapitoly zůstanou nastavené i po zavření programu."""
+        cfg = self.win.cfg
+        if (cfg.get("book_chapters"), cfg.get("book_words")) != (self.nchap.value(), self.nwords.value()):
+            cfg["book_chapters"], cfg["book_words"] = self.nchap.value(), self.nwords.value()
+            self.win.save_cfg()
 
     def on_service(self, *_):
         cfg = self.win.cfg
@@ -542,25 +779,70 @@ class BookPage(QtWidgets.QWidget):
                                       "jinak by se psaní AI a vaše úpravy navzájem přepsaly.")
             return
         proj = self.project
-        if proj is None or proj["outline"] != outline:
-            if proj is not None and proj["chapters"]:
-                if QtWidgets.QMessageBox.question(self, "Napsat knihu", "Osnova se změnila – začít psát od první "
-                                                                        "kapitoly?") != QtWidgets.QMessageBox.Yes:
-                    return
-                self.new_project(outline)
-            elif proj is not None:
+        if proj is None:
+            self.new_project(outline)
+        elif proj["outline"] != outline:
+            done = len(proj["chapters"])
+            if not done:
                 proj.update(outline=outline, words=self.nwords.value(), style=self.full_style(),
                             style_parts=self.parts(), style_extra=self.extra.text().strip(),
                             description=self.desc.toPlainText().strip(),
                             language=self.blang.currentText().strip() or "čeština")
                 bw.save_project(self.path, proj)
             else:
-                self.new_project(outline)
+                old = proj["outline"]["chapters"]
+
+                def key(c):
+                    return c["title"].strip(), c.get("summary", "").strip()
+
+                same = done <= len(outline["chapters"]) and all(
+                    key(old[i]) == key(outline["chapters"][i]) for i in range(done))
+                if not same:  # změnila se už napsaná kapitola
+                    box = QtWidgets.QMessageBox(self)
+                    box.setWindowTitle("Napsat knihu")
+                    box.setIcon(QtWidgets.QMessageBox.Icon.Question)
+                    box.setText(f"V osnově jste změnil(a) i kapitoly, které už jsou napsané ({done}).")
+                    box.setInformativeText("Napsané kapitoly můžete ponechat a pokračovat dál, nebo začít psát "
+                                           "celou knihu znovu (jako nový soubor – původní zůstane).")
+                    keep = box.addButton("Ponechat napsané a pokračovat", QtWidgets.QMessageBox.AcceptRole)
+                    restart = box.addButton("Začít znovu od 1. kapitoly", QtWidgets.QMessageBox.DestructiveRole)
+                    box.addButton("Zrušit", QtWidgets.QMessageBox.RejectRole)
+                    box.setDefaultButton(keep)
+                    box.exec()
+                    if box.clickedButton() is restart:
+                        self.new_project(outline)
+                    elif box.clickedButton() is not keep:
+                        return
+                if self.project is proj:
+                    proj["outline"] = outline
+                    bw.save_project(self.path, proj)
+                    self.logv.log(f"Osnova upravena – {done} napsaných kapitol zůstává, pokračuje se "
+                                  f"kapitolou {done + 1}.")
+                    if done >= len(outline["chapters"]):
+                        QtWidgets.QMessageBox.information(
+                            self, "Napsat knihu", "Všechny kapitoly z osnovy už jsou napsané. Pro další "
+                                                  "kapitoly je přidejte na konec osnovy.")
+                        return
         proj, path = self.project, self.path
         n = len(outline["chapters"])
+        if n != self.nchap.value() and not proj["chapters"]:
+            ans = QtWidgets.QMessageBox.question(
+                self, "Napsat knihu",
+                f"Osnova má {n} kapitol, ale v „Rozsah a služba“ je nastaveno {self.nchap.value()}.\n\n"
+                "Počet kapitol určuje osnova. Pokračovat s osnovou tak, jak je?\n\n"
+                "(Pro jiný počet klikněte na Ne a nechte znovu „1. Navrhnout osnovu“, nebo kapitoly "
+                "v osnově přidejte či smažte.)")
+            if ans != QtWidgets.QMessageBox.Yes:
+                return
+        if int(proj.get("words", 0)) != self.nwords.value():  # délku kapitoly jde změnit i po návrhu osnovy
+            old_words = proj.get("words")
+            proj["words"] = self.nwords.value()
+            bw.save_project(path, proj)
+            self.logv.log(f"Délka kapitoly změněna z {old_words} na {proj['words']} slov"
+                          + (" (platí pro kapitoly, které se teprve napíšou)." if proj["chapters"] else "."))
         try:
             wr = self.writer()
-            estimate = wr.estimate(n, proj["words"])
+            estimate = wr.estimate(n, bw.total_words(proj) // n)
         except Exception as e:  # noqa: BLE001
             QtWidgets.QMessageBox.critical(self, "Napsat knihu", str(e))
             return
@@ -939,16 +1221,19 @@ class SettingsPage(QtWidgets.QWidget):
         self.ta_spell.setChecked(ta.get("spell", True))
         self.ta_complete = QtWidgets.QCheckBox("Návrhy slov při psaní (T9) – Tab vloží návrh, šipkami vyberete jiný")
         self.ta_complete.setChecked(ta.get("complete", True))
+        self.ta_caps = QtWidgets.QCheckBox("Velké písmeno na začátku věty (po tečce, otazníku, vykřičníku)")
+        self.ta_caps.setChecked(ta.get("capitalize", True))
         self.dict_status = label("", "Hint")
         self.dict_btn = QtWidgets.QPushButton("⬇ Stáhnout český slovník")
         self.dict_btn.clicked.connect(self.download_dictionary)
         tg.addWidget(self.ta_spell, 0, 0, 1, 2)
         tg.addWidget(self.ta_complete, 1, 0, 1, 2)
-        tg.addWidget(self.dict_status, 2, 0)
-        tg.addWidget(self.dict_btn, 2, 1)
+        tg.addWidget(self.ta_caps, 2, 0, 1, 2)
+        tg.addWidget(self.dict_status, 3, 0)
+        tg.addWidget(self.dict_btn, 3, 1)
         tg.addWidget(label("Pravým tlačítkem na podtržené slovo nabídne opravy, „Přidat do slovníku“ si slovo "
                            "zapamatuje (jména postav apod.). Kontrola se zapíná jen u knih v češtině.", "Hint"),
-                     3, 0, 1, 2)
+                     4, 0, 1, 2)
         tg.setColumnStretch(0, 1)
         g.addWidget(tbox, 4, 0, 1, 3)
         g.addWidget(label(f"Nastavení programu: {core.config_path()}", "Hint"), 5, 0, 1, 3)
@@ -996,6 +1281,7 @@ class SettingsPage(QtWidgets.QWidget):
         ta = cfg.setdefault("text_assist", {})  # stejný slovník sdílí otevřená textová pole
         ta["spell"] = self.ta_spell.isChecked()
         ta["complete"] = self.ta_complete.isChecked()
+        ta["capitalize"] = self.ta_caps.isChecked()
         for a in (self.win.book.desc_assist, self.win.book.outline_assist):
             a.on_dictionary_ready() if ta["spell"] else a.rehighlight()
         self.win.save_cfg()
@@ -1071,7 +1357,7 @@ class MainWindow(QtWidgets.QMainWindow):
         for page in (self.translate, self.book, self.settings):
             wrap = QtWidgets.QWidget()
             wl = QtWidgets.QVBoxLayout(wrap)
-            wl.setContentsMargins(20, 12, 20, 12)
+            wl.setContentsMargins(*((0, 0, 0, 0) if page is self.book else (20, 12, 20, 12)))
             wl.addWidget(page)
             self.stack.addWidget(wrap)
         h.addWidget(self.stack, 1)

@@ -79,9 +79,18 @@ Ručně lze kontrolu spustit v *⚙ Nastavení → Obecné → Zkontrolovat novo
 
 ## Použití
 
-1. Přidejte soubory tlačítkem nebo je přetáhněte myší do seznamu.
+1. Přidejte soubory tlačítkem **Přidat soubory** (v okně jde vybrat víc souborů najednou – Ctrl+klik,
+   Shift+klik, Ctrl+A), **Přidat složku** (všechny podporované soubory včetně podsložek), nebo je přetáhněte
+   myší do seznamu. V seznamu se vybírá stejně (Ctrl, Shift, Ctrl+A / **Vybrat vše**); **Odebrat vybrané**
+   ukazuje počet a při výběru všech se změní na **Odebrat vše**. Odebírat jde i klávesou Delete.
 2. Zvolte cílový jazyk, výstupní formát, překladač a OCR. Pod překladačem je vidět, jestli je služba připravená.
 3. Klikněte na **Spustit**. V okně uvidíte průběh a na konci spotřebu (u Claude cenu, u DeepL zbývající měsíční limit).
+
+**PDF o více stranách:** PDF jde přeložit nebo převést celé – program zpracuje všechny strany (po částech,
+s průběhem „hotovo 40/120 stran“). Výsledek může být DOCX, PDF, EPUB… **Více obrázků do jednoho PDF:**
+přidejte fotky / skeny stránek, zvolte výstupní formát **PDF** a nechte zaškrtnuté *Více obrázků spojit do
+jednoho dokumentu*. V režimu *Jen převést* vznikne PDF, kde je každý obrázek jednou stránkou (bez rozpoznávání
+textu, okamžitě); při překladu se text rozpozná, přeloží a uloží jako vícestránkové PDF.
 
 Do pole **Pokyny pro překlad** (platí pro Claude, Gemini a Ollama) můžete napsat například:
 `Jména postav nepřekládej. „Ranger“ překládej jako „hraničář“. Tykání mezi postavami zachovej.`
@@ -99,6 +108,13 @@ DeepSeek nebo bezplatné modely na OpenRouteru) nebo **Ollama** (zdarma ve vaše
 3. **2. Napsat knihu** – Claude píše kapitolu po kapitole; každá dostane osnovu, shrnutí předchozích kapitol
    a konec předchozí kapitoly, aby děj i postavy navazovaly. Hotová kniha se uloží jako EPUB, DOCX, PDF nebo AZW3.
 
+**Délka kapitol:** „Slov na kapitolu“ je výchozí délka. Jednotlivá kapitola může být delší či kratší – v osnově
+klikněte pravým tlačítkem na její řádek → **📏 Délka kapitoly…** (v osnově se objeví např.
+`3. Bitva u řeky [4000 slov] — …`, jde to napsat i ručně). **Během psaní** můžete kdykoli kliknout na
+*Zastavit*, upravit délky nebo dosud nenapsané kapitoly (i přidat nové na konec) a znovu *Napsat knihu* –
+napsané kapitoly zůstanou a pokračuje se další. Pokud změníte už napsanou kapitolu, program se zeptá, zda ji
+ponechat, nebo začít znovu (jako nový soubor, původní zůstane).
+
 Žánr a styl se vybírá ze seznamů (přes 40 žánrů včetně erotiky, pro koho, vypravěč, tón, tempo, prostředí,
 jazyk) a lze dopsat vlastní přání. Okno jde maximalizovat nebo přepnout na celou obrazovku.
 
@@ -113,6 +129,13 @@ Když program zavřete, přijdete nanejvýš o právě psanou kapitolu – po sp
   stránky), **styly** (Normální, Nadpis, Podnadpis, Citace), **úpravy** (najít a nahradit v celé knize, zpět/znovu,
   lupa), uložit a exportovat.
 - **Kniha** – název a autor, výchozí písmo knihy, obsah s odkazy, formáty exportu, přidání/mazání/přesun kapitol.
+- **🖨 Tisk** (Domů → Soubor, nebo Ctrl+P) – vytiskne celou knihu (titulní strana, každá kapitola od nové
+  stránky, čísla stran, zalomení stránek z editoru) nebo jen otevřenou kapitolu; je i **náhled tisku**.
+  V okně tisku jde zvolit tiskárnu, počet kopií a stránky; „Microsoft Print to PDF“ uloží tisk jako PDF.
+- **Zobrazení** – **📏 Pravítko** (zapnout/vypnout, program si volbu pamatuje): vodorovné pravítko nad stránkou
+  v centimetrech a svislé vlevo. Na vodorovném jde myší táhnout odsazení odstavce jako ve Wordu – ▽ nahoře
+  první řádek, △ dole levé odsazení, △ vpravo pravé odsazení (po čtvrt centimetru); dvojklik odsazení zruší.
+  Odsazení se zachová i v exportu.
 - Vlevo seznam kapitol, dole počet slov a odstavců kapitoly i celé knihy.
 
 **Automatické ukládání v editoru** (⚙ Nastavení → Obecné): po každé větě (výchozí), po každém slově, po zadaném
@@ -129,6 +152,14 @@ jako záloha `Název.kniha.json.bak`. Dokud je kniha otevřená v editoru, AI do
   dělá normálně nový řádek.
 - Obojí jde vypnout v ⚙ Nastavení → Obecné nebo v menu pravého tlačítka. Používá se český slovník Hunspell
   z LibreOffice (součást instalátoru); kontrola pravopisu se zapíná jen u knih v češtině.
+
+- **Velké písmeno na začátku věty** – po tečce, otazníku či vykřičníku a na začátku odstavce se první písmeno
+  napíše velké samo (jako ve Wordu); po zkratkách („např.“, „tzv.“, „atd.“) a pořadových číslech („5. května“)
+  ne. Vypnout jde v ⚙ Nastavení → Obecné.
+
+Stránka **Napsat knihu** vypadá jako Word: nahoře pás karet *Žánr a styl* a *Rozsah a služba*, vpravo velká
+tlačítka (Navrhnout osnovu, Napsat knihu, Zastavit, Upravit, Otevřít rozepsanou), pod nimi stav služby a odhad
+rozsahu a uprostřed bílá stránka s popisem knihy a osnovou. Průběh psaní je dole (oddělovač jde posunout).
 
 **Postranní panel** jde tlačítkem ☰ vedle názvu programu sbalit na úzký proužek s ikonami (a zase rozbalit).
 

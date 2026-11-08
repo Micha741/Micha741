@@ -58,8 +58,47 @@ def outline_to_text(o: dict) -> str:
     lines = [f"NÁZEV: {o['title']}", "", "SHRNUTÍ:", o["synopsis"].strip(), "", "POSTAVY:"]
     lines += [f"- {c['name']}: {c['description']}" for c in o.get("characters", [])]
     lines += ["", "KAPITOLY:"]
-    lines += [f"{i}. {ch['title']} — {ch['summary']}" for i, ch in enumerate(o["chapters"], 1)]
+    lines += [f"{i}. {ch['title']}{words_tag(ch.get('words'))} — {ch['summary']}"
+              for i, ch in enumerate(o["chapters"], 1)]
     return "\n".join(lines) + "\n"
+
+
+WORDS_RE = re.compile(r"\s*[\[(]\s*(\d[\d\s]*)\s*slov\w*\s*[\])]\s*$", re.I)
+
+
+def words_tag(words) -> str:
+    return f" [{int(words)} slov]" if words else ""
+
+
+def split_words(title: str) -> tuple[str, int | None]:
+    """„Bitva u řeky [4000 slov]“ → („Bitva u řeky“, 4000). Délka jedné kapitoly v osnově je nepovinná."""
+    m = WORDS_RE.search(title)
+    if not m:
+        return title.strip(), None
+    n = int(re.sub(r"\s", "", m.group(1)))
+    return title[:m.start()].strip(), max(100, min(n, 20000))
+
+
+CHAPTER_LINE_RE = re.compile(r"^(\s*\d+[.)]\s*)(.+?)(\s+[—–-]\s+.*)?$")
+
+
+def set_line_words(line: str, words: int | None) -> str | None:
+    """Řádek kapitoly z osnovy s novou délkou (None = výchozí délka). Pro jiné řádky None."""
+    m = CHAPTER_LINE_RE.match(line)
+    if not m:
+        return None
+    title, _old = split_words(m.group(2))
+    return f"{m.group(1)}{title}{words_tag(words)}{m.group(3) or ''}"
+
+
+def chapter_words(project: dict, idx: int) -> int:
+    """Délka kapitoly: vlastní z osnovy, jinak výchozí „Slov na kapitolu“ knihy."""
+    chs = project["outline"]["chapters"]
+    return int((chs[idx].get("words") if idx < len(chs) else None) or project["words"])
+
+
+def total_words(project: dict) -> int:
+    return sum(chapter_words(project, i) for i in range(len(project["outline"]["chapters"])))
 
 
 def text_to_outline(text: str) -> dict:
@@ -79,9 +118,16 @@ def text_to_outline(text: str) -> dict:
     for line in parts.get("KAPITOLY", "").splitlines():
         m = re.match(r"^\s*\d+[.)]\s*(.+?)\s+[—–-]\s+(.+)$", line)
         if m:
-            chapters.append({"title": m.group(1).strip(), "summary": m.group(2).strip()})
+            title, summary = m.group(1), m.group(2).strip()
         elif re.match(r"^\s*\d+[.)]\s*\S", line):
-            chapters.append({"title": re.sub(r"^\s*\d+[.)]\s*", "", line).strip(), "summary": ""})
+            title, summary = re.sub(r"^\s*\d+[.)]\s*", "", line), ""
+        else:
+            continue
+        title, words = split_words(title)
+        ch = {"title": title, "summary": summary}
+        if words:
+            ch["words"] = words
+        chapters.append(ch)
     if not chapters:
         raise BookError("V osnově nejsou žádné kapitoly (řádky „1. Název — obsah“ pod „KAPITOLY:“).")
     return {"title": title_m.group(1).strip(), "synopsis": synopsis, "characters": characters,
@@ -234,7 +280,10 @@ class BookWriter:
         parts.append(f"\nNapiš kapitolu {idx + 1} z {len(chapters)}: „{ch['title']}“.")
         if ch.get("summary"):
             parts.append(f"Obsah podle osnovy: {ch['summary']}")
-        parts.append(f"Délka: přibližně {project['words']} slov.")
+        w = chapter_words(project, idx)
+        parts.append(f"Délka: přibližně {w} slov – na délce záleží: napiš aspoň {int(w * 0.85)} a nejvýš "
+                     f"{int(w * 1.2)} slov. Když děj z osnovy nevystačí, rozveď scény, dialogy, popisy a prožitky "
+                     "postav; nepřidávej ale děj z dalších kapitol.")
         if idx == len(chapters) - 1:
             parts.append("Je to poslední kapitola – příběh uzavři.")
         return "\n".join(parts)
@@ -247,13 +296,25 @@ class BookWriter:
             self.log(f"Píšu kapitolu {idx + 1}/{len(chapters)}: {chapters[idx]['title']}…")
             prompt = self._chapter_prompt(project, idx)
             # text + přemýšlení modelu; rezerva, aby se kapitola neusekla
-            max_tokens = min(64000, int(project["words"] * TOKENS_PER_WORD * 4) + 16000)
+            max_tokens = min(64000, int(chapter_words(project, idx) * TOKENS_PER_WORD * 4) + 16000)
             try:
                 res = self.backend.complete(system, prompt, CHAPTER_SCHEMA, max_tokens=max_tokens, cache=True)
             except ModelError as e:
                 raise BookError(f"Kapitolu {idx + 1} se nepodařilo napsat ({e}). Rozepsaná kniha je uložená, "
                                 "můžete pokračovat později.") from e
             text = res["text"].strip()
+            target = chapter_words(project, idx)
+            if len(text.split()) < target * 0.6:  # model psal výrazně kratší – jeden pokus o delší verzi
+                n = len(text.split())
+                self.log(f"  kapitola má jen {n} slov z ~{target}, píšu ji znovu podrobněji…")
+                retry = (prompt + f"\n\nPOZOR: předchozí verze měla jen {n} slov, to je málo. Napiš kapitolu "
+                         f"znovu, mnohem podrobněji – alespoň {int(target * 0.85)} slov.")
+                try:
+                    res2 = self.backend.complete(system, retry, CHAPTER_SCHEMA, max_tokens=max_tokens, cache=True)
+                    if len(res2["text"].split()) > n:
+                        res, text = res2, res2["text"].strip()
+                except ModelError as e:
+                    self.log(f"  delší verze se nepovedla ({e}), ponechávám kratší.")
             project["chapters"].append({"text": text, "summary": res["summary"].strip()})
             save_project(project_path, project)
             self.log(f"  ✓ hotovo ({len(text.split()):,} slov) – {self.backend.cost_summary()}".replace(",", " "))

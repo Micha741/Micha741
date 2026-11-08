@@ -4,11 +4,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from PySide6 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtPrintSupport, QtWidgets
 
 import book_writer as bw
 from html_docx import PAGE_BREAK, plain_to_html
 from qt_common import emoji_icon, label, lines_icon, run_bg, text_icon
+from qt_ruler import HRuler, VRuler
 from qt_textassist import TextAssist
 
 Qt = QtCore.Qt
@@ -172,12 +173,27 @@ class BookEditor(QtWidgets.QMainWindow):
         self.text.setTabStopDistance(40)
         self.text.document().setDocumentMargin(48)
         self.text.setStyleSheet("QTextEdit { border: none; background: white; }")
+        self.view_opts = text_assist if text_assist is not None else {}
+        self._save_view = save_options or (lambda: None)
         page = QtWidgets.QFrame()
         page.setStyleSheet("background: #e8ebf0;")
         pl = QtWidgets.QHBoxLayout(page)
         pl.setContentsMargins(24, 16, 24, 16)
-        self.text.setMaximumWidth(980)
-        pl.addWidget(self.text)
+        sheet = QtWidgets.QWidget()  # stránka s pravítky: [roh][vodorovné] / [svislé][text]
+        sheet.setMaximumWidth(980 + 22)
+        sg = QtWidgets.QGridLayout(sheet)
+        sg.setContentsMargins(0, 0, 0, 0)
+        sg.setSpacing(0)
+        self.hruler = HRuler(self.text)
+        self.vruler = VRuler(self.text)
+        self.ruler_corner = QtWidgets.QWidget()
+        self.ruler_corner.setFixedSize(22, 22)
+        self.ruler_corner.setStyleSheet("background: #f1f5f9;")
+        sg.addWidget(self.ruler_corner, 0, 0)
+        sg.addWidget(self.hruler, 0, 1)
+        sg.addWidget(self.vruler, 1, 0)
+        sg.addWidget(self.text, 1, 1)
+        pl.addWidget(sheet)
 
         central = QtWidgets.QWidget()
         cl = QtWidgets.QVBoxLayout(central)
@@ -237,6 +253,7 @@ class BookEditor(QtWidgets.QMainWindow):
         tabs.setDocumentMode(True)
         tabs.addTab(self._home_tab(), "Domů")
         tabs.addTab(self._book_tab(), "Kniha")
+        tabs.addTab(self._view_tab(), "Zobrazení")
         tabs.setMaximumHeight(150)
         return tabs
 
@@ -346,7 +363,135 @@ class BookEditor(QtWidgets.QMainWindow):
         save = RibbonGroup("Soubor")
         save.grid.addWidget(self._big(emoji_icon("💾"), "Uložit", self.save), 0, 0, 2, 1)
         save.grid.addWidget(self._big(emoji_icon("📤"), "Exportovat", self.export), 0, 1, 2, 1)
+        self.b_print = self._big(emoji_icon("🖨️"), "Tisk", lambda: self.print_book(True))
+        self.b_print.setToolTip("Vytisknout knihu (Ctrl+P). Šipkou vyberete tisk kapitoly nebo náhled.")
+        pm = QtWidgets.QMenu(self.b_print)
+        pm.addAction("🖨 Vytisknout celou knihu…  (Ctrl+P)", lambda: self.print_book(True))
+        pm.addAction("Vytisknout jen tuto kapitolu…", lambda: self.print_book(False))
+        pm.addSeparator()
+        pm.addAction("🔍 Náhled tisku – celá kniha", lambda: self.print_preview(True))
+        pm.addAction("Náhled tisku – tato kapitola", lambda: self.print_preview(False))
+        self.b_print.setMenu(pm)
+        self.b_print.setPopupMode(QtWidgets.QToolButton.MenuButtonPopup)
+        save.grid.addWidget(self.b_print, 0, 2, 2, 1)
         return self._row(clip, font, para, styles, edit, save)
+
+    # ================================================================ tisk
+    def print_document(self, whole: bool = True) -> QtGui.QTextDocument:
+        """Dokument k tisku: titulní strana a kapitoly (každá od nové stránky) nebo jen aktuální kapitola."""
+        self.store_current()
+        doc = QtGui.QTextDocument()
+        base = QtGui.QFont(self.fmt.get("font") or "Georgia")
+        base.setPointSizeF(float(self.fmt.get("size") or 12))
+        doc.setDefaultFont(base)
+        cur = QtGui.QTextCursor(doc)
+        title = self.title_edit.text().strip() or self.outline.get("title", "")
+        chapters = list(enumerate(self.project["chapters"]))
+        if not whole:
+            chapters = [chapters[self.cur]] if chapters else []
+        first = True
+
+        def block(page_break: bool, align=Qt.AlignLeft, top=0.0, bottom=0.0):
+            nonlocal first
+            f = QtGui.QTextBlockFormat()
+            f.setAlignment(align)
+            f.setTopMargin(top)
+            f.setBottomMargin(bottom)
+            if page_break and not first:
+                f.setPageBreakPolicy(QtGui.QTextFormat.PageBreak_AlwaysBefore)
+            if first:
+                cur.setBlockFormat(f)
+                first = False
+            else:
+                cur.insertBlock(f)
+
+        def text(t: str, size: float, bold=True):
+            cf = QtGui.QTextCharFormat()
+            cf.setFont(base)
+            cf.setFontPointSize(size)
+            cf.setFontWeight(QtGui.QFont.Bold if bold else QtGui.QFont.Normal)
+            cur.insertText(t, cf)
+
+        if whole:  # titulní strana
+            block(False, Qt.AlignHCenter, top=220)
+            text(title, 26)
+            author = self.author_edit.text().strip()
+            if author:
+                block(False, Qt.AlignHCenter, top=24)
+                text(author, 15, bold=False)
+        titles = self.outline.get("chapters", [])
+        for i, ch in chapters:
+            name = ch.get("title") or (titles[i]["title"] if i < len(titles) else f"Kapitola {i + 1}")
+            block(True, top=12, bottom=18)
+            text(f"{i + 1}. {name}", 18)
+            block(False)
+            cur.setCharFormat(QtGui.QTextCharFormat())
+            cur.insertFragment(QtGui.QTextDocumentFragment.fromHtml(ch.get("html") or plain_to_html(ch["text"])))
+        # značky [[STRANA]] z editoru → skutečné zalomení stránky
+        b = doc.begin()
+        while b.isValid():
+            nxt = b.next()
+            if b.text().strip() == PAGE_BREAK and nxt.isValid():
+                c = QtGui.QTextCursor(nxt)
+                f = nxt.blockFormat()
+                f.setPageBreakPolicy(QtGui.QTextFormat.PageBreak_AlwaysBefore)
+                c.setBlockFormat(f)
+                c = QtGui.QTextCursor(b)
+                c.select(QtGui.QTextCursor.BlockUnderCursor)
+                c.removeSelectedText()
+            b = nxt
+        return doc
+
+    def _printer(self) -> QtPrintSupport.QPrinter:
+        pr = QtPrintSupport.QPrinter(QtPrintSupport.QPrinter.HighResolution)
+        pr.setPageSize(QtGui.QPageSize(QtGui.QPageSize.A4))
+        # okraje 2 cm přidá tisk dokumentu sám (QTextDocument.print_), proto zde nulové – jinak by se sčítaly
+        pr.setPageMargins(QtCore.QMarginsF(0, 0, 0, 0), QtGui.QPageLayout.Millimeter)
+        pr.setDocName(self.title_edit.text().strip() or "Kniha")
+        return pr
+
+    def print_book(self, whole: bool = True):
+        pr = self._printer()
+        dlg = QtPrintSupport.QPrintDialog(pr, self)
+        dlg.setWindowTitle("Tisk – " + ("celá kniha" if whole else "tato kapitola"))
+        if dlg.exec() == QtWidgets.QDialog.Accepted:
+            self.print_document(whole).print_(pr)
+            self.statusBar().showMessage("Odesláno na tiskárnu.", 5000)
+
+    def print_preview(self, whole: bool = True):
+        pr = self._printer()
+        doc = self.print_document(whole)
+        dlg = QtPrintSupport.QPrintPreviewDialog(pr, self)
+        dlg.setWindowTitle("Náhled tisku – " + ("celá kniha" if whole else "tato kapitola"))
+        dlg.paintRequested.connect(doc.print_)
+        dlg.resize(1000, 800)
+        dlg.exec()
+
+    def print_to_pdf(self, path: str, whole: bool = True) -> None:
+        """Totéž co tisk, jen do souboru PDF (použito v testech)."""
+        pr = self._printer()
+        pr.setOutputFormat(QtPrintSupport.QPrinter.PdfFormat)
+        pr.setOutputFileName(str(path))
+        self.print_document(whole).print_(pr)
+
+    def _view_tab(self) -> QtWidgets.QWidget:
+        show = RibbonGroup("Zobrazit")
+        self.b_ruler = self._big(emoji_icon("📏"), "Pravítko", lambda: self.set_ruler(self.b_ruler.isChecked()))
+        self.b_ruler.setCheckable(True)
+        self.b_ruler.setToolTip("Pravítka nad a vlevo od stránky. Na vodorovném jde myší posouvat odsazení "
+                                "odstavce (▽ první řádek, △ levé a pravé odsazení); dvojklik ho zruší.")
+        show.grid.addWidget(self.b_ruler, 0, 0)
+        on = bool(self.view_opts.get("ruler", True))
+        self.b_ruler.setChecked(on)
+        self.set_ruler(on, save=False)
+        return self._row(show)
+
+    def set_ruler(self, on: bool, save: bool = True):
+        for w in (self.hruler, self.vruler, self.ruler_corner):
+            w.setVisible(on)
+        if save:
+            self.view_opts["ruler"] = on
+            self._save_view()
 
     def _book_tab(self) -> QtWidgets.QWidget:
         info = RibbonGroup("Kniha")
@@ -734,7 +879,8 @@ class BookEditor(QtWidgets.QMainWindow):
     def _shortcuts(self):
         for seq, fn in (("Ctrl+S", self.save), ("Ctrl+F", self.open_find), ("Ctrl+H", self.open_find),
                         ("Ctrl+B", lambda: self.b_bold.click()), ("Ctrl+I", lambda: self.b_italic.click()),
-                        ("Ctrl+U", lambda: self.b_under.click()), ("Ctrl+Return", self._page_break)):
+                        ("Ctrl+U", lambda: self.b_under.click()), ("Ctrl+Return", self._page_break),
+                        ("Ctrl+P", lambda: self.print_book(True))):
             QtGui.QShortcut(QtGui.QKeySequence(seq), self, activated=fn)
 
     def _doc_changed(self):

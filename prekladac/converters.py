@@ -609,6 +609,11 @@ def process_file(
         if ext in DOC_ONLY_EXT:
             raise ValueError(f"Formát {ext} umí přeložit jen překladač „Microsoft – překlad celých dokumentů“.")
 
+        # --- obrázek do PDF bez překladu: jen stránka s obrázkem
+        if ext in IMAGE_EXT and images_pdf_only(translate, fmt):
+            images_to_pdf([src], dst, log, progress)
+            return dst
+
         # --- obrázky a PDF: OCR / text z PDF (a překlad) → DOCX
         if ext in IMAGE_EXT or (ext == ".pdf" and (translate or fmt == "docx")):
             if tr is None:
@@ -649,12 +654,52 @@ def process_file(
         return finish(produced)
 
 
+def images_to_pdf(paths: list[str], dst: str, log: Log = _noop, progress: Progress = _noop) -> None:
+    """Obrázky (nafocené či naskenované stránky) → jedno PDF, každý obrázek na vlastní stránce. Bez OCR."""
+    from PIL import Image, ImageOps
+
+    pages = []
+    for i, p in enumerate(paths, 1):
+        with Image.open(p) as im:
+            im = ImageOps.exif_transpose(im)  # fotka z mobilu otočená správně
+            pages.append(im.convert("RGB"))
+        progress(i / len(paths) * 0.9)
+    if not pages:
+        raise ValueError("Žádné obrázky.")
+    dpi = 200.0
+    pages[0].save(dst, "PDF", save_all=True, append_images=pages[1:], resolution=dpi)
+    log(f"  PDF: {len(pages)} stran")
+    progress(1.0)
+
+
+def images_pdf_only(translate: bool, fmt: str | None) -> bool:
+    """Obrázky do PDF bez překladu = jen poskládat stránky (bez rozpoznávání textu)."""
+    return not translate and fmt == "pdf"
+
+
 def process_images_together(
-    paths: list[str], translate: bool, tr: Translator, out_dir: str | None = None,
-    log: Log = _noop, progress: Progress = _noop,
+    paths: list[str], translate: bool, tr: Translator | None, out_dir: str | None = None,
+    log: Log = _noop, progress: Progress = _noop, fmt: str | None = None, ebook_convert: str | None = None,
 ) -> str:
-    """Více obrázků (např. nafocené stránky) → jeden DOCX."""
+    """Více obrázků (např. nafocené stránky) → jeden dokument (DOCX, nebo vícestránkové PDF a další formáty)."""
+    fmt = fmt if fmt and fmt != "docx" else "docx"
+    if images_pdf_only(translate, fmt):
+        dst = output_path(paths[0], out_dir, "pdf", " (stránky)")
+        images_to_pdf(paths, dst, log, progress)
+        return dst
+    if tr is None:
+        raise ValueError("Pro text z obrázků je potřeba nastavit OCR (Tesseract, Gemini nebo Claude).")
     suffix = f" ({tr.target_lang})" if translate else " (přepis)"
-    dst = output_path(paths[0], out_dir, "docx", suffix)
-    images_to_docx(paths, dst, tr, translate, log, progress)
+    dst = output_path(paths[0], out_dir, fmt, suffix)
+    if fmt == "docx":
+        images_to_docx(paths, dst, tr, translate, log, progress)
+        return dst
+    tmp = Path(tempfile.mkdtemp(prefix="prekladac_")) / "obrazky.docx"
+    try:
+        images_to_docx(paths, str(tmp), tr, translate, log, lambda f: progress(f * 0.9))
+        log(f"  převádím do {fmt.upper()}…")
+        calibre_convert(str(tmp), dst, log, ebook_convert)
+    finally:
+        shutil.rmtree(tmp.parent, ignore_errors=True)
+    progress(1.0)
     return dst

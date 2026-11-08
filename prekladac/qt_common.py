@@ -65,6 +65,20 @@ QScrollArea {{ border: none; background: transparent; }}
 #Ribbon {{ background: white; border-bottom: 1px solid #d0d7e2; }}
 #RibbonGroup {{ background: transparent; }}
 #RibbonLabel {{ color: #64748b; font-size: 8pt; }}
+#RibbonBar {{ background: white; border-bottom: 1px solid #d0d7e2; }}
+#RibbonBar QTabWidget::pane {{ border: none; background: white; }}
+QToolButton#BigAction, QToolButton#BigPrimary {{ padding: 4px 6px; font-size: 9pt; }}
+QToolButton#BigPrimary {{ background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; font-weight: 600; }}
+QToolButton#BigPrimary:hover {{ background: #dbeafe; border-color: #93c5fd; }}
+QToolButton#BigPrimary:disabled, QToolButton#BigAction:disabled {{ color: #94a3b8; background: transparent; border-color: transparent; }}
+#InfoBar {{ background: #f8fafc; border-bottom: 1px solid #e2e8f0; }}
+#Canvas {{ background: #e8ebf0; }}
+QScrollArea#CanvasScroll {{ background: #e8ebf0; }}
+#Paper {{ background: white; border: 1px solid #d5dbe5; border-radius: 2px; }}
+#DocHeading {{ font-family: Georgia, "Times New Roman", serif; font-size: 17pt; color: #1e3a8a; }}
+QPlainTextEdit#DocText {{ border: none; border-left: 3px solid #e2e8f0; border-radius: 0; padding: 4px 10px;
+    background: white; font-family: Georgia, "Times New Roman", serif; font-size: 12pt; color: #111827; }}
+QPlainTextEdit#DocText:focus {{ border: none; border-left: 3px solid {ACCENT}; }}
 QToolButton {{ border: 1px solid transparent; border-radius: 4px; padding: 3px; background: transparent; }}
 QToolButton:hover {{ background: #e0e7ff; border-color: #c7d2fe; }}
 QToolButton:checked {{ background: #c7d2fe; border-color: #a5b4fc; }}

@@ -153,6 +153,9 @@ def _format_paragraph(par, tag: Tag) -> None:
         left = (left or 0) + int(block_indent) * 30
     if left:
         par.paragraph_format.left_indent = Pt(left)
+    right = _px_to_pt(css.get("margin-right", "")) if css.get("margin-right") else None
+    if right:
+        par.paragraph_format.right_indent = Pt(right)
     first = _px_to_pt(css.get("text-indent", "")) if css.get("text-indent") else None
     if first:
         par.paragraph_format.first_line_indent = Pt(first)

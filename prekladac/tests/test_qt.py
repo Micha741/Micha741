@@ -114,7 +114,7 @@ def _editor_with(tmp_path, autosave):
             "chapters": [{"text": "Začátek.", "summary": ""}]}
     path = tmp_path / "a.kniha.json"
     bw.save_project(path, proj)
-    ed = BookEditor(proj, path, None, autosave=autosave)
+    ed = BookEditor(proj, path, None, autosave=autosave, text_assist={"capitalize": False})
     ed.show()  # psaní z klávesnice jde jen do zobrazeného okna
     ed.text.setFocus()
     ed.text.moveCursor(QtGui.QTextCursor.End)
@@ -203,7 +203,7 @@ def test_text_assist_menu_and_completion(qapp, tiny_speller):
     from qt_textassist import TextAssist
     edit = QtWidgets.QTextEdit()
     edit.setPlainText("Drak knyha přijel. ")
-    opts = {}
+    opts = {"capitalize": False}
     saved = []
     assist = TextAssist(edit, opts, lambda: saved.append(1))
     edit.show()
@@ -273,9 +273,220 @@ def test_sidebar_collapse_and_section_order(qapp):
     assert win2.sidebar_collapsed
     win2.set_sidebar_collapsed(False)
     assert win2.nav.item(0).text() == "Překlad"
-    boxes = [b.title() for b in win.book.findChildren(qt_main.QtWidgets.QGroupBox)]
-    assert boxes.index(next(b for b in boxes if b.startswith("1. Žánr"))) < \
-        boxes.index(next(b for b in boxes if b.startswith("2. Popis")))
+    ribbon = win.book.findChild(qt_main.QtWidgets.QTabWidget, "Ribbon")
+    assert [ribbon.tabText(i) for i in range(ribbon.count())] == ["Žánr a styl", "Rozsah a služba"]
+    assert win.book.cats["genre"].isVisibleTo(ribbon.widget(0)) and win.book.desc.objectName() == "DocText"
     assert not win.windowIcon().isNull()
     win.close()
     win2.close()
+
+
+def test_file_list_select_add_remove(qapp, tmp_path):
+    import qt_main
+    from PySide6 import QtCore, QtTest
+    for n in ("a.txt", "b.docx", "c.epub", "x.xyz"):
+        (tmp_path / n).write_text("x", encoding="utf-8")
+    (tmp_path / "sub").mkdir()
+    (tmp_path / "sub" / "d.pdf").write_text("x", encoding="utf-8")
+    win = qt_main.MainWindow()
+    page = win.translate
+    assert page.files.add([tmp_path / "a.txt", tmp_path / "x.xyz"]) == 1
+    assert page.files.skipped == ["x.xyz"]
+    assert page.files.add([tmp_path]) == 3          # složka i s podsložkou, bez duplicit a .xyz
+    assert page.files.count() == 4
+    assert not page.b_remove.isEnabled()
+    page.files.item(0).setSelected(True)
+    page.files.item(1).setSelected(True)
+    assert page.b_remove.text() == "➖ Odebrat vybrané (2)" and "vybráno 2" in page.files_info.text()
+    page.files.selectAll()                           # Ctrl+A
+    assert page.b_remove.text() == "🗑 Odebrat vše" and page.b_selall.text() == "☐ Zrušit výběr"
+    page.b_selall.click()
+    assert not page.files.selectedItems()
+    page.files.item(0).setSelected(True)
+    QtTest.QTest.keyClick(page.files, QtCore.Qt.Key_Delete)
+    assert page.files.count() == 3 and len(page.files.files) == 3
+    page.files.selectAll()
+    page.b_remove.click()
+    assert page.files.count() == 0 and page.files.files == [] and page.files_info.text() == ""
+    win.close()
+
+
+@pytest.mark.parametrize("before,expected", [
+    ("", True), ("Ahoj světe. ", True), ("Kde je? ", True), ("Pozor! ", True), ("Řekl: „Jdu.“ ", True),
+    ("Ahoj světe.", False), ("Ahoj ", False), ("Viz např. ", False), ("Bylo to 5. ", False),
+    ("1. ", True), ("Tzv. ", False), ("A pak... ", False),
+])
+def test_should_capitalize(before, expected):
+    from qt_textassist import should_capitalize
+    assert should_capitalize(before) is expected
+
+
+def test_auto_capitalize_typing(qapp):
+    from PySide6 import QtTest, QtWidgets
+    from qt_textassist import TextAssist
+    edit = QtWidgets.QPlainTextEdit()
+    opts = {"complete": False}
+    TextAssist(edit, opts, lambda: None)
+    edit.show()
+    QtTest.QTest.keyClicks(edit, "drak letel. pak spal atd. tady. konec")
+    assert edit.toPlainText() == "Drak letel. Pak spal atd. tady. Konec"
+    edit.clear()
+    opts["capitalize"] = False
+    QtTest.QTest.keyClicks(edit, "drak. pes")
+    assert edit.toPlainText() == "drak. pes"
+
+
+def test_book_scope_is_remembered_and_applied(qapp, tmp_path, monkeypatch):
+    import book_writer as bw
+    import qt_main
+    from PySide6 import QtWidgets
+    win = qt_main.MainWindow()
+    b = win.book
+    b.nchap.setValue(20)
+    b.nwords.setValue(1200)
+    b.remember_scope()
+    win2 = qt_main.MainWindow()                       # po novém spuštění zůstane
+    assert (win2.book.nchap.value(), win2.book.nwords.value()) == (20, 1200)
+    # osnova vznikla s 2500 slovy, pak uživatel změní délku na 1200 → při psaní se použije 1200
+    outline = {"title": "T", "synopsis": "", "characters": [],
+               "chapters": [{"title": f"K{i}", "summary": ""} for i in range(20)]}
+    b.bdir.setText(str(tmp_path))
+    win.cfg.setdefault("engines", {})["gemini"] = {"api_key": "test"}
+    b.service.setCurrentIndex(b.service.findData("gemini"))
+    for name in ("critical", "warning", "information"):
+        monkeypatch.setattr(QtWidgets.QMessageBox, name, lambda *a, **k: (_ for _ in ()).throw(
+            AssertionError(f"neočekávané okno: {a[2] if len(a) > 2 else a}")))
+    b.nwords.setValue(2500)
+    b.new_project(outline)
+    b.outline.setPlainText(bw.outline_to_text(outline))
+    b.nwords.setValue(1200)
+    asked = []
+    monkeypatch.setattr(QtWidgets.QMessageBox, "question",
+                        lambda *a, **k: asked.append(a[2]) or QtWidgets.QMessageBox.No)
+    b.do_write()
+    assert b.project["words"] == 1200 and bw.load_project(b.path)["words"] == 1200
+    assert asked and "Napsat 20 kapitol" in asked[-1]
+    # nesoulad počtu kapitol se ohlásí
+    b.nchap.setValue(25)
+    asked.clear()
+    b.do_write()
+    assert "Osnova má 20 kapitol" in asked[0]
+    win.close()
+    win2.close()
+
+
+def test_rulers_toggle_and_indent(qapp, tmp_path):
+    import book_writer as bw
+    import docx
+    from html_docx import add_html
+    from qt_editor import BookEditor
+    proj = {"title": "T", "language": "čeština",
+            "outline": {"title": "T", "chapters": [{"title": "K1", "summary": ""}]},
+            "chapters": [{"title": "K1", "text": "Prvni odstavec.\n\nDruhy odstavec."}]}
+    p = tmp_path / "t.kniha.json"
+    bw.save_project(p, proj)
+    opts, saved = {}, []
+    ed = BookEditor(proj, p, None, text_assist=opts, save_options=lambda: saved.append(1))
+    ed.resize(1200, 800)
+    ed.show()
+    qapp.processEvents()
+    assert ed.hruler.isVisible() and ed.vruler.isVisible()     # výchozí: zapnuto
+    cm = ed.hruler.logicalDpiX() / 2.54
+    m = ed.hruler.markers()
+    ed.hruler.apply("left", m["left"] + 2 * cm + 3)              # posun o 2 cm (přichytí se)
+    f = ed.text.textCursor().blockFormat()
+    assert abs(f.leftMargin() - 2 * cm) < 0.5 and abs(f.textIndent() + 2 * cm) < 0.5  # první řádek zůstal
+    ed.hruler.apply("first", ed.hruler.markers()["left"] + 1 * cm)
+    assert abs(ed.text.textCursor().blockFormat().textIndent() - 1 * cm) < 0.5
+    ed.hruler.apply("right", ed.hruler.markers()["right"] - 1.5 * cm)
+    assert abs(ed.text.textCursor().blockFormat().rightMargin() - 1.5 * cm) < 0.5
+    # odsazení se přenese do DOCX
+    d = docx.Document()
+    add_html(d, ed.text.toHtml())
+    pf = d.paragraphs[0].paragraph_format
+    assert pf.left_indent and pf.first_line_indent and pf.right_indent
+    ed.b_ruler.click()
+    assert not ed.hruler.isVisible() and opts["ruler"] is False and saved
+    ed2 = BookEditor(proj, p, None, text_assist=opts, save_options=lambda: None)
+    ed2.show()
+    assert not ed2.hruler.isVisible() and not ed2.b_ruler.isChecked()
+    for e in (ed, ed2):
+        e.dirty = False
+        e.close()
+
+
+def test_print_book_to_pdf(qapp, tmp_path):
+    import book_writer as bw
+    from pypdf import PdfReader
+    from qt_editor import BookEditor
+    long = "\n\n".join(["Dlouhy odstavec textu kapitoly, ktery se opakuje. " * 8] * 40)
+    proj = {"title": "Kniha", "language": "čeština",
+            "outline": {"title": "Kniha", "chapters": [{"title": "Prvni", "summary": ""},
+                                                       {"title": "Druha", "summary": ""}]},
+            "chapters": [{"title": "Prvni", "text": long + "\n\n[[STRANA]]\n\nPo zalomeni."},
+                         {"title": "Druha", "text": "Kratka kapitola."}]}
+    p = tmp_path / "k.kniha.json"
+    bw.save_project(p, proj)
+    ed = BookEditor(proj, p, None, text_assist={"spell": False})
+    doc = ed.print_document(True)
+    assert "[[STRANA]]" not in doc.toPlainText() and "1. Prvni" in doc.toPlainText()
+    out = tmp_path / "tisk.pdf"
+    ed.print_to_pdf(out, whole=True)
+    whole = len(PdfReader(str(out)).pages)
+    ed.dirty = False
+    ed.close()
+    # srovnání počtu stran (čtení textu z PDF od Qt není na Windows spolehlivé):
+    # stejná kniha jen s dlouhou kapitolou bez zalomení = titulní strana + kapitola
+    base = dict(proj, chapters=[{"title": "Prvni", "text": long}],
+                outline={"title": "Kniha", "chapters": [{"title": "Prvni", "summary": ""}]})
+    p2 = tmp_path / "base.kniha.json"
+    bw.save_project(p2, base)
+    ed2 = BookEditor(base, p2, None, text_assist={"spell": False})
+    ref = tmp_path / "ref.pdf"
+    ed2.print_to_pdf(ref, whole=True)
+    first_only = len(PdfReader(str(ref)).pages)
+    assert first_only >= 3                       # titulní strana + dlouhá kapitola na víc stran
+    assert whole == first_only + 2               # + strana po [[STRANA]] + druhá kapitola od nové strany
+    one = tmp_path / "kapitola.pdf"
+    ed2.print_to_pdf(one, whole=False)
+    assert len(PdfReader(str(one)).pages) == first_only - 1   # bez titulní strany
+    ed2.dirty = False
+    ed2.close()
+
+
+def test_outline_change_keeps_written_chapters(qapp, tmp_path, monkeypatch):
+    import book_writer as bw
+    import qt_main
+    from PySide6 import QtGui, QtWidgets
+    win = qt_main.MainWindow()
+    b = win.book
+    b.bdir.setText(str(tmp_path))
+    win.cfg.setdefault("engines", {})["gemini"] = {"api_key": "test"}
+    b.service.setCurrentIndex(b.service.findData("gemini"))
+    outline = {"title": "T", "synopsis": "", "characters": [],
+               "chapters": [{"title": f"K{i}", "summary": f"obsah {i}"} for i in range(1, 4)]}
+    b.nchap.setValue(3)
+    b.new_project(outline)
+    b.project["chapters"].append({"text": "napsano", "summary": "s"})   # 1. kapitola už je napsaná
+    text = bw.outline_to_text(outline)
+    b.outline.setPlainText(text)
+    # délka 3. kapitoly přes menu osnovy
+    block = b.outline.document().findBlock(text.index("3. K3"))
+    b.set_chapter_words(block, 5000)
+    assert "3. K3 [5000 slov] — obsah 3" in b.outline.toPlainText()
+    asked = []
+    monkeypatch.setattr(QtWidgets.QMessageBox, "question",
+                        lambda *a, **k: asked.append(a[2]) or QtWidgets.QMessageBox.No)
+    path = b.path
+    b.do_write()                       # změna jen nenapsané kapitoly → pokračuje, nic se nemaže
+    assert b.path == path and len(b.project["chapters"]) == 1
+    assert b.project["outline"]["chapters"][2]["words"] == 5000
+    assert "Napsat 2 kapitol" in asked[-1]
+    qapp.processEvents()
+    assert "Osnova upravena" in b.logv.toPlainText()
+    # menu pravého tlačítka nabízí délku kapitoly
+    menu = QtWidgets.QMenu()
+    c = QtGui.QTextCursor(b.outline.document().findBlock(b.outline.toPlainText().index("2. K2")))
+    b._outline_menu(menu, c)
+    assert any("Délka kapitoly „K2“" in a.text() for a in menu.actions())
+    win.close()

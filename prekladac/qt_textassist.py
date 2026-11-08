@@ -14,7 +14,41 @@ from PySide6.QtCore import Qt
 import spell
 from qt_common import bridge, run_bg
 
-DEFAULT_OPTIONS = {"spell": True, "complete": True}
+DEFAULT_OPTIONS = {"spell": True, "complete": True, "capitalize": True}
+
+# zkratky, po jejichž tečce věta nekončí (malými písmeny, bez tečky)
+ABBREVIATIONS = {
+    "např", "tzv", "tj", "tzn", "atd", "apod", "resp", "popř", "mj", "aj", "tř", "č", "s", "str", "r", "sv",
+    "p", "pí", "sl", "ing", "mgr", "bc", "dr", "mudr", "judr", "phdr", "rndr", "doc", "prof", "cca", "kap",
+    "obr", "tab", "viz", "min", "max", "hod", "ul", "nám", "tel", "zn", "vč", "kč", "ks", "odst", "písm",
+    "srov", "pozn", "př", "angl", "lat", "něm", "fr", "st", "mil", "tis", "mld", "hl", "o", "a", "e", "u",
+}
+SENTENCE_END = ".!?…"
+
+
+def should_capitalize(before: str) -> bool:
+    """True, když další písmeno začíná větu: začátek odstavce nebo konec věty a mezera.
+
+    `before` je text odstavce před kurzorem. Po zkratkách („např.“) a pořadových číslech („1.“) ne.
+    """
+    if not before.strip():
+        return True  # začátek odstavce (i za odrážkou z mezer)
+    if not before[-1].isspace():
+        return False
+    t = before.rstrip()
+    t = t.rstrip("\"'“”„»«)]")  # konec věty může být v uvozovkách nebo závorce
+    if not t or t[-1] not in SENTENCE_END:
+        return False
+    if t[-1] == ".":
+        word = t[:-1].split()[-1] if t[:-1].split() else ""
+        word = word.lstrip("(\"'„“«»")
+        if word.isdigit():
+            return t[:-1].strip() == word  # „1. Název“ na začátku řádku (osnova, seznam) ano, „5. května“ ne
+        if word.lower() in ABBREVIATIONS:
+            return False
+        if t.endswith("..."):
+            return False  # trojtečka uprostřed věty
+    return True
 
 
 class SpellHighlighter(QtGui.QSyntaxHighlighter):
@@ -129,6 +163,17 @@ class TextAssist(QtCore.QObject):
             QtCore.QCoreApplication.sendEvent(self.edit, copy)
             return True
         if obj is self.edit:
+            txt = ev.text()
+            if (len(txt) == 1 and txt.islower() and self.options.get("capitalize", True) and not self.edit.isReadOnly()
+                    and not ev.modifiers() & (Qt.ControlModifier | Qt.AltModifier)):
+                c = self.edit.textCursor()
+                if not c.hasSelection() and should_capitalize(c.block().text()[:c.positionInBlock()]):
+                    # stejná klávesa s velkým písmenem – projde i ostatními filtry (automatické ukládání)
+                    up = QtGui.QKeyEvent(ev.type(), ev.key(), ev.modifiers() | Qt.ShiftModifier, txt.upper(),
+                                         ev.isAutoRepeat(), ev.count())
+                    QtCore.QCoreApplication.sendEvent(self.edit, up)
+                    self._complete_timer.start()
+                    return True
             if ev.text().isalpha() or ev.key() == Qt.Key_Backspace:
                 self._complete_timer.start()
             elif ev.key() not in self.NAV_KEYS:
@@ -241,6 +286,10 @@ class TextAssist(QtCore.QObject):
         a.setChecked(bool(self.options.get("spell", True)))
         a.setEnabled(self.spelling)
         a.toggled.connect(lambda v: self.set_option("spell", v))
+        a = tools.addAction("Velké písmeno na začátku věty")
+        a.setCheckable(True)
+        a.setChecked(bool(self.options.get("capitalize", True)))
+        a.toggled.connect(lambda v: self.set_option("capitalize", v))
         a = tools.addAction("Návrhy slov při psaní (T9)")
         a.setCheckable(True)
         a.setChecked(self.complete_on())
