@@ -86,6 +86,12 @@ Ručně lze kontrolu spustit v *⚙ Nastavení → Obecné → Zkontrolovat novo
 2. Zvolte cílový jazyk, výstupní formát, překladač a OCR. Pod překladačem je vidět, jestli je služba připravená.
 3. Klikněte na **Spustit**. V okně uvidíte průběh a na konci spotřebu (u Claude cenu, u DeepL zbývající měsíční limit).
 
+**PDF o více stranách:** PDF jde přeložit nebo převést celé – program zpracuje všechny strany (po částech,
+s průběhem „hotovo 40/120 stran“). Výsledek může být DOCX, PDF, EPUB… **Více obrázků do jednoho PDF:**
+přidejte fotky / skeny stránek, zvolte výstupní formát **PDF** a nechte zaškrtnuté *Více obrázků spojit do
+jednoho dokumentu*. V režimu *Jen převést* vznikne PDF, kde je každý obrázek jednou stránkou (bez rozpoznávání
+textu, okamžitě); při překladu se text rozpozná, přeloží a uloží jako vícestránkové PDF.
+
 Do pole **Pokyny pro překlad** (platí pro Claude, Gemini a Ollama) můžete napsat například:
 `Jména postav nepřekládej. „Ranger“ překládej jako „hraničář“. Tykání mezi postavami zachovej.`
 
@@ -116,6 +122,9 @@ Když program zavřete, přijdete nanejvýš o právě psanou kapitolu – po sp
   stránky), **styly** (Normální, Nadpis, Podnadpis, Citace), **úpravy** (najít a nahradit v celé knize, zpět/znovu,
   lupa), uložit a exportovat.
 - **Kniha** – název a autor, výchozí písmo knihy, obsah s odkazy, formáty exportu, přidání/mazání/přesun kapitol.
+- **🖨 Tisk** (Domů → Soubor, nebo Ctrl+P) – vytiskne celou knihu (titulní strana, každá kapitola od nové
+  stránky, čísla stran, zalomení stránek z editoru) nebo jen otevřenou kapitolu; je i **náhled tisku**.
+  V okně tisku jde zvolit tiskárnu, počet kopií a stránky; „Microsoft Print to PDF“ uloží tisk jako PDF.
 - **Zobrazení** – **📏 Pravítko** (zapnout/vypnout, program si volbu pamatuje): vodorovné pravítko nad stránkou
   v centimetrech a svislé vlevo. Na vodorovném jde myší táhnout odsazení odstavce jako ve Wordu – ▽ nahoře
   první řádek, △ dole levé odsazení, △ vpravo pravé odsazení (po čtvrt centimetru); dvojklik odsazení zruší.

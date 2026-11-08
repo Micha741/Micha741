@@ -204,6 +204,8 @@ def files_need_ocr(files: list[str], out_fmt: str | None, translate: bool, engin
     for f in files:
         ext = Path(f).suffix.lower()
         if ext in IMAGE_EXT:
+            if not translate and out_fmt == "pdf":
+                continue  # obrázky jen poskládat do PDF – bez rozpoznávání textu
             return True
         if ext == ".pdf" and engine == "microsoft_doc" and translate:
             continue  # PDF přeloží Microsoft celé
@@ -229,12 +231,14 @@ def run_jobs(files, translate, out_fmt, tr, out_dir, merge_images, log, progress
         if cancel_event.is_set():
             log("Zastaveno.")
             break
-        label = Path(paths[0]).name if kind == "file" else f"{len(paths)} obrázků → jeden DOCX"
+        merged_fmt = out_fmt if out_fmt not in (None, SAME_FORMAT) else "docx"
+        label = Path(paths[0]).name if kind == "file" else f"{len(paths)} obrázků → jeden {merged_fmt.upper()}"
         log(f"[{n + 1}/{len(jobs)}] {label}")
         step = lambda f, n=n: progress((n + max(0.0, min(1.0, f))) / len(jobs))  # noqa: E731
         try:
             if kind == "images":
-                out = process_images_together(sorted(paths), translate, tr, out_dir, log, step)
+                out = process_images_together(sorted(paths), translate, tr, out_dir, log, step,
+                                              fmt=merged_fmt, ebook_convert=ebook_convert)
             else:
                 fmt = None if out_fmt in (None, SAME_FORMAT) else out_fmt
                 out = process_file(paths[0], fmt, translate, tr, out_dir, log, step, ebook_convert)
@@ -306,7 +310,7 @@ def run_cli(argv: list[str]) -> int:
     ap.add_argument("--convert-only", action="store_true", help="jen převést / přepsat, nepřekládat")
     ap.add_argument("--out-dir")
     ap.add_argument("--notes", default="", help="pokyny pro překlad (glosář, styl)")
-    ap.add_argument("--merge-images", action="store_true", help="více obrázků do jednoho DOCX")
+    ap.add_argument("--merge-images", action="store_true", help="více obrázků do jednoho dokumentu (DOCX, nebo vícestránkové PDF s --to pdf)")
     ap.add_argument("--calibre", help="cesta k ebook-convert")
     ap.add_argument("--tesseract", help="cesta k tesseract")
     ap.add_argument("--log", help="výpis uložit i do tohoto souboru")

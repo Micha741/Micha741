@@ -246,3 +246,24 @@ def test_prepare_image(tmp_path):
 
 if __name__ == "__main__":
     sys.exit(pytest.main([__file__, "-q"]))
+
+
+def test_images_to_multipage_pdf(tmp_path):
+    from PIL import Image
+    from pypdf import PdfReader
+
+    import app
+    from converters import process_images_together, process_file
+    paths = []
+    for i, col in enumerate(("red", "green", "blue")):
+        p = tmp_path / f"strana{i + 1}.jpg"
+        Image.new("RGB", (600, 800), col).save(p)
+        paths.append(str(p))
+    out = process_images_together(paths, False, None, str(tmp_path / "out"), fmt="pdf")
+    assert out.endswith(".pdf") and len(PdfReader(out).pages) == 3
+    single = process_file(paths[0], "pdf", False, None, str(tmp_path / "out1"))
+    assert len(PdfReader(single).pages) == 1
+    # jen poskládat do PDF nepotřebuje OCR; přepis do DOCX ano
+    assert not app.files_need_ocr(paths, "pdf", False)
+    assert app.files_need_ocr(paths, "docx", False)
+    assert app.files_need_ocr(paths, "pdf", True)

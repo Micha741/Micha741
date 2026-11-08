@@ -413,3 +413,31 @@ def test_rulers_toggle_and_indent(qapp, tmp_path):
     for e in (ed, ed2):
         e.dirty = False
         e.close()
+
+
+def test_print_book_to_pdf(qapp, tmp_path):
+    import book_writer as bw
+    from pypdf import PdfReader
+    from qt_editor import BookEditor
+    long = "\n\n".join(["Dlouhy odstavec textu kapitoly, ktery se opakuje. " * 8] * 40)
+    proj = {"title": "Kniha", "language": "čeština",
+            "outline": {"title": "Kniha", "chapters": [{"title": "Prvni", "summary": ""},
+                                                       {"title": "Druha", "summary": ""}]},
+            "chapters": [{"title": "Prvni", "text": long + "\n\n[[STRANA]]\n\nPo zalomeni."},
+                         {"title": "Druha", "text": "Kratka kapitola."}]}
+    p = tmp_path / "k.kniha.json"
+    bw.save_project(p, proj)
+    ed = BookEditor(proj, p, None, text_assist={"spell": False})
+    doc = ed.print_document(True)
+    assert "[[STRANA]]" not in doc.toPlainText() and "1. Prvni" in doc.toPlainText()
+    out = tmp_path / "tisk.pdf"
+    ed.print_to_pdf(out, whole=True)
+    pages = PdfReader(str(out)).pages
+    # titulní strana + dlouhá kapitola (víc stran) + zalomení + druhá kapitola od nové strany
+    assert len(pages) >= 5
+    assert "Druha" in pages[-1].extract_text()
+    one = tmp_path / "kapitola.pdf"
+    ed.print_to_pdf(one, whole=False)
+    assert len(PdfReader(str(one)).pages) < len(pages)
+    ed.dirty = False
+    ed.close()

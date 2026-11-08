@@ -226,7 +226,7 @@ class TranslatePage(QtWidgets.QWidget):
         self.notes.setMaximumHeight(60)
         g.addWidget(QtWidgets.QLabel("Pokyny:"), 5, 0)
         g.addWidget(self.notes, 5, 1, 1, 3)
-        self.merge = QtWidgets.QCheckBox("Více obrázků spojit do jednoho DOCX")
+        self.merge = QtWidgets.QCheckBox("Více obrázků spojit do jednoho dokumentu (DOCX, nebo vícestránkové PDF)")
         self.merge.setChecked(cfg.get("merge_images", True))
         g.addWidget(self.merge, 6, 1, 1, 3)
         g.setColumnStretch(1, 1)
