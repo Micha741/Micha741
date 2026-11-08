@@ -9,3 +9,6 @@ truststore>=0.10
 certifi>=2024.0
 PySide6-Essentials>=6.7
 spylls>=0.1.7
+ctranslate2>=4.0
+sentencepiece>=0.2
+sacremoses>=0.1

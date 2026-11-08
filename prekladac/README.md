@@ -22,6 +22,15 @@ přes **Claude API** (nejlepší kvalita). Umí také jen převádět formáty a
 API služby (Claude, DeepSeek, OpenAI…) **nemají měsíční paušál** – dobíjí se kredit předem a platí se podle
 spotřebovaných tokenů (1 token ≈ 0,4 českého slova). Předplatné Claude Pro/Max na claude.ai se na API nevztahuje.
 
+### Offline překlad (bez internetu)
+
+Překladač **Offline v počítači (Argos)** překládá přímo v počítači – zdarma, bez klíče a bez odesílání textu
+(stejné modely jako LibreTranslate, ale bez serveru). Jazykové balíčky (každý asi 100 MB) se stáhnou v
+*⚙ Nastavení → Součásti → Offline překlad*, nebo zaškrtnutím volby při instalaci. Jazyk originálu program pozná
+sám; když přímý balíček chybí, překládá přes angličtinu (např. němčina → angličtina → čeština – stačí balíčky
+*němčina → angličtina* a *angličtina → čeština*). Kvalita je nižší než u DeepL či Google, běží i na slabším
+počítači (bez grafické karty). Vnitřní formátování odstavců (tučné uvnitř věty) se při offline překladu nezachová.
+
 ## Text z obrázků a skenů (OCR)
 
 | OCR | Cena | Poznámka |
@@ -68,6 +77,13 @@ Výsledek se uloží vedle originálu jako `název (čeština).přípona`.
    Číslo verze je v záhlaví okna a v *⚙ Nastavení → Obecné*.
    Klíče se ukládají **zašifrovaně** (Windows DPAPI) jen pro váš účet ve Windows.
 
+### Info o programu
+
+*⚙ Nastavení → Info* ukazuje verzi, co program umí, **historii verzí** (co přibylo kdy) a **plánované nápady**
+(soubor `assets/changelog.md`). Pod tím je pole **Moje poznámky a nápady**, kam si můžete psát vlastní seznam –
+uloží se tlačítkem Uložit nastavení. Instalátor i `Prekladac.exe` mají ve Vlastnostech → Podrobnosti verzi souboru,
+autorská práva a popis.
+
 ### Jazyk programu
 
 Program je česky, anglicky, slovensky a německy: *⚙ Nastavení → Obecné → Jazyk programu*, uložit a restartovat
@@ -87,6 +103,11 @@ stávající verzi a nastavení, klíče i rozepsané knihy zůstanou zachované
 Ručně lze kontrolu spustit v *⚙ Nastavení → Obecné → Zkontrolovat novou verzi*, kde ji jde i vypnout.
 
 ## Použití
+
+Stránka **Překlad** vypadá jako Word: nahoře pás karet **Soubory** (přidat soubory či složku, vybrat, odebrat),
+**Překlad** (přeložit / jen převést, cílový jazyk, výstupní formát, překladač a jeho stav) a **Obrázky a OCR**;
+vpravo velká tlačítka **▶ Spustit**, **Zastavit** a **Výstupní složka**; uprostřed stránka se seznamem souborů
+a pokyny pro překlad, dole průběh.
 
 1. Přidejte soubory tlačítkem **Přidat soubory** (v okně jde vybrat víc souborů najednou – Ctrl+klik,
    Shift+klik, Ctrl+A), **Přidat složku** (všechny podporované soubory včetně podsložek), nebo je přetáhněte

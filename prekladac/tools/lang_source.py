@@ -149,6 +149,42 @@ E: list[tuple[str, str, str, str]] = [
      "Tesseract sa nenašiel (Nastavenia → Súčasti)", "Tesseract nicht gefunden (Einstellungen → Komponenten)"),
     ("OCR {}: chybí klíč", "OCR {}: key missing", "OCR {}: chýba kľúč", "OCR {}: Schlüssel fehlt"),
     ("model: {}", "model: {}", "model: {}", "Modell: {}"),
+    ("Přidat\nsoubory…", "Add\nfiles…", "Pridať\nsúbory…", "Dateien\nhinzufügen…"),
+    ("Přidat\nsložku…", "Add\nfolder…", "Pridať\npriečinok…", "Ordner\nhinzufügen…"),
+    ("Přidat", "Add", "Pridať", "Hinzufügen"),
+    ("Výběr", "Selection", "Výber", "Auswahl"),
+    ("Režim", "Mode", "Režim", "Modus"),
+    ("Jazyk a formát", "Language and format", "Jazyk a formát", "Sprache und Format"),
+    ("Obrázky a OCR", "Images and OCR", "Obrázky a OCR", "Bilder und OCR"),
+    ("Text z obrázků a skenů (OCR)", "Text from images and scans (OCR)", "Text z obrázkov a skenov (OCR)",
+     "Text aus Bildern und Scans (OCR)"),
+    ("Rozpoznávání:", "Recognition:", "Rozpoznávanie:", "Erkennung:"),
+    ("Jazyk originálu:", "Source language:", "Jazyk originálu:", "Originalsprache:"),
+    ("Obrázky", "Images", "Obrázky", "Bilder"),
+    ("Spustit", "Start", "Spustiť", "Starten"),
+    ("Spustí překlad / převod všech souborů v seznamu", "Starts translating / converting all files in the list",
+     "Spustí preklad / prevod všetkých súborov v zozname", "Startet Übersetzen / Umwandeln aller Dateien der Liste"),
+    ("Zastaví po dokončení rozpracovaného souboru", "Stops after the current file is finished",
+     "Zastaví po dokončení rozpracovaného súboru", "Stoppt nach der aktuellen Datei"),
+    ("Výstupní\nsložka", "Output\nfolder", "Výstupný\npriečinok", "Ausgabe-\nordner"),
+    ("Otevře složku s výsledky", "Opens the folder with results", "Otvorí priečinok s výsledkami",
+     "Öffnet den Ordner mit den Ergebnissen"),
+    ("Přetáhněte sem soubory, nebo je přidejte na kartě Soubory. Pravé tlačítko a klávesa Delete fungují i "
+     "v seznamu.", "Drag files here or add them on the Files tab. Right-click and the Delete key also work in the "
+     "list.", "Pretiahnite sem súbory alebo ich pridajte na karte Súbory. Pravé tlačidlo a kláves Delete fungujú aj "
+     "v zozname.", "Dateien hierher ziehen oder auf der Registerkarte Dateien hinzufügen. Rechtsklick und Entf "
+     "funktionieren auch in der Liste."),
+    ("Pokyny pro překlad", "Translation instructions", "Pokyny pre preklad", "Übersetzungsanweisungen"),
+    ("Nepovinné – glosář, jména, tykání/vykání, styl. Platí pro Claude, Gemini, Ollama a OpenAI-kompatibilní "
+     "služby.", "Optional – glossary, names, formal/informal address, style. Applies to Claude, Gemini, Ollama and "
+     "OpenAI-compatible services.", "Nepovinné – glosár, mená, tykanie/vykanie, štýl. Platí pre Claude, Gemini, "
+     "Ollama a OpenAI-kompatibilné služby.", "Optional – Glossar, Namen, Du/Sie, Stil. Gilt für Claude, Gemini, "
+     "Ollama und OpenAI-kompatible Dienste."),
+    ("Výsledky se ukládají vedle originálů. Nejdřív přidejte soubory, nebo nastavte výstupní složku v Nastavení → "
+     "Obecné.", "Results are saved next to the originals. Add files first, or set an output folder in Settings → "
+     "General.", "Výsledky sa ukladajú vedľa originálov. Najprv pridajte súbory alebo nastavte výstupný priečinok "
+     "v Nastaveniach → Všeobecné.", "Ergebnisse werden neben den Originalen gespeichert. Fügen Sie zuerst Dateien "
+     "hinzu oder legen Sie unter Einstellungen → Allgemein einen Ausgabeordner fest."),
     # ------------------------------------------------------------ stránka Napsat knihu
     ("Soubor", "File", "Súbor", "Datei"),
     ("Žánr a styl", "Genre and style", "Žáner a štýl", "Genre und Stil"),
@@ -595,6 +631,55 @@ E += [
     ("Texty programu; návody ke službám a podrobné chybové hlášky zůstávají česky.", "Program texts; service guides "
      "and detailed error messages stay in Czech.", "Texty programu; návody k službám a podrobné chybové hlásenia "
      "zostávajú po česky.", "Programmtexte; Dienstanleitungen und detaillierte Fehlermeldungen bleiben tschechisch."),
+    # offline překlad
+    ("Offline v počítači (Argos) – zdarma, bez internetu", "Offline on your computer (Argos) – free, no internet",
+     "Offline v počítači (Argos) – zadarmo, bez internetu", "Offline auf dem Computer (Argos) – kostenlos, ohne "
+     "Internet"),
+    ("Offline překlad – v počítači, bez internetu (Argos Translate)", "Offline translation – on your computer, no "
+     "internet (Argos Translate)", "Offline preklad – v počítači, bez internetu (Argos Translate)",
+     "Offline-Übersetzung – auf dem Computer, ohne Internet (Argos Translate)"),
+    ("Zdarma a bez odesílání textu. Kvalita je nižší než u DeepL nebo Google. Každý balíček má kolem 100 MB. Když "
+     "přímý pár chybí, překládá se přes angličtinu (např. němčina → angličtina → čeština) – stačí balíčky „… → "
+     "angličtina“ a „angličtina → čeština“.", "Free and without sending text anywhere. Quality is lower than DeepL or "
+     "Google. Each package is about 100 MB. If a direct pair is missing, translation goes via English (e.g. German "
+     "→ English → Czech) – the packages „… → English“ and „English → Czech“ are enough.",
+     "Zadarmo a bez odosielania textu. Kvalita je nižšia ako pri DeepL alebo Google. Každý balík má okolo 100 MB. "
+     "Keď priamy pár chýba, prekladá sa cez angličtinu (napr. nemčina → angličtina → čeština) – stačia balíky „… → "
+     "angličtina“ a „angličtina → čeština“.", "Kostenlos und ohne Text zu versenden. Qualität geringer als DeepL "
+     "oder Google. Jedes Paket hat etwa 100 MB. Fehlt ein direktes Paar, wird über Englisch übersetzt (z. B. "
+     "Deutsch → Englisch → Tschechisch) – es genügen „… → Englisch“ und „Englisch → Tschechisch“."),
+    ("⬇ Stáhnout zaškrtnuté balíčky", "⬇ Download checked packages", "⬇ Stiahnuť zaškrtnuté balíky",
+     "⬇ Markierte Pakete herunterladen"),
+    ("🗑 Odebrat zaškrtnuté", "🗑 Remove checked", "🗑 Odobrať zaškrtnuté", "🗑 Markierte entfernen"),
+    ("nainstalováno: {}", "installed: {}", "nainštalované: {}", "installiert: {}"),
+    ("zatím žádný balíček – zaškrtněte a stáhněte", "no package yet – check and download",
+     "zatiaľ žiadny balík – zaškrtnite a stiahnite", "noch kein Paket – markieren und herunterladen"),
+    ("Offline překlad", "Offline translation", "Offline preklad", "Offline-Übersetzung"),
+    ("Zaškrtněte balíčky, které ještě nemáte.", "Check packages you do not have yet.",
+     "Zaškrtnite balíky, ktoré ešte nemáte.", "Markieren Sie Pakete, die noch fehlen."),
+    ("Odebrat zaškrtnuté offline balíčky z počítače?", "Remove the checked offline packages from this computer?",
+     "Odobrať zaškrtnuté offline balíky z počítača?", "Markierte Offline-Pakete vom Computer entfernen?"),
+    ("✓ Offline balíčky staženy.", "✓ Offline packages downloaded.", "✓ Offline balíky stiahnuté.",
+     "✓ Offline-Pakete heruntergeladen."),
+    ("chybí offline balíček – ⚙ Nastavení → Součásti → Offline překlad", "offline package missing – ⚙ Settings → "
+     "Components → Offline translation", "chýba offline balík – ⚙ Nastavenia → Súčasti → Offline preklad",
+     "Offline-Paket fehlt – ⚙ Einstellungen → Komponenten → Offline-Übersetzung"),
+    ("offline: {}", "offline: {}", "offline: {}", "offline: {}"),
+    ("{} → {}", "{} → {}", "{} → {}", "{} → {}"),
+    # Info
+    ("🌐 Stránka programu", "🌐 Program website", "🌐 Stránka programu", "🌐 Programm-Website"),
+    ("© 2026 Micha741 · zdarma pro osobní použití", "© 2026 Micha741 · free for personal use",
+     "© 2026 Micha741 · zadarmo na osobné použitie", "© 2026 Micha741 · kostenlos für den privaten Gebrauch"),
+    ("Moje poznámky a nápady", "My notes and ideas", "Moje poznámky a nápady", "Meine Notizen und Ideen"),
+    ("Co ještě chcete v programu mít nebo vyzkoušet – uloží se tlačítkem Uložit nastavení.",
+     "What else you want in the program or want to try – saved with Save settings.",
+     "Čo ešte chcete v programe mať alebo vyskúšať – uloží sa tlačidlom Uložiť nastavenia.",
+     "Was Sie sich noch wünschen oder ausprobieren möchten – wird mit Einstellungen speichern gesichert."),
+    ("např. přidat tlačítko Přepsat kapitolu, vyzkoušet DeepL u PDF…", "e.g. add a Rewrite chapter button, try "
+     "DeepL with PDF…", "napr. pridať tlačidlo Prepísať kapitolu, vyskúšať DeepL pri PDF…",
+     "z. B. Schaltfläche Kapitel neu schreiben, DeepL mit PDF testen…"),
+    ("Seznam změn není k dispozici.", "The list of changes is not available.", "Zoznam zmien nie je k dispozícii.",
+     "Änderungsliste nicht verfügbar."),
     # ------------------------------------------------------------ editor knihy
     ("Domů", "Home", "Domov", "Start"),
     ("Zobrazení", "View", "Zobrazenie", "Ansicht"),

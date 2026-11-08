@@ -717,6 +717,56 @@ class OpenAICompatEngine(_LLMEngine):
         return json.loads(content)
 
 
+class OfflineEngine(Engine):
+    """Překlad v počítači bez internetu (modely Argos Translate) – viz offline_mt.py."""
+
+    name = "Offline (v počítači)"
+    max_chars = 6000
+    max_items = 40
+    workers = 1  # model běží na všech jádrech procesoru sám
+
+    def __init__(self, target_lang: str, source: str = ""):
+        super().__init__(target_lang)
+        import offline_mt
+
+        self.mt = offline_mt
+        self.dst = offline_mt.code_of(target_lang) or self.iso
+        self.src = offline_mt.code_of(source) if source else None
+        self.sources = sorted({a for a, _b in offline_mt.installed()} | {"en"})
+        if not any(offline_mt.route(a, self.dst) for a in self.sources if a != self.dst):
+            raise EngineError(offline_mt.missing_message("en", self.dst))
+        self.translator = offline_mt.OfflineTranslator()
+        self.lock = threading.Lock()
+
+    def _source(self, texts: list[str]) -> str:
+        with self.lock:  # jazyk originálu se zjistí z prvních úseků a pak drží pro celý dokument
+            if not self.src:
+                cands = [a for a in self.sources if a != self.dst and self.mt.route(a, self.dst)]
+                found = self.mt.detect_language(" ".join(texts), cands)
+                if found:
+                    self.src = found
+            return self.src or "en"
+
+    def translate_batch(self, texts, markup, context):
+        prepared, tag_lists = [], []
+        for t in texts:
+            if markup:  # vnitřní značky (tučné…) model neumí – přeloží se čistý text
+                plain, tags = protect_tags(re.sub(r"\s*\n\s*", " ", t))
+                plain = re.sub(r"\s*\{\{\d+\}\}\s*", " ", plain).strip()
+            else:
+                plain, tags = t, []
+            prepared.append(plain)
+            tag_lists.append(tags)
+        src = self._source(prepared)
+        if src == self.dst:
+            return list(texts)
+        try:
+            result = self.translator.translate(prepared, src, self.dst)
+        except RuntimeError as e:
+            raise EngineError(str(e)) from e
+        return [restore_tags(r, tags) if markup else r for r, tags in zip(result, tag_lists)]
+
+
 ENGINE_LABELS = {
     "claude": "Claude API – placený, nejlepší kvalita",
     "deepl": "DeepL API Free – zdarma 500 000 znaků/měsíc",
@@ -727,6 +777,7 @@ ENGINE_LABELS = {
     "ollama": "Ollama – AI v počítači, offline, zdarma",
     "openai": "OpenAI-kompatibilní – OpenAI, DeepSeek, Mistral, OpenRouter, Groq…",
     "libre": "LibreTranslate – vlastní server, zdarma",
+    "offline": "Offline v počítači (Argos) – zdarma, bez internetu",
 }
 
 OCR_LABELS = {

@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 import threading
 import traceback
@@ -19,7 +20,8 @@ import components
 from converters import IMAGE_EXT, OUTPUT_FORMATS, CalibreMissing, process_file, process_images_together
 from free_engines import (
     ENGINE_LABELS, OCR_LABELS, DeepLEngine, EngineError, EngineTranslator, GeminiEngine, GoogleFreeEngine,
-    LibreTranslateEngine, MicrosoftDocumentTranslator, MicrosoftEngine, OllamaEngine, OpenAICompatEngine, Pipeline,
+    LibreTranslateEngine, MicrosoftDocumentTranslator, MicrosoftEngine, OfflineEngine, OllamaEngine, OpenAICompatEngine,
+    Pipeline,
     TesseractOCR,
 )
 from version import VERSION
@@ -120,6 +122,13 @@ def service_ready(cfg: dict, service: str) -> tuple[bool, str]:
     sect = cfg.get("engines", {}).get(service, {})
     if service in ("google",):
         return True, "připraveno, klíč není potřeba"
+    if service == "offline":
+        import offline_mt
+
+        pairs = offline_mt.installed()
+        if not pairs:
+            return False, "chybí offline balíček – ⚙ Nastavení → Součásti → Offline překlad"
+        return True, "offline: " + ", ".join(f"{a}→{b}" for a, b in sorted(pairs))
     if service in ("ollama", "libre"):
         return True, f"adresa {sect.get('url') or 'výchozí'}"
     if service == "openai" and not sect.get("model"):
@@ -133,6 +142,8 @@ def make_engine(name: str, lang: str, cfg: dict, notes: str):
     key = (cfg.get("api_key") or os.environ.get(ENV_KEYS.get(name, ""), "")).strip()
     if name == "deepl":
         return DeepLEngine(lang, key)
+    if name == "offline":
+        return OfflineEngine(lang, cfg.get("source", ""))
     if name == "google":
         return GoogleFreeEngine(lang)
     if name == "microsoft":
@@ -346,6 +357,37 @@ def run_cli(argv: list[str]) -> int:
     return 0 if len(res) == len(a.files) or (a.merge_images and res) else 1
 
 
+def _install_offline(pairs: str, report: Path | None = None) -> int:
+    """Stáhne offline balíčky (např. „en_cs,de_en“); volá instalátor, když je zaškrtnutý offline překlad."""
+    import offline_mt
+
+    lines = []
+    try:
+        index = offline_mt.available()
+        for pair in [p.strip() for p in pairs.split(",") if p.strip()]:
+            a, _, b = pair.partition("_")
+            if (a, b) in offline_mt.installed():
+                lines.append(f"{pair}: už je nainstalovaný")
+                continue
+            pkg = max((p for p in index if p["from_code"] == a and p["to_code"] == b),
+                      key=lambda p: [int(x) for x in re.findall(r"\d+", str(p.get("package_version", "0")))] or [0],
+                      default=None)
+            if not pkg:
+                lines.append(f"{pair}: balíček neexistuje")
+                continue
+            offline_mt.install(pkg, lines.append)
+        code = 0
+    except Exception as e:  # noqa: BLE001
+        lines.append(f"Chyba: {e}")
+        code = 1
+    text = "\n".join(lines)
+    if report:
+        report.write_text(text, encoding="utf-8")
+    else:
+        print(text)
+    return code
+
+
 def _gui_selftest(report: Path) -> int:
     os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
     try:
@@ -427,6 +469,8 @@ if __name__ == "__main__":
         sys.exit(0)
     if sys.argv[1:2] == ["--gui-selftest"] and len(sys.argv) > 2:  # CI: okno a editor se dají sestavit
         sys.exit(_gui_selftest(Path(sys.argv[2])))
+    if sys.argv[1:2] == ["--install-offline"] and len(sys.argv) > 2:  # instalátor: volitelné offline balíčky
+        sys.exit(_install_offline(sys.argv[2], Path(sys.argv[3]) if len(sys.argv) > 3 else None))
     if len(sys.argv) > 1:
         sys.exit(run_cli(sys.argv[1:]))
     run_gui()

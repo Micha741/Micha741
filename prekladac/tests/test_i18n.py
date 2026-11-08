@@ -73,7 +73,7 @@ def test_whole_window_in_english(tmp_path):
         win.show()
         app.processEvents()
         texts = [b.text() for b in win.findChildren(QtWidgets.QAbstractButton)]
-        assert "➕ Add files…" in texts and "💾 Save settings" in texts
+        assert "Add\nfiles…" in texts and "💾 Save settings" in texts and "Start" in texts
         assert win.nav.item(0).text() == "Translate"
         win.set_sidebar_collapsed(True)
         assert win.nav.item(0).toolTip() == "Translate"
