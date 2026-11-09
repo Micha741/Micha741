@@ -318,6 +318,7 @@ class BookEditor(QtWidgets.QMainWindow):
         pl.setContentsMargins(24, 16, 24, 16)
         sheet = QtWidgets.QWidget()  # stránka s pravítky: [roh][vodorovné] / [svislé][text]
         sheet.setMaximumWidth(980 + 22)
+        self.page_frame, self.page_layout, self.sheet = page, pl, sheet
         sg = QtWidgets.QGridLayout(sheet)
         sg.setContentsMargins(0, 0, 0, 0)
         sg.setSpacing(0)
@@ -649,10 +650,26 @@ class BookEditor(QtWidgets.QMainWindow):
         self.b_panel.setCheckable(True)
         self.b_panel.setToolTip("Zobrazit / skrýt seznam kapitol vlevo (F9)")
         show.grid.addWidget(self.b_panel, 0, 1)
+        self.b_wide = self._big(emoji_icon("↔️"), "Celá šířka", lambda: self.set_full_width(self.b_wide.isChecked()))
+        self.b_wide.setCheckable(True)
+        self.b_wide.setToolTip("Stránka přes celou šířku okna – bez šedých okrajů kolem stránky")
+        show.grid.addWidget(self.b_wide, 0, 2)
+        wide = bool(self.view_opts.get("editor_full_width", False))
+        self.b_wide.setChecked(wide)
+        self.set_full_width(wide, save=False)
         on = bool(self.view_opts.get("ruler", True))
         self.b_ruler.setChecked(on)
         self.set_ruler(on, save=False)
         return self._row(show)
+
+    def set_full_width(self, on: bool, save: bool = True):
+        """Stránka uprostřed s šedými okraji (jako ve Wordu), nebo přes celou šířku okna."""
+        self.sheet.setMaximumWidth(16777215 if on else 980 + 22)
+        self.page_layout.setContentsMargins(*((0, 0, 0, 0) if on else (24, 16, 24, 16)))
+        self.b_wide.setChecked(on)
+        if save:
+            self.view_opts["editor_full_width"] = on
+            self._save_view()
 
     def go_chapter(self, step: int):
         n = len(self.project["chapters"])

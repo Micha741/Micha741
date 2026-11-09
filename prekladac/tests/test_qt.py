@@ -826,3 +826,22 @@ def test_editor_statusbar_panel_and_chapter_arrows(qapp, tmp_path):
 def qt_editor_label():
     from PySide6 import QtWidgets
     return QtWidgets.QLabel
+
+
+def test_editor_full_width_remembered(qapp, tmp_path):
+    from qt_editor import BookEditor
+    proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000,
+            "chapters": [{"text": "Jedna.", "summary": ""}]}
+    p = tmp_path / "k.kniha.json"
+    bw.save_project(p, proj)
+    opts = {}
+    ed = BookEditor(proj, p, None, text_assist=opts, save_options=lambda: None)
+    assert not ed.b_wide.isChecked() and ed.sheet.maximumWidth() == 1002
+    ed.b_wide.click()
+    assert opts["editor_full_width"] is True and ed.sheet.maximumWidth() > 5000
+    assert ed.page_layout.contentsMargins().left() == 0
+    ed2 = BookEditor(proj, p, None, text_assist=opts, save_options=lambda: None)
+    assert ed2.b_wide.isChecked() and ed2.sheet.maximumWidth() > 5000
+    for e in (ed, ed2):
+        e.dirty = False
+        e.close()

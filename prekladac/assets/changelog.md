@@ -49,6 +49,7 @@
 - Pás karet se na menší obrazovce nepřetéká ani neukazuje posuvník: na krajích se objeví šipky ◀ ▶
   (posouvá i kolečko myši). Karta Domů v editoru bez skupiny Soubor (je na kartě Soubor).
 - Editor: ve stavovém řádku tlačítko panelu kapitol a šipky ‹ › na předchozí/další kapitolu (Ctrl+PgUp/PgDown).
+- Editor: Zobrazení → Celá šířka – stránka přes celou šířku okna bez šedých okrajů (pamatuje se).
 
 **1.0.37**
 - Jazyk programu (EN/SK/DE) s možností doinstalovat další jazyky.
