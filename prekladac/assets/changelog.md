@@ -46,6 +46,9 @@
   a program si pamatuje velikost i polohu okna (i maximalizované) z minula.
 - Karta Zobrazení na stránkách Překlad a Napsat knihu: stránka přes celou šířku okna (bez šedých okrajů)
   a skrytí záznamu průběhu dole – při práci zůstane jen proužek s poslední zprávou, při chybě se záznam ukáže.
+- Pás karet se na menší obrazovce nepřetéká ani neukazuje posuvník: na krajích se objeví šipky ◀ ▶
+  (posouvá i kolečko myši). Karta Domů v editoru bez skupiny Soubor (je na kartě Soubor).
+- Editor: ve stavovém řádku tlačítko panelu kapitol a šipky ‹ › na předchozí/další kapitolu (Ctrl+PgUp/PgDown).
 
 **1.0.37**
 - Jazyk programu (EN/SK/DE) s možností doinstalovat další jazyky.
