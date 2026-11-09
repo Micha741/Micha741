@@ -845,3 +845,26 @@ def test_editor_full_width_remembered(qapp, tmp_path):
     for e in (ed, ed2):
         e.dirty = False
         e.close()
+
+
+def test_open_finished_docx_book(qapp, tmp_path, monkeypatch):
+    import qt_main
+    from PySide6 import QtWidgets
+    proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000,
+            "chapters": [{"text": f"Text kapitoly {i}.", "summary": ""} for i in range(3)]}
+    src = tmp_path / "Hotova.docx"
+    bw.build_docx(proj, src)
+    win = qt_main.MainWindow()
+    monkeypatch.setattr(QtWidgets.QMessageBox, "question", lambda *a, **k: QtWidgets.QMessageBox.No)
+    assert win.book.load_path(str(src))
+    import time
+    for _ in range(300):
+        qapp.processEvents()
+        if win.book.project and win.book.project.get("imported_from"):
+            break
+        time.sleep(0.02)
+    b = win.book
+    assert b.path == tmp_path / "Hotova.kniha.json" and b.path.exists()
+    assert len(b.project["chapters"]) == 3 and "1. Bouře" in b.outline.toPlainText()
+    assert b.b_edit.isEnabled() and win.cfg["recent_books"][0] == str(b.path)
+    win.close()
