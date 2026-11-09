@@ -96,7 +96,10 @@ class RibbonGroup(QtWidgets.QFrame):
 
 
 class HScroll(QtWidgets.QScrollArea):
-    """Řádek pásu karet, který se na úzké obrazovce posouvá do strany místo roztažení celého okna."""
+    """Řádek pásu karet: když se na menší obrazovku nevejde, neroztáhne okno ani neukáže posuvník –
+    na krajích se objeví šipky ◀ ▶ (jde i kolečkem myši)."""
+
+    STEP = 240
 
     def __init__(self, content: QtWidgets.QWidget):
         super().__init__()
@@ -104,17 +107,55 @@ class HScroll(QtWidgets.QScrollArea):
         self.setWidgetResizable(True)
         self.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         self.viewport().setAutoFillBackground(False)
         content.setAutoFillBackground(False)
+        self.arrows = []
+        for text, step in (("◀", -1), ("▶", 1)):
+            b = QtWidgets.QToolButton(self)
+            b.setObjectName("RibbonArrow")
+            b.setText(text)
+            b.setAutoRepeat(True)
+            b.setCursor(Qt.PointingHandCursor)
+            b.setToolTip(tr("Další tlačítka pásu karet"))
+            b.setStyleSheet("QToolButton#RibbonArrow { background: rgba(241,245,249,235); border: 1px solid #cbd5e1;"
+                            " border-radius: 4px; color: #334155; font-size: 9pt; }"
+                            "QToolButton#RibbonArrow:hover { background: #dbeafe; }")
+            b.clicked.connect(lambda _=False, st=step: self._scroll(st * self.STEP))
+            b.hide()
+            self.arrows.append(b)
+        self.horizontalScrollBar().valueChanged.connect(lambda *_: self._place_arrows())
         self._fit()
 
+    def _scroll(self, dx: int):
+        sb = self.horizontalScrollBar()
+        sb.setValue(sb.value() + dx)
+
+    def wheelEvent(self, e):
+        d = e.angleDelta()
+        if self.horizontalScrollBar().maximum() > 0 and (d.y() or d.x()):
+            self._scroll(-(d.y() or d.x()) // 2)
+            e.accept()
+        else:
+            super().wheelEvent(e)
+
     def _fit(self):
-        need = self.widget().minimumSizeHint().width() > self.width()
-        h = self.widget().sizeHint().height() + (self.horizontalScrollBar().sizeHint().height() if need else 0)
+        h = self.widget().sizeHint().height()
         if self.height() != h or self.minimumHeight() != h:
             self.setFixedHeight(h)
+        self._place_arrows()
+
+    def _place_arrows(self):
+        sb = self.horizontalScrollBar()
+        w, h = 20, max(24, self.height() - 16)
+        left, right = self.arrows
+        left.setGeometry(0, (self.height() - h) // 2, w, h)
+        right.setGeometry(self.width() - w, (self.height() - h) // 2, w, h)
+        left.setVisible(sb.value() > 0)
+        right.setVisible(sb.value() < sb.maximum())
+        for b in self.arrows:
+            b.raise_()
 
     def minimumSizeHint(self) -> QtCore.QSize:
         return QtCore.QSize(120, self.height())
@@ -125,6 +166,26 @@ class HScroll(QtWidgets.QScrollArea):
     def resizeEvent(self, e):
         super().resizeEvent(e)
         self._fit()
+
+
+def panel_icon() -> QtGui.QIcon:
+    """Ikona „okno s postranním panelem“ (jako ve VS Code) pro skrytí panelu kapitol."""
+    icon = QtGui.QIcon()
+    for size in (16, 20, 32):
+        pm = QtGui.QPixmap(size, size)
+        pm.fill(Qt.transparent)
+        p = QtGui.QPainter(pm)
+        p.setRenderHint(QtGui.QPainter.Antialiasing)
+        pen = QtGui.QPen(QtGui.QColor("#334155"), max(1.2, size / 14))
+        p.setPen(pen)
+        m = size * 0.12
+        r = QtCore.QRectF(m, m * 1.4, size - 2 * m, size - 2.8 * m)
+        p.drawRoundedRect(r, size * 0.12, size * 0.12)
+        p.fillRect(QtCore.QRectF(r.left() + pen.widthF(), r.top() + pen.widthF(), r.width() * 0.3,
+                                 r.height() - 2 * pen.widthF()), QtGui.QColor("#64748b"))
+        p.end()
+        icon.addPixmap(pm)
+    return icon
 
 
 def vline() -> QtWidgets.QFrame:
@@ -257,6 +318,7 @@ class BookEditor(QtWidgets.QMainWindow):
         pl.setContentsMargins(24, 16, 24, 16)
         sheet = QtWidgets.QWidget()  # stránka s pravítky: [roh][vodorovné] / [svislé][text]
         sheet.setMaximumWidth(980 + 22)
+        self.page_frame, self.page_layout, self.sheet = page, pl, sheet
         sg = QtWidgets.QGridLayout(sheet)
         sg.setContentsMargins(0, 0, 0, 0)
         sg.setSpacing(0)
@@ -281,6 +343,7 @@ class BookEditor(QtWidgets.QMainWindow):
         self._build_chapters_dock()
         self.set_chapters_panel(bool(self.view_opts.get("chapters_panel", True)), save=False)
         self._build_status()
+        self.sb_panel.setChecked(bool(self.view_opts.get("chapters_panel", True)))
         self._shortcuts()
 
         self.text.document().contentsChanged.connect(self._doc_changed)
@@ -357,7 +420,17 @@ class BookEditor(QtWidgets.QMainWindow):
         f.grid.addWidget(self.b_saveas, 0, 1)
         f.grid.addWidget(self._big(emoji_icon("📤"), "Exportovat", self.export), 0, 2)
         pr = RibbonGroup("Tisk")
-        pr.grid.addWidget(self._big(emoji_icon("🖨️"), "Tisk", lambda: self.print_book(True)), 0, 0)
+        self.b_print = self._big(emoji_icon("🖨️"), "Tisk", lambda: self.print_book(True))
+        self.b_print.setToolTip("Vytisknout knihu (Ctrl+P). Šipkou vyberete tisk kapitoly nebo náhled.")
+        pm = QtWidgets.QMenu(self.b_print)
+        pm.addAction("🖨 Vytisknout celou knihu…  (Ctrl+P)", lambda: self.print_book(True))
+        pm.addAction("Vytisknout jen tuto kapitolu…", lambda: self.print_book(False))
+        pm.addSeparator()
+        pm.addAction("🔍 Náhled tisku – celá kniha", lambda: self.print_preview(True))
+        pm.addAction("Náhled tisku – tato kapitola", lambda: self.print_preview(False))
+        self.b_print.setMenu(pm)
+        self.b_print.setPopupMode(QtWidgets.QToolButton.MenuButtonPopup)
+        pr.grid.addWidget(self.b_print, 0, 0)
         pr.grid.addWidget(self._big(emoji_icon("🔍"), "Náhled tisku", lambda: self.print_preview(True)), 0, 1)
         win = RibbonGroup("Okno")
         win.grid.addWidget(self._big(emoji_icon("⬅️"), "Hlavní okno", self.go_back), 0, 0)
@@ -516,26 +589,12 @@ class BookEditor(QtWidgets.QMainWindow):
         edit.grid.addWidget(self._tb(emoji_icon("🔎"), "Přiblížit", lambda: t.zoomIn(1)), 0, 2)
         edit.grid.addWidget(self._tb(emoji_icon("🔍"), "Oddálit", lambda: t.zoomOut(1)), 1, 2)
 
-        save = RibbonGroup("Soubor")
-        save.grid.addWidget(self._big(emoji_icon("💾"), "Uložit", self.save), 0, 0, 2, 1)
-        save.grid.addWidget(self._big(emoji_icon("📤"), "Exportovat", self.export), 0, 1, 2, 1)
-        self.b_print = self._big(emoji_icon("🖨️"), "Tisk", lambda: self.print_book(True))
-        self.b_print.setToolTip("Vytisknout knihu (Ctrl+P). Šipkou vyberete tisk kapitoly nebo náhled.")
-        pm = QtWidgets.QMenu(self.b_print)
-        pm.addAction("🖨 Vytisknout celou knihu…  (Ctrl+P)", lambda: self.print_book(True))
-        pm.addAction("Vytisknout jen tuto kapitolu…", lambda: self.print_book(False))
-        pm.addSeparator()
-        pm.addAction("🔍 Náhled tisku – celá kniha", lambda: self.print_preview(True))
-        pm.addAction("Náhled tisku – tato kapitola", lambda: self.print_preview(False))
-        self.b_print.setMenu(pm)
-        self.b_print.setPopupMode(QtWidgets.QToolButton.MenuButtonPopup)
-        save.grid.addWidget(self.b_print, 0, 2, 2, 1)
         ins = RibbonGroup("Vložení")
         b_img = self._big(emoji_icon("🖼️"), "Obrázek", self.pick_image)
         b_img.setToolTip("Vložit obrázek ze souboru (JPG, PNG…). Jde i Ctrl+V ze schránky nebo přetažením myší. "
                          "Velikost a zarovnání změníte pravým tlačítkem na obrázku.")
         ins.grid.addWidget(b_img, 0, 0)
-        return self._row(clip, font, para, ins, styles, edit, save)
+        return self._row(clip, font, para, ins, styles, edit)
 
     # ================================================================ tisk
     def print_document(self, whole: bool = True) -> QtGui.QTextDocument:
@@ -591,15 +650,39 @@ class BookEditor(QtWidgets.QMainWindow):
         self.b_panel.setCheckable(True)
         self.b_panel.setToolTip("Zobrazit / skrýt seznam kapitol vlevo (F9)")
         show.grid.addWidget(self.b_panel, 0, 1)
+        self.b_wide = self._big(emoji_icon("↔️"), "Celá šířka", lambda: self.set_full_width(self.b_wide.isChecked()))
+        self.b_wide.setCheckable(True)
+        self.b_wide.setToolTip("Stránka přes celou šířku okna – bez šedých okrajů kolem stránky")
+        show.grid.addWidget(self.b_wide, 0, 2)
+        wide = bool(self.view_opts.get("editor_full_width", False))
+        self.b_wide.setChecked(wide)
+        self.set_full_width(wide, save=False)
         on = bool(self.view_opts.get("ruler", True))
         self.b_ruler.setChecked(on)
         self.set_ruler(on, save=False)
         return self._row(show)
 
+    def set_full_width(self, on: bool, save: bool = True):
+        """Stránka uprostřed s šedými okraji (jako ve Wordu), nebo přes celou šířku okna."""
+        self.sheet.setMaximumWidth(16777215 if on else 980 + 22)
+        self.page_layout.setContentsMargins(*((0, 0, 0, 0) if on else (24, 16, 24, 16)))
+        self.b_wide.setChecked(on)
+        if save:
+            self.view_opts["editor_full_width"] = on
+            self._save_view()
+
+    def go_chapter(self, step: int):
+        n = len(self.project["chapters"])
+        i = self.cur + step
+        if 0 <= i < n:
+            self.select_chapter(i)
+
     def _dock_visibility(self, visible: bool):
         try:
             if hasattr(self, "b_panel") and not self.isMinimized():
                 self.b_panel.setChecked(visible)
+                if hasattr(self, "sb_panel"):
+                    self.sb_panel.setChecked(visible)
         except RuntimeError:  # okno se právě zavírá
             pass
 
@@ -607,6 +690,8 @@ class BookEditor(QtWidgets.QMainWindow):
         """Skrytí panelu kapitol dá stránce celou šířku okna; stav se pamatuje."""
         self.chapters_dock.setVisible(on)
         self.b_panel.setChecked(on)
+        if hasattr(self, "sb_panel"):
+            self.sb_panel.setChecked(on)
         if save:
             self.view_opts["chapters_panel"] = on
             self._save_view()
@@ -1029,6 +1114,25 @@ class BookEditor(QtWidgets.QMainWindow):
         self._stats_timer.setInterval(400)
         self._stats_timer.timeout.connect(self.update_stats)
         sb = self.statusBar()
+        self.sb_panel = QtWidgets.QToolButton()
+        self.sb_panel.setIcon(panel_icon())
+        self.sb_panel.setCheckable(True)
+        self.sb_panel.setAutoRaise(True)
+        self.sb_panel.setToolTip(tr("Zobrazit nebo skrýt panel kapitol (F9)"))
+        self.sb_panel.clicked.connect(lambda on: self.set_chapters_panel(on))
+        self.sb_prev = QtWidgets.QToolButton()
+        self.sb_prev.setText("‹")
+        self.sb_prev.setToolTip(tr("Předchozí kapitola (Ctrl+PgUp)"))
+        self.sb_prev.clicked.connect(lambda: self.go_chapter(-1))
+        self.sb_next = QtWidgets.QToolButton()
+        self.sb_next.setText("›")
+        self.sb_next.setToolTip(tr("Další kapitola (Ctrl+PgDown)"))
+        self.sb_next.clicked.connect(lambda: self.go_chapter(1))
+        for b in (self.sb_prev, self.sb_next):
+            b.setAutoRaise(True)
+            b.setStyleSheet("font-size: 13pt; padding: 0 6px;")
+        for b in (self.sb_panel, self.sb_prev, self.sb_next):
+            sb.addWidget(b)
         self.stats = QtWidgets.QLabel("")
         self.saved = QtWidgets.QLabel("")
         sb.addWidget(self.stats, 1)
@@ -1040,7 +1144,8 @@ class BookEditor(QtWidgets.QMainWindow):
                         ("Ctrl+U", lambda: self.b_under.click()), ("Ctrl+Return", self._page_break),
                         ("Ctrl+P", lambda: self.print_book(True)), ("Ctrl+Shift+S", self.save_as),
                         ("F9", lambda: self.set_chapters_panel(not self.chapters_dock.isVisible())),
-                        ("Alt+Left", self.go_back)):
+                        ("Alt+Left", self.go_back), ("Ctrl+PgUp", lambda: self.go_chapter(-1)),
+                        ("Ctrl+PgDown", lambda: self.go_chapter(1))):
             sc = QtGui.QShortcut(QtGui.QKeySequence(seq), self, activated=fn)
             sc.setContext(Qt.WidgetWithChildrenShortcut)  # jen v editoru, ne na jiných stránkách okna
 

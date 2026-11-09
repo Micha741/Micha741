@@ -787,3 +787,61 @@ def test_view_full_width_and_hidden_log(qapp):
     assert win2.translate.view.show_log.isChecked()            # Překlad má vlastní nastavení
     win.close()
     win2.close()
+
+
+def test_editor_statusbar_panel_and_chapter_arrows(qapp, tmp_path):
+    from qt_editor import BookEditor, HScroll
+    proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000,
+            "chapters": [{"text": "Jedna.", "summary": ""}, {"text": "Dva.", "summary": ""}]}
+    p = tmp_path / "k.kniha.json"
+    bw.save_project(p, proj)
+    opts = {}
+    ed = BookEditor(proj, p, None, text_assist=opts, save_options=lambda: None)
+    ed.resize(900, 600)
+    ed.show()
+    qapp.processEvents()
+    assert ed.sb_panel.isChecked()
+    ed.sb_panel.click()                                   # skrýt panel kapitol ze stavového řádku
+    assert not ed.chapters_dock.isVisible() and opts["chapters_panel"] is False and not ed.b_panel.isChecked()
+    ed.sb_next.click()
+    assert ed.cur == 1 and "Dva." in ed.text.toPlainText()
+    ed.sb_next.click()                                    # za poslední kapitolu se nejde
+    assert ed.cur == 1
+    ed.sb_prev.click()
+    assert ed.cur == 0
+    home = ed.ribbon.widget(1)                            # karta Domů: bez skupiny Soubor, bez posuvníku
+    assert isinstance(home, HScroll)
+    assert "Soubor" not in [g.findChild(qt_editor_label()).text() for g in home.widget().findChildren(
+        __import__("qt_editor").RibbonGroup)]
+    assert home.horizontalScrollBarPolicy() == QtGui.Qt.ScrollBarAlwaysOff
+    right = home.arrows[1]
+    assert right.isVisible() == (home.horizontalScrollBar().maximum() > 0)
+    if right.isVisible():
+        right.click()
+        assert home.horizontalScrollBar().value() > 0 and home.arrows[0].isVisible()
+    ed.dirty = False
+    ed.close()
+
+
+def qt_editor_label():
+    from PySide6 import QtWidgets
+    return QtWidgets.QLabel
+
+
+def test_editor_full_width_remembered(qapp, tmp_path):
+    from qt_editor import BookEditor
+    proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000,
+            "chapters": [{"text": "Jedna.", "summary": ""}]}
+    p = tmp_path / "k.kniha.json"
+    bw.save_project(p, proj)
+    opts = {}
+    ed = BookEditor(proj, p, None, text_assist=opts, save_options=lambda: None)
+    assert not ed.b_wide.isChecked() and ed.sheet.maximumWidth() == 1002
+    ed.b_wide.click()
+    assert opts["editor_full_width"] is True and ed.sheet.maximumWidth() > 5000
+    assert ed.page_layout.contentsMargins().left() == 0
+    ed2 = BookEditor(proj, p, None, text_assist=opts, save_options=lambda: None)
+    assert ed2.b_wide.isChecked() and ed2.sheet.maximumWidth() > 5000
+    for e in (ed, ed2):
+        e.dirty = False
+        e.close()
