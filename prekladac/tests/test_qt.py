@@ -778,8 +778,12 @@ def test_view_full_width_and_hidden_log(qapp):
     assert b.work.logv.isVisible()                             # chyba záznam ukáže
     b.set_busy(False)
     assert win.cfg["view"]["book"] == {"full_width": True, "log": False}
+    import app as core
+    disk = core.load_config().get("view")
+    assert disk and disk.get("book") == {"full_width": True, "log": False}, (disk, win.translate.logv.toPlainText())
     win2 = qt_main.MainWindow()                                # pamatuje se
-    assert win2.book.view.full_width.isChecked() and not win2.book.view.show_log.isChecked()
+    assert win2.book.view.full_width.isChecked(), (win2.cfg.get("view"), win2.book.view.full_width.isChecked())
+    assert not win2.book.view.show_log.isChecked()
     assert win2.translate.view.show_log.isChecked()            # Překlad má vlastní nastavení
     win.close()
     win2.close()
