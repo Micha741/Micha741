@@ -190,6 +190,8 @@ class FindDialog(QtWidgets.QDialog):
 
 
 class BookEditor(QtWidgets.QMainWindow):
+    closed = QtCore.Signal()  # editor byl zavřen (hlavní okno se vrátí na Napsat knihu)
+
     def __init__(self, project: dict, path: Path, ebook_convert: str | None, parent=None,
                  autosave: dict | None = None, text_assist: dict | None = None, save_options=None):
         super().__init__(parent)
@@ -300,6 +302,17 @@ class BookEditor(QtWidgets.QMainWindow):
         tabs.addTab(self._view_tab(), "Zobrazení")
         tabs.setCurrentIndex(1)
         tabs.setMaximumHeight(150)
+        back = QtWidgets.QToolButton()
+        back.setObjectName("RibbonBack")
+        back.setText(tr("← Zpět"))
+        back.setToolTip(tr("Uložit knihu a vrátit se na stránku Napsat knihu (Alt+←)"))
+        back.setAutoRaise(True)
+        back.setCursor(Qt.PointingHandCursor)
+        back.setStyleSheet("QToolButton#RibbonBack { font-weight: 600; padding: 4px 12px; color: #1d4ed8; }"
+                           "QToolButton#RibbonBack:hover { background: #dbeafe; border-radius: 4px; }")
+        back.clicked.connect(self.go_back)
+        tabs.setCornerWidget(back, Qt.TopLeftCorner)
+        self.b_back = back
         self.ribbon = tabs
         return tabs
 
@@ -316,8 +329,19 @@ class BookEditor(QtWidgets.QMainWindow):
         pr.grid.addWidget(self._big(emoji_icon("🖨️"), "Tisk", lambda: self.print_book(True)), 0, 0)
         pr.grid.addWidget(self._big(emoji_icon("🔍"), "Náhled tisku", lambda: self.print_preview(True)), 0, 1)
         win = RibbonGroup("Okno")
-        win.grid.addWidget(self._big(emoji_icon("✖️"), "Zavřít", self.close), 0, 0)
+        win.grid.addWidget(self._big(emoji_icon("⬅️"), "Hlavní okno", self.go_back), 0, 0)
+        win.grid.addWidget(self._big(emoji_icon("✖️"), "Zavřít", self.close), 0, 1)
         return self._row(f, pr, win)
+
+    def go_back(self):
+        """Zpět na hlavní obrazovku: kniha se uloží a editor zavře (bez dotazu)."""
+        if self.dirty:
+            try:
+                self.save()
+            except Exception as e:  # noqa: BLE001
+                QtWidgets.QMessageBox.warning(self, "Upravit knihu", f"Knihu se nepodařilo uložit:\n{e}")
+                return
+        self.close()
 
     def save_as(self):
         """Uložit jako: formát podle zvoleného typu souboru; projekt *.kniha.json přepne editor na nový soubor."""
@@ -984,8 +1008,10 @@ class BookEditor(QtWidgets.QMainWindow):
                         ("Ctrl+B", lambda: self.b_bold.click()), ("Ctrl+I", lambda: self.b_italic.click()),
                         ("Ctrl+U", lambda: self.b_under.click()), ("Ctrl+Return", self._page_break),
                         ("Ctrl+P", lambda: self.print_book(True)), ("Ctrl+Shift+S", self.save_as),
-                        ("F9", lambda: self.set_chapters_panel(not self.chapters_dock.isVisible()))):
-            QtGui.QShortcut(QtGui.QKeySequence(seq), self, activated=fn)
+                        ("F9", lambda: self.set_chapters_panel(not self.chapters_dock.isVisible())),
+                        ("Alt+Left", self.go_back)):
+            sc = QtGui.QShortcut(QtGui.QKeySequence(seq), self, activated=fn)
+            sc.setContext(Qt.WidgetWithChildrenShortcut)  # jen v editoru, ne na jiných stránkách okna
 
     def _doc_changed(self):
         # kontrola pravopisu jen překresluje podtržení – to není úprava textu
@@ -1016,8 +1042,12 @@ class BookEditor(QtWidgets.QMainWindow):
         self._update_title()
 
     def _update_title(self):
-        self.setWindowTitle(f"{'● ' if self.dirty else ''}{self.title_edit.text() or self.outline['title']}"
-                            " – Upravit knihu")
+        title = f"{'● ' if self.dirty else ''}{self.title_edit.text() or self.outline['title']} – Upravit knihu"
+        self.setWindowTitle(title)
+        top = self.window()
+        if top is not self and top.isVisible() and getattr(top, "editor", None) is self \
+                and top.stack.currentWidget() is self:
+            top.setWindowTitle(title)
 
     # ------------------------------------------------------- automatické ukládání
     def eventFilter(self, obj, ev):
@@ -1209,3 +1239,4 @@ class BookEditor(QtWidgets.QMainWindow):
             if ans == QtWidgets.QMessageBox.Save:
                 self.save()
         e.accept()
+        self.closed.emit()

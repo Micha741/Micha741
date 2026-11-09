@@ -687,3 +687,35 @@ def test_editor_images_and_cover(qapp, tmp_path, monkeypatch):
     assert bw.load_project(p).get("images") == {}
     ed.dirty = False
     ed.close()
+
+
+def test_editor_opens_inside_main_window(qapp, tmp_path):
+    import qt_main
+    from PySide6 import QtWidgets
+    win = qt_main.MainWindow()
+    win.show()
+    b = win.book
+    proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000,
+            "chapters": [{"text": "Bouře zuřila nad mořem.", "summary": ""}]}
+    path = tmp_path / "k.kniha.json"
+    bw.save_project(path, proj)
+    b.project, b.path = proj, path
+    b.open_editor()
+    ed = win.editor
+    assert ed is not None and ed.window() is win            # žádné druhé okno
+    assert win.stack.currentWidget() is ed and win.nav.currentRow() == 1
+    assert "Upravit knihu" in win.windowTitle()
+    assert QtWidgets.QApplication.topLevelWidgets().count(ed) == 0
+    win.nav.setCurrentRow(0)                                # přepnout na Překlad a zase zpět
+    assert win.stack.currentIndex() == 0 and "Upravit knihu" not in win.windowTitle()
+    win.nav.setCurrentRow(1)
+    assert win.stack.currentWidget() is ed
+    b.open_editor()                                         # znovu otevřít = jen přepnout
+    assert win.editor is ed
+    ed.text.insertPlainText("Nový začátek. ")
+    assert ed.dirty
+    ed.b_back.click()                                       # ← Zpět uloží bez dotazu
+    assert win.editor is None and win.stack.currentIndex() == 1
+    assert "Nový začátek" in bw.load_project(path)["chapters"][0]["text"]
+    assert win.windowTitle() == win.title()
+    win.close()
