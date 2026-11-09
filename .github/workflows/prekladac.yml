@@ -54,8 +54,19 @@ jobs:
 
       - name: Calibre, Tesseract a Inno Setup
         run: |
-          choco install calibre tesseract innosetup -y --no-progress
-          if ($LASTEXITCODE -ne 0) { throw "choco install selhal ($LASTEXITCODE)" }
+          # Chocolatey občas vrátí 504 – každý balíček zkusíme víckrát a ověříme, že je nainstalovaný
+          $need = @{ calibre = "$env:ProgramFiles\Calibre2\ebook-convert.exe";
+                     tesseract = "$env:ProgramFiles\Tesseract-OCR\tesseract.exe"; innosetup = $null }
+          foreach ($p in $need.Keys) {
+            for ($i = 1; $i -le 5; $i++) {
+              choco install $p -y --no-progress
+              $ok = ($LASTEXITCODE -eq 0) -and (-not $need[$p] -or (Test-Path $need[$p]))
+              if ($ok) { break }
+              if ($i -eq 5) { throw "choco install $p selhal ($LASTEXITCODE)" }
+              "Instalace $p (pokus $i) selhala, zkusím znovu…"
+              Start-Sleep -Seconds (20 * $i)
+            }
+          }
 
       - name: Přibalení Calibre a Tesseractu
         run: |
