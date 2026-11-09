@@ -40,6 +40,8 @@
 - Obrázky v knize: vložení ze souboru, schránky nebo přetažením (JPG, PNG, GIF, BMP, WEBP, TIFF), velikost
   a zarovnání pravým tlačítkem; ukládají se přímo do souboru knihy a zůstanou v exportu i tisku.
 - Obálka knihy (karta Kniha): v EPUB/MOBI/AZW3 jako obálka e-knihy, v DOCX/PDF/ODT a tisku jako první strana.
+- Editor knihy se otevírá přímo v hlavním okně (místo druhého okna); tlačítko „← Zpět“ (Alt+←) knihu uloží
+  a vrátí se na Napsat knihu, levý panel zůstává pro přepnutí na Překlad nebo Nastavení.
 
 **1.0.37**
 - Jazyk programu (EN/SK/DE) s možností doinstalovat další jazyky.

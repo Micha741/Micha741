@@ -1211,15 +1211,8 @@ class BookPage(QtWidgets.QWidget):
 
     def open_editor_for(self, path):
         """Otevřený editor této knihy (nebo None)."""
-        alive = []
-        for ed in self.editors:
-            try:
-                ed.isVisible()
-            except RuntimeError:  # okno už bylo zavřeno a smazáno
-                continue
-            alive.append(ed)
-        self.editors = alive
-        return next((ed for ed in alive if ed.isVisible() and path and ed.path == Path(path)), None)
+        ed = self.win.editor
+        return ed if ed is not None and path and ed.path == Path(path) else None
 
     def open_editor(self):
         from qt_editor import BookEditor
@@ -1228,17 +1221,15 @@ class BookPage(QtWidgets.QWidget):
             QtWidgets.QMessageBox.information(self, "Upravit knihu", "Kniha zatím nemá napsanou žádnou kapitolu.")
             return
         if self.open_editor_for(self.path):
-            ed = self.open_editor_for(self.path)
-            ed.showMaximized()
-            ed.raise_()
-            ed.activateWindow()
+            self.win.show_editor(self.open_editor_for(self.path))
             return
+        if self.win.editor is not None and not self.win.close_editor():
+            return  # jiná kniha v editoru a uživatel zavření zrušil
         ed = BookEditor(self.project, self.path, self.win.cfg["paths"].get("ebook_convert") or None,
                         autosave=self.win.cfg.get("autosave"),
                         text_assist=self.win.cfg.setdefault("text_assist", {}), save_options=self.win.save_cfg)
-        self.editors.append(ed)
-        ed.destroyed.connect(lambda *_: self.update_buttons())
-        ed.showMaximized()
+        self.win.show_editor(ed)
+        self.update_buttons()
 
 
 # ===================================================================== Nastavení
@@ -1778,7 +1769,7 @@ class MainWindow(QtWidgets.QMainWindow):
         paths["ebook_convert"] = paths.get("ebook_convert") or find_ebook_convert() or ""
         paths["tesseract"] = paths.get("tesseract") or find_tesseract() or ""
 
-        self.setWindowTitle(f"{core.APP_NAME} – verze {VERSION}")
+        self.setWindowTitle(self.title())
         # velikost podle obrazovky (např. notebook 1366×768 s lištou Windows)
         avail = QtGui.QGuiApplication.primaryScreen().availableGeometry()
         self.resize(min(1180, int(avail.width() * 0.95)), min(860, int(avail.height() * 0.92)))
@@ -1842,7 +1833,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.stack.addWidget(wrap)  # posuvníky mají stránky uvnitř
         h.addWidget(self.stack, 1)
         self.setCentralWidget(central)
-        self.nav.currentRowChanged.connect(self.stack.setCurrentIndex)
+        self.editor = None  # editor knihy otevřený uvnitř okna místo stránky Napsat knihu
+        self.nav.currentRowChanged.connect(self._nav_changed)
         self.nav.setCurrentRow(0)
         self.set_sidebar_collapsed(bool(self.cfg.get("sidebar_collapsed")), save=False)
 
@@ -1851,6 +1843,56 @@ class MainWindow(QtWidgets.QMainWindow):
                                     "Je součástí instalátoru Prekladac-Setup.exe.")
         if self.cfg.get("check_updates", True):
             QtCore.QTimer.singleShot(3000, self.check_updates)
+
+    def title(self) -> str:
+        return f"{core.APP_NAME} – verze {VERSION}"
+
+    def _nav_changed(self, row: int):
+        if row == 1 and self.editor is not None:
+            self.stack.setCurrentWidget(self.editor)
+            self.editor._update_title()
+        else:
+            self.stack.setCurrentIndex(row)
+            self.setWindowTitle(self.title())
+
+    def show_editor(self, ed):
+        """Editor knihy se zobrazí v hlavním okně místo stránky Napsat knihu (jako ve Wordu)."""
+        if ed is not self.editor:
+            ed.setWindowFlags(Qt.Widget)
+            self.stack.addWidget(ed)
+            self.editor = ed
+            ed.destroyed.connect(self._editor_destroyed)
+            ed.closed.connect(lambda e=ed: self._editor_closed(e))
+        if self.nav.currentRow() != 1:
+            self.nav.setCurrentRow(1)  # → _nav_changed
+        else:
+            self._nav_changed(1)
+        ed.show()
+        ed.text.setFocus()
+
+    def close_editor(self) -> bool:
+        """Zavře editor (zeptá se na neuložené změny); False, když uživatel zavření zrušil."""
+        return self.editor is None or self.editor.close()
+
+    def _editor_closed(self, ed):
+        if ed is not self.editor:
+            return
+        self.editor = None
+        self.stack.removeWidget(ed)
+        self._nav_changed(self.nav.currentRow())
+        self.book.update_buttons()
+
+    def _editor_destroyed(self, *_):
+        try:
+            self.book.update_buttons()
+        except RuntimeError:  # okno se zavírá
+            pass
+
+    def closeEvent(self, e):
+        if not self.close_editor():
+            e.ignore()
+            return
+        super().closeEvent(e)
 
     def set_sidebar_collapsed(self, collapsed: bool, save: bool = True):
         """Sbalený panel = úzký proužek jen s ikonami; tlačítko ☰ ho zase rozbalí."""
