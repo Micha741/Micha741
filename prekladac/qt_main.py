@@ -1137,20 +1137,68 @@ class BookPage(QtWidgets.QWidget):
         run_bg(job, done)
 
     def do_load(self):
+        import book_import
+
         f, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Otevřít knihu", str(self.book_dir()),
-                                                     f"Kniha (*{bw.PROJECT_SUFFIX});;Vše (*.*)")
+                                                     book_import.OPEN_FILTER)
         if f:
             self.load_path(f)
 
     def load_path(self, f) -> bool:
+        import book_import
+
         if self.busy:
             return False
+        if not book_import.is_project(f):
+            self.import_book(f)
+            return True
         try:
             proj = bw.load_project(f)
+        except UnicodeDecodeError:
+            QtWidgets.QMessageBox.critical(self, "Otevřít knihu", "Soubor není projekt knihy z Překladače.")
+            self.forget_recent(f)
+            return False
         except Exception as e:  # noqa: BLE001
             QtWidgets.QMessageBox.critical(self, "Otevřít knihu", f"Knihu se nepodařilo otevřít:\n{e}")
             self.forget_recent(f)
             return False
+        return self.show_project(proj, f)
+
+    def import_book(self, f):
+        """Hotová kniha (DOCX, EPUB, TXT, MOBI…) → nový projekt *.kniha.json vedle ní, pak jde upravit v editoru."""
+        import book_import
+
+        if self.win.editor is not None and not self.win.close_editor():
+            return
+        self.logv.log(f"Otevírám knihu {Path(f).name} – rozděluji na kapitoly…")
+        self.set_busy(True)
+        conv = self.win.cfg["paths"].get("ebook_convert") or None
+
+        def job():
+            proj = book_import.import_book(f, conv)
+            dst = book_import.project_path_for(f)
+            bw.save_project(dst, proj, backup=False)
+            return proj, dst
+
+        def done(res, err):
+            self.set_busy(False)
+            if err:
+                QtWidgets.QMessageBox.critical(self, "Otevřít knihu", f"Knihu se nepodařilo otevřít:\n{err}")
+                return
+            proj, dst = res
+            self.show_project(proj, dst)
+            n = len(proj["chapters"])
+            self.logv.log(f"✓ Kniha {Path(f).name} načtena: {n} kapitol. Uložena jako projekt {dst} – "
+                          "upravíte ji tlačítkem Upravit knihu.")
+            if QtWidgets.QMessageBox.question(
+                    self, "Otevřít knihu",
+                    f"Kniha má {n} kapitol a je uložená jako projekt:\n{dst}\n\nOtevřít ji v editoru?"
+            ) == QtWidgets.QMessageBox.Yes:
+                self.open_editor()
+
+        run_bg(job, done, owner=self)
+
+    def show_project(self, proj: dict, f) -> bool:
         self.project, self.path = proj, Path(f)
         self.desc.setPlainText(proj.get("description", ""))
         parts = proj.get("style_parts") or {}

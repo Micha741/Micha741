@@ -10,7 +10,8 @@
 **Napsat knihu**
 - Popis kolem 20 vět, žánr a styl (přes 40 žánrů a další kategorie), osnova, psaní kapitolu po kapitole.
 - Délka každé kapitoly zvlášť, úpravy osnovy i během psaní, pokračování v rozepsané knize.
-- Karta Soubor jako ve Wordu (nová, otevřít, uložit, uložit jako, naposledy otevřené).
+- Karta Soubor jako ve Wordu (nová, otevřít, uložit, uložit jako, naposledy otevřené), otevření hotové
+  knihy (DOCX, EPUB, TXT, MOBI, PDB…) k úpravám.
 - Export do EPUB, DOCX, PDF, AZW3, MOBI, ODT, RTF a TXT s obsahem a odkazy na kapitoly.
 
 **Editor knihy (jako Word)**
@@ -50,6 +51,8 @@
   (posouvá i kolečko myši). Karta Domů v editoru bez skupiny Soubor (je na kartě Soubor).
 - Editor: ve stavovém řádku tlačítko panelu kapitol a šipky ‹ › na předchozí/další kapitolu (Ctrl+PgUp/PgDown).
 - Editor: Zobrazení → Celá šířka – stránka přes celou šířku okna bez šedých okrajů (pamatuje se).
+- Napsat knihu → Soubor → Otevřít: i hotové knihy v DOCX, EPUB, TXT (i starší kódování Windows), MOBI, AZW3,
+  PDB, FB2, ODT, RTF, PDF… – rozdělí se na kapitoly a uloží jako projekt vedle původního souboru.
 
 **1.0.37**
 - Jazyk programu (EN/SK/DE) s možností doinstalovat další jazyky.
