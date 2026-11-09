@@ -567,7 +567,7 @@ class BookPage(QtWidgets.QWidget):
         self.svc_status = label("", wrap=False)
         self.est = label("", "Hint", wrap=False)
         self.fmts = {}
-        for f in ("epub", "docx", "pdf", "azw3"):
+        for f in ("epub", "docx", "pdf", "azw3", "mobi", "odt", "rtf", "txt"):
             c = QtWidgets.QCheckBox(f.upper())
             c.setChecked(f in ("epub", "docx"))
             self.fmts[f] = c
@@ -630,7 +630,7 @@ class BookPage(QtWidgets.QWidget):
         fg = QtWidgets.QGridLayout(fmt_w)
         fg.setContentsMargins(0, 0, 0, 0)
         for i, cb in enumerate(self.fmts.values()):
-            fg.addWidget(cb, i // 2, i % 2)
+            fg.addWidget(cb, i // 4, i % 4)
         dir_w = QtWidgets.QWidget()
         dl = QtWidgets.QHBoxLayout(dir_w)
         dl.setContentsMargins(0, 0, 0, 0)

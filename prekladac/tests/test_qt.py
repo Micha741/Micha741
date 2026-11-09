@@ -554,3 +554,136 @@ def test_version_info_resource():
     assert "filevers=(1, 0, 38, 0)" in out and "'FileVersion', '1.0.38.0'" in out
     assert "LegalCopyright" in out and "Micha741" in out
     assert m.version_tuple("vývojová verze") == (0, 0, 0, 0)
+
+
+def test_editor_file_tab_save_as_and_panel(qapp, tmp_path, monkeypatch):
+    import book_writer as bw
+    from PySide6 import QtWidgets
+    from qt_editor import BookEditor
+    proj = {"title": "T", "language": "čeština", "words": 100,
+            "outline": {"title": "T", "chapters": [{"title": "K1", "summary": ""}]},
+            "chapters": [{"title": "K1", "text": "Text kapitoly."}]}
+    p = tmp_path / "t.kniha.json"
+    bw.save_project(p, proj)
+    opts = {}
+    ed = BookEditor(proj, p, None, text_assist=opts, save_options=lambda: None)
+    ed.show()
+    assert [ed.ribbon.tabText(i) for i in range(ed.ribbon.count())] == ["Soubor", "Domů", "Kniha", "Zobrazení"]
+    assert ed.ribbon.currentIndex() == 1
+    # panel kapitol
+    assert ed.chapters_dock.isVisible()
+    ed.b_panel.click()
+    assert not ed.chapters_dock.isVisible() and opts["chapters_panel"] is False
+    ed2 = BookEditor(proj, p, None, text_assist=opts, save_options=lambda: None)
+    ed2.show()
+    assert not ed2.chapters_dock.isVisible()
+    ed2.set_chapters_panel(True)
+    # uložit jako TXT (bez přípony – doplní se podle typu)
+    monkeypatch.setattr(QtWidgets.QFileDialog, "getSaveFileName",
+                        lambda *a, **k: (str(tmp_path / "vystup"), bw.SAVE_FORMATS["txt"]))
+    monkeypatch.setattr(QtWidgets.QMessageBox, "information", lambda *a, **k: None)
+    ed.save_as()
+    for _ in range(200):
+        qapp.processEvents()
+        if (tmp_path / "vystup.txt").exists():
+            break
+        import time
+        time.sleep(0.02)
+    assert "Text kapitoly." in (tmp_path / "vystup.txt").read_text(encoding="utf-8")
+    # uložit jako ODT (v okenním vlákně)
+    monkeypatch.setattr(QtWidgets.QFileDialog, "getSaveFileName",
+                        lambda *a, **k: (str(tmp_path / "kniha.odt"), bw.SAVE_FORMATS["odt"]))
+    ed.save_as()
+    assert (tmp_path / "kniha.odt").exists()
+    # uložit jako projekt → editor pracuje s novým souborem
+    monkeypatch.setattr(QtWidgets.QFileDialog, "getSaveFileName",
+                        lambda *a, **k: (str(tmp_path / "kopie"), f"Projekt knihy (*{bw.PROJECT_SUFFIX})"))
+    ed.save_as()
+    assert ed.path == tmp_path / "kopie.kniha.json" and ed.path.exists()
+    for e in (ed, ed2):
+        e.dirty = False
+        e.close()
+
+
+def _png_bytes(w=300, h=200, color="red"):
+    import io
+    from PIL import Image
+    buf = io.BytesIO()
+    Image.new("RGB", (w, h), color).save(buf, "PNG")
+    return buf.getvalue()
+
+
+def test_editor_images_and_cover(qapp, tmp_path, monkeypatch):
+    import zipfile
+
+    import book_images
+    import book_writer as bw
+    import converters
+    import docx
+    from PySide6 import QtCore, QtGui, QtWidgets
+    from qt_editor import BookEditor
+    proj = {"title": "T", "language": "čeština", "words": 100,
+            "outline": {"title": "Kniha", "chapters": [{"title": "K1", "summary": ""}]},
+            "chapters": [{"title": "K1", "text": "Prvni odstavec."}]}
+    p = tmp_path / "t.kniha.json"
+    bw.save_project(p, proj)
+    ed = BookEditor(proj, p, None, text_assist={"spell": False})
+    ed.show()
+    c = ed.text.textCursor()
+    c.movePosition(QtGui.QTextCursor.End)
+    ed.text.setTextCursor(c)
+    name = ed.insert_image_data(_png_bytes())
+    assert name in proj["images"] and ed.dirty
+    # vložení ze schránky (obrázek bez textu) a obrázek se v editoru načte z knihy
+    md = QtCore.QMimeData()
+    md.setImageData(QtGui.QImage.fromData(_png_bytes(100, 100, "blue")))
+    ed.text.insertFromMimeData(md)
+    assert len(proj["images"]) == 2
+    assert not ed.text.loadResource(QtGui.QTextDocument.ImageResource, QtCore.QUrl(name)).isNull()
+    # pravé tlačítko na obrázku: šířka 50 %
+    doc = ed.text.document()
+    pos = next(i for i in range(doc.characterCount()) if doc.characterAt(i) == "￼")
+    cur = QtGui.QTextCursor(doc)
+    cur.setPosition(pos)
+    img_c = ed.image_at(cur)
+    assert img_c is not None
+    menu = QtWidgets.QMenu()
+    ed._extra_menu(menu, cur)
+    assert any("Obrázek" in a.text() for a in menu.actions())
+    ed.set_image_width(img_c, 50)
+    assert 'width="400"' in doc.toHtml()
+    assert "[obrázek]" in __import__("qt_editor").document_to_plain(doc)
+    # obálka
+    monkeypatch.setattr(QtWidgets.QFileDialog, "getOpenFileName",
+                        lambda *a, **k: (str(tmp_path / "cover.png"), ""))
+    (tmp_path / "cover.png").write_bytes(_png_bytes(600, 900, "green"))
+    ed.pick_cover()
+    assert proj["cover"] in proj["images"] and ed.cover_thumb.pixmap() is not None
+    ed.save()
+    saved = bw.load_project(p)
+    assert set(saved["images"]) == book_images.used_names(saved) and len(saved["images"]) == 3
+    # export DOCX: obálka + 2 obrázky v textu
+    out = bw.export(saved, tmp_path / "out", ["docx"], lambda *_: None)[0]
+    d = docx.Document(out)
+    assert len(d.inline_shapes) == 3
+    assert d.paragraphs[0].runs and d.inline_shapes[0].width > d.inline_shapes[1].width  # obálka první, velká
+    # ODT a tisk s obrázky
+    odt = bw.save_as(saved, tmp_path / "k.odt", lambda *_: None)
+    names = zipfile.ZipFile(odt).namelist()
+    assert any(n.startswith("Pictures/") for n in names)
+    # EPUB: obálka jako obálka e-knihy (Calibre --cover), v textu se neopakuje
+    calls = []
+    monkeypatch.setattr(converters, "calibre_convert",
+                        lambda src, dst, log=None, exe=None, extra=None: (calls.append((src, extra)),
+                                                                           open(dst, "wb").close()))
+    bw.save_as(saved, tmp_path / "k.epub", lambda *_: None)
+    src, extra = calls[-1]
+    assert extra[0] == "--cover" and Path(extra[1]).suffix in (".png", ".jpg")
+    # smazání obrázku z textu → po uložení zmizí i ze souboru
+    ed.text.selectAll()
+    ed.text.textCursor().insertText("Bez obrazku.")
+    ed.remove_cover()
+    ed.save()
+    assert bw.load_project(p).get("images") == {}
+    ed.dirty = False
+    ed.close()

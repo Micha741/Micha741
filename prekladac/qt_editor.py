@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 from PySide6 import QtCore, QtGui, QtPrintSupport, QtWidgets
 
+import book_images
 import book_writer as bw
 from html_docx import PAGE_BREAK, plain_to_html
 from i18n import tr
@@ -28,12 +30,51 @@ TEXT_COLORS = ["#000000", "#c00000", "#e36c09", "#2e7d32", "#1565c0", "#6a1b9a",
 HIGHLIGHTS = ["#ffff00", "#00ff00", "#00ffff", "#ff66ff", "#ffc000", "#d9d9d9", None]
 
 
+class BookTextEdit(QtWidgets.QTextEdit):
+    """Text kapitoly: obrázky se načítají z knihy; obrázek jde vložit ze schránky i přetažením myší."""
+
+    IMAGE_EXT = (".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".tif", ".tiff")
+
+    def __init__(self, editor: "BookEditor"):
+        super().__init__()
+        self.editor = editor
+
+    def loadResource(self, rtype, url):
+        if rtype == QtGui.QTextDocument.ImageResource:
+            data = book_images.get_image(self.editor.project, url.toString())
+            if data:
+                return QtGui.QImage.fromData(data)
+        return super().loadResource(rtype, url)
+
+    def _image_files(self, source) -> list[str]:
+        return [u.toLocalFile() for u in source.urls() if u.isLocalFile()
+                and u.toLocalFile().lower().endswith(self.IMAGE_EXT)] if source.hasUrls() else []
+
+    def canInsertFromMimeData(self, source):
+        return source.hasImage() or bool(self._image_files(source)) or super().canInsertFromMimeData(source)
+
+    def insertFromMimeData(self, source):
+        files = self._image_files(source)
+        if files:
+            for f in files:
+                self.editor.insert_image_data(Path(f).read_bytes())
+            return
+        if source.hasImage() and not source.hasText():
+            img = source.imageData()
+            buf = QtCore.QBuffer()
+            buf.open(QtCore.QIODevice.WriteOnly)
+            QtGui.QImage(img).save(buf, "PNG")
+            self.editor.insert_image_data(bytes(buf.data()))
+            return
+        super().insertFromMimeData(source)
+
+
 def document_to_plain(doc: QtGui.QTextDocument) -> str:
     """Text dokumentu: odstavce oddělené prázdným řádkem (pro AI, statistiky a hledání v celé knize)."""
     blocks = []
     b = doc.begin()
     while b.isValid():
-        blocks.append(b.text().replace(" ", "\n"))
+        blocks.append(b.text().replace(" ", "\n").replace("\ufffc", "[obrázek]"))
         b = b.next()
     return "\n\n".join(t for t in blocks if t.strip())
 
@@ -169,7 +210,7 @@ class BookEditor(QtWidgets.QMainWindow):
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.resize(1300, 860)
 
-        self.text = QtWidgets.QTextEdit()
+        self.text = BookTextEdit(self)
         self.text.setAcceptRichText(True)
         self.text.setTabStopDistance(40)
         self.text.document().setDocumentMargin(48)
@@ -204,6 +245,7 @@ class BookEditor(QtWidgets.QMainWindow):
         cl.addWidget(page, 1)
         self.setCentralWidget(central)
         self._build_chapters_dock()
+        self.set_chapters_panel(bool(self.view_opts.get("chapters_panel", True)), save=False)
         self._build_status()
         self._shortcuts()
 
@@ -252,11 +294,69 @@ class BookEditor(QtWidgets.QMainWindow):
         tabs = QtWidgets.QTabWidget()
         tabs.setObjectName("Ribbon")
         tabs.setDocumentMode(True)
+        tabs.addTab(self._file_tab(), "Soubor")
         tabs.addTab(self._home_tab(), "Domů")
         tabs.addTab(self._book_tab(), "Kniha")
         tabs.addTab(self._view_tab(), "Zobrazení")
+        tabs.setCurrentIndex(1)
         tabs.setMaximumHeight(150)
+        self.ribbon = tabs
         return tabs
+
+    def _file_tab(self) -> QtWidgets.QWidget:
+        """Karta Soubor jako ve Wordu: uložit, uložit jako (DOCX, PDF, MOBI, ODT, TXT…), export, tisk."""
+        f = RibbonGroup("Soubor")
+        f.grid.addWidget(self._big(emoji_icon("💾"), "Uložit", self.save), 0, 0)
+        self.b_saveas = self._big(emoji_icon("🗂️"), "Uložit jako…", self.save_as)
+        self.b_saveas.setToolTip("Uložit knihu do jednoho souboru: DOCX, PDF, MOBI, EPUB, AZW3, ODT, TXT, "
+                                 "nebo jako projekt *.kniha.json (Ctrl+Shift+S)")
+        f.grid.addWidget(self.b_saveas, 0, 1)
+        f.grid.addWidget(self._big(emoji_icon("📤"), "Exportovat", self.export), 0, 2)
+        pr = RibbonGroup("Tisk")
+        pr.grid.addWidget(self._big(emoji_icon("🖨️"), "Tisk", lambda: self.print_book(True)), 0, 0)
+        pr.grid.addWidget(self._big(emoji_icon("🔍"), "Náhled tisku", lambda: self.print_preview(True)), 0, 1)
+        win = RibbonGroup("Okno")
+        win.grid.addWidget(self._big(emoji_icon("✖️"), "Zavřít", self.close), 0, 0)
+        return self._row(f, pr, win)
+
+    def save_as(self):
+        """Uložit jako: formát podle zvoleného typu souboru; projekt *.kniha.json přepne editor na nový soubor."""
+        self.store_current()
+        filters = [f"Projekt knihy (*{bw.PROJECT_SUFFIX})"] + list(bw.SAVE_FORMATS.values())
+        start = str(self.path.parent / bw.safe_name(self.title_edit.text().strip() or self.outline["title"]))
+        f, chosen = QtWidgets.QFileDialog.getSaveFileName(self, "Uložit jako", start, ";;".join(filters),
+                                                          bw.SAVE_FORMATS["docx"])
+        if not f:
+            return
+        ext = {v: k for k, v in bw.SAVE_FORMATS.items()}.get(chosen)
+        if chosen.startswith("Projekt") or f.endswith(bw.PROJECT_SUFFIX):
+            if not f.endswith(bw.PROJECT_SUFFIX):
+                f = re.sub(r"\.(kniha|json)$", "", f) + bw.PROJECT_SUFFIX
+            self.path = Path(f)
+            self.save()
+            self._update_title()
+            self.statusBar().showMessage(f"Uloženo jako {f}", 6000)
+            return
+        if ext and not f.lower().endswith("." + ext):
+            f += "." + ext
+        self.save()
+        self.statusBar().showMessage("Ukládám…")
+
+        def done(path, err):
+            self.statusBar().clearMessage()
+            if err:
+                QtWidgets.QMessageBox.critical(self, "Uložit jako", str(err))
+            else:
+                self.statusBar().showMessage(f"Uloženo: {path}", 8000)
+                QtWidgets.QMessageBox.information(self, "Uložit jako", f"Uloženo:\n\n{path}")
+
+        if f.lower().endswith(".odt"):  # ODT zapisuje Qt – v okenním vlákně
+            try:
+                done(bw.save_as(self.project, f, lambda *_: None, self.ebook_convert), None)
+            except Exception as e:  # noqa: BLE001
+                done(None, e)
+            return
+        run_bg(lambda: bw.save_as(self.project, f, lambda *_: None, self.ebook_convert), done)
 
     def _row(self, *groups) -> QtWidgets.QWidget:
         w = QtWidgets.QWidget()
@@ -375,73 +475,22 @@ class BookEditor(QtWidgets.QMainWindow):
         self.b_print.setMenu(pm)
         self.b_print.setPopupMode(QtWidgets.QToolButton.MenuButtonPopup)
         save.grid.addWidget(self.b_print, 0, 2, 2, 1)
-        return self._row(clip, font, para, styles, edit, save)
+        ins = RibbonGroup("Vložení")
+        b_img = self._big(emoji_icon("🖼️"), "Obrázek", self.pick_image)
+        b_img.setToolTip("Vložit obrázek ze souboru (JPG, PNG…). Jde i Ctrl+V ze schránky nebo přetažením myší. "
+                         "Velikost a zarovnání změníte pravým tlačítkem na obrázku.")
+        ins.grid.addWidget(b_img, 0, 0)
+        return self._row(clip, font, para, ins, styles, edit, save)
 
     # ================================================================ tisk
     def print_document(self, whole: bool = True) -> QtGui.QTextDocument:
         """Dokument k tisku: titulní strana a kapitoly (každá od nové stránky) nebo jen aktuální kapitola."""
+        from qt_bookdoc import book_document
+
         self.store_current()
-        doc = QtGui.QTextDocument()
-        base = QtGui.QFont(self.fmt.get("font") or "Georgia")
-        base.setPointSizeF(float(self.fmt.get("size") or 12))
-        doc.setDefaultFont(base)
-        cur = QtGui.QTextCursor(doc)
-        title = self.title_edit.text().strip() or self.outline.get("title", "")
-        chapters = list(enumerate(self.project["chapters"]))
-        if not whole:
-            chapters = [chapters[self.cur]] if chapters else []
-        first = True
-
-        def block(page_break: bool, align=Qt.AlignLeft, top=0.0, bottom=0.0):
-            nonlocal first
-            f = QtGui.QTextBlockFormat()
-            f.setAlignment(align)
-            f.setTopMargin(top)
-            f.setBottomMargin(bottom)
-            if page_break and not first:
-                f.setPageBreakPolicy(QtGui.QTextFormat.PageBreak_AlwaysBefore)
-            if first:
-                cur.setBlockFormat(f)
-                first = False
-            else:
-                cur.insertBlock(f)
-
-        def text(t: str, size: float, bold=True):
-            cf = QtGui.QTextCharFormat()
-            cf.setFont(base)
-            cf.setFontPointSize(size)
-            cf.setFontWeight(QtGui.QFont.Bold if bold else QtGui.QFont.Normal)
-            cur.insertText(t, cf)
-
-        if whole:  # titulní strana
-            block(False, Qt.AlignHCenter, top=220)
-            text(title, 26)
-            author = self.author_edit.text().strip()
-            if author:
-                block(False, Qt.AlignHCenter, top=24)
-                text(author, 15, bold=False)
-        titles = self.outline.get("chapters", [])
-        for i, ch in chapters:
-            name = ch.get("title") or (titles[i]["title"] if i < len(titles) else f"Kapitola {i + 1}")
-            block(True, top=12, bottom=18)
-            text(f"{i + 1}. {name}", 18)
-            block(False)
-            cur.setCharFormat(QtGui.QTextCharFormat())
-            cur.insertFragment(QtGui.QTextDocumentFragment.fromHtml(ch.get("html") or plain_to_html(ch["text"])))
-        # značky [[STRANA]] z editoru → skutečné zalomení stránky
-        b = doc.begin()
-        while b.isValid():
-            nxt = b.next()
-            if b.text().strip() == PAGE_BREAK and nxt.isValid():
-                c = QtGui.QTextCursor(nxt)
-                f = nxt.blockFormat()
-                f.setPageBreakPolicy(QtGui.QTextFormat.PageBreak_AlwaysBefore)
-                c.setBlockFormat(f)
-                c = QtGui.QTextCursor(b)
-                c.select(QtGui.QTextCursor.BlockUnderCursor)
-                c.removeSelectedText()
-            b = nxt
-        return doc
+        return book_document(self.project, None if whole else self.cur,
+                             title=self.title_edit.text().strip() or self.outline.get("title", ""),
+                             author=self.author_edit.text().strip())
 
     def _printer(self) -> QtPrintSupport.QPrinter:
         pr = QtPrintSupport.QPrinter(QtPrintSupport.QPrinter.HighResolution)
@@ -482,10 +531,30 @@ class BookEditor(QtWidgets.QMainWindow):
         self.b_ruler.setToolTip("Pravítka nad a vlevo od stránky. Na vodorovném jde myší posouvat odsazení "
                                 "odstavce (▽ první řádek, △ levé a pravé odsazení); dvojklik ho zruší.")
         show.grid.addWidget(self.b_ruler, 0, 0)
+        self.b_panel = self._big(emoji_icon("📑"), "Panel kapitol", lambda: self.set_chapters_panel(
+            self.b_panel.isChecked()))
+        self.b_panel.setCheckable(True)
+        self.b_panel.setToolTip("Zobrazit / skrýt seznam kapitol vlevo (F9)")
+        show.grid.addWidget(self.b_panel, 0, 1)
         on = bool(self.view_opts.get("ruler", True))
         self.b_ruler.setChecked(on)
         self.set_ruler(on, save=False)
         return self._row(show)
+
+    def _dock_visibility(self, visible: bool):
+        try:
+            if hasattr(self, "b_panel") and not self.isMinimized():
+                self.b_panel.setChecked(visible)
+        except RuntimeError:  # okno se právě zavírá
+            pass
+
+    def set_chapters_panel(self, on: bool, save: bool = True):
+        """Skrytí panelu kapitol dá stránce celou šířku okna; stav se pamatuje."""
+        self.chapters_dock.setVisible(on)
+        self.b_panel.setChecked(on)
+        if save:
+            self.view_opts["chapters_panel"] = on
+            self._save_view()
 
     def set_ruler(self, on: bool, save: bool = True):
         for w in (self.hruler, self.vruler, self.ruler_corner):
@@ -523,19 +592,31 @@ class BookEditor(QtWidgets.QMainWindow):
 
         exp = RibbonGroup("Export")
         self.fmt_checks = {}
-        for i, f in enumerate(("epub", "docx", "pdf", "azw3")):
+        for i, f in enumerate(("epub", "docx", "pdf", "azw3", "mobi", "odt", "rtf", "txt")):
             cb = QtWidgets.QCheckBox(f.upper())
             cb.setChecked(f in ("epub", "docx"))
             self.fmt_checks[f] = cb
-            exp.grid.addWidget(cb, i // 2, i % 2)
-        exp.grid.addWidget(self._big(emoji_icon("📤"), "Exportovat", self.export), 0, 2, 2, 1)
+            exp.grid.addWidget(cb, i % 2, i // 2)
+        exp.grid.addWidget(self._big(emoji_icon("📤"), "Exportovat", self.export), 0, 4, 2, 1)
 
         chap = RibbonGroup("Kapitoly")
         chap.grid.addWidget(self._big(emoji_icon("➕"), "Nová kapitola", self.add_chapter), 0, 0, 2, 1)
         chap.grid.addWidget(self._tb(emoji_icon("⬆️"), "Posunout nahoru", lambda: self.move_chapter(-1)), 0, 1)
         chap.grid.addWidget(self._tb(emoji_icon("⬇️"), "Posunout dolů", lambda: self.move_chapter(1)), 1, 1)
         chap.grid.addWidget(self._tb(emoji_icon("🗑️"), "Smazat kapitolu", self.delete_chapter), 0, 2)
-        return self._row(info, look, exp, chap)
+        cov = RibbonGroup("Obálka")
+        self.cover_thumb = QtWidgets.QLabel()
+        self.cover_thumb.setFixedSize(46, 64)
+        self.cover_thumb.setAlignment(Qt.AlignCenter)
+        self.cover_thumb.setStyleSheet("border: 1px solid #cbd5e1; background: white; color: #94a3b8;")
+        cov.grid.addWidget(self.cover_thumb, 0, 0, 2, 1)
+        b_cov = self._big(emoji_icon("🖼️"), "Obálka…", self.pick_cover)
+        b_cov.setToolTip("Obrázek obálky: v EPUB, MOBI a AZW3 jako obálka e-knihy ve čtečce, v DOCX, PDF a tisku "
+                         "jako první strana.")
+        cov.grid.addWidget(b_cov, 0, 1, 2, 1)
+        cov.grid.addWidget(self._tb(emoji_icon("🗑️"), "Odebrat obálku", self.remove_cover), 0, 2)
+        self.update_cover_thumb()
+        return self._row(info, look, cov, exp, chap)
 
     def _color_menu(self, colors, fn, extra_text):
         menu = QtWidgets.QMenu(self)
@@ -563,7 +644,9 @@ class BookEditor(QtWidgets.QMainWindow):
     # ============================================================ kapitoly
     def _build_chapters_dock(self):
         dock = QtWidgets.QDockWidget("Kapitoly", self)
-        dock.setFeatures(QtWidgets.QDockWidget.DockWidgetMovable)
+        dock.setFeatures(QtWidgets.QDockWidget.DockWidgetMovable | QtWidgets.QDockWidget.DockWidgetClosable)
+        dock.visibilityChanged.connect(self._dock_visibility)
+        self.chapters_dock = dock
         w = QtWidgets.QWidget()
         lay = QtWidgets.QVBoxLayout(w)
         self.chapters = QtWidgets.QListWidget()
@@ -808,6 +891,25 @@ class BookEditor(QtWidgets.QMainWindow):
 
     def _extra_menu(self, menu: QtWidgets.QMenu, word_cursor: QtGui.QTextCursor):
         """Položky editoru knihy v menu pravého tlačítka."""
+        img = self.image_at(word_cursor)
+        if img is not None:
+            im = menu.addMenu("🖼 Obrázek")
+            for pct in (25, 50, 75, 100):
+                im.addAction(f"Šířka {pct} %", lambda p=pct, c=QtGui.QTextCursor(img): self.set_image_width(c, p))
+            im.addAction("Vlastní šířka…", lambda c=QtGui.QTextCursor(img): self.ask_image_width(c))
+            im.addSeparator()
+            for text_, al in (("Zarovnat vlevo", Qt.AlignLeft), ("Na střed", Qt.AlignHCenter), ("Vpravo", Qt.AlignRight)):
+                def align(c=QtGui.QTextCursor(img), a=al):
+                    bf = c.blockFormat()
+                    bf.setAlignment(a)
+                    c.setBlockFormat(bf)
+                    self._changed()
+                im.addAction(text_, align)
+            im.addSeparator()
+            im.addAction("Nahradit obrázek…", lambda c=QtGui.QTextCursor(img): self.replace_image(c))
+            im.addAction("🗑 Smazat obrázek", lambda c=QtGui.QTextCursor(img): (c.removeSelectedText(), self._changed()))
+            menu.addSeparator()
+        menu.addAction("🖼 Vložit obrázek…", self.pick_image)
         fmt = menu.addMenu("🅰 Formát písma")
         for b, text, key in ((self.b_bold, "Tučné", "Ctrl+B"), (self.b_italic, "Kurzíva", "Ctrl+I"),
                              (self.b_under, "Podtržené", "Ctrl+U"), (self.b_strike, "Přeškrtnuté", None)):
@@ -881,7 +983,8 @@ class BookEditor(QtWidgets.QMainWindow):
         for seq, fn in (("Ctrl+S", self.save), ("Ctrl+F", self.open_find), ("Ctrl+H", self.open_find),
                         ("Ctrl+B", lambda: self.b_bold.click()), ("Ctrl+I", lambda: self.b_italic.click()),
                         ("Ctrl+U", lambda: self.b_under.click()), ("Ctrl+Return", self._page_break),
-                        ("Ctrl+P", lambda: self.print_book(True))):
+                        ("Ctrl+P", lambda: self.print_book(True)), ("Ctrl+Shift+S", self.save_as),
+                        ("F9", lambda: self.set_chapters_panel(not self.chapters_dock.isVisible()))):
             QtGui.QShortcut(QtGui.QKeySequence(seq), self, activated=fn)
 
     def _doc_changed(self):
@@ -953,6 +1056,108 @@ class BookEditor(QtWidgets.QMainWindow):
             return
         self.statusBar().showMessage(f"Automaticky uloženo {QtCore.QTime.currentTime().toString('HH:mm:ss')}", 4000)
 
+    # ================================================================ obrázky a obálka
+    IMAGE_FILTER = "Obrázky (*.jpg *.jpeg *.png *.gif *.bmp *.webp *.tif *.tiff);;Vše (*.*)"
+
+    def pick_image(self):
+        f, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Vložit obrázek", str(self.path.parent), self.IMAGE_FILTER)
+        if f:
+            self.insert_image_data(Path(f).read_bytes())
+
+    def insert_image_data(self, data: bytes, cursor: QtGui.QTextCursor | None = None) -> str | None:
+        """Vloží obrázek do textu jako samostatný odstavec na střed; data se uloží do knihy."""
+        try:
+            data, ext = book_images.shrink(data)
+        except Exception as e:  # noqa: BLE001
+            QtWidgets.QMessageBox.warning(self, "Obrázek", f"Obrázek se nepodařilo načíst:\n{e}")
+            return None
+        name = book_images.add_image(self.project, data, ext)
+        w, _h = book_images.size_px(data)
+        c = cursor or self.text.textCursor()
+        c.beginEditBlock()
+        if c.block().text().strip():
+            c.movePosition(QtGui.QTextCursor.EndOfBlock)
+            c.insertBlock()
+        bf = c.blockFormat()
+        bf.setAlignment(Qt.AlignHCenter)
+        c.setBlockFormat(bf)
+        f = QtGui.QTextImageFormat()
+        f.setName(name)
+        f.setWidth(min(w, book_images.PAGE_PX * 0.8))
+        c.insertImage(f)
+        c.insertBlock()
+        bf.setAlignment(Qt.AlignLeft)
+        c.setBlockFormat(bf)
+        c.endEditBlock()
+        self.text.setTextCursor(c)
+        self._changed()
+        return name
+
+    def image_at(self, cursor: QtGui.QTextCursor) -> QtGui.QTextCursor | None:
+        """Kurzor s označeným obrázkem v místě kliknutí (nebo None)."""
+        doc = self.text.document()
+        base = cursor.selectionStart() if cursor.hasSelection() else cursor.position()
+        for i in dict.fromkeys((base, base - 1, cursor.selectionEnd() - 1, base + 1)):
+            if 0 <= i < doc.characterCount() - 1 and doc.characterAt(i) == "\ufffc":
+                c = QtGui.QTextCursor(doc)
+                c.setPosition(i)
+                c.setPosition(i + 1, QtGui.QTextCursor.KeepAnchor)
+                if c.charFormat().isImageFormat():
+                    return c
+        return None
+
+    def set_image_width(self, c: QtGui.QTextCursor, percent: int):
+        f = c.charFormat().toImageFormat()
+        nf = QtGui.QTextImageFormat()
+        nf.setName(f.name())
+        nf.setWidth(book_images.PAGE_PX * percent / 100)
+        c.setCharFormat(nf)  # jen nový formát obrázku – text se nemění
+        self._changed()
+
+    def ask_image_width(self, c: QtGui.QTextCursor):
+        cur = c.charFormat().toImageFormat().width()
+        pct = round(cur / book_images.PAGE_PX * 100) if cur else 80
+        v, ok = QtWidgets.QInputDialog.getInt(self, "Velikost obrázku", "Šířka obrázku v % šířky stránky:",
+                                              max(5, min(100, pct)), 5, 100, 5)
+        if ok:
+            self.set_image_width(c, v)
+
+    def replace_image(self, c: QtGui.QTextCursor):
+        f, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Nahradit obrázek", str(self.path.parent),
+                                                     self.IMAGE_FILTER)
+        if f:
+            c.removeSelectedText()
+            self.insert_image_data(Path(f).read_bytes(), c)
+
+    def pick_cover(self):
+        f, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Obrázek obálky", str(self.path.parent), self.IMAGE_FILTER)
+        if not f:
+            return
+        try:
+            data, ext = book_images.shrink(Path(f).read_bytes())
+        except Exception as e:  # noqa: BLE001
+            QtWidgets.QMessageBox.warning(self, "Obálka", f"Obrázek se nepodařilo načíst:\n{e}")
+            return
+        self.project["cover"] = book_images.add_image(self.project, data, ext)
+        self.update_cover_thumb()
+        self._changed()
+
+    def remove_cover(self):
+        if self.project.pop("cover", None):
+            self.update_cover_thumb()
+            self._changed()
+
+    def update_cover_thumb(self):
+        data = book_images.get_image(self.project, self.project.get("cover") or "")
+        if data:
+            pm = QtGui.QPixmap()
+            pm.loadFromData(data)
+            self.cover_thumb.setPixmap(pm.scaled(self.cover_thumb.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
+            self.cover_thumb.setToolTip("Obálka knihy")
+        else:
+            self.cover_thumb.setPixmap(QtGui.QPixmap())
+            self.cover_thumb.setText("bez\nobálky")
+
     def save(self):
         import time
 
@@ -963,6 +1168,7 @@ class BookEditor(QtWidgets.QMainWindow):
         self.project["author"] = self.author_edit.text().strip()
         self.fmt.update(font=self.book_font.currentFont().family(), size=self.book_size.value(),
                         toc=self.toc.isChecked())
+        book_images.prune(self.project)  # obrázky smazané z textu už v souboru nebudou
         bw.save_project(self.path, self.project)
         self.dirty = False
         self.text.document().setModified(False)

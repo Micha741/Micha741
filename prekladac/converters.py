@@ -71,7 +71,8 @@ class CalibreMissing(Exception):
     pass
 
 
-def calibre_convert(src: str, dst: str, log: Log = _noop, ebook_convert: str | None = None) -> None:
+def calibre_convert(src: str, dst: str, log: Log = _noop, ebook_convert: str | None = None,
+                    extra: list[str] | None = None) -> None:
     exe = find_ebook_convert(ebook_convert)
     if not exe:
         raise CalibreMissing(
@@ -82,7 +83,8 @@ def calibre_convert(src: str, dst: str, log: Log = _noop, ebook_convert: str | N
         _ensure_kfx_plugin(exe, log)
     log(f"  Calibre: {Path(src).suffix} → {Path(dst).suffix}")
     flags = subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0
-    proc = subprocess.run([exe, src, dst], capture_output=True, text=True, errors="replace", creationflags=flags)
+    proc = subprocess.run([exe, src, dst, *(extra or [])], capture_output=True, text=True, errors="replace",
+                          creationflags=flags)
     if proc.returncode != 0 or not os.path.exists(dst):
         tail = (proc.stderr or proc.stdout or "")[-1500:]
         hint = ""

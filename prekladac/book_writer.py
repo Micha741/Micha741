@@ -408,20 +408,23 @@ def _set_fonts(document, font: str, size: int) -> None:
             st.font.size = Pt(size)
 
 
-def export(project: dict, out_dir: str | Path, formats: list[str], log: Callable[[str], None] = print,
-           ebook_convert: str | None = None) -> list[str]:
-    """Uloží knihu: vždy DOCX (písmo, obsah s odkazy, zalomení stránek), z něj přes Calibre EPUB/PDF/AZW3."""
+EBOOK_FORMATS = ("epub", "mobi", "azw3")  # obálka jako obálka e-knihy (Calibre --cover), ne jako první strana
+
+
+def build_docx(project: dict, dst: str | Path, cover_page: bool = True) -> None:
+    """DOCX knihy: (obálka), titulní strana, obsah s odkazy, kapitoly s formátováním a obrázky."""
+    import io
+
     import docx
     from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK
+    from docx.shared import Inches
 
-    from converters import calibre_convert, output_path
+    import book_images
 
     o = project["outline"]
     fmt_cfg = {**DEFAULT_FORMAT, **project.get("format", {})}
-    out_dir = Path(out_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
-    base = out_dir / safe_name(o["title"])
     written = list(zip(o["chapters"], project["chapters"]))
+    images = {n: book_images.get_image(project, n) for n in (project.get("images") or {})}
 
     d = docx.Document()
     _set_fonts(d, fmt_cfg["font"], int(fmt_cfg["size"]))
@@ -430,6 +433,14 @@ def export(project: dict, out_dir: str | Path, formats: list[str], log: Callable
     code = LANG_CODES.get(project.get("language", "").lower())
     if code:
         d.core_properties.language = code
+    cover = images.get(project.get("cover") or "")
+    if cover_page and cover:  # obálka přes celou stránku
+        w, h = book_images.size_px(cover)
+        width = min(book_images.PAGE_WIDTH_IN, book_images.PAGE_HEIGHT_IN * w / max(1, h))
+        cp = d.add_paragraph()
+        cp.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        cp.add_run().add_picture(io.BytesIO(cover), width=Inches(width))
+        cp.add_run().add_break(WD_BREAK.PAGE)
     t = d.add_paragraph(o["title"], style="Title")
     t.alignment = WD_ALIGN_PARAGRAPH.CENTER
     if project.get("author"):
@@ -446,10 +457,10 @@ def export(project: dict, out_dir: str | Path, formats: list[str], log: Callable
         d.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
         h = d.add_heading(f"{i}. {ch_plan['title']}", level=1)
         _bookmark(h, f"kapitola_{i}", i)
-        if ch.get("html"):  # kapitola upravená v editoru – s formátováním
+        if ch.get("html"):  # kapitola upravená v editoru – s formátováním a obrázky
             from html_docx import add_html
 
-            add_html(d, ch["html"])
+            add_html(d, ch["html"], images)
             continue
         for para in split_paragraphs(ch["text"]):
             if para == PAGE_BREAK:
@@ -461,8 +472,20 @@ def export(project: dict, out_dir: str | Path, formats: list[str], log: Callable
                 run = p.add_run(line)
                 if li < len(lines) - 1:
                     run.add_break()  # zalomení řádku uvnitř odstavce
+    d.save(str(dst))
+
+
+def export(project: dict, out_dir: str | Path, formats: list[str], log: Callable[[str], None] = print,
+           ebook_convert: str | None = None) -> list[str]:
+    """Uloží knihu: vždy DOCX (písmo, obsah s odkazy, zalomení stránek), z něj přes Calibre EPUB/PDF/AZW3…"""
+    from converters import output_path
+
+    o = project["outline"]
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    base = out_dir / safe_name(o["title"])
     docx_path = output_path(str(base) + ".docx", None, "docx", "")
-    d.save(docx_path)
+    build_docx(project, docx_path)
     results = []
     if "docx" in formats:
         results.append(docx_path)
@@ -470,8 +493,94 @@ def export(project: dict, out_dir: str | Path, formats: list[str], log: Callable
         if fmt == "docx":
             continue
         dst = output_path(str(base) + "." + fmt, None, fmt, "")
-        calibre_convert(docx_path, dst, log, ebook_convert)
+        write_format(project, docx_path, dst, fmt, log, ebook_convert)
         results.append(dst)
     if "docx" not in formats:
         Path(docx_path).unlink(missing_ok=True)
     return results
+
+
+# formáty, do kterých jde knihu uložit (Uložit jako / Export); popisky pro dialog
+SAVE_FORMATS = {
+    "docx": "Word (*.docx)",
+    "pdf": "PDF (*.pdf)",
+    "epub": "EPUB – e-kniha (*.epub)",
+    "mobi": "MOBI – Kindle (*.mobi)",
+    "azw3": "AZW3 – Kindle (*.azw3)",
+    "odt": "OpenDocument – LibreOffice (*.odt)",
+    "rtf": "RTF – Rich Text (*.rtf)",
+    "txt": "Prostý text (*.txt)",
+}
+
+
+def book_plain_text(project: dict) -> str:
+    """Kniha jako prostý text: název, autor, kapitoly s nadpisy (zalomení stránek se vynechají)."""
+    o = project["outline"]
+    lines = [o.get("title", "")]
+    if project.get("author"):
+        lines.append(project["author"])
+    for i, (plan, ch) in enumerate(zip(o["chapters"], project["chapters"]), 1):
+        lines += ["", "", f"{i}. {ch.get('title') or plan['title']}", ""]
+        paras = [p.replace("\ufffc", "[obrázek]") for p in split_paragraphs(ch.get("text", ""))
+                 if p.strip() != PAGE_BREAK]
+        lines.append("\n\n".join(paras))
+    return "\n".join(lines).strip() + "\n"
+
+
+def write_format(project: dict, docx_path: str, dst: str, fmt: str, log: Callable[[str], None] = print,
+                 ebook_convert: str | None = None) -> None:
+    """Jeden výstupní formát: TXT a ODT přímo, ostatní z DOCX přes Calibre."""
+    if fmt == "txt":
+        Path(dst).write_text(book_plain_text(project), encoding="utf-8")
+    elif fmt == "odt":
+        from qt_bookdoc import write_odt  # Calibre do ODT neukládá – zapíše ho Qt
+
+        write_odt(project, dst)
+    elif fmt in EBOOK_FORMATS and project.get("cover"):
+        # e-kniha: obálka jako skutečná obálka (ve čtečce v knihovně), v textu se neopakuje
+        import shutil
+        import tempfile
+
+        import book_images
+        from converters import calibre_convert
+
+        tmp = Path(tempfile.mkdtemp(prefix="prekladac_"))
+        try:
+            name = project["cover"]
+            cover = tmp / ("obalka" + Path(name).suffix)
+            cover.write_bytes(book_images.get_image(project, name) or b"")
+            src = tmp / "kniha.docx"
+            build_docx(project, src, cover_page=False)
+            calibre_convert(str(src), dst, log, ebook_convert, ["--cover", str(cover)])
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+    else:
+        from converters import calibre_convert
+
+        calibre_convert(docx_path, dst, log, ebook_convert)
+
+
+def save_as(project: dict, dst: str | Path, log: Callable[[str], None] = print,
+            ebook_convert: str | None = None) -> str:
+    """Uloží knihu do jednoho souboru přesně pod zadaným jménem; formát podle přípony."""
+    import shutil
+    import tempfile
+
+    dst = Path(dst)
+    fmt = dst.suffix.lower().lstrip(".")
+    if fmt not in SAVE_FORMATS:
+        raise BookError(f"Formát .{fmt} neumím uložit (podporované: {', '.join(SAVE_FORMATS)}).")
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    if fmt in ("txt", "odt"):
+        write_format(project, "", str(dst), fmt, log, ebook_convert)
+        return str(dst)
+    tmp = Path(tempfile.mkdtemp(prefix="prekladac_"))
+    try:
+        docx_path = export(project, tmp, ["docx"], log, ebook_convert)[0]
+        if fmt == "docx":
+            shutil.copyfile(docx_path, dst)
+        else:
+            write_format(project, docx_path, str(dst), fmt, log, ebook_convert)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    return str(dst)
