@@ -22,7 +22,7 @@ from guides import GUIDES
 from qt_common import STYLESHEET, app_icon, asset, bridge, emoji_icon, label, run_bg, set_status
 import i18n
 import updater
-from qt_editor import RibbonGroup, vline
+from qt_editor import HScroll, RibbonGroup, vline
 from qt_textassist import TextAssist
 from version import VERSION
 
@@ -85,7 +85,7 @@ def ribbon_row(*groups) -> QtWidgets.QWidget:
             hl.addWidget(vline())
         hl.addWidget(g)
     hl.addStretch(1)
-    return w
+    return HScroll(w)
 
 
 def doc_heading(text: str, hint: str) -> QtWidgets.QWidget:
@@ -120,7 +120,19 @@ def paper_canvas(widgets) -> QtWidgets.QScrollArea:
     scroll.setWidgetResizable(True)
     scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
     scroll.setWidget(canvas)
+    scroll.paper, scroll.canvas_layout = paper, cl
     return scroll
+
+
+PAPER_WIDTH = 980
+
+
+def set_paper_full_width(paper: QtWidgets.QWidget, canvas_layout: QtWidgets.QBoxLayout, full: bool) -> None:
+    """Stránka uprostřed s šedými okraji (jako ve Wordu), nebo přes celou šířku okna."""
+    paper.setMaximumWidth(16777215 if full else PAPER_WIDTH)
+    canvas_layout.setContentsMargins(*((8, 8, 8, 8) if full else (24, 20, 24, 24)))
+    canvas_layout.setStretch(0, 0 if full else 1)
+    canvas_layout.setStretch(2, 0 if full else 1)
 
 
 def primary(text: str) -> QtWidgets.QPushButton:
@@ -130,6 +142,8 @@ def primary(text: str) -> QtWidgets.QPushButton:
 
 
 class LogView(QtWidgets.QPlainTextEdit):
+    appended = QtCore.Signal(str)
+
     def __init__(self):
         super().__init__()
         self.setReadOnly(True)
@@ -139,7 +153,83 @@ class LogView(QtWidgets.QPlainTextEdit):
     def log(self, text: str) -> None:
         """Bezpečné volání i z vlákna."""
         text = i18n.tr_lines(text)
-        bridge().later(lambda: (self.appendPlainText(text), self.ensureCursorVisible()))
+        bridge().later(lambda: (self.appendPlainText(text), self.ensureCursorVisible(), self.appended.emit(text)))
+
+
+class WorkPanel(QtWidgets.QWidget):
+    """Průběh a záznam dole. Záznam jde skrýt – pak se při práci ukáže jen tenký proužek
+    s poslední zprávou a po chybě se záznam ukáže sám."""
+
+    def __init__(self, show_log: bool = True):
+        super().__init__()
+        bl = QtWidgets.QVBoxLayout(self)
+        bl.setContentsMargins(8, 4, 8, 6)
+        bl.setSpacing(4)
+        self.bar = QtWidgets.QProgressBar()
+        self.bar.setRange(0, 1000)
+        self.logv = LogView()
+        self.logv.setMinimumHeight(60)
+        bl.addWidget(self.bar)
+        bl.addWidget(self.logv)
+        self.show_log = show_log
+        self.busy = False
+        self.error_shown = False
+        self.logv.appended.connect(self._message)
+        self._update()
+
+    def _message(self, text: str):
+        last = text.strip().splitlines()[-1] if text.strip() else ""
+        if not self.show_log:
+            self.bar.setFormat(f"{last[:120]}   %p %" if last else "%p %")
+            if last.startswith(("✗", "!")) or "chyba" in last.lower() or "error" in last.lower():
+                self.error_shown = True  # chybu nesmí uživatel přehlédnout
+                self._update()
+
+    def set_log_visible(self, on: bool):
+        self.show_log = on
+        self.error_shown = False
+        self.bar.setFormat("%p %")
+        self._update()
+
+    def set_busy(self, on: bool):
+        self.busy = on
+        if on:
+            self.error_shown = False
+        self._update()
+
+    def _update(self):
+        log = self.show_log or self.error_shown
+        self.logv.setVisible(log)
+        self.setVisible(log or self.busy)
+        if log:
+            self.setMaximumHeight(16777215)
+        else:
+            self.setMaximumHeight(self.bar.sizeHint().height() + 12)
+
+
+def view_group(win: "MainWindow", key: str, panel: WorkPanel, paper, canvas_layout) -> "RibbonGroup":
+    """Karta Zobrazení: stránka přes celou šířku a záznam průběhu (stav se pamatuje)."""
+    opts = win.cfg.setdefault("view", {}).setdefault(key, {})
+    full = QtWidgets.QCheckBox("Stránka přes celou šířku okna (bez šedých okrajů)")
+    full.setChecked(bool(opts.get("full_width", False)))
+    log = QtWidgets.QCheckBox("Zobrazit záznam průběhu dole")
+    log.setToolTip("Když je vypnutý, při práci se ukáže jen proužek s poslední zprávou; při chybě se záznam "
+                   "ukáže sám.")
+    log.setChecked(bool(opts.get("log", True)))
+
+    def apply(save=True):
+        opts["full_width"], opts["log"] = full.isChecked(), log.isChecked()
+        set_paper_full_width(paper, canvas_layout, full.isChecked())
+        panel.set_log_visible(log.isChecked())
+        if save:
+            win.save_cfg()
+
+    full.toggled.connect(lambda *_: apply())
+    log.toggled.connect(lambda *_: apply())
+    apply(save=False)
+    g = ribbon_group("Zobrazení", [("", full), ("", log)])
+    g.full_width, g.show_log = full, log
+    return g
 
 
 class FileList(QtWidgets.QListWidget):
@@ -351,17 +441,12 @@ class TranslatePage(QtWidgets.QWidget):
         ])
 
         # ---------- průběh a záznam dole
-        bottom = QtWidgets.QWidget()
-        bl = QtWidgets.QVBoxLayout(bottom)
-        bl.setContentsMargins(8, 4, 8, 6)
-        bl.setSpacing(4)
-        self.bar = QtWidgets.QProgressBar()
-        self.bar.setRange(0, 1000)
-        self.logv = LogView()
-        self.logv.setMinimumHeight(60)
-        bl.addWidget(self.bar)
-        bl.addWidget(self.logv)
+        bottom = self.work = WorkPanel()
+        self.bar, self.logv = bottom.bar, bottom.logv
+        self.view = view_group(win, "translate", bottom, canvas.paper, canvas.canvas_layout)
+        ribbon.addTab(ribbon_row(self.view), "Zobrazení")
         split = QtWidgets.QSplitter(Qt.Vertical)
+        split.setChildrenCollapsible(False)
         split.addWidget(canvas)
         split.addWidget(bottom)
         split.setStretchFactor(0, 5)
@@ -490,6 +575,7 @@ class TranslatePage(QtWidgets.QWidget):
         self.start_btn.setEnabled(False)
         self.stop_btn.setEnabled(True)
         self.bar.setValue(0)
+        self.work.set_busy(True)
 
         def progress(f):
             bridge().later(lambda: self.bar.setValue(int(f * 1000)))
@@ -502,6 +588,7 @@ class TranslatePage(QtWidgets.QWidget):
         def done(res, err):
             self.start_btn.setEnabled(True)
             self.stop_btn.setEnabled(False)
+            self.work.set_busy(False)
             if err:
                 self.logv.log(f"Neočekávaná chyba: {err}")
             elif res:
@@ -564,8 +651,8 @@ class BookPage(QtWidgets.QWidget):
         self.nwords.setRange(500, 8000)
         self.nwords.setSingleStep(100)
         self.nwords.setValue(int(cfg.get("book_words", 2500)))
-        self.svc_status = label("", wrap=False)
-        self.est = label("", "Hint", wrap=False)
+        self.svc_status = label("")  # zalamuje se, aby úzké okno nebylo širší než obrazovka
+        self.est = label("", "Hint")
         self.fmts = {}
         for f in ("epub", "docx", "pdf", "azw3", "mobi", "odt", "rtf", "txt"):
             c = QtWidgets.QCheckBox(f.upper())
@@ -618,7 +705,7 @@ class BookPage(QtWidgets.QWidget):
                     hl.addWidget(vline())
                 hl.addWidget(g)
             hl.addStretch(1)
-            return w
+            return HScroll(w)
 
         c = self.cats
         style_tab = ribbon_row(
@@ -679,7 +766,7 @@ class BookPage(QtWidgets.QWidget):
         info.setObjectName("InfoBar")
         il = QtWidgets.QHBoxLayout(info)
         il.setContentsMargins(14, 4, 14, 4)
-        il.addWidget(self.svc_status)
+        il.addWidget(self.svc_status, 1)
         il.addWidget(label("·", "Hint", wrap=False))
         il.addWidget(self.est, 1)
         il.addWidget(self.mature)
@@ -711,7 +798,7 @@ class BookPage(QtWidgets.QWidget):
 
         paper = QtWidgets.QFrame()
         paper.setObjectName("Paper")
-        paper.setMaximumWidth(980)
+        paper.setMaximumWidth(PAPER_WIDTH)
         pl = QtWidgets.QVBoxLayout(paper)
         pl.setContentsMargins(56, 36, 56, 40)
         pl.setSpacing(6)
@@ -737,17 +824,12 @@ class BookPage(QtWidgets.QWidget):
         scroll.setWidget(canvas)
 
         # ---------- průběh a záznam dole
-        bottom = QtWidgets.QWidget()
-        bl = QtWidgets.QVBoxLayout(bottom)
-        bl.setContentsMargins(8, 4, 8, 6)
-        bl.setSpacing(4)
-        self.bar = QtWidgets.QProgressBar()
-        self.bar.setRange(0, 1000)
-        self.logv = LogView()
-        self.logv.setMinimumHeight(60)
-        bl.addWidget(self.bar)
-        bl.addWidget(self.logv)
+        bottom = self.work = WorkPanel()
+        self.bar, self.logv = bottom.bar, bottom.logv
+        self.view = view_group(win, "book", bottom, paper, cl)
+        ribbon.addTab(ribbon_row(self.view), "Zobrazení")
         split = QtWidgets.QSplitter(Qt.Vertical)
+        split.setChildrenCollapsible(False)
         split.addWidget(scroll)
         split.addWidget(bottom)
         split.setStretchFactor(0, 5)
@@ -881,6 +963,7 @@ class BookPage(QtWidgets.QWidget):
 
     def set_busy(self, on: bool):
         self.busy = on
+        self.work.set_busy(on)
         self.update_buttons()
 
     def book_dir(self) -> Path:
@@ -1255,7 +1338,7 @@ class SettingsPage(QtWidgets.QWidget):
         tabs.addTab(self._services_tab(cfg), "Služby a klíče")
         tabs.addTab(scrolled(self._components_tab(cfg)), "Součásti")
         tabs.addTab(scrolled(self._general_tab(cfg)), "Obecné")
-        tabs.addTab(self._info_tab(cfg), "Info")
+        tabs.addTab(scrolled(self._info_tab(cfg)), "Info")
         sc = QtGui.QShortcut(QtGui.QKeySequence("Ctrl+S"), self, activated=self.save)
         sc.setContext(Qt.WidgetWithChildrenShortcut)
 
@@ -1632,8 +1715,8 @@ class SettingsPage(QtWidgets.QWidget):
         head.addWidget(logo)
         info = QtWidgets.QVBoxLayout()
         info.addWidget(label(core.APP_NAME, "PageTitle", wrap=False))
-        info.addWidget(label(f"Verze programu: {VERSION}", wrap=False))
-        info.addWidget(label("© 2026 Micha741 · zdarma pro osobní použití", "Hint", wrap=False))
+        info.addWidget(label(f"Verze programu: {VERSION}"))
+        info.addWidget(label("© 2026 Micha741 · zdarma pro osobní použití", "Hint"))
         head.addLayout(info, 1)
         web = QtWidgets.QPushButton("🌐 Stránka programu")
         web.clicked.connect(lambda: webbrowser.open(updater.RELEASE_URL))
@@ -1774,6 +1857,7 @@ class MainWindow(QtWidgets.QMainWindow):
         avail = QtGui.QGuiApplication.primaryScreen().availableGeometry()
         self.resize(min(1180, int(avail.width() * 0.95)), min(860, int(avail.height() * 0.92)))
         self.move(avail.center() - self.rect().center())
+        self._restore_geometry()
         central = QtWidgets.QWidget()
         h = QtWidgets.QHBoxLayout(central)
         h.setContentsMargins(0, 0, 0, 0)
@@ -1888,10 +1972,28 @@ class MainWindow(QtWidgets.QMainWindow):
         except RuntimeError:  # okno se zavírá
             pass
 
+    def _restore_geometry(self):
+        """Velikost a poloha okna z minula – jen když se vejde na některou z obrazovek."""
+        geo = self.cfg.get("window_geometry")
+        if not geo:
+            return
+        old = self.saveGeometry()
+        if not self.restoreGeometry(QtCore.QByteArray.fromBase64(geo.encode("ascii"))):
+            return
+        fits = any(s.availableGeometry().adjusted(-20, -20, 20, 20).contains(self.frameGeometry())
+                   for s in QtGui.QGuiApplication.screens())
+        if not fits and not self.isMaximized():
+            self.restoreGeometry(old)
+
     def closeEvent(self, e):
         if not self.close_editor():
             e.ignore()
             return
+        try:
+            self.cfg["window_geometry"] = bytes(self.saveGeometry().toBase64()).decode("ascii")
+            self.save_cfg()
+        except Exception:  # noqa: BLE001 – zavření okna nesmí spadnout kvůli nastavení
+            pass
         super().closeEvent(e)
 
     def set_sidebar_collapsed(self, collapsed: bool, save: bool = True):

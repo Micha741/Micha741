@@ -274,7 +274,7 @@ def test_sidebar_collapse_and_section_order(qapp):
     win2.set_sidebar_collapsed(False)
     assert win2.nav.item(0).text() == "Překlad"
     ribbon = win.book.findChild(qt_main.QtWidgets.QTabWidget, "Ribbon")
-    assert [ribbon.tabText(i) for i in range(ribbon.count())] == ["Soubor", "Žánr a styl", "Rozsah a služba"]
+    assert [ribbon.tabText(i) for i in range(ribbon.count())] == ["Soubor", "Žánr a styl", "Rozsah a služba", "Zobrazení"]
     assert ribbon.currentIndex() == 1
     assert win.book.cats["genre"].isVisibleTo(ribbon.widget(1)) and win.book.desc.objectName() == "DocText"
     assert not win.windowIcon().isNull()
@@ -585,7 +585,7 @@ def test_editor_file_tab_save_as_and_panel(qapp, tmp_path, monkeypatch):
     ed.save_as()
     for _ in range(200):
         qapp.processEvents()
-        if (tmp_path / "vystup.txt").exists():
+        if "Uloženo" in ed.statusBar().currentMessage():  # až doběhne i done() na pozadí
             break
         import time
         time.sleep(0.02)
@@ -719,3 +719,71 @@ def test_editor_opens_inside_main_window(qapp, tmp_path):
     assert "Nový začátek" in bw.load_project(path)["chapters"][0]["text"]
     assert win.windowTitle() == win.title()
     win.close()
+
+
+def _widest(win, limit=350):
+    """Pro chybovou hlášku: které prvky drží okno široké."""
+    from PySide6 import QtCore, QtWidgets
+    out = []
+
+    def walk(w, depth):
+        for c in w.findChildren(QtWidgets.QWidget, options=QtCore.Qt.FindDirectChildrenOnly):
+            m = c.minimumSizeHint().width()
+            if m >= limit and not c.isWindow():
+                out.append(f"{'  ' * depth}{type(c).__name__} {c.objectName()!r} {m}")
+                walk(c, depth + 1)
+    for i in range(win.stack.count()):
+        out.append(f"PAGE {i}: {win.stack.widget(i).minimumSizeHint().width()}")
+        walk(win.stack.widget(i), 1)
+    return "\n".join(out)
+
+
+def test_main_window_fits_small_screen_and_remembers_size(qapp):
+    import qt_main
+    win = qt_main.MainWindow()
+    for i in range(win.stack.count()):                       # pás karet se posouvá, okno se neroztáhne
+        assert win.stack.widget(i).minimumSizeHint().width() <= 1366 - 260, i
+    assert win.minimumSizeHint().width() <= 1000, _widest(win)  # i notebook 1366 px se zvětšením 125 %
+    win.resize(1000, 700)
+    win.move(30, 20)
+    win.close()                                              # velikost se uloží
+    assert win.cfg.get("window_geometry")
+    win2 = qt_main.MainWindow()
+    assert win2.size().width() == 1000 or win2.isMaximized() is False
+    win2.cfg["window_geometry"] = "nesmysl"                  # poškozený údaj nesmí vadit
+    win2._restore_geometry()
+    win2.close()
+
+
+def test_view_full_width_and_hidden_log(qapp):
+    import qt_main
+    win = qt_main.MainWindow()
+    win.show()
+    b = win.book
+    win.nav.setCurrentRow(1)
+    qapp.processEvents()
+    assert b.work.logv.isVisible() and b.view.show_log.isChecked()
+    b.view.full_width.setChecked(True)
+    b.view.show_log.setChecked(False)
+    qapp.processEvents()
+    assert not b.work.isVisible()                              # záznam i proužek skryté
+    b.set_busy(True)
+    qapp.processEvents()
+    assert b.work.isVisible() and not b.work.logv.isVisible()  # při práci jen proužek
+    b.logv.log("Píšu kapitolu 3")
+    qapp.processEvents()
+    assert "kapitolu 3" in b.work.bar.format()
+    b.logv.log("✗ Chyba spojení")
+    qapp.processEvents()
+    assert b.work.logv.isVisible()                             # chyba záznam ukáže
+    b.set_busy(False)
+    assert win.cfg["view"]["book"] == {"full_width": True, "log": False}
+    import app as core
+    disk = core.load_config().get("view")
+    assert disk and disk.get("book") == {"full_width": True, "log": False}, (disk, win.translate.logv.toPlainText())
+    win2 = qt_main.MainWindow()                                # pamatuje se
+    assert win2.book.view.full_width.isChecked(), (win2.cfg.get("view"), win2.book.view.full_width.isChecked())
+    assert not win2.book.view.show_log.isChecked()
+    assert win2.translate.view.show_log.isChecked()            # Překlad má vlastní nastavení
+    win.close()
+    win2.close()

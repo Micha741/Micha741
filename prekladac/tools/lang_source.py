@@ -676,6 +676,16 @@ E += [
     ("Náhled tisku", "Print preview", "Náhľad tlače", "Druckvorschau"),
     ("Okno", "Window", "Okno", "Fenster"),
     ("← Zpět", "← Back", "← Späť", "← Zurück"),
+    ("Stránka přes celou šířku okna (bez šedých okrajů)", "Page across the full window width (no grey margins)",
+     "Stránka na celú šírku okna (bez sivých okrajov)", "Seite über die ganze Fensterbreite (ohne graue Ränder)"),
+    ("Zobrazit záznam průběhu dole", "Show the progress log at the bottom", "Zobraziť záznam priebehu dole",
+     "Fortschrittsprotokoll unten anzeigen"),
+    ("Když je vypnutý, při práci se ukáže jen proužek s poslední zprávou; při chybě se záznam ukáže sám.",
+     "When off, only a strip with the latest message is shown while working; the log appears by itself on an "
+     "error.",
+     "Keď je vypnutý, pri práci sa ukáže len pásik s poslednou správou; pri chybe sa záznam ukáže sám.",
+     "Wenn aus, erscheint bei der Arbeit nur ein Streifen mit der letzten Meldung; bei einem Fehler wird das "
+     "Protokoll von selbst angezeigt."),
     ("Hlavní okno", "Main window", "Hlavné okno", "Hauptfenster"),
     ("Uložit knihu a vrátit se na stránku Napsat knihu (Alt+←)",
      "Save the book and return to the Write a book page (Alt+←)",
