@@ -411,7 +411,7 @@ class BookEditor(QtWidgets.QMainWindow):
             except Exception as e:  # noqa: BLE001
                 done(None, e)
             return
-        run_bg(lambda: bw.save_as(self.project, f, lambda *_: None, self.ebook_convert), done)
+        run_bg(lambda: bw.save_as(self.project, f, lambda *_: None, self.ebook_convert), done, owner=self)
 
     def _row(self, *groups) -> QtWidgets.QWidget:
         w = QtWidgets.QWidget()
@@ -1247,7 +1247,7 @@ class BookEditor(QtWidgets.QMainWindow):
             else:
                 QtWidgets.QMessageBox.information(self, "Export", "Uloženo:\n\n" + "\n".join(files))
 
-        run_bg(lambda: bw.export(self.project, self.path.parent, formats, lambda *_: None, self.ebook_convert), done)
+        run_bg(lambda: bw.export(self.project, self.path.parent, formats, lambda *_: None, self.ebook_convert), done, owner=self)
 
     def open_find(self):
         if not self.find_dlg:

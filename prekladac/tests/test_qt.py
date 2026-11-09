@@ -274,7 +274,7 @@ def test_sidebar_collapse_and_section_order(qapp):
     win2.set_sidebar_collapsed(False)
     assert win2.nav.item(0).text() == "Překlad"
     ribbon = win.book.findChild(qt_main.QtWidgets.QTabWidget, "Ribbon")
-    assert [ribbon.tabText(i) for i in range(ribbon.count())] == ["Soubor", "Žánr a styl", "Rozsah a služba"]
+    assert [ribbon.tabText(i) for i in range(ribbon.count())] == ["Soubor", "Žánr a styl", "Rozsah a služba", "Zobrazení"]
     assert ribbon.currentIndex() == 1
     assert win.book.cats["genre"].isVisibleTo(ribbon.widget(1)) and win.book.desc.objectName() == "DocText"
     assert not win.windowIcon().isNull()
@@ -585,7 +585,7 @@ def test_editor_file_tab_save_as_and_panel(qapp, tmp_path, monkeypatch):
     ed.save_as()
     for _ in range(200):
         qapp.processEvents()
-        if (tmp_path / "vystup.txt").exists():
+        if "Uloženo" in ed.statusBar().currentMessage():  # až doběhne i done() na pozadí
             break
         import time
         time.sleep(0.02)
@@ -735,4 +735,34 @@ def test_main_window_fits_small_screen_and_remembers_size(qapp):
     assert win2.size().width() == 1000 or win2.isMaximized() is False
     win2.cfg["window_geometry"] = "nesmysl"                  # poškozený údaj nesmí vadit
     win2._restore_geometry()
+    win2.close()
+
+
+def test_view_full_width_and_hidden_log(qapp):
+    import qt_main
+    win = qt_main.MainWindow()
+    win.show()
+    b = win.book
+    win.nav.setCurrentRow(1)
+    qapp.processEvents()
+    assert b.work.logv.isVisible() and b.view.show_log.isChecked()
+    b.view.full_width.setChecked(True)
+    b.view.show_log.setChecked(False)
+    qapp.processEvents()
+    assert not b.work.isVisible()                              # záznam i proužek skryté
+    b.set_busy(True)
+    qapp.processEvents()
+    assert b.work.isVisible() and not b.work.logv.isVisible()  # při práci jen proužek
+    b.logv.log("Píšu kapitolu 3")
+    qapp.processEvents()
+    assert "kapitolu 3" in b.work.bar.format()
+    b.logv.log("✗ Chyba spojení")
+    qapp.processEvents()
+    assert b.work.logv.isVisible()                             # chyba záznam ukáže
+    b.set_busy(False)
+    assert win.cfg["view"]["book"] == {"full_width": True, "log": False}
+    win2 = qt_main.MainWindow()                                # pamatuje se
+    assert win2.book.view.full_width.isChecked() and not win2.book.view.show_log.isChecked()
+    assert win2.translate.view.show_log.isChecked()            # Překlad má vlastní nastavení
+    win.close()
     win2.close()

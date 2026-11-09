@@ -204,9 +204,18 @@ def bridge() -> Bridge:
     return BRIDGE
 
 
-def run_bg(fn, done=None) -> threading.Thread:
-    """Spustí fn() ve vlákně; done(výsledek, chyba) se zavolá v okenním vlákně."""
+def run_bg(fn, done=None, owner=None) -> threading.Thread:
+    """Spustí fn() ve vlákně; done(výsledek, chyba) se zavolá v okenním vlákně.
+    owner = okno, bez kterého done nemá smysl (když se mezitím zavře, done se nezavolá)."""
     b = bridge()
+    if done and owner is not None:
+        from shiboken6 import isValid
+
+        user_done = done
+
+        def done(res, err):  # noqa: F811
+            if isValid(owner):
+                user_done(res, err)
 
     def run():
         try:
