@@ -95,6 +95,38 @@ class RibbonGroup(QtWidgets.QFrame):
         outer.addWidget(lb)
 
 
+class HScroll(QtWidgets.QScrollArea):
+    """Řádek pásu karet, který se na úzké obrazovce posouvá do strany místo roztažení celého okna."""
+
+    def __init__(self, content: QtWidgets.QWidget):
+        super().__init__()
+        self.setWidget(content)
+        self.setWidgetResizable(True)
+        self.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        self.viewport().setAutoFillBackground(False)
+        content.setAutoFillBackground(False)
+        self._fit()
+
+    def _fit(self):
+        need = self.widget().minimumSizeHint().width() > self.width()
+        h = self.widget().sizeHint().height() + (self.horizontalScrollBar().sizeHint().height() if need else 0)
+        if self.height() != h or self.minimumHeight() != h:
+            self.setFixedHeight(h)
+
+    def minimumSizeHint(self) -> QtCore.QSize:
+        return QtCore.QSize(120, self.height())
+
+    def sizeHint(self) -> QtCore.QSize:
+        return QtCore.QSize(self.widget().sizeHint().width(), self.height())
+
+    def resizeEvent(self, e):
+        super().resizeEvent(e)
+        self._fit()
+
+
 def vline() -> QtWidgets.QFrame:
     f = QtWidgets.QFrame()
     f.setFrameShape(QtWidgets.QFrame.VLine)
@@ -301,7 +333,6 @@ class BookEditor(QtWidgets.QMainWindow):
         tabs.addTab(self._book_tab(), "Kniha")
         tabs.addTab(self._view_tab(), "Zobrazení")
         tabs.setCurrentIndex(1)
-        tabs.setMaximumHeight(150)
         back = QtWidgets.QToolButton()
         back.setObjectName("RibbonBack")
         back.setText(tr("← Zpět"))
@@ -392,7 +423,7 @@ class BookEditor(QtWidgets.QMainWindow):
                 lay.addWidget(vline())
             lay.addWidget(g)
         lay.addStretch(1)
-        return w
+        return HScroll(w)
 
     def _home_tab(self) -> QtWidgets.QWidget:
         t = self.text

@@ -22,7 +22,7 @@ from guides import GUIDES
 from qt_common import STYLESHEET, app_icon, asset, bridge, emoji_icon, label, run_bg, set_status
 import i18n
 import updater
-from qt_editor import RibbonGroup, vline
+from qt_editor import HScroll, RibbonGroup, vline
 from qt_textassist import TextAssist
 from version import VERSION
 
@@ -85,7 +85,7 @@ def ribbon_row(*groups) -> QtWidgets.QWidget:
             hl.addWidget(vline())
         hl.addWidget(g)
     hl.addStretch(1)
-    return w
+    return HScroll(w)
 
 
 def doc_heading(text: str, hint: str) -> QtWidgets.QWidget:
@@ -564,8 +564,8 @@ class BookPage(QtWidgets.QWidget):
         self.nwords.setRange(500, 8000)
         self.nwords.setSingleStep(100)
         self.nwords.setValue(int(cfg.get("book_words", 2500)))
-        self.svc_status = label("", wrap=False)
-        self.est = label("", "Hint", wrap=False)
+        self.svc_status = label("")  # zalamuje se, aby úzké okno nebylo širší než obrazovka
+        self.est = label("", "Hint")
         self.fmts = {}
         for f in ("epub", "docx", "pdf", "azw3", "mobi", "odt", "rtf", "txt"):
             c = QtWidgets.QCheckBox(f.upper())
@@ -618,7 +618,7 @@ class BookPage(QtWidgets.QWidget):
                     hl.addWidget(vline())
                 hl.addWidget(g)
             hl.addStretch(1)
-            return w
+            return HScroll(w)
 
         c = self.cats
         style_tab = ribbon_row(
@@ -1774,6 +1774,7 @@ class MainWindow(QtWidgets.QMainWindow):
         avail = QtGui.QGuiApplication.primaryScreen().availableGeometry()
         self.resize(min(1180, int(avail.width() * 0.95)), min(860, int(avail.height() * 0.92)))
         self.move(avail.center() - self.rect().center())
+        self._restore_geometry()
         central = QtWidgets.QWidget()
         h = QtWidgets.QHBoxLayout(central)
         h.setContentsMargins(0, 0, 0, 0)
@@ -1888,10 +1889,28 @@ class MainWindow(QtWidgets.QMainWindow):
         except RuntimeError:  # okno se zavírá
             pass
 
+    def _restore_geometry(self):
+        """Velikost a poloha okna z minula – jen když se vejde na některou z obrazovek."""
+        geo = self.cfg.get("window_geometry")
+        if not geo:
+            return
+        old = self.saveGeometry()
+        if not self.restoreGeometry(QtCore.QByteArray.fromBase64(geo.encode("ascii"))):
+            return
+        fits = any(s.availableGeometry().adjusted(-20, -20, 20, 20).contains(self.frameGeometry())
+                   for s in QtGui.QGuiApplication.screens())
+        if not fits and not self.isMaximized():
+            self.restoreGeometry(old)
+
     def closeEvent(self, e):
         if not self.close_editor():
             e.ignore()
             return
+        try:
+            self.cfg["window_geometry"] = bytes(self.saveGeometry().toBase64()).decode("ascii")
+            self.save_cfg()
+        except Exception:  # noqa: BLE001 – zavření okna nesmí spadnout kvůli nastavení
+            pass
         super().closeEvent(e)
 
     def set_sidebar_collapsed(self, collapsed: bool, save: bool = True):

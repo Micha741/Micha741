@@ -719,3 +719,20 @@ def test_editor_opens_inside_main_window(qapp, tmp_path):
     assert "Nový začátek" in bw.load_project(path)["chapters"][0]["text"]
     assert win.windowTitle() == win.title()
     win.close()
+
+
+def test_main_window_fits_small_screen_and_remembers_size(qapp):
+    import qt_main
+    win = qt_main.MainWindow()
+    for i in range(win.stack.count()):                       # pás karet se posouvá, okno se neroztáhne
+        assert win.stack.widget(i).minimumSizeHint().width() <= 1366 - 260, i
+    assert win.minimumSizeHint().width() <= 1100
+    win.resize(1000, 700)
+    win.move(30, 20)
+    win.close()                                              # velikost se uloží
+    assert win.cfg.get("window_geometry")
+    win2 = qt_main.MainWindow()
+    assert win2.size().width() == 1000 or win2.isMaximized() is False
+    win2.cfg["window_geometry"] = "nesmysl"                  # poškozený údaj nesmí vadit
+    win2._restore_geometry()
+    win2.close()
