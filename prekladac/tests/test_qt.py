@@ -743,7 +743,7 @@ def test_main_window_fits_small_screen_and_remembers_size(qapp):
     win = qt_main.MainWindow()
     for i in range(win.stack.count()):                       # pás karet se posouvá, okno se neroztáhne
         assert win.stack.widget(i).minimumSizeHint().width() <= 1366 - 260, i
-    assert win.minimumSizeHint().width() <= 1100, _widest(win)
+    assert win.minimumSizeHint().width() <= 1000, _widest(win)  # i notebook 1366 px se zvětšením 125 %
     win.resize(1000, 700)
     win.move(30, 20)
     win.close()                                              # velikost se uloží
