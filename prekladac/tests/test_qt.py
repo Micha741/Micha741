@@ -721,12 +721,29 @@ def test_editor_opens_inside_main_window(qapp, tmp_path):
     win.close()
 
 
+def _widest(win, limit=350):
+    """Pro chybovou hlášku: které prvky drží okno široké."""
+    from PySide6 import QtCore, QtWidgets
+    out = []
+
+    def walk(w, depth):
+        for c in w.findChildren(QtWidgets.QWidget, options=QtCore.Qt.FindDirectChildrenOnly):
+            m = c.minimumSizeHint().width()
+            if m >= limit and not c.isWindow():
+                out.append(f"{'  ' * depth}{type(c).__name__} {c.objectName()!r} {m}")
+                walk(c, depth + 1)
+    for i in range(win.stack.count()):
+        out.append(f"PAGE {i}: {win.stack.widget(i).minimumSizeHint().width()}")
+        walk(win.stack.widget(i), 1)
+    return "\n".join(out)
+
+
 def test_main_window_fits_small_screen_and_remembers_size(qapp):
     import qt_main
     win = qt_main.MainWindow()
     for i in range(win.stack.count()):                       # pás karet se posouvá, okno se neroztáhne
         assert win.stack.widget(i).minimumSizeHint().width() <= 1366 - 260, i
-    assert win.minimumSizeHint().width() <= 1100
+    assert win.minimumSizeHint().width() <= 1100, _widest(win)
     win.resize(1000, 700)
     win.move(30, 20)
     win.close()                                              # velikost se uloží
