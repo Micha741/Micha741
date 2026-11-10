@@ -150,14 +150,32 @@ def test_pdf_via_qt(tmp_path):
     assert "Mapa" in text or len(text) == 0  # některá písma nemají textovou vrstvu
 
 
+def _text_pdf(lines):
+    """Ruční PDF s textovou vrstvou (písmo Helvetica) – nezávislé na Qt."""
+    ops = "BT /F1 12 Tf 72 760 Td 14 TL " + " ".join(f"({t}) '" for t in lines) + " ET"
+    objs = ["<< /Type /Catalog /Pages 2 0 R >>", "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+            "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R "
+            "/Resources << /Font << /F1 5 0 R >> >> >>",
+            f"<< /Length {len(ops)} >>\nstream\n{ops}\nendstream",
+            "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>"]
+    out, offs = "%PDF-1.4\n", []
+    for i, o in enumerate(objs, 1):
+        offs.append(len(out))
+        out += f"{i} 0 obj\n{o}\nendobj\n"
+    xref = len(out)
+    out += f"xref\n0 {len(objs) + 1}\n0000000000 65535 f \n" + "".join(f"{o:010d} 00000 n \n" for o in offs)
+    out += f"trailer\n<< /Size {len(objs) + 1} /Root 1 0 R >>\nstartxref\n{xref}\n%%EOF\n"
+    return out.encode("latin-1")
+
+
 def test_pdf_text_reading(tmp_path):
-    import os
-    os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
-    dst = tmp_path / "k.pdf"
-    ebook.write_book(sample(), dst)
-    back = ebook.read_book(dst)
-    text = " ".join(ebook.plain_text(c.html) for c in back.chapters)
-    assert "Na půdě ležela mapa." in text and "Citát na konec." in text
+    pytest.importorskip("pypdf")
+    f = tmp_path / "k.pdf"
+    f.write_bytes(_text_pdf(["Moje kniha", "", "1. Prvni", "", "Na pude lezela stara", "mapa s tajemnymi znaky.",
+                             "", "2. Druha", "", "Konec pribehu."]))
+    back = ebook.read_book(f)
+    assert [c.title for c in back.chapters] == ["Prvni", "Druha"]
+    assert "Na pude lezela stara mapa s tajemnymi znaky." in ebook.plain_text(back.chapters[0].html)
 
 
 def test_rtf_reader_handles_word_style_rtf():

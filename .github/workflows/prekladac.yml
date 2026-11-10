@@ -156,6 +156,8 @@ jobs:
             if (-not (Get-ChildItem smoke_out -Filter "*.$f")) { throw "$f nevznikl" }
             if (-not (Select-String -Path "smoke_$f.log" -Pattern 'bez Calibre' -Quiet)) { throw "$f se nepřevedl vlastním kódem" }
           }
+          # PDF z nainstalovaného programu musí mít textovou vrstvu (hledání, kopírování textu)
+          python -c "import glob, pypdf; t = ''.join(p.extract_text() or '' for f in glob.glob('smoke_out/*.pdf') for p in pypdf.PdfReader(f).pages); print(repr(t[:200])); assert 'Hello' in t, 'PDF nemá text'"
           # 2) OCR přes přibalený Tesseract (obrázek -> DOCX)
           Run @('smoke.png', '--convert-only', '--ocr', 'tesseract', '--ocr-lang', 'eng', '--out-dir', 'smoke_out') 'smoke2.log'
           python -c "import docx, glob; t = ' '.join(p.text for f in glob.glob('smoke_out/smoke*.docx') for p in docx.Document(f).paragraphs); print(t); assert 'brown fox' in t"
