@@ -1,6 +1,5 @@
 ﻿; Instalátor Překladače (Inno Setup 6). Sestavuje ho .github/workflows/prekladac.yml:
 ;   build\app\         – Prekladac.exe a jeho knihovny (PyInstaller --onedir)
-;   build\Calibre2\    – Calibre (ebook-convert.exe, calibre-customize.exe…)
 ;   build\Tesseract-OCR\ – Tesseract a jazyky OCR
 ;   build\dict\        – český slovník Hunspell (kontrola pravopisu, návrhy slov)
 
@@ -51,7 +50,6 @@ Name: "offlinemt"; Description: "Stáhnout offline překlad – angličtina → 
 
 [Files]
 Source: "build\app\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "build\Calibre2\*"; DestDir: "{app}\Calibre2"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "build\Tesseract-OCR\*"; DestDir: "{app}\Tesseract-OCR"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "build\dict\*"; DestDir: "{app}\dict"; Flags: ignoreversion
 Source: "THIRD_PARTY.txt"; DestDir: "{app}"; Flags: ignoreversion

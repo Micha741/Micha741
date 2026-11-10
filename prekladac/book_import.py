@@ -187,8 +187,8 @@ def import_epub(path: Path) -> dict:
 # ------------------------------------------------------------------ ostatní přes Calibre
 def import_via_calibre(path: Path, ebook_convert: str | None) -> dict:
     if not ebook_convert:
-        raise BookError(f"Soubor {path.suffix.upper()} umí program otevřít jen s Calibre (je součástí "
-                        "instalátoru). Jinak knihu otevřete jako DOCX, EPUB nebo TXT.")
+        raise BookError(f"Soubor {path.suffix.upper()} umí program otevřít jen s Calibre (zdarma; Nastavení → "
+                        "Součásti → Stáhnout Calibre). EPUB, MOBI, PDB, DOCX a TXT otevře i bez něj.")
     with tempfile.TemporaryDirectory() as tmp:
         out = Path(tmp) / "kniha.epub"
         flags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
@@ -202,19 +202,25 @@ def import_via_calibre(path: Path, ebook_convert: str | None) -> dict:
 
 
 def import_book(path: str | Path, ebook_convert: str | None = None) -> dict:
+    """Hotová kniha → projekt. EPUB, MOBI, PDB a DOCX se otevřou vlastním kódem i s formátováním
+    a obrázky, TXT podle řádků s nadpisy kapitol, ostatní formáty přes Calibre."""
+    import ebook
+
     path = Path(path)
     ext = path.suffix.lower()
-    if is_project(path):
+    if is_project(path) or ext == ".json":
         return load_project(path)
-    if ext == ".docx":
-        return import_docx(path)
     if ext in (".txt", ".md"):
         return import_txt(path)
-    if ext == ".epub":
-        return import_epub(path)
-    if ext == ".json":
-        return load_project(path)
-    return import_via_calibre(path, ebook_convert)
+    try:
+        book = ebook.read_book(path)
+    except ebook.NeedsCalibre:
+        return import_via_calibre(path, ebook_convert)
+    if not book.chapters or not any(ebook.plain_text(c.html).strip() for c in book.chapters):
+        raise BookError("V souboru se nenašel žádný text knihy.")
+    proj = ebook.to_project(book)
+    proj["imported_from"] = path.name
+    return proj
 
 
 def project_path_for(source: str | Path) -> Path:

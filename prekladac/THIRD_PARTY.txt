@@ -1,18 +1,14 @@
 ﻿Překladač knih a dokumentů – přibalené programy třetích stran
 ===========================================================
 
-Instalátor obsahuje kromě samotného Překladače tyto programy. Překladač je spouští jako
-samostatné programy a nijak je nemění. Instalací souhlasíte s jejich licencemi.
-
-calibre (složka Calibre2)
-  Autor: Kovid Goyal a přispěvatelé, https://calibre-ebook.com
-  Licence: GNU General Public License v3 (plné znění: Calibre2\COPYRIGHT a https://www.gnu.org/licenses/gpl-3.0.html)
-  Zdrojový kód: https://github.com/kovidgoyal/calibre (verze odpovídá souboru Calibre2\VERSION.txt, pokud je přítomen)
+Instalátor obsahuje kromě samotného Překladače tyto programy a data. Překladač je používá
+jako samostatné součásti a nijak je nemění. Instalací souhlasíte s jejich licencemi.
 
 Český slovník Hunspell (složka dict)
   Autoři: Petr Kolář a přispěvatelé, aktualizace Miroslav Pošta; distribuováno s LibreOffice
   Licence: GNU General Public License, https://www.gnu.org/licenses/gpl.html
   Zdroj: https://github.com/LibreOffice/dictionaries/tree/master/cs_CZ
+  (přesná přibalená verze je uvedena v souboru dict\SOURCE.txt; soubory .aff a .dic jsou zdrojová podoba slovníku)
 
 Offline překlad (součást Prekladac.exe)
   CTranslate2 – MIT License, https://github.com/OpenNMT/CTranslate2
@@ -31,8 +27,13 @@ Tesseract OCR (složka Tesseract-OCR)
   Zdrojový kód: https://github.com/tesseract-ocr/tesseract
   Jazyková data: https://github.com/tesseract-ocr/tessdata_fast (Apache License 2.0)
 
-Plugin KFX Input pro calibre se nepřibaluje. Na vaši žádost (nebo při prvním otevření souboru KFX)
-ho Překladač stáhne z oficiálního rejstříku pluginů calibre a nainstaluje do calibre.
+calibre se nepřibaluje. Převody EPUB, MOBI, PDB, DOCX, TXT a PDF dělá Překladač vlastním kódem.
+Pro AZW3, KFX, RTF, ODT, FB2 a další formáty si můžete calibre (GNU GPL v3, https://calibre-ebook.com,
+zdrojový kód https://github.com/kovidgoyal/calibre) nainstalovat sami z jeho oficiálních stránek;
+Překladač ho pak najde a spustí jako samostatný program. Plugin KFX Input pro calibre Překladač na vaši
+žádost stáhne z oficiálního rejstříku pluginů calibre a nainstaluje do calibre.
 
 Překladač sám používá knihovny Pythonu (anthropic, python-docx, beautifulsoup4, lxml, pypdf, pillow,
-pypdfium2, truststore, certifi, tkinterdnd2) pod jejich vlastními licencemi (MIT, BSD, Apache 2.0, HPND, MPL 2.0).
+pypdfium2, truststore, certifi) a PySide6 (Qt for Python, LGPL v3, https://www.qt.io/qt-for-python) pod jejich
+vlastními licencemi (MIT, BSD, Apache 2.0, HPND, MPL 2.0, LGPL v3). Knihovny Qt jsou přibalené jako
+samostatné soubory DLL a lze je nahradit vlastní verzí.

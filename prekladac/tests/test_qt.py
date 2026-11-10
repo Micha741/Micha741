@@ -671,14 +671,17 @@ def test_editor_images_and_cover(qapp, tmp_path, monkeypatch):
     odt = bw.save_as(saved, tmp_path / "k.odt", lambda *_: None)
     names = zipfile.ZipFile(odt).namelist()
     assert any(n.startswith("Pictures/") for n in names)
-    # EPUB: obálka jako obálka e-knihy (Calibre --cover), v textu se neopakuje
+    # EPUB bez Calibre: obálka jako obálka e-knihy, v textu kapitol se neopakuje
     calls = []
-    monkeypatch.setattr(converters, "calibre_convert",
-                        lambda src, dst, log=None, exe=None, extra=None: (calls.append((src, extra)),
-                                                                           open(dst, "wb").close()))
-    bw.save_as(saved, tmp_path / "k.epub", lambda *_: None)
-    src, extra = calls[-1]
-    assert extra[0] == "--cover" and Path(extra[1]).suffix in (".png", ".jpg")
+    monkeypatch.setattr(converters, "calibre_convert", lambda *a, **k: calls.append(a))
+    epub = bw.save_as(saved, tmp_path / "k.epub", lambda *_: None)
+    assert not calls, "EPUB se má uložit bez Calibre"
+    z = zipfile.ZipFile(epub)
+    assert 'properties="cover-image"' in z.read("OEBPS/content.opf").decode()
+    chapters = "".join(z.read(n).decode() for n in z.namelist() if n.startswith("OEBPS/ch"))
+    assert chapters.count("<img") == 2  # obrázky v textu, obálka ne
+    mobi = bw.save_as(saved, tmp_path / "k.mobi", lambda *_: None)
+    assert Path(mobi).read_bytes()[60:68] == b"BOOKMOBI" and not calls
     # smazání obrázku z textu → po uložení zmizí i ze souboru
     ed.text.selectAll()
     ed.text.textCursor().insertText("Bez obrazku.")
@@ -868,3 +871,27 @@ def test_open_finished_docx_book(qapp, tmp_path, monkeypatch):
     assert len(b.project["chapters"]) == 3 and "1. Bouře" in b.outline.toPlainText()
     assert b.b_edit.isEnabled() and win.cfg["recent_books"][0] == str(b.path)
     win.close()
+
+
+def test_pdf_from_background_thread(qapp, tmp_path):
+    import threading
+    import time
+    import ebook
+    b = ebook.RichBook(title="Kniha", chapters=[ebook.Chapter("Jedna", "<h2>Jedna</h2><p>Ahoj <b>světe</b>.</p>")])
+    dst = tmp_path / "k.pdf"
+    err = []
+    def work():
+        try:
+            ebook.write_book(b, dst)
+        except Exception as e:  # noqa: BLE001
+            err.append(e)
+
+    t = threading.Thread(target=work)
+    t.start()
+    for _ in range(500):  # hlavní vlákno musí zpracovávat události
+        qapp.processEvents()
+        if not t.is_alive():
+            break
+        time.sleep(0.01)
+    t.join(5)
+    assert not err and dst.read_bytes()[:5] == b"%PDF-"

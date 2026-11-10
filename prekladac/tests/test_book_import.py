@@ -73,7 +73,7 @@ def test_import_epub(tmp_path):
 
 
 def test_needs_calibre_and_project_path(tmp_path):
-    f = tmp_path / "kniha.mobi"
+    f = tmp_path / "kniha.azw3"
     f.write_bytes(b"x")
     try:
         bi.import_book(f, None)

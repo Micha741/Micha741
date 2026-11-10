@@ -506,9 +506,10 @@ SAVE_FORMATS = {
     "pdf": "PDF (*.pdf)",
     "epub": "EPUB – e-kniha (*.epub)",
     "mobi": "MOBI – Kindle (*.mobi)",
-    "azw3": "AZW3 – Kindle (*.azw3)",
+    "azw3": "AZW3 – Kindle, jen s Calibre (*.azw3)",
+    "pdb": "PDB – PalmDoc (*.pdb)",
     "odt": "OpenDocument – LibreOffice (*.odt)",
-    "rtf": "RTF – Rich Text (*.rtf)",
+    "rtf": "RTF – Rich Text, jen s Calibre (*.rtf)",
     "txt": "Prostý text (*.txt)",
 }
 
@@ -529,8 +530,13 @@ def book_plain_text(project: dict) -> str:
 
 def write_format(project: dict, docx_path: str, dst: str, fmt: str, log: Callable[[str], None] = print,
                  ebook_convert: str | None = None) -> None:
-    """Jeden výstupní formát: TXT a ODT přímo, ostatní z DOCX přes Calibre."""
-    if fmt == "txt":
+    """Jeden výstupní formát: TXT, ODT, EPUB, MOBI, PDB a PDF přímo, AZW3 a RTF přes Calibre."""
+    if fmt in ("epub", "mobi", "pdb", "pdf"):
+        import ebook
+
+        ebook.write_book(ebook.from_project(project), dst)
+        log(f"✓ {Path(dst).name}")
+    elif fmt == "txt":
         Path(dst).write_text(book_plain_text(project), encoding="utf-8")
     elif fmt == "odt":
         from qt_bookdoc import write_odt  # Calibre do ODT neukládá – zapíše ho Qt

@@ -240,9 +240,10 @@ def label(text: str, name: str | None = None, wrap=True) -> QtWidgets.QLabel:
     return lb
 
 
-def set_status(lb: QtWidgets.QLabel, ok: bool, text: str) -> None:
+def set_status(lb: QtWidgets.QLabel, ok: bool | None, text: str) -> None:
+    """ok=True ✓ zeleně, False ⚠ varování, None ℹ jen informace (nic nechybí)."""
     text = " · ".join(tr(part) for part in text.split(" · "))  # každá část stavu zvlášť (jazyk programu)
-    lb.setText(("✓ " if ok else "⚠ ") + text)
-    lb.setObjectName("Ok" if ok else "Warn")
+    lb.setText({True: "✓ ", False: "⚠ ", None: "ℹ "}[ok] + text)
+    lb.setObjectName({True: "Ok", False: "Warn", None: "Hint"}[ok])
     lb.style().unpolish(lb)
     lb.style().polish(lb)

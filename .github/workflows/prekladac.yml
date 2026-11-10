@@ -68,7 +68,7 @@ jobs:
             }
           }
 
-      - name: Přibalení Calibre a Tesseractu
+      - name: Přibalení Tesseractu a slovníku (Calibre už se nepřibaluje)
         run: |
           function Find-Exe($name, $preferred) {
             if (Test-Path $preferred) { return $preferred }
@@ -89,7 +89,6 @@ jobs:
           }
           $cal = Find-Exe 'ebook-convert.exe' "$env:ProgramFiles\Calibre2\ebook-convert.exe"
           $tes = Find-Exe 'tesseract.exe' "$env:ProgramFiles\Tesseract-OCR\tesseract.exe"
-          Copy-Item (Split-Path $cal) build\Calibre2 -Recurse
           Copy-Item (Split-Path $tes) build\Tesseract-OCR -Recurse
           New-Item -ItemType Directory -Force build\Tesseract-OCR\tessdata | Out-Null
           foreach ($l in 'eng','ces','slk','deu','pol','fra','spa','ita','rus','ukr','hun') {
@@ -100,13 +99,18 @@ jobs:
           }
           # český slovník pro kontrolu pravopisu a návrhy slov (LibreOffice, GPL)
           New-Item -ItemType Directory -Force build\dict | Out-Null
+          # přesná verze (commit) kvůli licenci GPL – odkaz na zdroj se zapíše do dict\SOURCE.txt
+          $sha = (git ls-remote https://github.com/LibreOffice/dictionaries HEAD).Split("`t")[0]
+          if (-not $sha) { $sha = 'master' }
           foreach ($e in 'aff','dic') {
-            Get-File "https://raw.githubusercontent.com/LibreOffice/dictionaries/master/cs_CZ/cs_CZ.$e" "build\dict\cs_CZ.$e"
+            Get-File "https://raw.githubusercontent.com/LibreOffice/dictionaries/$sha/cs_CZ/cs_CZ.$e" "build\dict\cs_CZ.$e"
           }
+          Set-Content -Encoding utf8 build\dict\SOURCE.txt "Český slovník Hunspell (GPL). Zdroj této verze: https://github.com/LibreOffice/dictionaries/tree/$sha/cs_CZ"
           "Calibre: $cal"; "Tesseract: $tes"
           & build\Tesseract-OCR\tesseract.exe --list-langs
-          # systémové instalace odstraníme, aby zkouška níže používala jen přibalené součásti
-          choco uninstall calibre tesseract -y --no-progress
+          # systémový Tesseract odstraníme, aby zkouška níže používala jen přibalený; Calibre zůstává
+          # nainstalované jako u uživatele, který si ho volitelně doinstaluje (AZW3, KFX…)
+          choco uninstall tesseract -y --no-progress
 
       - name: Sestavení instalátoru Prekladac-Setup.exe
         run: |
@@ -142,22 +146,34 @@ jobs:
             if (Test-Path $log) { Get-Content $log -Encoding utf8 }
             if ($p.ExitCode -ne 0) { throw "Prekladac.exe $argsList skončil s kódem $($p.ExitCode)" }
           }
-          # 1) převod přes přibalené Calibre (DOCX -> EPUB)
+          # 1) převod bez Calibre (DOCX -> EPUB, MOBI, PDB, PDF vlastním kódem)
           Run @('smoke.docx', '--convert-only', '--to', 'epub', '--out-dir', 'smoke_out') 'smoke1.log'
           if (-not (Get-ChildItem smoke_out -Filter *.epub)) { throw 'EPUB nevznikl' }
+          foreach ($f in 'mobi','pdb','pdf') {
+            Run @('smoke.docx', '--convert-only', '--to', $f, '--out-dir', 'smoke_out') "smoke_$f.log"
+            if (-not (Get-ChildItem smoke_out -Filter "*.$f")) { throw "$f nevznikl" }
+            if (-not (Select-String -Path "smoke_$f.log" -Pattern 'bez Calibre' -Quiet)) { throw "$f se nepřevedl vlastním kódem" }
+          }
           # 2) OCR přes přibalený Tesseract (obrázek -> DOCX)
           Run @('smoke.png', '--convert-only', '--ocr', 'tesseract', '--ocr-lang', 'eng', '--out-dir', 'smoke_out') 'smoke2.log'
           python -c "import docx, glob; t = ' '.join(p.text for f in glob.glob('smoke_out/smoke*.docx') for p in docx.Document(f).paragraphs); print(t); assert 'brown fox' in t"
           # 3) kniha s obsahem a odkazy -> EPUB přes přibalené Calibre; odkazy musí zůstat
-          python tests\ci_check_epub_links.py "$dir\Calibre2\ebook-convert.exe"
+          python tests\ci_check_epub_links.py "$env:ProgramFiles\Calibre2\ebook-convert.exe"
           # 4) stažení a instalace pluginu KFX Input do přibaleného Calibre
-          python -c "import sys; sys.path.insert(0, '.'); import components; c = r'$dir\Calibre2\ebook-convert.exe'; print('CA:', components.calibre_ca_file(c)); components.install_kfx_plugin(c, print); assert components.calibre_kfx_plugin(c) is True, 'plugin chybí'"
+          python -c "import sys; sys.path.insert(0, '.'); import components; c = r'$env:ProgramFiles\Calibre2\ebook-convert.exe'; print('CA:', components.calibre_ca_file(c)); components.install_kfx_plugin(c, print); assert components.calibre_kfx_plugin(c) is True, 'plugin chybí'"
           # 5a) Uložit jako z editoru knihy: MOBI, RTF, PDF přes přibalené Calibre (TXT/ODT/DOCX bez Calibre)
-          python -c "import sys, pathlib; sys.path.insert(0, '.'); import book_writer as bw; p = {'description': 'x', 'words': 100, 'outline': {'title': 'Kniha', 'chapters': [{'title': 'Jedna', 'summary': ''}]}, 'chapters': [{'text': 'Ahoj svete.', 'summary': ''}]}; out = [bw.save_as(p, f'saveas_out/kniha.{e}', print, r'$dir\Calibre2\ebook-convert.exe') for e in ('mobi', 'rtf', 'pdf', 'docx', 'txt')]; print(out); assert all(pathlib.Path(f).stat().st_size > 100 for f in out)"
+          python -c "import sys, pathlib; sys.path.insert(0, '.'); import book_writer as bw; p = {'description': 'x', 'words': 100, 'outline': {'title': 'Kniha', 'chapters': [{'title': 'Jedna', 'summary': ''}]}, 'chapters': [{'text': 'Ahoj svete.', 'summary': ''}]}; out = [bw.save_as(p, f'saveas_out/kniha.{e}', print, r'$env:ProgramFiles\Calibre2\ebook-convert.exe') for e in ('mobi', 'rtf', 'pdf', 'docx', 'txt')]; print(out); assert all(pathlib.Path(f).stat().st_size > 100 for f in out)"
           # 5c) otevření hotové knihy v jiném formátu (MOBI, PDB) přes přibalené Calibre → projekt s kapitolami
-          python -c "import sys, pathlib; sys.path.insert(0, '.'); import book_writer as bw, book_import as imp; cal = r'$dir\Calibre2\ebook-convert.exe'; p = {'description': 'x', 'words': 100, 'outline': {'title': 'Kniha', 'chapters': [{'title': 'Jedna', 'summary': ''}, {'title': 'Dva', 'summary': ''}]}, 'chapters': [{'text': 'Prvni kapitola knihy s textem.', 'summary': ''}, {'text': 'Druha kapitola knihy s textem.', 'summary': ''}]}; m = bw.save_as(p, 'import_out/kniha.mobi', print, cal); bw.save_as(p, 'import_out/kniha.txt', print, cal); import subprocess; subprocess.run([cal, 'import_out/kniha.txt', 'import_out/kniha.pdb'], check=True); res = [imp.import_book(f, cal) for f in (m, 'import_out/kniha.pdb')]; print([[c['text'][:30] for c in r['chapters']] for r in res]); assert all(any('Druha kapitola' in c['text'] for c in r['chapters']) for r in res)"
+          python -c "import sys, pathlib; sys.path.insert(0, '.'); import book_writer as bw, book_import as imp; cal = r'$env:ProgramFiles\Calibre2\ebook-convert.exe'; p = {'description': 'x', 'words': 100, 'outline': {'title': 'Kniha', 'chapters': [{'title': 'Jedna', 'summary': ''}, {'title': 'Dva', 'summary': ''}]}, 'chapters': [{'text': 'Prvni kapitola knihy s textem.', 'summary': ''}, {'text': 'Druha kapitola knihy s textem.', 'summary': ''}]}; m = bw.save_as(p, 'import_out/kniha.mobi', print, cal); bw.save_as(p, 'import_out/kniha.txt', print, cal); import subprocess; subprocess.run([cal, 'import_out/kniha.txt', 'import_out/kniha.pdb'], check=True); res = [imp.import_book(f, cal) for f in (m, 'import_out/kniha.pdb')]; print([[c['text'][:30] for c in r['chapters']] for r in res]); assert all(any('Druha kapitola' in c['text'] for c in r['chapters']) for r in res)"
           # 5b) obálka a obrázek: EPUB s obálkou e-knihy, DOCX s obrázky (přes přibalené Calibre)
-          python -c "import sys, io, zipfile, base64; sys.path.insert(0, '.'); from PIL import Image; import book_writer as bw, book_images as bi; b = io.BytesIO(); Image.new('RGB', (600, 900), 'red').save(b, 'JPEG'); p = {'description': 'x', 'words': 100, 'outline': {'title': 'Kniha', 'chapters': [{'title': 'Jedna', 'summary': ''}]}, 'chapters': [{'text': 'x', 'html': '<p>Ahoj</p><p><img src=\"obr.jpg\" width=\"400\" /></p>', 'summary': ''}], 'images': {'obr.jpg': base64.b64encode(b.getvalue()).decode()}, 'cover': 'obr.jpg'}; e = bw.save_as(p, 'cover_out/kniha.epub', print, r'$dir\Calibre2\ebook-convert.exe'); names = zipfile.ZipFile(e).namelist(); print(names); assert any('cover' in n.lower() for n in names), 'EPUB nemá obálku'"
+          python -c "import sys, io, zipfile, base64; sys.path.insert(0, '.'); from PIL import Image; import book_writer as bw, book_images as bi; b = io.BytesIO(); Image.new('RGB', (600, 900), 'red').save(b, 'JPEG'); p = {'description': 'x', 'words': 100, 'outline': {'title': 'Kniha', 'chapters': [{'title': 'Jedna', 'summary': ''}]}, 'chapters': [{'text': 'x', 'html': '<p>Ahoj</p><p><img src=\"obr.jpg\" width=\"400\" /></p>', 'summary': ''}], 'images': {'obr.jpg': base64.b64encode(b.getvalue()).decode()}, 'cover': 'obr.jpg'}; e = bw.save_as(p, 'cover_out/kniha.epub', print, r'$env:ProgramFiles\Calibre2\ebook-convert.exe'); names = zipfile.ZipFile(e).namelist(); print(names); assert any('cover' in n.lower() for n in names), 'EPUB nemá obálku'"
+          # 5d) bez Calibre vůbec: odinstalovat a převést EPUB → MOBI → EPUB, chybějící Calibre jen u AZW3
+          choco uninstall calibre -y --no-progress
+          Get-ChildItem smoke_out -Filter *.epub | Select-Object -First 1 | Copy-Item -Destination nocal.epub
+          Run @('nocal.epub', '--convert-only', '--to', 'mobi', '--out-dir', 'nocal_out') 'nocal1.log'
+          Run @((Get-ChildItem nocal_out -Filter *.mobi | Select-Object -First 1).FullName, '--convert-only', '--to', 'epub', '--out-dir', 'nocal_out') 'nocal2.log'
+          if (-not (Get-ChildItem nocal_out -Filter *.epub)) { throw 'MOBI -> EPUB bez Calibre nevznikl' }
+          python tests\ci_check_no_calibre.py
           # 5) offline překlad (Argos): stažení balíčků jako volba v instalátoru, překlad EN→CS a DE→(EN)→CS
           $o = Start-Process $exe -ArgumentList '--install-offline','en_cs,de_en','offline.txt' -Wait -PassThru
           Get-Content offline.txt -Encoding utf8
@@ -183,4 +199,4 @@ jobs:
           gh release create prekladac-latest dist/Prekladac-Setup.exe \
             --title "Překladač 1.0.${{ github.run_number }}" \
             --target "$GITHUB_SHA" \
-            --notes "Verze 1.0.${{ github.run_number }}. Stáhněte Prekladac-Setup.exe a nainstalujte. Obsahuje Calibre i Tesseract, Python není potřeba. Návod: https://github.com/${{ github.repository }}/tree/main/prekladac#readme"
+            --notes "Verze 1.0.${{ github.run_number }}. Stáhněte Prekladac-Setup.exe a nainstalujte. Obsahuje Tesseract, převody EPUB/MOBI/PDB/DOCX/PDF bez Calibre (Calibre je volitelné pro AZW3/KFX), Python není potřeba. Návod: https://github.com/${{ github.repository }}/tree/main/prekladac#readme"
