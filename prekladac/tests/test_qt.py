@@ -27,6 +27,19 @@ def qapp():
 @pytest.fixture(autouse=True)
 def appdata(tmp_path, monkeypatch):
     monkeypatch.setenv("APPDATA", str(tmp_path / "appdata"))
+    yield
+    # okna z testu se zruší (bez closeEvent), aby jejich časovače a úlohy na pozadí neuložily staré
+    # nastavení do složky dalšího testu – ve skutečném programu je okno jen jedno
+    app = QtWidgets.QApplication.instance()
+    if app is not None:
+        from PySide6 import QtCore
+        for w in app.topLevelWidgets():
+            if isinstance(w, (QtWidgets.QMainWindow, QtWidgets.QDialog)):
+                w.blockSignals(True)
+                w.hide()
+                w.deleteLater()
+        QtCore.QCoreApplication.sendPostedEvents(None, QtCore.QEvent.DeferredDelete)
+        app.processEvents()
 
 
 def test_html_to_docx_keeps_formatting(qapp):
