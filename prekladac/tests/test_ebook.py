@@ -32,7 +32,7 @@ def sample():
     return b
 
 
-def _check(back, formatting=True):
+def _check(back, formatting=True, fmt=""):
     assert back.title == "Strážce majáku"
     assert back.author == "Jan Novák"
     assert [c.title for c in back.chapters] == ["Bouře", "Mapa", "Návrat"]
@@ -43,15 +43,19 @@ def _check(back, formatting=True):
     assert "<img" in back.chapters[1].html
     if formatting:
         assert "<b>zuřila</b>" in back.chapters[0].html and "<i>mořem</i>" in back.chapters[0].html
-        assert "<u>kůň</u>" in back.chapters[0].html
-        assert "<hr/>" in back.chapters[1].html
+        if fmt != "fb2":  # FB2 nemá podtržení
+            assert "<u>kůň</u>" in back.chapters[0].html
+        if fmt != "fb2":  # FB2 nezná zalomení stránky
+            assert "<hr/>" in back.chapters[1].html
 
 
-@pytest.mark.parametrize("fmt", ["epub", "mobi", "docx"])
+@pytest.mark.parametrize("fmt", ["epub", "mobi", "docx", "rtf", "fb2", "htmlz", "odt"])
 def test_roundtrip_keeps_formatting_images_cover(tmp_path, fmt):
+    import os
+    os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
     dst = tmp_path / f"kniha.{fmt}"
     ebook.write_book(sample(), dst)
-    _check(ebook.read_book(dst))
+    _check(ebook.read_book(dst), fmt=fmt)
 
 
 @pytest.mark.parametrize("fmt", ["pdb", "txt"])
@@ -126,12 +130,12 @@ def test_html_cleaner_handles_messy_markup():
 
 
 def test_needs_calibre_for_unknown_formats(tmp_path):
-    f = tmp_path / "k.azw3"
+    f = tmp_path / "k.kfx"
     f.write_bytes(b"x")
     with pytest.raises(ebook.NeedsCalibre):
         ebook.convert(f, tmp_path / "k.epub")
     with pytest.raises(ebook.NeedsCalibre):
-        ebook.convert(tmp_path / "k.txt", tmp_path / "k.rtf")
+        ebook.convert(tmp_path / "k.txt", tmp_path / "k.azw3")
 
 
 def test_pdf_via_qt(tmp_path):
@@ -144,3 +148,26 @@ def test_pdf_via_qt(tmp_path):
     assert len(r.pages) >= 5  # obálka, titul, 3 kapitoly (a zalomení)
     text = "".join(p.extract_text() or "" for p in r.pages)
     assert "Mapa" in text or len(text) == 0  # některá písma nemají textovou vrstvu
+
+
+def test_pdf_text_reading(tmp_path):
+    import os
+    os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+    dst = tmp_path / "k.pdf"
+    ebook.write_book(sample(), dst)
+    back = ebook.read_book(dst)
+    text = " ".join(ebook.plain_text(c.html) for c in back.chapters)
+    assert "Na půdě ležela mapa." in text and "Citát na konec." in text
+
+
+def test_rtf_reader_handles_word_style_rtf():
+    import ebook_more
+    rtf = (r"{\rtf1\ansi\ansicpg1250\deff0{\fonttbl{\f0 Times;}}{\info{\title Moje}{\author Ja}}"
+           r"{\*\generator Word;}\pard\qc\outlinelevel0{\b Kapitola jedna}\par"
+           r"\pard P\'f8\'edli\'9a {\b tu\b0\i \u269?esky} konec.\par\page"
+           r"\pard\outlinelevel0 Druh\'e1\par\pard text\line dal\par}").encode("latin-1")
+    b = ebook_more.read_rtf(rtf, "x")
+    assert b.title == "Moje" and b.author == "Ja"
+    assert [c.title for c in b.chapters] == ["Kapitola jedna", "Druhá"]
+    assert "Příliš <b>tu</b><i>česky</i> konec." in b.chapters[0].html
+    assert "text<br/>dal" in b.chapters[1].html

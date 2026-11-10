@@ -46,11 +46,11 @@ U PDF s textovou vrstvou (ne sken) Tesseract není potřeba, text se vezme pří
 | Vstup | Co program udělá | Výchozí výstup |
 |---|---|---|
 | EPUB | přeloží text a zachová kapitoly, obrázky, styly i obsah | EPUB |
-| MOBI, PDB | program převede knihu na EPUB, přeloží ji a uloží zpět (bez Calibre) | stejný formát |
-| AZW3, KFX, AZW | Calibre (volitelné) převede knihu na EPUB, program ji přeloží a Calibre převede výsledek zpět | AZW3 |
+| MOBI, PDB, AZW3 | program převede knihu na EPUB, přeloží ji a uloží zpět (bez Calibre; AZW3 se uloží jako MOBI nebo EPUB, zápis AZW3 umí jen Calibre) | stejný formát |
+| KFX, LIT | Calibre (volitelné) převede knihu na EPUB, program ji přeloží a Calibre převede výsledek zpět | AZW3 |
 | DOCX | přeloží odstavce, tabulky a záhlaví a zachová obrázky, styly, tučné písmo a kurzívu | DOCX |
 | TXT | přeloží text po odstavcích | TXT |
-| RTF, FB2, ODT | stejně jako e-knihy (přes EPUB, potřebuje Calibre) | stejný formát |
+| RTF, FB2, ODT, HTMLZ | stejně jako e-knihy (přes EPUB, bez Calibre) | stejný formát |
 | PDF | vezme text ze stránek (u skenů přes OCR) a přeloží ho | DOCX |
 | JPG, PNG, WEBP, BMP, TIFF | přečte text z obrázku (OCR) a přeloží ho | DOCX |
 
@@ -67,8 +67,9 @@ Výsledek se uloží vedle originálu jako `název (čeština).přípona`.
    `%LOCALAPPDATA%\Programs\Prekladac`). Odinstalace: *Nastavení Windows → Aplikace*.
    - Instalátor obsahuje **Tesseract** (`Tesseract-OCR\tesseract.exe`) s jazyky OCR (angličtina, čeština,
      slovenština, němčina, polština, francouzština, španělština, italština, ruština, ukrajinština, maďarština).
-   - **EPUB, MOBI, PDB, DOCX, TXT a PDF** převádí program sám, bez dalších programů.
-   - **Calibre je volitelné** – jen pro AZW3, KFX, RTF, ODT, FB2 a LIT. Nainstalujte ho zdarma z
+   - **EPUB, MOBI, PDB, DOCX, RTF, ODT, FB2, HTMLZ, TXT a PDF** (čtení i zápis) a čtení **AZW3** zvládne program
+     sám, bez dalších programů.
+   - **Calibre je volitelné** – jen pro zápis AZW3, pro KFX a LIT. Nainstalujte ho zdarma z
      https://calibre-ebook.com (*⚙ Nastavení → Součásti → ⬇ Stáhnout Calibre*), program ho pak najde sám.
      **Plugin KFX Input** program stáhne a nainstaluje do Calibre sám při prvním souboru KFX.
 3. Windows SmartScreen může u nového nepodepsaného programu ukázat „Systém Windows ochránil váš počítač“ →
@@ -164,9 +165,9 @@ Když program zavřete, přijdete nanejvýš o právě psanou kapitolu – po sp
 - **🖨 Tisk** (Domů → Soubor, nebo Ctrl+P) – vytiskne celou knihu (titulní strana, každá kapitola od nové
   stránky, čísla stran, zalomení stránek z editoru) nebo jen otevřenou kapitolu; je i **náhled tisku**.
   V okně tisku jde zvolit tiskárnu, počet kopií a stránky; „Microsoft Print to PDF“ uloží tisk jako PDF.
-- **Soubor** – Uložit, **Uložit jako…** (jeden soubor ve formátu **DOCX, PDF, EPUB, MOBI, PDB, AZW3, ODT, RTF, TXT**,
+- **Soubor** – Uložit, **Uložit jako…** (jeden soubor ve formátu **DOCX, PDF, EPUB, MOBI, PDB, AZW3, ODT, RTF, FB2, HTMLZ, TXT**,
   nebo kopie projektu `*.kniha.json`, Ctrl+Shift+S), Exportovat (víc formátů najednou), Tisk, Náhled tisku, Zavřít.
-  DOCX, PDF, EPUB, MOBI, PDB, ODT a TXT zapisuje program sám; AZW3 a RTF jen s nainstalovaným Calibre.
+  Všechny formáty zapisuje program sám, jen AZW3 potřebuje nainstalované Calibre.
 - **Obrázky** – Domů → Vložení → **🖼 Obrázek** (JPG, PNG, GIF, BMP, WEBP, TIFF), nebo Ctrl+V ze schránky či
   přetažení souboru myší. Pravým tlačítkem na obrázku: šířka (25–100 % stránky), zarovnání, nahradit, smazat.
   Obrázky se ukládají přímo do souboru knihy (velké fotky se zmenší) a zůstanou v DOCX, EPUB, PDF, MOBI, AZW3,

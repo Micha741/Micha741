@@ -20,8 +20,9 @@ from pathlib import Path, PurePosixPath
 
 from bs4 import BeautifulSoup, NavigableString, Tag
 
-READ_FORMATS = {"epub", "mobi", "prc", "azw", "pdb", "docx", "txt", "md", "html", "htm", "json"}
-WRITE_FORMATS = {"epub", "mobi", "pdb", "docx", "txt", "pdf", "html"}
+READ_FORMATS = {"epub", "mobi", "prc", "azw", "azw3", "pdb", "docx", "txt", "md", "html", "htm", "json", "rtf", "fb2",
+                "odt", "htmlz", "pdf"}
+WRITE_FORMATS = {"epub", "mobi", "pdb", "docx", "txt", "pdf", "html", "rtf", "fb2", "odt", "htmlz"}
 TOC_NAMES = {"obsah", "contents", "table of contents", "inhalt", "inhaltsverzeichnis", "spis treści",
              "table des matières", "índice"}
 NUM_TITLE = re.compile(r"^\s*(\d{1,3})[.)]\s+(\S.{0,120})$")
@@ -514,8 +515,12 @@ def read_book(path: str | Path) -> RichBook:
     base = path.name[: -len(".kniha.json")] if name.endswith(".kniha.json") else path.stem
     if ext == "epub":
         return read_epub(data, base)
-    if ext in ("mobi", "prc", "azw", "pdb"):
+    if ext in ("mobi", "prc", "azw", "azw3", "pdb"):
         return read_mobi_pdb(data, base)
+    if ext in ("rtf", "fb2", "odt", "htmlz", "pdf"):
+        import ebook_more
+
+        return getattr(ebook_more, f"read_{ext}")(data, base)
     if ext == "docx":
         return read_docx(data, base)
     if ext == "json":
@@ -650,6 +655,10 @@ def read_mobi_pdb(data: bytes, base: str = "Kniha") -> RichBook:
         raise NeedsCalibre("PDB ve formátu eReader (Peanut Press)")
     if kind != "BOOKMOBI":
         raise NeedsCalibre(f"neznámý typ PDB ({kind.strip()})")
+    import ebook_more
+
+    if ebook_more.kf8_start(recs) == 0:  # samostatné AZW3 (KF8)
+        return ebook_more.read_kf8(recs, 0, base)
     r0 = recs[0]
     comp, text_len, count, _size, enc = struct.unpack(">HxxIHHH", r0[:14])
     if enc:
@@ -862,6 +871,14 @@ def write_book(book: RichBook, dst: str | Path) -> str:
         write_docx(book, dst)
     elif fmt == "pdf":
         write_pdf(book, dst)
+    elif fmt in ("rtf", "fb2", "htmlz"):
+        import ebook_more
+
+        dst.write_bytes(getattr(ebook_more, f"write_{fmt}")(book))
+    elif fmt == "odt":
+        import ebook_more
+
+        ebook_more.write_odt(book, dst)
     elif fmt in ("html", "htm"):
         dst.write_text(book_html(book, inline_images=True), encoding="utf-8")
     else:
@@ -1158,8 +1175,8 @@ def book_html(book: RichBook, inline_images: bool = False) -> str:
             f'<style>{CSS}</style></head><body>{body}</body></html>')
 
 
-def write_pdf(book: RichBook, dst: str | Path) -> None:
-    """PDF (A4) přes Qt – bez Calibre. Z vlákna na pozadí se zápis provede v hlavním vlákně okna."""
+def run_in_gui_thread(fn) -> None:
+    """Qt dokumenty (PDF, ODT) jen v hlavním vlákně okna; z vlákna na pozadí se počká na výsledek."""
     import sys
 
     from PySide6 import QtCore, QtGui
@@ -1173,13 +1190,18 @@ def write_pdf(book: RichBook, dst: str | Path) -> None:
         app = QtGui.QGuiApplication([])
         _keep_app.append(app)
     if QtCore.QThread.currentThread() is not app.thread():
-        runner = _MainThreadCall(lambda: _write_pdf(book, dst))
+        runner = _MainThreadCall(fn)
         runner.moveToThread(app.thread())
         QtCore.QMetaObject.invokeMethod(runner, "run", QtCore.Qt.BlockingQueuedConnection)
         if runner.error:
             raise runner.error
         return
-    _write_pdf(book, dst)
+    fn()
+
+
+def write_pdf(book: RichBook, dst: str | Path) -> None:
+    """PDF (A4) přes Qt – bez Calibre."""
+    run_in_gui_thread(lambda: _write_pdf(book, dst))
 
 
 _keep_app: list = []
@@ -1212,7 +1234,8 @@ def _MainThreadCall(fn):  # noqa: N802 – třída se vytvoří až při prvním
     return cls(fn)
 
 
-def _write_pdf(book: RichBook, dst: str | Path) -> None:
+def qt_document(book: RichBook):
+    """Kniha jako QTextDocument (PDF, ODT) – obrázky jako zdroje dokumentu."""
     from PySide6 import QtCore, QtGui
 
     doc = QtGui.QTextDocument()
@@ -1228,9 +1251,16 @@ def _write_pdf(book: RichBook, dst: str | Path) -> None:
             doc.addResource(QtGui.QTextDocument.ImageResource, QtCore.QUrl(n), img)
     html = book_html(book)
     # Qt neumí šířku v procentech u obrázků – omezí se na šířku stránky
-    html = re.sub(r'(<img src="[^"]+")(?: width="(\d+)")?(/?>)',
+    html = re.sub(r'(<img src="[^"]+")(?: width="(\d+)")?(?: height="\d+")?(/?>)',
                   lambda m: f'{m.group(1)} width="{min(int(m.group(2) or 800), 800) * 0.8:.0f}"{m.group(3)}', html)
     doc.setHtml(html)
+    return doc
+
+
+def _write_pdf(book: RichBook, dst: str | Path) -> None:
+    from PySide6 import QtCore, QtGui
+
+    doc = qt_document(book)
     writer = QtGui.QPdfWriter(str(dst))
     writer.setPageSize(QtGui.QPageSize(QtGui.QPageSize.A4))
     writer.setPageMargins(QtCore.QMarginsF(20, 20, 20, 20), QtGui.QPageLayout.Millimeter)

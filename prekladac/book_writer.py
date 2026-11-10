@@ -509,7 +509,9 @@ SAVE_FORMATS = {
     "azw3": "AZW3 – Kindle, jen s Calibre (*.azw3)",
     "pdb": "PDB – PalmDoc (*.pdb)",
     "odt": "OpenDocument – LibreOffice (*.odt)",
-    "rtf": "RTF – Rich Text, jen s Calibre (*.rtf)",
+    "rtf": "RTF – Rich Text (*.rtf)",
+    "fb2": "FB2 – FictionBook (*.fb2)",
+    "htmlz": "HTMLZ – web stránka v ZIP (*.htmlz)",
     "txt": "Prostý text (*.txt)",
 }
 
@@ -530,18 +532,14 @@ def book_plain_text(project: dict) -> str:
 
 def write_format(project: dict, docx_path: str, dst: str, fmt: str, log: Callable[[str], None] = print,
                  ebook_convert: str | None = None) -> None:
-    """Jeden výstupní formát: TXT, ODT, EPUB, MOBI, PDB a PDF přímo, AZW3 a RTF přes Calibre."""
-    if fmt in ("epub", "mobi", "pdb", "pdf"):
+    """Jeden výstupní formát: vše vlastním kódem, jen AZW3 přes Calibre."""
+    if fmt in ("epub", "mobi", "pdb", "pdf", "rtf", "fb2", "odt", "htmlz"):
         import ebook
 
         ebook.write_book(ebook.from_project(project), dst)
         log(f"✓ {Path(dst).name}")
     elif fmt == "txt":
         Path(dst).write_text(book_plain_text(project), encoding="utf-8")
-    elif fmt == "odt":
-        from qt_bookdoc import write_odt  # Calibre do ODT neukládá – zapíše ho Qt
-
-        write_odt(project, dst)
     elif fmt in EBOOK_FORMATS and project.get("cover"):
         # e-kniha: obálka jako skutečná obálka (ve čtečce v knihovně), v textu se neopakuje
         import shutil
@@ -577,7 +575,7 @@ def save_as(project: dict, dst: str | Path, log: Callable[[str], None] = print,
     if fmt not in SAVE_FORMATS:
         raise BookError(f"Formát .{fmt} neumím uložit (podporované: {', '.join(SAVE_FORMATS)}).")
     dst.parent.mkdir(parents=True, exist_ok=True)
-    if fmt in ("txt", "odt"):
+    if fmt not in ("azw3", "docx"):
         write_format(project, "", str(dst), fmt, log, ebook_convert)
         return str(dst)
     tmp = Path(tempfile.mkdtemp(prefix="prekladac_"))

@@ -105,6 +105,8 @@ jobs:
           foreach ($e in 'aff','dic') {
             Get-File "https://raw.githubusercontent.com/LibreOffice/dictionaries/$sha/cs_CZ/cs_CZ.$e" "build\dict\cs_CZ.$e"
           }
+          # licence (GPL v2) a autoři slovníku – soubor README_cs.txt ze stejného zdroje
+          Get-File "https://raw.githubusercontent.com/LibreOffice/dictionaries/$sha/cs_CZ/README_cs.txt" "build\dict\README_cs.txt"
           Set-Content -Encoding utf8 build\dict\SOURCE.txt "Český slovník Hunspell (GPL). Zdroj této verze: https://github.com/LibreOffice/dictionaries/tree/$sha/cs_CZ"
           "Calibre: $cal"; "Tesseract: $tes"
           & build\Tesseract-OCR\tesseract.exe --list-langs
@@ -167,6 +169,8 @@ jobs:
           python -c "import sys, pathlib; sys.path.insert(0, '.'); import book_writer as bw, book_import as imp; cal = r'$env:ProgramFiles\Calibre2\ebook-convert.exe'; p = {'description': 'x', 'words': 100, 'outline': {'title': 'Kniha', 'chapters': [{'title': 'Jedna', 'summary': ''}, {'title': 'Dva', 'summary': ''}]}, 'chapters': [{'text': 'Prvni kapitola knihy s textem.', 'summary': ''}, {'text': 'Druha kapitola knihy s textem.', 'summary': ''}]}; m = bw.save_as(p, 'import_out/kniha.mobi', print, cal); bw.save_as(p, 'import_out/kniha.txt', print, cal); import subprocess; subprocess.run([cal, 'import_out/kniha.txt', 'import_out/kniha.pdb'], check=True); res = [imp.import_book(f, cal) for f in (m, 'import_out/kniha.pdb')]; print([[c['text'][:30] for c in r['chapters']] for r in res]); assert all(any('Druha kapitola' in c['text'] for c in r['chapters']) for r in res)"
           # 5b) obálka a obrázek: EPUB s obálkou e-knihy, DOCX s obrázky (přes přibalené Calibre)
           python -c "import sys, io, zipfile, base64; sys.path.insert(0, '.'); from PIL import Image; import book_writer as bw, book_images as bi; b = io.BytesIO(); Image.new('RGB', (600, 900), 'red').save(b, 'JPEG'); p = {'description': 'x', 'words': 100, 'outline': {'title': 'Kniha', 'chapters': [{'title': 'Jedna', 'summary': ''}]}, 'chapters': [{'text': 'x', 'html': '<p>Ahoj</p><p><img src=\"obr.jpg\" width=\"400\" /></p>', 'summary': ''}], 'images': {'obr.jpg': base64.b64encode(b.getvalue()).decode()}, 'cover': 'obr.jpg'}; e = bw.save_as(p, 'cover_out/kniha.epub', print, r'$env:ProgramFiles\Calibre2\ebook-convert.exe'); names = zipfile.ZipFile(e).namelist(); print(names); assert any('cover' in n.lower() for n in names), 'EPUB nemá obálku'"
+          # 5e) vzájemná kontrola formátů s Calibre (EPUB, MOBI, AZW3, RTF, FB2, ODT, HTMLZ, DOCX, PDB)
+          python tests\ci_check_formats_calibre.py "$env:ProgramFiles\Calibre2\ebook-convert.exe"
           # 5d) bez Calibre vůbec: odinstalovat a převést EPUB → MOBI → EPUB, chybějící Calibre jen u AZW3
           choco uninstall calibre -y --no-progress
           Get-ChildItem smoke_out -Filter *.epub | Select-Object -First 1 | Copy-Item -Destination nocal.epub

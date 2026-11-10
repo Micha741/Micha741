@@ -1482,7 +1482,7 @@ class SettingsPage(QtWidgets.QWidget):
     def _components_tab(self, cfg) -> QtWidgets.QWidget:
         w = QtWidgets.QWidget()
         lay = QtWidgets.QVBoxLayout(w)
-        cal = QtWidgets.QGroupBox("Calibre – volitelné, jen pro AZW3, KFX, RTF, ODT, FB2, LIT…")
+        cal = QtWidgets.QGroupBox("Calibre – volitelné, jen pro zápis AZW3, KFX a LIT")
         cg = QtWidgets.QGridLayout(cal)
         self.cal_status = label("Zjišťuji…")
         self.cal_path = QtWidgets.QLineEdit(cfg["paths"].get("ebook_convert", ""))
@@ -1630,8 +1630,8 @@ class SettingsPage(QtWidgets.QWidget):
                     else "nalezeno"
                 set_status(self.cal_status, kfx is not False, f"Calibre {where} · {kfx_txt}")
             else:
-                set_status(self.cal_status, None, "Calibre není nainstalované – EPUB, MOBI, PDB, DOCX, TXT a PDF "
-                                                  "převádí Překladač sám; Calibre je potřeba jen pro AZW3, KFX, RTF a další")
+                set_status(self.cal_status, None, "Calibre není nainstalované – všechny běžné formáty převádí Překladač "
+                                                  "sám; Calibre je potřeba jen pro zápis AZW3, KFX a LIT")
             if tp:
                 set_status(self.tes_status, True, f"Tesseract nalezen · jazyky: {', '.join(langs) or 'žádné'}")
             else:

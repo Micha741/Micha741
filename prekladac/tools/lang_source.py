@@ -676,21 +676,24 @@ E += [
     ("Náhled tisku", "Print preview", "Náhľad tlače", "Druckvorschau"),
     ("Okno", "Window", "Okno", "Fenster"),
     ("← Zpět", "← Back", "← Späť", "← Zurück"),
-    ("Calibre – volitelné, jen pro AZW3, KFX, RTF, ODT, FB2, LIT…", "Calibre – optional, only for AZW3, KFX, RTF, ODT, FB2, LIT…",
-     "Calibre – voliteľné, len pre AZW3, KFX, RTF, ODT, FB2, LIT…", "Calibre – optional, nur für AZW3, KFX, RTF, ODT, FB2, LIT…"),
+    ("Calibre – volitelné, jen pro zápis AZW3, KFX a LIT", "Calibre – optional, only for writing AZW3, KFX and LIT",
+     "Calibre – voliteľné, len pre zápis AZW3, KFX a LIT", "Calibre – optional, nur zum Schreiben von AZW3, KFX und LIT"),
     ("⬇ Stáhnout Calibre", "⬇ Download Calibre", "⬇ Stiahnuť Calibre", "⬇ Calibre herunterladen"),
     ("Calibre je zdarma (licence GPL v3). Po instalaci ho Překladač najde sám.",
      "Calibre is free (GPL v3 licence). After installation Translator finds it automatically.",
      "Calibre je zadarmo (licencia GPL v3). Po inštalácii ho Prekladač nájde sám.",
      "Calibre ist kostenlos (GPL v3). Nach der Installation findet der Übersetzer es automatisch."),
-    ("Calibre není nainstalované – EPUB, MOBI, PDB, DOCX, TXT a PDF převádí Překladač sám; Calibre je potřeba jen "
-     "pro AZW3, KFX, RTF a další",
-     "Calibre is not installed – Translator converts EPUB, MOBI, PDB, DOCX, TXT and PDF itself; Calibre is needed "
-     "only for AZW3, KFX, RTF and others",
-     "Calibre nie je nainštalované – EPUB, MOBI, PDB, DOCX, TXT a PDF prevádza Prekladač sám; Calibre je potrebné len "
-     "pre AZW3, KFX, RTF a ďalšie",
-     "Calibre ist nicht installiert – EPUB, MOBI, PDB, DOCX, TXT und PDF konvertiert der Übersetzer selbst; Calibre "
-     "wird nur für AZW3, KFX, RTF u. a. benötigt"),
+    ("Calibre není nainstalované – všechny běžné formáty převádí Překladač sám; Calibre je potřeba jen pro zápis "
+     "AZW3, KFX a LIT",
+     "Calibre is not installed – Translator converts all common formats itself; Calibre is needed only for writing "
+     "AZW3, KFX and LIT",
+     "Calibre nie je nainštalované – všetky bežné formáty prevádza Prekladač sám; Calibre je potrebné len pre zápis "
+     "AZW3, KFX a LIT",
+     "Calibre ist nicht installiert – alle gängigen Formate konvertiert der Übersetzer selbst; Calibre wird nur zum "
+     "Schreiben von AZW3, KFX und LIT benötigt"),
+    ("FB2 – FictionBook (*.fb2)", "FB2 – FictionBook (*.fb2)", "FB2 – FictionBook (*.fb2)", "FB2 – FictionBook (*.fb2)"),
+    ("HTMLZ – web stránka v ZIP (*.htmlz)", "HTMLZ – web page in ZIP (*.htmlz)", "HTMLZ – webová stránka v ZIP (*.htmlz)",
+     "HTMLZ – Webseite im ZIP (*.htmlz)"),
     ("Převedeno bez Calibre: {} → {} ({} kapitol, {} obrázků)", "Converted without Calibre: {} → {} ({} chapters, {} images)",
      "Prevedené bez Calibre: {} → {} ({} kapitol, {} obrázkov)", "Ohne Calibre konvertiert: {} → {} ({} Kapitel, {} Bilder)"),
     ("PDB – PalmDoc (*.pdb)", "PDB – PalmDoc (*.pdb)", "PDB – PalmDoc (*.pdb)", "PDB – PalmDoc (*.pdb)"),

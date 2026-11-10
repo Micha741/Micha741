@@ -22,8 +22,8 @@ DOC_EXT = {".docx", ".txt", ".pdf"}
 # tyto formáty umí jen „Microsoft – překlad celých dokumentů“
 DOC_ONLY_EXT = {".pptx", ".xlsx", ".md"}
 SUPPORTED_EXT = EBOOK_EXT | IMAGE_EXT | DOC_EXT | DOC_ONLY_EXT
-OUTPUT_FORMATS = ["epub", "azw3", "docx", "pdf", "txt", "rtf", "mobi", "pdb"]
-NATIVE_OUTPUT = {"epub", "docx", "pdf", "txt", "mobi", "pdb"}  # bez Calibre
+OUTPUT_FORMATS = ["epub", "azw3", "docx", "pdf", "txt", "rtf", "mobi", "pdb", "fb2", "odt", "htmlz"]
+NATIVE_OUTPUT = {"epub", "docx", "pdf", "txt", "mobi", "pdb", "rtf", "fb2", "odt", "htmlz"}  # bez Calibre
 
 LANG_CODES = {
     "čeština": "cs", "slovenština": "sk", "angličtina": "en", "němčina": "de", "polština": "pl",
@@ -74,8 +74,9 @@ class CalibreMissing(Exception):
 
 def _missing_msg(src: str, dst: str) -> str:
     return (f"Převod {Path(src).suffix.upper()} → {Path(dst).suffix.upper()} umí jen Calibre, které není nainstalované. "
-            "EPUB, MOBI, PDB, DOCX, TXT a PDF převede Překladač sám; pro AZW3, KFX, RTF, ODT, FB2 a další formáty "
-            "nainstalujte zdarma Calibre (Nastavení → Součásti → Stáhnout Calibre) a spusťte převod znovu.")
+            "EPUB, MOBI, AZW3 (čtení), PDB, DOCX, RTF, ODT, FB2, HTMLZ, TXT a PDF převede Překladač sám; Calibre je "
+            "potřeba jen pro zápis AZW3, pro KFX a LIT. Nainstalujte ho zdarma (Nastavení → Součásti → Stáhnout "
+            "Calibre) a spusťte převod znovu.")
 
 
 def calibre_convert(src: str, dst: str, log: Log = _noop, ebook_convert: str | None = None,
@@ -99,7 +100,7 @@ def calibre_convert(src: str, dst: str, log: Log = _noop, ebook_convert: str | N
 
 def convert(src: str, dst: str, log: Log = _noop, ebook_convert: str | None = None,
             extra: list[str] | None = None) -> None:
-    """Převod formátu: EPUB, MOBI, PDB, DOCX, TXT, HTML a PDF vlastním kódem, ostatní přes Calibre."""
+    """Převod formátu vlastním kódem (ebook.py), Calibre jen pro zápis AZW3, KFX a LIT."""
     import ebook
 
     if not extra:
@@ -574,8 +575,8 @@ def default_output_format(ext: str) -> str:
         return "azw3"
     if ext in ("pdf",) or "." + ext in IMAGE_EXT:
         return "docx"
-    if ext in ("fb2", "odt", "htmlz"):
-        return "epub"
+    if ext in ("fb2", "odt", "htmlz", "rtf"):
+        return ext
     return ext
 
 

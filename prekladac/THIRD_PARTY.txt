@@ -6,9 +6,11 @@ jako samostatné součásti a nijak je nemění. Instalací souhlasíte s jejich
 
 Český slovník Hunspell (složka dict)
   Autoři: Petr Kolář a přispěvatelé, aktualizace Miroslav Pošta; distribuováno s LibreOffice
-  Licence: GNU General Public License, https://www.gnu.org/licenses/gpl.html
-  Zdroj: https://github.com/LibreOffice/dictionaries/tree/master/cs_CZ
-  (přesná přibalená verze je uvedena v souboru dict\SOURCE.txt; soubory .aff a .dic jsou zdrojová podoba slovníku)
+  Licence: GNU General Public License verze 2 – plné znění licence a seznam autorů je v souboru
+  dict\README_cs.txt (přibalený ze stejného zdroje), https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+  Zdroj: https://github.com/LibreOffice/dictionaries/tree/master/cs_CZ – přesná přibalená verze (commit) je
+  uvedena v souboru dict\SOURCE.txt. Soubory .aff a .dic jsou zároveň zdrojovou podobou slovníku.
+  Překladač slovník jen čte (kontrola pravopisu, návrhy slov) a nijak ho nemění.
 
 Offline překlad (součást Prekladac.exe)
   CTranslate2 – MIT License, https://github.com/OpenNMT/CTranslate2
@@ -27,8 +29,8 @@ Tesseract OCR (složka Tesseract-OCR)
   Zdrojový kód: https://github.com/tesseract-ocr/tesseract
   Jazyková data: https://github.com/tesseract-ocr/tessdata_fast (Apache License 2.0)
 
-calibre se nepřibaluje. Převody EPUB, MOBI, PDB, DOCX, TXT a PDF dělá Překladač vlastním kódem.
-Pro AZW3, KFX, RTF, ODT, FB2 a další formáty si můžete calibre (GNU GPL v3, https://calibre-ebook.com,
+calibre se nepřibaluje. Převody EPUB, MOBI, PDB, DOCX, RTF, ODT, FB2, HTMLZ, TXT a PDF a čtení AZW3
+dělá Překladač vlastním kódem. Pro zápis AZW3 a pro KFX a LIT si můžete calibre (GNU GPL v3, https://calibre-ebook.com,
 zdrojový kód https://github.com/kovidgoyal/calibre) nainstalovat sami z jeho oficiálních stránek;
 Překladač ho pak najde a spustí jako samostatný program. Plugin KFX Input pro calibre Překladač na vaši
 žádost stáhne z oficiálního rejstříku pluginů calibre a nainstaluje do calibre.
