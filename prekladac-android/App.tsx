@@ -5,7 +5,8 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { addImage, bookStats, insertImage, pruneImages, type Book } from './src/core/book';
 import { toBase64 } from './src/core/bytes';
 import { OUTPUT_FORMATS, type OutputFormat } from './src/core/formats';
-import { CLAUDE_MODELS, DEFAULT_CLAUDE_MODEL, DEFAULT_GEMINI_MODEL, ENGINES, LANGUAGES, makeTranslator, translateBook, type EngineId } from './src/core/translate';
+import { CLAUDE_MODELS, DEFAULT_CLAUDE_MODEL, DEFAULT_GEMINI_MODEL, ENGINES, LANGUAGES, makeTranslator, setOfflineBackend, translateBook, type EngineId } from './src/core/translate';
+import Mlkit from './modules/mlkit-translate/src/MlkitTranslateModule';
 import { BUILTIN_SKINS, type Skin } from './src/core/skins';
 import { installSkinFromPicker, loadInstalledSkins, loadSettings, makeOutput, pickBook, pickImage, removeSkin, saveOutputToFolder, saveSettings, shareOutput, type Output, type Settings } from './src/platform';
 
@@ -34,6 +35,11 @@ function isDark(hex: string) {
   const n = parseInt(hex.slice(1, 7), 16);
   return 0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255) < 140;
 }
+if (Mlkit) {
+  const m = Mlkit;
+  setOfflineBackend({ identifyLanguage: (t) => m.identifyLanguage(t), translate: (x, a, b, w) => m.translate(x, a, b, w) });
+}
+
 const SERIF = Platform.select({ android: 'serif', default: 'Georgia' });
 
 type Tab = 'kniha' | 'psat' | 'nastaveni';
@@ -474,6 +480,7 @@ function SettingsScreen({ settings, update, skin }: { settings: Settings; update
               <Field label="Adresa API" value={settings.openaiBase} placeholder="https://openrouter.ai/api/v1" onChange={(v) => update({ openaiBase: v })} />
               <Field label="Model" value={settings.openaiModel} placeholder="deepseek/deepseek-chat" onChange={(v) => update({ openaiModel: v })} />
             </Box>
+            <OfflineBox settings={settings} update={update} />
             <Box title="Google (zdarma)">
               <Text style={[st.hint, { color: C.ok }]}>✓ Klíč není potřeba.</Text>
             </Box>
@@ -498,6 +505,61 @@ function SettingsScreen({ settings, update, skin }: { settings: Settings; update
         )}
       </ScrollView>
     </View>
+  );
+}
+
+function OfflineBox({ settings, update }: { settings: Settings; update: (s: Partial<Settings>) => void }) {
+  const [have, setHave] = useState<string[] | null>(null);
+  const [busy, setBusy] = useState('');
+  const refresh = () => Mlkit?.downloadedLanguages().then(setHave).catch(() => setHave([]));
+  useEffect(() => {
+    refresh();
+  }, []);
+  if (!Mlkit) {
+    return (
+      <Box title="Offline v telefonu (Google ML Kit)">
+        <Text style={st.hint}>Funguje jen v nainstalované aplikaci (APK), ne v Expo Go.</Text>
+      </Box>
+    );
+  }
+  const wifi = settings.offlineWifiOnly !== false;
+  const act = async (code: string, del: boolean) => {
+    setBusy(code);
+    try {
+      if (del) await Mlkit!.deleteLanguage(code);
+      else await Mlkit!.downloadLanguage(code, wifi);
+      await refresh();
+    } catch (e: any) {
+      Alert.alert('Offline v telefonu', del ? String(e?.message ?? e) : `Jazyk se nepodařilo stáhnout${wifi ? ' – jste připojeni k Wi-Fi?' : '.'}\n\n${e?.message ?? e}`);
+    } finally {
+      setBusy('');
+    }
+  };
+  return (
+    <Box title="Offline v telefonu (Google ML Kit)">
+      <Text style={st.hint}>
+        Překládá přímo v telefonu bez internetu a bez klíče. Každý jazyk (asi 30 MB) se stáhne jednou – stačí ho stáhnout tady, nebo se stáhne sám při
+        prvním překladu. Jazyk knihy se pozná automaticky. Kvalita odpovídá běžnému Google Překladači; pro knihy je lepší Claude nebo Gemini.
+      </Text>
+      <Text style={st.label}>Stahovat jazyky</Text>
+      <Chips items={[{ id: 'wifi', label: 'jen přes Wi-Fi' }, { id: 'any', label: 'i přes mobilní data' }]} value={wifi ? 'wifi' : 'any'} onChange={(v) => update({ offlineWifiOnly: v === 'wifi' })} />
+      <Text style={st.label}>Jazyky v telefonu</Text>
+      {LANGUAGES.map((l) => {
+        const on = !!have?.includes(l.code);
+        return (
+          <View key={l.code} style={[st.row, { justifyContent: 'space-between', marginTop: 4 }]}>
+            <Text style={st.btnText}>{on ? '✓ ' : ''}{l.name}</Text>
+            {busy === l.code ? (
+              <ActivityIndicator color={C.accent} />
+            ) : l.code === 'en' && on ? (
+              <Text style={st.hint}>vždy (přes ni se překládá)</Text>
+            ) : (
+              <Btn small label={on ? '🗑️ Smazat' : '⬇ Stáhnout'} onPress={() => act(l.code, on)} disabled={!!busy || have === null} />
+            )}
+          </View>
+        );
+      })}
+    </Box>
   );
 }
 

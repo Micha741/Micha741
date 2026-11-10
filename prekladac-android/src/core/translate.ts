@@ -16,7 +16,7 @@ export const LANGUAGES: { code: string; name: string; english: string; deepl: st
   { code: 'hu', name: 'maďarština', english: 'Hungarian', deepl: 'HU' },
 ];
 
-export type EngineId = 'google' | 'google_cloud' | 'claude' | 'gemini' | 'deepl' | 'openai';
+export type EngineId = 'offline' | 'google' | 'google_cloud' | 'claude' | 'gemini' | 'deepl' | 'openai';
 
 export interface EngineSettings {
   claudeKey?: string;
@@ -25,12 +25,15 @@ export interface EngineSettings {
   geminiModel?: string;
   deeplKey?: string;
   googleCloudKey?: string;
+  /** offline překlad: jazyky stahovat jen přes Wi-Fi (výchozí ano) */
+  offlineWifiOnly?: boolean;
   openaiKey?: string;
   openaiBase?: string;
   openaiModel?: string;
 }
 
 export const ENGINES: { id: EngineId; name: string; hint: string; needs?: keyof EngineSettings }[] = [
+  { id: 'offline', name: 'Offline v telefonu', hint: 'bez internetu a bez klíče (Google ML Kit); jazyk se stáhne jednou, asi 30 MB; běžná kvalita' },
   { id: 'google', name: 'Google (zdarma)', hint: 'bez klíče; u velkých knih pomaleji (Google omezuje počet požadavků)' },
   { id: 'google_cloud', name: 'Google Cloud', hint: 'oficiální, zdarma 500 000 znaků/měsíc, API klíč z Google Cloud', needs: 'googleCloudKey' },
   { id: 'claude', name: 'Claude', hint: 'nejlepší kvalita pro knihy, placené (API klíč)', needs: 'claudeKey' },
@@ -54,6 +57,16 @@ export interface Translator {
 }
 
 type Fetch = typeof fetch;
+
+/** Překlad přímo v telefonu (Google ML Kit) – nativní modul dodá aplikace přes setOfflineBackend(). */
+export interface OfflineBackend {
+  identifyLanguage(text: string): Promise<string>;
+  translate(texts: string[], source: string, target: string, wifiOnly: boolean): Promise<string[]>;
+}
+let offlineBackend: OfflineBackend | null = null;
+export function setOfflineBackend(b: OfflineBackend | null) {
+  offlineBackend = b;
+}
 
 function langOf(code: string) {
   return LANGUAGES.find((l) => l.code === code) ?? LANGUAGES[0];
@@ -99,6 +112,33 @@ async function httpJson(f: Fetch, url: string, init: RequestInit, service: strin
 export function makeTranslator(id: EngineId, target: string, s: EngineSettings, f: Fetch = fetch): Translator {
   const L = langOf(target);
   switch (id) {
+    case 'offline': {
+      const b = offlineBackend;
+      if (!b) throw new Error('Offline překlad funguje jen v nainstalované aplikaci (APK), ne v Expo Go.');
+      let source = '';
+      return {
+        maxChars: 3000,
+        maxItems: 40,
+        async translate(texts, signal) {
+          if (signal?.aborted) throw new Error('Zastaveno.');
+          if (!source) {
+            // jazyk knihy se pozná z prvního úseku; „und“ = nepoznáno → zkusí se angličtina
+            const found = await b.identifyLanguage(texts.join(' ').slice(0, 2000));
+            source = found && found !== 'und' ? found.split('-')[0] : 'en';
+          }
+          if (source === L.code) return texts; // kniha už je v cílovém jazyce
+          try {
+            return await b.translate(texts, source, L.code, s.offlineWifiOnly !== false);
+          } catch (e: any) {
+            const m = String(e?.message ?? e);
+            if (/nepodporuje/.test(m)) throw new Error(`Offline v telefonu: ${m} Zvolte jiný překladač.`);
+            if (/wifi|Wi-Fi|network|download/i.test(m))
+              throw new Error('Offline v telefonu: jazyk se ještě nestáhl. Připojte se k Wi-Fi (nebo v Nastavení povolte stahování přes mobilní data) a zkuste to znovu.');
+            throw e;
+          }
+        },
+      };
+    }
     case 'google':
       return {
         maxChars: 4500,

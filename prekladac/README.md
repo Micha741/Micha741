@@ -311,3 +311,7 @@ Testy nevolají API (odpovědi služeb jsou podvržené). Živý test Google Př
 
 Mobilní verze (převod a překlad knih v telefonu) je ve složce [`../prekladac-android`](../prekladac-android).
 Používá stejná pravidla převodů (EPUB, MOBI, PDB, DOCX, TXT, PDF) a podobný vzhled.
+
+Překlad **Offline v telefonu** používá Google ML Kit (vlastní modul `modules/mlkit-translate`): jazyk (asi 30 MB)
+se stáhne jednou a pak se překládá bez internetu a bez klíče. ML Kit je jen pro Android a iOS – ve Windows stejnou
+roli plní *Offline v počítači* (Argos). Funguje jen v sestavené aplikaci (APK), ne v Expo Go.

@@ -25,6 +25,7 @@
 - Jazyk programu: čeština, angličtina, slovenština, němčina (další jazyky jde doinstalovat).
 - Skiny (vzhledy) jako ve Winampu: Výchozí, Tmavý, Sépie, Vysoký kontrast a doinstalování dalších ze souboru .skin – i na Androidu.
 - Srozumitelná hláška, když neběží vlastní server (LibreTranslate, Ollama), a podrobný návod k LibreTranslate (Python, Docker, server pro domácí síť).
+- Android: překlad „Offline v telefonu“ (Google ML Kit) – bez internetu a bez klíče, jazyky se stahují jednou.
 - Klíče uložené zašifrovaně (Windows DPAPI), návody ke všem službám.
 
 # Historie verzí
