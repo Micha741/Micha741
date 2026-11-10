@@ -65,7 +65,7 @@ class SkinsTab(QtWidgets.QWidget):
         lay.addWidget(self.list, 1)
         self.info = label("", "Hint")
         lay.addWidget(self.info)
-        row = QtWidgets.QHBoxLayout()
+        row = QtWidgets.QGridLayout()  # 2×2 – na malé obrazovce se tlačítka nevejdou vedle sebe
         b_inst = QtWidgets.QPushButton(tr("📥 Instalovat skin…"))
         b_inst.clicked.connect(self.install_dialog)
         self.b_export = QtWidgets.QPushButton(tr("📤 Uložit jako šablonu…"))
@@ -77,9 +77,9 @@ class SkinsTab(QtWidgets.QWidget):
         self.b_remove.clicked.connect(self.remove_selected)
         b_dir = QtWidgets.QPushButton(tr("📁 Složka skinů"))
         b_dir.clicked.connect(lambda: open_folder(skins.skins_dir()))
-        for b in (b_inst, self.b_export, self.b_remove, b_dir):
-            row.addWidget(b)
-        row.addStretch(1)
+        for i, b in enumerate((b_inst, self.b_export, self.b_remove, b_dir)):
+            row.addWidget(b, i // 2, i % 2)
+        row.setColumnStretch(2, 1)
         lay.addLayout(row)
         self.reload()
 

@@ -124,10 +124,10 @@ MOŽNOST A – Python (jen tento počítač)
   1. Nainstalujte Python 3.12 nebo 3.13 z https://www.python.org (při instalaci zaškrtněte
      „Add python.exe to PATH“). Python 3.14 a novější LibreTranslate zatím nepodporuje.
   2. V příkazovém řádku (Win+R → cmd) vytvořte samostatnou složku pro server:
-        py -3.12 -m venv %USERPROFILE%\libretranslate
-        %USERPROFILE%\libretranslate\Scripts\pip install libretranslate
+        py -3.12 -m venv %USERPROFILE%\\libretranslate
+        %USERPROFILE%\\libretranslate\\Scripts\\pip install libretranslate
   3. Spusťte server jen s jazyky, které potřebujete (angličtinu nechte vždy – překládá se přes ni):
-        %USERPROFILE%\libretranslate\Scripts\libretranslate --load-only en,cs,de
+        %USERPROFILE%\\libretranslate\\Scripts\\libretranslate --load-only en,cs,de
      První spuštění stáhne jazykové modely (stovky MB), chvíli trvá. Okno nechte otevřené –
      zavřením se server vypne.
   4. Zkouška: v prohlížeči otevřete http://localhost:5000 – objeví se překladová stránka.

@@ -1390,7 +1390,7 @@ class SettingsPage(QtWidgets.QWidget):
         from qt_skins import SkinsTab
 
         self.skins_tab = SkinsTab(cfg, win.save_cfg)
-        tabs.addTab(self.skins_tab, "Vzhled")
+        tabs.addTab(scrolled(self.skins_tab), "Vzhled")
         self.tabs = tabs
         tabs.addTab(scrolled(self._info_tab(cfg)), "Info")
         sc = QtGui.QShortcut(QtGui.QKeySequence("Ctrl+S"), self, activated=self.save)
