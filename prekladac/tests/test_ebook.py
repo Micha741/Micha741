@@ -1,0 +1,206 @@
+import io
+import json
+import sys
+import zipfile
+from pathlib import Path
+
+import pytest
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+import ebook  # noqa: E402
+
+
+def _img(color="red", fmt="JPEG", size=(120, 80)):
+    from PIL import Image
+    b = io.BytesIO()
+    Image.new("RGB", size, color).save(b, fmt)
+    return b.getvalue()
+
+
+def sample():
+    b = ebook.RichBook(title="Strážce majáku", author="Jan Novák")
+    b.cover = b.add_image(_img("navy", size=(300, 450)))
+    pic = b.add_image(_img("green", "PNG"))
+    b.chapters = [
+        ebook.Chapter("Bouře", "<h2>1. Bouře</h2><p>Bouře <b>zuřila</b> nad <i>mořem</i>.</p>"
+                               '<p style="text-align:center">Žluťoučký <u>kůň</u> úpěl.</p>'),
+        ebook.Chapter("Mapa", f'<h2>2. Mapa</h2><p>Na půdě ležela mapa.</p><p style="text-align:center"><img src="{pic}"/></p>'
+                              "<hr/><p>Po zalomení stránky.</p>"),
+        ebook.Chapter("Návrat", "<h2>3. Návrat</h2><blockquote><p>Citát na konec.</p></blockquote><ul><li>jedna</li><li>dvě</li></ul>"),
+    ]
+    return b
+
+
+def _check(back, formatting=True, fmt=""):
+    assert back.title == "Strážce majáku"
+    assert back.author == "Jan Novák"
+    assert [c.title for c in back.chapters] == ["Bouře", "Mapa", "Návrat"]
+    txt = [ebook.plain_text(c.html) for c in back.chapters]
+    assert "Bouře zuřila nad mořem." in txt[0] and "Žluťoučký kůň úpěl." in txt[0]
+    assert "Po zalomení stránky." in txt[1] and "Citát na konec." in txt[2]
+    assert back.cover and ebook.image_ext(back.images[back.cover]) in ("jpg", "png")
+    assert "<img" in back.chapters[1].html
+    if formatting:
+        assert "<b>zuřila</b>" in back.chapters[0].html and "<i>mořem</i>" in back.chapters[0].html
+        if fmt != "fb2":  # FB2 nemá podtržení
+            assert "<u>kůň</u>" in back.chapters[0].html
+        if fmt != "fb2":  # FB2 nezná zalomení stránky
+            assert "<hr/>" in back.chapters[1].html
+
+
+@pytest.mark.parametrize("fmt", ["epub", "mobi", "docx", "rtf", "fb2", "htmlz", "odt"])
+def test_roundtrip_keeps_formatting_images_cover(tmp_path, fmt):
+    import os
+    os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+    dst = tmp_path / f"kniha.{fmt}"
+    ebook.write_book(sample(), dst)
+    _check(ebook.read_book(dst), fmt=fmt)
+
+
+@pytest.mark.parametrize("fmt", ["pdb", "txt"])
+def test_roundtrip_text_formats(tmp_path, fmt):
+    dst = tmp_path / f"kniha.{fmt}"
+    ebook.write_book(sample(), dst)
+    back = ebook.read_book(dst)
+    assert [c.title for c in back.chapters] == ["Bouře", "Mapa", "Návrat"]
+    assert "Bouře zuřila nad mořem." in ebook.plain_text(back.chapters[0].html)
+
+
+def test_epub_structure(tmp_path):
+    data = ebook.write_epub(sample())
+    z = zipfile.ZipFile(io.BytesIO(data))
+    first = z.infolist()[0]
+    assert first.filename == "mimetype" and first.compress_type == zipfile.ZIP_STORED
+    import xml.etree.ElementTree as ET
+    for n in z.namelist():
+        if n.endswith((".xhtml", ".opf", ".ncx", ".xml")):
+            ET.fromstring(z.read(n))  # platné XML
+    opf = z.read("OEBPS/content.opf").decode()
+    assert 'properties="cover-image"' in opf and '<meta name="cover"' in opf
+
+
+def test_mobi_toc_links_point_to_chapters():
+    import re
+    data = ebook.write_mobi(sample())
+    name, kind, recs = ebook.read_pdb(data)
+    assert kind == "BOOKMOBI"
+    count = int.from_bytes(recs[0][8:10], "big")
+    text = b"".join(ebook.palmdoc_decompress(r) for r in recs[1:1 + count])
+    positions = [int(m) for m in re.findall(rb"filepos=(\d{10})", text)]
+    assert positions and all(text[p:p + 4] == b"<h2>" for p in positions[2:])  # odkazy z obsahu na kapitoly
+
+
+def test_mobi_readable_by_kindleunpack(tmp_path):
+    mobi = pytest.importorskip("mobi")
+    dst = tmp_path / "k.mobi"
+    ebook.write_book(sample(), dst)
+    tmp, path = mobi.extract(str(dst))
+    html = Path(path).read_text(encoding="utf-8", errors="replace")
+    assert "Žluťoučký" in html and "<b>zuřila</b>" in html
+
+
+def test_palmdoc_roundtrip():
+    data = ("Bouře zuřila nad mořem. " * 200).encode()[:4096] + b""
+    assert ebook.palmdoc_decompress(ebook.palmdoc_compress(data)) == data
+    rnd = bytes((i * 2654435761 >> 24) & 255 for i in range(4096))
+    assert ebook.palmdoc_decompress(ebook.palmdoc_compress(rnd)) == rnd
+
+
+def test_txt_cp1250_and_project_roundtrip(tmp_path):
+    f = tmp_path / "stara.txt"
+    f.write_bytes("Moje kniha\n\nKapitola 1\n\nŽluťoučký kůň.\n".encode("cp1250"))
+    b = ebook.read_book(f)
+    assert b.title == "Moje kniha" and "Žluťoučký kůň." in ebook.plain_text(b.chapters[0].html)
+    proj = ebook.to_project(sample())
+    assert proj["outline"]["chapters"][0]["title"] == "Bouře"
+    assert "<b>zuřila</b>" in proj["chapters"][0]["html"] and "1. Bouře" not in proj["chapters"][0]["text"]
+    p = tmp_path / "k.kniha.json"
+    p.write_text(json.dumps(proj, ensure_ascii=False), encoding="utf-8")
+    _check(ebook.read_book(p))
+
+
+def test_html_cleaner_handles_messy_markup():
+    blocks = ebook.clean_html('<div><span style="font-weight:bold">Tučně</span> text<br>dál<div>vnořený</div>'
+                              '<p class="x">odstavec <em>kurzívou</em></p><mbp:pagebreak/><table><tr><td>a</td>'
+                              '<td>b</td></tr></table><script>x</script></div>')
+    assert blocks[0] == "<p><b>Tučně</b> text<br/>dál</p>"
+    assert "<p>vnořený</p>" in blocks and "<p>odstavec <i>kurzívou</i></p>" in blocks
+    assert "<hr/>" in blocks and "<p>a | b</p>" in blocks and not any("x</p>" == b for b in blocks)
+
+
+def test_needs_calibre_for_unknown_formats(tmp_path):
+    f = tmp_path / "k.kfx"
+    f.write_bytes(b"x")
+    with pytest.raises(ebook.NeedsCalibre):
+        ebook.convert(f, tmp_path / "k.epub")
+    with pytest.raises(ebook.NeedsCalibre):
+        ebook.convert(tmp_path / "k.txt", tmp_path / "k.azw3")
+
+
+def test_pdf_via_qt(tmp_path):
+    import os
+    os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+    pypdf = pytest.importorskip("pypdf")
+    dst = tmp_path / "k.pdf"
+    ebook.write_book(sample(), dst)
+    r = pypdf.PdfReader(str(dst))
+    assert len(r.pages) >= 5  # obálka, titul, 3 kapitoly (a zalomení)
+    text = "".join(p.extract_text() or "" for p in r.pages)
+    assert "Mapa" in text or len(text) == 0  # některá písma nemají textovou vrstvu
+
+
+def _text_pdf(lines):
+    """Ruční PDF s textovou vrstvou (písmo Helvetica) – nezávislé na Qt."""
+    ops = "BT /F1 12 Tf 72 760 Td 14 TL " + " ".join(f"({t}) '" for t in lines) + " ET"
+    objs = ["<< /Type /Catalog /Pages 2 0 R >>", "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+            "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R "
+            "/Resources << /Font << /F1 5 0 R >> >> >>",
+            f"<< /Length {len(ops)} >>\nstream\n{ops}\nendstream",
+            "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>"]
+    out, offs = "%PDF-1.4\n", []
+    for i, o in enumerate(objs, 1):
+        offs.append(len(out))
+        out += f"{i} 0 obj\n{o}\nendobj\n"
+    xref = len(out)
+    out += f"xref\n0 {len(objs) + 1}\n0000000000 65535 f \n" + "".join(f"{o:010d} 00000 n \n" for o in offs)
+    out += f"trailer\n<< /Size {len(objs) + 1} /Root 1 0 R >>\nstartxref\n{xref}\n%%EOF\n"
+    return out.encode("latin-1")
+
+
+def test_pdf_text_reading(tmp_path):
+    pytest.importorskip("pypdf")
+    f = tmp_path / "k.pdf"
+    f.write_bytes(_text_pdf(["Moje kniha", "", "1. Prvni", "", "Na pude lezela stara", "mapa s tajemnymi znaky.",
+                             "", "2. Druha", "", "Konec pribehu."]))
+    back = ebook.read_book(f)
+    assert [c.title for c in back.chapters] == ["Prvni", "Druha"]
+    assert "Na pude lezela stara mapa s tajemnymi znaky." in ebook.plain_text(back.chapters[0].html)
+
+
+def test_rtf_reader_handles_word_style_rtf():
+    import ebook_more
+    rtf = (r"{\rtf1\ansi\ansicpg1250\deff0{\fonttbl{\f0 Times;}}{\info{\title Moje}{\author Ja}}"
+           r"{\*\generator Word;}\pard\qc\outlinelevel0{\b Kapitola jedna}\par"
+           r"\pard P\'f8\'edli\'9a {\b tu\b0\i \u269?esky} konec.\par\page"
+           r"\pard\outlinelevel0 Druh\'e1\par\pard text\line dal\par}").encode("latin-1")
+    b = ebook_more.read_rtf(rtf, "x")
+    assert b.title == "Moje" and b.author == "Ja"
+    assert [c.title for c in b.chapters] == ["Kapitola jedna", "Druhá"]
+    assert "Příliš <b>tu</b><i>česky</i> konec." in b.chapters[0].html
+    assert "text<br/>dal" in b.chapters[1].html
+
+
+def test_epub_from_written_book_has_linked_toc(tmp_path):
+    import re
+    proj = {"language": "čeština", "outline": {"title": "Kniha", "chapters": [{"title": t, "summary": ""} for t in "ABC"]},
+            "chapters": [{"text": f"Text {t}.", "summary": ""} for t in "ABC"]}
+    book = ebook.from_project(proj)
+    z = zipfile.ZipFile(io.BytesIO(ebook.write_epub(book)))
+    toc = z.read("OEBPS/toc.xhtml").decode()
+    links = re.findall(r'href="(ch\d+\.xhtml)#(c\d+)"', toc)
+    assert len(links) == 3
+    for fn, anchor in links:
+        assert f'id="{anchor}"' in z.read(f"OEBPS/{fn}").decode()
+    proj["format"] = {"toc": False}
+    assert "OEBPS/toc.xhtml" not in zipfile.ZipFile(io.BytesIO(ebook.write_epub(ebook.from_project(proj)))).namelist()

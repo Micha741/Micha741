@@ -1482,7 +1482,7 @@ class SettingsPage(QtWidgets.QWidget):
     def _components_tab(self, cfg) -> QtWidgets.QWidget:
         w = QtWidgets.QWidget()
         lay = QtWidgets.QVBoxLayout(w)
-        cal = QtWidgets.QGroupBox("Calibre – převody e-knih (AZW3, KFX, MOBI, RTF…)")
+        cal = QtWidgets.QGroupBox("Calibre – volitelné, jen pro zápis AZW3, KFX a LIT")
         cg = QtWidgets.QGridLayout(cal)
         self.cal_status = label("Zjišťuji…")
         self.cal_path = QtWidgets.QLineEdit(cfg["paths"].get("ebook_convert", ""))
@@ -1495,7 +1495,8 @@ class SettingsPage(QtWidgets.QWidget):
         row = QtWidgets.QHBoxLayout()
         kfx = QtWidgets.QPushButton("Nainstalovat plugin KFX Input")
         kfx.clicked.connect(self.install_kfx)
-        web = QtWidgets.QPushButton("🌐 Web Calibre")
+        web = QtWidgets.QPushButton("⬇ Stáhnout Calibre")
+        web.setToolTip("Calibre je zdarma (licence GPL v3). Po instalaci ho Překladač najde sám.")
         web.clicked.connect(lambda: webbrowser.open(core.CALIBRE_URL))
         row.addWidget(kfx)
         row.addWidget(web)
@@ -1629,7 +1630,8 @@ class SettingsPage(QtWidgets.QWidget):
                     else "nalezeno"
                 set_status(self.cal_status, kfx is not False, f"Calibre {where} · {kfx_txt}")
             else:
-                set_status(self.cal_status, False, "Calibre nebylo nalezeno – je součástí instalátoru")
+                set_status(self.cal_status, None, "Calibre není nainstalované – všechny běžné formáty převádí Překladač "
+                                                  "sám; Calibre je potřeba jen pro zápis AZW3, KFX a LIT")
             if tp:
                 set_status(self.tes_status, True, f"Tesseract nalezen · jazyky: {', '.join(langs) or 'žádné'}")
             else:
@@ -1897,8 +1899,10 @@ class MainWindow(QtWidgets.QMainWindow):
         for old in ("ebook_convert", "tesseract"):
             if self.cfg.get(old) and not paths.get(old):
                 paths[old] = self.cfg.pop(old)
-        paths["ebook_convert"] = paths.get("ebook_convert") or find_ebook_convert() or ""
-        paths["tesseract"] = paths.get("tesseract") or find_tesseract() or ""
+        # uložená cesta, která už neexistuje (např. Calibre z dřívější verze po odinstalování), se hledá znovu
+        for key, finder in (("ebook_convert", find_ebook_convert), ("tesseract", find_tesseract)):
+            if not paths.get(key) or not os.path.isfile(paths[key]):
+                paths[key] = finder() or ""
 
         self.setWindowTitle(self.title())
         # velikost podle obrazovky (např. notebook 1366×768 s lištou Windows)
@@ -1970,9 +1974,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.nav.setCurrentRow(0)
         self.set_sidebar_collapsed(bool(self.cfg.get("sidebar_collapsed")), save=False)
 
-        if not paths["ebook_convert"]:
-            self.translate.logv.log("Upozornění: Calibre nebylo nalezeno – bez něj nepůjdou AZW3, KFX, MOBI a RTF. "
-                                    "Je součástí instalátoru Prekladac-Setup.exe.")
         if self.cfg.get("check_updates", True):
             QtCore.QTimer.singleShot(3000, self.check_updates)
 

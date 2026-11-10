@@ -46,10 +46,11 @@ U PDF s textovou vrstvou (ne sken) Tesseract není potřeba, text se vezme pří
 | Vstup | Co program udělá | Výchozí výstup |
 |---|---|---|
 | EPUB | přeloží text a zachová kapitoly, obrázky, styly i obsah | EPUB |
-| AZW3, KFX, MOBI, AZW | Calibre převede knihu na EPUB, program ji přeloží a Calibre převede výsledek zpět | AZW3 (MOBI → MOBI) |
+| MOBI, PDB, AZW3 | program převede knihu na EPUB, přeloží ji a uloží zpět (bez Calibre; AZW3 se uloží jako MOBI nebo EPUB, zápis AZW3 umí jen Calibre) | stejný formát |
+| KFX, LIT | Calibre (volitelné) převede knihu na EPUB, program ji přeloží a Calibre převede výsledek zpět | AZW3 |
 | DOCX | přeloží odstavce, tabulky a záhlaví a zachová obrázky, styly, tučné písmo a kurzívu | DOCX |
 | TXT | přeloží text po odstavcích | TXT |
-| RTF, FB2, ODT | stejně jako e-knihy (přes EPUB) | stejný formát |
+| RTF, FB2, ODT, HTMLZ | stejně jako e-knihy (přes EPUB, bez Calibre) | stejný formát |
 | PDF | vezme text ze stránek (u skenů přes OCR) a přeloží ho | DOCX |
 | JPG, PNG, WEBP, BMP, TIFF | přečte text z obrázku (OCR) a přeloží ho | DOCX |
 
@@ -64,11 +65,13 @@ Výsledek se uloží vedle originálu jako `název (čeština).přípona`.
 2. Spusťte ho a projděte instalací. Standardně se instaluje do `C:\Program Files\Prekladac` a Windows se zeptá
    na práva správce. V úvodu instalátoru můžete zvolit instalaci jen pro sebe (bez práv správce, do
    `%LOCALAPPDATA%\Programs\Prekladac`). Odinstalace: *Nastavení Windows → Aplikace*.
-   - Instalátor **obsahuje Calibre** (`Calibre2\ebook-convert.exe`) i **Tesseract** (`Tesseract-OCR\tesseract.exe`)
-     s jazyky OCR (angličtina, čeština, slovenština, němčina, polština, francouzština, španělština, italština,
-     ruština, ukrajinština, maďarština). Nic dalšího se instalovat nemusí.
-   - **Plugin KFX Input** program stáhne a nainstaluje do Calibre sám při prvním souboru KFX
-     (nebo tlačítkem v *⚙ Nastavení → Součásti*). Pokud už máte Calibre s pluginem, použije se váš.
+   - Instalátor obsahuje **Tesseract** (`Tesseract-OCR\tesseract.exe`) s jazyky OCR (angličtina, čeština,
+     slovenština, němčina, polština, francouzština, španělština, italština, ruština, ukrajinština, maďarština).
+   - **EPUB, MOBI, PDB, DOCX, RTF, ODT, FB2, HTMLZ, TXT a PDF** (čtení i zápis) a čtení **AZW3** zvládne program
+     sám, bez dalších programů.
+   - **Calibre je volitelné** – jen pro zápis AZW3, pro KFX a LIT. Nainstalujte ho zdarma z
+     https://calibre-ebook.com (*⚙ Nastavení → Součásti → ⬇ Stáhnout Calibre*), program ho pak najde sám.
+     **Plugin KFX Input** program stáhne a nainstaluje do Calibre sám při prvním souboru KFX.
 3. Windows SmartScreen může u nového nepodepsaného programu ukázat „Systém Windows ochránil váš počítač“ →
    *Další informace → Přesto spustit*. Pokud antivirus (např. Avast) program zablokuje jako `IDP.Generic`,
    jde o falešný poplach u neznámého programu – viz *Antivirus* níže.
@@ -162,9 +165,9 @@ Když program zavřete, přijdete nanejvýš o právě psanou kapitolu – po sp
 - **🖨 Tisk** (Domů → Soubor, nebo Ctrl+P) – vytiskne celou knihu (titulní strana, každá kapitola od nové
   stránky, čísla stran, zalomení stránek z editoru) nebo jen otevřenou kapitolu; je i **náhled tisku**.
   V okně tisku jde zvolit tiskárnu, počet kopií a stránky; „Microsoft Print to PDF“ uloží tisk jako PDF.
-- **Soubor** – Uložit, **Uložit jako…** (jeden soubor ve formátu **DOCX, PDF, EPUB, MOBI, AZW3, ODT, RTF, TXT**,
+- **Soubor** – Uložit, **Uložit jako…** (jeden soubor ve formátu **DOCX, PDF, EPUB, MOBI, PDB, AZW3, ODT, RTF, FB2, HTMLZ, TXT**,
   nebo kopie projektu `*.kniha.json`, Ctrl+Shift+S), Exportovat (víc formátů najednou), Tisk, Náhled tisku, Zavřít.
-  ODT (LibreOffice) a TXT zapisuje program sám, ostatní formáty z DOCX přes přibalené Calibre.
+  Všechny formáty zapisuje program sám, jen AZW3 potřebuje nainstalované Calibre.
 - **Obrázky** – Domů → Vložení → **🖼 Obrázek** (JPG, PNG, GIF, BMP, WEBP, TIFF), nebo Ctrl+V ze schránky či
   přetažení souboru myší. Pravým tlačítkem na obrázku: šířka (25–100 % stránky), zarovnání, nahradit, smazat.
   Obrázky se ukládají přímo do souboru knihy (velké fotky se zmenší) a zůstanou v DOCX, EPUB, PDF, MOBI, AZW3,
@@ -237,7 +240,7 @@ Klíče se berou z Nastavení programu (nebo z parametru `--key`, případně z 
 python -m pip install -r requirements.txt
 python app.py
 ```
-Instalátor (`installer.iss`, Inno Setup) i s přibaleným Calibre a Tesseractem sestavuje na GitHubu workflow
+Instalátor (`installer.iss`, Inno Setup) s přibaleným Tesseractem sestavuje na GitHubu workflow
 `.github/workflows/prekladac.yml`, který ho po instalaci i vyzkouší. `build_exe.bat` sestaví jen samotný program.
 
 ## Antivirus
@@ -291,3 +294,8 @@ python -m pytest tests
 ```
 
 Testy nevolají API (odpovědi služeb jsou podvržené). Živý test Google Překladače: `set PREKLADAC_LIVE=1` a pak pytest.
+
+## Android
+
+Mobilní verze (převod a překlad knih v telefonu) je ve složce [`../prekladac-android`](../prekladac-android).
+Používá stejná pravidla převodů (EPUB, MOBI, PDB, DOCX, TXT, PDF) a podobný vzhled.

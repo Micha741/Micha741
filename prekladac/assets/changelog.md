@@ -20,7 +20,8 @@
 - Kontrola pravopisu, návrhy slov (T9), velké písmeno na začátku věty, menu pravého tlačítka.
 
 **Program**
-- Instalátor s Calibre, Tesseractem a českým slovníkem, upozornění na novou verzi.
+- Instalátor s Tesseractem a českým slovníkem (asi o 300 MB menší), upozornění na novou verzi.
+- Vlastní převody EPUB, MOBI, PDB, DOCX, RTF, ODT, FB2, HTMLZ, TXT a PDF bez Calibre; Calibre volitelně pro zápis AZW3, KFX a LIT.
 - Jazyk programu: čeština, angličtina, slovenština, němčina (další jazyky jde doinstalovat).
 - Klíče uložené zašifrovaně (Windows DPAPI), návody ke všem službám.
 
@@ -51,6 +52,12 @@
   (posouvá i kolečko myši). Karta Domů v editoru bez skupiny Soubor (je na kartě Soubor).
 - Editor: ve stavovém řádku tlačítko panelu kapitol a šipky ‹ › na předchozí/další kapitolu (Ctrl+PgUp/PgDown).
 - Editor: Zobrazení → Celá šířka – stránka přes celou šířku okna bez šedých okrajů (pamatuje se).
+- Převody bez Calibre: EPUB, MOBI (Kindle), PDB, DOCX, RTF, ODT, FB2, HTMLZ, TXT a PDF (čtení i zápis)
+  a čtení AZW3 vlastním kódem se zachovaným formátováním (tučné, kurzíva, podtržení, nadpisy, zarovnání, seznamy,
+  obrázky, obálka); instalátor je asi o 300 MB menší. Calibre je volitelné (Nastavení → Součásti → Stáhnout
+  Calibre) jen pro zápis AZW3, pro KFX a LIT.
+- Český slovník s přesnou verzí zdroje a plným zněním licence (GPL v2) ve složce dict.
+- Mobilní verze pro Android (převod a překlad knih) se stejnými formáty a podobným vzhledem.
 - Napsat knihu → Soubor → Otevřít: i hotové knihy v DOCX, EPUB, TXT (i starší kódování Windows), MOBI, AZW3,
   PDB, FB2, ODT, RTF, PDF… – rozdělí se na kapitoly a uloží jako projekt vedle původního souboru.
 

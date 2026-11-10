@@ -1,0 +1,181 @@
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+import { addImage, emptyBook, insertImage, type Book } from '../src/core/book';
+import { cp1250Decode, decodeAny, fromBase64, toBase64, utf8Decode, utf8Encode } from '../src/core/bytes';
+import { readBook, writeBook, bookPlainText } from '../src/core/formats';
+import { compressPalmDoc, decompressPalmDoc, readPdb } from '../src/core/palmdoc';
+import { pdfHtml } from '../src/core/pdf';
+import { makeTranslator, translateBook, type Translator } from '../src/core/translate';
+import { imageSize } from '../src/core/docx';
+
+// malé „obrázky“ se správnou hlavičkou (rozměry 120×80)
+function png(): Uint8Array {
+  const d = new Uint8Array(40);
+  d.set([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 13, 0x49, 0x48, 0x44, 0x52]);
+  new DataView(d.buffer).setUint32(16, 120);
+  new DataView(d.buffer).setUint32(20, 80);
+  return d;
+}
+function jpeg(): Uint8Array {
+  return Uint8Array.from([0xff, 0xd8, 0xff, 0xc0, 0, 17, 8, 0, 80, 0, 120, 3, 1, 0x22, 0, 2, 0x11, 1, 3, 0x11, 1, 0xff, 0xd9]);
+}
+
+const TEXTS = [
+  ['Bouře zuřila nad mořem. Žluťoučký kůň úpěl ďábelské ódy.', 'Tomáš se díval z okna – „kde je děda?“'],
+  ['Na půdě ležela stará mapa.'],
+  ['Tajemství bylo odhaleno. Konec.'],
+];
+
+function sample(withImages = true): Book {
+  const b = emptyBook('Strážce majáku');
+  b.author = 'Jan Novák';
+  b.chapters = TEXTS.map((ps, i) => ({ title: ['Bouře', 'Mapa', 'Návrat'][i], blocks: ps.map((text) => ({ type: 'p' as const, text })) }));
+  if (withImages) {
+    b.cover = addImage(b, jpeg());
+    insertImage(b, 1, addImage(b, png()), 'end');
+  }
+  return b;
+}
+
+function texts(b: Book) {
+  return b.chapters.map((c) => c.blocks.filter((x) => x.type === 'p').map((x) => (x as any).text));
+}
+
+test('utf8, cp1250, base64', () => {
+  const s = 'Příliš žluťoučký kůň 😀 €';
+  assert.equal(utf8Decode(utf8Encode(s)), s);
+  assert.equal(cp1250Decode(Uint8Array.from([0xe8, 0xf8, 0xec, 0x9a, 0x9e, 0xf9])), 'čřěšžů');
+  assert.equal(decodeAny(Uint8Array.from([0x9e, 0x6c, 0x75, 0x9d, 0x6f, 0x75, 0xe8, 0x6b, 0xfd])), 'žluťoučký');
+  const bytes = Uint8Array.from({ length: 300 }, (_, i) => (i * 7) & 255);
+  for (const n of [0, 1, 2, 3, 299, 300]) assert.deepEqual(fromBase64(toBase64(bytes.subarray(0, n))), bytes.subarray(0, n));
+});
+
+test('PalmDOC komprese tam a zpět', () => {
+  const text = utf8Encode('Bouře zuřila nad mořem. '.repeat(150) + 'Konec \x01\x02 ÿ');
+  const chunk = text.subarray(0, 4096);
+  const c = compressPalmDoc(chunk);
+  assert.ok(c.length < chunk.length / 2, 'opakovaný text se má zmenšit');
+  assert.deepEqual(decompressPalmDoc(c), chunk);
+  const rnd = Uint8Array.from({ length: 4096 }, (_, i) => (i * 2654435761) >>> 24);
+  assert.deepEqual(decompressPalmDoc(compressPalmDoc(rnd)), rnd);
+});
+
+test('rozměry obrázků', () => {
+  assert.deepEqual(imageSize(png()), { w: 120, h: 80 });
+  assert.deepEqual(imageSize(jpeg()), { w: 120, h: 80 });
+});
+
+for (const fmt of ['epub', 'docx', 'mobi', 'kniha'] as const) {
+  test(`${fmt}: zápis a zpětné čtení zachová kapitoly, text a obrázky`, async () => {
+    const src = sample();
+    const data = await writeBook(src, fmt);
+    const name = fmt === 'kniha' ? 'kniha.kniha.json' : `kniha.${fmt}`;
+    const back = await readBook(data, name);
+    assert.equal(back.title, 'Strážce majáku');
+    assert.equal(back.author, 'Jan Novák');
+    assert.deepEqual(back.chapters.map((c) => c.title), ['Bouře', 'Mapa', 'Návrat']);
+    assert.deepEqual(texts(back), TEXTS);
+    assert.ok(back.cover && back.images[back.cover], 'obálka');
+    assert.equal(back.images[back.cover!].mime, 'image/jpeg');
+    const img = back.chapters[1].blocks.find((b) => b.type === 'img') as any;
+    assert.ok(img && back.images[img.name]?.mime === 'image/png', 'obrázek v kapitole 2');
+  });
+}
+
+test('MOBI: hlavička, obsah s odkazy (filepos) a záznamy obrázků', async () => {
+  const data = await writeBook(sample(), 'mobi');
+  const pdb = readPdb(data);
+  assert.equal(pdb.type + pdb.creator, 'BOOKMOBI');
+  const r0 = pdb.records[0];
+  assert.equal(String.fromCharCode(...r0.subarray(16, 20)), 'MOBI');
+  const dv = new DataView(r0.buffer, r0.byteOffset);
+  const textRecs = dv.getUint16(8);
+  const firstImage = dv.getUint32(16 + 92);
+  assert.equal(firstImage, textRecs + 1);
+  assert.deepEqual(pdb.records[firstImage], jpeg()); // obálka je první obrázek
+  const html = utf8Decode(Uint8Array.from(pdb.records.slice(1, 1 + textRecs).flatMap((r) => [...decompressPalmDoc(r)])));
+  for (const m of html.matchAll(/filepos=(\d{10})/g)) {
+    const pos = parseInt(m[1], 10);
+    const at = utf8Decode(utf8Encode(html).subarray(pos, pos + 4));
+    assert.ok(at === '<h2>', `odkaz filepos ${pos} míří na nadpis, ne na „${at}“`);
+  }
+  assert.equal(String.fromCharCode(...pdb.records[pdb.records.length - 1]), '\xe9\x8e\r\n');
+});
+
+test('PDB (PalmDoc) a TXT: text a kapitoly', async () => {
+  for (const fmt of ['pdb', 'txt'] as const) {
+    const back = await readBook(await writeBook(sample(false), fmt), `kniha.${fmt}`);
+    assert.deepEqual(back.chapters.map((c) => c.title), ['Bouře', 'Mapa', 'Návrat'], fmt);
+    assert.deepEqual(texts(back), TEXTS, fmt);
+  }
+});
+
+test('TXT ve starém kódování Windows a bez kapitol', async () => {
+  const b = await readBook(Uint8Array.from([...'Moje kniha\n\nKapitola 1\n\n'].map((c) => c.charCodeAt(0)).concat([0x8e, 0x6c, 0x75, 0x9d, 0x6f, 0x75, 0xe8, 0x6b, 0xfd])), 'stara.txt');
+  assert.equal(b.title, 'Moje kniha');
+  assert.equal((b.chapters[0].blocks[0] as any).text, 'Žluťoučký');
+  const one = await readBook(utf8Encode('Povídka\n\nPrvní.\n\nDruhý.\n'), 'p.txt');
+  assert.equal(one.chapters.length, 1);
+  assert.deepEqual(texts(one), [['První.', 'Druhý.']]);
+});
+
+test('projekt z desktopového Překladače (text i HTML z editoru)', async () => {
+  const proj = {
+    language: 'čeština', words: 1000, outline: { title: 'Kniha', chapters: [{ title: 'Jedna', summary: '' }, { title: 'Dva', summary: '' }] },
+    chapters: [{ text: 'Ahoj.\n\n[[STRANA]]\n\nSvěte.', summary: '' }, { text: 'x', html: '<p>Odstavec <b>tučně</b>.</p><p><img src="obr.png" width="400"/></p>', summary: '' }],
+    images: { 'obr.png': toBase64(png()) },
+  };
+  const b = await readBook(utf8Encode(JSON.stringify(proj)), 'k.kniha.json');
+  assert.deepEqual(b.chapters[0].blocks.map((x) => x.type), ['p', 'pb', 'p']);
+  assert.deepEqual(b.chapters[1].blocks, [{ type: 'p', text: 'Odstavec tučně.' }, { type: 'img', name: 'obr.png', width: 400 }]);
+});
+
+test('PDF HTML obsahuje obálku, obsah a obrázky jako data URI', () => {
+  const h = pdfHtml(sample());
+  assert.ok(h.includes('data:image/jpeg;base64,') && h.includes('data:image/png;base64,'));
+  assert.ok(h.includes('<h2>Obsah</h2>') && h.includes('3. Návrat'));
+});
+
+test('překlad knihy: dávky, dlouhé odstavce, obrázky zůstanou', async () => {
+  const calls: string[][] = [];
+  const tr: Translator = {
+    maxChars: 60,
+    maxItems: 3,
+    async translate(t) {
+      calls.push(t);
+      return t.map((x) => x.toUpperCase());
+    },
+  };
+  const src = sample();
+  src.chapters[2].blocks.push({ type: 'p', text: 'Velmi dlouhá věta číslo jedna. Druhá věta je tu také. Třetí věta končí knihu!' });
+  const progress: number[] = [];
+  const out = await translateBook(src, tr, 'en', (p) => progress.push(p.done / p.total));
+  assert.equal(out.title, 'STRÁŽCE MAJÁKU');
+  assert.equal(out.chapters[0].title, 'BOUŘE');
+  assert.equal((out.chapters[2].blocks[1] as any).text, 'VELMI DLOUHÁ VĚTA ČÍSLO JEDNA. DRUHÁ VĚTA JE TU TAKÉ. TŘETÍ VĚTA KONČÍ KNIHU!');
+  assert.ok(calls.every((c) => c.length <= 3 && c.join('').length <= 60 + 60));
+  assert.equal(out.language, 'en');
+  assert.equal(src.chapters[0].title, 'Bouře', 'původní kniha se nezmění');
+  assert.ok(out.chapters[1].blocks.some((b) => b.type === 'img'));
+  assert.equal(progress[progress.length - 1], 1);
+});
+
+test('Google (zdarma): požadavek a rozdělení odpovědi', async () => {
+  let url = '';
+  const fake = (async (u: string) => {
+    url = u;
+    const q = decodeURIComponent(/q=(.*)$/.exec(u)![1]);
+    return new Response(JSON.stringify([[[q.replace(/a/g, 'A'), q]]]), { status: 200 });
+  }) as unknown as typeof fetch;
+  const tr = makeTranslator('google', 'de', {}, fake);
+  assert.deepEqual(await tr.translate(['ahoj', 'mapa']), ['Ahoj', 'mApA']);
+  assert.ok(url.includes('tl=de'));
+  const bad = (async () => new Response('{"error":{"message":"bad key"}}', { status: 403 })) as unknown as typeof fetch;
+  await assert.rejects(makeTranslator('deepl', 'cs', { deeplKey: 'x:fx' }, bad).translate(['a']), /klíč/);
+});
+
+test('prostý text knihy', () => {
+  const t = bookPlainText(sample());
+  assert.ok(t.startsWith('Strážce majáku\nJan Novák\n\n\n1. Bouře'));
+  assert.ok(t.includes('[obrázek]'));
+});

@@ -22,7 +22,8 @@ DOC_EXT = {".docx", ".txt", ".pdf"}
 # tyto formáty umí jen „Microsoft – překlad celých dokumentů“
 DOC_ONLY_EXT = {".pptx", ".xlsx", ".md"}
 SUPPORTED_EXT = EBOOK_EXT | IMAGE_EXT | DOC_EXT | DOC_ONLY_EXT
-OUTPUT_FORMATS = ["epub", "azw3", "docx", "pdf", "txt", "rtf", "mobi"]
+OUTPUT_FORMATS = ["epub", "azw3", "docx", "pdf", "txt", "rtf", "mobi", "pdb", "fb2", "odt", "htmlz"]
+NATIVE_OUTPUT = {"epub", "docx", "pdf", "txt", "mobi", "pdb", "rtf", "fb2", "odt", "htmlz"}  # bez Calibre
 
 LANG_CODES = {
     "čeština": "cs", "slovenština": "sk", "angličtina": "en", "němčina": "de", "polština": "pl",
@@ -71,14 +72,18 @@ class CalibreMissing(Exception):
     pass
 
 
+def _missing_msg(src: str, dst: str) -> str:
+    return (f"Převod {Path(src).suffix.upper()} → {Path(dst).suffix.upper()} umí jen Calibre, které není nainstalované. "
+            "EPUB, MOBI, AZW3 (čtení), PDB, DOCX, RTF, ODT, FB2, HTMLZ, TXT a PDF převede Překladač sám; Calibre je "
+            "potřeba jen pro zápis AZW3, pro KFX a LIT. Nainstalujte ho zdarma (Nastavení → Součásti → Stáhnout "
+            "Calibre) a spusťte převod znovu.")
+
+
 def calibre_convert(src: str, dst: str, log: Log = _noop, ebook_convert: str | None = None,
                     extra: list[str] | None = None) -> None:
     exe = find_ebook_convert(ebook_convert)
     if not exe:
-        raise CalibreMissing(
-            "Pro tento převod je potřeba Calibre (https://calibre-ebook.com). "
-            "Nainstalujte ho, případně nastavte cestu k ebook-convert.exe."
-        )
+        raise CalibreMissing(_missing_msg(src, dst))
     if src.lower().endswith(".kfx"):
         _ensure_kfx_plugin(exe, log)
     log(f"  Calibre: {Path(src).suffix} → {Path(dst).suffix}")
@@ -91,6 +96,22 @@ def calibre_convert(src: str, dst: str, log: Log = _noop, ebook_convert: str | N
         if src.lower().endswith(".kfx"):
             hint = "\nPro KFX nainstalujte do Calibre plugin „KFX Input“ (Předvolby → Moduly → Získat nové moduly)."
         raise RuntimeError(f"Calibre převod selhal:\n{tail}{hint}")
+
+
+def convert(src: str, dst: str, log: Log = _noop, ebook_convert: str | None = None,
+            extra: list[str] | None = None) -> None:
+    """Převod formátu vlastním kódem (ebook.py), Calibre jen pro zápis AZW3, KFX a LIT."""
+    import ebook
+
+    if not extra:
+        try:
+            ebook.convert(src, dst, log)
+            return
+        except ebook.NeedsCalibre as e:
+            if not find_ebook_convert(ebook_convert):
+                raise CalibreMissing(f"{e}.\n\n{_missing_msg(src, dst)}") from e
+            log(f"  {e} – převádím přes Calibre")
+    calibre_convert(src, dst, log, ebook_convert, extra)
 
 
 def _ensure_kfx_plugin(exe: str, log: Log) -> None:
@@ -548,12 +569,14 @@ def pdf_to_docx(src: str, dst: str, tr: Translator, translate: bool, log: Log = 
 # ------------------------------------------------------------ orchestrace
 def default_output_format(ext: str) -> str:
     ext = ext.lower().lstrip(".")
-    if ext in ("kfx", "azw", "mobi", "lit", "pdb"):
-        return "azw3" if ext != "mobi" else "mobi"
+    if ext in ("mobi", "pdb"):
+        return ext
+    if ext in ("kfx", "azw", "lit"):
+        return "azw3"
     if ext in ("pdf",) or "." + ext in IMAGE_EXT:
         return "docx"
-    if ext in ("fb2", "odt", "htmlz"):
-        return "epub"
+    if ext in ("fb2", "odt", "htmlz", "rtf"):
+        return ext
     return ext
 
 
@@ -588,7 +611,7 @@ def process_file(
     fmt = (out_fmt or (ext.lstrip(".") if use_doc else default_output_format(ext))).lower()
     suffix = f" ({tr.target_lang})" if translate and tr else ""
     dst = output_path(src, out_dir, fmt, suffix if translate else " (převod)")
-    conv = lambda a, b: calibre_convert(a, b, log, ebook_convert)  # noqa: E731
+    conv = lambda a, b: convert(a, b, log, ebook_convert)  # noqa: E731
 
     with tempfile.TemporaryDirectory(prefix="prekladac_") as tmp:
         def tmpfile(name: str) -> str:
@@ -700,7 +723,7 @@ def process_images_together(
     try:
         images_to_docx(paths, str(tmp), tr, translate, log, lambda f: progress(f * 0.9))
         log(f"  převádím do {fmt.upper()}…")
-        calibre_convert(str(tmp), dst, log, ebook_convert)
+        convert(str(tmp), dst, log, ebook_convert)
     finally:
         shutil.rmtree(tmp.parent, ignore_errors=True)
     progress(1.0)

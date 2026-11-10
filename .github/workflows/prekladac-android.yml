@@ -1,0 +1,28 @@
+name: Překladač – Android (testy)
+
+on:
+  push:
+    paths: ["prekladac-android/**", ".github/workflows/prekladac-android.yml"]
+  pull_request:
+    paths: ["prekladac-android/**", ".github/workflows/prekladac-android.yml"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: prekladac-android
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: prekladac-android/package-lock.json
+      - run: npm ci
+      - name: Kontrola typů
+        run: npx tsc --noEmit
+      - name: Testy jádra (formáty, překlad)
+        run: npm test
+      - name: Sestavení balíčku pro Android (Metro + Hermes)
+        run: npx expo export --platform android --output-dir /tmp/export
