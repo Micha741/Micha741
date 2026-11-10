@@ -438,10 +438,27 @@ E += [
     ("Zdarma 500 000 znaků/měsíc. Klíč: deepl.com → účet → API Keys.", "Free 500,000 characters/month. Key: "
      "deepl.com → account → API Keys.", "Zadarmo 500 000 znakov/mesiac. Kľúč: deepl.com → účet → API Keys.",
      "Kostenlos 500.000 Zeichen/Monat. Schlüssel: deepl.com → Konto → API Keys."),
-    ("Bez registrace. Při velkém množství textu může Google dočasně omezit přístup.",
-     "No registration. With large amounts of text Google may temporarily limit access.",
-     "Bez registrácie. Pri veľkom množstve textu môže Google dočasne obmedziť prístup.",
-     "Ohne Registrierung. Bei großen Textmengen kann Google den Zugriff vorübergehend begrenzen."),
+    ("Bez registrace. Při velkém množství textu může Google dočasně omezit přístup – program pak počká a pokračuje "
+     "(celá kniha se proto překládá pomaleji).",
+     "No registration. With large amounts of text Google may temporarily limit access – the program then waits "
+     "and continues (a whole book is therefore translated more slowly).",
+     "Bez registrácie. Pri veľkom množstve textu môže Google dočasne obmedziť prístup – program potom počká "
+     "a pokračuje (celá kniha sa preto prekladá pomalšie).",
+     "Ohne Registrierung. Bei großen Textmengen kann Google den Zugriff vorübergehend begrenzen – das Programm "
+     "wartet dann und macht weiter (ein ganzes Buch dauert daher länger)."),
+    ("Oficiální služba Google: zdarma 500 000 znaků/měsíc, pak asi 20 USD za milion. Vyžaduje účet Google Cloud "
+     "s platební kartou.",
+     "Official Google service: free 500,000 characters/month, then about USD 20 per million. Requires a Google "
+     "Cloud account with a payment card.",
+     "Oficiálna služba Google: zadarmo 500 000 znakov/mesiac, potom asi 20 USD za milión. Vyžaduje účet Google "
+     "Cloud s platobnou kartou.",
+     "Offizieller Google-Dienst: kostenlos 500.000 Zeichen/Monat, danach etwa 20 USD pro Million. Erfordert ein "
+     "Google-Cloud-Konto mit Zahlungskarte."),
+    ("Google Cloud Translation", "Google Cloud Translation", "Google Cloud Translation", "Google Cloud Translation"),
+    ("Google Cloud Translation – zdarma 500 000 znaků/měsíc, s klíčem",
+     "Google Cloud Translation – free 500,000 characters/month, with key",
+     "Google Cloud Translation – zadarmo 500 000 znakov/mesiac, s kľúčom",
+     "Google Cloud Translation – kostenlos 500.000 Zeichen/Monat, mit Schlüssel"),
     ("Zdarma 2 mil. znaků/měsíc (úroveň F0). Azure → Translator → Klíče a koncový bod. „Překlad dokumentu“ je druhé "
      "API – přeloží celý DOCX/PDF/PPTX a zachová vzhled.",
      "Free 2 million characters/month (F0 tier). Azure → Translator → Keys and Endpoint. „Document translation“ is "
@@ -457,9 +474,15 @@ E += [
      "Ollama and download a model: ollama pull gemma3:12b", "Offline, zadarmo. Nainštalujte Ollama a stiahnite "
      "model: ollama pull gemma3:12b", "Offline, kostenlos. Ollama installieren und Modell laden: ollama pull "
      "gemma3:12b"),
-    ("Vlastní server LibreTranslate nebo veřejná instance s klíčem.", "Your own LibreTranslate server or a public "
-     "instance with a key.", "Vlastný server LibreTranslate alebo verejná inštancia s kľúčom.",
-     "Eigener LibreTranslate-Server oder öffentliche Instanz mit Schlüssel."),
+    ("Pro pokročilé: vlastní překladový server (v tomto počítači, na jiném počítači nebo NAS v síti). Pro jeden "
+     "počítač je jednodušší „Offline v počítači“ – stejné modely bez serveru.",
+     "For advanced users: your own translation server (on this computer, another computer or a NAS on your "
+     "network). For a single computer, “Offline on this computer” is simpler – same models, no server.",
+     "Pre pokročilých: vlastný prekladový server (v tomto počítači, na inom počítači alebo NAS v sieti). Pre jeden "
+     "počítač je jednoduchší „Offline v počítači“ – rovnaké modely bez servera.",
+     "Für Fortgeschrittene: eigener Übersetzungsserver (auf diesem Computer, einem anderen Computer oder NAS im "
+     "Netzwerk). Für einen einzelnen Computer ist „Offline auf diesem Computer“ einfacher – gleiche Modelle, kein "
+     "Server."),
     ("Placené podle spotřeby (DeepSeek je velmi levný, OpenRouter má i modely zdarma). Adresu API a název modelu "
      "najdete v Návodu.", "Pay as you go (DeepSeek is very cheap, OpenRouter also has free models). The API address "
      "and model name are in the Guide.", "Platené podľa spotreby (DeepSeek je veľmi lacný, OpenRouter má aj modely "
@@ -476,8 +499,10 @@ E += [
      "kvalita", "Claude API – kostenpflichtig, beste Qualität"),
     ("DeepL API Free – zdarma 500 000 znaků/měsíc", "DeepL API Free – free 500,000 characters/month",
      "DeepL API Free – zadarmo 500 000 znakov/mesiac", "DeepL API Free – kostenlos 500.000 Zeichen/Monat"),
-    ("Google Překladač – zdarma, bez klíče", "Google Translate – free, no key", "Google Prekladač – zadarmo, bez kľúča",
-     "Google Übersetzer – kostenlos, ohne Schlüssel"),
+    ("Google Překladač – zdarma, bez klíče (u velkých knih pomaleji)",
+     "Google Translate – free, no key (slower for large books)",
+     "Google Prekladač – zadarmo, bez kľúča (pri veľkých knihách pomalšie)",
+     "Google Übersetzer – kostenlos, ohne Schlüssel (bei großen Büchern langsamer)"),
     ("Microsoft Translator – zdarma 2 mil. znaků/měsíc", "Microsoft Translator – free 2 million characters/month",
      "Microsoft Translator – zadarmo 2 mil. znakov/mesiac", "Microsoft Translator – kostenlos 2 Mio. Zeichen/Monat"),
     ("Microsoft – překlad celých dokumentů se zachováním vzhledu (DOCX, PDF, PPTX…)",
@@ -491,8 +516,9 @@ E += [
     ("OpenAI-kompatibilní – OpenAI, DeepSeek, Mistral, OpenRouter, Groq…", "OpenAI-compatible – OpenAI, DeepSeek, "
      "Mistral, OpenRouter, Groq…", "OpenAI-kompatibilné – OpenAI, DeepSeek, Mistral, OpenRouter, Groq…",
      "OpenAI-kompatibel – OpenAI, DeepSeek, Mistral, OpenRouter, Groq…"),
-    ("LibreTranslate – vlastní server, zdarma", "LibreTranslate – own server, free", "LibreTranslate – vlastný "
-     "server, zadarmo", "LibreTranslate – eigener Server, kostenlos"),
+    ("LibreTranslate – vlastní server (pro pokročilé), zdarma", "LibreTranslate – own server (advanced), free",
+     "LibreTranslate – vlastný server (pre pokročilých), zadarmo",
+     "LibreTranslate – eigener Server (für Fortgeschrittene), kostenlos"),
     ("Tesseract – zdarma, offline", "Tesseract – free, offline", "Tesseract – zadarmo, offline",
      "Tesseract – kostenlos, offline"),
     ("Google Gemini – bezplatná úroveň", "Google Gemini – free tier", "Google Gemini – bezplatná úroveň",
@@ -953,6 +979,61 @@ E += [
     ("Tab = vložit návrh · šipky = vybrat · Esc = zavřít", "Tab = insert suggestion · arrows = choose · Esc = close",
      "Tab = vložiť návrh · šípky = vybrať · Esc = zavrieť", "Tab = Vorschlag einfügen · Pfeile = wählen · Esc = "
      "schließen"),
+    # ------------------------------------------------------------ vzhled (skiny)
+    ("Vzhled", "Appearance", "Vzhľad", "Aussehen"),
+    ("Skin mění barvy, písmo, logo, pozadí a ikony programu – podobně jako ve Winampu. Vzhled se změní hned. "
+     "Další skiny se dají doinstalovat ze souboru .skin (stačí ho sem přetáhnout nebo na něj ve Windows dvakrát "
+     "klepnout).",
+     "A skin changes the program's colours, font, logo, background and icons – much like in Winamp. The look "
+     "changes immediately. More skins can be installed from a .skin file (drag it here or double-click it in "
+     "Windows).",
+     "Skin mení farby, písmo, logo, pozadie a ikony programu – podobne ako vo Winampe. Vzhľad sa zmení hneď. "
+     "Ďalšie skiny sa dajú doinštalovať zo súboru .skin (stačí ho sem pretiahnuť alebo naň vo Windows dvakrát "
+     "kliknúť).",
+     "Ein Skin ändert Farben, Schrift, Logo, Hintergrund und Symbole des Programms – ähnlich wie in Winamp. Das "
+     "Aussehen ändert sich sofort. Weitere Skins lassen sich aus einer .skin-Datei installieren (hierher ziehen "
+     "oder in Windows doppelklicken)."),
+    ("📥 Instalovat skin…", "📥 Install skin…", "📥 Inštalovať skin…", "📥 Skin installieren…"),
+    ("📤 Uložit jako šablonu…", "📤 Save as template…", "📤 Uložiť ako šablónu…", "📤 Als Vorlage speichern…"),
+    ("Uloží vybraný skin do souboru .skin – můžete ho upravit a poslat dál. Uvnitř je NAVOD.txt.",
+     "Saves the selected skin to a .skin file – you can edit it and share it. NAVOD.txt inside explains how.",
+     "Uloží vybraný skin do súboru .skin – môžete ho upraviť a poslať ďalej. Vnútri je NAVOD.txt.",
+     "Speichert den gewählten Skin als .skin-Datei – Sie können ihn bearbeiten und weitergeben. Anleitung in "
+     "NAVOD.txt."),
+    ("🗑️ Odebrat", "🗑️ Remove", "🗑️ Odobrať", "🗑️ Entfernen"),
+    ("📁 Složka skinů", "📁 Skins folder", "📁 Priečinok skinov", "📁 Skin-Ordner"),
+    ("Skin", "Skin", "Skin", "Skin"),
+    ("Instalovat skin", "Install skin", "Inštalovať skin", "Skin installieren"),
+    ("Uložit skin", "Save skin", "Uložiť skin", "Skin speichern"),
+    ("Skin nejde nainstalovat:", "The skin cannot be installed:", "Skin sa nedá nainštalovať:",
+     "Der Skin kann nicht installiert werden:"),
+    ("Skin uložen:", "Skin saved:", "Skin uložený:", "Skin gespeichert:"),
+    ("Přejmenujte ho na .zip, rozbalte a upravte barvy v skin.json – návod je v souboru NAVOD.txt.",
+     "Rename it to .zip, unpack it and edit the colours in skin.json – see NAVOD.txt for instructions.",
+     "Premenujte ho na .zip, rozbaľte a upravte farby v skin.json – návod je v súbore NAVOD.txt.",
+     "Benennen Sie ihn in .zip um, entpacken Sie ihn und ändern Sie die Farben in skin.json – Anleitung in "
+     "NAVOD.txt."),
+    ("Odebrat skin?", "Remove the skin?", "Odobrať skin?", "Skin entfernen?"),
+    ("vlastní obrázky", "custom images", "vlastné obrázky", "eigene Bilder"),
+    ("vlastní ikony", "custom icons", "vlastné ikony", "eigene Symbole"),
+    ("Výchozí (světlý)", "Default (light)", "Predvolený (svetlý)", "Standard (hell)"),
+    ("Tmavý", "Dark", "Tmavý", "Dunkel"),
+    ("Sépie (papír)", "Sepia (paper)", "Sépia (papier)", "Sepia (Papier)"),
+    ("Vysoký kontrast", "High contrast", "Vysoký kontrast", "Hoher Kontrast"),
+    ("Původní světlý vzhled s modrými prvky.", "The original light look with blue accents.",
+     "Pôvodný svetlý vzhľad s modrými prvkami.", "Das ursprüngliche helle Aussehen mit blauen Akzenten."),
+    ("Tmavé okno šetrné k očím večer; stránka knihy zůstává světlá jako papír.",
+     "A dark window that is easy on the eyes in the evening; the book page stays light like paper.",
+     "Tmavé okno šetrné k očiam večer; stránka knihy zostáva svetlá ako papier.",
+     "Ein dunkles Fenster, angenehm für die Augen am Abend; die Buchseite bleibt hell wie Papier."),
+    ("Teplé barvy starého papíru a hnědé prvky – jako v knihovně.",
+     "Warm colours of old paper with brown accents – like in a library.",
+     "Teplé farby starého papiera a hnedé prvky – ako v knižnici.",
+     "Warme Farben alten Papiers mit braunen Akzenten – wie in einer Bibliothek."),
+    ("Černé pozadí, bílý text a žluté prvky – nejlepší čitelnost, větší písmo.",
+     "Black background, white text and yellow accents – best readability, larger font.",
+     "Čierne pozadie, biely text a žlté prvky – najlepšia čitateľnosť, väčšie písmo.",
+     "Schwarzer Hintergrund, weißer Text und gelbe Akzente – beste Lesbarkeit, größere Schrift."),
 ]
 
 

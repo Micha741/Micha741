@@ -14,11 +14,13 @@ from PySide6.QtCore import Qt
 
 SIZE = 22                 # výška vodorovného / šířka svislého pravítka v px
 SNAP_CM = 0.25            # značky odsazení se přichytávají po čtvrt centimetru
-BG = QtGui.QColor("#f1f5f9")
-PAPER = QtGui.QColor("#ffffff")
-MARGIN = QtGui.QColor("#cbd5e1")
-TICK = QtGui.QColor("#64748b")
-MARK = QtGui.QColor("#2563eb")
+
+
+def _c(token: str) -> QtGui.QColor:
+    """Barva z aktuálního skinu (pravítko se přebarví hned po změně vzhledu)."""
+    import skins
+
+    return QtGui.QColor(skins.C(token))
 
 
 def px_per_cm(w: QtWidgets.QWidget) -> float:
@@ -70,16 +72,16 @@ class HRuler(QtWidgets.QWidget):
     def paintEvent(self, _e):
         p = QtGui.QPainter(self)
         p.setRenderHint(QtGui.QPainter.Antialiasing)
-        p.fillRect(self.rect(), BG)
+        p.fillRect(self.rect(), _c("ruler"))
         cm = px_per_cm(self)
         x0, w = self._origin(), self._text_width()
-        p.fillRect(QtCore.QRectF(x0, 3, w, SIZE - 6), PAPER)
-        p.fillRect(QtCore.QRectF(0, 3, x0, SIZE - 6), MARGIN)
-        p.fillRect(QtCore.QRectF(x0 + w, 3, self.width() - x0 - w, SIZE - 6), MARGIN)
+        p.fillRect(QtCore.QRectF(x0, 3, w, SIZE - 6), _c("paper"))
+        p.fillRect(QtCore.QRectF(0, 3, x0, SIZE - 6), _c("ruler_margin"))
+        p.fillRect(QtCore.QRectF(x0 + w, 3, self.width() - x0 - w, SIZE - 6), _c("ruler_margin"))
         font = p.font()
         font.setPointSizeF(7)
         p.setFont(font)
-        p.setPen(TICK)
+        p.setPen(_c("ruler_tick"))
         n = int(-x0 / cm * 4) - 1
         while True:
             x = x0 + n * cm / 4
@@ -95,8 +97,8 @@ class HRuler(QtWidgets.QWidget):
                     p.drawLine(QtCore.QPointF(x, SIZE / 2 - 1), QtCore.QPointF(x, SIZE / 2 + 1))
             n += 1
         m = self.markers()
-        p.setPen(QtGui.QPen(MARK.darker(120), 1))
-        p.setBrush(MARK)
+        p.setPen(QtGui.QPen(_c("accent").darker(120), 1))
+        p.setBrush(_c("accent"))
         self._tri(p, m["first"], down=True)
         self._tri(p, m["left"], down=False)
         self._tri(p, m["right"], down=False)
@@ -181,18 +183,18 @@ class VRuler(QtWidgets.QWidget):
 
     def paintEvent(self, _e):
         p = QtGui.QPainter(self)
-        p.fillRect(self.rect(), BG)
+        p.fillRect(self.rect(), _c("ruler"))
         cm = self.logicalDpiY() / 2.54
         margin = self.edit.document().documentMargin()
         y0 = margin - self.edit.verticalScrollBar().value()
         doc_h = self.edit.document().size().height()
-        p.fillRect(QtCore.QRectF(3, max(0.0, y0), SIZE - 6, max(0.0, doc_h - 2 * margin)), PAPER)
+        p.fillRect(QtCore.QRectF(3, max(0.0, y0), SIZE - 6, max(0.0, doc_h - 2 * margin)), _c("paper"))
         if y0 > 0:
-            p.fillRect(QtCore.QRectF(3, 0, SIZE - 6, y0), MARGIN)
+            p.fillRect(QtCore.QRectF(3, 0, SIZE - 6, y0), _c("ruler_margin"))
         font = p.font()
         font.setPointSizeF(7)
         p.setFont(font)
-        p.setPen(TICK)
+        p.setPen(_c("ruler_tick"))
         n = max(0, int(-y0 / cm * 4))
         while True:
             y = y0 + n * cm / 4

@@ -179,3 +179,48 @@ test('prostý text knihy', () => {
   assert.ok(t.startsWith('Strážce majáku\nJan Novák\n\n\n1. Bouře'));
   assert.ok(t.includes('[obrázek]'));
 });
+
+// ------------------------------------------------------------ skiny
+import JSZip from 'jszip';
+import { BUILTIN_SKINS, readSkinFile, SkinError, TOKENS } from '../src/core/skins';
+
+test('vestavěné skiny mají všechny barvy', () => {
+  assert.deepEqual(BUILTIN_SKINS.map((s) => s.id).slice(0, 4), ['default', 'dark', 'sepia', 'contrast']);
+  for (const s of BUILTIN_SKINS) assert.deepEqual(Object.keys(s.colors).sort(), [...TOKENS].sort());
+});
+
+test('skin ze souboru .skin (stejný formát jako Windows)', async () => {
+  const zip = new JSZip();
+  zip.file('Les/skin.json', JSON.stringify({ name: 'Les', author: 'Já', base: 'dark', colors: { accent: '#22C55E', window: 'nesmysl' }, images: { logo: 'logo.png' } }));
+  zip.file('Les/logo.png', new Uint8Array([0x89, 0x50, 0x4e, 0x47, 1, 2, 3]));
+  const skin = await readSkinFile(await zip.generateAsync({ type: 'uint8array' }), 'les.skin');
+  assert.equal(skin.id, 'user:les');
+  assert.equal(skin.colors.accent, '#22c55e');
+  assert.equal(skin.colors.window, BUILTIN_SKINS[1].colors.window);
+  assert.ok(skin.logo?.startsWith('data:image/png;base64,'));
+  await assert.rejects(readSkinFile(new Uint8Array([1, 2, 3]), 'x.skin'), SkinError);
+  const bad = new JSZip();
+  bad.file('readme.txt', 'x');
+  await assert.rejects(readSkinFile(await bad.generateAsync({ type: 'uint8array' }), 'x.skin'), /skin\.json/);
+});
+
+// ------------------------------------------------------------ offline v telefonu (ML Kit) – s náhradou modulu
+import { setOfflineBackend } from '../src/core/translate';
+
+test('offline překlad: pozná jazyk jednou, přeskočí stejný jazyk, srozumitelné chyby', async () => {
+  const calls: string[] = [];
+  setOfflineBackend({
+    identifyLanguage: async (t) => (calls.push('id:' + t.slice(0, 5)), 'de'),
+    translate: async (texts, src, dst, wifi) => (calls.push(`${src}>${dst}:${wifi}`), texts.map((t) => `[${t}]`)),
+  });
+  const tr = makeTranslator('offline', 'cs', {});
+  assert.deepEqual(await tr.translate(['Hallo', 'Welt']), ['[Hallo]', '[Welt]']);
+  assert.deepEqual(await tr.translate(['Buch']), ['[Buch]']);
+  assert.deepEqual(calls, ['id:Hallo', 'de>cs:true', 'de>cs:true']);
+  const same = makeTranslator('offline', 'de', { offlineWifiOnly: false });
+  assert.deepEqual(await same.translate(['Hallo']), ['Hallo']);
+  setOfflineBackend({ identifyLanguage: async () => 'und', translate: async () => { throw new Error('Waiting for wifi to download'); } });
+  await assert.rejects(makeTranslator('offline', 'cs', {}).translate(['x']), /Wi-Fi/);
+  setOfflineBackend(null);
+  assert.throws(() => makeTranslator('offline', 'cs', {}), /Expo Go/);
+});

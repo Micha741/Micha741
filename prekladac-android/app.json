@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Překladač knih",
-    "slug": "prekladac-knih",
+    "slug": "prekladac",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -41,6 +41,11 @@
     "androidStatusBar": {
       "barStyle": "light-content",
       "backgroundColor": "#1e293b"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "cc32578f-eecd-4640-a6ab-49a737d994d4"
+      }
     }
   }
 }

@@ -2,7 +2,7 @@
 
 **Překlad a převod souborů**
 - Formáty EPUB, AZW3/KF8, KFX, MOBI, PDF (i mnohastránkové), DOCX, TXT, RTF, obrázky JPG/PNG (OCR) a další.
-- Překladače: Google (zdarma), offline v počítači (Argos, bez internetu), DeepL Free, Microsoft Translator a překlad celých dokumentů Azure, Claude, Google Gemini,
+- Překladače: Google (zdarma, šetrně – 1 požadavek najednou), Google Cloud Translation (API klíč, 500 000 znaků/měsíc zdarma), offline v počítači (Argos, bez internetu), DeepL Free, Microsoft Translator a překlad celých dokumentů Azure, Claude, Google Gemini,
   OpenAI‑kompatibilní (OpenRouter, DeepSeek, Mistral, Groq…), Ollama, LibreTranslate.
 - Text z obrázků a skenů (Tesseract, Gemini, Claude), více fotek do jednoho DOCX nebo vícestránkového PDF.
 - Seznam souborů s výběrem více položek, přidáním celé složky a přetahováním myší.
@@ -23,6 +23,9 @@
 - Instalátor s Tesseractem a českým slovníkem (asi o 300 MB menší), upozornění na novou verzi.
 - Vlastní převody EPUB, MOBI, PDB, DOCX, RTF, ODT, FB2, HTMLZ, TXT a PDF bez Calibre; Calibre volitelně pro zápis AZW3, KFX a LIT.
 - Jazyk programu: čeština, angličtina, slovenština, němčina (další jazyky jde doinstalovat).
+- Skiny (vzhledy) jako ve Winampu: Výchozí, Tmavý, Sépie, Vysoký kontrast a doinstalování dalších ze souboru .skin – i na Androidu.
+- Srozumitelná hláška, když neběží vlastní server (LibreTranslate, Ollama), a podrobný návod k LibreTranslate (Python, Docker, server pro domácí síť).
+- Android: překlad „Offline v telefonu“ (Google ML Kit) – bez internetu a bez klíče, jazyky se stahují jednou.
 - Klíče uložené zašifrovaně (Windows DPAPI), návody ke všem službám.
 
 # Historie verzí
@@ -57,6 +60,7 @@
   obrázky, obálka); instalátor je asi o 300 MB menší. Calibre je volitelné (Nastavení → Součásti → Stáhnout
   Calibre) jen pro zápis AZW3, pro KFX a LIT.
 - Český slovník s přesnou verzí zdroje a plným zněním licence (GPL v2) ve složce dict.
+- Srozumitelná hláška, když Google (zdarma) dočasně omezí počet požadavků (HTTP 429), bez webové stránky v okně.
 - Mobilní verze pro Android (převod a překlad knih) se stejnými formáty a podobným vzhledem.
 - Napsat knihu → Soubor → Otevřít: i hotové knihy v DOCX, EPUB, TXT (i starší kódování Windows), MOBI, AZW3,
   PDB, FB2, ODT, RTF, PDF… – rozdělí se na kapitoly a uloží jako projekt vedle původního souboru.

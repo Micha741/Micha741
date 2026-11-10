@@ -330,3 +330,98 @@ def test_openai_compat_caps_max_tokens_and_explains_402(monkeypatch):
     else:
         raise AssertionError("expected EngineError")
     assert 1024 <= sent[0]["max_tokens"] < 4000  # krátký text = malá rezervace, ne 16 384
+
+
+def test_http_429_friendly_message_without_html(monkeypatch):
+    import io
+    import urllib.error
+
+    import free_engines as fe
+
+    page = b"<!DOCTYPE html><html><head><title>Error 429 (Too Many Requests)!!1</title></head><body><a href=//www.google.com/><span id=logo aria-label=Google></span></a><p>Too many</p></body></html>"
+
+    def boom(req, timeout=None, context=None):
+        raise urllib.error.HTTPError(req.full_url, 429, "Too Many Requests", {}, io.BytesIO(page))
+
+    monkeypatch.setattr(fe.urllib.request, "urlopen", boom)
+    monkeypatch.setattr(fe.time, "sleep", lambda *_: None)
+    try:
+        fe.http_request("https://translate.googleapis.com/x", service="Google Překladač", retries=2)
+    except fe.EngineError as e:
+        msg = str(e)
+    else:
+        raise AssertionError("má přijít chyba")
+    assert "HTTP 429" in msg and "Počkejte několik minut" in msg
+    assert "<" not in msg and "html" not in msg.lower()
+    assert fe._clean_body(page.decode()) == "Error 429 (Too Many Requests)!!1"
+
+
+def test_google_cloud_engine(monkeypatch):
+    import free_engines as fe
+
+    sent = {}
+
+    def fake(url, data=None, service="", **k):
+        sent.update(url=url, data=data)
+        return {"data": {"translations": [{"translatedText": t.upper().replace("'", "&#39;")} for t in data["q"]]}}
+
+    monkeypatch.setattr(fe, "http_json", fake)
+    eng = fe.GoogleCloudEngine("němčina", " AIza klíč ")
+    assert eng.translate_batch(["it's", "b"], markup=False, context="") == ["IT'S", "B"]
+    assert "key=AIza" in sent["url"] and sent["data"]["target"] == "de" and sent["data"]["format"] == "text"
+    assert eng.translate_batch(["<b>a</b>"], markup=True, context="") == ["<B>A</B>"]
+    assert sent["data"]["format"] == "html"
+    import pytest
+    with pytest.raises(fe.EngineError):
+        fe.GoogleCloudEngine("čeština", "")
+
+
+def test_google_free_is_gentle():
+    import free_engines as fe
+
+    assert fe.GoogleFreeEngine.workers == 1 and fe.GoogleFreeEngine.PAUSE >= 1
+    assert sum(fe.GoogleFreeEngine.BACKOFF) >= 600  # při HTTP 429 čeká celkem aspoň 10 minut
+
+
+@pytest.mark.parametrize("url, service, expect", [
+    ("http://localhost:5000/translate", "LibreTranslate", ["ve vašem počítači", "http://localhost:5000",
+                                                           "Offline v počítači"]),
+    ("http://192.168.1.20:5000/translate", "LibreTranslate", ["192.168.1.20:5000", "--host 0.0.0.0", "firewall"]),
+    ("http://localhost:11434/api/chat", "Ollama", ["ve vašem počítači", "ollama list"]),
+])
+def test_refused_connection_is_explained_without_retries(monkeypatch, url, service, expect):
+    import urllib.error
+
+    import free_engines as fe
+
+    calls = []
+
+    def refused(req, timeout=None, context=None):
+        calls.append(1)
+        raise urllib.error.URLError(ConnectionRefusedError(10061, "[WinError 10061] Nemohlo být vytvořeno žádné "
+                                                                  "připojení, protože cílový počítač je aktivně odmítl"))
+
+    monkeypatch.setattr(fe.urllib.request, "urlopen", refused)
+    monkeypatch.setattr(fe.time, "sleep", lambda *_: (_ for _ in ()).throw(AssertionError("nemá čekat")))
+    with pytest.raises(fe.EngineError) as e:
+        fe.http_request(url, service=service)
+    msg = str(e.value)
+    assert len(calls) == 1 and "WinError" not in msg
+    for part in expect:
+        assert part in msg
+
+
+def test_ollama_not_running_message_is_not_duplicated(monkeypatch):
+    import urllib.error
+
+    import free_engines as fe
+
+    def refused(req, timeout=None, context=None):
+        raise urllib.error.URLError(ConnectionRefusedError(10061, "[WinError 10061] odmítl"))
+
+    monkeypatch.setattr(fe.urllib.request, "urlopen", refused)
+    eng = fe.OllamaEngine("Czech")
+    with pytest.raises(fe.EngineError) as e:
+        eng._complete_json("s", [{"text": "x"}], {"type": "object"})
+    msg = str(e.value)
+    assert "ve vašem počítači" in msg and "ollama list" in msg and "ollama pull" not in msg

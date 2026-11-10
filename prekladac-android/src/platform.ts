@@ -10,6 +10,7 @@ import type { Book } from './core/book';
 import { type OutputFormat, OUTPUT_FORMATS, readBook, writeBook } from './core/formats';
 import { pdfHtml } from './core/pdf';
 import type { EngineSettings } from './core/translate';
+import { readSkinFile, slug, type Skin } from './core/skins';
 
 export async function pickBook(): Promise<Book | null> {
   const res = await DocumentPicker.getDocumentAsync({ type: '*/*', copyToCacheDirectory: true });
@@ -92,6 +93,7 @@ export async function saveOutputToFolder(o: Output): Promise<string> {
 
 // ------------------------------------------------------------ nastavení (klíče jsou v šifrovaném úložišti)
 export interface Settings extends EngineSettings {
+  skin?: string;
   engine?: string;
   target?: string;
   format?: string;
@@ -110,4 +112,47 @@ export async function loadSettings(): Promise<Settings> {
 
 export async function saveSettings(s: Settings) {
   await SecureStore.setItemAsync(KEY, JSON.stringify(s));
+}
+
+// ------------------------------------------------------------ skiny (soubory .skin jako ve Windows)
+function skinsDir(): Directory {
+  const d = new Directory(Paths.document, 'skins');
+  if (!d.exists) d.create({ intermediates: true });
+  return d;
+}
+
+export async function loadInstalledSkins(): Promise<Skin[]> {
+  const out: Skin[] = [];
+  try {
+    for (const f of skinsDir().list()) {
+      if (f instanceof File && f.name.endsWith('.json')) {
+        try {
+          out.push(JSON.parse(await f.text()) as Skin);
+        } catch {
+          // poškozený skin se jen nezobrazí
+        }
+      }
+    }
+  } catch {
+    return [];
+  }
+  return out.sort((a, b) => a.name.localeCompare(b.name, 'cs'));
+}
+
+/** Vybere soubor .skin a uloží ho do aplikace. Vrátí nainstalovaný skin (nebo null při zrušení). */
+export async function installSkinFromPicker(): Promise<Skin | null> {
+  const res = await DocumentPicker.getDocumentAsync({ type: '*/*', copyToCacheDirectory: true });
+  if (res.canceled || !res.assets?.length) return null;
+  const a = res.assets[0];
+  const skin = await readSkinFile(await new File(a.uri).bytes(), a.name);
+  const f = new File(skinsDir(), `${slug(skin.name)}.json`);
+  if (f.exists) f.delete();
+  f.create();
+  f.write(JSON.stringify(skin));
+  return skin;
+}
+
+export function removeSkin(skin: Skin) {
+  const f = new File(skinsDir(), `${skin.id.replace(/^user:/, '')}.json`);
+  if (f.exists) f.delete();
 }

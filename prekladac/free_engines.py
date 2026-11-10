@@ -111,7 +111,7 @@ def http_request(url: str, *, data=None, headers: dict | None = None, method: st
             with urllib.request.urlopen(req, timeout=timeout, context=ctxs[ctx_i]) as resp:
                 return resp.read()
         except urllib.error.HTTPError as e:
-            body = e.read().decode("utf-8", errors="replace")[:500]
+            body = _clean_body(e.read().decode("utf-8", errors="replace"))
             if e.code in (401, 403):
                 raise EngineError(f"{service}: neplatný nebo chybějící klíč (HTTP {e.code}). {body}") from e
             if e.code == 456:
@@ -119,7 +119,7 @@ def http_request(url: str, *, data=None, headers: dict | None = None, method: st
             if e.code == 404:
                 raise EngineError(f"{service}: adresa nebo model nenalezen (HTTP 404). {body}") from e
             if e.code in (429, 500, 502, 503, 504, 529):
-                last = f"HTTP {e.code} {body}"
+                last = e.code
                 wait = e.headers.get("Retry-After")
                 delay = float(wait) if wait and wait.isdigit() else backoff[min(attempt, len(backoff) - 1)]
             else:
@@ -134,12 +134,64 @@ def http_request(url: str, *, data=None, headers: dict | None = None, method: st
                     "Častou příčinou je antivirus, který kontroluje HTTPS spojení, nebo firemní proxy. "
                     "Zkuste v antiviru vypnout kontrolu HTTPS pro Prekladac.exe."
                 ) from e
+            if _is_refused(e):  # server neběží – opakování nepomůže, hned srozumitelná hláška
+                raise _refused_error(url, service) from e
             last = str(getattr(e, "reason", e))
             delay = backoff[min(attempt, len(backoff) - 1)]
         attempt += 1
         if attempt <= retries:
             time.sleep(delay)
-    raise EngineError(f"{service}: služba neodpovídá ({last}).")
+    if last == 429:
+        raise EngineError(f"{service}: služba dočasně omezila počet požadavků z vašeho připojení (HTTP 429 – příliš "
+                          "mnoho požadavků). Program to zkoušel znovu, ale omezení trvá. Počkejte několik minut a "
+                          "zkuste to znovu, nebo zvolte jiný překladač (Offline v počítači, DeepL, Gemini…).")
+    if isinstance(last, int):
+        raise EngineError(f"{service}: služba je přetížená nebo mimo provoz (HTTP {last}). Zkuste to za chvíli znovu.")
+    raise EngineError(f"{service}: služba neodpovídá ({last}). Zkontrolujte připojení k internetu.")
+
+
+# co poradit, když vlastní server (v počítači nebo v domácí síti) odmítne spojení: (v tomto počítači, jinde v síti)
+SERVER_HINTS = {
+    "LibreTranslate": (
+        "LibreTranslate je vlastní překladový server pro pokročilé – nejdřív ho spusťte podle návodu v Nastavení → "
+        "Služby a klíče → LibreTranslate (Python nebo Docker). Pokud server mít nechcete, zvolte překladač „Offline "
+        "v počítači“ – používá stejné jazykové modely, ale žádný server nepotřebuje.",
+        "Na tom počítači musí LibreTranslate běžet s volbou --host 0.0.0.0 (v Dockeru je to samo) a brána firewall "
+        "musí povolit port serveru. Návod je v Nastavení → Služby a klíče → LibreTranslate."),
+    "Ollama": (
+        "Ollama asi neběží – spusťte aplikaci Ollama (ikona u hodin) a v příkazovém řádku zkuste „ollama list“. "
+        "Návod je v Nastavení → Služby a klíče → Ollama.",
+        "Na tom počítači musí Ollama běžet s nastavením OLLAMA_HOST=0.0.0.0 a brána firewall musí povolit port "
+        "11434."),
+}
+
+
+def _is_refused(e: BaseException) -> bool:
+    r = getattr(e, "reason", e)
+    if isinstance(r, ConnectionRefusedError):
+        return True
+    return getattr(r, "errno", None) in (111, 10061) or "10061" in str(r) or "refused" in str(r).lower()
+
+
+def _refused_error(url: str, service: str) -> EngineError:
+    p = urllib.parse.urlsplit(url)
+    base = f"{p.scheme}://{p.netloc}"
+    local = (p.hostname or "") in ("localhost", "127.0.0.1", "::1", "0.0.0.0")
+    here, there = SERVER_HINTS.get(service, ("Zkontrolujte adresu serveru v Nastavení a že server běží.",) * 2)
+    if local:
+        return EngineError(f"{service}: ve vašem počítači na adrese {base} neběží žádný server (spojení odmítnuto). "
+                           f"{here}")
+    return EngineError(f"{service}: počítač na adrese {base} odmítl spojení – server tam neběží, nebo nepřijímá "
+                       f"spojení ze sítě. {there}")
+
+
+def _clean_body(body: str) -> str:
+    """Text chyby ze serveru – bez HTML stránky (Google posílá celou stránku s logem), zkrácený."""
+    if re.search(r"<(html|!doctype|body|head)\b", body, re.I):
+        title = re.search(r"<title[^>]*>(.*?)</title>", body, re.I | re.S)
+        body = title.group(1) if title else ""
+    body = re.sub(r"<[^>]+>", " ", body)
+    return " ".join(body.split())[:300]
 
 
 def http_json(url: str, **kw):
@@ -301,7 +353,10 @@ class GoogleFreeEngine(Engine):
     name = "Google Překladač"
     max_chars = 4000
     max_items = 80
-    workers = 2
+    workers = 1  # jeden požadavek najednou – Google pak méně často omezí přístup (HTTP 429)
+    PAUSE = 1.0  # pauza mezi požadavky (s)
+    # při omezení (429) se čeká postupně déle, celkem až ~17 minut, než to program vzdá
+    BACKOFF = (20, 45, 90, 180, 300, 400)
     URL = "https://translate.googleapis.com/translate_a/single"
 
     def _call(self, text: str) -> str:
@@ -310,9 +365,9 @@ class GoogleFreeEngine(Engine):
         data = http_json(
             f"{self.URL}?{params}", data=body,
             headers={"Content-Type": "application/x-www-form-urlencoded;charset=utf-8"},
-            service="Google Překladač", backoff=(5, 15, 30, 60),
+            service="Google Překladač", backoff=self.BACKOFF, retries=len(self.BACKOFF),
         )
-        time.sleep(0.2)  # šetrně, ať Google neblokuje
+        time.sleep(self.PAUSE)  # šetrně, ať Google neblokuje
         return "".join(part[0] for part in (data[0] or []) if part and part[0])
 
     def _translate_one(self, text: str) -> str:
@@ -337,6 +392,43 @@ class GoogleFreeEngine(Engine):
         if result is None:
             result = [self._translate_one(p) for p in prepared]
         return [restore_tags(r, tags) if markup else r for r, tags in zip(result, tag_lists)]
+
+
+class GoogleCloudEngine(Engine):
+    """Oficiální Google Cloud Translation (Basic, v2) s API klíčem – zdarma 500 000 znaků měsíčně."""
+
+    name = "Google Cloud Translation"
+    max_chars = 25000
+    max_items = 100
+    workers = 2
+    URL = "https://translation.googleapis.com/language/translate/v2"
+
+    def __init__(self, target_lang: str, api_key: str):
+        super().__init__(target_lang)
+        if not api_key:
+            raise EngineError("Google Cloud Translation: chybí API klíč (Google Cloud Console → Credentials).")
+        self.key = re.sub(r"\s+", "", api_key)
+
+    def translate_batch(self, texts, markup, context):
+        body = {"q": texts, "target": self.iso, "format": "html" if markup else "text"}
+        try:
+            data = http_json(f"{self.URL}?key={urllib.parse.quote(self.key)}", data=body,
+                             service="Google Cloud Translation")
+        except EngineError as e:
+            msg = str(e)
+            if "API has not been used" in msg or "SERVICE_DISABLED" in msg or "is disabled" in msg:
+                raise EngineError("Google Cloud Translation: v projektu není zapnuté „Cloud Translation API“ – "
+                                  "Google Cloud Console → APIs & Services → Library → Cloud Translation API → "
+                                  "Enable.") from e
+            if "billing" in msg.lower():
+                raise EngineError("Google Cloud Translation: projekt nemá propojený fakturační účet (Billing). "
+                                  "Google ho vyžaduje i pro bezplatných 500 000 znaků měsíčně.") from e
+            raise
+        out = [t.get("translatedText", "") for t in (data.get("data") or {}).get("translations", [])]
+        if len(out) != len(texts):
+            raise BadResponse("Google Cloud vrátil jiný počet úseků")
+        # ve formátu „text“ vrací Google i tak HTML entity (&#39; &quot;)
+        return out if markup else [html.unescape(t) for t in out]
 
 
 class MicrosoftEngine(Engine):
@@ -631,7 +723,9 @@ class OllamaEngine(_LLMEngine):
         try:
             data = http_json(f"{self.url}/api/chat", data=body, service="Ollama", timeout=1800, retries=1)
         except EngineError as e:
-            raise EngineError(f"{e} Běží Ollama a je stažený model „{self.model}“ (ollama pull {self.model})?") from e
+            if "spojení" in str(e):  # Ollama vůbec neběží – hláška z http_request už radí, co dělat
+                raise
+            raise EngineError(f"{e} Je stažený model „{self.model}“? V příkazovém řádku: ollama pull {self.model}") from e
         self._add_usage(data.get("prompt_eval_count"), data.get("eval_count"))
         return json.loads(data["message"]["content"])
 
@@ -770,13 +864,14 @@ class OfflineEngine(Engine):
 ENGINE_LABELS = {
     "claude": "Claude API – placený, nejlepší kvalita",
     "deepl": "DeepL API Free – zdarma 500 000 znaků/měsíc",
-    "google": "Google Překladač – zdarma, bez klíče",
+    "google": "Google Překladač – zdarma, bez klíče (u velkých knih pomaleji)",
+    "google_cloud": "Google Cloud Translation – zdarma 500 000 znaků/měsíc, s klíčem",
     "microsoft": "Microsoft Translator – zdarma 2 mil. znaků/měsíc",
     "microsoft_doc": "Microsoft – překlad celých dokumentů se zachováním vzhledu (DOCX, PDF, PPTX…)",
     "gemini": "Google Gemini – bezplatná úroveň s limity",
     "ollama": "Ollama – AI v počítači, offline, zdarma",
     "openai": "OpenAI-kompatibilní – OpenAI, DeepSeek, Mistral, OpenRouter, Groq…",
-    "libre": "LibreTranslate – vlastní server, zdarma",
+    "libre": "LibreTranslate – vlastní server (pro pokročilé), zdarma",
     "offline": "Offline v počítači (Argos) – zdarma, bez internetu",
 }
 

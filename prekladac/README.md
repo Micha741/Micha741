@@ -87,6 +87,18 @@ Výsledek se uloží vedle originálu jako `název (čeština).přípona`.
 uloží se tlačítkem Uložit nastavení. Instalátor i `Prekladac.exe` mají ve Vlastnostech → Podrobnosti verzi souboru,
 autorská práva a popis.
 
+### Vzhled (skiny)
+
+Jako ve Winampu: *⚙ Nastavení → Vzhled*. Vestavěné skiny **Výchozí**, **Tmavý**, **Sépie (papír)** a **Vysoký
+kontrast** se přepnou hned, bez restartu. Další skiny se instalují ze souboru **.skin** – tlačítkem
+**Instalovat skin…**, přetažením do seznamu nebo dvojklikem na soubor ve Windows. Ukládají se do
+`%APPDATA%\Prekladac\skins`.
+
+Soubor .skin je ZIP se `skin.json` (název, autor, barvy, písmo) a volitelně s logem, pozadím, vlastními ikonami
+tlačítek (`icons/<kód emoji>.png`) a styly `style.qss`. Obsahuje jen barvy, obrázky a styly, žádný spustitelný kód.
+Při instalaci se kontrolují cesty, typy souborů i velikost. Šablonu vytvoří **Uložit jako šablonu…**, návod je
+uvnitř v `NAVOD.txt`. Stejné soubory .skin umí i aplikace pro Android (barvy a logo).
+
 ### Jazyk programu
 
 Program je česky, anglicky, slovensky a německy: *⚙ Nastavení → Obecné → Jazyk programu*, uložit a restartovat
@@ -299,3 +311,7 @@ Testy nevolají API (odpovědi služeb jsou podvržené). Živý test Google Př
 
 Mobilní verze (převod a překlad knih v telefonu) je ve složce [`../prekladac-android`](../prekladac-android).
 Používá stejná pravidla převodů (EPUB, MOBI, PDB, DOCX, TXT, PDF) a podobný vzhled.
+
+Překlad **Offline v telefonu** používá Google ML Kit (vlastní modul `modules/mlkit-translate`): jazyk (asi 30 MB)
+se stáhne jednou a pak se překládá bez internetu a bez klíče. ML Kit je jen pro Android a iOS – ve Windows stejnou
+roli plní *Offline v počítači* (Argos). Funguje jen v sestavené aplikaci (APK), ne v Expo Go.
