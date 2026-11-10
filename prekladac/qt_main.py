@@ -1899,8 +1899,10 @@ class MainWindow(QtWidgets.QMainWindow):
         for old in ("ebook_convert", "tesseract"):
             if self.cfg.get(old) and not paths.get(old):
                 paths[old] = self.cfg.pop(old)
-        paths["ebook_convert"] = paths.get("ebook_convert") or find_ebook_convert() or ""
-        paths["tesseract"] = paths.get("tesseract") or find_tesseract() or ""
+        # uložená cesta, která už neexistuje (např. Calibre z dřívější verze po odinstalování), se hledá znovu
+        for key, finder in (("ebook_convert", find_ebook_convert), ("tesseract", find_tesseract)):
+            if not paths.get(key) or not os.path.isfile(paths[key]):
+                paths[key] = finder() or ""
 
         self.setWindowTitle(self.title())
         # velikost podle obrazovky (např. notebook 1366×768 s lištou Windows)

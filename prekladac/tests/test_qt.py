@@ -895,3 +895,15 @@ def test_pdf_from_background_thread(qapp, tmp_path):
         time.sleep(0.01)
     t.join(5)
     assert not err and dst.read_bytes()[:5] == b"%PDF-"
+
+
+def test_stale_calibre_path_is_forgotten(qapp, monkeypatch):
+    import app as core
+    import qt_main
+    cfg = core.load_config()
+    cfg.setdefault("paths", {})["ebook_convert"] = r"C:\neexistuje\Calibre2\ebook-convert.exe"
+    core.save_config(cfg)
+    monkeypatch.setattr(qt_main, "find_ebook_convert", lambda *a: None)
+    win = qt_main.MainWindow()
+    assert win.cfg["paths"]["ebook_convert"] == ""
+    win.close()
