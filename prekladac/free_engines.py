@@ -723,7 +723,9 @@ class OllamaEngine(_LLMEngine):
         try:
             data = http_json(f"{self.url}/api/chat", data=body, service="Ollama", timeout=1800, retries=1)
         except EngineError as e:
-            raise EngineError(f"{e} Běží Ollama a je stažený model „{self.model}“ (ollama pull {self.model})?") from e
+            if "spojení" in str(e):  # Ollama vůbec neběží – hláška z http_request už radí, co dělat
+                raise
+            raise EngineError(f"{e} Je stažený model „{self.model}“? V příkazovém řádku: ollama pull {self.model}") from e
         self._add_usage(data.get("prompt_eval_count"), data.get("eval_count"))
         return json.loads(data["message"]["content"])
 

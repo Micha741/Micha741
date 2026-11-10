@@ -85,13 +85,28 @@ Program před překladem vypíše odhad a na konci skutečnou cenu.""",
 
     "ollama": """Ollama – AI model ve vašem počítači (zdarma, offline)
 
-1. Stáhněte a nainstalujte Ollama z https://ollama.com.
-2. V příkazovém řádku stáhněte model, např.:  ollama pull gemma3:12b
-   (menší a rychlejší: gemma3:4b; kvalita češtiny je slabší než u online služeb).
-3. Ollama běží na pozadí na adrese http://localhost:11434 – tu nechte v poli „Adresa“.
-4. Do pole „Model“ napište název staženého modelu, Uložit → Otestovat.
+NEJDŘÍV: zvládne to váš počítač?
+  Model gemma3:12b má ke stažení asi 8 GB a potřebuje zhruba 12–16 GB paměti (ideálně grafickou kartu
+  s 12 GB a více). Na běžném notebooku použijte menší gemma3:4b (asi 3 GB). Bez grafické karty se
+  překládá pomalu – kniha může trvat i hodiny. Pokud chcete jen překlad bez internetu a bez čekání,
+  je jednodušší vestavěný „Offline v počítači“.
 
-Potřebuje výkonnější počítač (ideálně s grafickou kartou); překlad knihy může trvat hodiny.""",
+1. Stáhněte a nainstalujte Ollama z https://ollama.com (Download → Windows).
+   Po instalaci běží na pozadí – ikona lamy vpravo dole u hodin. Když tam není, spusťte Ollama
+   z nabídky Start.
+2. V příkazovém řádku (Win+R → cmd) stáhněte model:
+      ollama pull gemma3:12b        (nebo menší:  ollama pull gemma3:4b)
+3. Kontrola: příkaz  ollama list  vypíše stažené modely. V prohlížeči adresa
+   http://localhost:11434 musí ukázat „Ollama is running“.
+4. Tady nechte v poli „Adresa“ http://localhost:11434, do pole „Model“ napište přesný název
+   z „ollama list“ (např. gemma3:4b), Uložit → Otestovat.
+
+ČASTÉ CHYBY
+  „neběží žádný server (spojení odmítnuto)“ – Ollama není spuštěná (chybí ikona u hodin) nebo není
+    nainstalovaná.
+  „model nenalezen (HTTP 404)“ – model není stažený nebo je v Nastavení napsaný jinak než v „ollama list“.
+  Ollama na jiném počítači v síti: tam nastavte proměnnou prostředí OLLAMA_HOST=0.0.0.0, restartujte
+    Ollama, povolte port 11434 ve firewallu a sem napište http://IP-adresa-počítače:11434.""",
 
     "libre": """LibreTranslate – vlastní překladový server (zdarma, offline, pro pokročilé)
 

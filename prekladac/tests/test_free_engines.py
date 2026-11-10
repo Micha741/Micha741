@@ -409,3 +409,19 @@ def test_refused_connection_is_explained_without_retries(monkeypatch, url, servi
     assert len(calls) == 1 and "WinError" not in msg
     for part in expect:
         assert part in msg
+
+
+def test_ollama_not_running_message_is_not_duplicated(monkeypatch):
+    import urllib.error
+
+    import free_engines as fe
+
+    def refused(req, timeout=None, context=None):
+        raise urllib.error.URLError(ConnectionRefusedError(10061, "[WinError 10061] odmítl"))
+
+    monkeypatch.setattr(fe.urllib.request, "urlopen", refused)
+    eng = fe.OllamaEngine("Czech")
+    with pytest.raises(fe.EngineError) as e:
+        eng._complete_json("s", [{"text": "x"}], {"type": "object"})
+    msg = str(e.value)
+    assert "ve vašem počítači" in msg and "ollama list" in msg and "ollama pull" not in msg
