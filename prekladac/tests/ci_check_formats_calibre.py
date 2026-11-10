@@ -33,7 +33,8 @@ def sample():
 
 
 def calibre(src, dst):
-    r = subprocess.run([CAL, str(src), str(dst)], capture_output=True, text=True, errors="replace")
+    extra = ["--pdb-output-encoding", "utf-8"] if str(dst).endswith(".pdb") else []  # výchozí cp1252 neumí háčky
+    r = subprocess.run([CAL, str(src), str(dst), *extra], capture_output=True, text=True, errors="replace")
     if r.returncode != 0 or not Path(dst).exists():
         raise RuntimeError(f"Calibre {src.name} → {Path(dst).name} selhal:\n{(r.stderr or r.stdout)[-800:]}")
 

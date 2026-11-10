@@ -177,7 +177,8 @@ jobs:
           choco uninstall calibre -y --no-progress
           Get-ChildItem smoke_out -Filter *.epub | Select-Object -First 1 | Copy-Item -Destination nocal.epub
           Run @('nocal.epub', '--convert-only', '--to', 'mobi', '--out-dir', 'nocal_out') 'nocal1.log'
-          Run @((Get-ChildItem nocal_out -Filter *.mobi | Select-Object -First 1).FullName, '--convert-only', '--to', 'epub', '--out-dir', 'nocal_out') 'nocal2.log'
+          Get-ChildItem nocal_out -Filter *.mobi | Select-Object -First 1 | Copy-Item -Destination nocal.mobi
+          Run @('nocal.mobi', '--convert-only', '--to', 'epub', '--out-dir', 'nocal_out') 'nocal2.log'
           if (-not (Get-ChildItem nocal_out -Filter *.epub)) { throw 'MOBI -> EPUB bez Calibre nevznikl' }
           python tests\ci_check_no_calibre.py
           # 5) offline překlad (Argos): stažení balíčků jako volba v instalátoru, překlad EN→CS a DE→(EN)→CS
