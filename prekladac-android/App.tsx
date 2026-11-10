@@ -411,6 +411,10 @@ function SettingsScreen({ settings, update }: { settings: Settings; update: (s: 
               <Field label="API klíč (aistudio.google.com)" value={settings.geminiKey} onChange={(v) => update({ geminiKey: v })} secret />
               <Field label="Model" value={settings.geminiModel} placeholder={DEFAULT_GEMINI_MODEL} onChange={(v) => update({ geminiModel: v })} />
             </Box>
+            <Box title="Google Cloud Translation">
+              <Field label="API klíč (console.cloud.google.com → Credentials)" value={settings.googleCloudKey} onChange={(v) => update({ googleCloudKey: v })} secret />
+              <Text style={st.hint}>Zdarma 500 000 znaků měsíčně. V projektu zapněte „Cloud Translation API“ a propojte fakturaci (Google to vyžaduje i pro bezplatnou část).</Text>
+            </Box>
             <Box title="DeepL">
               <Field label="API klíč (Free končí na :fx)" value={settings.deeplKey} onChange={(v) => update({ deeplKey: v })} secret />
             </Box>

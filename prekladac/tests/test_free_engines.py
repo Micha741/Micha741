@@ -354,3 +354,30 @@ def test_http_429_friendly_message_without_html(monkeypatch):
     assert "HTTP 429" in msg and "Počkejte několik minut" in msg
     assert "<" not in msg and "html" not in msg.lower()
     assert fe._clean_body(page.decode()) == "Error 429 (Too Many Requests)!!1"
+
+
+def test_google_cloud_engine(monkeypatch):
+    import free_engines as fe
+
+    sent = {}
+
+    def fake(url, data=None, service="", **k):
+        sent.update(url=url, data=data)
+        return {"data": {"translations": [{"translatedText": t.upper().replace("'", "&#39;")} for t in data["q"]]}}
+
+    monkeypatch.setattr(fe, "http_json", fake)
+    eng = fe.GoogleCloudEngine("němčina", " AIza klíč ")
+    assert eng.translate_batch(["it's", "b"], markup=False, context="") == ["IT'S", "B"]
+    assert "key=AIza" in sent["url"] and sent["data"]["target"] == "de" and sent["data"]["format"] == "text"
+    assert eng.translate_batch(["<b>a</b>"], markup=True, context="") == ["<B>A</B>"]
+    assert sent["data"]["format"] == "html"
+    import pytest
+    with pytest.raises(fe.EngineError):
+        fe.GoogleCloudEngine("čeština", "")
+
+
+def test_google_free_is_gentle():
+    import free_engines as fe
+
+    assert fe.GoogleFreeEngine.workers == 1 and fe.GoogleFreeEngine.PAUSE >= 1
+    assert sum(fe.GoogleFreeEngine.BACKOFF) >= 600  # při HTTP 429 čeká celkem aspoň 10 minut

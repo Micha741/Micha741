@@ -316,7 +316,10 @@ class GoogleFreeEngine(Engine):
     name = "Google Překladač"
     max_chars = 4000
     max_items = 80
-    workers = 2
+    workers = 1  # jeden požadavek najednou – Google pak méně často omezí přístup (HTTP 429)
+    PAUSE = 1.0  # pauza mezi požadavky (s)
+    # při omezení (429) se čeká postupně déle, celkem až ~17 minut, než to program vzdá
+    BACKOFF = (20, 45, 90, 180, 300, 400)
     URL = "https://translate.googleapis.com/translate_a/single"
 
     def _call(self, text: str) -> str:
@@ -325,9 +328,9 @@ class GoogleFreeEngine(Engine):
         data = http_json(
             f"{self.URL}?{params}", data=body,
             headers={"Content-Type": "application/x-www-form-urlencoded;charset=utf-8"},
-            service="Google Překladač", backoff=(5, 15, 30, 60),
+            service="Google Překladač", backoff=self.BACKOFF, retries=len(self.BACKOFF),
         )
-        time.sleep(0.2)  # šetrně, ať Google neblokuje
+        time.sleep(self.PAUSE)  # šetrně, ať Google neblokuje
         return "".join(part[0] for part in (data[0] or []) if part and part[0])
 
     def _translate_one(self, text: str) -> str:
@@ -352,6 +355,43 @@ class GoogleFreeEngine(Engine):
         if result is None:
             result = [self._translate_one(p) for p in prepared]
         return [restore_tags(r, tags) if markup else r for r, tags in zip(result, tag_lists)]
+
+
+class GoogleCloudEngine(Engine):
+    """Oficiální Google Cloud Translation (Basic, v2) s API klíčem – zdarma 500 000 znaků měsíčně."""
+
+    name = "Google Cloud Translation"
+    max_chars = 25000
+    max_items = 100
+    workers = 2
+    URL = "https://translation.googleapis.com/language/translate/v2"
+
+    def __init__(self, target_lang: str, api_key: str):
+        super().__init__(target_lang)
+        if not api_key:
+            raise EngineError("Google Cloud Translation: chybí API klíč (Google Cloud Console → Credentials).")
+        self.key = re.sub(r"\s+", "", api_key)
+
+    def translate_batch(self, texts, markup, context):
+        body = {"q": texts, "target": self.iso, "format": "html" if markup else "text"}
+        try:
+            data = http_json(f"{self.URL}?key={urllib.parse.quote(self.key)}", data=body,
+                             service="Google Cloud Translation")
+        except EngineError as e:
+            msg = str(e)
+            if "API has not been used" in msg or "SERVICE_DISABLED" in msg or "is disabled" in msg:
+                raise EngineError("Google Cloud Translation: v projektu není zapnuté „Cloud Translation API“ – "
+                                  "Google Cloud Console → APIs & Services → Library → Cloud Translation API → "
+                                  "Enable.") from e
+            if "billing" in msg.lower():
+                raise EngineError("Google Cloud Translation: projekt nemá propojený fakturační účet (Billing). "
+                                  "Google ho vyžaduje i pro bezplatných 500 000 znaků měsíčně.") from e
+            raise
+        out = [t.get("translatedText", "") for t in (data.get("data") or {}).get("translations", [])]
+        if len(out) != len(texts):
+            raise BadResponse("Google Cloud vrátil jiný počet úseků")
+        # ve formátu „text“ vrací Google i tak HTML entity (&#39; &quot;)
+        return out if markup else [html.unescape(t) for t in out]
 
 
 class MicrosoftEngine(Engine):
@@ -785,7 +825,8 @@ class OfflineEngine(Engine):
 ENGINE_LABELS = {
     "claude": "Claude API – placený, nejlepší kvalita",
     "deepl": "DeepL API Free – zdarma 500 000 znaků/měsíc",
-    "google": "Google Překladač – zdarma, bez klíče",
+    "google": "Google Překladač – zdarma, bez klíče (u velkých knih pomaleji)",
+    "google_cloud": "Google Cloud Translation – zdarma 500 000 znaků/měsíc, s klíčem",
     "microsoft": "Microsoft Translator – zdarma 2 mil. znaků/měsíc",
     "microsoft_doc": "Microsoft – překlad celých dokumentů se zachováním vzhledu (DOCX, PDF, PPTX…)",
     "gemini": "Google Gemini – bezplatná úroveň s limity",

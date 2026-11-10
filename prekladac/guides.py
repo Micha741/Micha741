@@ -5,8 +5,30 @@ GUIDES = {
 
 Nic se nenastavuje. Stačí v hlavním okně zvolit překladač „Google Překladač“.
 
-Pozor: jde o neoficiální bezplatný přístup. Při překladu velkého množství textu
-může Google přístup na čas omezit. Na celé knihy je spolehlivější DeepL Free nebo Gemini.""",
+Pozor: jde o neoficiální bezplatný přístup bez zveřejněných limitů. Při překladu
+velkého množství textu (celá kniha) může Google přístup na čas omezit (HTTP 429).
+Program proto posílá text po jednom kousku s pauzami, při omezení počká (až
+několik minut) a pak pokračuje – celá kniha se tak překládá pomaleji.
+Na celé knihy je spolehlivější Google Cloud Translation, DeepL Free nebo Gemini.""",
+
+    "google_cloud": """Google Cloud Translation – oficiální služba, zdarma 500 000 znaků měsíčně
+
+Kvalita je stejná jako u bezplatného Google Překladače, ale se zveřejněnými limity,
+takže velké knihy se přeloží rychle a bez omezení (HTTP 429).
+Cena: prvních 500 000 znaků každý měsíc zdarma, pak zhruba 20 USD za milion znaků.
+
+1. Otevřete https://console.cloud.google.com a přihlaste se účtem Google.
+2. Vytvořte projekt (nahoře „Select a project“ → „New project“).
+3. Billing (Fakturace): propojte projekt s fakturačním účtem a platební kartou.
+   Google to vyžaduje i pro bezplatnou část; v rámci 500 000 znaků nic neplatíte.
+4. APIs & Services → Library → vyhledejte „Cloud Translation API“ → Enable (Povolit).
+5. APIs & Services → Credentials → Create credentials → API key. Klíč zkopírujte.
+6. Doporučeno: u klíče zvolte „Restrict key“ → API restrictions → jen
+   „Cloud Translation API“ (klíč pak nejde zneužít pro jiné služby).
+7. Klíč vložte sem a klikněte na Otestovat. Ukládá se zašifrovaně (Windows DPAPI).
+
+Hlídání útraty: Billing → Budgets & alerts → nastavte rozpočet třeba 1 USD,
+Google vás upozorní e-mailem dřív, než by se něco platilo.""",
 
     "deepl": """DeepL API Free – zdarma 500 000 znaků měsíčně (zhruba 1 kniha)
 

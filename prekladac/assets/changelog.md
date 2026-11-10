@@ -2,7 +2,7 @@
 
 **Překlad a převod souborů**
 - Formáty EPUB, AZW3/KF8, KFX, MOBI, PDF (i mnohastránkové), DOCX, TXT, RTF, obrázky JPG/PNG (OCR) a další.
-- Překladače: Google (zdarma), offline v počítači (Argos, bez internetu), DeepL Free, Microsoft Translator a překlad celých dokumentů Azure, Claude, Google Gemini,
+- Překladače: Google (zdarma, šetrně – 1 požadavek najednou), Google Cloud Translation (API klíč, 500 000 znaků/měsíc zdarma), offline v počítači (Argos, bez internetu), DeepL Free, Microsoft Translator a překlad celých dokumentů Azure, Claude, Google Gemini,
   OpenAI‑kompatibilní (OpenRouter, DeepSeek, Mistral, Groq…), Ollama, LibreTranslate.
 - Text z obrázků a skenů (Tesseract, Gemini, Claude), více fotek do jednoho DOCX nebo vícestránkového PDF.
 - Seznam souborů s výběrem více položek, přidáním celé složky a přetahováním myší.

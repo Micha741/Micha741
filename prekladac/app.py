@@ -19,7 +19,8 @@ from pathlib import Path
 import components
 from converters import IMAGE_EXT, OUTPUT_FORMATS, CalibreMissing, process_file, process_images_together
 from free_engines import (
-    ENGINE_LABELS, OCR_LABELS, DeepLEngine, EngineError, EngineTranslator, GeminiEngine, GoogleFreeEngine,
+    ENGINE_LABELS, OCR_LABELS, DeepLEngine, EngineError, EngineTranslator, GeminiEngine, GoogleCloudEngine,
+    GoogleFreeEngine,
     LibreTranslateEngine, MicrosoftDocumentTranslator, MicrosoftEngine, OfflineEngine, OllamaEngine, OpenAICompatEngine,
     Pipeline,
     TesseractOCR,
@@ -39,6 +40,7 @@ SERVICES = {
                                       ("model", "Model", False, "", "claude_models")]),
     "deepl": ("DeepL", [("api_key", "API klíč (končí „:fx“)", True, "", None)]),
     "google": ("Google Překladač", []),
+    "google_cloud": ("Google Cloud Translation", [("api_key", "API klíč", True, "", None)]),
     "microsoft": ("Microsoft Azure Translator", [
         ("api_key", "KLÍČ 1", True, "", None),
         ("region", "Umístění/oblast (např. westeurope)", False, "", None),
@@ -58,12 +60,17 @@ SERVICES = {
 }
 ENGINE_SERVICE = {"microsoft_doc": "microsoft"}  # překladač → služba, jejíž nastavení používá
 ENV_KEYS = {"claude": "ANTHROPIC_API_KEY", "deepl": "DEEPL_API_KEY", "gemini": "GEMINI_API_KEY",
+            "google_cloud": "GOOGLE_TRANSLATE_API_KEY",
             "microsoft": "AZURE_TRANSLATOR_KEY", "openai": "OPENAI_API_KEY"}
 SERVICE_HELP = {
     "claude": ("Placené podle spotřeby. Klíč: platform.claude.com → API Keys.", "https://platform.claude.com"),
     "deepl": ("Zdarma 500 000 znaků/měsíc. Klíč: deepl.com → účet → API Keys.",
               "https://www.deepl.com/your-account/keys"),
-    "google": ("Bez registrace. Při velkém množství textu může Google dočasně omezit přístup.", None),
+    "google": ("Bez registrace. Při velkém množství textu může Google dočasně omezit přístup – program pak "
+               "počká a pokračuje (celá kniha se proto překládá pomaleji).", None),
+    "google_cloud": ("Oficiální služba Google: zdarma 500 000 znaků/měsíc, pak asi 20 USD za milion. "
+                     "Vyžaduje účet Google Cloud s platební kartou.",
+                     "https://console.cloud.google.com/apis/library/translate.googleapis.com"),
     "microsoft": ("Zdarma 2 mil. znaků/měsíc (úroveň F0). Azure → Translator → Klíče a koncový bod. "
                   "„Překlad dokumentu“ je druhé API – přeloží celý DOCX/PDF/PPTX a zachová vzhled.",
                   "https://portal.azure.com"),
@@ -146,6 +153,8 @@ def make_engine(name: str, lang: str, cfg: dict, notes: str):
         return OfflineEngine(lang, cfg.get("source", ""))
     if name == "google":
         return GoogleFreeEngine(lang)
+    if name == "google_cloud":
+        return GoogleCloudEngine(lang, key)
     if name == "microsoft":
         return MicrosoftEngine(lang, key, cfg.get("region", ""))
     if name == "gemini":

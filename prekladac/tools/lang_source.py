@@ -438,10 +438,27 @@ E += [
     ("Zdarma 500 000 znaků/měsíc. Klíč: deepl.com → účet → API Keys.", "Free 500,000 characters/month. Key: "
      "deepl.com → account → API Keys.", "Zadarmo 500 000 znakov/mesiac. Kľúč: deepl.com → účet → API Keys.",
      "Kostenlos 500.000 Zeichen/Monat. Schlüssel: deepl.com → Konto → API Keys."),
-    ("Bez registrace. Při velkém množství textu může Google dočasně omezit přístup.",
-     "No registration. With large amounts of text Google may temporarily limit access.",
-     "Bez registrácie. Pri veľkom množstve textu môže Google dočasne obmedziť prístup.",
-     "Ohne Registrierung. Bei großen Textmengen kann Google den Zugriff vorübergehend begrenzen."),
+    ("Bez registrace. Při velkém množství textu může Google dočasně omezit přístup – program pak počká a pokračuje "
+     "(celá kniha se proto překládá pomaleji).",
+     "No registration. With large amounts of text Google may temporarily limit access – the program then waits "
+     "and continues (a whole book is therefore translated more slowly).",
+     "Bez registrácie. Pri veľkom množstve textu môže Google dočasne obmedziť prístup – program potom počká "
+     "a pokračuje (celá kniha sa preto prekladá pomalšie).",
+     "Ohne Registrierung. Bei großen Textmengen kann Google den Zugriff vorübergehend begrenzen – das Programm "
+     "wartet dann und macht weiter (ein ganzes Buch dauert daher länger)."),
+    ("Oficiální služba Google: zdarma 500 000 znaků/měsíc, pak asi 20 USD za milion. Vyžaduje účet Google Cloud "
+     "s platební kartou.",
+     "Official Google service: free 500,000 characters/month, then about USD 20 per million. Requires a Google "
+     "Cloud account with a payment card.",
+     "Oficiálna služba Google: zadarmo 500 000 znakov/mesiac, potom asi 20 USD za milión. Vyžaduje účet Google "
+     "Cloud s platobnou kartou.",
+     "Offizieller Google-Dienst: kostenlos 500.000 Zeichen/Monat, danach etwa 20 USD pro Million. Erfordert ein "
+     "Google-Cloud-Konto mit Zahlungskarte."),
+    ("Google Cloud Translation", "Google Cloud Translation", "Google Cloud Translation", "Google Cloud Translation"),
+    ("Google Cloud Translation – zdarma 500 000 znaků/měsíc, s klíčem",
+     "Google Cloud Translation – free 500,000 characters/month, with key",
+     "Google Cloud Translation – zadarmo 500 000 znakov/mesiac, s kľúčom",
+     "Google Cloud Translation – kostenlos 500.000 Zeichen/Monat, mit Schlüssel"),
     ("Zdarma 2 mil. znaků/měsíc (úroveň F0). Azure → Translator → Klíče a koncový bod. „Překlad dokumentu“ je druhé "
      "API – přeloží celý DOCX/PDF/PPTX a zachová vzhled.",
      "Free 2 million characters/month (F0 tier). Azure → Translator → Keys and Endpoint. „Document translation“ is "
@@ -476,8 +493,10 @@ E += [
      "kvalita", "Claude API – kostenpflichtig, beste Qualität"),
     ("DeepL API Free – zdarma 500 000 znaků/měsíc", "DeepL API Free – free 500,000 characters/month",
      "DeepL API Free – zadarmo 500 000 znakov/mesiac", "DeepL API Free – kostenlos 500.000 Zeichen/Monat"),
-    ("Google Překladač – zdarma, bez klíče", "Google Translate – free, no key", "Google Prekladač – zadarmo, bez kľúča",
-     "Google Übersetzer – kostenlos, ohne Schlüssel"),
+    ("Google Překladač – zdarma, bez klíče (u velkých knih pomaleji)",
+     "Google Translate – free, no key (slower for large books)",
+     "Google Prekladač – zadarmo, bez kľúča (pri veľkých knihách pomalšie)",
+     "Google Übersetzer – kostenlos, ohne Schlüssel (bei großen Büchern langsamer)"),
     ("Microsoft Translator – zdarma 2 mil. znaků/měsíc", "Microsoft Translator – free 2 million characters/month",
      "Microsoft Translator – zadarmo 2 mil. znakov/mesiac", "Microsoft Translator – kostenlos 2 Mio. Zeichen/Monat"),
     ("Microsoft – překlad celých dokumentů se zachováním vzhledu (DOCX, PDF, PPTX…)",
