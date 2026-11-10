@@ -381,3 +381,31 @@ def test_google_free_is_gentle():
 
     assert fe.GoogleFreeEngine.workers == 1 and fe.GoogleFreeEngine.PAUSE >= 1
     assert sum(fe.GoogleFreeEngine.BACKOFF) >= 600  # při HTTP 429 čeká celkem aspoň 10 minut
+
+
+@pytest.mark.parametrize("url, service, expect", [
+    ("http://localhost:5000/translate", "LibreTranslate", ["ve vašem počítači", "http://localhost:5000",
+                                                           "Offline v počítači"]),
+    ("http://192.168.1.20:5000/translate", "LibreTranslate", ["192.168.1.20:5000", "--host 0.0.0.0", "firewall"]),
+    ("http://localhost:11434/api/chat", "Ollama", ["ve vašem počítači", "ollama list"]),
+])
+def test_refused_connection_is_explained_without_retries(monkeypatch, url, service, expect):
+    import urllib.error
+
+    import free_engines as fe
+
+    calls = []
+
+    def refused(req, timeout=None, context=None):
+        calls.append(1)
+        raise urllib.error.URLError(ConnectionRefusedError(10061, "[WinError 10061] Nemohlo být vytvořeno žádné "
+                                                                  "připojení, protože cílový počítač je aktivně odmítl"))
+
+    monkeypatch.setattr(fe.urllib.request, "urlopen", refused)
+    monkeypatch.setattr(fe.time, "sleep", lambda *_: (_ for _ in ()).throw(AssertionError("nemá čekat")))
+    with pytest.raises(fe.EngineError) as e:
+        fe.http_request(url, service=service)
+    msg = str(e.value)
+    assert len(calls) == 1 and "WinError" not in msg
+    for part in expect:
+        assert part in msg

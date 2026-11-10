@@ -474,9 +474,15 @@ E += [
      "Ollama and download a model: ollama pull gemma3:12b", "Offline, zadarmo. Nainštalujte Ollama a stiahnite "
      "model: ollama pull gemma3:12b", "Offline, kostenlos. Ollama installieren und Modell laden: ollama pull "
      "gemma3:12b"),
-    ("Vlastní server LibreTranslate nebo veřejná instance s klíčem.", "Your own LibreTranslate server or a public "
-     "instance with a key.", "Vlastný server LibreTranslate alebo verejná inštancia s kľúčom.",
-     "Eigener LibreTranslate-Server oder öffentliche Instanz mit Schlüssel."),
+    ("Pro pokročilé: vlastní překladový server (v tomto počítači, na jiném počítači nebo NAS v síti). Pro jeden "
+     "počítač je jednodušší „Offline v počítači“ – stejné modely bez serveru.",
+     "For advanced users: your own translation server (on this computer, another computer or a NAS on your "
+     "network). For a single computer, “Offline on this computer” is simpler – same models, no server.",
+     "Pre pokročilých: vlastný prekladový server (v tomto počítači, na inom počítači alebo NAS v sieti). Pre jeden "
+     "počítač je jednoduchší „Offline v počítači“ – rovnaké modely bez servera.",
+     "Für Fortgeschrittene: eigener Übersetzungsserver (auf diesem Computer, einem anderen Computer oder NAS im "
+     "Netzwerk). Für einen einzelnen Computer ist „Offline auf diesem Computer“ einfacher – gleiche Modelle, kein "
+     "Server."),
     ("Placené podle spotřeby (DeepSeek je velmi levný, OpenRouter má i modely zdarma). Adresu API a název modelu "
      "najdete v Návodu.", "Pay as you go (DeepSeek is very cheap, OpenRouter also has free models). The API address "
      "and model name are in the Guide.", "Platené podľa spotreby (DeepSeek je veľmi lacný, OpenRouter má aj modely "
@@ -510,8 +516,9 @@ E += [
     ("OpenAI-kompatibilní – OpenAI, DeepSeek, Mistral, OpenRouter, Groq…", "OpenAI-compatible – OpenAI, DeepSeek, "
      "Mistral, OpenRouter, Groq…", "OpenAI-kompatibilné – OpenAI, DeepSeek, Mistral, OpenRouter, Groq…",
      "OpenAI-kompatibel – OpenAI, DeepSeek, Mistral, OpenRouter, Groq…"),
-    ("LibreTranslate – vlastní server, zdarma", "LibreTranslate – own server, free", "LibreTranslate – vlastný "
-     "server, zadarmo", "LibreTranslate – eigener Server, kostenlos"),
+    ("LibreTranslate – vlastní server (pro pokročilé), zdarma", "LibreTranslate – own server (advanced), free",
+     "LibreTranslate – vlastný server (pre pokročilých), zadarmo",
+     "LibreTranslate – eigener Server (für Fortgeschrittene), kostenlos"),
     ("Tesseract – zdarma, offline", "Tesseract – free, offline", "Tesseract – zadarmo, offline",
      "Tesseract – kostenlos, offline"),
     ("Google Gemini – bezplatná úroveň", "Google Gemini – free tier", "Google Gemini – bezplatná úroveň",

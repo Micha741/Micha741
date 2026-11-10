@@ -77,7 +77,9 @@ SERVICE_HELP = {
     "gemini": ("Bezplatná úroveň s limity. Klíč: aistudio.google.com → Get API key.",
                "https://aistudio.google.com/apikey"),
     "ollama": ("Offline, zdarma. Nainstalujte Ollama a stáhněte model: ollama pull gemma3:12b", "https://ollama.com"),
-    "libre": ("Vlastní server LibreTranslate nebo veřejná instance s klíčem.", "https://libretranslate.com"),
+    "libre": ("Pro pokročilé: vlastní překladový server (v tomto počítači, na jiném počítači nebo NAS v síti). Pro "
+              "jeden počítač je jednodušší „Offline v počítači“ – stejné modely bez serveru.",
+              "https://github.com/LibreTranslate/LibreTranslate"),
     "openai": ("Placené podle spotřeby (DeepSeek je velmi levný, OpenRouter má i modely zdarma). "
                "Adresu API a název modelu najdete v Návodu.", None),
 }

@@ -134,6 +134,8 @@ def http_request(url: str, *, data=None, headers: dict | None = None, method: st
                     "Častou příčinou je antivirus, který kontroluje HTTPS spojení, nebo firemní proxy. "
                     "Zkuste v antiviru vypnout kontrolu HTTPS pro Prekladac.exe."
                 ) from e
+            if _is_refused(e):  # server neběží – opakování nepomůže, hned srozumitelná hláška
+                raise _refused_error(url, service) from e
             last = str(getattr(e, "reason", e))
             delay = backoff[min(attempt, len(backoff) - 1)]
         attempt += 1
@@ -146,6 +148,41 @@ def http_request(url: str, *, data=None, headers: dict | None = None, method: st
     if isinstance(last, int):
         raise EngineError(f"{service}: služba je přetížená nebo mimo provoz (HTTP {last}). Zkuste to za chvíli znovu.")
     raise EngineError(f"{service}: služba neodpovídá ({last}). Zkontrolujte připojení k internetu.")
+
+
+# co poradit, když vlastní server (v počítači nebo v domácí síti) odmítne spojení: (v tomto počítači, jinde v síti)
+SERVER_HINTS = {
+    "LibreTranslate": (
+        "LibreTranslate je vlastní překladový server pro pokročilé – nejdřív ho spusťte podle návodu v Nastavení → "
+        "Služby a klíče → LibreTranslate (Python nebo Docker). Pokud server mít nechcete, zvolte překladač „Offline "
+        "v počítači“ – používá stejné jazykové modely, ale žádný server nepotřebuje.",
+        "Na tom počítači musí LibreTranslate běžet s volbou --host 0.0.0.0 (v Dockeru je to samo) a brána firewall "
+        "musí povolit port serveru. Návod je v Nastavení → Služby a klíče → LibreTranslate."),
+    "Ollama": (
+        "Ollama asi neběží – spusťte aplikaci Ollama (ikona u hodin) a v příkazovém řádku zkuste „ollama list“. "
+        "Návod je v Nastavení → Služby a klíče → Ollama.",
+        "Na tom počítači musí Ollama běžet s nastavením OLLAMA_HOST=0.0.0.0 a brána firewall musí povolit port "
+        "11434."),
+}
+
+
+def _is_refused(e: BaseException) -> bool:
+    r = getattr(e, "reason", e)
+    if isinstance(r, ConnectionRefusedError):
+        return True
+    return getattr(r, "errno", None) in (111, 10061) or "10061" in str(r) or "refused" in str(r).lower()
+
+
+def _refused_error(url: str, service: str) -> EngineError:
+    p = urllib.parse.urlsplit(url)
+    base = f"{p.scheme}://{p.netloc}"
+    local = (p.hostname or "") in ("localhost", "127.0.0.1", "::1", "0.0.0.0")
+    here, there = SERVER_HINTS.get(service, ("Zkontrolujte adresu serveru v Nastavení a že server běží.",) * 2)
+    if local:
+        return EngineError(f"{service}: ve vašem počítači na adrese {base} neběží žádný server (spojení odmítnuto). "
+                           f"{here}")
+    return EngineError(f"{service}: počítač na adrese {base} odmítl spojení – server tam neběží, nebo nepřijímá "
+                       f"spojení ze sítě. {there}")
 
 
 def _clean_body(body: str) -> str:
@@ -832,7 +869,7 @@ ENGINE_LABELS = {
     "gemini": "Google Gemini – bezplatná úroveň s limity",
     "ollama": "Ollama – AI v počítači, offline, zdarma",
     "openai": "OpenAI-kompatibilní – OpenAI, DeepSeek, Mistral, OpenRouter, Groq…",
-    "libre": "LibreTranslate – vlastní server, zdarma",
+    "libre": "LibreTranslate – vlastní server (pro pokročilé), zdarma",
     "offline": "Offline v počítači (Argos) – zdarma, bez internetu",
 }
 

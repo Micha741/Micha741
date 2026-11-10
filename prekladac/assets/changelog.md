@@ -24,6 +24,7 @@
 - Vlastní převody EPUB, MOBI, PDB, DOCX, RTF, ODT, FB2, HTMLZ, TXT a PDF bez Calibre; Calibre volitelně pro zápis AZW3, KFX a LIT.
 - Jazyk programu: čeština, angličtina, slovenština, němčina (další jazyky jde doinstalovat).
 - Skiny (vzhledy) jako ve Winampu: Výchozí, Tmavý, Sépie, Vysoký kontrast a doinstalování dalších ze souboru .skin – i na Androidu.
+- Srozumitelná hláška, když neběží vlastní server (LibreTranslate, Ollama), a podrobný návod k LibreTranslate (Python, Docker, server pro domácí síť).
 - Klíče uložené zašifrovaně (Windows DPAPI), návody ke všem službám.
 
 # Historie verzí

@@ -93,18 +93,66 @@ Program před překladem vypíše odhad a na konci skutečnou cenu.""",
 
 Potřebuje výkonnější počítač (ideálně s grafickou kartou); překlad knihy může trvat hodiny.""",
 
-    "libre": """LibreTranslate – vlastní překladový server (zdarma, offline)
+    "libre": """LibreTranslate – vlastní překladový server (zdarma, offline, pro pokročilé)
 
-1. Potřebujete Python (https://www.python.org). V příkazovém řádku:
-      pip install libretranslate
-2. Spusťte server jen s potřebnými jazyky (angličtinu nechte vždy):
-      libretranslate --load-only en,cs,de
-   První spuštění stáhne jazykové modely, chvíli trvá. Okno nechte otevřené.
-3. Zkouška v PowerShellu (pište curl.exe, ne curl):
-      curl.exe -X POST http://localhost:5000/translate -d q="Hello" -d source=en -d target=cs
-4. Sem do pole „Adresa serveru“ nechte http://localhost:5000, Uložit → Otestovat.
+NEJDŘÍV: potřebujete ho vůbec?
+  LibreTranslate překládá stejnými jazykovými modely (Argos) jako překladač „Offline v počítači“,
+  který je v Překladači už vestavěný a žádný server nepotřebuje. Pro jeden počítač tedy stačí
+  Offline v počítači (Nastavení → Součásti → stáhnout jazyky) – stejná kvalita, nic se neinstaluje.
+  Vlastní server se hodí, když chcete:
+    • jeden server pro víc počítačů v domácnosti (modely se stahují jen jednou),
+    • překládat na výkonnějším počítači nebo domácím serveru / NAS, zatímco pracujete na notebooku,
+    • mít webovou stránku pro rychlý překlad v prohlížeči (http://localhost:5000).
+  Kvalita češtiny je slabší než u DeepL, Gemini nebo Claude; výhodou je, že text neopouští váš počítač.
 
-Kvalita češtiny je slabší než u DeepL, Gemini nebo Claude; výhodou je, že text neopouští počítač.""",
+MOŽNOST A – Python (jen tento počítač)
+  1. Nainstalujte Python 3.12 nebo 3.13 z https://www.python.org (při instalaci zaškrtněte
+     „Add python.exe to PATH“). Python 3.14 a novější LibreTranslate zatím nepodporuje.
+  2. V příkazovém řádku (Win+R → cmd) vytvořte samostatnou složku pro server:
+        py -3.12 -m venv %USERPROFILE%\libretranslate
+        %USERPROFILE%\libretranslate\Scripts\pip install libretranslate
+  3. Spusťte server jen s jazyky, které potřebujete (angličtinu nechte vždy – překládá se přes ni):
+        %USERPROFILE%\libretranslate\Scripts\libretranslate --load-only en,cs,de
+     První spuštění stáhne jazykové modely (stovky MB), chvíli trvá. Okno nechte otevřené –
+     zavřením se server vypne.
+  4. Zkouška: v prohlížeči otevřete http://localhost:5000 – objeví se překladová stránka.
+  5. Tady v poli „Adresa serveru“ nechte http://localhost:5000, Uložit → Otestovat.
+  Spouštění se systémem: do souboru libretranslate.bat napište řádek z bodu 3 a soubor dejte do
+  složky Po spuštění (Win+R → shell:startup).
+
+MOŽNOST B – Docker (pohodlnější, sám se spouští)
+  1. Nainstalujte Docker Desktop (https://www.docker.com/products/docker-desktop/).
+  2. V příkazovém řádku jednou spusťte:
+        docker run -d --name libretranslate --restart unless-stopped -p 5000:5000 -e LT_LOAD_ONLY=en,cs,de -v lt-local:/home/libretranslate/.local libretranslate/libretranslate
+     Server pak běží na pozadí a po restartu počítače se spustí sám (když běží Docker Desktop).
+     Modely zůstanou uložené ve svazku lt-local, takže se nestahují znovu.
+  3. Zkouška a nastavení jako v A (body 4 a 5). Aktualizace: docker pull libretranslate/libretranslate,
+     pak docker rm -f libretranslate a znovu příkaz z bodu 2.
+
+MOŽNOST C – server pro celou domácí síť (jiný počítač, NAS)
+  1. Na serveru spusťte LibreTranslate podle A nebo B. U možnosti A přidejte --host 0.0.0.0,
+     jinak server odpovídá jen sám sobě:
+        libretranslate --host 0.0.0.0 --load-only en,cs,de
+  2. Na serveru povolte v bráně Windows Defender Firewall příchozí spojení na port 5000
+     (Brána firewall → Upřesnit nastavení → Příchozí pravidla → Nové pravidlo → Port → TCP 5000).
+  3. Zjistěte IP adresu serveru (příkaz ipconfig → „Adresa IPv4“, např. 192.168.1.20).
+  4. Tady do „Adresa serveru“ napište http://192.168.1.20:5000, Uložit → Otestovat.
+  Server nevystavujte do internetu (přesměrováním portu na routeru). Kdo by ho tam chtěl mít,
+  ať ho spustí s --api-keys a vytvoří klíče příkazem ltmanage keys add 1000 – klíč pak patří sem
+  do pole „API klíč“.
+
+VEŘEJNÝ SERVER
+  libretranslate.com nabízí stejný server za měsíční poplatek (klíč zadáte sem). Pro občasný
+  překlad je ale výhodnější Google Cloud, DeepL Free nebo Gemini – mají bezplatné limity.
+
+ČASTÉ CHYBY
+  „neběží žádný server (spojení odmítnuto)“ – server není spuštěný (okno z možnosti A je zavřené,
+    nebo neběží Docker Desktop).
+  „odmítl spojení“ u adresy v síti – chybí --host 0.0.0.0 nebo pravidlo ve firewallu.
+  Velmi pomalý překlad – server překládá na procesoru; pomůže výkonnější počítač nebo menší
+    počet jazyků v --load-only.
+  Licence: LibreTranslate je pod licencí AGPL-3.0; Překladač s ním jen komunikuje přes síť,
+    nic z něj neobsahuje.""",
 
     "openai": """OpenAI-kompatibilní služby – OpenAI, DeepSeek, Mistral, OpenRouter, Groq…
 
