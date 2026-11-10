@@ -1472,10 +1472,10 @@ class SettingsPage(QtWidgets.QWidget):
             btn.setEnabled(True)
             btn.setText("✔ Otestovat")
             title = f"Test – {core.SERVICES[name][0]}"
-            if err:
-                QtWidgets.QMessageBox.critical(self, title, str(err))
-            else:
-                QtWidgets.QMessageBox.information(self, title, f"Funguje ✓\n\n{res}")
+            box = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical if err else QtWidgets.QMessageBox.Information,
+                                        title, str(err) if err else f"Funguje ✓\n\n{res}", parent=self)
+            box.setTextFormat(Qt.PlainText)  # odpověď serveru se nikdy nevykreslí jako webová stránka
+            box.exec()
 
         run_bg(lambda: core.test_service(name, self.win.cfg, lang), done)
 

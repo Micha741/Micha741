@@ -330,3 +330,27 @@ def test_openai_compat_caps_max_tokens_and_explains_402(monkeypatch):
     else:
         raise AssertionError("expected EngineError")
     assert 1024 <= sent[0]["max_tokens"] < 4000  # krátký text = malá rezervace, ne 16 384
+
+
+def test_http_429_friendly_message_without_html(monkeypatch):
+    import io
+    import urllib.error
+
+    import free_engines as fe
+
+    page = b"<!DOCTYPE html><html><head><title>Error 429 (Too Many Requests)!!1</title></head><body><a href=//www.google.com/><span id=logo aria-label=Google></span></a><p>Too many</p></body></html>"
+
+    def boom(req, timeout=None, context=None):
+        raise urllib.error.HTTPError(req.full_url, 429, "Too Many Requests", {}, io.BytesIO(page))
+
+    monkeypatch.setattr(fe.urllib.request, "urlopen", boom)
+    monkeypatch.setattr(fe.time, "sleep", lambda *_: None)
+    try:
+        fe.http_request("https://translate.googleapis.com/x", service="Google Překladač", retries=2)
+    except fe.EngineError as e:
+        msg = str(e)
+    else:
+        raise AssertionError("má přijít chyba")
+    assert "HTTP 429" in msg and "Počkejte několik minut" in msg
+    assert "<" not in msg and "html" not in msg.lower()
+    assert fe._clean_body(page.decode()) == "Error 429 (Too Many Requests)!!1"

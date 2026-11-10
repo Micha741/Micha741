@@ -111,7 +111,7 @@ def http_request(url: str, *, data=None, headers: dict | None = None, method: st
             with urllib.request.urlopen(req, timeout=timeout, context=ctxs[ctx_i]) as resp:
                 return resp.read()
         except urllib.error.HTTPError as e:
-            body = e.read().decode("utf-8", errors="replace")[:500]
+            body = _clean_body(e.read().decode("utf-8", errors="replace"))
             if e.code in (401, 403):
                 raise EngineError(f"{service}: neplatný nebo chybějící klíč (HTTP {e.code}). {body}") from e
             if e.code == 456:
@@ -119,7 +119,7 @@ def http_request(url: str, *, data=None, headers: dict | None = None, method: st
             if e.code == 404:
                 raise EngineError(f"{service}: adresa nebo model nenalezen (HTTP 404). {body}") from e
             if e.code in (429, 500, 502, 503, 504, 529):
-                last = f"HTTP {e.code} {body}"
+                last = e.code
                 wait = e.headers.get("Retry-After")
                 delay = float(wait) if wait and wait.isdigit() else backoff[min(attempt, len(backoff) - 1)]
             else:
@@ -139,7 +139,22 @@ def http_request(url: str, *, data=None, headers: dict | None = None, method: st
         attempt += 1
         if attempt <= retries:
             time.sleep(delay)
-    raise EngineError(f"{service}: služba neodpovídá ({last}).")
+    if last == 429:
+        raise EngineError(f"{service}: služba dočasně omezila počet požadavků z vašeho připojení (HTTP 429 – příliš "
+                          "mnoho požadavků). Program to zkoušel znovu, ale omezení trvá. Počkejte několik minut a "
+                          "zkuste to znovu, nebo zvolte jiný překladač (Offline v počítači, DeepL, Gemini…).")
+    if isinstance(last, int):
+        raise EngineError(f"{service}: služba je přetížená nebo mimo provoz (HTTP {last}). Zkuste to za chvíli znovu.")
+    raise EngineError(f"{service}: služba neodpovídá ({last}). Zkontrolujte připojení k internetu.")
+
+
+def _clean_body(body: str) -> str:
+    """Text chyby ze serveru – bez HTML stránky (Google posílá celou stránku s logem), zkrácený."""
+    if re.search(r"<(html|!doctype|body|head)\b", body, re.I):
+        title = re.search(r"<title[^>]*>(.*?)</title>", body, re.I | re.S)
+        body = title.group(1) if title else ""
+    body = re.sub(r"<[^>]+>", " ", body)
+    return " ".join(body.split())[:300]
 
 
 def http_json(url: str, **kw):

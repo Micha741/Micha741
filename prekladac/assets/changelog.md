@@ -57,6 +57,7 @@
   obrázky, obálka); instalátor je asi o 300 MB menší. Calibre je volitelné (Nastavení → Součásti → Stáhnout
   Calibre) jen pro zápis AZW3, pro KFX a LIT.
 - Český slovník s přesnou verzí zdroje a plným zněním licence (GPL v2) ve složce dict.
+- Srozumitelná hláška, když Google (zdarma) dočasně omezí počet požadavků (HTTP 429), bez webové stránky v okně.
 - Mobilní verze pro Android (převod a překlad knih) se stejnými formáty a podobným vzhledem.
 - Napsat knihu → Soubor → Otevřít: i hotové knihy v DOCX, EPUB, TXT (i starší kódování Windows), MOBI, AZW3,
   PDB, FB2, ODT, RTF, PDF… – rozdělí se na kapitoly a uloží jako projekt vedle původního souboru.
