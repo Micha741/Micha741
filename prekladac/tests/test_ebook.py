@@ -189,3 +189,18 @@ def test_rtf_reader_handles_word_style_rtf():
     assert [c.title for c in b.chapters] == ["Kapitola jedna", "Druhá"]
     assert "Příliš <b>tu</b><i>česky</i> konec." in b.chapters[0].html
     assert "text<br/>dal" in b.chapters[1].html
+
+
+def test_epub_from_written_book_has_linked_toc(tmp_path):
+    import re
+    proj = {"language": "čeština", "outline": {"title": "Kniha", "chapters": [{"title": t, "summary": ""} for t in "ABC"]},
+            "chapters": [{"text": f"Text {t}.", "summary": ""} for t in "ABC"]}
+    book = ebook.from_project(proj)
+    z = zipfile.ZipFile(io.BytesIO(ebook.write_epub(book)))
+    toc = z.read("OEBPS/toc.xhtml").decode()
+    links = re.findall(r'href="(ch\d+\.xhtml)#(c\d+)"', toc)
+    assert len(links) == 3
+    for fn, anchor in links:
+        assert f'id="{anchor}"' in z.read(f"OEBPS/{fn}").decode()
+    proj["format"] = {"toc": False}
+    assert "OEBPS/toc.xhtml" not in zipfile.ZipFile(io.BytesIO(ebook.write_epub(ebook.from_project(proj)))).namelist()

@@ -49,6 +49,7 @@ class RichBook:
     chapters: list[Chapter] = field(default_factory=list)
     images: dict[str, bytes] = field(default_factory=dict)
     cover: str | None = None
+    toc_title: str = ""  # neprázdné = v textu se vytvoří stránka obsahu s odkazy na kapitoly (Napsat knihu)
 
     def add_image(self, data: bytes, ext: str | None = None) -> str:
         ext = (ext or image_ext(data)).lstrip(".")
@@ -810,6 +811,10 @@ def from_project(proj: dict) -> RichBook:
     lang = str(proj.get("language") or "cs").lower()
     code = {"čeština": "cs", "slovenčina": "sk", "angličtina": "en", "němčina": "de"}.get(lang, lang[:2])
     book = RichBook(title=o.get("title") or "Kniha", author=proj.get("author") or "", language=code)
+    from book_writer import DEFAULT_FORMAT, TOC_TITLES
+
+    if {**DEFAULT_FORMAT, **(proj.get("format") or {})}.get("toc"):
+        book.toc_title = TOC_TITLES.get(code, "Obsah")
     for n in proj.get("images") or {}:
         book.images[n] = book_images.get_image(proj, n) or b""
     if proj.get("cover") in book.images:
@@ -957,15 +962,26 @@ def write_epub(book: RichBook) -> bytes:
             f'<p class="author">{esc(book.author)}</p>' if book.author else ""), lang))
         manifest.append('<item id="titlepage" href="title.xhtml" media-type="application/xhtml+xml"/>')
         spine.append('<itemref idref="titlepage"/>')
+        if book.toc_title and book.chapters:
+            items = "".join(f'<p class="toc"><a href="ch{i:03d}.xhtml#c{i}">{i}. {esc(c.title)}</a></p>'
+                            for i, c in enumerate(book.chapters, 1))
+            z.writestr("OEBPS/toc.xhtml", _xhtml(book.toc_title, f"<h2>{esc(book.toc_title)}</h2>{items}", lang))
+            manifest.append('<item id="tocpage" href="toc.xhtml" media-type="application/xhtml+xml"/>')
+            spine.append('<itemref idref="tocpage"/>')
         nav, ncx = [], []
         for i, ch in enumerate(book.chapters, 1):
             fn = f"ch{i:03d}.xhtml"
-            z.writestr(f"OEBPS/{fn}", _xhtml(ch.title, fix(ch.html), lang))
+            body = fix(ch.html)
+            if re.match(r"<h[1-6]", body):  # kotva pro odkazy z obsahu
+                body = re.sub(r"^<(h[1-6])", rf'<\1 id="c{i}"', body, count=1)
+            else:
+                body = f'<a id="c{i}"></a>' + body
+            z.writestr(f"OEBPS/{fn}", _xhtml(ch.title, body, lang))
             manifest.append(f'<item id="c{i}" href="{fn}" media-type="application/xhtml+xml"/>')
             spine.append(f'<itemref idref="c{i}"/>')
-            nav.append(f'<li><a href="{fn}">{esc(ch.title)}</a></li>')
+            nav.append(f'<li><a href="{fn}#c{i}">{esc(ch.title)}</a></li>')
             ncx.append(f'<navPoint id="n{i}" playOrder="{i}"><navLabel><text>{esc(ch.title)}</text></navLabel>'
-                       f'<content src="{fn}"/></navPoint>')
+                       f'<content src="{fn}#c{i}"/></navPoint>')
         z.writestr("OEBPS/nav.xhtml", _xhtml("Obsah", f'<nav epub:type="toc" id="toc"><h2>Obsah</h2><ol>{"".join(nav)}'
                                                      f'</ol></nav>', lang))
         z.writestr("OEBPS/toc.ncx", f'<?xml version="1.0" encoding="utf-8"?><ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" '
