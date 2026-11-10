@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "Překladač knih",
+    "slug": "prekladac-knih",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F0FF",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.micha741.prekladac",
+      "versionCode": 1
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-sharing",
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Aplikace potřebuje přístup k fotkám, abyste mohli vložit obrázek nebo obálku do knihy.",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ]
+    ],
+    "owner": "micha741",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.micha741.prekladac"
+    }
+  }
+}
