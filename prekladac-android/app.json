@@ -36,6 +36,11 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.micha741.prekladac"
+    },
+    "backgroundColor": "#1e293b",
+    "androidStatusBar": {
+      "barStyle": "light-content",
+      "backgroundColor": "#1e293b"
     }
   }
 }
