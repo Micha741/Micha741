@@ -11,7 +11,8 @@ import book_images
 import book_writer as bw
 from html_docx import PAGE_BREAK, plain_to_html
 from i18n import tr
-from qt_common import emoji_icon, label, lines_icon, run_bg, text_icon
+import skins
+from qt_common import emoji_icon, label, lines_icon, live_icon, run_bg, text_icon
 from qt_ruler import HRuler, VRuler
 from qt_textassist import TextAssist
 
@@ -119,9 +120,6 @@ class HScroll(QtWidgets.QScrollArea):
             b.setAutoRepeat(True)
             b.setCursor(Qt.PointingHandCursor)
             b.setToolTip(tr("Další tlačítka pásu karet"))
-            b.setStyleSheet("QToolButton#RibbonArrow { background: rgba(241,245,249,235); border: 1px solid #cbd5e1;"
-                            " border-radius: 4px; color: #334155; font-size: 9pt; }"
-                            "QToolButton#RibbonArrow:hover { background: #dbeafe; }")
             b.clicked.connect(lambda _=False, st=step: self._scroll(st * self.STEP))
             b.hide()
             self.arrows.append(b)
@@ -139,6 +137,10 @@ class HScroll(QtWidgets.QScrollArea):
             e.accept()
         else:
             super().wheelEvent(e)
+
+    def skin_changed(self):
+        """Jiný skin může mít jiné písmo – výška pásu karet se přepočítá."""
+        QtCore.QTimer.singleShot(0, self._fit)
 
     def _fit(self):
         h = self.widget().sizeHint().height()
@@ -170,28 +172,22 @@ class HScroll(QtWidgets.QScrollArea):
 
 def panel_icon() -> QtGui.QIcon:
     """Ikona „okno s postranním panelem“ (jako ve VS Code) pro skrytí panelu kapitol."""
-    icon = QtGui.QIcon()
-    for size in (16, 20, 32):
-        pm = QtGui.QPixmap(size, size)
-        pm.fill(Qt.transparent)
-        p = QtGui.QPainter(pm)
-        p.setRenderHint(QtGui.QPainter.Antialiasing)
-        pen = QtGui.QPen(QtGui.QColor("#334155"), max(1.2, size / 14))
+    def draw(p, size=32):
+        pen = QtGui.QPen(QtGui.QColor(skins.C("icon")), max(1.2, size / 14))
         p.setPen(pen)
         m = size * 0.12
         r = QtCore.QRectF(m, m * 1.4, size - 2 * m, size - 2.8 * m)
         p.drawRoundedRect(r, size * 0.12, size * 0.12)
         p.fillRect(QtCore.QRectF(r.left() + pen.widthF(), r.top() + pen.widthF(), r.width() * 0.3,
-                                 r.height() - 2 * pen.widthF()), QtGui.QColor("#64748b"))
-        p.end()
-        icon.addPixmap(pm)
-    return icon
+                                 r.height() - 2 * pen.widthF()), QtGui.QColor(skins.C("muted")))
+
+    return live_icon(draw)
 
 
 def vline() -> QtWidgets.QFrame:
     f = QtWidgets.QFrame()
     f.setFrameShape(QtWidgets.QFrame.VLine)
-    f.setStyleSheet("color: #e2e8f0;")
+    f.setObjectName("RibbonSep")
     return f
 
 
@@ -309,11 +305,11 @@ class BookEditor(QtWidgets.QMainWindow):
         self.text.setAcceptRichText(True)
         self.text.setTabStopDistance(40)
         self.text.document().setDocumentMargin(48)
-        self.text.setStyleSheet("QTextEdit { border: none; background: white; }")
+        self.text.setObjectName("BookText")
         self.view_opts = text_assist if text_assist is not None else {}
         self._save_view = save_options or (lambda: None)
         page = QtWidgets.QFrame()
-        page.setStyleSheet("background: #e8ebf0;")
+        page.setObjectName("EditorCanvas")
         pl = QtWidgets.QHBoxLayout(page)
         pl.setContentsMargins(24, 16, 24, 16)
         sheet = QtWidgets.QWidget()  # stránka s pravítky: [roh][vodorovné] / [svislé][text]
@@ -326,7 +322,8 @@ class BookEditor(QtWidgets.QMainWindow):
         self.vruler = VRuler(self.text)
         self.ruler_corner = QtWidgets.QWidget()
         self.ruler_corner.setFixedSize(22, 22)
-        self.ruler_corner.setStyleSheet("background: #f1f5f9;")
+        self.ruler_corner.setObjectName("RulerCorner")
+        self.ruler_corner.setAttribute(Qt.WA_StyledBackground, True)
         sg.addWidget(self.ruler_corner, 0, 0)
         sg.addWidget(self.hruler, 0, 1)
         sg.addWidget(self.vruler, 1, 0)
@@ -402,8 +399,6 @@ class BookEditor(QtWidgets.QMainWindow):
         back.setToolTip(tr("Uložit knihu a vrátit se na stránku Napsat knihu (Alt+←)"))
         back.setAutoRaise(True)
         back.setCursor(Qt.PointingHandCursor)
-        back.setStyleSheet("QToolButton#RibbonBack { font-weight: 600; padding: 4px 12px; color: #1d4ed8; }"
-                           "QToolButton#RibbonBack:hover { background: #dbeafe; border-radius: 4px; }")
         back.clicked.connect(self.go_back)
         tabs.setCornerWidget(back, Qt.TopLeftCorner)
         self.b_back = back
@@ -748,7 +743,7 @@ class BookEditor(QtWidgets.QMainWindow):
         self.cover_thumb = QtWidgets.QLabel()
         self.cover_thumb.setFixedSize(46, 64)
         self.cover_thumb.setAlignment(Qt.AlignCenter)
-        self.cover_thumb.setStyleSheet("border: 1px solid #cbd5e1; background: white; color: #94a3b8;")
+        self.cover_thumb.setObjectName("CoverThumb")
         cov.grid.addWidget(self.cover_thumb, 0, 0, 2, 1)
         b_cov = self._big(emoji_icon("🖼️"), "Obálka…", self.pick_cover)
         b_cov.setToolTip("Obrázek obálky: v EPUB, MOBI a AZW3 jako obálka e-knihy ve čtečce, v DOCX, PDF a tisku "

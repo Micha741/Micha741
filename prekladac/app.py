@@ -307,10 +307,10 @@ def test_service(service: str, cfg: dict, lang: str) -> str:
 
 
 # -------------------------------------------------------------------- GUI
-def run_gui() -> None:
+def run_gui(skin_file: str | None = None) -> None:
     from qt_main import main
 
-    main()
+    main(skin_file)
 
 
 # ---------------------------------------------------------- příkazová řádka
@@ -480,6 +480,9 @@ if __name__ == "__main__":
         sys.exit(_gui_selftest(Path(sys.argv[2])))
     if sys.argv[1:2] == ["--install-offline"] and len(sys.argv) > 2:  # instalátor: volitelné offline balíčky
         sys.exit(_install_offline(sys.argv[2], Path(sys.argv[3]) if len(sys.argv) > 3 else None))
+    if len(sys.argv) == 2 and sys.argv[1].lower().endswith(".skin") and Path(sys.argv[1]).is_file():
+        run_gui(sys.argv[1])  # dvojklik na skin ve Windows
+        sys.exit(0)
     if len(sys.argv) > 1:
         sys.exit(run_cli(sys.argv[1:]))
     run_gui()

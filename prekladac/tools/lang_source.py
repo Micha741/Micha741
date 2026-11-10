@@ -972,6 +972,61 @@ E += [
     ("Tab = vložit návrh · šipky = vybrat · Esc = zavřít", "Tab = insert suggestion · arrows = choose · Esc = close",
      "Tab = vložiť návrh · šípky = vybrať · Esc = zavrieť", "Tab = Vorschlag einfügen · Pfeile = wählen · Esc = "
      "schließen"),
+    # ------------------------------------------------------------ vzhled (skiny)
+    ("Vzhled", "Appearance", "Vzhľad", "Aussehen"),
+    ("Skin mění barvy, písmo, logo, pozadí a ikony programu – podobně jako ve Winampu. Vzhled se změní hned. "
+     "Další skiny se dají doinstalovat ze souboru .skin (stačí ho sem přetáhnout nebo na něj ve Windows dvakrát "
+     "klepnout).",
+     "A skin changes the program's colours, font, logo, background and icons – much like in Winamp. The look "
+     "changes immediately. More skins can be installed from a .skin file (drag it here or double-click it in "
+     "Windows).",
+     "Skin mení farby, písmo, logo, pozadie a ikony programu – podobne ako vo Winampe. Vzhľad sa zmení hneď. "
+     "Ďalšie skiny sa dajú doinštalovať zo súboru .skin (stačí ho sem pretiahnuť alebo naň vo Windows dvakrát "
+     "kliknúť).",
+     "Ein Skin ändert Farben, Schrift, Logo, Hintergrund und Symbole des Programms – ähnlich wie in Winamp. Das "
+     "Aussehen ändert sich sofort. Weitere Skins lassen sich aus einer .skin-Datei installieren (hierher ziehen "
+     "oder in Windows doppelklicken)."),
+    ("📥 Instalovat skin…", "📥 Install skin…", "📥 Inštalovať skin…", "📥 Skin installieren…"),
+    ("📤 Uložit jako šablonu…", "📤 Save as template…", "📤 Uložiť ako šablónu…", "📤 Als Vorlage speichern…"),
+    ("Uloží vybraný skin do souboru .skin – můžete ho upravit a poslat dál. Uvnitř je NAVOD.txt.",
+     "Saves the selected skin to a .skin file – you can edit it and share it. NAVOD.txt inside explains how.",
+     "Uloží vybraný skin do súboru .skin – môžete ho upraviť a poslať ďalej. Vnútri je NAVOD.txt.",
+     "Speichert den gewählten Skin als .skin-Datei – Sie können ihn bearbeiten und weitergeben. Anleitung in "
+     "NAVOD.txt."),
+    ("🗑️ Odebrat", "🗑️ Remove", "🗑️ Odobrať", "🗑️ Entfernen"),
+    ("📁 Složka skinů", "📁 Skins folder", "📁 Priečinok skinov", "📁 Skin-Ordner"),
+    ("Skin", "Skin", "Skin", "Skin"),
+    ("Instalovat skin", "Install skin", "Inštalovať skin", "Skin installieren"),
+    ("Uložit skin", "Save skin", "Uložiť skin", "Skin speichern"),
+    ("Skin nejde nainstalovat:", "The skin cannot be installed:", "Skin sa nedá nainštalovať:",
+     "Der Skin kann nicht installiert werden:"),
+    ("Skin uložen:", "Skin saved:", "Skin uložený:", "Skin gespeichert:"),
+    ("Přejmenujte ho na .zip, rozbalte a upravte barvy v skin.json – návod je v souboru NAVOD.txt.",
+     "Rename it to .zip, unpack it and edit the colours in skin.json – see NAVOD.txt for instructions.",
+     "Premenujte ho na .zip, rozbaľte a upravte farby v skin.json – návod je v súbore NAVOD.txt.",
+     "Benennen Sie ihn in .zip um, entpacken Sie ihn und ändern Sie die Farben in skin.json – Anleitung in "
+     "NAVOD.txt."),
+    ("Odebrat skin?", "Remove the skin?", "Odobrať skin?", "Skin entfernen?"),
+    ("vlastní obrázky", "custom images", "vlastné obrázky", "eigene Bilder"),
+    ("vlastní ikony", "custom icons", "vlastné ikony", "eigene Symbole"),
+    ("Výchozí (světlý)", "Default (light)", "Predvolený (svetlý)", "Standard (hell)"),
+    ("Tmavý", "Dark", "Tmavý", "Dunkel"),
+    ("Sépie (papír)", "Sepia (paper)", "Sépia (papier)", "Sepia (Papier)"),
+    ("Vysoký kontrast", "High contrast", "Vysoký kontrast", "Hoher Kontrast"),
+    ("Původní světlý vzhled s modrými prvky.", "The original light look with blue accents.",
+     "Pôvodný svetlý vzhľad s modrými prvkami.", "Das ursprüngliche helle Aussehen mit blauen Akzenten."),
+    ("Tmavé okno šetrné k očím večer; stránka knihy zůstává světlá jako papír.",
+     "A dark window that is easy on the eyes in the evening; the book page stays light like paper.",
+     "Tmavé okno šetrné k očiam večer; stránka knihy zostáva svetlá ako papier.",
+     "Ein dunkles Fenster, angenehm für die Augen am Abend; die Buchseite bleibt hell wie Papier."),
+    ("Teplé barvy starého papíru a hnědé prvky – jako v knihovně.",
+     "Warm colours of old paper with brown accents – like in a library.",
+     "Teplé farby starého papiera a hnedé prvky – ako v knižnici.",
+     "Warme Farben alten Papiers mit braunen Akzenten – wie in einer Bibliothek."),
+    ("Černé pozadí, bílý text a žluté prvky – nejlepší čitelnost, větší písmo.",
+     "Black background, white text and yellow accents – best readability, larger font.",
+     "Čierne pozadie, biely text a žlté prvky – najlepšia čitateľnosť, väčšie písmo.",
+     "Schwarzer Hintergrund, weißer Text und gelbe Akzente – beste Lesbarkeit, größere Schrift."),
 ]
 
 

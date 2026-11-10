@@ -28,6 +28,7 @@ ArchitecturesInstallIn64BitMode=x64compatible
 PrivilegesRequired=admin
 PrivilegesRequiredOverridesAllowed=commandline dialog
 UninstallDisplayIcon={app}\Prekladac.exe
+ChangesAssociations=yes
 SetupIconFile=assets\icon.ico
 ; údaje souboru Prekladac-Setup.exe (Vlastnosti → Podrobnosti)
 VersionInfoVersion={#AppVersion}
@@ -54,6 +55,14 @@ Source: "build\Tesseract-OCR\*"; DestDir: "{app}\Tesseract-OCR"; Flags: ignoreve
 Source: "build\dict\*"; DestDir: "{app}\dict"; Flags: ignoreversion
 Source: "THIRD_PARTY.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README.md"; DestDir: "{app}"; Flags: ignoreversion
+
+[Registry]
+; skiny (*.skin) – dvojklikem se nainstalují do Překladače
+Root: HKA; Subkey: "Software\Classes\.skin"; ValueType: string; ValueName: ""; ValueData: "Prekladac.Skin"; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\.skin\OpenWithProgids"; ValueType: string; ValueName: "Prekladac.Skin"; ValueData: ""; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\Prekladac.Skin"; ValueType: string; ValueName: ""; ValueData: "Skin pro Překladač"; Flags: uninsdeletekey
+Root: HKA; Subkey: "Software\Classes\Prekladac.Skin\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\Prekladac.exe,0"
+Root: HKA; Subkey: "Software\Classes\Prekladac.Skin\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\Prekladac.exe"" ""%1"""
 
 [Icons]
 Name: "{group}\Překladač"; Filename: "{app}\Prekladac.exe"

@@ -21,6 +21,7 @@ from free_engines import ENGINE_LABELS, OCR_LABELS, EngineError, GeminiEngine, O
 from guides import GUIDES
 from qt_common import STYLESHEET, app_icon, asset, bridge, emoji_icon, label, run_bg, set_status
 import i18n
+import skins
 import updater
 from qt_editor import HScroll, RibbonGroup, vline
 from qt_textassist import TextAssist
@@ -314,7 +315,7 @@ class FileList(QtWidgets.QListWidget):
         super().paintEvent(e)
         if not self.files:
             p = QtGui.QPainter(self.viewport())
-            p.setPen(QtGui.QColor("#94a3b8"))
+            p.setPen(QtGui.QColor(skins.C("disabled_text")))
             p.drawText(self.viewport().rect(), Qt.AlignCenter,
                        "Přetáhněte sem soubory\n(EPUB, AZW3, KFX, MOBI, PDF, DOCX, TXT, RTF, JPG, PNG…)")
 
@@ -1386,6 +1387,11 @@ class SettingsPage(QtWidgets.QWidget):
         tabs.addTab(self._services_tab(cfg), "Služby a klíče")
         tabs.addTab(scrolled(self._components_tab(cfg)), "Součásti")
         tabs.addTab(scrolled(self._general_tab(cfg)), "Obecné")
+        from qt_skins import SkinsTab
+
+        self.skins_tab = SkinsTab(cfg, win.save_cfg)
+        tabs.addTab(self.skins_tab, "Vzhled")
+        self.tabs = tabs
         tabs.addTab(scrolled(self._info_tab(cfg)), "Info")
         sc = QtGui.QShortcut(QtGui.QKeySequence("Ctrl+S"), self, activated=self.save)
         sc.setContext(Qt.WidgetWithChildrenShortcut)
@@ -1917,7 +1923,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.setWindowIcon(app_icon())
         self.side = side = QtWidgets.QWidget()
-        side.setStyleSheet("background: #1e293b;")
+        side.setObjectName("SidePanel")
+        side.setAttribute(Qt.WA_StyledBackground, True)
         sl = QtWidgets.QVBoxLayout(side)
         sl.setContentsMargins(0, 0, 0, 0)
         sl.setSpacing(0)
@@ -1927,7 +1934,7 @@ class MainWindow(QtWidgets.QMainWindow):
         hl.setContentsMargins(12, 14, 8, 12)
         hl.setSpacing(10)
         self.logo = QtWidgets.QLabel()
-        self.logo.setPixmap(app_icon().pixmap(QtCore.QSize(36, 36)))
+        self.skin_changed()
         self.logo.setFixedSize(36, 36)
         self.brand = QtWidgets.QWidget()
         bl = QtWidgets.QVBoxLayout(self.brand)
@@ -2045,6 +2052,18 @@ class MainWindow(QtWidgets.QMainWindow):
             pass
         super().closeEvent(e)
 
+    def skin_changed(self):
+        """Volá skins.apply(): logo ze skinu (nebo ikona programu)."""
+        from qt_skins import apply_logo
+
+        apply_logo(self.logo, app_icon())
+
+    def open_skin_file(self, path: str):
+        """Soubor .skin otevřený dvojklikem ve Windows: nainstalovat a ukázat v Nastavení → Vzhled."""
+        self.nav.setCurrentRow(2)
+        self.settings.tabs.setCurrentWidget(self.settings.skins_tab)
+        self.settings.skins_tab.install_file(path)
+
     def set_sidebar_collapsed(self, collapsed: bool, save: bool = True):
         """Sbalený panel = úzký proužek jen s ikonami; tlačítko ☰ ho zase rozbalí."""
         self.sidebar_collapsed = collapsed
@@ -2117,7 +2136,7 @@ def restart_app() -> None:
     QtWidgets.QApplication.quit()
 
 
-def main() -> int:
+def main(skin_file: str | None = None) -> int:
     QtWidgets.QApplication.setHighDpiScaleFactorRoundingPolicy(
         QtCore.Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     if sys.platform == "win32":  # vlastní ikona na hlavním panelu Windows (ne ikona Pythonu)
@@ -2133,6 +2152,10 @@ def main() -> int:
     qapp.setStyle("Fusion")
     qapp.setStyleSheet(STYLESHEET)
     bridge()
+    try:  # vzhled (skin) – chyba skinu nesmí zabránit spuštění
+        skins.apply(skins.find(core.load_config().get("skin")), qapp)
+    except Exception:  # noqa: BLE001
+        pass
     try:  # jazyk programu (čeština = beze změny)
         cfg = core.load_config()
         if not i18n.load(cfg.get("ui_lang") or i18n.system_language()):
@@ -2142,4 +2165,6 @@ def main() -> int:
         i18n.load("cs")
     win = MainWindow()
     win.show()
+    if skin_file:
+        QtCore.QTimer.singleShot(300, lambda: win.open_skin_file(skin_file))
     return qapp.exec()

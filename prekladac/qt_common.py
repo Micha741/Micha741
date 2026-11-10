@@ -30,65 +30,9 @@ def app_icon() -> QtGui.QIcon:
 
 SIDEBAR = "#1e293b"
 
-STYLESHEET = f"""
-QWidget {{ font-family: "Segoe UI", "Noto Sans", sans-serif; font-size: 10pt; color: #1f2937; }}
-QMainWindow, QDialog {{ background: #f4f6fa; }}
-#Sidebar {{ background: {SIDEBAR}; border: none; color: #e2e8f0; outline: 0; padding-top: 8px; }}
-#Sidebar::item {{ padding: 12px 16px; border-radius: 8px; margin: 2px 8px; color: #cbd5e1; }}
-#Sidebar::item:selected {{ background: {ACCENT}; color: white; }}
-#Sidebar::item:hover:!selected {{ background: #334155; }}
-#AppTitle {{ color: white; font-size: 13pt; font-weight: 600; padding: 16px 16px 4px 16px; background: {SIDEBAR}; }}
-#AppVersion {{ color: #94a3b8; padding: 0; background: {SIDEBAR}; font-size: 8.5pt; }}
-#SideHeader {{ background: {SIDEBAR}; }}
-#SideHeader QLabel {{ background: transparent; }}
-#AppName {{ color: white; font-size: 13pt; font-weight: 600; }}
-QToolButton#SideToggle {{ color: #cbd5e1; background: transparent; border: none; border-radius: 6px;
-    font-size: 15pt; padding: 2px 8px; }}
-QToolButton#SideToggle:hover {{ background: #334155; color: white; }}
-#PageTitle {{ font-size: 16pt; font-weight: 600; color: #0f172a; padding: 4px 0 8px 0; }}
-QGroupBox {{ background: white; border: 1px solid #e2e8f0; border-radius: 10px; margin-top: 14px; padding: 12px 10px 10px 10px; }}
-QGroupBox::title {{ subcontrol-origin: margin; left: 12px; padding: 0 4px; color: #334155; font-weight: 600; }}
-QLineEdit, QComboBox, QSpinBox, QPlainTextEdit, QTextEdit, QListWidget {{
-    background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 4px 6px; }}
-QLineEdit:focus, QComboBox:focus, QSpinBox:focus, QPlainTextEdit:focus, QTextEdit:focus {{ border: 1px solid {ACCENT}; }}
-QPushButton {{ background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 6px 14px; }}
-QPushButton:hover {{ background: #eef2ff; border-color: #a5b4fc; }}
-QPushButton:disabled {{ color: #94a3b8; background: #f1f5f9; }}
-QPushButton#Primary {{ background: {ACCENT}; color: white; border: none; font-weight: 600; padding: 8px 20px; }}
-QPushButton#Primary:hover {{ background: #1d4ed8; }}
-QPushButton#Primary:disabled {{ background: #93c5fd; }}
-QPushButton#Danger {{ background: #fee2e2; border: 1px solid #fecaca; color: #b91c1c; }}
-QProgressBar {{ border: none; background: #e2e8f0; border-radius: 6px; height: 12px; text-align: center; color: transparent; }}
-QProgressBar::chunk {{ background: {ACCENT}; border-radius: 6px; }}
-QTabWidget::pane {{ border: 1px solid #e2e8f0; border-radius: 8px; background: white; top: -1px; }}
-QTabBar::tab {{ padding: 7px 16px; border: 1px solid transparent; border-top-left-radius: 6px; border-top-right-radius: 6px; }}
-QTabBar::tab:selected {{ background: white; border-color: #e2e8f0; border-bottom-color: white; color: {ACCENT}; font-weight: 600; }}
-QScrollArea {{ border: none; background: transparent; }}
-#Ribbon {{ background: white; border-bottom: 1px solid #d0d7e2; }}
-#RibbonGroup {{ background: transparent; }}
-#RibbonLabel {{ color: #64748b; font-size: 8pt; }}
-#RibbonBar {{ background: white; border-bottom: 1px solid #d0d7e2; }}
-#RibbonBar QTabWidget::pane {{ border: none; background: white; }}
-QToolButton#BigAction, QToolButton#BigPrimary {{ padding: 4px 6px; font-size: 9pt; }}
-QToolButton#BigPrimary {{ background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; font-weight: 600; }}
-QToolButton#BigPrimary:hover {{ background: #dbeafe; border-color: #93c5fd; }}
-QToolButton#BigPrimary:disabled, QToolButton#BigAction:disabled {{ color: #94a3b8; background: transparent; border-color: transparent; }}
-QToolButton#RecentBook {{ text-align: left; padding: 2px 8px; color: #1e3a8a; }}
-#InfoBar {{ background: #f8fafc; border-bottom: 1px solid #e2e8f0; }}
-#Canvas {{ background: #e8ebf0; }}
-QScrollArea#CanvasScroll {{ background: #e8ebf0; }}
-#Paper {{ background: white; border: 1px solid #d5dbe5; border-radius: 2px; }}
-#DocHeading {{ font-family: Georgia, "Times New Roman", serif; font-size: 17pt; color: #1e3a8a; }}
-QPlainTextEdit#DocText {{ border: none; border-left: 3px solid #e2e8f0; border-radius: 0; padding: 4px 10px;
-    background: white; font-family: Georgia, "Times New Roman", serif; font-size: 12pt; color: #111827; }}
-QPlainTextEdit#DocText:focus {{ border: none; border-left: 3px solid {ACCENT}; }}
-QToolButton {{ border: 1px solid transparent; border-radius: 4px; padding: 3px; background: transparent; }}
-QToolButton:hover {{ background: #e0e7ff; border-color: #c7d2fe; }}
-QToolButton:checked {{ background: #c7d2fe; border-color: #a5b4fc; }}
-#Hint {{ color: #64748b; }}
-#Ok {{ color: #15803d; }}
-#Warn {{ color: #b45309; }}
-"""
+import skins  # noqa: E402
+
+STYLESHEET = skins.stylesheet(skins.current())  # výchozí vzhled; skin se použije přes skins.apply()
 
 
 # ------------------------------------------------------------------- ikony
@@ -98,32 +42,71 @@ def _pixmap(size=32):
     return pm
 
 
-def text_icon(text: str, *, bold=False, italic=False, underline=False, strike=False, color="#1f2937",
+class LiveIcon(QtGui.QIconEngine):
+    """Ikona kreslená až při zobrazení – po změně skinu se hned přebarví (bez restartu)."""
+
+    def __init__(self, draw):
+        super().__init__()
+        self.draw = draw  # draw(painter) kreslí do plochy 32×32
+
+    def clone(self):
+        return LiveIcon(self.draw)
+
+    def paint(self, painter, rect, mode, state):
+        painter.save()
+        painter.translate(rect.topLeft())
+        painter.scale(rect.width() / 32, rect.height() / 32)
+        if mode == QtGui.QIcon.Disabled:
+            painter.setOpacity(0.35)
+        painter.setRenderHint(QtGui.QPainter.Antialiasing)
+        self.draw(painter)
+        painter.restore()
+
+    def pixmap(self, size, mode, state):
+        pm = QtGui.QPixmap(size)
+        pm.fill(QtCore.Qt.transparent)
+        p = QtGui.QPainter(pm)
+        self.paint(p, QtCore.QRect(QtCore.QPoint(0, 0), size), mode, state)
+        p.end()
+        return pm
+
+    def scaledPixmap(self, size, mode, state, scale):
+        pm = self.pixmap(QtCore.QSize(int(size.width() * scale), int(size.height() * scale)), mode, state)
+        pm.setDevicePixelRatio(scale)
+        return pm
+
+
+def live_icon(draw) -> QtGui.QIcon:
+    return QtGui.QIcon(LiveIcon(draw))
+
+
+def text_icon(text: str, *, bold=False, italic=False, underline=False, strike=False, color: str | None = None,
               bar: str | None = None, size_pt=15, family="Segoe UI") -> QtGui.QIcon:
-    pm = _pixmap()
-    p = QtGui.QPainter(pm)
-    p.setRenderHint(QtGui.QPainter.Antialiasing)
+    return live_icon(lambda p: _draw_text_icon(p, text, bold, italic, underline, strike, color, bar, size_pt, family))
+
+
+def _draw_text_icon(p, text, bold, italic, underline, strike, color, bar, size_pt, family):
     f = QtGui.QFont(family, size_pt)
     f.setBold(bold)
     f.setItalic(italic)
     f.setUnderline(underline)
     f.setStrikeOut(strike)
     p.setFont(f)
-    p.setPen(QtGui.QColor(color))
+    p.setPen(QtGui.QColor(color or skins.C("icon")))
     rect = QtCore.QRect(0, -2 if bar else 0, 32, 32)
     p.drawText(rect, QtCore.Qt.AlignCenter, text)
     if bar:
         p.fillRect(QtCore.QRect(5, 26, 22, 5), QtGui.QColor(bar))
-    p.end()
-    return QtGui.QIcon(pm)
 
 
 def lines_icon(kind: str) -> QtGui.QIcon:
     """Ikony zarovnání, odrážek a odsazení kreslené čarami."""
-    pm = _pixmap()
-    p = QtGui.QPainter(pm)
-    p.setRenderHint(QtGui.QPainter.Antialiasing)
-    pen = QtGui.QPen(QtGui.QColor("#1f2937"), 2.2)
+    return live_icon(lambda p: _draw_lines_icon(p, kind))
+
+
+def _draw_lines_icon(p, kind: str):
+    ink = QtGui.QColor(skins.C("icon"))
+    pen = QtGui.QPen(ink, 2.2)
     p.setPen(pen)
     ys = [7, 13, 19, 25]
     if kind.startswith("align"):
@@ -140,7 +123,7 @@ def lines_icon(kind: str) -> QtGui.QIcon:
         for i, y in enumerate(ys[:3]):
             y += 2
             if kind == "bullets":
-                p.setBrush(QtGui.QColor("#1f2937"))
+                p.setBrush(ink)
                 p.drawEllipse(QtCore.QPointF(7, y), 1.8, 1.8)
             else:
                 f = QtGui.QFont("Segoe UI", 7)
@@ -163,21 +146,32 @@ def lines_icon(kind: str) -> QtGui.QIcon:
     elif kind == "page_break":
         p.drawLine(6, 6, 26, 6)
         p.drawLine(6, 26, 26, 26)
-        dash = QtGui.QPen(QtGui.QColor(ACCENT), 2, QtCore.Qt.DashLine)
+        dash = QtGui.QPen(QtGui.QColor(skins.C("accent")), 2, QtCore.Qt.DashLine)
         p.setPen(dash)
         p.drawLine(3, 16, 29, 16)
-    p.end()
-    return QtGui.QIcon(pm)
+
+
+_SKIN_ICONS: dict[str, QtGui.QPixmap] = {}
 
 
 def emoji_icon(ch: str) -> QtGui.QIcon:
-    pm = _pixmap()
-    p = QtGui.QPainter(pm)
-    f = QtGui.QFont("Segoe UI Emoji", 16)
-    p.setFont(f)
+    """Ikona z emoji; skin může mít vlastní obrázek (icons/<kód emoji>.png)."""
+    return live_icon(lambda p: _draw_emoji(p, ch))
+
+
+def _draw_emoji(p, ch: str):
+    custom = skins.current().icon_path(ch)
+    if custom:
+        key = str(custom)
+        if key not in _SKIN_ICONS:
+            _SKIN_ICONS[key] = QtGui.QPixmap(key)
+        pm = _SKIN_ICONS[key]
+        if not pm.isNull():
+            p.setRenderHint(QtGui.QPainter.SmoothPixmapTransform)
+            p.drawPixmap(QtCore.QRectF(1, 1, 30, 30), pm, QtCore.QRectF(pm.rect()))
+            return
+    p.setFont(QtGui.QFont("Segoe UI Emoji", 16))
     p.drawText(QtCore.QRect(0, 0, 32, 32), QtCore.Qt.AlignCenter, ch)
-    p.end()
-    return QtGui.QIcon(pm)
 
 
 # --------------------------------------------- pomalé akce mimo hlavní okno

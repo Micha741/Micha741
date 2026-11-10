@@ -96,11 +96,6 @@ class TextAssist(QtCore.QObject):
         self.completer.setMaxVisibleItems(7)
         self.completer.activated[str].connect(self.insert_completion)
         self.completer.popup().setObjectName("T9Popup")
-        self.completer.popup().setStyleSheet(
-            "QListView#T9Popup { border: 1px solid #94a3b8; border-radius: 6px; padding: 2px; "
-            "background: white; font-size: 10.5pt; }"
-            "QListView#T9Popup::item { padding: 3px 10px; }"
-            "QListView#T9Popup::item:selected { background: #2563eb; color: white; }")
         edit.installEventFilter(self)
         self.completer.popup().installEventFilter(self)
         self.completer.popup().setToolTip("Tab = vložit návrh · šipky = vybrat · Esc = zavřít")

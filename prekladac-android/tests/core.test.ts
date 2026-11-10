@@ -179,3 +179,27 @@ test('prostý text knihy', () => {
   assert.ok(t.startsWith('Strážce majáku\nJan Novák\n\n\n1. Bouře'));
   assert.ok(t.includes('[obrázek]'));
 });
+
+// ------------------------------------------------------------ skiny
+import JSZip from 'jszip';
+import { BUILTIN_SKINS, readSkinFile, SkinError, TOKENS } from '../src/core/skins';
+
+test('vestavěné skiny mají všechny barvy', () => {
+  assert.deepEqual(BUILTIN_SKINS.map((s) => s.id).slice(0, 4), ['default', 'dark', 'sepia', 'contrast']);
+  for (const s of BUILTIN_SKINS) assert.deepEqual(Object.keys(s.colors).sort(), [...TOKENS].sort());
+});
+
+test('skin ze souboru .skin (stejný formát jako Windows)', async () => {
+  const zip = new JSZip();
+  zip.file('Les/skin.json', JSON.stringify({ name: 'Les', author: 'Já', base: 'dark', colors: { accent: '#22C55E', window: 'nesmysl' }, images: { logo: 'logo.png' } }));
+  zip.file('Les/logo.png', new Uint8Array([0x89, 0x50, 0x4e, 0x47, 1, 2, 3]));
+  const skin = await readSkinFile(await zip.generateAsync({ type: 'uint8array' }), 'les.skin');
+  assert.equal(skin.id, 'user:les');
+  assert.equal(skin.colors.accent, '#22c55e');
+  assert.equal(skin.colors.window, BUILTIN_SKINS[1].colors.window);
+  assert.ok(skin.logo?.startsWith('data:image/png;base64,'));
+  await assert.rejects(readSkinFile(new Uint8Array([1, 2, 3]), 'x.skin'), SkinError);
+  const bad = new JSZip();
+  bad.file('readme.txt', 'x');
+  await assert.rejects(readSkinFile(await bad.generateAsync({ type: 'uint8array' }), 'x.skin'), /skin\.json/);
+});

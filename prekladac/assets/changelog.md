@@ -23,6 +23,7 @@
 - Instalátor s Tesseractem a českým slovníkem (asi o 300 MB menší), upozornění na novou verzi.
 - Vlastní převody EPUB, MOBI, PDB, DOCX, RTF, ODT, FB2, HTMLZ, TXT a PDF bez Calibre; Calibre volitelně pro zápis AZW3, KFX a LIT.
 - Jazyk programu: čeština, angličtina, slovenština, němčina (další jazyky jde doinstalovat).
+- Skiny (vzhledy) jako ve Winampu: Výchozí, Tmavý, Sépie, Vysoký kontrast a doinstalování dalších ze souboru .skin – i na Androidu.
 - Klíče uložené zašifrovaně (Windows DPAPI), návody ke všem službám.
 
 # Historie verzí

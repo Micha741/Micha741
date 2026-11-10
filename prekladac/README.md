@@ -87,6 +87,18 @@ Výsledek se uloží vedle originálu jako `název (čeština).přípona`.
 uloží se tlačítkem Uložit nastavení. Instalátor i `Prekladac.exe` mají ve Vlastnostech → Podrobnosti verzi souboru,
 autorská práva a popis.
 
+### Vzhled (skiny)
+
+Jako ve Winampu: *⚙ Nastavení → Vzhled*. Vestavěné skiny **Výchozí**, **Tmavý**, **Sépie (papír)** a **Vysoký
+kontrast** se přepnou hned, bez restartu. Další skiny se instalují ze souboru **.skin** – tlačítkem
+**Instalovat skin…**, přetažením do seznamu nebo dvojklikem na soubor ve Windows. Ukládají se do
+`%APPDATA%\Prekladac\skins`.
+
+Soubor .skin je ZIP se `skin.json` (název, autor, barvy, písmo) a volitelně s logem, pozadím, vlastními ikonami
+tlačítek (`icons/<kód emoji>.png`) a styly `style.qss`. Obsahuje jen barvy, obrázky a styly, žádný spustitelný kód.
+Při instalaci se kontrolují cesty, typy souborů i velikost. Šablonu vytvoří **Uložit jako šablonu…**, návod je
+uvnitř v `NAVOD.txt`. Stejné soubory .skin umí i aplikace pro Android (barvy a logo).
+
 ### Jazyk programu
 
 Program je česky, anglicky, slovensky a německy: *⚙ Nastavení → Obecné → Jazyk programu*, uložit a restartovat
