@@ -11,7 +11,7 @@ import { type OutputFormat, OUTPUT_FORMATS, readBook, writeBook } from './core/f
 import { pdfHtml } from './core/pdf';
 import type { EngineSettings } from './core/translate';
 import { readSkinFile, slug, type Skin } from './core/skins';
-import { deserializeBook, fileNameFromUrl, newEntry, serializeBook, type LibraryEntry } from './core/library';
+import { deserializeBook, fileNameFromUrl, newEntry, serializeBook, type LibraryEntry, type VocabItem } from './core/library';
 import { toBase64 } from './core/bytes';
 
 export async function pickBook(): Promise<Book | null> {
@@ -257,4 +257,29 @@ export async function downloadBook(url: string, signal?: AbortSignal): Promise<B
     throw new Error('Odkaz nevede na soubor knihy, ale na webovou stránku. Otevřete ho v prohlížeči a stáhněte soubor (EPUB, MOBI…).');
   const ext = /epub/.test(type) ? 'epub' : /mobipocket|x-mobi/.test(type) ? 'mobi' : '';
   return readBook(data, fileNameFromUrl(url, ext));
+}
+
+// ------------------------------------------------------------ slovníček (přeložená slova ze čtečky)
+export async function loadVocab(): Promise<VocabItem[]> {
+  try {
+    const f = new File(libDir(), 'slovnicek.json');
+    return f.exists ? (JSON.parse(await f.text()) as VocabItem[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveVocab(list: VocabItem[]) {
+  const f = new File(libDir(), 'slovnicek.json');
+  if (!f.exists) f.create();
+  f.write(JSON.stringify(list));
+}
+
+/** Sdílí text jako soubor .txt (slovníček, poznámky). */
+export async function shareText(name: string, text: string) {
+  const f = new File(Paths.cache, `${safeFileName(name)}.txt`);
+  if (f.exists) f.delete();
+  f.create();
+  f.write(text);
+  await Sharing.shareAsync(f.uri, { mimeType: 'text/plain', dialogTitle: name });
 }

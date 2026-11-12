@@ -4,6 +4,7 @@
 // Zprávy do aplikace jdou přes window.ReactNativeWebView.postMessage(JSON).
 import type { Book, Chapter } from './book';
 import { escapeXml, toBase64 } from './bytes';
+import { MARK_COLORS, type MarkColor } from './library';
 
 export type ReaderTheme = 'day' | 'sepia' | 'night';
 
@@ -16,6 +17,8 @@ export interface ReaderPrefs {
   justify: boolean;
   /** animace listování: otočení stránky jako v knize, posun, prolnutí, žádná */
   turn: ReaderTurn;
+  /** rychlost čtení nahlas (1 = normální) */
+  ttsRate?: number;
 }
 
 export type ReaderTurn = 'curl' | 'slide' | 'fade' | 'none';
@@ -39,7 +42,8 @@ export type ReaderMessage =
   | { type: 'prev' }
   | { type: 'menu' }
   | { type: 'para'; i: number; text: string }
-  | { type: 'word'; i: number; word: string; text: string };
+  | { type: 'word'; i: number; word: string; text: string }
+  | { type: 'first'; i: number };
 
 export function parseReaderMessage(raw: string): ReaderMessage | null {
   try {
@@ -50,10 +54,10 @@ export function parseReaderMessage(raw: string): ReaderMessage | null {
   }
 }
 
-function blocksHtml(book: Book, ch: Chapter, marks: Set<number>): string {
+function blocksHtml(book: Book, ch: Chapter, marks: Map<number, MarkColor>): string {
   let out = '';
   ch.blocks.forEach((b, i) => {
-    if (b.type === 'p') out += `<p data-i="${i}"${marks.has(i) ? ' class="mk"' : ''}>${escapeXml(b.text).replace(/\n/g, '<br/>')}</p>`;
+    if (b.type === 'p') out += `<p data-i="${i}"${marks.has(i) ? ` class="mk mk-${marks.get(i)}"` : ''}>${escapeXml(b.text).replace(/\n/g, '<br/>')}</p>`;
     else if (b.type === 'h') out += `<h${Math.min(4, Math.max(2, (b.level ?? 2) + 1))} data-i="${i}">${escapeXml(b.text)}</h${Math.min(4, Math.max(2, (b.level ?? 2) + 1))}>`;
     else if (b.type === 'pb') out += '<div class="pb"></div>';
     else if (b.type === 'img') {
@@ -65,7 +69,7 @@ function blocksHtml(book: Book, ch: Chapter, marks: Set<number>): string {
 }
 
 /** HTML jedné kapitoly pro čtečku. */
-export function chapterHtml(book: Book, index: number, prefs: ReaderPrefs, start: StartAt = 'start', marks: number[] = []): string {
+export function chapterHtml(book: Book, index: number, prefs: ReaderPrefs, start: StartAt = 'start', marks: { i: number; color?: MarkColor }[] = []): string {
   const ch = book.chapters[index];
   const t = THEMES[prefs.theme] ?? THEMES.sepia;
   const family = prefs.font === 'sans' ? 'Roboto, "Noto Sans", sans-serif' : '"Noto Serif", Georgia, serif';
@@ -73,7 +77,7 @@ export function chapterHtml(book: Book, index: number, prefs: ReaderPrefs, start
     ? `<figure class="cover"><img src="data:${book.images[book.cover].mime};base64,${toBase64(book.images[book.cover].data)}" alt=""/></figure>`
     : '';
   const title = ch ? `<h1>${escapeXml(ch.title)}</h1>` : '';
-  const body = ch ? blocksHtml(book, ch, new Set(marks)) : '<p>Kniha je prázdná.</p>';
+  const body = ch ? blocksHtml(book, ch, new Map(marks.map((x) => [x.i, x.color ?? 'y']))) : '<p>Kniha je prázdná.</p>';
   const m = prefs.margin;
   return `<!DOCTYPE html><html lang="${escapeXml(book.language || 'cs')}"><head><meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
@@ -93,7 +97,8 @@ figure{margin:.6em 0;text-align:center;break-inside:avoid}figure img{max-width:1
 figure.cover{margin:0;height:calc(100vh - ${Math.max(50, Math.round(m * 1.4)) + Math.round(m * 1.4) + 6}px);display:flex;align-items:center;justify-content:center;break-after:column}
 .pb{break-after:column;height:0}
 .hl{background:${t.accent}33;border-radius:3px}
-.mk{background:${prefs.theme === 'night' ? '#5c4a0f' : '#fff2a8'};box-shadow:0 0 0 2px ${prefs.theme === 'night' ? '#5c4a0f' : '#fff2a8'};border-radius:2px}
+${(Object.keys(MARK_COLORS) as MarkColor[]).map((k) => { const col = prefs.theme === 'night' ? MARK_COLORS[k].night : MARK_COLORS[k].day; return `.mk-${k}{background:${col};box-shadow:0 0 0 2px ${col};border-radius:2px}`; }).join('')}
+.sp{outline:2px solid ${t.accent};outline-offset:3px;border-radius:2px}
 </style></head><body><div id="c" class="pg">${cover}${title}${body}</div><div id="t"></div>
 <script>
 (function(){
@@ -127,7 +132,14 @@ figure.cover{margin:0;height:calc(100vh - ${Math.max(50, Math.round(m * 1.4)) + 
       if(!el){show(0);return;}var t=c.style.transform;c.style.transform='none';var r=el.getBoundingClientRect();c.style.transform=t;
       show(Math.floor((r.left+2)/W));el.classList.add('hl');setTimeout(function(){el.classList.remove('hl')},1600);}
     else show(0);};
-  window.readerMark=function(i,on){[c,clone].forEach(function(root){if(!root)return;var el=root.querySelector('[data-i="'+i+'"]');if(el)el.classList.toggle('mk',on);});};
+  window.readerMark=function(i,color){[c,clone].forEach(function(root){if(!root)return;var el=root.querySelector('[data-i="'+i+'"]');if(!el)return;
+    el.classList.remove('mk','mk-y','mk-g','mk-b','mk-p');if(color){el.classList.add('mk');el.classList.add('mk-'+color);}});};
+  // čtení nahlas: první odstavec na stránce a zvýraznění čteného odstavce (stránka se otočí za ním)
+  window.readerFirst=function(){var ps=c.querySelectorAll('[data-i]');for(var k=0;k<ps.length;k++){var r=ps[k].getBoundingClientRect();
+      if(r.right>4&&r.left<W-4){send({type:'first',i:+ps[k].getAttribute('data-i')});return;}}send({type:'first',i:0});};
+  window.readerSpeak=function(i){var old=c.querySelector('.sp');if(old)old.classList.remove('sp');if(i<0)return;
+    var el=c.querySelector('[data-i="'+i+'"]');if(!el)return;el.classList.add('sp');var t=c.style.transform;c.style.transform='none';
+    var r=el.getBoundingClientRect();c.style.transform=t;var p=Math.floor((r.left+2)/W);if(p!==page&&!busy)go(p,p>page?1:-1);};
   function next(){if(busy)return;if(page<pages-1)go(page+1,1);else send({type:'next'});}
   function prev(){if(busy)return;if(page>0)go(page-1,-1);else send({type:'prev'});}
   window.readerNext=next;window.readerPrev=prev;

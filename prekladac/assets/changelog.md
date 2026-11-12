@@ -28,6 +28,7 @@
 - Android: překlad „Offline v telefonu“ (Google ML Kit) – bez internetu a bez klíče, jazyky se stahují jednou.
 - Android: čtečka knih (knihovna, stránky, písmo, barvy, obsah, záložky, originál a překlad odstavce, překlad slova), hledání knih (Project Gutenberg přímo, obchody a knihovny) a „Otevřít v Překladači“.
 - Android: čtení PDF – text se přeskládá do odstavců a kapitol (bez záhlaví a čísel stránek), PDF jde číst, přeložit i převést.
+- Android 1.1.0: čtení nahlas, ☰ nabídka (kapitoly, hledání v knize, označené), zvýraznění barvami s poznámkami, slovníček přeložených slov, animace listování, výsledky z katalogu Google Books a našeptávač, PDF chráněná jen proti tisku/kopírování.
 - Klíče uložené zašifrovaně (Windows DPAPI), návody ke všem službám.
 
 # Historie verzí

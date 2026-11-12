@@ -4,8 +4,9 @@ import { ActivityIndicator, Alert, BackHandler, Image, Linking, Modal, Platform,
 import { WebView, type WebViewMessageEvent } from 'react-native-webview';
 import { useKeepAwake } from 'expo-keep-awake';
 import { blockText, bookProgress, chapterHtml, DEFAULT_PREFS, parseReaderMessage, searchBook, THEMES, TURNS, type ReaderPrefs, type ReaderTheme, type ReaderTurn, type StartAt } from './src/core/reader';
-import type { Highlight, LibraryEntry } from './src/core/library';
-import { addToHistory, googleBooksSuggestUrl, gutendexUrl, KIND_LABEL, mergeSuggestions, openLibrarySuggestUrl, parseGoogleBooks, parseGutendex, parseOpenLibrary, SOURCES, suggestionQuery, type FoundBook, type SourceKind, type Suggestion } from './src/core/sources';
+import { addVocab, MARK_COLORS, vocabText, type Highlight, type LibraryEntry, type MarkColor, type VocabItem } from './src/core/library';
+import * as Speech from 'expo-speech';
+import { addToHistory, googleBooksSuggestUrl, googleBooksUrl, parseGoogleBooksFull, type StoreBook, gutendexUrl, KIND_LABEL, mergeSuggestions, openLibrarySuggestUrl, parseGoogleBooks, parseGutendex, parseOpenLibrary, SOURCES, suggestionQuery, type FoundBook, type SourceKind, type Suggestion } from './src/core/sources';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { addImage, bookStats, insertImage, pruneImages, type Book } from './src/core/book';
 import { toBase64 } from './src/core/bytes';
@@ -13,9 +14,11 @@ import { OUTPUT_FORMATS, type OutputFormat } from './src/core/formats';
 import { CLAUDE_MODELS, DEFAULT_CLAUDE_MODEL, DEFAULT_GEMINI_MODEL, ENGINES, LANGUAGES, makeTranslator, setOfflineBackend, translateBook, type EngineId } from './src/core/translate';
 import Mlkit from './modules/mlkit-translate/src/MlkitTranslateModule';
 import { BUILTIN_SKINS, type Skin } from './src/core/skins';
-import { addToLibrary, downloadBook, installSkinFromPicker, loadInstalledSkins, loadLibrary, loadLibraryBook, loadSettings, makeOutput, openBookUri, pickBook, pickImage, removeFromLibrary, removeSkin, saveOutputToFolder, saveSettings, shareOutput, updateEntry, type Output, type Settings } from './src/platform';
+import { addToLibrary, downloadBook, installSkinFromPicker, loadInstalledSkins, loadLibrary, loadLibraryBook, loadSettings, makeOutput, openBookUri, pickBook, pickImage, removeFromLibrary, removeSkin, saveOutputToFolder, saveSettings, saveVocab, loadVocab, shareOutput, shareText, updateEntry, type Output, type Settings } from './src/platform';
 
-const VERSION = '1.0';
+import appConfig from './app.json';
+
+const VERSION = appConfig.expo.version; // číslo verze jen na jednom místě (app.json)
 
 // Barvy ze skinu – stejné názvy jako ve Windows verzi (prekladac/assets/skins/builtin.json)
 function colorsFor(skin: Skin) {
@@ -687,13 +690,60 @@ function SkinsBox({ api }: { api: SkinApi }) {
 // ------------------------------------------------------------ Číst: knihovna
 type Reading = { entry: LibraryEntry; book: Book; original: Book | null };
 
+function VocabModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const [list, setList] = useState<VocabItem[]>([]);
+  const [q, setQ] = useState('');
+  useEffect(() => {
+    if (visible) loadVocab().then(setList);
+  }, [visible]);
+  const shown = q.trim() ? list.filter((v) => `${v.word} ${v.translation}`.toLowerCase().includes(q.trim().toLowerCase())) : list;
+  const remove = (v: VocabItem) => {
+    const next = list.filter((x) => x !== v);
+    setList(next);
+    saveVocab(next);
+  };
+  return (
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+      <Pressable style={st.modalBack} onPress={onClose}>
+        <Pressable style={[st.modal, { maxHeight: '85%' }]} onPress={() => undefined}>
+          <View style={[st.row, { justifyContent: 'space-between' }]}>
+            <Text style={st.boxTitle}>📒 Slovníček ({list.length})</Text>
+            <View style={st.row}>
+              {list.length ? <Btn small label="📤 Sdílet" onPress={() => shareText('Slovníček', vocabText(list)).catch(() => undefined)} /> : null}
+              <Btn small label="✖" onPress={onClose} />
+            </View>
+          </View>
+          {list.length > 8 ? <TextInput style={st.input} value={q} onChangeText={setQ} placeholder="Hledat ve slovníčku" placeholderTextColor={C.disabled} /> : null}
+          <ScrollView>
+            {!list.length ? <Text style={st.hint}>Slova, která si ve čtečce přeložíte (dvojité klepnutí na slovo → Přeložit slovo), se ukládají sem i s větou, ve které byla.</Text> : null}
+            {shown.map((v) => (
+              <View key={`${v.word}${v.at}`} style={st.chapterRow}>
+                <View style={{ flex: 1 }}>
+                  <Text style={st.btnText}><Text style={{ fontWeight: '700' }}>{v.word}</Text> – {v.translation}</Text>
+                  {v.sentence ? <Text style={[st.hint, { fontStyle: 'italic' }]} numberOfLines={2}>{v.sentence}</Text> : null}
+                  <Text style={st.hint} numberOfLines={1}>{v.book}</Text>
+                </View>
+                <Btn small label="✖" onPress={() => remove(v)} />
+              </View>
+            ))}
+          </ScrollView>
+        </Pressable>
+      </Pressable>
+    </Modal>
+  );
+}
+
 function LibraryScreen({ list, onOpen, onRemove, onPick, busy }: { list: LibraryEntry[]; onOpen: (e: LibraryEntry) => void; onRemove: (e: LibraryEntry) => void; onPick: () => void; busy: string }) {
+  const [vocab, setVocab] = useState(false);
   return (
     <View style={{ flex: 1, backgroundColor: C.window }}>
       <View style={[st.settingsHead, { paddingBottom: 10 }]}>
         <View style={[st.row, { justifyContent: 'space-between' }]}>
           <Text style={st.pageTitle}>Knihovna</Text>
-          <Btn label="📂 Otevřít knihu" onPress={onPick} primary small disabled={!!busy} />
+          <View style={st.row}>
+            <Btn label="📒" onPress={() => setVocab(true)} small />
+            <Btn label="📂 Otevřít knihu" onPress={onPick} primary small disabled={!!busy} />
+          </View>
         </View>
         {busy ? <Text style={st.hint}>{busy}</Text> : null}
       </View>
@@ -720,8 +770,9 @@ function LibraryScreen({ list, onOpen, onRemove, onPick, busy }: { list: Library
             </View>
           </Pressable>
         ))}
-        {list.length ? <Text style={[st.hint, { textAlign: 'center' }]}>Podržením prstu na knize ji odeberete z knihovny.</Text> : null}
+        {list.length ? <Text style={[st.hint, { textAlign: 'center' }]}>Podržením prstu na knize ji odeberete z knihovny. 📒 = slovníček přeložených slov.</Text> : null}
       </ScrollView>
+      <VocabModal visible={vocab} onClose={() => setVocab(false)} />
     </View>
   );
 }
@@ -753,8 +804,8 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
   const web = useRef<WebView>(null);
   const saveT = useRef<ReturnType<typeof setTimeout> | null>(null);
   const html = useMemo(
-    () => chapterHtml(book, chapter, prefs, start, (entry.highlights ?? []).filter((h) => h.chapter === chapter).map((h) => h.i)),
-    [book, chapter, JSON.stringify(prefs), start], // označení se mění bez načtení stránky (readerMark)
+    () => chapterHtml(book, chapter, prefs, start, (entry.highlights ?? []).filter((h) => h.chapter === chapter).map((h) => ({ i: h.i, color: h.color }))),
+    [book, chapter, JSON.stringify({ ...prefs, ttsRate: 0 }), start], // označení a rychlost hlasu se mění bez načtení stránky
   );
 
   const persist = (patch: Partial<LibraryEntry>) => {
@@ -791,7 +842,15 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
   const onMessage = (ev: WebViewMessageEvent) => {
     const m = parseReaderMessage(ev.nativeEvent.data);
     if (!m) return;
+    if (m.type === 'first') {
+      speakFromRef.current(m.i);
+      return;
+    }
     if (m.type === 'pos') {
+      if (pendingSpeak.current) {
+        pendingSpeak.current = false;
+        setTimeout(() => speakFromRef.current(0), 50);
+      }
       setPos({ page: m.page, pages: m.pages });
       const f = m.pages > 1 ? m.page / (m.pages - 1) : 0;
       persist({ chapter, fraction: f, progress: bookProgress(book, chapter, f) });
@@ -802,6 +861,7 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
     else if (m.type === 'menu') setMenu((v) => !v);
     else if (m.type === 'para') {
       setTr({ busy: false, text: '' });
+      setNoteDraft(markOf(m.i)?.note ?? '');
       setSheet({ kind: 'para', i: m.i, text: m.text });
     } else if (m.type === 'word') {
       setTr({ busy: false, text: '' });
@@ -818,6 +878,11 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
       const t = makeTranslator(engine, target, settings);
       const [out] = await t.translate([sheet.kind === 'word' ? sheet.word! : sheet.text]);
       setTr({ busy: false, text: out });
+      if (sheet.kind === 'word' && out.trim()) {
+        const sentence = (sheet.text.match(new RegExp(`[^.!?…]*${sheet.word!.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^.!?…]*[.!?…]?`, 'i'))?.[0] ?? '').trim().slice(0, 240);
+        const item: VocabItem = { word: sheet.word!, translation: out.trim(), sentence, book: book.title, from: book.language, to: target, at: Date.now() };
+        loadVocab().then((list) => saveVocab(addVocab(list, item))).catch(() => undefined);
+      }
     } catch (e: any) {
       setTr({ busy: false, text: `⚠ ${e?.message ?? e}` });
     }
@@ -830,20 +895,78 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
   };
   const percent = Math.round(bookProgress(book, chapter, fraction) * 100);
   const highlights = entry.highlights ?? [];
-  const isMarked = (i: number) => highlights.some((h) => h.chapter === chapter && h.i === i);
-  const toggleMark = (i: number, text: string) => {
-    const on = !isMarked(i);
-    const next: Highlight[] = on
-      ? [...highlights, { chapter, i, text: text.slice(0, 160), at: Date.now() }]
-      : highlights.filter((h) => !(h.chapter === chapter && h.i === i));
+  const markOf = (i: number) => highlights.find((h) => h.chapter === chapter && h.i === i);
+  /** Označí odstavec barvou (null = zrušit označení) a uloží poznámku. */
+  const setMark = (i: number, text: string, color: MarkColor | null, note?: string) => {
+    const old = markOf(i);
+    const rest = highlights.filter((h) => !(h.chapter === chapter && h.i === i));
+    const next: Highlight[] = color ? [...rest, { chapter, i, text: text.slice(0, 160), at: old?.at ?? Date.now(), color, note: note ?? old?.note }] : rest;
     persist({ highlights: next });
-    web.current?.injectJavaScript(`window.readerMark&&window.readerMark(${i},${on});true;`);
+    web.current?.injectJavaScript(`window.readerMark&&window.readerMark(${i},${color ? `'${color}'` : 'false'});true;`);
   };
+  const [noteDraft, setNoteDraft] = useState('');
+
+  // ---- čtení nahlas (hlas Androidu, i bez internetu); čte odstavec po odstavci a otáčí stránky
+  const [speaking, setSpeaking] = useState(false);
+  const speakingRef = useRef(false);
+  const pendingSpeak = useRef(false);
+  const speakFromRef = useRef<(i: number) => void>(() => undefined);
+  const ttsLang = ({ cs: 'cs-CZ', sk: 'sk-SK', en: 'en-US', de: 'de-DE', pl: 'pl-PL', fr: 'fr-FR', es: 'es-ES', it: 'it-IT', ru: 'ru-RU', uk: 'uk-UA', hu: 'hu-HU' } as Record<string, string>)[book.language] ?? (book.language || 'cs-CZ');
+  const stopSpeaking = () => {
+    speakingRef.current = false;
+    pendingSpeak.current = false;
+    setSpeaking(false);
+    Speech.stop().catch(() => undefined);
+    web.current?.injectJavaScript('window.readerSpeak&&window.readerSpeak(-1);true;');
+  };
+  speakFromRef.current = (from: number) => {
+    if (!speakingRef.current) return;
+    const blocks = book.chapters[chapter]?.blocks ?? [];
+    let i = from;
+    while (i < blocks.length && !((blocks[i].type === 'p' || blocks[i].type === 'h') && (blocks[i] as { text: string }).text.trim())) i++;
+    if (i >= blocks.length) {
+      if (chapter < book.chapters.length - 1) {
+        pendingSpeak.current = true;
+        goChapter(chapter + 1, 'start');
+      } else stopSpeaking();
+      return;
+    }
+    const text = (blocks[i] as { text: string }).text;
+    web.current?.injectJavaScript(`window.readerSpeak&&window.readerSpeak(${i});true;`);
+    // dlouhý odstavec po větách do kousků, které hlas zvládne najednou
+    const parts: string[] = [];
+    let cur = '';
+    for (const sent of text.match(/[^.!?…]+[.!?…]*\s*/g) ?? [text]) {
+      if ((cur + sent).length > 3000 && cur) {
+        parts.push(cur);
+        cur = '';
+      }
+      cur += sent;
+    }
+    if (cur.trim()) parts.push(cur);
+    const say = (k: number) => {
+      if (!speakingRef.current) return;
+      if (k >= parts.length) return speakFromRef.current(i + 1);
+      Speech.speak(parts[k], { language: ttsLang, rate: prefs.ttsRate ?? 1, onDone: () => say(k + 1), onError: () => stopSpeaking() });
+    };
+    say(0);
+  };
+  const startSpeaking = () => {
+    speakingRef.current = true;
+    setSpeaking(true);
+    setMenu(false);
+    setPanel('');
+    web.current?.injectJavaScript('window.readerFirst&&window.readerFirst();true;');
+  };
+  useEffect(() => () => {
+    speakingRef.current = false;
+    Speech.stop().catch(() => undefined);
+  }, []);
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.bg }}>
       <WebView
-        key={`${chapter}:${typeof start === 'number' ? start.toFixed(4) : JSON.stringify(start)}:${JSON.stringify(prefs)}`}
+        key={`${chapter}:${typeof start === 'number' ? start.toFixed(4) : JSON.stringify(start)}:${JSON.stringify({ ...prefs, ttsRate: 0 })}`}
         ref={web}
         originWhitelist={['*']}
         source={{ html }}
@@ -859,6 +982,15 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
           {book.chapters[chapter]?.title ?? ''} · {pos.page + 1}/{pos.pages} · {percent} %
         </Text>
       </View>
+      {speaking ? (
+        <View style={[st.ttsBar, { backgroundColor: theme.bg, borderColor: theme.muted + '55' }]}>
+          <Text style={{ color: theme.fg }}>🔊</Text>
+          <Pressable onPress={() => update({ reader: { ...prefs, ttsRate: Math.max(0.5, Math.round(((prefs.ttsRate ?? 1) - 0.1) * 10) / 10) } })} hitSlop={8}><Text style={{ color: theme.fg, fontSize: 17 }}>−</Text></Pressable>
+          <Text style={{ color: theme.muted, fontVariant: ['tabular-nums'] }}>{(prefs.ttsRate ?? 1).toFixed(1)}×</Text>
+          <Pressable onPress={() => update({ reader: { ...prefs, ttsRate: Math.min(2, Math.round(((prefs.ttsRate ?? 1) + 0.1) * 10) / 10) } })} hitSlop={8}><Text style={{ color: theme.fg, fontSize: 17 }}>+</Text></Pressable>
+          <Pressable onPress={stopSpeaking} hitSlop={8} accessibilityLabel="Zastavit čtení"><Text style={{ color: theme.fg, fontSize: 17 }}>⏹</Text></Pressable>
+        </View>
+      ) : null}
       <Pressable onPress={() => openMenu('toc')} style={[st.burger, { backgroundColor: theme.bg, borderColor: theme.muted + '55' }]} accessibilityRole="button" accessibilityLabel="Nabídka: kapitoly, hledat, označené" hitSlop={8}>
         <Text style={{ color: theme.fg, fontSize: 20, lineHeight: 22 }}>☰</Text>
       </Pressable>
@@ -873,6 +1005,7 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
             <Pressable onPress={() => openMenu('toc')} style={st.readerBtn}><Text style={st.readerBtnText}>☰ Obsah</Text></Pressable>
             <Pressable onPress={() => openMenu('search')} style={st.readerBtn}><Text style={st.readerBtnText}>🔎</Text></Pressable>
             <Pressable onPress={addBookmark} style={st.readerBtn}><Text style={st.readerBtnText}>🔖</Text></Pressable>
+            <Pressable onPress={() => (speaking ? stopSpeaking() : startSpeaking())} style={st.readerBtn} accessibilityLabel="Číst nahlas"><Text style={st.readerBtnText}>{speaking ? '⏹' : '🔊'}</Text></Pressable>
             <Pressable onPress={() => setPanel('look')} style={st.readerBtn}><Text style={st.readerBtnText}>Aa</Text></Pressable>
             <Pressable onPress={() => goChapter(chapter + 1, 'start')} style={st.readerBtn} disabled={chapter >= book.chapters.length - 1}><Text style={st.readerBtnText}>⏭</Text></Pressable>
           </View>
@@ -888,6 +1021,7 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
               <Btn small label="✖" onPress={() => setPanel('')} />
             </View>
             <View style={[st.row, { gap: 6 }]}>
+              <Btn small label={speaking ? '⏹ Nahlas' : '🔊 Nahlas'} onPress={() => (speaking ? stopSpeaking() : startSpeaking())} />
               <Btn small label="🔖 Záložka" onPress={() => { addBookmark(); }} />
               <Btn small label="Aa Vzhled" onPress={() => setPanel('look')} />
               <Btn small label="← Knihovna" onPress={() => { setPanel(''); onClose(); }} />
@@ -918,12 +1052,19 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
               ) : null}
               {menuTab === 'marks' ? (
                 <>
-                  {!highlights.length && !entry.bookmarks.length ? <Text style={st.hint}>Zatím nic. Odstavec označíte podržením prstu na něm → 🖍 Označit. Záložku přidáte tlačítkem 🔖 nahoře.</Text> : null}
+                  {!highlights.length && !entry.bookmarks.length ? <Text style={st.hint}>Zatím nic. Odstavec označíte podržením prstu na něm a výběrem barvy, můžete k němu připsat poznámku. Záložku přidáte tlačítkem 🔖 nahoře.</Text> : null}
+                  {highlights.length ? (
+                    <Btn small label="📤 Sdílet označené a poznámky" onPress={() => shareText(`${book.title} – poznámky`, [...highlights].sort((a, b) => a.chapter - b.chapter || a.i - b.i).map((h) => `${book.chapters[h.chapter]?.title ?? ''}\n„${blockText(book, h.chapter, h.i)}“${h.note ? `\nPoznámka: ${h.note}` : ''}\n`).join('\n')).catch(() => undefined)} />
+                  ) : null}
                   {[...highlights].sort((a, b) => a.chapter - b.chapter || a.i - b.i).map((h) => (
                     <View key={`h${h.at}`} style={st.chapterRow}>
                       <Pressable style={{ flex: 1 }} onPress={() => goChapter(h.chapter, { block: h.i })}>
-                        <Text style={st.hint} numberOfLines={1}>🖍 {book.chapters[h.chapter]?.title}</Text>
+                        <View style={st.row}>
+                          <View style={[st.colorDot, { width: 14, height: 14, backgroundColor: MARK_COLORS[h.color ?? 'y'].day }]} />
+                          <Text style={[st.hint, { flex: 1 }]} numberOfLines={1}>{book.chapters[h.chapter]?.title}</Text>
+                        </View>
                         <Text style={st.btnText} numberOfLines={3}>{h.text}</Text>
+                        {h.note ? <Text style={[st.hint, { fontStyle: 'italic' }]}>📝 {h.note}</Text> : null}
                       </Pressable>
                       <Btn small label="✖" onPress={() => { persist({ highlights: highlights.filter((x) => x !== h) }); if (h.chapter === chapter) web.current?.injectJavaScript(`window.readerMark&&window.readerMark(${h.i},false);true;`); }} />
                     </View>
@@ -987,9 +1128,23 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
               ) : null}
               <View style={[st.row, { marginTop: 4 }]}>
                 {tr.busy ? <ActivityIndicator color={C.accent} /> : <Btn label={sheet?.kind === 'word' ? '🌍 Přeložit slovo' : '🌍 Přeložit odstavec'} onPress={translateNow} primary />}
-                {sheet && sheet.kind === 'para' && sheet.i >= 0 ? <Btn label={isMarked(sheet.i) ? '🖍 Zrušit označení' : '🖍 Označit'} onPress={() => { toggleMark(sheet.i, sheet.text); setSheet(null); }} /> : null}
+                {sheet?.kind === 'word' && tr.text && !tr.text.startsWith('⚠') ? <Text style={st.hint}>📒 Uloženo do slovníčku</Text> : null}
                 <Btn label="Zavřít" onPress={() => setSheet(null)} />
               </View>
+              {sheet && sheet.kind === 'para' && sheet.i >= 0 ? (
+                <View style={{ gap: 6, marginTop: 4 }}>
+                  <Text style={st.label}>🖍 Označit barvou</Text>
+                  <View style={st.row}>
+                    {(Object.keys(MARK_COLORS) as MarkColor[]).map((k) => (
+                      <Pressable key={k} onPress={() => setMark(sheet.i, sheet.text, k, noteDraft || undefined)} accessibilityLabel={`Označit: ${MARK_COLORS[k].name}`}
+                        style={[st.colorDot, { backgroundColor: MARK_COLORS[k].day }, markOf(sheet.i)?.color === k || (!markOf(sheet.i)?.color && markOf(sheet.i) && k === 'y') ? { borderColor: C.accent, borderWidth: 3 } : null]} />
+                    ))}
+                    {markOf(sheet.i) ? <Btn small label="Zrušit" onPress={() => { setMark(sheet.i, sheet.text, null); setNoteDraft(''); }} /> : null}
+                  </View>
+                  <TextInput style={[st.input, { minHeight: 60, textAlignVertical: 'top' }]} multiline value={noteDraft} onChangeText={setNoteDraft} placeholder="📝 Poznámka k odstavci (nepovinné)" placeholderTextColor={C.disabled} />
+                  {noteDraft !== (markOf(sheet.i)?.note ?? '') ? <Btn small label="💾 Uložit poznámku" onPress={() => setMark(sheet.i, sheet.text, markOf(sheet.i)?.color ?? 'y', noteDraft)} /> : null}
+                </View>
+              ) : null}
               <Text style={st.hint}>Překladač a cílový jazyk se nastavují na kartě Překlad. Text jde označit a zkopírovat.</Text>
             </ScrollView>
           </Pressable>
@@ -1004,6 +1159,8 @@ function SearchScreen({ onBook, settings, update, library }: { onBook: (b: Book)
   const [q, setQ] = useState('');
   const [lang, setLang] = useState('');
   const [found, setFound] = useState<FoundBook[] | null>(null);
+  const [store, setStore] = useState<StoreBook[] | null>(null);
+  const [open, setOpen] = useState('');
   const [busy, setBusy] = useState('');
   const [link, setLink] = useState('');
   const [focus, setFocus] = useState(false);
@@ -1047,7 +1204,12 @@ function SearchScreen({ onBook, settings, update, library }: { onBook: (b: Book)
     setQ(text);
     setFocus(false);
     update({ searchHistory: addToHistory(settings.searchHistory, text) });
-    setBusy('Hledám v Project Gutenberg…');
+    setBusy('Hledám knihy…');
+    // katalog Google Books (obchody, ukázky, volná díla) souběžně s Project Gutenberg
+    fetch(googleBooksUrl(text, lang))
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => setStore(j ? parseGoogleBooksFull(j) : []))
+      .catch(() => setStore([]));
     try {
       const res = await fetch(gutendexUrl(text, lang));
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -1098,6 +1260,36 @@ function SearchScreen({ onBook, settings, update, library }: { onBook: (b: Book)
         {busy ? <View style={st.row}><ActivityIndicator color={C.accent} /><Text style={st.hint}>{busy}</Text></View> : null}
       </View>
       <ScrollView contentContainerStyle={{ padding: 12, gap: 10 }} keyboardShouldPersistTaps="handled">
+        {store && store.length ? (
+          <Box title={`Knihy v katalogu Google Books – ${store.length}`}>
+            {store.map((b) => (
+              <View key={b.id} style={[st.chapterRow, { alignItems: 'flex-start' }]}>
+                {b.cover ? <Image source={{ uri: b.cover }} style={[st.libCover, { width: 52, height: 76 }]} /> : <View style={[st.libCover, st.libNoCover, { width: 52, height: 76 }]}><Text>📖</Text></View>}
+                <View style={{ flex: 1, gap: 2 }}>
+                  <Pressable onPress={() => setOpen(open === b.id ? '' : b.id)}>
+                    <Text style={st.btnText} numberOfLines={open === b.id ? undefined : 2}>{b.title}</Text>
+                    <Text style={st.hint} numberOfLines={1}>{b.authors}{b.language ? ` · ${b.language}` : ''}{b.price ? ` · ${b.price}` : ''}</Text>
+                    {b.description ? <Text style={st.hint} numberOfLines={open === b.id ? undefined : 2}>{b.description}</Text> : null}
+                  </Pressable>
+                  <View style={[st.row, { gap: 6 }]}>
+                    {b.download ? <Btn small primary label="⬇ Číst" onPress={() => get(b.download!, b.title)} disabled={!!busy} /> : null}
+                    {b.preview ? <Btn small label="👁 Ukázka" onPress={() => Linking.openURL(b.preview!)} /> : null}
+                    {b.buy ? <Btn small label="🛒 Koupit" onPress={() => Linking.openURL(b.buy!)} /> : null}
+                  </View>
+                  {open === b.id ? (
+                    <View style={[st.row, { gap: 6 }]}>
+                      <Text style={st.hint}>Najít v:</Text>
+                      {SOURCES.filter((x) => ['alza', 'kosmas', 'palmknihy', 'martinus'].includes(x.id)).map((x) => (
+                        <Btn key={x.id} small label={x.name} onPress={() => Linking.openURL(x.url(`${b.title} ${b.authors.split(',')[0] ?? ''}`.trim()))} />
+                      ))}
+                    </View>
+                  ) : null}
+                </View>
+              </View>
+            ))}
+            <Text style={st.hint}>Klepnutím na název se ukáže celý popis a odkazy do českých obchodů. Ukázky a nákup se otevřou v prohlížeči; soubor stažený z obchodu pak otevřete „Otevřít v Překladači“.</Text>
+          </Box>
+        ) : null}
         {found ? (
           <Box title={`Project Gutenberg – ${found.length ? `${found.length} knih zdarma` : 'nic nenalezeno'}`}>
             {found.map((b) => (
@@ -1261,6 +1453,8 @@ function makeStyles() {
   readerBtn: { paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8, minHeight: 44, justifyContent: 'center' },
   readerBtnText: { color: '#f8fafc', fontSize: 17 },
   sheetText: { fontFamily: SERIF, fontSize: 16, lineHeight: 23, color: C.text },
+  colorDot: { width: 34, height: 34, borderRadius: 17, borderWidth: 1, borderColor: C.inputBorder },
+  ttsBar: { position: 'absolute', top: 6, left: 8, height: 40, borderRadius: 20, borderWidth: 1, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 12, opacity: 0.92 },
   burger: { position: 'absolute', top: 6, right: 8, width: 40, height: 40, borderRadius: 20, borderWidth: 1, alignItems: 'center', justifyContent: 'center', opacity: 0.85 },
   sideMenu: { width: '86%', maxWidth: 420, backgroundColor: C.surface, paddingHorizontal: 12, paddingTop: 14, paddingBottom: 10, gap: 8 },
   suggestBox: { borderWidth: 1, borderColor: C.inputBorder, borderRadius: 8, backgroundColor: C.surface, overflow: 'hidden' },

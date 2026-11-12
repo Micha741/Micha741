@@ -142,3 +142,49 @@ export function addToHistory(history: string[] | undefined, q: string): string[]
   if (!t) return history ?? [];
   return [t, ...(history ?? []).filter((h) => fold(h) !== fold(t))].slice(0, 15);
 }
+
+// ------------------------------------------------------------ výsledky z katalogu Google Books (přímo v aplikaci)
+export interface StoreBook {
+  id: string;
+  title: string;
+  authors: string;
+  description: string;
+  language: string;
+  cover?: string;
+  /** cena jako text, např. „249 Kč“; „zdarma“ u volných děl */
+  price?: string;
+  /** odkaz na stažení volného díla (EPUB/PDF) */
+  download?: string;
+  /** ukázka / čtení na webu */
+  preview?: string;
+  buy?: string;
+}
+
+export function googleBooksUrl(q: string, lang?: string): string {
+  const fields = 'items(id,volumeInfo(title,subtitle,authors,description,language,imageLinks/thumbnail,previewLink,infoLink),saleInfo(saleability,listPrice,retailPrice,buyLink),accessInfo(publicDomain,webReaderLink,viewability,epub(isAvailable,downloadLink),pdf(isAvailable,downloadLink)))';
+  return `https://www.googleapis.com/books/v1/volumes?q=${enc(q)}&maxResults=20&printType=books&fields=${enc(fields)}${lang ? `&langRestrict=${enc(lang)}` : ''}`;
+}
+
+const https = (u?: string) => (u ? u.replace(/^http:\/\//, 'https://') : undefined);
+
+export function parseGoogleBooksFull(j: any): StoreBook[] {
+  return (j?.items ?? []).map((it: any) => {
+    const v = it.volumeInfo ?? {}, sale = it.saleInfo ?? {}, acc = it.accessInfo ?? {};
+    const p = sale.retailPrice ?? sale.listPrice;
+    const free = acc.publicDomain || sale.saleability === 'FREE';
+    const price = free ? 'zdarma' : p?.amount != null ? `${Math.round(p.amount * 100) / 100} ${p.currencyCode === 'CZK' ? 'Kč' : p.currencyCode ?? ''}`.trim() : undefined;
+    const download = acc.publicDomain ? https(acc.epub?.downloadLink) ?? https(acc.pdf?.downloadLink) : undefined;
+    return {
+      id: String(it.id ?? ''),
+      title: [v.title, v.subtitle].filter(Boolean).join(': '),
+      authors: (v.authors ?? []).join(', '),
+      description: String(v.description ?? '').replace(/<[^>]+>/g, '').slice(0, 400),
+      language: v.language ?? '',
+      cover: https(v.imageLinks?.thumbnail),
+      price,
+      download,
+      preview: acc.viewability && acc.viewability !== 'NO_PAGES' ? https(acc.webReaderLink ?? v.previewLink) : undefined,
+      buy: https(sale.buyLink),
+    } as StoreBook;
+  }).filter((b: StoreBook) => b.title);
+}

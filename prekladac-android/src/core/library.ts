@@ -10,11 +10,43 @@ export interface Bookmark {
   at: number;
 }
 
+export type MarkColor = 'y' | 'g' | 'b' | 'p';
+export const MARK_COLORS: Record<MarkColor, { name: string; day: string; night: string }> = {
+  y: { name: 'žlutá', day: '#fff2a8', night: '#5c4a0f' },
+  g: { name: 'zelená', day: '#c9f2c7', night: '#1f4d2a' },
+  b: { name: 'modrá', day: '#cfe3ff', night: '#1e3a5f' },
+  p: { name: 'růžová', day: '#ffd3e6', night: '#5a2440' },
+};
+
 export interface Highlight {
   chapter: number;
   i: number; // číslo odstavce v kapitole
   text: string; // začátek odstavce pro seznam
   at: number;
+  color?: MarkColor;
+  note?: string;
+}
+
+/** Slovo přeložené ve čtečce (slovníček). */
+export interface VocabItem {
+  word: string;
+  translation: string;
+  sentence: string;
+  book: string;
+  from: string;
+  to: string;
+  at: number;
+}
+
+/** Přidá slovo do slovníčku (stejné slovo se stejným překladem se jen posune nahoru). */
+export function addVocab(list: VocabItem[], item: VocabItem): VocabItem[] {
+  const key = (v: VocabItem) => `${v.word.toLowerCase()}|${v.to}`;
+  return [item, ...list.filter((v) => key(v) !== key(item))].slice(0, 2000);
+}
+
+/** Slovníček jako text (sdílení, tisk, import do kartiček). */
+export function vocabText(list: VocabItem[]): string {
+  return list.map((v) => `${v.word}\t${v.translation}${v.sentence ? `\t${v.sentence}` : ''}`).join('\n') + '\n';
 }
 
 export interface LibraryEntry {

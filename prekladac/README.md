@@ -317,8 +317,11 @@ Používá stejná pravidla převodů (EPUB, MOBI, PDB, DOCX, TXT, PDF) a podobn
 originál (u knihy přeložené v aplikaci) nebo se odstavec přeloží, dvojitým klepnutím se přeloží slovo. Soubor knihy
 stažený v telefonu jde otevřít volbou „Otevřít v Překladači“. Otevře i **PDF**: text se přeskládá jako
 v e-knize (odstavce, nadpisy, kapitoly, bez záhlaví a čísel stránek), takže jde číst, přeložit i převést;
-zašifrovaná PDF a skeny bez textu (OCR) telefon neotevře. Karta **Hledat** prohledá Project Gutenberg přímo
-v aplikaci (stažení jedním klepnutím) a otevře vyhledávání v obchodech a knihovnách (Alza, Kosmas, Martinus,
+zašifrovaná PDF a skeny bez textu (OCR) telefon neotevře. Ve čtečce je i **čtení nahlas** (hlas Androidu, i bez internetu), tlačítko **☰** s kapitolami, hledáním
+v celé knize a označenými odstavci (4 barvy, poznámky, sdílení) a **slovníček** přeložených slov (📒 v knihovně).
+Karta **Hledat** prohledá Project Gutenberg a katalog Google Books přímo
+v aplikaci (volná díla se stáhnou jedním klepnutím, u ostatních ukázka, cena a odkazy do českých obchodů; při psaní
+našeptává) a otevře vyhledávání v obchodech a knihovnách (Alza, Kosmas, Martinus,
 Palmknihy, Smashwords, Amazon, Google Play, knihovny v Praze, Brně, Plzni a Českých Budějovicích…). Knihy
 se šifrováním (Amazon Kindle, Adobe DRM .acsm, Google Play) aplikace neotevře.
 

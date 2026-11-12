@@ -422,8 +422,8 @@ test('čtečka: hledání v knize bez ohledu na diakritiku, označené odstavce,
   assert.deepEqual(hits.map((h) => [h.chapter, h.i, h.match]), [[0, 0, 'kůň'], [1, 0, 'Kůň'], [1, 1, 'KŮŇ'], [1, 1, 'kun']]);
   assert.equal(hits[2].before, 'Další ');
   assert.deepEqual(searchBook(book, 'k'), []);
-  const html = chapterHtml(book, 0, DEFAULT_PREFS, { block: 1 }, [1]);
-  assert.match(html, /<p data-i="1" class="mk">Nic\.<\/p>/);
+  const html = chapterHtml(book, 0, DEFAULT_PREFS, { block: 1 }, [{ i: 1, color: "g" }]);
+  assert.match(html, /<p data-i="1" class="mk mk-g">Nic\.<\/p>/);
   assert.match(html, /readerGo\(\{"block":1\}\)/);
 });
 
@@ -448,4 +448,33 @@ test('šifrovací funkce odpovídají standardu', async () => {
   c2.setAutoPadding(false);
   const block = d.subarray(0, 64);
   assert.deepEqual(Buffer.from(aesCbcEncrypt(key.subarray(0, 16), iv, block)), Buffer.concat([c2.update(block), c2.final()]));
+});
+
+test('hledání: výsledky z katalogu Google Books (cena, ukázka, volné dílo ke stažení)', async () => {
+  const { parseGoogleBooksFull, googleBooksUrl } = await import('../src/core/sources');
+  const r = parseGoogleBooksFull({ items: [
+    { id: 'a', volumeInfo: { title: 'Babička', authors: ['Božena Němcová'], language: 'cs', imageLinks: { thumbnail: 'http://books.google.com/x.jpg' }, description: '<p>Obrazy <b>venkovského</b> života</p>' },
+      saleInfo: { saleability: 'FOR_SALE', retailPrice: { amount: 149, currencyCode: 'CZK' }, buyLink: 'https://play.google.com/store/books/details?id=a' },
+      accessInfo: { publicDomain: false, viewability: 'PARTIAL', webReaderLink: 'http://play.google.com/books/reader?id=a' } },
+    { id: 'b', volumeInfo: { title: 'Pride and Prejudice' }, saleInfo: { saleability: 'FREE' }, accessInfo: { publicDomain: true, viewability: 'ALL_PAGES', epub: { isAvailable: true, downloadLink: 'http://books.google.com/b.epub' } } },
+    { id: 'c', volumeInfo: {} },
+  ] });
+  assert.equal(r.length, 2);
+  assert.equal(r[0].price, '149 Kč');
+  assert.equal(r[0].cover, 'https://books.google.com/x.jpg');
+  assert.equal(r[0].description, 'Obrazy venkovského života');
+  assert.equal(r[0].download, undefined);
+  assert.match(r[0].preview!, /^https:/);
+  assert.equal(r[1].price, 'zdarma');
+  assert.equal(r[1].download, 'https://books.google.com/b.epub');
+  assert.match(googleBooksUrl('babička', 'cs'), /langRestrict=cs/);
+});
+
+test('slovníček: bez duplicit, nejnovější nahoře, export', async () => {
+  const { addVocab, vocabText } = await import('../src/core/library');
+  let list = addVocab([], { word: 'Pferd', translation: 'kůň', sentence: 'Das Pferd läuft.', book: 'K', from: 'de', to: 'cs', at: 1 });
+  list = addVocab(list, { word: 'Haus', translation: 'dům', sentence: '', book: 'K', from: 'de', to: 'cs', at: 2 });
+  list = addVocab(list, { word: 'pferd', translation: 'kůň', sentence: 'Ein Pferd.', book: 'K', from: 'de', to: 'cs', at: 3 });
+  assert.deepEqual(list.map((v) => v.word), ['pferd', 'Haus']);
+  assert.equal(vocabText(list), 'pferd\tkůň\tEin Pferd.\nHaus\tdům\n');
 });
