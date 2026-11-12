@@ -75,3 +75,99 @@ def docx_width_inches(width_px: float | None, data: bytes) -> float:
     if not width_px:
         width_px = size_px(data)[0]
     return max(0.3, min(PAGE_WIDTH_IN, float(width_px) / PAGE_PX * PAGE_WIDTH_IN))
+
+
+def crop(data: bytes, box: tuple[float, float, float, float]) -> tuple[bytes, str]:
+    """Vyjme část obrázku; box = (vlevo, nahoře, vpravo, dole) jako podíl 0–1 šířky a výšky."""
+    from PIL import Image, ImageOps
+
+    with Image.open(io.BytesIO(data)) as im:
+        im = ImageOps.exif_transpose(im)
+        w, h = im.size
+        l, t, r, b = box
+        px = (round(max(0, min(l, r)) * w), round(max(0, min(t, b)) * h),
+              round(min(1, max(l, r)) * w), round(min(1, max(t, b)) * h))
+        if px[2] - px[0] < 2 or px[3] - px[1] < 2:
+            raise ValueError("Výřez je příliš malý.")
+        out = io.BytesIO()
+        im.crop(px).save(out, "PNG")
+    return shrink(out.getvalue())
+
+
+def rotate(data: bytes, clockwise: bool = True) -> tuple[bytes, str]:
+    """Otočí obrázek o 90°."""
+    from PIL import Image, ImageOps
+
+    with Image.open(io.BytesIO(data)) as im:
+        im = ImageOps.exif_transpose(im)
+        out = io.BytesIO()
+        im.rotate(-90 if clockwise else 90, expand=True).save(out, "PNG")
+    return shrink(out.getvalue())
+
+
+def aspect_box(data: bytes, ratio: float | None, margin: float = 0.0) -> tuple[float, float, float, float]:
+    """Výřez na střed obrázku: s poměrem stran ratio (šířka/výška), nebo jen ořez okrajů o margin."""
+    w, h = size_px(data)
+    if not ratio:
+        return (margin, margin, 1 - margin, 1 - margin)
+    if w / h > ratio:  # obrázek je širší – ubrat po stranách
+        k = (h * ratio) / w
+        return ((1 - k) / 2, 0.0, (1 + k) / 2, 1.0)
+    k = (w / ratio) / h
+    return (0.0, (1 - k) / 2, 1.0, (1 + k) / 2)
+
+
+def _font(size: int, bold: bool = True):
+    from PIL import ImageFont
+
+    names = (["georgiab.ttf", "timesbd.ttf", "DejaVuSerif-Bold.ttf"] if bold
+             else ["georgia.ttf", "times.ttf", "DejaVuSerif.ttf"])
+    for n in names:
+        for p in (n, f"C:/Windows/Fonts/{n}", f"/usr/share/fonts/truetype/dejavu/{n}"):
+            try:
+                return ImageFont.truetype(p, size)
+            except OSError:
+                continue
+    return ImageFont.load_default(size=size)
+
+
+def text_cover(title: str, author: str = "", size: tuple[int, int] = (1200, 1800)) -> bytes:
+    """Obálka bez obrázku: jen název a autor na barevném pozadí (JPEG)."""
+    from PIL import Image, ImageDraw
+
+    W, H = size
+    im = Image.new("RGB", size)
+    d = ImageDraw.Draw(im)
+    top, bottom = (43, 58, 85), (20, 32, 58)
+    for y in range(H):  # přechod barvy shora dolů
+        k = y / H
+        d.line([(0, y), (W, y)], fill=tuple(round(a + (b - a) * k) for a, b in zip(top, bottom)))
+    gold = (201, 169, 110)
+    d.rectangle([70, 70, W - 70, H - 70], outline=gold, width=6)
+    title = (title or "Kniha").strip()
+    fs = 120
+    while True:  # zalomit název do řádků, které se vejdou
+        f = _font(fs)
+        lines, cur = [], ""
+        for word in title.split():
+            test = f"{cur} {word}".strip()
+            if cur and d.textlength(test, font=f) > W - 260:
+                lines.append(cur)
+                cur = word
+            else:
+                cur = test
+        lines.append(cur)
+        if (len(lines) <= 6 and all(d.textlength(x, font=f) <= W - 260 for x in lines)) or fs <= 40:
+            break
+        fs -= 10
+    lh = round(fs * 1.25)
+    y = round(H * 0.42 - len(lines) * lh / 2)
+    for line in lines:
+        d.text((W / 2, y), line, font=f, fill=(245, 236, 217), anchor="ma")
+        y += lh
+    d.line([(W / 2 - 160, y + 30), (W / 2 + 160, y + 30)], fill=gold, width=4)
+    if author:
+        d.text((W / 2, H - 300), author.strip(), font=_font(60, bold=False), fill=(230, 215, 184), anchor="ma")
+    out = io.BytesIO()
+    im.save(out, "JPEG", quality=90)
+    return out.getvalue()

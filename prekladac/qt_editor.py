@@ -660,7 +660,8 @@ class BookEditor(QtWidgets.QMainWindow):
         ins = RibbonGroup("Vložení")
         b_img = self._big(emoji_icon("🖼️"), "Obrázek", self.pick_image)
         b_img.setToolTip("Vložit obrázek ze souboru (JPG, PNG…). Jde i Ctrl+V ze schránky nebo přetažením myší. "
-                         "Velikost a zarovnání změníte pravým tlačítkem na obrázku.")
+                         "Můžete vybrat i více obrázků – první se nabídne jako obálka. Velikost, ořez, otočení a celou stránku "
+                         "nastavíte pravým tlačítkem na obrázku.")
         ins.grid.addWidget(b_img, 0, 0)
         return self._row(clip, font, para, ins, styles, edit)
 
@@ -1102,9 +1103,15 @@ class BookEditor(QtWidgets.QMainWindow):
         img = self.image_at(word_cursor)
         if img is not None:
             im = menu.addMenu("🖼 Obrázek")
-            for pct in (25, 50, 75, 100):
-                im.addAction(f"Šířka {pct} %", lambda p=pct, c=QtGui.QTextCursor(img): self.set_image_width(c, p))
+            for text_, pct in (("Malý (35 %)", 35), ("Střední (55 %)", 55), ("Velký (85 %)", 85)):
+                im.addAction(text_, lambda p=pct, c=QtGui.QTextCursor(img): self.set_image_width(c, p))
+            im.addAction("⛶ Roztáhnout na celou stránku", lambda c=QtGui.QTextCursor(img): self.image_full_page(c))
             im.addAction("Vlastní šířka…", lambda c=QtGui.QTextCursor(img): self.ask_image_width(c))
+            im.addSeparator()
+            im.addAction("✂ Vyjmout část (oříznout)…", lambda c=QtGui.QTextCursor(img): self.crop_image(c))
+            im.addAction("⟳ Otočit doprava", lambda c=QtGui.QTextCursor(img): self.rotate_image(c, True))
+            im.addAction("⟲ Otočit doleva", lambda c=QtGui.QTextCursor(img): self.rotate_image(c, False))
+            im.addAction("📕 Použít jako obálku", lambda c=QtGui.QTextCursor(img): self.image_as_cover(c))
             im.addSeparator()
             for text_, al in (("Zarovnat vlevo", Qt.AlignLeft), ("Na střed", Qt.AlignHCenter), ("Vpravo", Qt.AlignRight)):
                 def align(c=QtGui.QTextCursor(img), a=al):
@@ -1294,8 +1301,26 @@ class BookEditor(QtWidgets.QMainWindow):
     IMAGE_FILTER = "Obrázky (*.jpg *.jpeg *.png *.gif *.bmp *.webp *.tif *.tiff);;Vše (*.*)"
 
     def pick_image(self):
-        f, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Vložit obrázek", str(self.path.parent), self.IMAGE_FILTER)
-        if f:
+        """Vložit obrázky (i více najednou). Když kniha nemá obálku, první obrázek se nabídne jako obálka."""
+        files, _ = QtWidgets.QFileDialog.getOpenFileNames(self, "Vložit obrázky", str(self.path.parent),
+                                                          self.IMAGE_FILTER)
+        if not files:
+            return
+        if not self.project.get("cover"):
+            ask = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Question, "Obálka knihy",
+                                        "Kniha zatím nemá obálku. Použít první obrázek jako obálku?", parent=self)
+            b_cov = ask.addButton("📕 Jako obálku", QtWidgets.QMessageBox.YesRole)
+            ask.addButton("Vložit do textu", QtWidgets.QMessageBox.NoRole)
+            ask.setDefaultButton(b_cov)
+            ask.exec()
+            if ask.clickedButton() is b_cov:
+                self.set_cover_data(Path(files[0]).read_bytes())
+                files = files[1:]
+                if files and QtWidgets.QMessageBox.question(
+                        self, "Obrázky", f"Vložit další obrázky ({len(files)}) do textu na místo kurzoru?",
+                        QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No) != QtWidgets.QMessageBox.Yes:
+                    return
+        for f in files:
             self.insert_image_data(Path(f).read_bytes())
 
     def insert_image_data(self, data: bytes, cursor: QtGui.QTextCursor | None = None) -> str | None:
@@ -1356,6 +1381,72 @@ class BookEditor(QtWidgets.QMainWindow):
         if ok:
             self.set_image_width(c, v)
 
+    def _image_data(self, c: QtGui.QTextCursor) -> bytes | None:
+        return book_images.get_image(self.project, c.charFormat().toImageFormat().name())
+
+    def _swap_image(self, c: QtGui.QTextCursor, data: bytes, ext: str):
+        """Nahradí obrázek na místě upravenou verzí (šířka zůstane, obálka se taky přepíše)."""
+        old = c.charFormat().toImageFormat()
+        name = book_images.add_image(self.project, data, ext)
+        nf = QtGui.QTextImageFormat()
+        nf.setName(name)
+        if old.width():
+            nf.setWidth(old.width())
+        c.setCharFormat(nf)
+        if self.project.get("cover") == old.name():
+            self.project["cover"] = name
+            self.update_cover_thumb()
+        self.text.viewport().update()
+        self._changed()
+
+    def crop_image(self, c: QtGui.QTextCursor):
+        data = self._image_data(c)
+        if not data:
+            return
+        dlg = CropDialog(data, self)
+        if dlg.exec() == QtWidgets.QDialog.Accepted:
+            try:
+                self._swap_image(c, *book_images.crop(data, dlg.box()))
+            except Exception as e:  # noqa: BLE001
+                QtWidgets.QMessageBox.warning(self, "Obrázek", f"Obrázek se nepodařilo oříznout:\n{e}")
+
+    def rotate_image(self, c: QtGui.QTextCursor, clockwise: bool):
+        data = self._image_data(c)
+        if data:
+            self._swap_image(c, *book_images.rotate(data, clockwise))
+
+    def image_as_cover(self, c: QtGui.QTextCursor):
+        name = c.charFormat().toImageFormat().name()
+        if book_images.get_image(self.project, name):
+            self.project["cover"] = name
+            self.update_cover_thumb()
+            self._changed()
+
+    def image_full_page(self, c: QtGui.QTextCursor):
+        """Obrázek přes celou šířku a sám na stránce (zalomení stránky před a za ním)."""
+        self.set_image_width(c, 100)
+        doc = self.text.document()
+        block = c.block()
+        bf = block.blockFormat()
+        bf.setAlignment(Qt.AlignHCenter)
+        QtGui.QTextCursor(block).setBlockFormat(bf)
+        gray = QtGui.QTextCharFormat()
+        gray.setForeground(QtGui.QColor("#94a3b8"))
+        e = QtGui.QTextCursor(doc)
+        e.beginEditBlock()
+        nxt = block.next()
+        if not (nxt.isValid() and nxt.text().strip() == PAGE_BREAK):
+            e.setPosition(block.position() + block.length() - 1)
+            e.insertBlock(QtGui.QTextBlockFormat(), gray)
+            e.insertText(PAGE_BREAK, gray)
+        prv = block.previous()
+        if prv.isValid() and prv.text().strip() != PAGE_BREAK:
+            e.setPosition(block.position())
+            e.insertText(PAGE_BREAK, gray)
+            e.insertBlock(QtGui.QTextBlockFormat())
+        e.endEditBlock()
+        self._changed()
+
     def replace_image(self, c: QtGui.QTextCursor):
         f, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Nahradit obrázek", str(self.path.parent),
                                                      self.IMAGE_FILTER)
@@ -1367,8 +1458,23 @@ class BookEditor(QtWidgets.QMainWindow):
         f, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Obrázek obálky", str(self.path.parent), self.IMAGE_FILTER)
         if not f:
             return
+        data = Path(f).read_bytes()
+        try:  # obálka knihy má poměr 2:3 – nabídnout výřez
+            w, h = book_images.size_px(data)
+        except Exception:  # noqa: BLE001
+            w, h = 2, 3
+        if abs(w / max(1, h) - 2 / 3) > 0.08:
+            dlg = CropDialog(data, self, ratio=2 / 3)
+            if dlg.exec() == QtWidgets.QDialog.Accepted:
+                try:
+                    data, _ext = book_images.crop(data, dlg.box())
+                except Exception:  # noqa: BLE001
+                    pass
+        self.set_cover_data(data)
+
+    def set_cover_data(self, data: bytes):
         try:
-            data, ext = book_images.shrink(Path(f).read_bytes())
+            data, ext = book_images.shrink(data)
         except Exception as e:  # noqa: BLE001
             QtWidgets.QMessageBox.warning(self, "Obálka", f"Obrázek se nepodařilo načíst:\n{e}")
             return
@@ -1388,9 +1494,20 @@ class BookEditor(QtWidgets.QMainWindow):
             pm.loadFromData(data)
             self.cover_thumb.setPixmap(pm.scaled(self.cover_thumb.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
             self.cover_thumb.setToolTip("Obálka knihy")
-        else:
-            self.cover_thumb.setPixmap(QtGui.QPixmap())
-            self.cover_thumb.setText("bez\nobálky")
+        else:  # bez obrázku: obálka jen s názvem a autorem (tak se uloží i do e-knihy)
+            pm = QtGui.QPixmap()
+            try:
+                title = (self.project.get("outline") or {}).get("title") or "Kniha"
+                pm.loadFromData(book_images.text_cover(title, self.project.get("author") or "", (300, 450)))
+            except Exception:  # noqa: BLE001
+                pass
+            if pm.isNull():
+                self.cover_thumb.setPixmap(QtGui.QPixmap())
+                self.cover_thumb.setText("bez\nobálky")
+            else:
+                self.cover_thumb.setPixmap(pm.scaled(self.cover_thumb.size(), Qt.KeepAspectRatio,
+                                                     Qt.SmoothTransformation))
+            self.cover_thumb.setToolTip("Obálka jen s názvem a autorem (kniha nemá obrázek obálky)")
 
     def save(self):
         import time
@@ -1452,3 +1569,91 @@ class BookEditor(QtWidgets.QMainWindow):
                 self.save()
         e.accept()
         self.closed.emit()
+
+
+class CropDialog(QtWidgets.QDialog):
+    """Vyjmutí části obrázku: myší táhnout výřez, nebo zvolit hotový poměr stran."""
+
+    def __init__(self, data: bytes, parent=None, ratio: float | None = None):
+        super().__init__(parent)
+        self.setWindowTitle("Vyjmout část obrázku")
+        self.data = data
+        self.pm = QtGui.QPixmap()
+        self.pm.loadFromData(data)
+        self.view = _CropView(self.pm, self)
+        presets = QtWidgets.QHBoxLayout()
+        for text_, r, m in (("Celý", None, 0.0), ("Okraje −5 %", None, 0.05), ("Okraje −10 %", None, 0.10),
+                            ("Obálka 2:3", 2 / 3, 0), ("Čtverec", 1.0, 0), ("Na šířku 3:2", 1.5, 0),
+                            ("16:9", 16 / 9, 0)):
+            b = QtWidgets.QPushButton(text_)
+            b.clicked.connect(lambda _=False, r=r, m=m: self.view.set_box(book_images.aspect_box(self.data, r, m)))
+            presets.addWidget(b)
+        hint = QtWidgets.QLabel("Tažením myší označte část obrázku, která má zůstat.")
+        bb = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel)
+        bb.button(QtWidgets.QDialogButtonBox.Ok).setText("✂ Vyjmout")
+        bb.accepted.connect(self.accept)
+        bb.rejected.connect(self.reject)
+        lay = QtWidgets.QVBoxLayout(self)
+        lay.addWidget(hint)
+        lay.addLayout(presets)
+        lay.addWidget(self.view, 1)
+        lay.addWidget(bb)
+        if ratio:
+            self.view.set_box(book_images.aspect_box(data, ratio))
+
+    def box(self) -> tuple[float, float, float, float]:
+        return self.view.box
+
+
+class _CropView(QtWidgets.QWidget):
+    def __init__(self, pm: QtGui.QPixmap, parent=None):
+        super().__init__(parent)
+        self.pm = pm
+        self.box = (0.0, 0.0, 1.0, 1.0)
+        self._start: QtCore.QPointF | None = None
+        self.setMinimumSize(420, 420)
+        self.setCursor(Qt.CrossCursor)
+
+    def _rect(self) -> QtCore.QRectF:
+        if self.pm.isNull():
+            return QtCore.QRectF(self.rect())
+        s = self.pm.size().scaled(self.size(), Qt.KeepAspectRatio)
+        return QtCore.QRectF((self.width() - s.width()) / 2, (self.height() - s.height()) / 2, s.width(), s.height())
+
+    def set_box(self, box):
+        self.box = tuple(float(x) for x in box)
+        self.update()
+
+    def _frac(self, p: QtCore.QPointF) -> tuple[float, float]:
+        r = self._rect()
+        return (min(1.0, max(0.0, (p.x() - r.x()) / max(1.0, r.width()))),
+                min(1.0, max(0.0, (p.y() - r.y()) / max(1.0, r.height()))))
+
+    def mousePressEvent(self, e):
+        self._start = e.position()
+
+    def mouseMoveEvent(self, e):
+        if self._start is not None:
+            (x0, y0), (x1, y1) = self._frac(self._start), self._frac(e.position())
+            self.set_box((min(x0, x1), min(y0, y1), max(x0, x1), max(y0, y1)))
+
+    def mouseReleaseEvent(self, e):
+        self.mouseMoveEvent(e)
+        self._start = None
+        l, t, r, b = self.box
+        if r - l < 0.02 or b - t < 0.02:  # jen kliknutí = celý obrázek
+            self.set_box((0.0, 0.0, 1.0, 1.0))
+
+    def paintEvent(self, _e):
+        p = QtGui.QPainter(self)
+        r = self._rect()
+        p.drawPixmap(r.toRect(), self.pm)
+        l, t, rr, b = self.box
+        sel = QtCore.QRectF(r.x() + l * r.width(), r.y() + t * r.height(), (rr - l) * r.width(), (b - t) * r.height())
+        shade = QtGui.QPainterPath()
+        shade.addRect(r)
+        hole = QtGui.QPainterPath()
+        hole.addRect(sel)
+        p.fillPath(shade.subtracted(hole), QtGui.QColor(0, 0, 0, 140))
+        p.setPen(QtGui.QPen(QtGui.QColor("#facc15"), 2, Qt.DashLine))
+        p.drawRect(sel)

@@ -13,6 +13,9 @@
 - Karta Soubor jako ve Wordu (nová, otevřít, uložit, uložit jako, naposledy otevřené), otevření hotové
   knihy (DOCX, EPUB, TXT, MOBI, PDB…) k úpravám.
 - Export do EPUB, DOCX, PDF, AZW3, MOBI, ODT, RTF a TXT s obsahem a odkazy na kapitoly.
+- Obrázky: vložení více najednou (první se nabídne jako obálka), velikost malý / střední / velký,
+  roztažení na celou stránku, vyjmutí části (ořez myší nebo poměr 2:3, čtverec, 16:9) a otočení.
+- Kniha bez obrázku obálky dostane obálku s názvem a autorem.
 
 **Editor knihy (jako Word)**
 - Pás karet (písmo, odstavec, styly, úpravy), kapitoly, najít a nahradit v celé knize, statistiky.

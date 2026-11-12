@@ -782,12 +782,47 @@ E += [
     # obrázky a obálka
     ("Vložení", "Insert", "Vloženie", "Einfügen"),
     ("Obrázek", "Picture", "Obrázok", "Bild"),
-    ("Vložit obrázek ze souboru (JPG, PNG…). Jde i Ctrl+V ze schránky nebo přetažením myší. Velikost a zarovnání "
-     "změníte pravým tlačítkem na obrázku.", "Insert a picture from a file (JPG, PNG…). Ctrl+V from the clipboard "
-     "or drag and drop also works. Right-click the picture to change size and alignment.",
-     "Vložiť obrázok zo súboru (JPG, PNG…). Ide aj Ctrl+V zo schránky alebo pretiahnutím myšou. Veľkosť a "
-     "zarovnanie zmeníte pravým tlačidlom na obrázku.", "Bild aus Datei einfügen (JPG, PNG…). Auch Strg+V aus der "
-     "Zwischenablage oder per Drag & Drop. Größe und Ausrichtung per Rechtsklick auf das Bild."),
+    ("Vložit obrázek ze souboru (JPG, PNG…). Jde i Ctrl+V ze schránky nebo přetažením myší. Můžete vybrat i více "
+     "obrázků – první se nabídne jako obálka. Velikost, ořez, otočení a celou stránku nastavíte pravým tlačítkem na "
+     "obrázku.", "Insert pictures from files (JPG, PNG…). Ctrl+V from the clipboard or drag and drop also works. You "
+     "can pick several pictures – the first one is offered as the cover. Right-click a picture for size, crop, "
+     "rotation and full page.", "Vložiť obrázok zo súboru (JPG, PNG…). Ide aj Ctrl+V zo schránky alebo "
+     "pretiahnutím myšou. Môžete vybrať aj viac obrázkov – prvý sa ponúkne ako obálka. Veľkosť, orez, otočenie a "
+     "celú stranu nastavíte pravým tlačidlom na obrázku.", "Bilder aus Dateien einfügen (JPG, PNG…). Auch Strg+V "
+     "oder Drag & Drop. Sie können mehrere Bilder wählen – das erste wird als Umschlag angeboten. Größe, "
+     "Zuschnitt, Drehung und ganze Seite per Rechtsklick auf das Bild."),
+    ("Malý (35 %)", "Small (35 %)", "Malý (35 %)", "Klein (35 %)"),
+    ("Střední (55 %)", "Medium (55 %)", "Stredný (55 %)", "Mittel (55 %)"),
+    ("Velký (85 %)", "Large (85 %)", "Veľký (85 %)", "Groß (85 %)"),
+    ("⛶ Roztáhnout na celou stránku", "⛶ Stretch to full page", "⛶ Roztiahnuť na celú stranu", "⛶ Auf ganze Seite"),
+    ("✂ Vyjmout část (oříznout)…", "✂ Crop…", "✂ Vystrihnúť časť (orezať)…", "✂ Zuschneiden…"),
+    ("⟳ Otočit doprava", "⟳ Rotate right", "⟳ Otočiť doprava", "⟳ Nach rechts drehen"),
+    ("⟲ Otočit doleva", "⟲ Rotate left", "⟲ Otočiť doľava", "⟲ Nach links drehen"),
+    ("📕 Použít jako obálku", "📕 Use as cover", "📕 Použiť ako obálku", "📕 Als Umschlag verwenden"),
+    ("Vložit obrázky", "Insert pictures", "Vložiť obrázky", "Bilder einfügen"),
+    ("Kniha zatím nemá obálku. Použít první obrázek jako obálku?", "The book has no cover yet. Use the first "
+     "picture as the cover?", "Kniha zatiaľ nemá obálku. Použiť prvý obrázok ako obálku?", "Das Buch hat noch "
+     "keinen Umschlag. Das erste Bild als Umschlag verwenden?"),
+    ("📕 Jako obálku", "📕 As cover", "📕 Ako obálku", "📕 Als Umschlag"),
+    ("Vložit do textu", "Insert into text", "Vložiť do textu", "In den Text einfügen"),
+    ("Vložit další obrázky ({}) do textu na místo kurzoru?", "Insert the other pictures ({}) into the text at the "
+     "cursor?", "Vložiť ďalšie obrázky ({}) do textu na miesto kurzora?", "Die weiteren Bilder ({}) an der "
+     "Cursorposition einfügen?"),
+    ("Obrázek se nepodařilo oříznout:\n{}", "The picture could not be cropped:\n{}",
+     "Obrázok sa nepodarilo orezať:\n{}", "Das Bild konnte nicht zugeschnitten werden:\n{}"),
+    ("Obálka jen s názvem a autorem (kniha nemá obrázek obálky)", "Cover with title and author only (the book has "
+     "no cover picture)", "Obálka len s názvom a autorom (kniha nemá obrázok obálky)", "Umschlag nur mit Titel und "
+     "Autor (das Buch hat kein Umschlagbild)"),
+    ("Vyjmout část obrázku", "Crop picture", "Vystrihnúť časť obrázka", "Bild zuschneiden"),
+    ("Celý", "Whole", "Celý", "Ganz"),
+    ("Okraje −5 %", "Margins −5 %", "Okraje −5 %", "Ränder −5 %"),
+    ("Okraje −10 %", "Margins −10 %", "Okraje −10 %", "Ränder −10 %"),
+    ("Obálka 2:3", "Cover 2:3", "Obálka 2:3", "Umschlag 2:3"),
+    ("Čtverec", "Square", "Štvorec", "Quadrat"),
+    ("Na šířku 3:2", "Landscape 3:2", "Na šírku 3:2", "Querformat 3:2"),
+    ("Tažením myší označte část obrázku, která má zůstat.", "Drag with the mouse to mark the part of the picture "
+     "to keep.", "Ťahaním myši označte časť obrázka, ktorá má zostať.", "Ziehen Sie mit der Maus den Bildteil "
+     "auf, der bleiben soll."),
     ("Obálka", "Cover", "Obálka", "Umschlag"),
     ("Obálka…", "Cover…", "Obálka…", "Umschlag…"),
     ("Obrázek obálky: v EPUB, MOBI a AZW3 jako obálka e-knihy ve čtečce, v DOCX, PDF a tisku jako první strana.",
