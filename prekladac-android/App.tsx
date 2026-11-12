@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { ActivityIndicator, Alert, BackHandler, Image, Linking, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { WebView, type WebViewMessageEvent } from 'react-native-webview';
 import { useKeepAwake } from 'expo-keep-awake';
-import { blockText, bookProgress, chapterHtml, DEFAULT_PREFS, parseReaderMessage, THEMES, type ReaderPrefs, type ReaderTheme, type StartAt } from './src/core/reader';
+import { blockText, bookProgress, chapterHtml, DEFAULT_PREFS, parseReaderMessage, THEMES, TURNS, type ReaderPrefs, type ReaderTheme, type ReaderTurn, type StartAt } from './src/core/reader';
 import type { LibraryEntry } from './src/core/library';
 import { addToHistory, googleBooksSuggestUrl, gutendexUrl, KIND_LABEL, mergeSuggestions, openLibrarySuggestUrl, parseGoogleBooks, parseGutendex, parseOpenLibrary, SOURCES, suggestionQuery, type FoundBook, type SourceKind, type Suggestion } from './src/core/sources';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -882,6 +882,8 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
             <Text style={st.boxTitle}>Vzhled stránky</Text>
             <Text style={st.label}>Barvy</Text>
             <Chips items={(Object.keys(THEMES) as ReaderTheme[]).map((k) => ({ id: k, label: THEMES[k].name }))} value={prefs.theme} onChange={(v) => setPrefs({ theme: v as ReaderTheme })} />
+            <Text style={st.label}>Listování</Text>
+            <Chips items={(Object.keys(TURNS) as ReaderTurn[]).map((k) => ({ id: k, label: TURNS[k] }))} value={prefs.turn} onChange={(v) => setPrefs({ turn: v as ReaderTurn })} />
             <Text style={st.label}>Písmo</Text>
             <Chips items={[{ id: 'serif', label: 'Patkové' }, { id: 'sans', label: 'Bezpatkové' }]} value={prefs.font} onChange={(v) => setPrefs({ font: v as 'serif' | 'sans' })} />
             <View style={[st.row, { marginTop: 6 }]}>
