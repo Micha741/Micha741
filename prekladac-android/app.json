@@ -2,7 +2,7 @@
   "expo": {
     "name": "Překladač knih",
     "slug": "prekladac",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -15,7 +15,98 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.micha741.prekladac",
-      "versionCode": 1
+      "versionCode": 2,
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "category": [
+            "DEFAULT",
+            "BROWSABLE"
+          ],
+          "data": [
+            {
+              "scheme": "content",
+              "mimeType": "application/epub+zip"
+            },
+            {
+              "scheme": "content",
+              "mimeType": "application/x-mobipocket-ebook"
+            },
+            {
+              "scheme": "content",
+              "mimeType": "application/vnd.amazon.mobi8-ebook"
+            },
+            {
+              "scheme": "content",
+              "mimeType": "application/vnd.palm"
+            },
+            {
+              "scheme": "content",
+              "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            },
+            {
+              "scheme": "content",
+              "mimeType": "text/plain"
+            },
+            {
+              "scheme": "content",
+              "mimeType": "text/html"
+            },
+            {
+              "scheme": "content",
+              "mimeType": "application/octet-stream"
+            },
+            {
+              "scheme": "file",
+              "mimeType": "application/epub+zip"
+            },
+            {
+              "scheme": "file",
+              "mimeType": "application/x-mobipocket-ebook"
+            },
+            {
+              "scheme": "file",
+              "mimeType": "application/vnd.amazon.mobi8-ebook"
+            },
+            {
+              "scheme": "file",
+              "mimeType": "application/vnd.palm"
+            },
+            {
+              "scheme": "file",
+              "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            },
+            {
+              "scheme": "file",
+              "mimeType": "text/plain"
+            },
+            {
+              "scheme": "file",
+              "mimeType": "text/html"
+            },
+            {
+              "scheme": "file",
+              "mimeType": "application/octet-stream"
+            },
+            {
+              "scheme": "content",
+              "mimeType": "application/json"
+            },
+            {
+              "scheme": "file",
+              "mimeType": "application/json"
+            },
+            {
+              "scheme": "content",
+              "mimeType": "application/pdf"
+            },
+            {
+              "scheme": "file",
+              "mimeType": "application/pdf"
+            }
+          ]
+        }
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"

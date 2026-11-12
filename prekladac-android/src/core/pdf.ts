@@ -1,6 +1,6 @@
 // HTML knihy pro tisk do PDF (expo-print): obálka, titulní strana, obsah, kapitoly od nové stránky.
-import type { Book } from './book';
-import { escapeXml, toBase64 } from './bytes';
+import { textCoverSvg, type Book } from './book';
+import { escapeXml, toBase64, utf8Encode } from './bytes';
 
 export function pdfHtml(book: Book): string {
   const img = (n: string, style = '') => {
@@ -9,6 +9,8 @@ export function pdfHtml(book: Book): string {
   };
   let body = '';
   if (book.cover && book.images[book.cover]) body += `<div class="cover">${img(book.cover, 'max-width:100%;max-height:96vh')}</div>`;
+  else body += `<div class="cover"><img src="data:image/svg+xml;base64,${toBase64(utf8Encode(textCoverSvg(book.title, book.author)))}" style="max-width:100%;max-height:96vh"/></div>`;
+  body = body.replace(/<div class="pb"><\/div>(\s*<p class="img">)/g, '$1');
   body += `<div class="titlepage"><h1>${escapeXml(book.title)}</h1>${book.author ? `<p class="author">${escapeXml(book.author)}</p>` : ''}</div>`;
   if (book.chapters.length > 1) {
     body += '<div class="toc"><h2>Obsah</h2>' + book.chapters.map((c, i) => `<p>${i + 1}. ${escapeXml(c.title)}</p>`).join('') + '</div>';

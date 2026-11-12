@@ -6,7 +6,7 @@ export type Block =
   | { type: 'p'; text: string }
   | { type: 'h'; text: string; level?: number }
   | { type: 'img'; name: string; width?: number }
-  | { type: 'pb' };
+  | { type: 'pb'; auto?: boolean }; // auto = zalomení přidané kvůli obrázku přes celou stránku
 
 export interface Chapter {
   title: string;
@@ -75,6 +75,92 @@ export function insertImage(book: Book, chapter: number, name: string, where: 's
   if (where === 'start') ch.blocks.unshift(block);
   else if (where === 'end') ch.blocks.push(block);
   else ch.blocks.splice(Math.max(0, Math.min(ch.blocks.length, where + 1)), 0, block);
+}
+
+// ------------------------------------------------------------ práce s obrázky v knize
+export type ImgSize = 'small' | 'medium' | 'large' | 'page';
+export const IMG_SIZES: Record<ImgSize, { label: string; width: number }> = {
+  small: { label: 'malý', width: 280 },
+  medium: { label: 'střední', width: 440 },
+  large: { label: 'velký', width: 680 },
+  page: { label: 'celá stránka', width: 800 },
+};
+
+/** Velikost obrázku na pozici idx (podle šířky a zalomení stránky kolem). */
+export function imageSizeAt(ch: Chapter, idx: number): ImgSize {
+  const b = ch.blocks[idx];
+  if (!b || b.type !== 'img') return 'large';
+  const prev = ch.blocks[idx - 1], next = ch.blocks[idx + 1];
+  if ((b.width ?? 0) >= 800 && prev?.type === 'pb' && next?.type === 'pb') return 'page';
+  const w = b.width ?? 640;
+  return w <= 300 ? 'small' : w <= 500 ? 'medium' : 'large';
+}
+
+/** Změní velikost obrázku; „celá stránka“ = obrázek sám na stránce (zalomení před a za). Vrátí nový index obrázku. */
+export function setImageSize(book: Book, chapter: number, idx: number, size: ImgSize): number {
+  const ch = book.chapters[chapter];
+  const b = ch?.blocks[idx];
+  if (!b || b.type !== 'img') return idx;
+  b.width = IMG_SIZES[size].width;
+  if (size === 'page') {
+    if (ch.blocks[idx + 1]?.type !== 'pb') ch.blocks.splice(idx + 1, 0, { type: 'pb', auto: true });
+    if (idx > 0 && ch.blocks[idx - 1]?.type !== 'pb') {
+      ch.blocks.splice(idx, 0, { type: 'pb', auto: true });
+      idx++;
+    }
+  } else {
+    const next = ch.blocks[idx + 1];
+    if (next?.type === 'pb' && next.auto) ch.blocks.splice(idx + 1, 1);
+    const prev = ch.blocks[idx - 1];
+    if (prev?.type === 'pb' && prev.auto) {
+      ch.blocks.splice(idx - 1, 1);
+      idx--;
+    }
+  }
+  return idx;
+}
+
+/** Odebere obrázek z kapitoly (i zalomení stránky přidaná kvůli němu). */
+export function removeImageAt(book: Book, chapter: number, idx: number) {
+  setImageSize(book, chapter, idx, 'large');
+  const ch = book.chapters[chapter];
+  const i = ch.blocks.findIndex((b, k) => k >= Math.max(0, idx - 1) && b.type === 'img');
+  if (i >= 0) ch.blocks.splice(i, 1);
+  pruneImages(book);
+}
+
+/** Všechny obrázky v kapitolách (pro seznam „Obrázky v knize“). */
+export function listImages(book: Book): { chapter: number; idx: number; name: string; size: ImgSize }[] {
+  const out: { chapter: number; idx: number; name: string; size: ImgSize }[] = [];
+  book.chapters.forEach((ch, ci) => ch.blocks.forEach((b, i) => {
+    if (b.type === 'img' && book.images[b.name]) out.push({ chapter: ci, idx: i, name: b.name, size: imageSizeAt(ch, i) });
+  }));
+  return out;
+}
+
+/** Obálka bez obrázku: jen název a autor (SVG – použije se v EPUB, PDF a ve čtečce). */
+export function textCoverSvg(title: string, author: string): string {
+  const words = (title || 'Kniha').split(/\s+/);
+  const lines: string[] = [];
+  let cur = '';
+  for (const w of words) {
+    if ((cur + ' ' + w).trim().length > 16 && cur) {
+      lines.push(cur);
+      cur = w;
+    } else cur = (cur + ' ' + w).trim();
+  }
+  if (cur) lines.push(cur);
+  const shown = lines.slice(0, 6);
+  const size = shown.length > 4 ? 48 : 60;
+  const top = 380 - (shown.length - 1) * size * 0.6;
+  const t = shown.map((l, i) => `<text x="300" y="${Math.round(top + i * size * 1.2)}" font-size="${size}">${escapeXml(l)}</text>`).join('');
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="900" viewBox="0 0 600 900">` +
+    `<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b3a55"/><stop offset="1" stop-color="#14203a"/></linearGradient></defs>` +
+    `<rect width="600" height="900" fill="url(#g)"/><rect x="36" y="36" width="528" height="828" fill="none" stroke="#c9a96e" stroke-width="3"/>` +
+    `<g fill="#f5ecd9" font-family="Georgia, 'Times New Roman', serif" font-weight="bold" text-anchor="middle">${t}</g>` +
+    `<line x1="220" y1="${Math.round(top + shown.length * size * 1.2)}" x2="380" y2="${Math.round(top + shown.length * size * 1.2)}" stroke="#c9a96e" stroke-width="2"/>` +
+    (author ? `<text x="300" y="760" fill="#e6d7b8" font-family="Georgia, serif" font-size="30" text-anchor="middle">${escapeXml(author)}</text>` : '') +
+    `</svg>`;
 }
 
 export function chapterText(ch: Chapter): string {

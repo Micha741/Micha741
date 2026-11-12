@@ -11,13 +11,35 @@ import { type OutputFormat, OUTPUT_FORMATS, readBook, writeBook } from './core/f
 import { pdfHtml } from './core/pdf';
 import type { EngineSettings } from './core/translate';
 import { readSkinFile, slug, type Skin } from './core/skins';
+import { deserializeBook, fileNameFromUrl, newEntry, serializeBook, type LibraryEntry, type VocabItem } from './core/library';
+import { toBase64 } from './core/bytes';
+
+// PDF chráněné heslem: data se podrží, aby šlo po zadání hesla otevřít znovu bez dalšího výběru
+let pendingPdf: { data: Uint8Array; name: string } | null = null;
+async function readOrHold(data: Uint8Array, name: string): Promise<Book> {
+  try {
+    const b = await readBook(data, name);
+    pendingPdf = null;
+    return b;
+  } catch (e: any) {
+    if (e?.needsPassword) pendingPdf = { data, name };
+    throw e;
+  }
+}
+/** Znovu otevře naposledy odmítnuté PDF se zadaným heslem. */
+export async function reopenPdf(password: string): Promise<Book> {
+  if (!pendingPdf) throw new Error('Soubor už není k dispozici – otevřete ho znovu.');
+  const b = await readBook(pendingPdf.data, pendingPdf.name, password);
+  pendingPdf = null;
+  return b;
+}
 
 export async function pickBook(): Promise<Book | null> {
   const res = await DocumentPicker.getDocumentAsync({ type: '*/*', copyToCacheDirectory: true });
   if (res.canceled || !res.assets?.length) return null;
   const a = res.assets[0];
   const data = await new File(a.uri).bytes();
-  return readBook(data, a.name);
+  return readOrHold(data, a.name);
 }
 
 /** Vybere obrázek z galerie; vrátí JPEG (zmenšený na delší stranu max. 1600 px). */
@@ -94,6 +116,10 @@ export async function saveOutputToFolder(o: Output): Promise<string> {
 // ------------------------------------------------------------ nastavení (klíče jsou v šifrovaném úložišti)
 export interface Settings extends EngineSettings {
   skin?: string;
+  /** nastavení čtečky (písmo, velikost, barvy…) */
+  reader?: Partial<import('./core/reader').ReaderPrefs>;
+  /** poslední hledané knihy (našeptávač) */
+  searchHistory?: string[];
   engine?: string;
   target?: string;
   format?: string;
@@ -155,4 +181,125 @@ export async function installSkinFromPicker(): Promise<Skin | null> {
 export function removeSkin(skin: Skin) {
   const f = new File(skinsDir(), `${skin.id.replace(/^user:/, '')}.json`);
   if (f.exists) f.delete();
+}
+
+// ------------------------------------------------------------ knihovna čtečky
+function libDir(): Directory {
+  const d = new Directory(Paths.document, 'knihovna');
+  if (!d.exists) d.create({ intermediates: true });
+  return d;
+}
+
+export async function loadLibrary(): Promise<LibraryEntry[]> {
+  try {
+    const f = new File(libDir(), 'index.json');
+    if (!f.exists) return [];
+    const list = JSON.parse(await f.text()) as LibraryEntry[];
+    return Array.isArray(list) ? list.sort((a, b) => b.lastRead - a.lastRead) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveLibrary(list: LibraryEntry[]) {
+  const f = new File(libDir(), 'index.json');
+  if (!f.exists) f.create();
+  f.write(JSON.stringify(list));
+}
+
+async function coverThumb(book: Book): Promise<string | undefined> {
+  const im = book.cover ? book.images[book.cover] : undefined;
+  if (!im) return undefined;
+  try {
+    const tmp = new File(Paths.cache, `obalka_${Date.now()}`);
+    tmp.write(im.data);
+    const jpg = await toJpeg(tmp.uri, 0, 0, 240);
+    tmp.delete();
+    return `data:image/jpeg;base64,${toBase64(jpg)}`;
+  } catch {
+    return undefined;
+  }
+}
+
+/** Uloží knihu do knihovny (stejná kniha podle názvu a autora se nahradí). Vrátí záznam. */
+export async function addToLibrary(book: Book, originalId?: string): Promise<LibraryEntry> {
+  const list = await loadLibrary();
+  const same = list.find((e) => e.title === book.title && e.author === (book.author || '') && e.language === (book.language || '') && e.originalId === originalId);
+  const id = same?.id ?? `k${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+  const f = new File(libDir(), `${id}.kniha`);
+  if (f.exists) f.delete();
+  f.create();
+  f.write(serializeBook(book));
+  const entry: LibraryEntry = { ...(same ?? newEntry(book, id, originalId)), lastRead: Date.now(), cover: await coverThumb(book) };
+  saveLibrary([entry, ...list.filter((e) => e.id !== id)]);
+  return entry;
+}
+
+export async function loadLibraryBook(id: string): Promise<Book> {
+  return deserializeBook(await new File(libDir(), `${id}.kniha`).bytes());
+}
+
+export async function removeFromLibrary(id: string) {
+  const f = new File(libDir(), `${id}.kniha`);
+  if (f.exists) f.delete();
+  saveLibrary((await loadLibrary()).filter((e) => e.id !== id));
+}
+
+export async function updateEntry(id: string, patch: Partial<LibraryEntry>) {
+  const list = await loadLibrary();
+  saveLibrary(list.map((e) => (e.id === id ? { ...e, ...patch } : e)));
+}
+
+/** Kniha otevřená z jiné aplikace („Otevřít v Překladači“, content:// nebo file://). */
+export async function openBookUri(uri: string): Promise<Book> {
+  let data: Uint8Array;
+  try {
+    data = await new File(uri).bytes();
+  } catch {
+    throw new Error('Soubor se nepodařilo načíst. Zkuste ho uložit do telefonu a otevřít tlačítkem Otevřít knihu.');
+  }
+  let name = '';
+  try {
+    name = decodeURIComponent(uri.split('/').pop() || '');
+  } catch {
+    name = '';
+  }
+  return readOrHold(data, name || 'kniha');
+}
+
+/** Stáhne knihu z odkazu (Project Gutenberg, ukázka z obchodu…) a otevře ji. */
+export async function downloadBook(url: string, signal?: AbortSignal): Promise<Book> {
+  const res = await fetch(url, { signal });
+  if (!res.ok) throw new Error(`Stažení se nepodařilo (HTTP ${res.status}).`);
+  const data = new Uint8Array(await res.arrayBuffer());
+  const type = res.headers.get('content-type') || '';
+  if (/text\/html/.test(type) && !/\.html?$/i.test(url))
+    throw new Error('Odkaz nevede na soubor knihy, ale na webovou stránku. Otevřete ho v prohlížeči a stáhněte soubor (EPUB, MOBI…).');
+  const ext = /epub/.test(type) ? 'epub' : /mobipocket|x-mobi/.test(type) ? 'mobi' : '';
+  return readOrHold(data, fileNameFromUrl(url, ext));
+}
+
+// ------------------------------------------------------------ slovníček (přeložená slova ze čtečky)
+export async function loadVocab(): Promise<VocabItem[]> {
+  try {
+    const f = new File(libDir(), 'slovnicek.json');
+    return f.exists ? (JSON.parse(await f.text()) as VocabItem[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveVocab(list: VocabItem[]) {
+  const f = new File(libDir(), 'slovnicek.json');
+  if (!f.exists) f.create();
+  f.write(JSON.stringify(list));
+}
+
+/** Sdílí text jako soubor .txt (slovníček, poznámky). */
+export async function shareText(name: string, text: string) {
+  const f = new File(Paths.cache, `${safeFileName(name)}.txt`);
+  if (f.exists) f.delete();
+  f.create();
+  f.write(text);
+  await Sharing.shareAsync(f.uri, { mimeType: 'text/plain', dialogTitle: name });
 }

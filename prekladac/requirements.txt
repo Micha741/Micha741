@@ -12,3 +12,5 @@ spylls>=0.1.7
 ctranslate2>=4.0
 sentencepiece>=0.2
 sacremoses>=0.1
+cryptography>=42
+comtypes>=1.4; sys_platform == "win32"

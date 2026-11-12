@@ -26,7 +26,7 @@ const MAX_LOGO = 2 * 1024 * 1024;
 export class SkinError extends Error {}
 
 export function slug(name: string): string {
-  const s = name.normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  const s = name.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   return s.slice(0, 40) || 'skin';
 }
 

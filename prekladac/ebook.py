@@ -819,6 +819,13 @@ def from_project(proj: dict) -> RichBook:
         book.images[n] = book_images.get_image(proj, n) or b""
     if proj.get("cover") in book.images:
         book.cover = proj["cover"]
+    elif proj.get("text_cover", True):  # bez obrázku: obálka jen s názvem a autorem
+        try:
+            data = book_images.text_cover(book.title, book.author)
+            book.cover = "obalka_nazev.jpg"
+            book.images[book.cover] = data
+        except Exception:  # noqa: BLE001 – bez Pillow zůstane kniha bez obálky
+            pass
     titles = o.get("chapters", [])
     for i, ch in enumerate(proj["chapters"]):
         t = ch.get("title") or (titles[i]["title"] if i < len(titles) else f"Kapitola {i + 1}")

@@ -87,6 +87,29 @@ Výsledek se uloží vedle originálu jako `název (čeština).přípona`.
 uloží se tlačítkem Uložit nastavení. Instalátor i `Prekladac.exe` mají ve Vlastnostech → Podrobnosti verzi souboru,
 autorská práva a popis.
 
+### Čtečka (režim Čtení)
+
+V okně knihy vpravo nahoře přepnete **✏️ Úpravy / 📖 Čtení** (nebo F6). V režimu čtení se kniha vysází do stránek –
+na široké obrazovce dvě vedle sebe jako otevřená kniha – a pás karet ukáže nabídku čtečky:
+
+- **Listovat:** klepnutím na okraj stránky, kolečkem myši, šipkami, PgUp/PgDn nebo tažením myší; animace
+  *otočení stránky* (stránka se otáčí kolem hřbetu se stínem), *posun*, *prolnutí* nebo bez animace.
+- **Kniha:** Obsah, **Hledat** v celé knize (bez ohledu na háčky a velikost písmen, Ctrl+F), **Záložka**, **Označené**.
+- **Označit odstavec** 4 barvami s **poznámkou** (pravé tlačítko myši na odstavci); označené a poznámky jdou uložit
+  jako text.
+- **Překlad:** pravé tlačítko → Přeložit odstavec; **dvojklik na slovo** přeloží slovo a uloží ho do **📒 Slovníčku**
+  i s větou (slovníček jde uložit jako text pro kartičky).
+- **Číst nahlas** hlasem Windows (bez internetu), odstavec po odstavci s otáčením stránek; **Pozastavit / Pokračovat**,
+  **Zastavit**, rychlost pomaleji/rychleji a **výběr hlasu** (u hlasů Windows je uvedeno muž/žena).
+  Český hlas je ve Windows v *Nastavení → Čas a jazyk → Řeč* (hlas „Jakub“).
+- **Vzhled:** barvy Den/Sépie/Noc, patkové/bezpatkové písmo, velikost, řádkování, okraje, zarovnání do bloku,
+  jedna/dvě strany.
+
+Kniha se při čtení nemění; místo čtení, záložky a označení se ukládají zvlášť v `%APPDATA%\Prekladac\reader`.
+
+PDF **chráněné heslem** program otevře po zadání hesla (heslo uživatele i vlastníka); PDF chráněná jen proti tisku
+nebo kopírování otevře bez dotazu. PDF s Adobe DRM otevřít nejde.
+
 ### Vzhled (skiny)
 
 Jako ve Winampu: *⚙ Nastavení → Vzhled*. Vestavěné skiny **Výchozí**, **Tmavý**, **Sépie (papír)** a **Vysoký
@@ -311,6 +334,19 @@ Testy nevolají API (odpovědi služeb jsou podvržené). Živý test Google Př
 
 Mobilní verze (převod a překlad knih v telefonu) je ve složce [`../prekladac-android`](../prekladac-android).
 Používá stejná pravidla převodů (EPUB, MOBI, PDB, DOCX, TXT, PDF) a podobný vzhled.
+
+**Čtečka** (karta Číst): knihovna s obálkami a průběhem, listování stránek klepnutím nebo tažením, písmo, velikost,
+řádkování, okraje, barvy Den / Sépie / Noc, obsah, záložky a zapamatované místo. Podržením prstu na odstavci se ukáže
+originál (u knihy přeložené v aplikaci) nebo se odstavec přeloží, dvojitým klepnutím se přeloží slovo. Soubor knihy
+stažený v telefonu jde otevřít volbou „Otevřít v Překladači“. Otevře i **PDF**: text se přeskládá jako
+v e-knize (odstavce, nadpisy, kapitoly, bez záhlaví a čísel stránek), takže jde číst, přeložit i převést;
+zašifrovaná PDF a skeny bez textu (OCR) telefon neotevře. Ve čtečce je i **čtení nahlas** (hlas Androidu, i bez internetu), tlačítko **☰** s kapitolami, hledáním
+v celé knize a označenými odstavci (4 barvy, poznámky, sdílení) a **slovníček** přeložených slov (📒 v knihovně).
+Karta **Hledat** prohledá Project Gutenberg a katalog Google Books přímo
+v aplikaci (volná díla se stáhnou jedním klepnutím, u ostatních ukázka, cena a odkazy do českých obchodů; při psaní
+našeptává) a otevře vyhledávání v obchodech a knihovnách (Alza, Kosmas, Martinus,
+Palmknihy, Smashwords, Amazon, Google Play, knihovny v Praze, Brně, Plzni a Českých Budějovicích…). Knihy
+se šifrováním (Amazon Kindle, Adobe DRM .acsm, Google Play) aplikace neotevře.
 
 Překlad **Offline v telefonu** používá Google ML Kit (vlastní modul `modules/mlkit-translate`): jazyk (asi 30 MB)
 se stáhne jednou a pak se překládá bez internetu a bez klíče. ML Kit je jen pro Android a iOS – ve Windows stejnou

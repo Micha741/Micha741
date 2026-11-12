@@ -782,12 +782,47 @@ E += [
     # obrázky a obálka
     ("Vložení", "Insert", "Vloženie", "Einfügen"),
     ("Obrázek", "Picture", "Obrázok", "Bild"),
-    ("Vložit obrázek ze souboru (JPG, PNG…). Jde i Ctrl+V ze schránky nebo přetažením myší. Velikost a zarovnání "
-     "změníte pravým tlačítkem na obrázku.", "Insert a picture from a file (JPG, PNG…). Ctrl+V from the clipboard "
-     "or drag and drop also works. Right-click the picture to change size and alignment.",
-     "Vložiť obrázok zo súboru (JPG, PNG…). Ide aj Ctrl+V zo schránky alebo pretiahnutím myšou. Veľkosť a "
-     "zarovnanie zmeníte pravým tlačidlom na obrázku.", "Bild aus Datei einfügen (JPG, PNG…). Auch Strg+V aus der "
-     "Zwischenablage oder per Drag & Drop. Größe und Ausrichtung per Rechtsklick auf das Bild."),
+    ("Vložit obrázek ze souboru (JPG, PNG…). Jde i Ctrl+V ze schránky nebo přetažením myší. Můžete vybrat i více "
+     "obrázků – první se nabídne jako obálka. Velikost, ořez, otočení a celou stránku nastavíte pravým tlačítkem na "
+     "obrázku.", "Insert pictures from files (JPG, PNG…). Ctrl+V from the clipboard or drag and drop also works. You "
+     "can pick several pictures – the first one is offered as the cover. Right-click a picture for size, crop, "
+     "rotation and full page.", "Vložiť obrázok zo súboru (JPG, PNG…). Ide aj Ctrl+V zo schránky alebo "
+     "pretiahnutím myšou. Môžete vybrať aj viac obrázkov – prvý sa ponúkne ako obálka. Veľkosť, orez, otočenie a "
+     "celú stranu nastavíte pravým tlačidlom na obrázku.", "Bilder aus Dateien einfügen (JPG, PNG…). Auch Strg+V "
+     "oder Drag & Drop. Sie können mehrere Bilder wählen – das erste wird als Umschlag angeboten. Größe, "
+     "Zuschnitt, Drehung und ganze Seite per Rechtsklick auf das Bild."),
+    ("Malý (35 %)", "Small (35 %)", "Malý (35 %)", "Klein (35 %)"),
+    ("Střední (55 %)", "Medium (55 %)", "Stredný (55 %)", "Mittel (55 %)"),
+    ("Velký (85 %)", "Large (85 %)", "Veľký (85 %)", "Groß (85 %)"),
+    ("⛶ Roztáhnout na celou stránku", "⛶ Stretch to full page", "⛶ Roztiahnuť na celú stranu", "⛶ Auf ganze Seite"),
+    ("✂ Vyjmout část (oříznout)…", "✂ Crop…", "✂ Vystrihnúť časť (orezať)…", "✂ Zuschneiden…"),
+    ("⟳ Otočit doprava", "⟳ Rotate right", "⟳ Otočiť doprava", "⟳ Nach rechts drehen"),
+    ("⟲ Otočit doleva", "⟲ Rotate left", "⟲ Otočiť doľava", "⟲ Nach links drehen"),
+    ("📕 Použít jako obálku", "📕 Use as cover", "📕 Použiť ako obálku", "📕 Als Umschlag verwenden"),
+    ("Vložit obrázky", "Insert pictures", "Vložiť obrázky", "Bilder einfügen"),
+    ("Kniha zatím nemá obálku. Použít první obrázek jako obálku?", "The book has no cover yet. Use the first "
+     "picture as the cover?", "Kniha zatiaľ nemá obálku. Použiť prvý obrázok ako obálku?", "Das Buch hat noch "
+     "keinen Umschlag. Das erste Bild als Umschlag verwenden?"),
+    ("📕 Jako obálku", "📕 As cover", "📕 Ako obálku", "📕 Als Umschlag"),
+    ("Vložit do textu", "Insert into text", "Vložiť do textu", "In den Text einfügen"),
+    ("Vložit další obrázky ({}) do textu na místo kurzoru?", "Insert the other pictures ({}) into the text at the "
+     "cursor?", "Vložiť ďalšie obrázky ({}) do textu na miesto kurzora?", "Die weiteren Bilder ({}) an der "
+     "Cursorposition einfügen?"),
+    ("Obrázek se nepodařilo oříznout:\n{}", "The picture could not be cropped:\n{}",
+     "Obrázok sa nepodarilo orezať:\n{}", "Das Bild konnte nicht zugeschnitten werden:\n{}"),
+    ("Obálka jen s názvem a autorem (kniha nemá obrázek obálky)", "Cover with title and author only (the book has "
+     "no cover picture)", "Obálka len s názvom a autorom (kniha nemá obrázok obálky)", "Umschlag nur mit Titel und "
+     "Autor (das Buch hat kein Umschlagbild)"),
+    ("Vyjmout část obrázku", "Crop picture", "Vystrihnúť časť obrázka", "Bild zuschneiden"),
+    ("Celý", "Whole", "Celý", "Ganz"),
+    ("Okraje −5 %", "Margins −5 %", "Okraje −5 %", "Ränder −5 %"),
+    ("Okraje −10 %", "Margins −10 %", "Okraje −10 %", "Ränder −10 %"),
+    ("Obálka 2:3", "Cover 2:3", "Obálka 2:3", "Umschlag 2:3"),
+    ("Čtverec", "Square", "Štvorec", "Quadrat"),
+    ("Na šířku 3:2", "Landscape 3:2", "Na šírku 3:2", "Querformat 3:2"),
+    ("Tažením myší označte část obrázku, která má zůstat.", "Drag with the mouse to mark the part of the picture "
+     "to keep.", "Ťahaním myši označte časť obrázka, ktorá má zostať.", "Ziehen Sie mit der Maus den Bildteil "
+     "auf, der bleiben soll."),
     ("Obálka", "Cover", "Obálka", "Umschlag"),
     ("Obálka…", "Cover…", "Obálka…", "Umschlag…"),
     ("Obrázek obálky: v EPUB, MOBI a AZW3 jako obálka e-knihy ve čtečce, v DOCX, PDF a tisku jako první strana.",
@@ -1034,6 +1069,73 @@ E += [
      "Black background, white text and yellow accents – best readability, larger font.",
      "Čierne pozadie, biely text a žlté prvky – najlepšia čitateľnosť, väčšie písmo.",
      "Schwarzer Hintergrund, weißer Text und gelbe Akzente – beste Lesbarkeit, größere Schrift."),
+    # ------------------------------------------------------------ čtečka (režim Čtení), heslo k PDF
+    ('Barvy', 'Colours', 'Farby', 'Farben'),
+    ('Další kapitola', 'Next chapter', 'Ďalšia kapitola', 'Nächstes Kapitel'),
+    ('Dál', 'Next', 'Ďalej', 'Weiter'),
+    ('Heslo nesouhlasí. Zkuste ho zadat znovu:', 'Wrong password. Please try again:', 'Heslo nesúhlasí. Skúste ho zadať znova:', 'Falsches Passwort. Bitte erneut eingeben:'),
+    ('Hledat', 'Search', 'Hľadať', 'Suchen'),
+    ('Hledat v celé knize…', 'Search the whole book…', 'Hľadať v celej knihe…', 'Im ganzen Buch suchen…'),
+    ('Hledat ve slovníčku', 'Search the word list', 'Hľadať v slovníčku', 'In der Wortliste suchen'),
+    ('Listování', 'Page turn', 'Listovanie', 'Umblättern'),
+    ('Menší', 'Smaller', 'Menšie', 'Kleiner'),
+    ('Nalezeno: {}', 'Found: {}', 'Nájdené: {}', 'Gefunden: {}'),
+    ('Napište aspoň 2 písmena – na háčcích a velikosti písmen nezáleží.', 'Type at least 2 letters – accents and letter case do not matter.', 'Napíšte aspoň 2 písmená – na mäkčeňoch a veľkosti písmen nezáleží.', 'Mindestens 2 Buchstaben eingeben – Akzente und Groß-/Kleinschreibung spielen keine Rolle.'),
+    ('Obsah', 'Contents', 'Obsah', 'Inhalt'),
+    ('Okraje', 'Margins', 'Okraje', 'Ränder'),
+    ('Označené', 'Marked', 'Označené', 'Markiert'),
+    ('PDF je chráněné heslem:', 'The PDF is password-protected:', 'PDF je chránené heslom:', 'Die PDF ist passwortgeschützt:'),
+    ('Pomaleji', 'Slower', 'Pomalšie', 'Langsamer'),
+    ('Poznámka', 'Note', 'Poznámka', 'Notiz'),
+    ('Poznámka k odstavci:', 'Note for the paragraph:', 'Poznámka k odseku:', 'Notiz zum Absatz:'),
+    ('Předchozí kapitola', 'Previous chapter', 'Predchádzajúca kapitola', 'Vorheriges Kapitel'),
+    ('Překlad odstavce', 'Paragraph translation', 'Preklad odseku', 'Absatzübersetzung'),
+    ('Překládám…', 'Translating…', 'Prekladám…', 'Übersetze…'),
+    ('Rychleji', 'Faster', 'Rýchlejšie', 'Schneller'),
+    ('Rychlost čtení: {}×', 'Reading speed: {}×', 'Rýchlosť čítania: {}×', 'Lesegeschwindigkeit: {}×'),
+    ('Slova přeložená ve čtečce (dvojklik na slovo) i s větou, ve které byla.', 'Words translated in the reader (double-click a word) with the sentence they came from.', 'Slová preložené v čítačke (dvojklik na slovo) aj s vetou, v ktorej boli.', 'Im Reader übersetzte Wörter (Doppelklick auf ein Wort) mit dem Satz, aus dem sie stammen.'),
+    ('Slovníček', 'Word list', 'Slovníček', 'Wortliste'),
+    ('Slovo', 'Word', 'Slovo', 'Wort'),
+    ('Strany', 'Pages', 'Strany', 'Seiten'),
+    ('Uložit označené a poznámky', 'Save highlights and notes', 'Uložiť označené a poznámky', 'Markierungen und Notizen speichern'),
+    ('Uložit slovníček', 'Save word list', 'Uložiť slovníček', 'Wortliste speichern'),
+    ('Více než 500 nálezů – upřesněte hledání.', 'More than 500 results – refine the search.', 'Viac než 500 výsledkov – upresnite hľadanie.', 'Mehr als 500 Treffer – Suche eingrenzen.'),
+    ('Věta', 'Sentence', 'Veta', 'Satz'),
+    ('Větší', 'Larger', 'Väčšie', 'Größer'),
+    ('Zadejte heslo k otevření (nebo heslo vlastníka):', 'Enter the password to open it (or the owner password):', 'Zadajte heslo na otvorenie (alebo heslo vlastníka):', 'Passwort zum Öffnen eingeben (oder Besitzerpasswort):'),
+    ('Zrušit označení', 'Remove highlight', 'Zrušiť označenie', 'Markierung entfernen'),
+    ('Záložka', 'Bookmark', 'Záložka', 'Lesezeichen'),
+    ('Záložka uložena: {}', 'Bookmark saved: {}', 'Záložka uložená: {}', 'Lesezeichen gespeichert: {}'),
+    ('Čtení', 'Reading', 'Čítanie', 'Lesen'),
+    ('Čtení nahlas', 'Read aloud', 'Čítanie nahlas', 'Vorlesen'),
+    ('Číst nahlas', 'Read aloud', 'Čítať nahlas', 'Vorlesen'),
+    ('✏️ Úpravy', '✏️ Edit', '✏️ Úpravy', '✏️ Bearbeiten'),
+    ('✖ Smazat', '✖ Delete', '✖ Zmazať', '✖ Löschen'),
+    ('✖ Smazat vybrané', '✖ Delete selected', '✖ Zmazať vybrané', '✖ Ausgewählte löschen'),
+    ('🌍 Přeložit odstavec', '🌍 Translate paragraph', '🌍 Preložiť odsek', '🌍 Absatz übersetzen'),
+    ('📋 Kopírovat odstavec', '📋 Copy paragraph', '📋 Kopírovať odsek', '📋 Absatz kopieren'),
+    ('📋 Kopírovat vše', '📋 Copy all', '📋 Kopírovať všetko', '📋 Alles kopieren'),
+    ('📒 Slovníček', '📒 Word list', '📒 Slovníček', '📒 Wortliste'),
+    ('📖 Čtení', '📖 Read', '📖 Čítanie', '📖 Lesen'),
+    ('📝 Označit a připsat poznámku…', '📝 Highlight and add a note…', '📝 Označiť a pripísať poznámku…', '📝 Markieren und Notiz hinzufügen…'),
+    ('📝 Poznámka…', '📝 Note…', '📝 Poznámka…', '📝 Notiz…'),
+    ('📝 Upravit poznámku…', '📝 Edit note…', '📝 Upraviť poznámku…', '📝 Notiz bearbeiten…'),
+    ('📤 Uložit jako text…', '📤 Save as text…', '📤 Uložiť ako text…', '📤 Als Text speichern…'),
+    ('📤 Uložit označené a poznámky…', '📤 Save highlights and notes…', '📤 Uložiť označené a poznámky…', '📤 Markierungen und Notizen speichern…'),
+    ('🔊 Číst nahlas odsud', '🔊 Read aloud from here', '🔊 Čítať nahlas odtiaľto', '🔊 Ab hier vorlesen'),
+    ('🔒 Heslo k PDF', '🔒 PDF password', '🔒 Heslo k PDF', '🔒 PDF-Passwort'),
+    ('🖍 Označit', '🖍 Highlight', '🖍 Označiť', '🖍 Markieren'),
+    ('Číst knihu jako v čtečce: stránky, otáčení, hledání, záložky, označování, překlad a čtení nahlas (F6)', 'Read the book like in an e-reader: pages, page turning, search, bookmarks, highlights, translation and read-aloud (F6)', 'Čítať knihu ako v čítačke: strany, otáčanie, hľadanie, záložky, označovanie, preklad a čítanie nahlas (F6)', 'Buch wie im E-Reader lesen: Seiten, Umblättern, Suche, Lesezeichen, Markierungen, Übersetzung und Vorlesen (F6)'),
+    ('strana', 'page', 'strana', 'Seite'),
+    ('uloženo do slovníčku', 'saved to the word list', 'uložené do slovníčka', 'in der Wortliste gespeichert'),
+    ('Čtení nahlas používá hlasy Windows. Na tomto počítači nejsou k dispozici.', 'Read-aloud uses Windows voices. They are not available on this computer.', 'Čítanie nahlas používa hlasy Windows. Na tomto počítači nie sú k dispozícii.', 'Vorlesen verwendet Windows-Stimmen. Auf diesem Computer sind sie nicht verfügbar.'),
+    ('Pokračovat', 'Resume', 'Pokračovať', 'Fortsetzen'),
+    ('Pozastavit', 'Pause', 'Pozastaviť', 'Pause'),
+    ('Číst nahlas od začátku stránky; během čtení pozastavit a pokračovat', 'Read aloud from the top of the page; pause and resume while reading', 'Čítať nahlas od začiatku strany; počas čítania pozastaviť a pokračovať', 'Ab Seitenanfang vorlesen; beim Vorlesen pausieren und fortsetzen'),
+    ('Hlas pro čtení nahlas (hlasy nainstalované ve Windows: Nastavení → Čas a jazyk → Řeč)', 'Voice for reading aloud (voices installed in Windows: Settings → Time & language → Speech)', 'Hlas na čítanie nahlas (hlasy nainštalované vo Windows: Nastavenia → Čas a jazyk → Reč)', 'Stimme zum Vorlesen (in Windows installierte Stimmen: Einstellungen → Zeit und Sprache → Sprache)'),
+    ('Hlas podle jazyka knihy', 'Voice by book language', 'Hlas podľa jazyka knihy', 'Stimme nach Buchsprache'),
+    ('žena', 'female', 'žena', 'weiblich'),
+    ('muž', 'male', 'muž', 'männlich'),
 ]
 
 

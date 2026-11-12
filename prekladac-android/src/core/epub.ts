@@ -1,7 +1,7 @@
 // EPUB 3 (s toc.ncx pro starší čtečky) – zápis i čtení.
 import JSZip from 'jszip';
 import type { Book } from './book';
-import { emptyBook, extFromMime, sniffMime, mimeFromName } from './book';
+import { emptyBook, extFromMime, sniffMime, mimeFromName, textCoverSvg } from './book';
 import { decodeAny, decodeEntities, escapeXml } from './bytes';
 import { chaptersFromBlocks } from './chapters';
 import { htmlToBlocks } from './html';
@@ -41,7 +41,15 @@ export async function writeEpub(book: Book): Promise<Uint8Array> {
     if (n === book.cover) coverId = `img${k + 1}`;
     manifest.push(`<item id="img${++k}" href="${file}" media-type="${im.mime}"${n === book.cover ? ' properties="cover-image"' : ''}/>`);
   }
-  if (book.cover && imgId[book.cover]) {
+  if (!book.cover || !imgId[book.cover]) {
+    // bez obrázku: obálka jen s názvem a autorem
+    zip.file('OEBPS/images/cover.svg', textCoverSvg(book.title, book.author));
+    manifest.push('<item id="coversvg" href="images/cover.svg" media-type="image/svg+xml" properties="cover-image"/>');
+    zip.file('OEBPS/cover.xhtml', xhtml('Obálka', '<div style="text-align:center"><img src="images/cover.svg" alt="Obálka" style="max-height:100%"/></div>', lang));
+    manifest.push('<item id="cover" href="cover.xhtml" media-type="application/xhtml+xml"/>');
+    spine.push('<itemref idref="cover" linear="no"/>');
+    coverId = 'coversvg';
+  } else if (book.cover && imgId[book.cover]) {
     zip.file('OEBPS/cover.xhtml', xhtml('Obálka', `<div style="text-align:center"><img src="${imgId[book.cover]}" alt="Obálka" style="max-height:100%"/></div>`, lang));
     manifest.push('<item id="cover" href="cover.xhtml" media-type="application/xhtml+xml"/>');
     spine.push('<itemref idref="cover" linear="no"/>');
