@@ -2,8 +2,8 @@
 // Klepnutí vlevo/vpravo = stránka zpět/vpřed, uprostřed = nabídka, tažení prstem = listování,
 // podržení prstu na odstavci = originál / překlad odstavce, dvojité klepnutí na slovo = překlad slova.
 // Zprávy do aplikace jdou přes window.ReactNativeWebView.postMessage(JSON).
-import type { Book, Chapter } from './book';
-import { escapeXml, toBase64 } from './bytes';
+import { textCoverSvg, type Book, type Chapter } from './book';
+import { escapeXml, toBase64, utf8Encode } from './bytes';
 import { MARK_COLORS, type MarkColor } from './library';
 
 export type ReaderTheme = 'day' | 'sepia' | 'night';
@@ -75,9 +75,9 @@ export function chapterHtml(book: Book, index: number, prefs: ReaderPrefs, start
   const ch = book.chapters[index];
   const t = THEMES[prefs.theme] ?? THEMES.sepia;
   const family = prefs.font === 'sans' ? 'Roboto, "Noto Sans", sans-serif' : '"Noto Serif", Georgia, serif';
-  const cover = index === 0 && book.cover && book.images[book.cover]
+  const cover = index !== 0 ? '' : book.cover && book.images[book.cover]
     ? `<figure class="cover"><img src="data:${book.images[book.cover].mime};base64,${toBase64(book.images[book.cover].data)}" alt=""/></figure>`
-    : '';
+    : `<figure class="cover"><img src="data:image/svg+xml;base64,${toBase64(utf8Encode(textCoverSvg(book.title, book.author)))}" alt=""/></figure>`;
   const title = ch ? `<h1>${escapeXml(ch.title)}</h1>` : '';
   const body = ch ? blocksHtml(book, ch, new Map(marks.map((x) => [x.i, x.color ?? 'y']))) : '<p>Kniha je prázdná.</p>';
   const m = prefs.margin;
