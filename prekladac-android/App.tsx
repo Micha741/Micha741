@@ -5,7 +5,7 @@ import { WebView, type WebViewMessageEvent } from 'react-native-webview';
 import { useKeepAwake } from 'expo-keep-awake';
 import { blockText, bookProgress, chapterHtml, DEFAULT_PREFS, parseReaderMessage, THEMES, type ReaderPrefs, type ReaderTheme, type StartAt } from './src/core/reader';
 import type { LibraryEntry } from './src/core/library';
-import { gutendexUrl, KIND_LABEL, parseGutendex, SOURCES, type FoundBook, type SourceKind } from './src/core/sources';
+import { addToHistory, googleBooksSuggestUrl, gutendexUrl, KIND_LABEL, mergeSuggestions, openLibrarySuggestUrl, parseGoogleBooks, parseGutendex, parseOpenLibrary, SOURCES, suggestionQuery, type FoundBook, type SourceKind, type Suggestion } from './src/core/sources';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { addImage, bookStats, insertImage, pruneImages, type Book } from './src/core/book';
 import { toBase64 } from './src/core/bytes';
@@ -185,7 +185,7 @@ export default function App() {
         <View style={{ flex: 1 }}>
           {tab === 'cist' && <LibraryScreen list={library} onOpen={openEntry} onRemove={removeEntry} onPick={pickToLibrary} busy={libBusy} />}
           {tab === 'kniha' && <BookScreen settings={settings} update={update} goSettings={() => setTab('nastaveni')} onRead={readBookNow} />}
-          {tab === 'hledat' && <SearchScreen onBook={(b) => readBookNow(b)} />}
+          {tab === 'hledat' && <SearchScreen onBook={(b) => readBookNow(b)} settings={settings} update={update} library={library} />}
           {tab === 'nastaveni' && <SettingsScreen settings={settings} update={update} skin={skinApi} />}
         </View>
         <View style={st.nav}>
@@ -932,17 +932,56 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
 }
 
 // ------------------------------------------------------------ Hledat knihy
-function SearchScreen({ onBook }: { onBook: (b: Book) => Promise<void> }) {
+function SearchScreen({ onBook, settings, update, library }: { onBook: (b: Book) => Promise<void>; settings: Settings; update: (s: Partial<Settings>) => void; library: LibraryEntry[] }) {
   const [q, setQ] = useState('');
   const [lang, setLang] = useState('');
   const [found, setFound] = useState<FoundBook[] | null>(null);
   const [busy, setBusy] = useState('');
   const [link, setLink] = useState('');
-  const search = async () => {
-    if (!q.trim()) return;
+  const [focus, setFocus] = useState(false);
+  const [web, setWeb] = useState<Suggestion[]>([]);
+  // našeptávač: dřívější hledání a knihy z knihovny hned, katalog knih z internetu po krátké pauze v psaní
+  useEffect(() => {
+    const t = q.trim();
+    if (t.length < 3) {
+      setWeb([]);
+      return;
+    }
+    const ctrl = new AbortController();
+    const timer = setTimeout(async () => {
+      try {
+        const r = await fetch(googleBooksSuggestUrl(t, lang), { signal: ctrl.signal });
+        if (!r.ok) throw new Error(String(r.status));
+        setWeb(parseGoogleBooks(await r.json()));
+      } catch {
+        if (ctrl.signal.aborted) return;
+        try {
+          const r = await fetch(openLibrarySuggestUrl(t), { signal: ctrl.signal });
+          setWeb(r.ok ? parseOpenLibrary(await r.json()) : []);
+        } catch {
+          setWeb([]);
+        }
+      }
+    }, 350);
+    return () => {
+      clearTimeout(timer);
+      ctrl.abort();
+    };
+  }, [q, lang]);
+  const local: Suggestion[] = [
+    ...(settings.searchHistory ?? []).map((h) => ({ title: h, author: '', from: 'history' as const })),
+    ...library.map((e) => ({ title: e.title, author: e.author, from: 'library' as const })),
+  ];
+  const suggestions = focus ? (q.trim() ? mergeSuggestions(q, local, web) : local.filter((s) => s.from === 'history').slice(0, 6)) : [];
+  const search = async (query = q) => {
+    const text = query.trim();
+    if (!text) return;
+    setQ(text);
+    setFocus(false);
+    update({ searchHistory: addToHistory(settings.searchHistory, text) });
     setBusy('Hledám v Project Gutenberg…');
     try {
-      const res = await fetch(gutendexUrl(q.trim(), lang));
+      const res = await fetch(gutendexUrl(text, lang));
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       setFound(parseGutendex(await res.json()).books.slice(0, 30));
     } catch (e: any) {
@@ -968,9 +1007,25 @@ function SearchScreen({ onBook }: { onBook: (b: Book) => Promise<void> }) {
       <View style={[st.settingsHead, { paddingBottom: 10, gap: 6 }]}>
         <Text style={st.pageTitle}>Hledat knihy</Text>
         <View style={st.row}>
-          <TextInput style={[st.input, { flex: 1, marginTop: 0 }]} value={q} onChangeText={setQ} placeholder="Název nebo autor" placeholderTextColor={C.disabled} returnKeyType="search" onSubmitEditing={search} />
-          <Btn label="🔎" onPress={search} primary disabled={!!busy || !q.trim()} />
+          <TextInput style={[st.input, { flex: 1, marginTop: 0 }]} value={q} onChangeText={(t) => { setQ(t); setFocus(true); }} placeholder="Název nebo autor" placeholderTextColor={C.disabled} returnKeyType="search" onSubmitEditing={() => search()} onFocus={() => setFocus(true)} />
+          <Btn label="🔎" onPress={() => search()} primary disabled={!!busy || !q.trim()} />
         </View>
+        {suggestions.length ? (
+          <View style={st.suggestBox}>
+            {suggestions.map((s, i) => (
+              <Pressable key={`${s.from}${i}`} onPress={() => search(suggestionQuery(s))} style={({ pressed }) => [st.suggestRow, pressed && { backgroundColor: C.hover }]} accessibilityRole="button">
+                <Text style={{ width: 22 }}>{s.from === 'history' ? '🕘' : s.from === 'library' ? '📖' : '🔎'}</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={st.btnText} numberOfLines={1}>{s.title}</Text>
+                  {s.author ? <Text style={st.hint} numberOfLines={1}>{s.author}</Text> : null}
+                </View>
+              </Pressable>
+            ))}
+            {!q.trim() && settings.searchHistory?.length ? (
+              <Pressable onPress={() => update({ searchHistory: [] })} style={st.suggestRow}><Text style={st.hint}>Smazat historii hledání</Text></Pressable>
+            ) : null}
+          </View>
+        ) : null}
         <Chips items={[{ id: '', label: 'všechny jazyky' }, { id: 'cs', label: 'čeština' }, { id: 'en', label: 'angličtina' }, { id: 'de', label: 'němčina' }, { id: 'fr', label: 'francouzština' }]} value={lang} onChange={setLang} />
         {busy ? <View style={st.row}><ActivityIndicator color={C.accent} /><Text style={st.hint}>{busy}</Text></View> : null}
       </View>
@@ -1138,6 +1193,8 @@ function makeStyles() {
   readerBtn: { paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8, minHeight: 44, justifyContent: 'center' },
   readerBtnText: { color: '#f8fafc', fontSize: 17 },
   sheetText: { fontFamily: SERIF, fontSize: 16, lineHeight: 23, color: C.text },
+  suggestBox: { borderWidth: 1, borderColor: C.inputBorder, borderRadius: 8, backgroundColor: C.surface, overflow: 'hidden' },
+  suggestRow: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 10, paddingVertical: 8, borderTopWidth: 1, borderColor: C.border, minHeight: 44 },
   });
 }
 let st = makeStyles();

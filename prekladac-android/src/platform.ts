@@ -98,6 +98,8 @@ export interface Settings extends EngineSettings {
   skin?: string;
   /** nastavení čtečky (písmo, velikost, barvy…) */
   reader?: Partial<import('./core/reader').ReaderPrefs>;
+  /** poslední hledané knihy (našeptávač) */
+  searchHistory?: string[];
   engine?: string;
   target?: string;
   format?: string;

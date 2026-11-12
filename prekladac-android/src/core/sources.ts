@@ -74,3 +74,71 @@ export function parseGutendex(j: any): { books: FoundBook[]; next: string | null
 export function gutendexUrl(q: string, lang?: string): string {
   return `https://gutendex.com/books/?search=${enc(q)}${lang ? `&languages=${enc(lang)}` : ''}`;
 }
+
+// ------------------------------------------------------------ našeptávač při psaní
+export interface Suggestion {
+  title: string;
+  author: string;
+  /** odkud návrh je: dřívější hledání, kniha v knihovně, nebo katalog na internetu */
+  from: 'history' | 'library' | 'web';
+}
+
+export function googleBooksSuggestUrl(q: string, lang?: string): string {
+  return `https://www.googleapis.com/books/v1/volumes?q=${enc(q)}&maxResults=10&printType=books&fields=items(volumeInfo(title,authors))${lang ? `&langRestrict=${enc(lang)}` : ''}`;
+}
+
+export function openLibrarySuggestUrl(q: string): string {
+  return `https://openlibrary.org/search.json?q=${enc(q)}&limit=10&fields=title,author_name`;
+}
+
+export function parseGoogleBooks(j: any): Suggestion[] {
+  return (j?.items ?? []).map((it: any) => ({ title: String(it?.volumeInfo?.title ?? ''), author: (it?.volumeInfo?.authors ?? []).join(', '), from: 'web' as const })).filter((s: Suggestion) => s.title);
+}
+
+export function parseOpenLibrary(j: any): Suggestion[] {
+  return (j?.docs ?? []).map((d: any) => ({ title: String(d?.title ?? ''), author: (d?.author_name ?? []).slice(0, 2).join(', '), from: 'web' as const })).filter((s: Suggestion) => s.title);
+}
+
+const PLAIN: Record<string, string> = { á: 'a', č: 'c', ď: 'd', é: 'e', ě: 'e', í: 'i', ň: 'n', ó: 'o', ř: 'r', š: 's', ť: 't', ú: 'u', ů: 'u', ý: 'y', ž: 'z', ä: 'a', ö: 'o', ü: 'u', ľ: 'l', ĺ: 'l', ô: 'o', ŕ: 'r', ß: 'ss' };
+const fold = (s: string) => {
+  const low = s.toLowerCase();
+  try {
+    return low.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  } catch {
+    return low.replace(/[^\x00-\x7f]/g, (c) => PLAIN[c] ?? c);
+  }
+};
+const keyOf = (t: string) => fold(t).replace(/[^a-z0-9]+/g, ' ').trim();
+
+/** Spojí návrhy (nejdřív historie a knihovna, které odpovídají psanému textu), bez duplicit, nejvýš `max`. */
+export function mergeSuggestions(q: string, local: Suggestion[], web: Suggestion[], max = 8): Suggestion[] {
+  const f = fold(q.trim());
+  const words = f.split(/\s+/).filter(Boolean);
+  const matches = (s: Suggestion) => {
+    const t = fold(`${s.title} ${s.author}`);
+    return words.every((w) => t.includes(w));
+  };
+  const seen = new Set<string>();
+  const out: Suggestion[] = [];
+  for (const s of [...local.filter(matches), ...web]) {
+    const key = `${keyOf(s.title)}|${keyOf(s.author)}`;
+    if (!s.title.trim() || seen.has(key)) continue;
+    seen.add(key);
+    out.push({ ...s, title: s.title.trim(), author: s.author.trim() });
+    if (out.length >= max) break;
+  }
+  return out;
+}
+
+/** Text do vyhledávání po klepnutí na návrh. */
+export function suggestionQuery(s: Suggestion): string {
+  const surname = s.author.split(',')[0].trim().split(/\s+/).pop() ?? '';
+  return s.from === 'history' || !surname ? s.title : `${s.title} ${surname}`;
+}
+
+/** Historie hledání: nejnovější první, bez duplicit, nejvýš 15. */
+export function addToHistory(history: string[] | undefined, q: string): string[] {
+  const t = q.trim();
+  if (!t) return history ?? [];
+  return [t, ...(history ?? []).filter((h) => fold(h) !== fold(t))].slice(0, 15);
+}

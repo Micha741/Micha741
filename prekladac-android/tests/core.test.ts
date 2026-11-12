@@ -382,3 +382,32 @@ test('PDF: zašifrované a sken bez textu dají srozumitelnou chybu', async () =
   const b = await readBook(new Uint8Array(readFileSync('tests/fixtures/kniha-libreoffice.pdf')), 'stazeny-soubor');
   assert.equal(b.chapters.length, 3);
 });
+
+// ------------------------------------------------------------ našeptávač
+import { addToHistory, mergeSuggestions, parseGoogleBooks, parseOpenLibrary, suggestionQuery } from '../src/core/sources';
+
+test('našeptávač: historie, knihovna a katalog bez duplicit, bez ohledu na diakritiku', () => {
+  const web = parseGoogleBooks({ items: [
+    { volumeInfo: { title: 'Babička', authors: ['Božena Němcová'] } },
+    { volumeInfo: { title: 'Babička ', authors: ['Božena Němcová'] } },
+    { volumeInfo: { title: 'Babička a vnoučata', authors: [] } },
+    { volumeInfo: {} },
+  ] });
+  assert.equal(web.length, 3);
+  const local = [
+    { title: 'babicka nemcova', author: '', from: 'history' as const },
+    { title: 'Válka s mloky', author: 'Karel Čapek', from: 'history' as const },
+    { title: 'Babička', author: 'Božena Němcová', from: 'library' as const },
+  ];
+  const s = mergeSuggestions('babič', local, web);
+  assert.deepEqual(s.map((x) => `${x.from}:${x.title}`), ['history:babicka nemcova', 'library:Babička', 'web:Babička a vnoučata']);
+  assert.equal(suggestionQuery(s[1]), 'Babička Němcová');
+  assert.equal(suggestionQuery(s[0]), 'babicka nemcova');
+  assert.deepEqual(parseOpenLibrary({ docs: [{ title: 'R.U.R.', author_name: ['Karel Čapek'] }] }), [{ title: 'R.U.R.', author: 'Karel Čapek', from: 'web' }]);
+  let h = addToHistory(undefined, ' Čapek ');
+  h = addToHistory(h, 'Hašek');
+  h = addToHistory(h, 'čapek');
+  assert.deepEqual(h, ['čapek', 'Hašek']);
+  for (let i = 0; i < 30; i++) h = addToHistory(h, `kniha ${i}`);
+  assert.equal(h.length, 15);
+});
