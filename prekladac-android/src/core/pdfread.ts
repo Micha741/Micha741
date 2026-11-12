@@ -4,6 +4,7 @@
 // WinAnsi/MacRoman/Differences, fonty Type0/CID, objektové proudy, formuláře XObject).
 // Neumí zašifrovaná PDF a skeny bez textové vrstvy (ty potřebují OCR na počítači).
 import pako from 'pako';
+import { aesCbcDecrypt, aesCbcEncrypt, md5, rc4, sha256, sha384, sha512 } from './crypto';
 import { addImage, emptyBook, type Block, type Book } from './book';
 import { chaptersFromBlocks, chaptersFromText } from './chapters';
 
@@ -179,8 +180,51 @@ function latin1(d: Uint8Array, from = 0, to = d.length): string {
   return s;
 }
 
+const PAD = new Uint8Array([0x28, 0xbf, 0x4e, 0x5e, 0x4e, 0x75, 0x8a, 0x41, 0x64, 0x00, 0x4e, 0x56, 0xff, 0xfa, 0x01, 0x08,
+  0x2e, 0x2e, 0x00, 0xb6, 0xd0, 0x68, 0x3e, 0x80, 0x2f, 0x0c, 0xa9, 0xfe, 0x64, 0x53, 0x69, 0x7a]);
+const cat = (...a: Uint8Array[]) => {
+  const out = new Uint8Array(a.reduce((n, x) => n + x.length, 0));
+  let o = 0;
+  for (const x of a) {
+    out.set(x, o);
+    o += x.length;
+  }
+  return out;
+};
+const PASSWORD_ERR = 'PDF je chráněné heslem pro otevření (nebo DRM) – telefon ho bez hesla neotevře. Pokud ho máte koupené s Adobe DRM, čtěte ho v aplikaci obchodu.';
+
+/** Klíč PDF 2.0 (R6), algoritmus 2.B. */
+function hash2B(pwd: Uint8Array, salt: Uint8Array, udata: Uint8Array): Uint8Array {
+  let k = sha256(cat(pwd, salt, udata));
+  for (let round = 0; ; ) {
+    const unit = cat(pwd, k, udata);
+    const k1 = new Uint8Array(unit.length * 64);
+    for (let i = 0; i < 64; i++) k1.set(unit, i * unit.length);
+    const e = aesCbcEncrypt(k.subarray(0, 16), k.subarray(16, 32), k1);
+    let sum = 0;
+    for (let i = 0; i < 16; i++) sum += e[i];
+    k = sum % 3 === 0 ? sha256(e) : sum % 3 === 1 ? sha384(e) : sha512(e);
+    round++;
+    if (round >= 64 && e[e.length - 1] <= round - 32) break;
+    if (round > 2000) break;
+  }
+  return k.subarray(0, 32);
+}
+
+interface Crypt {
+  key: Uint8Array;
+  aes: boolean;
+  v5: boolean;
+  strings: boolean;
+  streams: boolean;
+  metadata: boolean;
+}
+
 class PdfDoc {
   offsets = new Map<number, number>();
+  gens = new Map<number, number>();
+  crypt: Crypt | null = null;
+  encNum = -1;
   cache = new Map<number, any>();
   inStream = new Map<number, { stm: number; idx: number }>();
   text: string;
@@ -188,7 +232,11 @@ class PdfDoc {
     this.text = latin1(d);
     const re = /(\d+)\s+(\d+)\s+obj\b/g;
     let m: RegExpExecArray | null;
-    while ((m = re.exec(this.text))) this.offsets.set(+m[1], m.index + m[0].length);
+    while ((m = re.exec(this.text))) {
+      this.offsets.set(+m[1], m.index + m[0].length);
+      this.gens.set(+m[1], +m[2]);
+    }
+    this.setupEncryption();
     // objekty uvnitř objektových proudů (/Type /ObjStm)
     for (const [num] of this.offsets) {
       const head = this.text.slice(this.offsets.get(num)!, this.offsets.get(num)! + 400);
@@ -205,6 +253,88 @@ class PdfDoc {
         if (typeof on === 'number' && !this.offsets.has(on)) this.inStream.set(on, { stm: num, idx: i });
       }
     }
+  }
+  /** PDF chráněné bez hesla pro otevření (jen zákaz tisku/kopírování) se dešifruje prázdným heslem. */
+  setupEncryption() {
+    const em = [...this.text.matchAll(/\/Encrypt\s*(?:(\d+)\s+\d+\s+R|(<<))/g)].pop();
+    if (!em) return;
+    let enc: any;
+    if (em[1]) {
+      this.encNum = +em[1];
+      enc = this.get(this.encNum);
+    } else enc = new Lexer(this.d, (em.index ?? 0) + em[0].length - 2).value();
+    this.cache.clear();
+    if (!isDict(enc)) throw new Error(PASSWORD_ERR);
+    const filter = enc.get('Filter');
+    if (!(filter instanceof Name) || filter.v !== 'Standard') throw new Error(PASSWORD_ERR);
+    const idm = [...this.text.matchAll(/\/ID\s*\[\s*(<[0-9a-fA-F\s]*>|\((?:\\.|[^\\)])*\))/g)].pop();
+    const id0 = idm ? (new Lexer(Uint8Array.from(idm[1], (c) => c.charCodeAt(0) & 255)).value() as Str).b : new Uint8Array(0);
+    const V = enc.get('V') ?? 0, R = enc.get('R') ?? 2;
+    const O = (enc.get('O') as Str)?.b ?? new Uint8Array(32), U = (enc.get('U') as Str)?.b ?? new Uint8Array(32);
+    const P = enc.get('P') ?? 0;
+    const metadata = enc.get('EncryptMetadata') !== false;
+    let aes = false, strings = true, streams = true;
+    if (V >= 4) {
+      const cf = enc.get('CF');
+      const method = (name: any) => {
+        if (!(name instanceof Name) || name.v === 'Identity') return 'None';
+        const d = isDict(cf) ? cf.get(name.v) : null;
+        const m2 = isDict(d) ? d.get('CFM') : null;
+        return m2 instanceof Name ? m2.v : 'None';
+      };
+      const sm = method(enc.get('StmF')), tm = method(enc.get('StrF'));
+      streams = sm !== 'None';
+      strings = tm !== 'None';
+      aes = sm === 'AESV2' || sm === 'AESV3' || tm === 'AESV2' || tm === 'AESV3';
+    }
+    if (R >= 5) {
+      const UE = (enc.get('UE') as Str)?.b;
+      const empty = new Uint8Array(0);
+      const ok = R >= 6 ? hash2B(empty, U.subarray(32, 40), empty) : sha256(U.subarray(32, 40));
+      if (!UE || !ok.every((b, i) => b === U[i])) throw new Error(PASSWORD_ERR);
+      const inter = R >= 6 ? hash2B(empty, U.subarray(40, 48), empty) : sha256(U.subarray(40, 48));
+      const key = aesCbcDecrypt(inter, new Uint8Array(16), UE.subarray(0, 32), false);
+      this.crypt = { key, aes: true, v5: true, strings, streams, metadata };
+      return;
+    }
+    const n = R === 2 ? 5 : Math.min(16, Math.max(5, Math.floor((enc.get('Length') ?? 40) / 8)));
+    const p4 = new Uint8Array([P & 255, (P >> 8) & 255, (P >> 16) & 255, (P >>> 24) & 255]);
+    let h = md5(cat(PAD, O.subarray(0, 32), p4, id0, R >= 4 && !metadata ? new Uint8Array([255, 255, 255, 255]) : new Uint8Array(0)));
+    if (R >= 3) for (let i = 0; i < 50; i++) h = md5(h.subarray(0, n));
+    const key = h.subarray(0, n);
+    let check: Uint8Array, good: boolean;
+    if (R === 2) {
+      check = rc4(key, PAD);
+      good = check.every((b, i) => b === U[i]);
+    } else {
+      check = rc4(key, md5(cat(PAD, id0)));
+      for (let i = 1; i <= 19; i++) check = rc4(key.map((b) => b ^ i), check);
+      good = check.subarray(0, 16).every((b, i) => b === U[i]);
+    }
+    if (!good) throw new Error(PASSWORD_ERR);
+    this.crypt = { key, aes, v5: false, strings, streams, metadata };
+  }
+  decrypt(num: number, data: Uint8Array): Uint8Array {
+    const c = this.crypt!;
+    let k = c.key;
+    if (!c.v5) {
+      const g = this.gens.get(num) ?? 0;
+      const ext = new Uint8Array([num & 255, (num >> 8) & 255, (num >> 16) & 255, g & 255, (g >> 8) & 255]);
+      k = md5(cat(c.key, ext, c.aes ? new Uint8Array([0x73, 0x41, 0x6c, 0x54]) : new Uint8Array(0))).subarray(0, Math.min(16, c.key.length + 5));
+    }
+    if (!c.aes) return rc4(k, data);
+    if (data.length < 32) return new Uint8Array(0);
+    return aesCbcDecrypt(k, data.subarray(0, 16), data.subarray(16));
+  }
+  decryptValue(num: number, v: any): any {
+    if (v instanceof Str) return new Str(this.decrypt(num, v.b));
+    if (Array.isArray(v)) return v.map((x) => this.decryptValue(num, x));
+    if (isDict(v)) {
+      const m: PDict = new Map();
+      for (const [k, x] of v) m.set(k, this.decryptValue(num, x));
+      return m;
+    }
+    return v;
   }
   get(num: number): any {
     if (this.cache.has(num)) return this.cache.get(num);
@@ -227,6 +357,13 @@ class PdfDoc {
           }
           v = { dict: v, data: this.d.subarray(p, p + len) } as Stream;
         }
+      }
+      if (this.crypt && num !== this.encNum) {
+        if (isStream(v)) {
+          const type = v.dict.get('Type');
+          const skip = type instanceof Name && (type.v === 'XRef' || (type.v === 'Metadata' && !this.crypt.metadata));
+          if (!skip && this.crypt.streams) v = { dict: this.crypt.strings ? this.decryptValue(num, v.dict) : v.dict, data: this.decrypt(num, v.data) };
+        } else if (this.crypt.strings) v = this.decryptValue(num, v);
       }
     } else if (this.inStream.has(num)) {
       const { stm, idx } = this.inStream.get(num)!;
@@ -782,9 +919,6 @@ export function linesToBlocks(pages: Line[][]): Block[] {
 /** PDF → kniha. */
 export function readPdf(data: Uint8Array, fileName: string): Book {
   const doc = new PdfDoc(data);
-  if (/\/Encrypt\s+(\d+\s+\d+\s+R|<<)/.test(doc.text)) {
-    throw new Error('PDF je zašifrované (heslo nebo DRM) – telefon ho neotevře. Pokud ho máte koupené s Adobe DRM, čtěte ho v aplikaci obchodu.');
-  }
   const pages = pageList(doc);
   if (!pages.length) throw new Error('PDF se nepodařilo přečíst – soubor je poškozený nebo neobvyklý.');
   const fonts = new Map<any, Font>();

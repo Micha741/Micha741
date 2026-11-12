@@ -370,7 +370,7 @@ test('PDF: jednoduché písmo s WinAnsi a Differences, TJ s mezerami, objektový
 test('PDF: zašifrované a sken bez textu dají srozumitelnou chybu', async () => {
   const enc = makePdf(['<< /Type /Catalog /Pages 2 0 R >>', '<< /Type /Pages /Kids [] /Count 0 >>']);
   const withEncrypt = Uint8Array.from([...enc.subarray(0, enc.length - 20), ...Uint8Array.from('trailer << /Root 1 0 R /Encrypt 9 0 R >>\n', (c) => c.charCodeAt(0))]);
-  assert.throws(() => readPdf(withEncrypt, 'a.pdf'), /zašifrované/);
+  assert.throws(() => readPdf(withEncrypt, 'a.pdf'), /heslem/);
   const scan = makePdf([
     '<< /Type /Catalog /Pages 2 0 R >>',
     '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
@@ -425,4 +425,27 @@ test('čtečka: hledání v knize bez ohledu na diakritiku, označené odstavce,
   const html = chapterHtml(book, 0, DEFAULT_PREFS, { block: 1 }, [1]);
   assert.match(html, /<p data-i="1" class="mk">Nic\.<\/p>/);
   assert.match(html, /readerGo\(\{"block":1\}\)/);
+});
+
+test('PDF chráněné jen proti tisku/kopírování (prázdné heslo) se otevře, s heslem ne', () => {
+  for (const f of ['chranene-rc4.pdf', 'chranene-aes128.pdf', 'chranene-aes256.pdf']) {
+    assert.equal(checkKniha(readPdf(new Uint8Array(readFileSync(`tests/fixtures/${f}`)), f)), 24, f);
+  }
+  assert.throws(() => readPdf(new Uint8Array(readFileSync('tests/fixtures/heslo.pdf')), 'heslo.pdf'), /heslem/);
+});
+
+test('šifrovací funkce odpovídají standardu', async () => {
+  const { createHash, createCipheriv } = await import('node:crypto');
+  const { md5, sha256, sha384, sha512, aesCbcDecrypt, aesCbcEncrypt } = await import('../src/core/crypto');
+  const d = utf8Encode('Příliš žluťoučký kůň'.repeat(17));
+  for (const [n, f] of [['md5', md5], ['sha256', sha256], ['sha384', sha384], ['sha512', sha512]] as const)
+    assert.equal(Buffer.from(f(d)).toString('hex'), createHash(n).update(d).digest('hex'), n);
+  const key = new Uint8Array(32).map((_, i) => i * 7), iv = new Uint8Array(16).map((_, i) => i);
+  const c = createCipheriv('aes-256-cbc', key, iv);
+  const enc = Buffer.concat([c.update(d), c.final()]);
+  assert.deepEqual(Buffer.from(aesCbcDecrypt(key, iv, new Uint8Array(enc))), Buffer.from(d));
+  const c2 = createCipheriv('aes-128-cbc', key.subarray(0, 16), iv);
+  c2.setAutoPadding(false);
+  const block = d.subarray(0, 64);
+  assert.deepEqual(Buffer.from(aesCbcEncrypt(key.subarray(0, 16), iv, block)), Buffer.concat([c2.update(block), c2.final()]));
 });

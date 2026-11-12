@@ -14,6 +14,7 @@
     "expo-print": "~57.0.2",
     "expo-secure-store": "~57.0.4",
     "expo-sharing": "~57.0.25",
+    "expo-speech": "~57.0.3",
     "expo-status-bar": "~57.0.1",
     "jszip": "^3.10.2",
     "pako": "^1.0.11",
