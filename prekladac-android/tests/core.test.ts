@@ -226,7 +226,7 @@ test('offline překlad: pozná jazyk jednou, přeskočí stejný jazyk, srozumit
 });
 
 // ------------------------------------------------------------ čtečka, knihovna, hledání
-import { blockText, bookProgress, chapterHtml, DEFAULT_PREFS, parseReaderMessage } from '../src/core/reader';
+import { blockText, bookProgress, chapterHtml, DEFAULT_PREFS, parseReaderMessage, searchBook } from '../src/core/reader';
 import { deserializeBook, fileNameFromUrl, serializeBook, sniffBookExt } from '../src/core/library';
 import { gutendexUrl, parseGutendex, SOURCES } from '../src/core/sources';
 
@@ -410,4 +410,19 @@ test('našeptávač: historie, knihovna a katalog bez duplicit, bez ohledu na di
   assert.deepEqual(h, ['čapek', 'Hašek']);
   for (let i = 0; i < 30; i++) h = addToHistory(h, `kniha ${i}`);
   assert.equal(h.length, 15);
+});
+
+test('čtečka: hledání v knize bez ohledu na diakritiku, označené odstavce, skok na odstavec', () => {
+  const book = emptyBook('K');
+  book.chapters = [
+    { title: 'Jedna', blocks: [{ type: 'p', text: 'Žluťoučký kůň úpěl.' }, { type: 'p', text: 'Nic.' }] },
+    { title: 'Dvě', blocks: [{ type: 'h', text: 'Kůň' }, { type: 'p', text: 'Další KŮŇ a ještě jeden kun.' }] },
+  ];
+  const hits = searchBook(book, 'kun');
+  assert.deepEqual(hits.map((h) => [h.chapter, h.i, h.match]), [[0, 0, 'kůň'], [1, 0, 'Kůň'], [1, 1, 'KŮŇ'], [1, 1, 'kun']]);
+  assert.equal(hits[2].before, 'Další ');
+  assert.deepEqual(searchBook(book, 'k'), []);
+  const html = chapterHtml(book, 0, DEFAULT_PREFS, { block: 1 }, [1]);
+  assert.match(html, /<p data-i="1" class="mk">Nic\.<\/p>/);
+  assert.match(html, /readerGo\(\{"block":1\}\)/);
 });

@@ -10,6 +10,13 @@ export interface Bookmark {
   at: number;
 }
 
+export interface Highlight {
+  chapter: number;
+  i: number; // číslo odstavce v kapitole
+  text: string; // začátek odstavce pro seznam
+  at: number;
+}
+
 export interface LibraryEntry {
   id: string;
   title: string;
@@ -21,6 +28,8 @@ export interface LibraryEntry {
   fraction: number; // místo v kapitole 0–1
   progress: number; // celé knihy 0–1
   bookmarks: Bookmark[];
+  /** označené (zvýrazněné) odstavce */
+  highlights?: Highlight[];
   /** id knihy, ze které vznikl tento překlad (pro „originál“ u odstavce) */
   originalId?: string;
   /** malá obálka jako data URI */

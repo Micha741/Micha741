@@ -30,7 +30,7 @@ export const THEMES: Record<ReaderTheme, { bg: string; fg: string; muted: string
 };
 
 /** Kde začít: první stránka, poslední (návrat z další kapitoly) nebo podíl kapitoly 0–1. */
-export type StartAt = 'start' | 'end' | number;
+export type StartAt = 'start' | 'end' | number | { block: number };
 
 /** Zprávy z WebView. */
 export type ReaderMessage =
@@ -50,10 +50,10 @@ export function parseReaderMessage(raw: string): ReaderMessage | null {
   }
 }
 
-function blocksHtml(book: Book, ch: Chapter): string {
+function blocksHtml(book: Book, ch: Chapter, marks: Set<number>): string {
   let out = '';
   ch.blocks.forEach((b, i) => {
-    if (b.type === 'p') out += `<p data-i="${i}">${escapeXml(b.text).replace(/\n/g, '<br/>')}</p>`;
+    if (b.type === 'p') out += `<p data-i="${i}"${marks.has(i) ? ' class="mk"' : ''}>${escapeXml(b.text).replace(/\n/g, '<br/>')}</p>`;
     else if (b.type === 'h') out += `<h${Math.min(4, Math.max(2, (b.level ?? 2) + 1))} data-i="${i}">${escapeXml(b.text)}</h${Math.min(4, Math.max(2, (b.level ?? 2) + 1))}>`;
     else if (b.type === 'pb') out += '<div class="pb"></div>';
     else if (b.type === 'img') {
@@ -65,7 +65,7 @@ function blocksHtml(book: Book, ch: Chapter): string {
 }
 
 /** HTML jedné kapitoly pro čtečku. */
-export function chapterHtml(book: Book, index: number, prefs: ReaderPrefs, start: StartAt = 'start'): string {
+export function chapterHtml(book: Book, index: number, prefs: ReaderPrefs, start: StartAt = 'start', marks: number[] = []): string {
   const ch = book.chapters[index];
   const t = THEMES[prefs.theme] ?? THEMES.sepia;
   const family = prefs.font === 'sans' ? 'Roboto, "Noto Sans", sans-serif' : '"Noto Serif", Georgia, serif';
@@ -73,13 +73,13 @@ export function chapterHtml(book: Book, index: number, prefs: ReaderPrefs, start
     ? `<figure class="cover"><img src="data:${book.images[book.cover].mime};base64,${toBase64(book.images[book.cover].data)}" alt=""/></figure>`
     : '';
   const title = ch ? `<h1>${escapeXml(ch.title)}</h1>` : '';
-  const body = ch ? blocksHtml(book, ch) : '<p>Kniha je prázdná.</p>';
+  const body = ch ? blocksHtml(book, ch, new Set(marks)) : '<p>Kniha je prázdná.</p>';
   const m = prefs.margin;
   return `<!DOCTYPE html><html lang="${escapeXml(book.language || 'cs')}"><head><meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
 <style>
 html,body{margin:0;padding:0;height:100%;overflow:hidden;background:${t.bg};color:${t.fg};-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
-.pg{height:100%;box-sizing:border-box;padding:${Math.round(m * 1.4)}px ${m}px;column-width:100vw;column-gap:${m * 2}px;column-fill:auto;
+.pg{height:100%;box-sizing:border-box;padding:${Math.max(50, Math.round(m * 1.4))}px ${m}px ${Math.round(m * 1.4)}px;column-width:100vw;column-gap:${m * 2}px;column-fill:auto;
   font-family:${family};font-size:${prefs.size}px;line-height:${prefs.line};will-change:transform}
 body{perspective:1700px}
 #t{position:fixed;left:0;top:0;width:100vw;height:100vh;overflow:hidden;background:${t.bg};transform-origin:0 50%;display:none;z-index:2;
@@ -89,10 +89,11 @@ body{perspective:1700px}
 p{margin:0 0 .35em;text-indent:1.3em;text-align:${prefs.justify ? 'justify' : 'left'};hyphens:auto;-webkit-hyphens:auto;orphans:2;widows:2}
 h1{font-size:1.45em;text-align:center;margin:.6em 0 1em;line-height:1.25;break-after:avoid}
 h2,h3,h4{font-size:1.15em;margin:1em 0 .5em;line-height:1.3;break-after:avoid}
-figure{margin:.6em 0;text-align:center;break-inside:avoid}figure img{max-width:100%;max-height:calc(100vh - ${Math.round(m * 3.2)}px);object-fit:contain}
-figure.cover{margin:0;height:calc(100vh - ${Math.round(m * 2.8) + 6}px);display:flex;align-items:center;justify-content:center;break-after:column}
+figure{margin:.6em 0;text-align:center;break-inside:avoid}figure img{max-width:100%;max-height:calc(100vh - ${Math.max(50, Math.round(m * 1.4)) + Math.round(m * 1.8)}px);object-fit:contain}
+figure.cover{margin:0;height:calc(100vh - ${Math.max(50, Math.round(m * 1.4)) + Math.round(m * 1.4) + 6}px);display:flex;align-items:center;justify-content:center;break-after:column}
 .pb{break-after:column;height:0}
 .hl{background:${t.accent}33;border-radius:3px}
+.mk{background:${prefs.theme === 'night' ? '#5c4a0f' : '#fff2a8'};box-shadow:0 0 0 2px ${prefs.theme === 'night' ? '#5c4a0f' : '#fff2a8'};border-radius:2px}
 </style></head><body><div id="c" class="pg">${cover}${title}${body}</div><div id="t"></div>
 <script>
 (function(){
@@ -121,7 +122,12 @@ figure.cover{margin:0;height:calc(100vh - ${Math.round(m * 2.8) + 6}px);display:
     else{place(p);done(p);}}
   function show(p){p=Math.max(0,Math.min(pages-1,p));hideFlip();place(p);done(p);}
   window.readerGo=function(where){measure();
-    if(where==='end')show(pages-1);else if(typeof where==='number')show(Math.round(where*(pages-1)));else show(0);};
+    if(where==='end')show(pages-1);else if(typeof where==='number')show(Math.round(where*(pages-1)));
+    else if(where&&typeof where==='object'&&where.block!==undefined){var el=c.querySelector('[data-i="'+where.block+'"]');
+      if(!el){show(0);return;}var t=c.style.transform;c.style.transform='none';var r=el.getBoundingClientRect();c.style.transform=t;
+      show(Math.floor((r.left+2)/W));el.classList.add('hl');setTimeout(function(){el.classList.remove('hl')},1600);}
+    else show(0);};
+  window.readerMark=function(i,on){[c,clone].forEach(function(root){if(!root)return;var el=root.querySelector('[data-i="'+i+'"]');if(el)el.classList.toggle('mk',on);});};
   function next(){if(busy)return;if(page<pages-1)go(page+1,1);else send({type:'next'});}
   function prev(){if(busy)return;if(page>0)go(page-1,-1);else send({type:'prev'});}
   window.readerNext=next;window.readerPrev=prev;
@@ -183,4 +189,39 @@ export function bookProgress(book: Book, chapter: number, fraction: number): num
   const total = sizes.reduce((a, b) => a + b, 0) || 1;
   const before = sizes.slice(0, chapter).reduce((a, b) => a + b, 0);
   return Math.min(1, (before + (sizes[chapter] ?? 0) * Math.min(1, Math.max(0, fraction))) / total);
+}
+
+export interface SearchHit {
+  chapter: number;
+  i: number;
+  before: string;
+  match: string;
+  after: string;
+}
+
+const PLAIN_R: Record<string, string> = { á: 'a', č: 'c', ď: 'd', é: 'e', ě: 'e', í: 'i', ň: 'n', ó: 'o', ř: 'r', š: 's', ť: 't', ú: 'u', ů: 'u', ý: 'y', ž: 'z', ä: 'a', ö: 'o', ü: 'u', ľ: 'l', ĺ: 'l', ô: 'o', ŕ: 'r' };
+/** Malá písmena bez diakritiky, stejná délka jako vstup (aby šly vrátit pozice nálezu). */
+function foldSame(s: string): string {
+  return s.toLowerCase().replace(/[^\x00-\x7f]/g, (c) => PLAIN_R[c] ?? c);
+}
+
+/** Hledání v celé knize (bez ohledu na velikost písmen a háčky/čárky). */
+export function searchBook(book: Book, query: string, max = 200): SearchHit[] {
+  const q = foldSame(query.trim());
+  const hits: SearchHit[] = [];
+  if (q.length < 2) return hits;
+  book.chapters.forEach((ch, ci) => {
+    ch.blocks.forEach((b, i) => {
+      if (hits.length >= max || (b.type !== 'p' && b.type !== 'h')) return;
+      const f = foldSame(b.text);
+      let k = f.indexOf(q);
+      while (k >= 0 && hits.length < max) {
+        const a = Math.max(0, k - 45);
+        const e = Math.min(b.text.length, k + q.length + 60);
+        hits.push({ chapter: ci, i, before: (a > 0 ? '…' : '') + b.text.slice(a, k), match: b.text.slice(k, k + q.length), after: b.text.slice(k + q.length, e) + (e < b.text.length ? '…' : '') });
+        k = f.indexOf(q, k + q.length);
+      }
+    });
+  });
+  return hits;
 }

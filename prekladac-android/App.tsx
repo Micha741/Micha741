@@ -3,8 +3,8 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { ActivityIndicator, Alert, BackHandler, Image, Linking, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { WebView, type WebViewMessageEvent } from 'react-native-webview';
 import { useKeepAwake } from 'expo-keep-awake';
-import { blockText, bookProgress, chapterHtml, DEFAULT_PREFS, parseReaderMessage, THEMES, TURNS, type ReaderPrefs, type ReaderTheme, type ReaderTurn, type StartAt } from './src/core/reader';
-import type { LibraryEntry } from './src/core/library';
+import { blockText, bookProgress, chapterHtml, DEFAULT_PREFS, parseReaderMessage, searchBook, THEMES, TURNS, type ReaderPrefs, type ReaderTheme, type ReaderTurn, type StartAt } from './src/core/reader';
+import type { Highlight, LibraryEntry } from './src/core/library';
 import { addToHistory, googleBooksSuggestUrl, gutendexUrl, KIND_LABEL, mergeSuggestions, openLibrarySuggestUrl, parseGoogleBooks, parseGutendex, parseOpenLibrary, SOURCES, suggestionQuery, type FoundBook, type SourceKind, type Suggestion } from './src/core/sources';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { addImage, bookStats, insertImage, pruneImages, type Book } from './src/core/book';
@@ -737,14 +737,25 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
   const [start, setStart] = useState<StartAt>(reading.entry.fraction || 'start');
   const [pos, setPos] = useState({ page: 0, pages: 1 });
   const [menu, setMenu] = useState(false);
-  const [panel, setPanel] = useState<'' | 'toc' | 'look'>('');
+  const [panel, setPanel] = useState<'' | 'menu' | 'look'>('');
+  const [menuTab, setMenuTab] = useState<'toc' | 'search' | 'marks'>('toc');
+  const [query, setQuery] = useState('');
+  const hits = useMemo(() => (menuTab === 'search' ? searchBook(book, query) : []), [book, query, menuTab]);
+  const openMenu = (t: 'toc' | 'search' | 'marks') => {
+    setMenuTab(t);
+    setMenu(false);
+    setPanel('menu');
+  };
   const [sheet, setSheet] = useState<Sheet>(null);
   const [tr, setTr] = useState<{ busy: boolean; text: string }>({ busy: false, text: '' });
   const prefs: ReaderPrefs = { ...DEFAULT_PREFS, ...(settings.reader ?? {}) };
   const theme = THEMES[prefs.theme];
   const web = useRef<WebView>(null);
   const saveT = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const html = useMemo(() => chapterHtml(book, chapter, prefs, start), [book, chapter, JSON.stringify(prefs), start]);
+  const html = useMemo(
+    () => chapterHtml(book, chapter, prefs, start, (entry.highlights ?? []).filter((h) => h.chapter === chapter).map((h) => h.i)),
+    [book, chapter, JSON.stringify(prefs), start], // označení se mění bez načtení stránky (readerMark)
+  );
 
   const persist = (patch: Partial<LibraryEntry>) => {
     const next = { ...entry, ...patch, lastRead: Date.now() };
@@ -818,11 +829,21 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
     Alert.alert('Záložka', `Uloženo: ${label}`);
   };
   const percent = Math.round(bookProgress(book, chapter, fraction) * 100);
+  const highlights = entry.highlights ?? [];
+  const isMarked = (i: number) => highlights.some((h) => h.chapter === chapter && h.i === i);
+  const toggleMark = (i: number, text: string) => {
+    const on = !isMarked(i);
+    const next: Highlight[] = on
+      ? [...highlights, { chapter, i, text: text.slice(0, 160), at: Date.now() }]
+      : highlights.filter((h) => !(h.chapter === chapter && h.i === i));
+    persist({ highlights: next });
+    web.current?.injectJavaScript(`window.readerMark&&window.readerMark(${i},${on});true;`);
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.bg }}>
       <WebView
-        key={`${chapter}:${typeof start === 'number' ? start.toFixed(4) : start}:${JSON.stringify(prefs)}`}
+        key={`${chapter}:${typeof start === 'number' ? start.toFixed(4) : JSON.stringify(start)}:${JSON.stringify(prefs)}`}
         ref={web}
         originWhitelist={['*']}
         source={{ html }}
@@ -838,6 +859,9 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
           {book.chapters[chapter]?.title ?? ''} · {pos.page + 1}/{pos.pages} · {percent} %
         </Text>
       </View>
+      <Pressable onPress={() => openMenu('toc')} style={[st.burger, { backgroundColor: theme.bg, borderColor: theme.muted + '55' }]} accessibilityRole="button" accessibilityLabel="Nabídka: kapitoly, hledat, označené" hitSlop={8}>
+        <Text style={{ color: theme.fg, fontSize: 20, lineHeight: 22 }}>☰</Text>
+      </Pressable>
       {menu ? (
         <>
           <View style={[st.readerBar, { top: 0 }]}>
@@ -846,7 +870,8 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
           </View>
           <View style={[st.readerBar, { bottom: 0, justifyContent: 'space-around' }]}>
             <Pressable onPress={() => goChapter(chapter - 1, 'start')} style={st.readerBtn} disabled={chapter === 0}><Text style={st.readerBtnText}>⏮</Text></Pressable>
-            <Pressable onPress={() => setPanel('toc')} style={st.readerBtn}><Text style={st.readerBtnText}>☰ Obsah</Text></Pressable>
+            <Pressable onPress={() => openMenu('toc')} style={st.readerBtn}><Text style={st.readerBtnText}>☰ Obsah</Text></Pressable>
+            <Pressable onPress={() => openMenu('search')} style={st.readerBtn}><Text style={st.readerBtnText}>🔎</Text></Pressable>
             <Pressable onPress={addBookmark} style={st.readerBtn}><Text style={st.readerBtnText}>🔖</Text></Pressable>
             <Pressable onPress={() => setPanel('look')} style={st.readerBtn}><Text style={st.readerBtnText}>Aa</Text></Pressable>
             <Pressable onPress={() => goChapter(chapter + 1, 'start')} style={st.readerBtn} disabled={chapter >= book.chapters.length - 1}><Text style={st.readerBtnText}>⏭</Text></Pressable>
@@ -854,26 +879,66 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
         </>
       ) : null}
 
-      <Modal visible={panel === 'toc'} transparent animationType="slide" onRequestClose={() => setPanel('')}>
-        <Pressable style={st.modalBack} onPress={() => setPanel('')}>
-          <Pressable style={[st.modal, { maxHeight: '80%' }]} onPress={() => undefined}>
-            <Text style={st.boxTitle}>Obsah</Text>
-            <ScrollView>
-              {book.chapters.map((c, i) => (
-                <Pressable key={i} onPress={() => goChapter(i)} style={st.chapterRow}>
-                  <Text style={[st.btnText, { flex: 1 }, i === chapter && { fontWeight: '700', color: C.accent }]} numberOfLines={2}>{i + 1}. {c.title}</Text>
-                </Pressable>
-              ))}
-              {entry.bookmarks.length ? <Text style={[st.boxTitle, { marginTop: 12 }]}>Záložky</Text> : null}
-              {entry.bookmarks.map((b, k) => (
-                <View key={b.at} style={st.chapterRow}>
-                  <Pressable style={{ flex: 1 }} onPress={() => goChapter(b.chapter, b.fraction)}><Text style={st.btnText}>🔖 {b.label}</Text></Pressable>
-                  <Btn small label="✖" onPress={() => persist({ bookmarks: entry.bookmarks.filter((_, j) => j !== k) })} />
-                </View>
-              ))}
+      <Modal visible={panel === 'menu'} transparent animationType="fade" onRequestClose={() => setPanel('')}>
+        <View style={{ flex: 1, flexDirection: 'row' }}>
+          <Pressable style={{ flex: 1, backgroundColor: 'rgba(15,23,42,0.45)' }} onPress={() => setPanel('')} accessibilityLabel="Zavřít nabídku" />
+          <View style={st.sideMenu}>
+            <View style={[st.row, { justifyContent: 'space-between' }]}>
+              <Text style={[st.boxTitle, { flex: 1 }]} numberOfLines={2}>{book.title}</Text>
+              <Btn small label="✖" onPress={() => setPanel('')} />
+            </View>
+            <View style={[st.row, { gap: 6 }]}>
+              <Btn small label="🔖 Záložka" onPress={() => { addBookmark(); }} />
+              <Btn small label="Aa Vzhled" onPress={() => setPanel('look')} />
+              <Btn small label="← Knihovna" onPress={() => { setPanel(''); onClose(); }} />
+            </View>
+            <Chips items={[{ id: 'toc', label: 'Kapitoly' }, { id: 'search', label: '🔎 Hledat' }, { id: 'marks', label: `🖍 Označené (${highlights.length + entry.bookmarks.length})` }]} value={menuTab} onChange={(v) => setMenuTab(v as typeof menuTab)} />
+            {menuTab === 'search' ? (
+              <TextInput style={st.input} value={query} onChangeText={setQuery} placeholder="Hledat v celé knize…" placeholderTextColor={C.disabled} autoFocus returnKeyType="search" />
+            ) : null}
+            <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
+              {menuTab === 'toc' &&
+                book.chapters.map((c, i) => (
+                  <Pressable key={i} onPress={() => goChapter(i)} style={st.chapterRow}>
+                    <Text style={[st.btnText, { flex: 1 }, i === chapter && { fontWeight: '700', color: C.accent }]} numberOfLines={2}>{i + 1}. {c.title}</Text>
+                  </Pressable>
+                ))}
+              {menuTab === 'search' ? (
+                <>
+                  {query.trim().length >= 2 ? <Text style={st.hint}>{hits.length >= 200 ? 'Více než 200 nálezů – upřesněte hledání.' : `Nalezeno: ${hits.length}`}</Text> : <Text style={st.hint}>Napište aspoň 2 písmena. Na velikosti písmen ani háčcích a čárkách nezáleží.</Text>}
+                  {hits.map((h, k) => (
+                    <Pressable key={k} onPress={() => goChapter(h.chapter, { block: h.i })} style={st.chapterRow}>
+                      <View style={{ flex: 1 }}>
+                        <Text style={st.hint} numberOfLines={1}>{book.chapters[h.chapter]?.title}</Text>
+                        <Text style={st.btnText}>{h.before}<Text style={{ fontWeight: '700', backgroundColor: '#fff2a8', color: '#111827' }}>{h.match}</Text>{h.after}</Text>
+                      </View>
+                    </Pressable>
+                  ))}
+                </>
+              ) : null}
+              {menuTab === 'marks' ? (
+                <>
+                  {!highlights.length && !entry.bookmarks.length ? <Text style={st.hint}>Zatím nic. Odstavec označíte podržením prstu na něm → 🖍 Označit. Záložku přidáte tlačítkem 🔖 nahoře.</Text> : null}
+                  {[...highlights].sort((a, b) => a.chapter - b.chapter || a.i - b.i).map((h) => (
+                    <View key={`h${h.at}`} style={st.chapterRow}>
+                      <Pressable style={{ flex: 1 }} onPress={() => goChapter(h.chapter, { block: h.i })}>
+                        <Text style={st.hint} numberOfLines={1}>🖍 {book.chapters[h.chapter]?.title}</Text>
+                        <Text style={st.btnText} numberOfLines={3}>{h.text}</Text>
+                      </Pressable>
+                      <Btn small label="✖" onPress={() => { persist({ highlights: highlights.filter((x) => x !== h) }); if (h.chapter === chapter) web.current?.injectJavaScript(`window.readerMark&&window.readerMark(${h.i},false);true;`); }} />
+                    </View>
+                  ))}
+                  {entry.bookmarks.map((b, k) => (
+                    <View key={`b${b.at}`} style={st.chapterRow}>
+                      <Pressable style={{ flex: 1 }} onPress={() => goChapter(b.chapter, b.fraction)}><Text style={st.btnText}>🔖 {b.label}</Text></Pressable>
+                      <Btn small label="✖" onPress={() => persist({ bookmarks: entry.bookmarks.filter((_, j) => j !== k) })} />
+                    </View>
+                  ))}
+                </>
+              ) : null}
             </ScrollView>
-          </Pressable>
-        </Pressable>
+          </View>
+        </View>
       </Modal>
 
       <Modal visible={panel === 'look'} transparent animationType="slide" onRequestClose={() => setPanel('')}>
@@ -922,6 +987,7 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
               ) : null}
               <View style={[st.row, { marginTop: 4 }]}>
                 {tr.busy ? <ActivityIndicator color={C.accent} /> : <Btn label={sheet?.kind === 'word' ? '🌍 Přeložit slovo' : '🌍 Přeložit odstavec'} onPress={translateNow} primary />}
+                {sheet && sheet.kind === 'para' && sheet.i >= 0 ? <Btn label={isMarked(sheet.i) ? '🖍 Zrušit označení' : '🖍 Označit'} onPress={() => { toggleMark(sheet.i, sheet.text); setSheet(null); }} /> : null}
                 <Btn label="Zavřít" onPress={() => setSheet(null)} />
               </View>
               <Text style={st.hint}>Překladač a cílový jazyk se nastavují na kartě Překlad. Text jde označit a zkopírovat.</Text>
@@ -1195,6 +1261,8 @@ function makeStyles() {
   readerBtn: { paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8, minHeight: 44, justifyContent: 'center' },
   readerBtnText: { color: '#f8fafc', fontSize: 17 },
   sheetText: { fontFamily: SERIF, fontSize: 16, lineHeight: 23, color: C.text },
+  burger: { position: 'absolute', top: 6, right: 8, width: 40, height: 40, borderRadius: 20, borderWidth: 1, alignItems: 'center', justifyContent: 'center', opacity: 0.85 },
+  sideMenu: { width: '86%', maxWidth: 420, backgroundColor: C.surface, paddingHorizontal: 12, paddingTop: 14, paddingBottom: 10, gap: 8 },
   suggestBox: { borderWidth: 1, borderColor: C.inputBorder, borderRadius: 8, backgroundColor: C.surface, overflow: 'hidden' },
   suggestRow: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 10, paddingVertical: 8, borderTopWidth: 1, borderColor: C.border, minHeight: 44 },
   });
