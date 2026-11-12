@@ -245,11 +245,24 @@ class PageView(QtWidgets.QWidget):
         return int(max(0.0, y + 1) // self.ph)
 
     def first_pos(self) -> int:
-        """Pozice prvního znaku na zobrazené stránce (pro uložení místa čtení)."""
+        """Pozice prvního znaku na zobrazené stránce (pro uložení místa čtení).
+
+        Bod těsně pod horním okrajem může padnout do mezery mezi odstavci – pak by „nejbližší“ znak
+        byl ještě na předchozí stránce. Proto se zkouší postupně níž, dokud nález není na této stránce."""
         if self.doc is None:
             return 0
+        lay = self.doc.documentLayout()
         m = self.doc.documentMargin()
-        return max(0, self.doc.documentLayout().hitTest(QtCore.QPointF(m + 2, self.page * self.ph + m + 2), Qt.FuzzyHit))
+        first = None
+        for dy in range(int(m) + 2, int(self.ph * 0.7), 6):
+            pos = lay.hitTest(QtCore.QPointF(m + 2, self.page * self.ph + dy), Qt.FuzzyHit)
+            if pos < 0:
+                continue
+            if first is None:
+                first = pos
+            if self.page_of(pos) >= self.page:
+                return pos
+        return max(0, first or 0)
 
     def visible_range(self) -> tuple[int, int]:
         if self.doc is None:
