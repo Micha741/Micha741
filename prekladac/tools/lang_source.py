@@ -1122,7 +1122,10 @@ E += [
     ('📝 Upravit poznámku…', '📝 Edit note…', '📝 Upraviť poznámku…', '📝 Notiz bearbeiten…'),
     ('📤 Uložit jako text…', '📤 Save as text…', '📤 Uložiť ako text…', '📤 Als Text speichern…'),
     ('📤 Uložit označené a poznámky…', '📤 Save highlights and notes…', '📤 Uložiť označené a poznámky…', '📤 Markierungen und Notizen speichern…'),
-    ('🔊 Číst nahlas odsud', '🔊 Read aloud from here', '🔊 Čítať nahlas odtiaľto', '🔊 Ab hier vorlesen'),
+    ("🔊 Číst nahlas od této věty", "🔊 Read aloud from this sentence", "🔊 Čítať nahlas od tejto vety",
+     "🔊 Ab diesem Satz vorlesen"),
+    ("🔊 Číst nahlas celý odstavec", "🔊 Read the whole paragraph aloud", "🔊 Čítať nahlas celý odsek",
+     "🔊 Ganzen Absatz vorlesen"),
     ('🔒 Heslo k PDF', '🔒 PDF password', '🔒 Heslo k PDF', '🔒 PDF-Passwort'),
     ('🖍 Označit', '🖍 Highlight', '🖍 Označiť', '🖍 Markieren'),
     ('Číst knihu jako v čtečce: stránky, otáčení, hledání, záložky, označování, překlad a čtení nahlas (F6)', 'Read the book like in an e-reader: pages, page turning, search, bookmarks, highlights, translation and read-aloud (F6)', 'Čítať knihu ako v čítačke: strany, otáčanie, hľadanie, záložky, označovanie, preklad a čítanie nahlas (F6)', 'Buch wie im E-Reader lesen: Seiten, Umblättern, Suche, Lesezeichen, Markierungen, Übersetzung und Vorlesen (F6)'),
@@ -1131,7 +1134,13 @@ E += [
     ('Čtení nahlas používá hlasy Windows. Na tomto počítači nejsou k dispozici.', 'Read-aloud uses Windows voices. They are not available on this computer.', 'Čítanie nahlas používa hlasy Windows. Na tomto počítači nie sú k dispozícii.', 'Vorlesen verwendet Windows-Stimmen. Auf diesem Computer sind sie nicht verfügbar.'),
     ('Pokračovat', 'Resume', 'Pokračovať', 'Fortsetzen'),
     ('Pozastavit', 'Pause', 'Pozastaviť', 'Pause'),
-    ('Číst nahlas od začátku stránky; během čtení pozastavit a pokračovat', 'Read aloud from the top of the page; pause and resume while reading', 'Čítať nahlas od začiatku strany; počas čítania pozastaviť a pokračovať', 'Ab Seitenanfang vorlesen; beim Vorlesen pausieren und fortsetzen'),
+    ("Číst nahlas od začátku stránky, nebo od věty, na kterou kliknete v textu (zezelená); během čtení klik do textu "
+     "přeskočí na tu větu. Tlačítkem pak pozastavit a pokračovat.", "Read aloud from the top of the page, or from the "
+     "sentence you click in the text (it turns green); while reading, a click in the text jumps to that sentence. "
+     "Use the button to pause and resume.", "Čítať nahlas od začiatku strany alebo od vety, na ktorú kliknete v texte "
+     "(zozelenie); počas čítania klik do textu preskočí na tú vetu. Tlačidlom potom pozastaviť a pokračovať.",
+     "Ab Seitenanfang vorlesen oder ab dem Satz, den Sie im Text anklicken (er wird grün); beim Vorlesen springt ein "
+     "Klick in den Text zu diesem Satz. Mit der Taste pausieren und fortsetzen."),
     ("Hlas pro čtení nahlas: hlasy Windows (Nastavení → Čas a jazyk → Řeč) a stažené hlasy, které čtou bez internetu",
      "Voice for reading aloud: Windows voices (Settings → Time & language → Speech) and downloaded voices that work "
      "offline", "Hlas na čítanie nahlas: hlasy Windows (Nastavenia → Čas a jazyk → Reč) a stiahnuté hlasy, ktoré "

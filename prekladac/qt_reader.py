@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import re
 import threading
 import time
 import unicodedata
@@ -196,7 +197,7 @@ class PageView(QtWidgets.QWidget):
         self._press: QtCore.QPointF | None = None
         self._dragging = False
         self.setFocusPolicy(Qt.StrongFocus)
-        self.setMouseTracking(False)
+        self.setMouseTracking(True)  # kurzor: nad textem „I“ (klik = odsud číst nahlas), u okrajů ruka (listovat)
         self.setMinimumSize(300, 300)
 
     # ---- sazba
@@ -515,8 +516,17 @@ class PageView(QtWidgets.QWidget):
             self._dragging = False
         super().mousePressEvent(e)
 
+    EDGE = 0.15  # klik do pruhu u levého / pravého okraje = otočit stránku
+
+    def _edge(self, pt: QtCore.QPointF) -> int:
+        x = pt.x() / max(1, self.width())
+        return -1 if x < self.EDGE else 1 if x > 1 - self.EDGE else 0
+
     def mouseMoveEvent(self, e):
         if self._press is None:
+            over_text = not self._edge(e.position()) and self.hit(e.position()) is not None
+            self.setCursor(Qt.IBeamCursor if over_text else Qt.PointingHandCursor if self._edge(e.position())
+                           else Qt.ArrowCursor)
             return
         dx = e.position().x() - self._press.x()
         if not self._dragging and abs(dx) > 10:
@@ -544,11 +554,14 @@ class PageView(QtWidgets.QWidget):
             self.anim.start()
             return
         if e.button() == Qt.LeftButton and (e.position() - press).manhattanLength() < 6:
-            x = e.position().x() / max(1, self.width())
-            if x < 0.3:
-                self.turn(-1)
-            elif x > 0.7:
-                self.turn(1)
+            edge = self._edge(e.position())
+            pos = None if edge else self.hit(e.position())
+            if pos is not None:
+                self.reader.click_text(pos)  # odsud číst nahlas
+            elif edge:
+                self.turn(edge)
+            else:  # mimo text uprostřed (prázdný konec kapitoly…) – listovat podle poloviny
+                self.turn(-1 if e.position().x() < self.width() / 2 else 1)
 
     def mouseDoubleClickEvent(self, e):
         pos = self.hit(e.position())
@@ -749,6 +762,28 @@ class VocabDialog(QtWidgets.QDialog):
 
 
 # ------------------------------------------------------------------ čtečka
+SENTENCE_END = re.compile(r"[.!?…]+[\"'»“”)\]]*\s+")
+
+
+def sentence_bounds(doc: QtGui.QTextDocument, pos: int) -> tuple[int, int]:
+    """Začátek a konec věty (pozice v knize), ve které je pos – věta nepřesahuje odstavec."""
+    b = doc.findBlock(max(0, pos))
+    text, base = b.text(), b.position()
+    i = max(0, min(len(text), pos - base))
+    start = 0
+    for m in SENTENCE_END.finditer(text):
+        if m.end() <= i:
+            start = m.end()
+        else:
+            end = m.end()
+            break
+    else:
+        end = len(text)
+    if start >= len(text):
+        start = 0
+    return base + start, base + end
+
+
 class Reader(QtWidgets.QWidget):
     """Čtečka pro okno knihy. project = projekt knihy, app_cfg = nastavení programu (překladač, vzhled)."""
 
@@ -763,6 +798,8 @@ class Reader(QtWidgets.QWidget):
         self.state = ReaderState(project)
         self.search_sel: tuple[int, int] | None = None
         self.speak_block = -1
+        self.speak_from = 0       # odkud v čteném odstavci se čte (pozice v knize)
+        self.read_start: int | None = None  # kliknutím označené místo, odkud začne čtení nahlas
         self.speaking = False
         self.paused = False
         self.speaker = None
@@ -877,7 +914,10 @@ class Reader(QtWidgets.QWidget):
         if self.speak_block >= 0:
             b = self.doc.findBlockByNumber(self.speak_block)
             if b.isValid():
-                sel(b.position(), b.position() + b.length() - 1, "#3b4f7a" if night else "#dbe8ff")
+                sel(max(b.position(), self.speak_from), b.position() + b.length() - 1, "#3b4f7a" if night else "#dbe8ff")
+        if self.read_start is not None and not self.speaking:
+            a, z = sentence_bounds(self.doc, self.read_start)
+            sel(a, z, "#2f5d3a" if night else "#c9efcf")
         if self.search_sel:
             sel(self.search_sel[0], self.search_sel[0] + self.search_sel[1], "#ffb300")
         return out
@@ -987,7 +1027,8 @@ class Reader(QtWidgets.QWidget):
             m.addAction(tr("📝 Označit a připsat poznámku…"), lambda: (self.mark(pos, "y"), self.edit_note(
                 next(x for x in self.state.highlights if x.get("block") == b.blockNumber()))))
         m.addSeparator()
-        m.addAction(tr("🔊 Číst nahlas odsud"), lambda: self.start_speaking(b.blockNumber()))
+        m.addAction(tr("🔊 Číst nahlas od této věty"), lambda: self.start_speaking(pos=pos))
+        m.addAction(tr("🔊 Číst nahlas celý odstavec"), lambda: self.start_speaking(b.blockNumber()))
         m.addAction(tr("📋 Kopírovat odstavec"), lambda: QtWidgets.QApplication.clipboard().setText(b.text()))
         m.exec(gpos)
 
@@ -1049,7 +1090,17 @@ class Reader(QtWidgets.QWidget):
         VocabDialog(self).exec()
 
     # ---- čtení nahlas
-    def start_speaking(self, block: int | None = None):
+    def click_text(self, pos: int):
+        """Klik do textu: označit větu, od které se bude číst nahlas; během čtení na ni rovnou přeskočit."""
+        if self.speaking:
+            self.start_speaking(pos=pos)
+            return
+        a, _z = sentence_bounds(self.doc, pos)
+        self.read_start = None if self.read_start is not None and sentence_bounds(self.doc, self.read_start)[0] == a else a
+        self.view.refresh()
+
+    def start_speaking(self, block: int | None = None, pos: int | None = None):
+        """Číst nahlas: od věty na pozici pos, od označeného místa, od odstavce block, jinak od začátku stránky."""
         import tts_win
 
         lang = self.book_lang()
@@ -1065,12 +1116,22 @@ class Reader(QtWidgets.QWidget):
             return
         if self.speaker is None:
             self.speaker = tts_win.Speaker()
-        if block is None:
+        if pos is None and block is None and self.read_start is not None:
+            pos = self.read_start
+        offset = 0
+        if pos is not None:
+            start = sentence_bounds(self.doc, pos)[0]
+            b = self.doc.findBlock(start)
+            block, offset = b.blockNumber(), start - b.position()
+        elif block is None:
             block = self.doc.findBlock(self.view.first_pos()).blockNumber()
+        self.read_start = None
+        if self.speaking:  # přeskočit jinam během čtení
+            self.speaker.stop()
         self.speaking = True
         self.paused = False
         self._speak_buttons()
-        self.speak_next(block)
+        self.speak_next(block, offset)
 
     def book_lang(self) -> str:
         return LANG_CODES.get(str(self.project.get("language", "čeština")).lower(), "cs")
@@ -1145,23 +1206,26 @@ class Reader(QtWidgets.QWidget):
         if st is not None:
             st.setEnabled(self.speaking)
 
-    def speak_next(self, n: int):
+    def speak_next(self, n: int, offset: int = 0):
         if not self.speaking:
             return
         b = self.doc.findBlockByNumber(n)
+        if offset and b.isValid() and not b.text()[offset:].strip():
+            b, offset = b.next(), 0
         while b.isValid() and not b.text().strip():
-            b = b.next()
+            b, offset = b.next(), 0
         if not b.isValid():
             self.stop_speaking()
             return
         self.speak_block = b.blockNumber()
-        page = self.view.page_of(b.position())
+        self.speak_from = b.position() + offset
+        page = self.view.page_of(self.speak_from)
         if not (self.view.page <= page < self.view.page + self.view.step()):
             self.view.goto_page(page, animate=True)
         self.view.refresh()
         lang = self.book_lang()
         nxt = b.blockNumber() + 1
-        self.speaker.speak(b.text(), lang, float(self.prefs.get("tts_rate", 1.0)),
+        self.speaker.speak(b.text()[offset:].replace("\u2028", " "), lang, float(self.prefs.get("tts_rate", 1.0)),
                            on_done=lambda: bridge().later(lambda: self.speak_next(nxt)),
                            voice_name=self.prefs.get("tts_voice") or None)
 
@@ -1192,7 +1256,9 @@ def reader_ribbon(reader: Reader, big, row, group_cls) -> QtWidgets.QWidget:
     book.grid.addWidget(big(emoji_icon("🖍️"), tr("Označené"), lambda: (reader.toggle_panel(True), reader.panel.setCurrentIndex(2))), 0, 3)
     voice = group_cls("Nahlas")
     reader.b_speak = big(emoji_icon("🔊"), tr("Číst nahlas"), reader.toggle_speaking)
-    reader.b_speak.setToolTip(tr("Číst nahlas od začátku stránky; během čtení pozastavit a pokračovat"))
+    reader.b_speak.setToolTip(tr("Číst nahlas od začátku stránky, nebo od věty, na kterou kliknete v textu "
+                                 "(zezelená); během čtení klik do textu přeskočí na tu větu. "
+                                 "Tlačítkem pak pozastavit a pokračovat."))
     voice.grid.addWidget(reader.b_speak, 0, 0)
     reader.b_stop = big(emoji_icon("⏹️"), tr("Zastavit"), reader.stop_speaking)
     reader.b_stop.setEnabled(False)

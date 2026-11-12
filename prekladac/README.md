@@ -101,6 +101,8 @@ na široké obrazovce dvě vedle sebe jako otevřená kniha – a pás karet uk�
   i s větou (slovníček jde uložit jako text pro kartičky).
 - **Číst nahlas** hlasem Windows (bez internetu), odstavec po odstavci s otáčením stránek; **Pozastavit / Pokračovat**,
   **Zastavit**, rychlost pomaleji/rychleji a **výběr hlasu** (u hlasů Windows je uvedeno muž/žena).
+  **Odkud číst:** klikněte do textu na větu, ze které se má začít (zezelená), pak Číst nahlas; během čtení
+  klik do textu přeskočí na tu větu. Stránky se listují klikem u levého/pravého okraje, tažením nebo kolečkem.
   **Český hlas:** když ve Windows chybí, program nabídne stažení hlasu **Jirka** (Piper, zdarma, asi 85 MB,
   čte bez internetu; slovenský hlas Lili). Program najde i hlas **Microsoft Jakub** z Windows 10/11
   (*Nastavení → Čas a jazyk → Řeč → Přidat hlasy → Čeština*).

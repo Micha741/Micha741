@@ -196,13 +196,17 @@ class Speaker:
 
     def __init__(self):
         self._q: queue.Queue = queue.Queue()
-        self._stop = threading.Event()
         self._pause = threading.Event()
         self._thread: threading.Thread | None = None
         self.error = ""
         self._voice, self._by_lang, self._by_name = None, {}, {}
+        self._gen = self._cur = 0
 
     player_cls = WavPlayer
+
+    def _halted(self) -> bool:
+        """Zastaveno (stop) – platí jen pro větu, která se čte teď, ne pro nově zadanou."""
+        return self._cur != self._gen
 
     def _sapi(self):
         """Hlas Windows (SAPI) – vytvoří se až při prvním použití, ve vlákně hlasu."""
@@ -224,7 +228,9 @@ class Speaker:
             cmd = self._q.get()
             if cmd is None:
                 return
-            text, lang, rate, on_done, name = cmd
+            text, lang, rate, on_done, name, self._cur = cmd
+            if self._cur != self._gen:  # zastaveno dřív, než na větu přišla řada
+                continue
             try:
                 piper = None
                 if name and name.startswith(PIPER_PREFIX):
@@ -244,7 +250,7 @@ class Speaker:
                     self._speak_sapi(text, lang, rate, name)
             except Exception as e:  # noqa: BLE001
                 self.error = f"Hlas není k dispozici: {e}"
-            if not self._stop.is_set() and on_done:
+            if not self._halted() and on_done:
                 on_done()
 
     def _speak_sapi(self, text, lang, rate, name):
@@ -256,7 +262,7 @@ class Speaker:
         voice.Speak(text, 1)  # SVSFlagsAsync
         paused = False
         while not voice.WaitUntilDone(80):
-            if self._stop.is_set():
+            if self._halted():
                 if paused:
                     voice.Resume()
                 voice.Speak("", 3)  # přerušit (SVSFPurgeBeforeSpeak | async)
@@ -269,22 +275,22 @@ class Speaker:
         tmp = Path(tempfile.gettempdir()) / f"prekladac_tts_{os.getpid()}_{threading.get_ident()}"
         wav, rest = str(tmp) + ".wav", str(tmp) + "_dal.wav"
         piper_synthesize(text, model, rate, wav)
-        if self._stop.is_set():
+        if self._halted():
             return
         player = self.player_cls()
         total, done = wav_seconds(wav), 0.0
         player.play(wav)
         started = time.monotonic()
         while True:
-            if self._stop.is_set():
+            if self._halted():
                 player.stop()
                 return
             if self._pause.is_set():
                 player.stop()
                 done += time.monotonic() - started
-                while self._pause.is_set() and not self._stop.is_set():
+                while self._pause.is_set() and not self._halted():
                     time.sleep(0.05)
-                if self._stop.is_set():
+                if self._halted():
                     return
                 player.play(wav_tail(wav, done, rest))  # pokračovat tam, kde se skončilo
                 started = time.monotonic()
@@ -294,12 +300,11 @@ class Speaker:
 
     def speak(self, text: str, lang: str, rate: float, on_done: Callable[[], None] | None = None,
               voice_name: str | None = None):
-        self._stop.clear()
         self._pause.clear()
         if self._thread is None or not self._thread.is_alive():
             self._thread = threading.Thread(target=self._run, daemon=True)
             self._thread.start()
-        self._q.put((text, lang, rate, on_done, voice_name))
+        self._q.put((text, lang, rate, on_done, voice_name, self._gen))
 
     def pause(self):
         self._pause.set()
@@ -308,7 +313,7 @@ class Speaker:
         self._pause.clear()
 
     def stop(self):
-        self._stop.set()
+        self._gen += 1
         self._pause.clear()
         while not self._q.empty():
             try:
@@ -355,3 +360,8 @@ def list_voices() -> list[dict]:
 
 def any_voice() -> bool:
     return available() or bool(piper_installed())
+
+
+def has_voice(lang: str) -> bool | None:
+    """Je pro jazyk hlas (Windows nebo stažený Piper)? None = nelze zjistit."""
+    return Speaker.has_voice(None, lang)  # metoda nepoužívá stav mluvčího

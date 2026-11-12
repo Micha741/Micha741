@@ -49,7 +49,7 @@ def test_download_piper_and_list_voice(appdata, monkeypatch):
     assert v["name"] == "piper:cs_CZ-jirka-medium" and v["lang"] == "cs" and v["gender"] == "muž"
     assert any("cs_CZ-jirka-medium.onnx?download=true" in u for u in got)
     assert [x["name"] for x in tts_win.list_voices()] == ["piper:cs_CZ-jirka-medium"]
-    assert tts_win.any_voice() and tts_win.Speaker().has_voice("cs") is True
+    assert tts_win.any_voice() and tts_win.Speaker().has_voice("cs") is True and tts_win.has_voice("cs") is True
     n = len(got)
     tts_win.download_piper("cs", lambda m: None)  # podruhé už se nic nestahuje
     assert len(got) == n

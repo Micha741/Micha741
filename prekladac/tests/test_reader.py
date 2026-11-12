@@ -264,5 +264,56 @@ def test_read_aloud_pause_resume_stop_and_voice(qapp, monkeypatch):
     assert r.speak_block > first
     r.b_stop.click()
     assert not r.speaking and calls[-1] == ("stop",) and r.b_speak.text() == "Číst nahlas" and not r.b_stop.isEnabled()
+
+    # klik do textu označí větu, od které se bude číst (zezelená); čtení pak začne přesně od ní
+    from qt_reader import sentence_bounds
+
+    b = r.doc.findBlockByNumber(r.speak_block if r.speak_block >= 0 else 2)
+    b = next(x for x in (r.doc.findBlockByNumber(i) for i in range(r.doc.blockCount())) if x.text().count(". ") >= 2)
+    second = b.position() + b.text().index(". ") + 2           # začátek 2. věty odstavce
+    r.click_text(second + 5)
+    assert r.read_start == second and sentence_bounds(r.doc, second + 5)[0] == second
+    assert any(sel.cursor.selectionStart() == second for sel in r.selections())
+    r.click_text(second + 3)                                    # klik na tutéž větu = zrušit označení
+    assert r.read_start is None
+    r.click_text(second + 5)
+    r.b_speak.click()
+    assert r.speaking and r.read_start is None and r.speak_from == second
+    assert calls[-1][1] == b.text()[second - b.position():][:12]
+    # během čtení klik jinam = přeskočit tam (předchozí věta se zastaví)
+    n = len(calls)
+    r.click_text(b.position() + 1)
+    assert calls[n] == ("stop",) and calls[n + 1][0] == "speak" and r.speak_from == b.position()
+    r.stop_speaking()
+
+    # bez zvoleného hlasu a s hlasem Windows pro jazyk knihy: čte hned (žádná nabídka stažení)
+    monkeypatch.setattr(tts_win, "has_voice", lambda lang: True)
+    r.set_pref("tts_voice", "")
+    r.start_speaking()
+    assert r.speaking and calls[-1][0] == "speak" and calls[-1][3] is None
+    r.stop_speaking()
+    # bez českého hlasu: nabídne stažení; „Číst hlasem Windows“ čte dál bez stahování
+    monkeypatch.setattr(tts_win, "has_voice", lambda lang: False)
+    asked = []
+    monkeypatch.setattr(r, "offer_voice_download", lambda lang, ask=True: asked.append(lang) or False)
+    r.start_speaking()
+    assert asked == ["cs"] and r.speaking
+    r.stop_speaking()
+
+    # myší: klik doprostřed textu označí větu, klik k pravému okraji otočí stránku
+    from PySide6.QtTest import QTest
+
+    ed.show()
+    settle(qapp, ed)
+    v = r.view
+    slot = v.slots()[0]
+    mid = QtCore.QPoint(int(v.width() / 2) if not v.two else int(slot.center().x()), int(slot.top() + 30))
+    assert v._edge(QtCore.QPointF(mid)) == 0 and v.hit(QtCore.QPointF(mid)) is not None
+    QTest.mouseClick(v, QtCore.Qt.LeftButton, pos=mid)
+    assert r.read_start is not None
+    page = v.page
+    QTest.mouseClick(v, QtCore.Qt.LeftButton, pos=QtCore.QPoint(v.width() - 3, int(v.height() / 2)))
+    v.finish_turn()
+    assert v.page > page
     ed.dirty = False
     ed.close()
