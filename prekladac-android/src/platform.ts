@@ -14,12 +14,32 @@ import { readSkinFile, slug, type Skin } from './core/skins';
 import { deserializeBook, fileNameFromUrl, newEntry, serializeBook, type LibraryEntry, type VocabItem } from './core/library';
 import { toBase64 } from './core/bytes';
 
+// PDF chráněné heslem: data se podrží, aby šlo po zadání hesla otevřít znovu bez dalšího výběru
+let pendingPdf: { data: Uint8Array; name: string } | null = null;
+async function readOrHold(data: Uint8Array, name: string): Promise<Book> {
+  try {
+    const b = await readBook(data, name);
+    pendingPdf = null;
+    return b;
+  } catch (e: any) {
+    if (e?.needsPassword) pendingPdf = { data, name };
+    throw e;
+  }
+}
+/** Znovu otevře naposledy odmítnuté PDF se zadaným heslem. */
+export async function reopenPdf(password: string): Promise<Book> {
+  if (!pendingPdf) throw new Error('Soubor už není k dispozici – otevřete ho znovu.');
+  const b = await readBook(pendingPdf.data, pendingPdf.name, password);
+  pendingPdf = null;
+  return b;
+}
+
 export async function pickBook(): Promise<Book | null> {
   const res = await DocumentPicker.getDocumentAsync({ type: '*/*', copyToCacheDirectory: true });
   if (res.canceled || !res.assets?.length) return null;
   const a = res.assets[0];
   const data = await new File(a.uri).bytes();
-  return readBook(data, a.name);
+  return readOrHold(data, a.name);
 }
 
 /** Vybere obrázek z galerie; vrátí JPEG (zmenšený na delší stranu max. 1600 px). */
@@ -244,7 +264,7 @@ export async function openBookUri(uri: string): Promise<Book> {
   } catch {
     name = '';
   }
-  return readBook(data, name || 'kniha');
+  return readOrHold(data, name || 'kniha');
 }
 
 /** Stáhne knihu z odkazu (Project Gutenberg, ukázka z obchodu…) a otevře ji. */
@@ -256,7 +276,7 @@ export async function downloadBook(url: string, signal?: AbortSignal): Promise<B
   if (/text\/html/.test(type) && !/\.html?$/i.test(url))
     throw new Error('Odkaz nevede na soubor knihy, ale na webovou stránku. Otevřete ho v prohlížeči a stáhněte soubor (EPUB, MOBI…).');
   const ext = /epub/.test(type) ? 'epub' : /mobipocket|x-mobi/.test(type) ? 'mobi' : '';
-  return readBook(data, fileNameFromUrl(url, ext));
+  return readOrHold(data, fileNameFromUrl(url, ext));
 }
 
 // ------------------------------------------------------------ slovníček (přeložená slova ze čtečky)

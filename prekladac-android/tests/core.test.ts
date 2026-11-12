@@ -478,3 +478,20 @@ test('slovníček: bez duplicit, nejnovější nahoře, export', async () => {
   assert.deepEqual(list.map((v) => v.word), ['pferd', 'Haus']);
   assert.equal(vocabText(list), 'pferd\tkůň\tEin Pferd.\nHaus\tdům\n');
 });
+
+test('PDF s heslem: bez hesla dotaz, špatné heslo, správné heslo uživatele i vlastníka', () => {
+  const tries = (f: string, pw: string) => {
+    try {
+      return `ok${readPdf(new Uint8Array(readFileSync(`tests/fixtures/${f}`)), f, pw).chapters.length}`;
+    } catch (e: any) {
+      return e.needsPassword ? (e.wrong ? 'spatne' : 'chybi') : e.message;
+    }
+  };
+  for (const f of ['heslo-aes256.pdf', 'heslo-rc4.pdf']) {
+    assert.equal(tries(f, ''), 'chybi', f);
+    assert.equal(tries(f, 'nevim'), 'spatne', f);
+    assert.equal(tries(f, 'Žluťoučký kůň'), 'ok3', f); // heslo uživatele s diakritikou
+    assert.equal(tries(f, 'majitel'), 'ok3', f); // heslo vlastníka
+  }
+  assert.equal(tries('heslo.pdf', 'tajne'), 'ok3');
+});

@@ -30,7 +30,7 @@ export function extOf(name: string): string {
   return n.split('.').pop() ?? '';
 }
 
-export async function readBook(data: Uint8Array, fileName: string): Promise<Book> {
+export async function readBook(data: Uint8Array, fileName: string, password = ''): Promise<Book> {
   // soubor z jiné aplikace nebo z odkazu nemusí mít příponu – typ se pozná podle obsahu
   if (!INPUT_EXT.includes(extOf(fileName))) fileName = `${fileName.replace(/\.[^.]*$/, '') || 'kniha'}.${sniffBookExt(data)}`;
   const ext = extOf(fileName);
@@ -38,7 +38,7 @@ export async function readBook(data: Uint8Array, fileName: string): Promise<Book
   if (ext === 'epub' || (data[0] === 0x50 && data[1] === 0x4b && ext !== 'docx' && /mimetypeapplication\/epub/.test(String.fromCharCode(...data.subarray(30, 70))))) return readEpub(data, fileName);
   if (ext === 'docx') return readDocx(data, fileName);
   if (ext === 'mobi' || ext === 'prc' || ext === 'azw' || ext === 'pdb') return readMobiOrPdb(data, fileName);
-  if (ext === 'pdf') return readPdf(data, fileName);
+  if (ext === 'pdf') return readPdf(data, fileName, password);
   if (ext === 'json') return fromProject(JSON.parse(decodeAny(data)), (h) => htmlToBlocks(h));
   if (ext === 'html' || ext === 'htm') {
     const book = emptyBook(base);

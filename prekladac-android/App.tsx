@@ -14,7 +14,7 @@ import { OUTPUT_FORMATS, type OutputFormat } from './src/core/formats';
 import { CLAUDE_MODELS, DEFAULT_CLAUDE_MODEL, DEFAULT_GEMINI_MODEL, ENGINES, LANGUAGES, makeTranslator, setOfflineBackend, translateBook, type EngineId } from './src/core/translate';
 import Mlkit from './modules/mlkit-translate/src/MlkitTranslateModule';
 import { BUILTIN_SKINS, type Skin } from './src/core/skins';
-import { addToLibrary, downloadBook, installSkinFromPicker, loadInstalledSkins, loadLibrary, loadLibraryBook, loadSettings, makeOutput, openBookUri, pickBook, pickImage, removeFromLibrary, removeSkin, saveOutputToFolder, saveSettings, saveVocab, loadVocab, shareOutput, shareText, updateEntry, type Output, type Settings } from './src/platform';
+import { addToLibrary, downloadBook, installSkinFromPicker, loadInstalledSkins, loadLibrary, loadLibraryBook, loadSettings, makeOutput, openBookUri, pickBook, pickImage, removeFromLibrary, removeSkin, reopenPdf, saveOutputToFolder, saveSettings, saveVocab, loadVocab, shareOutput, shareText, updateEntry, type Output, type Settings } from './src/platform';
 
 import appConfig from './app.json';
 
@@ -46,6 +46,57 @@ function isDark(hex: string) {
 if (Mlkit) {
   const m = Mlkit;
   setOfflineBackend({ identifyLanguage: (t) => m.identifyLanguage(t), translate: (x, a, b, w) => m.translate(x, a, b, w) });
+}
+
+// ---- heslo k PDF: okno s dotazem (otevírá ho App), funkce použitelná ze všech obrazovek
+let askPassword: (wrong: boolean) => Promise<string | null> = async () => null;
+async function withPassword<T>(fn: () => Promise<T>): Promise<T | Book | null> {
+  try {
+    return await fn();
+  } catch (e: any) {
+    if (!e?.needsPassword) throw e;
+    let wrong = false;
+    for (;;) {
+      const pw = await askPassword(wrong);
+      if (pw === null) return null;
+      try {
+        return await reopenPdf(pw);
+      } catch (e2: any) {
+        if (!e2?.needsPassword) throw e2;
+        wrong = true;
+      }
+    }
+  }
+}
+
+function PasswordModal() {
+  const [state, setState] = useState<{ wrong: boolean; resolve: (v: string | null) => void } | null>(null);
+  const [pw, setPw] = useState('');
+  useEffect(() => {
+    askPassword = (wrong) => new Promise((resolve) => {
+      setPw('');
+      setState({ wrong, resolve });
+    });
+  }, []);
+  const done = (v: string | null) => {
+    state?.resolve(v);
+    setState(null);
+  };
+  return (
+    <Modal visible={!!state} transparent animationType="fade" onRequestClose={() => done(null)}>
+      <View style={[st.modalBack, { justifyContent: 'center', padding: 20 }]}>
+        <View style={[st.modal, { borderRadius: 14 }]}>
+          <Text style={st.boxTitle}>🔒 PDF je chráněné heslem</Text>
+          <Text style={[st.hint, state?.wrong && { color: C.danger }]}>{state?.wrong ? 'Heslo nesouhlasí. Zkuste ho zadat znovu.' : 'Zadejte heslo k otevření souboru (nebo heslo vlastníka).'}</Text>
+          <TextInput style={st.input} value={pw} onChangeText={setPw} secureTextEntry autoFocus autoCapitalize="none" autoCorrect={false} placeholder="Heslo" placeholderTextColor={C.disabled} onSubmitEditing={() => done(pw)} />
+          <View style={[st.row, { justifyContent: 'flex-end' }]}>
+            <Btn label="Zrušit" onPress={() => done(null)} />
+            <Btn label="Otevřít" onPress={() => done(pw)} primary />
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
 }
 
 const SERIF = Platform.select({ android: 'serif', default: 'Georgia' });
@@ -100,7 +151,7 @@ export default function App() {
   const pickToLibrary = async () => {
     try {
       setLibBusy('Načítám knihu…');
-      const b = await pickBook();
+      const b = (await withPassword(() => pickBook())) as Book | null;
       if (b) await readBookNow(b);
     } catch (err: any) {
       Alert.alert('Otevřít knihu', String(err?.message ?? err));
@@ -119,7 +170,8 @@ export default function App() {
       if (!url || !/^(content|file):/i.test(url)) return;
       try {
         setLibBusy('Otevírám soubor…');
-        await readBookNow(await openBookUri(url));
+        const b = (await withPassword(() => openBookUri(url))) as Book | null;
+        if (b) await readBookNow(b);
       } catch (err: any) {
         Alert.alert('Otevřít knihu', String(err?.message ?? err));
       } finally {
@@ -201,6 +253,7 @@ export default function App() {
         </View>
         </>
         )}
+        <PasswordModal />
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -271,7 +324,7 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
   const open = async () => {
     try {
       setBusy('Načítám knihu…');
-      const b = await pickBook();
+      const b = (await withPassword(() => pickBook())) as Book | null;
       if (b) {
         setBook(b);
         setOutput(null);
@@ -1224,7 +1277,8 @@ function SearchScreen({ onBook, settings, update, library }: { onBook: (b: Book)
   const get = async (url: string, label: string) => {
     setBusy(`Stahuji: ${label}…`);
     try {
-      await onBook(await downloadBook(url));
+      const b = (await withPassword(() => downloadBook(url))) as Book | null;
+      if (b) await onBook(b);
     } catch (e: any) {
       Alert.alert('Stažení', String(e?.message ?? e));
     } finally {
