@@ -143,8 +143,29 @@ def download_piper(lang: str, log: Callable[[str], None]) -> dict:
         tmp = target.with_suffix(target.suffix + ".part")
         tmp.write_bytes(data)
         tmp.replace(target)
+        if ext == ".onnx.json":
+            fix_piper_config(target)
     log(f"  ✓ hlas {name} je připravený")
     return next(v for v in piper_installed(lang) if v["name"].endswith(model.rsplit("/", 1)[-1]))
+
+
+def fix_piper_config(path: Path) -> bool:
+    """Program Piper (verze pro Windows) neumí v nastavení hlasu fonémy z více znaků (např. „aɪ“) a skončí chybou
+    „is not a single codepoint“. Takové zápisy se vynechají – čeština je při čtení nepoužívá. True = upraveno."""
+    import json
+
+    try:
+        cfg = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return False
+    ids = cfg.get("phoneme_id_map") or {}
+    bad = [k for k in ids if len(k) != 1]
+    if not bad:
+        return False
+    for k in bad:
+        del ids[k]
+    path.write_text(json.dumps(cfg, ensure_ascii=False), encoding="utf-8")
+    return True
 
 
 def piper_synthesize(text: str, model: str, rate: float, out: str) -> None:
@@ -152,6 +173,7 @@ def piper_synthesize(text: str, model: str, rate: float, out: str) -> None:
     exe = piper_exe()
     if exe is None:
         raise RuntimeError("Program Piper není stažený.")
+    fix_piper_config(Path(model + ".json"))  # i u hlasu staženého dřív
     cmd = [str(exe), "--model", model, "--output_file", out,
            "--length_scale", f"{1 / max(0.3, min(3.0, rate)):.2f}", "--sentence_silence", "0.25"]
     r = subprocess.run(cmd, input=text.replace("\n", " ").encode("utf-8"), capture_output=True,

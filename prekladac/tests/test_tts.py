@@ -133,3 +133,15 @@ def test_piper_synthesize_command(appdata, monkeypatch):
     assert seen["cmd"][0] == str(exe) and "--length_scale" in seen["cmd"]
     assert seen["cmd"][seen["cmd"].index("--length_scale") + 1] == "0.50"
     assert seen["input"] == "Žluťoučký kůň úpěl.".encode("utf-8")
+
+
+def test_fix_piper_config(tmp_path):
+    import json
+
+    p = tmp_path / "v.onnx.json"
+    p.write_text(json.dumps({"phoneme_id_map": {"a": [1], "aɪ": [161], "ʃ": [2]}, "audio": {"sample_rate": 22050}},
+                            ensure_ascii=False), encoding="utf-8")
+    assert tts_win.fix_piper_config(p) is True
+    cfg = json.loads(p.read_text(encoding="utf-8"))
+    assert cfg["phoneme_id_map"] == {"a": [1], "ʃ": [2]} and cfg["audio"]["sample_rate"] == 22050
+    assert tts_win.fix_piper_config(p) is False  # podruhé už není co upravit
