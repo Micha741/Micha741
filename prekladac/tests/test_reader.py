@@ -59,7 +59,7 @@ def test_reader_pages_turn_search_marks_and_state(qapp):
     v.turn(1)
     assert v.turning is not None
     v.grab()  # vykreslení rozpracované animace
-    v.anim.setCurrentTime(v.anim.duration())
+    v.finish_turn()  # jako po doběhnutí animace (nezávisle na časovačích Qt)
     qapp.processEvents()
     assert v.page == 2 and v.turning is None
     # tažení myší: krátké se vrátí, dlouhé otočí
@@ -71,7 +71,7 @@ def test_reader_pages_turn_search_marks_and_state(qapp):
         v.mouseMoveEvent(ev(QtCore.QEvent.MouseMove, start + QtCore.QPointF(dx, 0)))
         v.grab()
         v.mouseReleaseEvent(ev(QtCore.QEvent.MouseButtonRelease, start + QtCore.QPointF(dx, 0)))
-        v.anim.setCurrentTime(v.anim.duration())
+        v.finish_turn()  # jako po doběhnutí animace (nezávisle na časovačích Qt)
         qapp.processEvents()
         assert v.page == expect, dx
     # kapitoly
@@ -104,7 +104,7 @@ def test_reader_pages_turn_search_marks_and_state(qapp):
     assert cfg["reader"]["size"] == 16.0
     v.turn(1)
     v.grab()
-    v.anim.setCurrentTime(v.anim.duration())
+    v.finish_turn()  # jako po doběhnutí animace (nezávisle na časovačích Qt)
     qapp.processEvents()
     assert v.page % 2 == 0
     # znovu otevřená kniha pokračuje na stejném místě a má označení

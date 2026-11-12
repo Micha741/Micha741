@@ -205,6 +205,7 @@ class PageView(QtWidgets.QWidget):
     def relayout(self, keep_pos: int | None = None):
         if self.doc is None:
             return
+        self.finish_turn()
         pos = keep_pos if keep_pos is not None else self.anchor
         self.anchor = pos
         spread = self.reader.prefs.get("spread", "auto")
@@ -438,6 +439,14 @@ class PageView(QtWidgets.QWidget):
         self.anchor = self.first_pos()
         self.update()
         self.reader.page_changed()
+
+    def finish_turn(self):
+        """Dokončí rozpracované otočení stránky hned (např. před změnou sazby)."""
+        if self.turning:
+            self.anim.stop()
+            if self.turning.get("done", True):
+                self.turning["t"] = 1.0
+            self._anim_done()
 
     def _anim_step(self, v):
         if self.turning:
