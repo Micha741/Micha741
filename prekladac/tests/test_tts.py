@@ -44,6 +44,7 @@ def test_download_piper_and_list_voice(appdata, monkeypatch):
         return b"{}" * 400 if url.split("?")[0].endswith(".json") else b"\0" * 2_000_000
 
     monkeypatch.setattr(free_engines, "http_request", fake_http)
+    monkeypatch.setattr(tts_win, "available", lambda: False)  # jen stažené hlasy (bez hlasů Windows počítače)
     assert tts_win.piper_installed("cs") == []
     v = tts_win.download_piper("cs", lambda m: None)
     assert v["name"] == "piper:cs_CZ-jirka-medium" and v["lang"] == "cs" and v["gender"] == "muž"
