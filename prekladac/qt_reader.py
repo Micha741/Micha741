@@ -182,6 +182,7 @@ class PageView(QtWidgets.QWidget):
         self.doc: QtGui.QTextDocument | None = None
         self.page = 0  # první zobrazená stránka (u dvou stran vždy sudá)
         self.anchor = 0  # místo čtení (pozice znaku) – drží se při změně písma, velikosti okna…
+        self.starts: list[int] = [0]  # první znak každé stránky (spočítá se při sazbě)
         self.pages = 1
         self.two = False
         self.pw = self.ph = 100.0
@@ -216,6 +217,7 @@ class PageView(QtWidgets.QWidget):
         self.ph = h
         self.doc.setPageSize(QtCore.QSizeF(self.pw, self.ph))
         self.pages = max(1, self.doc.pageCount())
+        self._compute_starts()
         self.cache.clear()
         self.page = self._norm(self.page_of(pos))
         self.update()
@@ -228,41 +230,35 @@ class PageView(QtWidgets.QWidget):
     def step(self) -> int:
         return 2 if self.two else 1
 
-    def page_of(self, pos: int) -> int:
-        """Stránka, na které je znak na pozici pos."""
-        if self.doc is None:
-            return 0
-        block = self.doc.findBlock(max(0, min(pos, self.doc.characterCount() - 1)))
-        if not block.isValid():
-            return 0
-        rect = self.doc.documentLayout().blockBoundingRect(block)
-        y = rect.y()
-        lay = block.layout()
-        if lay is not None and lay.lineCount():
-            line = lay.lineForTextPosition(pos - block.position())
-            if line.isValid():
-                y += line.y()
-        return int(max(0.0, y + 1) // self.ph)
-
-    def first_pos(self) -> int:
-        """Pozice prvního znaku na zobrazené stránce (pro uložení místa čtení).
-
-        Bod těsně pod horním okrajem může padnout do mezery mezi odstavci – pak by „nejbližší“ znak
-        byl ještě na předchozí stránce. Proto se zkouší postupně níž, dokud nález není na této stránce."""
-        if self.doc is None:
-            return 0
+    def _compute_starts(self):
+        """První znak na každé stránce – jediný zdroj pro „na které stránce je znak“ i „kde stránka začíná“."""
         lay = self.doc.documentLayout()
         m = self.doc.documentMargin()
-        first = None
-        for dy in range(int(m) + 2, int(self.ph * 0.7), 6):
-            pos = lay.hitTest(QtCore.QPointF(m + 2, self.page * self.ph + dy), Qt.FuzzyHit)
-            if pos < 0:
-                continue
-            if first is None:
-                first = pos
-            if self.page_of(pos) >= self.page:
-                return pos
-        return max(0, first or 0)
+        step = max(3.0, QtGui.QFontMetricsF(self.doc.defaultFont()).height() / 3)
+        starts = [0]
+        for n in range(1, self.pages):
+            y0 = n * self.ph + m
+            pos = -1
+            dy = step
+            while dy < self.ph * 0.6:  # první řádek textu na stránce (horní mezeru stránky přeskočit)
+                pos = lay.hitTest(QtCore.QPointF(m + 2, y0 + dy), Qt.FuzzyHit)
+                if pos > starts[-1]:
+                    break
+                dy += step
+            starts.append(max(pos, starts[-1] + 1))
+        self.starts = starts
+
+    def page_of(self, pos: int) -> int:
+        """Stránka, na které je znak na pozici pos."""
+        import bisect
+
+        return max(0, bisect.bisect_right(self.starts, max(0, pos)) - 1)
+
+    def first_pos(self) -> int:
+        """Pozice prvního znaku na zobrazené stránce (pro uložení místa čtení)."""
+        if self.doc is None or not self.starts:
+            return 0
+        return self.starts[min(self.page, len(self.starts) - 1)]
 
     def visible_range(self) -> tuple[int, int]:
         if self.doc is None:
