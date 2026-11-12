@@ -1,5 +1,6 @@
 // Otevření knihy z libovolného podporovaného formátu a uložení do zvoleného formátu.
 import { sniffBookExt } from './library';
+import { readPdf } from './pdfread';
 import type { Book } from './book';
 import { emptyBook, fromProject, toProject } from './book';
 import { decodeAny, utf8Encode } from './bytes';
@@ -9,7 +10,7 @@ import { readEpub, writeEpub } from './epub';
 import { htmlToBlocks } from './html';
 import { readMobiOrPdb, writeMobi, writePalmDoc } from './mobi';
 
-export const INPUT_EXT = ['epub', 'docx', 'txt', 'md', 'mobi', 'prc', 'azw', 'pdb', 'json', 'html', 'htm'];
+export const INPUT_EXT = ['pdf', 'epub', 'docx', 'txt', 'md', 'mobi', 'prc', 'azw', 'pdb', 'json', 'html', 'htm'];
 
 export type OutputFormat = 'epub' | 'mobi' | 'pdb' | 'pdf' | 'docx' | 'txt' | 'kniha';
 
@@ -31,13 +32,13 @@ export function extOf(name: string): string {
 
 export async function readBook(data: Uint8Array, fileName: string): Promise<Book> {
   // soubor z jiné aplikace nebo z odkazu nemusí mít příponu – typ se pozná podle obsahu
-  if (!INPUT_EXT.includes(extOf(fileName)) && extOf(fileName) !== 'pdf') fileName = `${fileName.replace(/\.[^.]*$/, '') || 'kniha'}.${sniffBookExt(data)}`;
+  if (!INPUT_EXT.includes(extOf(fileName))) fileName = `${fileName.replace(/\.[^.]*$/, '') || 'kniha'}.${sniffBookExt(data)}`;
   const ext = extOf(fileName);
   const base = fileName.replace(/\.kniha\.json$/i, '').replace(/\.[^.]+$/, '');
   if (ext === 'epub' || (data[0] === 0x50 && data[1] === 0x4b && ext !== 'docx' && /mimetypeapplication\/epub/.test(String.fromCharCode(...data.subarray(30, 70))))) return readEpub(data, fileName);
   if (ext === 'docx') return readDocx(data, fileName);
   if (ext === 'mobi' || ext === 'prc' || ext === 'azw' || ext === 'pdb') return readMobiOrPdb(data, fileName);
-  if (ext === 'pdf') throw new Error('PDF zatím telefon neumí otevřít – připravuje se. Zatím ho převeďte na počítači.');
+  if (ext === 'pdf') return readPdf(data, fileName);
   if (ext === 'json') return fromProject(JSON.parse(decodeAny(data)), (h) => htmlToBlocks(h));
   if (ext === 'html' || ext === 'htm') {
     const book = emptyBook(base);
@@ -52,7 +53,7 @@ export async function readBook(data: Uint8Array, fileName: string): Promise<Book
     book.source = fileName;
     return book;
   }
-  throw new Error(`Formát .${ext} telefon neumí otevřít. Umí EPUB, DOCX, TXT, MOBI, PDB a projekt .kniha.json.`);
+  throw new Error(`Formát .${ext} telefon neumí otevřít. Umí EPUB, PDF, DOCX, TXT, MOBI, PDB a projekt .kniha.json.`);
 }
 
 export function bookPlainText(book: Book): string {

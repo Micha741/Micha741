@@ -315,7 +315,9 @@ Používá stejná pravidla převodů (EPUB, MOBI, PDB, DOCX, TXT, PDF) a podobn
 **Čtečka** (karta Číst): knihovna s obálkami a průběhem, listování stránek klepnutím nebo tažením, písmo, velikost,
 řádkování, okraje, barvy Den / Sépie / Noc, obsah, záložky a zapamatované místo. Podržením prstu na odstavci se ukáže
 originál (u knihy přeložené v aplikaci) nebo se odstavec přeloží, dvojitým klepnutím se přeloží slovo. Soubor knihy
-stažený v telefonu jde otevřít volbou „Otevřít v Překladači“. Karta **Hledat** prohledá Project Gutenberg přímo
+stažený v telefonu jde otevřít volbou „Otevřít v Překladači“. Otevře i **PDF**: text se přeskládá jako
+v e-knize (odstavce, nadpisy, kapitoly, bez záhlaví a čísel stránek), takže jde číst, přeložit i převést;
+zašifrovaná PDF a skeny bez textu (OCR) telefon neotevře. Karta **Hledat** prohledá Project Gutenberg přímo
 v aplikaci (stažení jedním klepnutím) a otevře vyhledávání v obchodech a knihovnách (Alza, Kosmas, Martinus,
 Palmknihy, Smashwords, Amazon, Google Play, knihovny v Praze, Brně, Plzni a Českých Budějovicích…). Knihy
 se šifrováním (Amazon Kindle, Adobe DRM .acsm, Google Play) aplikace neotevře.

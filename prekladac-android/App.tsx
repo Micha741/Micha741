@@ -431,7 +431,7 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
           {!book ? (
             <>
               <Text style={st.docHeading}>Kniha</Text>
-              <Text style={st.paperHint}>Otevřete knihu: EPUB, DOCX, TXT, MOBI, PDB nebo projekt .kniha.json z Překladače na počítači. Pak ji přeložíte, převedete do jiného formátu nebo přidáte obálku a obrázky.</Text>
+              <Text style={st.paperHint}>Otevřete knihu: EPUB, PDF, DOCX, TXT, MOBI, PDB nebo projekt .kniha.json z Překladače na počítači. Pak ji přeložíte, převedete do jiného formátu nebo přidáte obálku a obrázky.</Text>
               <Btn label="📂 Otevřít knihu" onPress={open} primary disabled={!!busy} />
             </>
           ) : (
@@ -576,8 +576,8 @@ function SettingsScreen({ settings, update, skin }: { settings: Settings; update
               </View>
             </View>
             <Text style={[st.hint, { marginTop: 8 }]}>
-              Čte, překládá a převádí knihy: otevře EPUB, DOCX, TXT, MOBI, PDB a projekty z Překladače na počítači; uloží EPUB, MOBI, PDF, DOCX, PDB, TXT. Převody používají stejná pravidla jako
-              verze pro Windows. AZW3, KFX a PDF jako vstup zatím převádějte na počítači.
+              Čte, překládá a převádí knihy: otevře EPUB, PDF, DOCX, TXT, MOBI, PDB a projekty z Překladače na počítači; uloží EPUB, MOBI, PDF, DOCX, PDB, TXT. Převody používají stejná pravidla jako
+              verze pro Windows. AZW3 a KFX jako vstup a skeny PDF (OCR) zatím převádějte na počítači.
             </Text>
           </Box>
         )}
@@ -702,7 +702,7 @@ function LibraryScreen({ list, onOpen, onRemove, onPick, busy }: { list: Library
           <View style={st.box}>
             <Text style={st.boxTitle}>Zatím tu nejsou žádné knihy</Text>
             <Text style={st.hint}>
-              Otevřete knihu tlačítkem nahoře (EPUB, MOBI, DOCX, TXT, PDB), najděte ji na kartě Hledat, nebo klepněte na stažený soubor v telefonu a zvolte
+              Otevřete knihu tlačítkem nahoře (EPUB, PDF, MOBI, DOCX, TXT, PDB), najděte ji na kartě Hledat, nebo klepněte na stažený soubor v telefonu a zvolte
               „Otevřít v Překladači“. Přeloženou knihu otevřete na kartě Překlad tlačítkem 📖 Číst – u odstavců pak uvidíte i originál.
             </Text>
           </View>
@@ -1002,7 +1002,7 @@ function SearchScreen({ onBook }: { onBook: (b: Book) => Promise<void> }) {
           </Box>
         ))}
         <Box title="Stáhnout z odkazu">
-          <Text style={st.hint}>Máte odkaz přímo na soubor knihy nebo ukázky (končí .epub, .mobi…)? Vložte ho sem. Stažený soubor v telefonu otevřete klepnutím a volbou „Otevřít v Překladači“.</Text>
+          <Text style={st.hint}>Máte odkaz přímo na soubor knihy nebo ukázky (končí .epub, .pdf, .mobi…)? Vložte ho sem. Stažený soubor v telefonu otevřete klepnutím a volbou „Otevřít v Překladači“.</Text>
           <View style={st.row}>
             <TextInput style={[st.input, { flex: 1 }]} value={link} onChangeText={(t) => setLink(t.trim())} placeholder="https://…/kniha.epub" placeholderTextColor={C.disabled} autoCapitalize="none" autoCorrect={false} />
             <Btn label="⬇" onPress={() => get(link, 'kniha z odkazu')} disabled={!!busy || !/^https?:\/\//.test(link)} />

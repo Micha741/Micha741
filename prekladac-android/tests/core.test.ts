@@ -285,3 +285,100 @@ test('hledání: Gutendex a odkazy na obchody a knihovny', () => {
   for (const s of SOURCES) assert.match(s.url('Babička Němcová'), /^https:\/\/[^ ]+$/);
   assert.match(SOURCES.find((s) => s.id === 'kosmas')!.url('Babička'), /site%3Akosmas\.cz/);
 });
+
+// ------------------------------------------------------------ čtení PDF
+import { readFileSync } from 'node:fs';
+import { deflateSync } from 'node:zlib';
+import { readPdf } from '../src/core/pdfread';
+
+function checkKniha(b: Book) {
+  assert.deepEqual(b.chapters.map((c) => c.title.replace(/^Kapitola \d+\.\s*/, '')).length, 3);
+  const paras = b.chapters.flatMap((c) => c.blocks).filter((x) => x.type === 'p') as { text: string }[];
+  for (const p of paras) {
+    assert.match(p.text, /^Odstavec \d\.\d+\. Příliš žluťoučký kůň úpěl ďábelské ódy/, p.text.slice(0, 80));
+    assert.match(p.text, /Konec odstavce\.$/, p.text.slice(-80));
+    assert.ok(!/Konec odstavce\. /.test(p.text), 'dva odstavce slepené');
+    assert.ok(!/‐ |- [a-zá-ž]/.test(p.text), 'rozdělené slovo');
+  }
+  return paras.length;
+}
+
+test('PDF z LibreOffice, Qt (Překladač ve Windows) a Chromia (knižní sazba)', () => {
+  const lo = readPdf(new Uint8Array(readFileSync('tests/fixtures/kniha-libreoffice.pdf')), 'kniha.pdf');
+  assert.equal(checkKniha(lo), 24);
+  const qt = readPdf(new Uint8Array(readFileSync('tests/fixtures/kniha-qt.pdf')), 'kniha.pdf');
+  assert.equal(checkKniha(qt), 24); // Qt kreslí schovaný řádek z předchozí stránky – nesmí se zdvojit
+  const ch = readPdf(new Uint8Array(readFileSync('tests/fixtures/kniha-chromium.pdf')), 'kniha.pdf');
+  assert.equal(checkKniha(ch), 30); // odsazené odstavce bez mezer, záhlaví a čísla stránek, dělení slov
+  assert.ok(!ch.chapters.some((c) => c.blocks.some((b) => b.type === 'p' && /Kůň a louka – román/.test(b.text))), 'záhlaví zůstalo');
+  assert.equal(ch.chapters[0].title, 'Kapitola o koni číslo 1');
+});
+
+function makePdf(objects: string[], extra: Uint8Array[] = []): Uint8Array {
+  // jednoduché PDF sestavené ručně (obj. 1 = katalog); extra = binární proudy vložené místo @@n@@
+  let out = '%PDF-1.5\n';
+  const parts: (string | Uint8Array)[] = [];
+  objects.forEach((o, i) => {
+    const m = /@@(\d+)@@/.exec(o);
+    if (m) {
+      const [a, b] = o.split(m[0]);
+      parts.push(`${i + 1} 0 obj\n${a}`, extra[+m[1]], `${b}\nendobj\n`);
+    } else parts.push(`${i + 1} 0 obj\n${o}\nendobj\n`);
+  });
+  parts.push('trailer\n<< /Root 1 0 R >>\n%%EOF\n');
+  const chunks = [out, ...parts].map((p) => (typeof p === 'string' ? Uint8Array.from(p, (c) => c.charCodeAt(0) & 255) : p));
+  const res = new Uint8Array(chunks.reduce((a, c) => a + c.length, 0));
+  let o = 0;
+  for (const c of chunks) {
+    res.set(c, o);
+    o += c.length;
+  }
+  return res;
+}
+
+test('PDF: jednoduché písmo s WinAnsi a Differences, TJ s mezerami, objektový proud', () => {
+  // „Žluťoučký kůň“ – ť, č, ů přes /Differences, ostatní WinAnsi (Ž = 0x8E, ý = 0xFD)
+  const content = 'BT /F1 12 Tf 72 700 Td (\x8Elu\x01ou\x02k\xFD) Tj [() -300 (k) 0 (\x03\xF2)] TJ 0 -16 Td (Druh\xFD \xF8\xE1dek.) Tj ET';
+  const s = Uint8Array.from(content, (c) => c.charCodeAt(0));
+  const font = '<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman /Encoding << /BaseEncoding /WinAnsiEncoding /Differences [1 /tcaron /ccaron 3 /uring 242 /ncaron 248 /rcaron] >> >>';
+  const pdf = makePdf([
+    '<< /Type /Catalog /Pages 2 0 R >>',
+    '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
+    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>',
+    `<< /Length ${s.length} >>\nstream\n@@0@@\nendstream`,
+    font,
+  ], [s]);
+  const b = readPdf(pdf, 'test.pdf');
+  const text = b.chapters.flatMap((c) => c.blocks).map((x: any) => x.text).join('\n');
+  assert.match(text, /Žluťoučký kůň/);
+  assert.match(text, /Druhý řádek\./);
+  // stejné PDF s fontem a stránkou uvnitř komprimovaného objektového proudu (objekty 6 a 7)
+  const page = '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 7 0 R >> >> /Contents 4 0 R >>';
+  const objs = `6 0 7 ${page.length + 1} `;
+  const stm = deflateSync(Buffer.from(objs + page + '\n' + font, 'latin1'));
+  const cs = deflateSync(Buffer.from(s));
+  const pdf2 = makePdf([
+    '<< /Type /Catalog /Pages 2 0 R >>',
+    '<< /Type /Pages /Kids [6 0 R] /Count 1 >>',
+    `<< /Type /ObjStm /N 2 /First ${objs.length} /Filter /FlateDecode /Length ${stm.length} >>\nstream\n@@0@@\nendstream`,
+    `<< /Filter /FlateDecode /Length ${cs.length} >>\nstream\n@@1@@\nendstream`,
+  ], [new Uint8Array(stm), new Uint8Array(cs)]);
+  const b2 = readPdf(pdf2, 'test2.pdf');
+  assert.match(b2.chapters.flatMap((c) => c.blocks).map((x: any) => x.text).join('\n'), /Žluťoučký kůň[\s\S]*Druhý řádek/);
+});
+
+test('PDF: zašifrované a sken bez textu dají srozumitelnou chybu', async () => {
+  const enc = makePdf(['<< /Type /Catalog /Pages 2 0 R >>', '<< /Type /Pages /Kids [] /Count 0 >>']);
+  const withEncrypt = Uint8Array.from([...enc.subarray(0, enc.length - 20), ...Uint8Array.from('trailer << /Root 1 0 R /Encrypt 9 0 R >>\n', (c) => c.charCodeAt(0))]);
+  assert.throws(() => readPdf(withEncrypt, 'a.pdf'), /zašifrované/);
+  const scan = makePdf([
+    '<< /Type /Catalog /Pages 2 0 R >>',
+    '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
+    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R >>',
+    '<< /Length 22 >>\nstream\nq 595 0 0 842 0 0 cm Q\nendstream',
+  ]);
+  assert.throws(() => readPdf(scan, 'sken.pdf'), /sken/);
+  // readBook pozná PDF i bez přípony
+  const b = await readBook(new Uint8Array(readFileSync('tests/fixtures/kniha-libreoffice.pdf')), 'stazeny-soubor');
+  assert.equal(b.chapters.length, 3);
+});

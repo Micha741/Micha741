@@ -95,6 +95,14 @@
             {
               "scheme": "file",
               "mimeType": "application/json"
+            },
+            {
+              "scheme": "content",
+              "mimeType": "application/pdf"
+            },
+            {
+              "scheme": "file",
+              "mimeType": "application/pdf"
             }
           ]
         }
