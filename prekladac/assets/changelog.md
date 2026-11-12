@@ -26,6 +26,7 @@
 - Skiny (vzhledy) jako ve Winampu: Výchozí, Tmavý, Sépie, Vysoký kontrast a doinstalování dalších ze souboru .skin – i na Androidu.
 - Srozumitelná hláška, když neběží vlastní server (LibreTranslate, Ollama), a podrobný návod k LibreTranslate (Python, Docker, server pro domácí síť).
 - Android: překlad „Offline v telefonu“ (Google ML Kit) – bez internetu a bez klíče, jazyky se stahují jednou.
+- Android: čtečka knih (knihovna, stránky, písmo, barvy, obsah, záložky, originál a překlad odstavce, překlad slova), hledání knih (Project Gutenberg přímo, obchody a knihovny) a „Otevřít v Překladači“.
 - Klíče uložené zašifrovaně (Windows DPAPI), návody ke všem službám.
 
 # Historie verzí

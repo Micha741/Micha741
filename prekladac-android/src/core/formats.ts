@@ -1,4 +1,5 @@
 // Otevření knihy z libovolného podporovaného formátu a uložení do zvoleného formátu.
+import { sniffBookExt } from './library';
 import type { Book } from './book';
 import { emptyBook, fromProject, toProject } from './book';
 import { decodeAny, utf8Encode } from './bytes';
@@ -29,6 +30,8 @@ export function extOf(name: string): string {
 }
 
 export async function readBook(data: Uint8Array, fileName: string): Promise<Book> {
+  // soubor z jiné aplikace nebo z odkazu nemusí mít příponu – typ se pozná podle obsahu
+  if (!INPUT_EXT.includes(extOf(fileName)) && extOf(fileName) !== 'pdf') fileName = `${fileName.replace(/\.[^.]*$/, '') || 'kniha'}.${sniffBookExt(data)}`;
   const ext = extOf(fileName);
   const base = fileName.replace(/\.kniha\.json$/i, '').replace(/\.[^.]+$/, '');
   if (ext === 'epub' || (data[0] === 0x50 && data[1] === 0x4b && ext !== 'docx' && /mimetypeapplication\/epub/.test(String.fromCharCode(...data.subarray(30, 70))))) return readEpub(data, fileName);

@@ -224,3 +224,64 @@ test('offline překlad: pozná jazyk jednou, přeskočí stejný jazyk, srozumit
   setOfflineBackend(null);
   assert.throws(() => makeTranslator('offline', 'cs', {}), /Expo Go/);
 });
+
+// ------------------------------------------------------------ čtečka, knihovna, hledání
+import { blockText, bookProgress, chapterHtml, DEFAULT_PREFS, parseReaderMessage } from '../src/core/reader';
+import { deserializeBook, fileNameFromUrl, serializeBook, sniffBookExt } from '../src/core/library';
+import { gutendexUrl, parseGutendex, SOURCES } from '../src/core/sources';
+
+test('čtečka: HTML kapitoly s odstavci, obálkou a ovládáním', () => {
+  const book = emptyBook('Kniha <A&B>');
+  book.chapters = [
+    { title: 'První', blocks: [{ type: 'h', text: 'Úvod' }, { type: 'p', text: 'Ahoj <svět> & "lidi"' }, { type: 'pb' }] },
+    { title: 'Druhá', blocks: [{ type: 'p', text: 'x'.repeat(300) }] },
+  ];
+  book.cover = addImage(book, new Uint8Array([0x89, 0x50, 0x4e, 0x47, 1]), 'image/png');
+  const html = chapterHtml(book, 0, { ...DEFAULT_PREFS, theme: 'night', size: 22 }, 0.5);
+  assert.match(html, /<p data-i="1">Ahoj &lt;svět&gt; &amp; &quot;lidi&quot;<\/p>/);
+  assert.match(html, /figure class="cover"/);
+  assert.match(html, /font-size:22px/);
+  assert.match(html, /readerGo\(0.5\)/);
+  assert.doesNotMatch(chapterHtml(book, 1, DEFAULT_PREFS), /figure class="cover"/);
+  assert.equal(blockText(book, 0, 1), 'Ahoj <svět> & "lidi"');
+  assert.equal(blockText(null, 0, 1), '');
+  assert.equal(bookProgress(book, 0, 0), 0);
+  assert.equal(bookProgress(book, 1, 1), 1);
+  assert.ok(bookProgress(book, 1, 0) > 0.1 && bookProgress(book, 1, 0) < 0.9);
+  assert.deepEqual(parseReaderMessage('{"type":"para","i":3,"text":"x"}'), { type: 'para', i: 3, text: 'x' });
+  assert.equal(parseReaderMessage('nesmysl'), null);
+});
+
+test('knihovna: uložení knihy beze ztrát a rozpoznání typu souboru', async () => {
+  const book = emptyBook('Kniha');
+  book.author = 'Autor';
+  book.chapters = [{ title: 'K', blocks: [{ type: 'h', text: 'N', level: 2 }, { type: 'p', text: 'Text' }, { type: 'pb' }, { type: 'img', name: 'a.png' }] }];
+  addImage(book, new Uint8Array([0x89, 0x50, 0x4e, 0x47, 9, 8]), 'image/png');
+  const back = deserializeBook(serializeBook(book));
+  assert.deepEqual(back.chapters, book.chapters);
+  assert.deepEqual(Object.values(back.images)[0].data, Object.values(book.images)[0].data);
+  assert.equal(sniffBookExt(await writeBook(book, 'epub')), 'epub');
+  assert.equal(sniffBookExt(await writeBook(book, 'mobi')), 'mobi');
+  assert.equal(sniffBookExt(await writeBook(book, 'docx')), 'docx');
+  assert.equal(sniffBookExt(utf8Encode('%PDF-1.4')), 'pdf');
+  assert.equal(sniffBookExt(utf8Encode('Obyčejný text')), 'txt');
+  // soubor bez přípony (z jiné aplikace) se otevře podle obsahu
+  const opened = await readBook(await writeBook(book, 'epub'), 'document:1234');
+  assert.equal(opened.title, 'Kniha');
+  assert.equal(fileNameFromUrl('https://x.cz/a/Kniha%20ukazka.epub?y=1'), 'Kniha ukazka.epub');
+  assert.equal(fileNameFromUrl('https://www.gutenberg.org/ebooks/84', 'epub'), '84.epub');
+});
+
+test('hledání: Gutendex a odkazy na obchody a knihovny', () => {
+  const r = parseGutendex({ next: null, results: [
+    { id: 84, title: 'Frankenstein', authors: [{ name: 'Shelley, Mary Wollstonecraft' }], languages: ['en'], download_count: 5, formats: { 'application/epub+zip': 'https://www.gutenberg.org/ebooks/84.epub3.images', 'image/jpeg': 'https://x/84.jpg' } },
+    { id: 1, title: 'Bez EPUB', authors: [], languages: ['en'], formats: { 'text/plain': 'x' } },
+  ] });
+  assert.equal(r.books.length, 1);
+  assert.equal(r.books[0].authors, 'Mary Wollstonecraft Shelley');
+  assert.equal(gutendexUrl('čapek r.u.r.', 'cs'), 'https://gutendex.com/books/?search=%C4%8Dapek%20r.u.r.&languages=cs');
+  const ids = SOURCES.map((s) => s.id);
+  for (const id of ['alza', 'amazon', 'gplay', 'kosmas', 'martinus', 'mkp', 'kjm', 'plzen', 'cbvk', 'smashwords']) assert.ok(ids.includes(id), id);
+  for (const s of SOURCES) assert.match(s.url('Babička Němcová'), /^https:\/\/[^ ]+$/);
+  assert.match(SOURCES.find((s) => s.id === 'kosmas')!.url('Babička'), /site%3Akosmas\.cz/);
+});

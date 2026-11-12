@@ -1,6 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { ActivityIndicator, Alert, Image, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { ActivityIndicator, Alert, BackHandler, Image, Linking, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { WebView, type WebViewMessageEvent } from 'react-native-webview';
+import { useKeepAwake } from 'expo-keep-awake';
+import { blockText, bookProgress, chapterHtml, DEFAULT_PREFS, parseReaderMessage, THEMES, type ReaderPrefs, type ReaderTheme, type StartAt } from './src/core/reader';
+import type { LibraryEntry } from './src/core/library';
+import { gutendexUrl, KIND_LABEL, parseGutendex, SOURCES, type FoundBook, type SourceKind } from './src/core/sources';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { addImage, bookStats, insertImage, pruneImages, type Book } from './src/core/book';
 import { toBase64 } from './src/core/bytes';
@@ -8,7 +13,7 @@ import { OUTPUT_FORMATS, type OutputFormat } from './src/core/formats';
 import { CLAUDE_MODELS, DEFAULT_CLAUDE_MODEL, DEFAULT_GEMINI_MODEL, ENGINES, LANGUAGES, makeTranslator, setOfflineBackend, translateBook, type EngineId } from './src/core/translate';
 import Mlkit from './modules/mlkit-translate/src/MlkitTranslateModule';
 import { BUILTIN_SKINS, type Skin } from './src/core/skins';
-import { installSkinFromPicker, loadInstalledSkins, loadSettings, makeOutput, pickBook, pickImage, removeSkin, saveOutputToFolder, saveSettings, shareOutput, type Output, type Settings } from './src/platform';
+import { addToLibrary, downloadBook, installSkinFromPicker, loadInstalledSkins, loadLibrary, loadLibraryBook, loadSettings, makeOutput, openBookUri, pickBook, pickImage, removeFromLibrary, removeSkin, saveOutputToFolder, saveSettings, shareOutput, updateEntry, type Output, type Settings } from './src/platform';
 
 const VERSION = '1.0';
 
@@ -42,10 +47,13 @@ if (Mlkit) {
 
 const SERIF = Platform.select({ android: 'serif', default: 'Georgia' });
 
-type Tab = 'kniha' | 'psat' | 'nastaveni';
+type Tab = 'cist' | 'kniha' | 'hledat' | 'nastaveni';
 
 export default function App() {
-  const [tab, setTab] = useState<Tab>('kniha');
+  const [tab, setTab] = useState<Tab>('cist');
+  const [library, setLibrary] = useState<LibraryEntry[]>([]);
+  const [reading, setReading] = useState<Reading | null>(null);
+  const [libBusy, setLibBusy] = useState('');
   const [settings, setSettings] = useState<Settings>({});
   const [skins, setSkins] = useState<Skin[]>(BUILTIN_SKINS);
   const [, redraw] = useState(0);
@@ -56,6 +64,68 @@ export default function App() {
       useSkin(all.find((k) => k.id === s.skin) ?? BUILTIN_SKINS[0]);
       setSettings(s);
     });
+    loadLibrary().then(setLibrary);
+  }, []);
+
+  // ---- čtečka: otevření knihy z knihovny, z jiné aplikace nebo po překladu
+  const openEntry = async (e: LibraryEntry) => {
+    try {
+      setLibBusy(`Otevírám: ${e.title}…`);
+      const book = await loadLibraryBook(e.id);
+      const original = e.originalId ? await loadLibraryBook(e.originalId).catch(() => null) : null;
+      setReading({ entry: e, book, original });
+    } catch (err: any) {
+      Alert.alert('Knihovna', String(err?.message ?? err));
+    } finally {
+      setLibBusy('');
+    }
+  };
+  const readBookNow = async (book: Book, original?: Book) => {
+    setLibBusy('Ukládám do knihovny…');
+    try {
+      const orig = original ? await addToLibrary(original) : undefined;
+      const entry = await addToLibrary(book, orig?.id);
+      setLibrary(await loadLibrary());
+      setTab('cist');
+      setReading({ entry, book, original: original ?? null });
+    } catch (err: any) {
+      Alert.alert('Knihovna', String(err?.message ?? err));
+    } finally {
+      setLibBusy('');
+    }
+  };
+  const pickToLibrary = async () => {
+    try {
+      setLibBusy('Načítám knihu…');
+      const b = await pickBook();
+      if (b) await readBookNow(b);
+    } catch (err: any) {
+      Alert.alert('Otevřít knihu', String(err?.message ?? err));
+    } finally {
+      setLibBusy('');
+    }
+  };
+  const removeEntry = (e: LibraryEntry) =>
+    Alert.alert('Odebrat z knihovny?', e.title, [
+      { text: 'Zrušit', style: 'cancel' },
+      { text: 'Odebrat', style: 'destructive', onPress: async () => { await removeFromLibrary(e.id); setLibrary(await loadLibrary()); } },
+    ]);
+  // soubor otevřený z jiné aplikace („Otevřít v Překladači“)
+  useEffect(() => {
+    const handle = async (url: string | null) => {
+      if (!url || !/^(content|file):/i.test(url)) return;
+      try {
+        setLibBusy('Otevírám soubor…');
+        await readBookNow(await openBookUri(url));
+      } catch (err: any) {
+        Alert.alert('Otevřít knihu', String(err?.message ?? err));
+      } finally {
+        setLibBusy('');
+      }
+    };
+    Linking.getInitialURL().then(handle).catch(() => undefined);
+    const sub = Linking.addEventListener('url', (e) => handle(e.url));
+    return () => sub.remove();
   }, []);
   const update = (s: Partial<Settings>) => {
     const next = { ...settings, ...s };
@@ -92,6 +162,19 @@ export default function App() {
     <SafeAreaProvider>
       <SafeAreaView style={st.root} edges={['top', 'bottom']}>
         <StatusBar style={isDark(C.sidebar) ? 'light' : 'dark'} />
+        {reading ? (
+          <ReaderView
+            reading={reading}
+            settings={settings}
+            update={update}
+            onEntry={(e) => setLibrary((l) => l.map((x) => (x.id === e.id ? e : x)))}
+            onClose={() => {
+              setReading(null);
+              loadLibrary().then(setLibrary);
+            }}
+          />
+        ) : (
+        <>
         <View style={st.header}>
           <Image source={currentSkin.logo ? { uri: currentSkin.logo } : require('./assets/logo.png')} style={st.logo} />
           <View style={{ flex: 1 }}>
@@ -100,18 +183,21 @@ export default function App() {
           </View>
         </View>
         <View style={{ flex: 1 }}>
-          {tab === 'kniha' && <BookScreen settings={settings} update={update} goSettings={() => setTab('nastaveni')} />}
-          {tab === 'psat' && <WriteScreen />}
+          {tab === 'cist' && <LibraryScreen list={library} onOpen={openEntry} onRemove={removeEntry} onPick={pickToLibrary} busy={libBusy} />}
+          {tab === 'kniha' && <BookScreen settings={settings} update={update} goSettings={() => setTab('nastaveni')} onRead={readBookNow} />}
+          {tab === 'hledat' && <SearchScreen onBook={(b) => readBookNow(b)} />}
           {tab === 'nastaveni' && <SettingsScreen settings={settings} update={update} skin={skinApi} />}
         </View>
         <View style={st.nav}>
-          {([['kniha', '🌍', 'Překlad'], ['psat', '✍️', 'Napsat knihu'], ['nastaveni', '⚙️', 'Nastavení']] as const).map(([id, icon, label]) => (
+          {([['cist', '📖', 'Číst'], ['kniha', '🌍', 'Překlad'], ['hledat', '🔎', 'Hledat'], ['nastaveni', '⚙️', 'Nastavení']] as const).map(([id, icon, label]) => (
             <Pressable key={id} style={[st.navItem, tab === id && st.navItemOn]} onPress={() => setTab(id)} accessibilityRole="tab" accessibilityState={{ selected: tab === id }}>
               <Text style={{ fontSize: 18 }}>{icon}</Text>
               <Text style={[st.navText, tab === id && { color: C.accentText, fontWeight: '600' }]}>{label}</Text>
             </Pressable>
           ))}
         </View>
+        </>
+        )}
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -162,12 +248,13 @@ function Big({ icon, label, onPress, primary, disabled, on }: { icon: string; la
 }
 
 // ------------------------------------------------------------ Překlad a převod
-function BookScreen({ settings, update, goSettings }: { settings: Settings; update: (s: Partial<Settings>) => void; goSettings: () => void }) {
+function BookScreen({ settings, update, goSettings, onRead }: { settings: Settings; update: (s: Partial<Settings>) => void; goSettings: () => void; onRead: (book: Book, original?: Book) => Promise<void> }) {
   const [book, setBook] = useState<Book | null>(null);
   const [busy, setBusy] = useState('');
   const [progress, setProgress] = useState(0);
   const [log, setLog] = useState<string[]>([]);
   const [output, setOutput] = useState<Output | null>(null);
+  const [translated, setTranslated] = useState<Book | null>(null);
   const [translate, setTranslate] = useState(true);
   const [imgPick, setImgPick] = useState<Uint8Array | null>(null);
   const [rtab, setRtab] = useState(1);
@@ -185,6 +272,7 @@ function BookScreen({ settings, update, goSettings }: { settings: Settings; upda
       if (b) {
         setBook(b);
         setOutput(null);
+        setTranslated(null);
         const s = bookStats(b);
         say(`Otevřeno: ${b.source} – ${s.chapters} kapitol, ${s.words.toLocaleString('cs')} slov, ${s.images} obrázků.`);
       }
@@ -199,6 +287,7 @@ function BookScreen({ settings, update, goSettings }: { settings: Settings; upda
   const changed = (b: Book) => {
     setBook({ ...b });
     setOutput(null);
+    setTranslated(null);
   };
 
   const setCover = async () => {
@@ -245,6 +334,7 @@ function BookScreen({ settings, update, goSettings }: { settings: Settings; upda
         setBusy(`Překládám do: ${lang.name}…`);
         say(`🌍 Překlad (${ENGINES.find((e) => e.id === engine)!.name}) do: ${lang.name}`);
         result = await translateBook(book, makeTranslator(engine, target, settings), target, (p) => setProgress(p.done / Math.max(1, p.total)), ctrl.signal);
+        setTranslated(result);
         say('✓ Přeloženo.');
       }
       setBusy(`Ukládám ${OUTPUT_FORMATS.find((f) => f.id === fmt)!.label}…`);
@@ -285,6 +375,7 @@ function BookScreen({ settings, update, goSettings }: { settings: Settings; upda
           <>
             <Group label="Kniha">
               <Big icon="📂" label="Otevřít…" onPress={open} disabled={!!busy} />
+              <Big icon="📖" label="Číst" onPress={() => { if (book) onRead(translated ?? book, translated ? book : undefined).catch(fail); }} disabled={!book || !!busy} />
             </Group>
             <Group label="Výsledek">
               <Big icon="📤" label="Sdílet" onPress={() => output && shareOutput(output).catch(fail)} disabled={!output} />
@@ -376,6 +467,7 @@ function BookScreen({ settings, update, goSettings }: { settings: Settings; upda
             <View style={st.row}>
               <Btn label="📤 Sdílet / poslat" onPress={() => shareOutput(output).catch(fail)} primary />
               <Btn label="📁 Uložit do složky" onPress={() => saveOutputToFolder(output).then((n) => say(`📁 Uloženo: ${n}`)).catch(fail)} />
+              <Btn label="📖 Číst" onPress={() => { (translated ? onRead(translated, book ?? undefined) : book ? onRead(book) : Promise.resolve()).catch(fail); }} />
             </View>
           </View>
         ) : null}
@@ -421,20 +513,6 @@ function BookScreen({ settings, update, goSettings }: { settings: Settings; upda
         </View>
       </Modal>
     </View>
-  );
-}
-
-function WriteScreen() {
-  return (
-    <ScrollView style={st.canvas} contentContainerStyle={st.canvasContent}>
-      <View style={st.paper}>
-        <Text style={st.docHeading}>Napsat knihu</Text>
-        <Text style={st.hint}>
-          Psaní knihy s umělou inteligencí (popis → osnova → kapitoly) přijde v další verzi. Rozepsanou knihu z počítače (.kniha.json)
-          už teď otevřete na kartě Překlad a uložíte do EPUB, MOBI, PDF…
-        </Text>
-      </View>
-    </ScrollView>
   );
 }
 
@@ -498,7 +576,7 @@ function SettingsScreen({ settings, update, skin }: { settings: Settings; update
               </View>
             </View>
             <Text style={[st.hint, { marginTop: 8 }]}>
-              Otevře EPUB, DOCX, TXT, MOBI, PDB a projekty z Překladače na počítači; uloží EPUB, MOBI, PDF, DOCX, PDB, TXT. Převody používají stejná pravidla jako
+              Čte, překládá a převádí knihy: otevře EPUB, DOCX, TXT, MOBI, PDB a projekty z Překladače na počítači; uloží EPUB, MOBI, PDF, DOCX, PDB, TXT. Převody používají stejná pravidla jako
               verze pro Windows. AZW3, KFX a PDF jako vstup zatím převádějte na počítači.
             </Text>
           </Box>
@@ -603,6 +681,336 @@ function SkinsBox({ api }: { api: SkinApi }) {
       </View>
       <Text style={st.hint}>Vlastní skin vytvoříte ve Windows verzi: Nastavení → Vzhled → Uložit jako šablonu (uvnitř je návod).</Text>
     </Box>
+  );
+}
+
+// ------------------------------------------------------------ Číst: knihovna
+type Reading = { entry: LibraryEntry; book: Book; original: Book | null };
+
+function LibraryScreen({ list, onOpen, onRemove, onPick, busy }: { list: LibraryEntry[]; onOpen: (e: LibraryEntry) => void; onRemove: (e: LibraryEntry) => void; onPick: () => void; busy: string }) {
+  return (
+    <View style={{ flex: 1, backgroundColor: C.window }}>
+      <View style={[st.settingsHead, { paddingBottom: 10 }]}>
+        <View style={[st.row, { justifyContent: 'space-between' }]}>
+          <Text style={st.pageTitle}>Knihovna</Text>
+          <Btn label="📂 Otevřít knihu" onPress={onPick} primary small disabled={!!busy} />
+        </View>
+        {busy ? <Text style={st.hint}>{busy}</Text> : null}
+      </View>
+      <ScrollView contentContainerStyle={{ padding: 12, gap: 10 }}>
+        {list.length === 0 ? (
+          <View style={st.box}>
+            <Text style={st.boxTitle}>Zatím tu nejsou žádné knihy</Text>
+            <Text style={st.hint}>
+              Otevřete knihu tlačítkem nahoře (EPUB, MOBI, DOCX, TXT, PDB), najděte ji na kartě Hledat, nebo klepněte na stažený soubor v telefonu a zvolte
+              „Otevřít v Překladači“. Přeloženou knihu otevřete na kartě Překlad tlačítkem 📖 Číst – u odstavců pak uvidíte i originál.
+            </Text>
+          </View>
+        ) : null}
+        {list.map((e) => (
+          <Pressable key={e.id} onPress={() => onOpen(e)} onLongPress={() => onRemove(e)} style={({ pressed }) => [st.libRow, pressed && { opacity: 0.7 }]} accessibilityRole="button" accessibilityLabel={`${e.title}, přečteno ${Math.round(e.progress * 100)} %`}>
+            {e.cover ? <Image source={{ uri: e.cover }} style={st.libCover} /> : <View style={[st.libCover, st.libNoCover]}><Text style={{ fontSize: 22 }}>📖</Text></View>}
+            <View style={{ flex: 1, gap: 2 }}>
+              <Text style={st.libTitle} numberOfLines={2}>{e.title}</Text>
+              {e.author ? <Text style={st.hint} numberOfLines={1}>{e.author}</Text> : null}
+              <Text style={st.hint}>
+                {e.originalId ? '🌍 překlad · ' : ''}{e.language ? `${e.language} · ` : ''}{Math.round(e.progress * 100)} %{e.bookmarks.length ? ` · 🔖 ${e.bookmarks.length}` : ''}
+              </Text>
+              <View style={[st.bar, { height: 4, marginTop: 4 }]}><View style={[st.barFill, { height: 4, width: `${Math.round(e.progress * 100)}%` }]} /></View>
+            </View>
+          </Pressable>
+        ))}
+        {list.length ? <Text style={[st.hint, { textAlign: 'center' }]}>Podržením prstu na knize ji odeberete z knihovny.</Text> : null}
+      </ScrollView>
+    </View>
+  );
+}
+
+// ------------------------------------------------------------ Číst: čtečka
+type Sheet = { kind: 'para' | 'word'; i: number; text: string; word?: string } | null;
+
+function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: Reading; settings: Settings; update: (s: Partial<Settings>) => void; onClose: () => void; onEntry: (e: LibraryEntry) => void }) {
+  useKeepAwake();
+  const { book, original } = reading;
+  const [entry, setEntry] = useState(reading.entry);
+  const [chapter, setChapter] = useState(Math.min(reading.entry.chapter, Math.max(0, book.chapters.length - 1)));
+  const [start, setStart] = useState<StartAt>(reading.entry.fraction || 'start');
+  const [pos, setPos] = useState({ page: 0, pages: 1 });
+  const [menu, setMenu] = useState(false);
+  const [panel, setPanel] = useState<'' | 'toc' | 'look'>('');
+  const [sheet, setSheet] = useState<Sheet>(null);
+  const [tr, setTr] = useState<{ busy: boolean; text: string }>({ busy: false, text: '' });
+  const prefs: ReaderPrefs = { ...DEFAULT_PREFS, ...(settings.reader ?? {}) };
+  const theme = THEMES[prefs.theme];
+  const web = useRef<WebView>(null);
+  const saveT = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const html = useMemo(() => chapterHtml(book, chapter, prefs, start), [book, chapter, JSON.stringify(prefs), start]);
+
+  const persist = (patch: Partial<LibraryEntry>) => {
+    const next = { ...entry, ...patch, lastRead: Date.now() };
+    setEntry(next);
+    onEntry(next);
+    if (saveT.current) clearTimeout(saveT.current);
+    saveT.current = setTimeout(() => updateEntry(next.id, next).catch(() => undefined), 600);
+  };
+  const fraction = pos.pages > 1 ? pos.page / (pos.pages - 1) : 0;
+  const setPrefs = (p: Partial<ReaderPrefs>) => {
+    setStart(fraction); // po změně písma zůstat na stejném místě kapitoly
+    update({ reader: { ...prefs, ...p } });
+  };
+  const goChapter = (i: number, at: StartAt = 'start') => {
+    if (i < 0 || i >= book.chapters.length) return;
+    setStart(at);
+    setChapter(i);
+    setPanel('');
+    setMenu(false);
+  };
+
+  useEffect(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (sheet) setSheet(null);
+      else if (panel) setPanel('');
+      else if (menu) setMenu(false);
+      else onClose();
+      return true;
+    });
+    return () => sub.remove();
+  }, [sheet, panel, menu]);
+
+  const onMessage = (ev: WebViewMessageEvent) => {
+    const m = parseReaderMessage(ev.nativeEvent.data);
+    if (!m) return;
+    if (m.type === 'pos') {
+      setPos({ page: m.page, pages: m.pages });
+      const f = m.pages > 1 ? m.page / (m.pages - 1) : 0;
+      persist({ chapter, fraction: f, progress: bookProgress(book, chapter, f) });
+    } else if (m.type === 'next') {
+      if (chapter < book.chapters.length - 1) goChapter(chapter + 1, 'start');
+      else persist({ progress: 1 });
+    } else if (m.type === 'prev') goChapter(chapter - 1, 'end');
+    else if (m.type === 'menu') setMenu((v) => !v);
+    else if (m.type === 'para') {
+      setTr({ busy: false, text: '' });
+      setSheet({ kind: 'para', i: m.i, text: m.text });
+    } else if (m.type === 'word') {
+      setTr({ busy: false, text: '' });
+      setSheet({ kind: 'word', i: m.i, text: m.text, word: m.word });
+    }
+  };
+
+  const engine = (settings.engine as EngineId) || 'google';
+  const target = settings.target || 'cs';
+  const translateNow = async () => {
+    if (!sheet) return;
+    setTr({ busy: true, text: '' });
+    try {
+      const t = makeTranslator(engine, target, settings);
+      const [out] = await t.translate([sheet.kind === 'word' ? sheet.word! : sheet.text]);
+      setTr({ busy: false, text: out });
+    } catch (e: any) {
+      setTr({ busy: false, text: `⚠ ${e?.message ?? e}` });
+    }
+  };
+  const origText = sheet ? blockText(original, chapter, sheet.i) : '';
+  const addBookmark = () => {
+    const label = `${book.chapters[chapter]?.title ?? 'Kapitola'} – ${Math.round(fraction * 100)} %`;
+    persist({ bookmarks: [...entry.bookmarks, { chapter, fraction, label, at: Date.now() }] });
+    Alert.alert('Záložka', `Uloženo: ${label}`);
+  };
+  const percent = Math.round(bookProgress(book, chapter, fraction) * 100);
+
+  return (
+    <View style={{ flex: 1, backgroundColor: theme.bg }}>
+      <WebView
+        key={`${chapter}:${typeof start === 'number' ? start.toFixed(4) : start}:${JSON.stringify(prefs)}`}
+        ref={web}
+        originWhitelist={['*']}
+        source={{ html }}
+        onMessage={onMessage}
+        style={{ flex: 1, backgroundColor: theme.bg }}
+        setSupportMultipleWindows={false}
+        overScrollMode="never"
+        textZoom={100}
+      />
+      {/* tenký řádek průběhu dole (jako v čtečkách) */}
+      <View style={[st.readerFoot, { backgroundColor: theme.bg }]}>
+        <Text style={[st.readerFootText, { color: theme.muted }]} numberOfLines={1}>
+          {book.chapters[chapter]?.title ?? ''} · {pos.page + 1}/{pos.pages} · {percent} %
+        </Text>
+      </View>
+      {menu ? (
+        <>
+          <View style={[st.readerBar, { top: 0 }]}>
+            <Pressable onPress={onClose} style={st.readerBtn} accessibilityLabel="Zpět do knihovny"><Text style={st.readerBtnText}>←</Text></Pressable>
+            <Text style={[st.readerBtnText, { flex: 1, fontSize: 15 }]} numberOfLines={1}>{book.title}</Text>
+          </View>
+          <View style={[st.readerBar, { bottom: 0, justifyContent: 'space-around' }]}>
+            <Pressable onPress={() => goChapter(chapter - 1, 'start')} style={st.readerBtn} disabled={chapter === 0}><Text style={st.readerBtnText}>⏮</Text></Pressable>
+            <Pressable onPress={() => setPanel('toc')} style={st.readerBtn}><Text style={st.readerBtnText}>☰ Obsah</Text></Pressable>
+            <Pressable onPress={addBookmark} style={st.readerBtn}><Text style={st.readerBtnText}>🔖</Text></Pressable>
+            <Pressable onPress={() => setPanel('look')} style={st.readerBtn}><Text style={st.readerBtnText}>Aa</Text></Pressable>
+            <Pressable onPress={() => goChapter(chapter + 1, 'start')} style={st.readerBtn} disabled={chapter >= book.chapters.length - 1}><Text style={st.readerBtnText}>⏭</Text></Pressable>
+          </View>
+        </>
+      ) : null}
+
+      <Modal visible={panel === 'toc'} transparent animationType="slide" onRequestClose={() => setPanel('')}>
+        <Pressable style={st.modalBack} onPress={() => setPanel('')}>
+          <Pressable style={[st.modal, { maxHeight: '80%' }]} onPress={() => undefined}>
+            <Text style={st.boxTitle}>Obsah</Text>
+            <ScrollView>
+              {book.chapters.map((c, i) => (
+                <Pressable key={i} onPress={() => goChapter(i)} style={st.chapterRow}>
+                  <Text style={[st.btnText, { flex: 1 }, i === chapter && { fontWeight: '700', color: C.accent }]} numberOfLines={2}>{i + 1}. {c.title}</Text>
+                </Pressable>
+              ))}
+              {entry.bookmarks.length ? <Text style={[st.boxTitle, { marginTop: 12 }]}>Záložky</Text> : null}
+              {entry.bookmarks.map((b, k) => (
+                <View key={b.at} style={st.chapterRow}>
+                  <Pressable style={{ flex: 1 }} onPress={() => goChapter(b.chapter, b.fraction)}><Text style={st.btnText}>🔖 {b.label}</Text></Pressable>
+                  <Btn small label="✖" onPress={() => persist({ bookmarks: entry.bookmarks.filter((_, j) => j !== k) })} />
+                </View>
+              ))}
+            </ScrollView>
+          </Pressable>
+        </Pressable>
+      </Modal>
+
+      <Modal visible={panel === 'look'} transparent animationType="slide" onRequestClose={() => setPanel('')}>
+        <Pressable style={st.modalBack} onPress={() => setPanel('')}>
+          <Pressable style={st.modal} onPress={() => undefined}>
+            <Text style={st.boxTitle}>Vzhled stránky</Text>
+            <Text style={st.label}>Barvy</Text>
+            <Chips items={(Object.keys(THEMES) as ReaderTheme[]).map((k) => ({ id: k, label: THEMES[k].name }))} value={prefs.theme} onChange={(v) => setPrefs({ theme: v as ReaderTheme })} />
+            <Text style={st.label}>Písmo</Text>
+            <Chips items={[{ id: 'serif', label: 'Patkové' }, { id: 'sans', label: 'Bezpatkové' }]} value={prefs.font} onChange={(v) => setPrefs({ font: v as 'serif' | 'sans' })} />
+            <View style={[st.row, { marginTop: 6 }]}>
+              <Text style={st.label}>Velikost {prefs.size}</Text>
+              <Btn small label="A−" onPress={() => setPrefs({ size: Math.max(12, prefs.size - 1) })} />
+              <Btn small label="A+" onPress={() => setPrefs({ size: Math.min(34, prefs.size + 1) })} />
+            </View>
+            <Text style={st.label}>Řádkování</Text>
+            <Chips items={[{ id: '1.3', label: 'těsné' }, { id: '1.55', label: 'běžné' }, { id: '1.8', label: 'volné' }]} value={String(prefs.line)} onChange={(v) => setPrefs({ line: Number(v) })} />
+            <Text style={st.label}>Okraje</Text>
+            <Chips items={[{ id: '12', label: 'úzké' }, { id: '22', label: 'střední' }, { id: '34', label: 'široké' }]} value={String(prefs.margin)} onChange={(v) => setPrefs({ margin: Number(v) })} />
+            <Text style={st.label}>Zarovnání</Text>
+            <Chips items={[{ id: 'j', label: 'do bloku' }, { id: 'l', label: 'vlevo' }]} value={prefs.justify ? 'j' : 'l'} onChange={(v) => setPrefs({ justify: v === 'j' })} />
+          </Pressable>
+        </Pressable>
+      </Modal>
+
+      <Modal visible={!!sheet} transparent animationType="slide" onRequestClose={() => setSheet(null)}>
+        <Pressable style={st.modalBack} onPress={() => setSheet(null)}>
+          <Pressable style={[st.modal, { maxHeight: '75%' }]} onPress={() => undefined}>
+            <ScrollView contentContainerStyle={{ gap: 8 }}>
+              {sheet?.kind === 'word' ? <Text style={[st.pageTitle, { fontSize: 22 }]} selectable>{sheet.word}</Text> : null}
+              {origText && origText !== sheet?.text ? (
+                <>
+                  <Text style={st.label}>Originál</Text>
+                  <Text style={st.sheetText} selectable>{origText}</Text>
+                  <Text style={st.label}>Překlad</Text>
+                </>
+              ) : null}
+              {sheet?.kind === 'para' || origText ? <Text style={st.sheetText} selectable>{sheet?.text}</Text> : null}
+              {tr.text ? (
+                <>
+                  <Text style={st.label}>Přeloženo ({ENGINES.find((e) => e.id === engine)?.name} → {LANGUAGES.find((l) => l.code === target)?.name})</Text>
+                  <Text style={st.sheetText} selectable>{tr.text}</Text>
+                </>
+              ) : null}
+              <View style={[st.row, { marginTop: 4 }]}>
+                {tr.busy ? <ActivityIndicator color={C.accent} /> : <Btn label={sheet?.kind === 'word' ? '🌍 Přeložit slovo' : '🌍 Přeložit odstavec'} onPress={translateNow} primary />}
+                <Btn label="Zavřít" onPress={() => setSheet(null)} />
+              </View>
+              <Text style={st.hint}>Překladač a cílový jazyk se nastavují na kartě Překlad. Text jde označit a zkopírovat.</Text>
+            </ScrollView>
+          </Pressable>
+        </Pressable>
+      </Modal>
+    </View>
+  );
+}
+
+// ------------------------------------------------------------ Hledat knihy
+function SearchScreen({ onBook }: { onBook: (b: Book) => Promise<void> }) {
+  const [q, setQ] = useState('');
+  const [lang, setLang] = useState('');
+  const [found, setFound] = useState<FoundBook[] | null>(null);
+  const [busy, setBusy] = useState('');
+  const [link, setLink] = useState('');
+  const search = async () => {
+    if (!q.trim()) return;
+    setBusy('Hledám v Project Gutenberg…');
+    try {
+      const res = await fetch(gutendexUrl(q.trim(), lang));
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      setFound(parseGutendex(await res.json()).books.slice(0, 30));
+    } catch (e: any) {
+      setFound([]);
+      Alert.alert('Hledání', `Project Gutenberg teď neodpovídá (${e?.message ?? e}). Zkuste to za chvíli nebo použijte obchody a knihovny níže.`);
+    } finally {
+      setBusy('');
+    }
+  };
+  const get = async (url: string, label: string) => {
+    setBusy(`Stahuji: ${label}…`);
+    try {
+      await onBook(await downloadBook(url));
+    } catch (e: any) {
+      Alert.alert('Stažení', String(e?.message ?? e));
+    } finally {
+      setBusy('');
+    }
+  };
+  const kinds: SourceKind[] = ['free', 'social', 'library', 'drm'];
+  return (
+    <View style={{ flex: 1, backgroundColor: C.window }}>
+      <View style={[st.settingsHead, { paddingBottom: 10, gap: 6 }]}>
+        <Text style={st.pageTitle}>Hledat knihy</Text>
+        <View style={st.row}>
+          <TextInput style={[st.input, { flex: 1, marginTop: 0 }]} value={q} onChangeText={setQ} placeholder="Název nebo autor" placeholderTextColor={C.disabled} returnKeyType="search" onSubmitEditing={search} />
+          <Btn label="🔎" onPress={search} primary disabled={!!busy || !q.trim()} />
+        </View>
+        <Chips items={[{ id: '', label: 'všechny jazyky' }, { id: 'cs', label: 'čeština' }, { id: 'en', label: 'angličtina' }, { id: 'de', label: 'němčina' }, { id: 'fr', label: 'francouzština' }]} value={lang} onChange={setLang} />
+        {busy ? <View style={st.row}><ActivityIndicator color={C.accent} /><Text style={st.hint}>{busy}</Text></View> : null}
+      </View>
+      <ScrollView contentContainerStyle={{ padding: 12, gap: 10 }} keyboardShouldPersistTaps="handled">
+        {found ? (
+          <Box title={`Project Gutenberg – ${found.length ? `${found.length} knih zdarma` : 'nic nenalezeno'}`}>
+            {found.map((b) => (
+              <Pressable key={b.id} onPress={() => b.epub && get(b.epub, b.title)} style={({ pressed }) => [st.libRow, { borderWidth: 0, padding: 4 }, pressed && { opacity: 0.7 }]} disabled={!!busy}>
+                {b.cover ? <Image source={{ uri: b.cover }} style={[st.libCover, { width: 44, height: 64 }]} /> : <View style={[st.libCover, st.libNoCover, { width: 44, height: 64 }]}><Text>📖</Text></View>}
+                <View style={{ flex: 1 }}>
+                  <Text style={st.btnText} numberOfLines={2}>{b.title}</Text>
+                  <Text style={st.hint} numberOfLines={1}>{b.authors}{b.languages.length ? ` · ${b.languages.join(', ')}` : ''}</Text>
+                </View>
+                <Text style={{ color: C.accent, fontWeight: '600' }}>⬇ Číst</Text>
+              </Pressable>
+            ))}
+          </Box>
+        ) : null}
+        {kinds.map((k) => (
+          <Box key={k} title={KIND_LABEL[k]}>
+            {SOURCES.filter((s) => s.kind === k).map((s) => (
+              <Pressable key={s.id} onPress={() => (q.trim() ? Linking.openURL(s.url(q.trim())) : Alert.alert('Hledat', 'Nejdřív napište název nebo autora.'))} style={({ pressed }) => [st.chapterRow, pressed && { opacity: 0.6 }]}>
+                <View style={{ flex: 1 }}>
+                  <Text style={st.btnText}>{s.name} ↗</Text>
+                  <Text style={st.hint}>{s.note}</Text>
+                </View>
+              </Pressable>
+            ))}
+          </Box>
+        ))}
+        <Box title="Stáhnout z odkazu">
+          <Text style={st.hint}>Máte odkaz přímo na soubor knihy nebo ukázky (končí .epub, .mobi…)? Vložte ho sem. Stažený soubor v telefonu otevřete klepnutím a volbou „Otevřít v Překladači“.</Text>
+          <View style={st.row}>
+            <TextInput style={[st.input, { flex: 1 }]} value={link} onChangeText={(t) => setLink(t.trim())} placeholder="https://…/kniha.epub" placeholderTextColor={C.disabled} autoCapitalize="none" autoCorrect={false} />
+            <Btn label="⬇" onPress={() => get(link, 'kniha z odkazu')} disabled={!!busy || !/^https?:\/\//.test(link)} />
+          </View>
+        </Box>
+        <Text style={[st.hint, { textAlign: 'center' }]}>Knihy se zašifrováním (Amazon Kindle, Adobe DRM .acsm, Google Play) Překladač neotevře – čtěte je v aplikaci obchodu.</Text>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -720,6 +1128,16 @@ function makeStyles() {
   modalBack: { flex: 1, backgroundColor: 'rgba(15,23,42,0.45)', justifyContent: 'flex-end' },
   modal: { backgroundColor: C.surface, borderTopLeftRadius: 14, borderTopRightRadius: 14, padding: 16, gap: 10 },
   chapterRow: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 6, borderBottomWidth: 1, borderColor: C.border },
+  libRow: { flexDirection: 'row', gap: 12, alignItems: 'center', backgroundColor: C.surface, borderWidth: 1, borderColor: C.border, borderRadius: 10, padding: 10 },
+  libCover: { width: 56, height: 80, borderRadius: 3, backgroundColor: C.paper },
+  libNoCover: { alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: C.paperBorder },
+  libTitle: { fontFamily: SERIF, fontSize: 16, color: C.strong },
+  readerFoot: { paddingHorizontal: 14, paddingVertical: 4 },
+  readerFootText: { fontSize: 11.5, textAlign: 'center' },
+  readerBar: { position: 'absolute', left: 0, right: 0, flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 8, paddingVertical: 8, backgroundColor: 'rgba(17,24,39,0.92)' },
+  readerBtn: { paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8, minHeight: 44, justifyContent: 'center' },
+  readerBtnText: { color: '#f8fafc', fontSize: 17 },
+  sheetText: { fontFamily: SERIF, fontSize: 16, lineHeight: 23, color: C.text },
   });
 }
 let st = makeStyles();

@@ -312,6 +312,14 @@ Testy nevolají API (odpovědi služeb jsou podvržené). Živý test Google Př
 Mobilní verze (převod a překlad knih v telefonu) je ve složce [`../prekladac-android`](../prekladac-android).
 Používá stejná pravidla převodů (EPUB, MOBI, PDB, DOCX, TXT, PDF) a podobný vzhled.
 
+**Čtečka** (karta Číst): knihovna s obálkami a průběhem, listování stránek klepnutím nebo tažením, písmo, velikost,
+řádkování, okraje, barvy Den / Sépie / Noc, obsah, záložky a zapamatované místo. Podržením prstu na odstavci se ukáže
+originál (u knihy přeložené v aplikaci) nebo se odstavec přeloží, dvojitým klepnutím se přeloží slovo. Soubor knihy
+stažený v telefonu jde otevřít volbou „Otevřít v Překladači“. Karta **Hledat** prohledá Project Gutenberg přímo
+v aplikaci (stažení jedním klepnutím) a otevře vyhledávání v obchodech a knihovnách (Alza, Kosmas, Martinus,
+Palmknihy, Smashwords, Amazon, Google Play, knihovny v Praze, Brně, Plzni a Českých Budějovicích…). Knihy
+se šifrováním (Amazon Kindle, Adobe DRM .acsm, Google Play) aplikace neotevře.
+
 Překlad **Offline v telefonu** používá Google ML Kit (vlastní modul `modules/mlkit-translate`): jazyk (asi 30 MB)
 se stáhne jednou a pak se překládá bez internetu a bez klíče. ML Kit je jen pro Android a iOS – ve Windows stejnou
 roli plní *Offline v počítači* (Argos). Funguje jen v sestavené aplikaci (APK), ne v Expo Go.
