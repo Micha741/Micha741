@@ -32,6 +32,7 @@ def settle(app, w):
 
     QTest.qWaitForWindowExposed(w, 2000)
     w.layout().activate()
+    w.grab()  # první vykreslení (ve Windows může změnit měření písma)
     for _ in range(10):
         app.processEvents()
         QTest.qWait(10)

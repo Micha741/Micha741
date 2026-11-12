@@ -183,6 +183,7 @@ class PageView(QtWidgets.QWidget):
         self.page = 0  # první zobrazená stránka (u dvou stran vždy sudá)
         self.anchor = 0  # místo čtení (pozice znaku) – drží se při změně písma, velikosti okna…
         self.starts: list[int] = [0]  # první znak každé stránky (spočítá se při sazbě)
+        self._in_relayout = False
         self.pages = 1
         self.two = False
         self.pw = self.ph = 100.0
@@ -203,10 +204,31 @@ class PageView(QtWidgets.QWidget):
         self.doc = doc
         self.relayout()
 
+    def _watch_layout(self):
+        """Písmo se měří podle okna čtečky; když Qt knihu přesto přesází (změna DPI, písma…), přepočítat stránky."""
+        lay = self.doc.documentLayout()
+        lay.setPaintDevice(self)
+        if getattr(lay, "_reader_watch", None) is not self:
+            lay._reader_watch = self
+            lay.documentSizeChanged.connect(lambda _s: QtCore.QTimer.singleShot(0, self._layout_changed))
+
+    def _layout_changed(self):
+        if self.doc is None or self._in_relayout or self.turning:
+            return
+        old = list(self.starts)
+        self._compute_starts()
+        if self.starts != old:
+            self.page = self._norm(self.page_of(self.anchor))
+            self.cache.clear()
+            self.update()
+            self.reader.page_changed()
+
     def relayout(self, keep_pos: int | None = None):
         if self.doc is None:
             return
         self.finish_turn()
+        self._in_relayout = True
+        self._watch_layout()
         pos = keep_pos if keep_pos is not None else self.anchor
         self.anchor = pos
         spread = self.reader.prefs.get("spread", "auto")
@@ -220,6 +242,7 @@ class PageView(QtWidgets.QWidget):
         self._compute_starts()
         self.cache.clear()
         self.page = self._norm(self.page_of(pos))
+        self._in_relayout = False
         self.update()
         self.reader.page_changed()
 
