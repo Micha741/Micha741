@@ -99,7 +99,8 @@ na široké obrazovce dvě vedle sebe jako otevřená kniha – a pás karet uk�
   jako text.
 - **Překlad:** pravé tlačítko → Přeložit odstavec; **dvojklik na slovo** přeloží slovo a uloží ho do **📒 Slovníčku**
   i s větou (slovníček jde uložit jako text pro kartičky).
-- **Číst nahlas** hlasem Windows (bez internetu), odstavec po odstavci s otáčením stránek, rychlost pomaleji/rychleji.
+- **Číst nahlas** hlasem Windows (bez internetu), odstavec po odstavci s otáčením stránek; **Pozastavit / Pokračovat**,
+  **Zastavit**, rychlost pomaleji/rychleji a **výběr hlasu** (u hlasů Windows je uvedeno muž/žena).
   Český hlas je ve Windows v *Nastavení → Čas a jazyk → Řeč* (hlas „Jakub“).
 - **Vzhled:** barvy Den/Sépie/Noc, patkové/bezpatkové písmo, velikost, řádkování, okraje, zarovnání do bloku,
   jedna/dvě strany.

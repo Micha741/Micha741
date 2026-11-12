@@ -613,5 +613,12 @@
  "Číst knihu jako v čtečce: stránky, otáčení, hledání, záložky, označování, překlad a čtení nahlas (F6)": "Buch wie im E-Reader lesen: Seiten, Umblättern, Suche, Lesezeichen, Markierungen, Übersetzung und Vorlesen (F6)",
  "strana": "Seite",
  "uloženo do slovníčku": "in der Wortliste gespeichert",
- "Čtení nahlas používá hlasy Windows. Na tomto počítači nejsou k dispozici.": "Vorlesen verwendet Windows-Stimmen. Auf diesem Computer sind sie nicht verfügbar."
+ "Čtení nahlas používá hlasy Windows. Na tomto počítači nejsou k dispozici.": "Vorlesen verwendet Windows-Stimmen. Auf diesem Computer sind sie nicht verfügbar.",
+ "Pokračovat": "Fortsetzen",
+ "Pozastavit": "Pause",
+ "Číst nahlas od začátku stránky; během čtení pozastavit a pokračovat": "Ab Seitenanfang vorlesen; beim Vorlesen pausieren und fortsetzen",
+ "Hlas pro čtení nahlas (hlasy nainstalované ve Windows: Nastavení → Čas a jazyk → Řeč)": "Stimme zum Vorlesen (in Windows installierte Stimmen: Einstellungen → Zeit und Sprache → Sprache)",
+ "Hlas podle jazyka knihy": "Stimme nach Buchsprache",
+ "žena": "weiblich",
+ "muž": "männlich"
 }

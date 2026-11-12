@@ -613,5 +613,12 @@
  "Číst knihu jako v čtečce: stránky, otáčení, hledání, záložky, označování, překlad a čtení nahlas (F6)": "Read the book like in an e-reader: pages, page turning, search, bookmarks, highlights, translation and read-aloud (F6)",
  "strana": "page",
  "uloženo do slovníčku": "saved to the word list",
- "Čtení nahlas používá hlasy Windows. Na tomto počítači nejsou k dispozici.": "Read-aloud uses Windows voices. They are not available on this computer."
+ "Čtení nahlas používá hlasy Windows. Na tomto počítači nejsou k dispozici.": "Read-aloud uses Windows voices. They are not available on this computer.",
+ "Pokračovat": "Resume",
+ "Pozastavit": "Pause",
+ "Číst nahlas od začátku stránky; během čtení pozastavit a pokračovat": "Read aloud from the top of the page; pause and resume while reading",
+ "Hlas pro čtení nahlas (hlasy nainstalované ve Windows: Nastavení → Čas a jazyk → Řeč)": "Voice for reading aloud (voices installed in Windows: Settings → Time & language → Speech)",
+ "Hlas podle jazyka knihy": "Voice by book language",
+ "žena": "female",
+ "muž": "male"
 }

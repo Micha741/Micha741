@@ -19,6 +19,8 @@ export interface ReaderPrefs {
   turn: ReaderTurn;
   /** rychlost čtení nahlas (1 = normální) */
   ttsRate?: number;
+  /** hlas pro čtení nahlas (identifikátor hlasu Androidu; prázdné = výchozí) */
+  ttsVoice?: string;
 }
 
 export type ReaderTurn = 'curl' | 'slide' | 'fade' | 'none';

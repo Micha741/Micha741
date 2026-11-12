@@ -709,6 +709,7 @@ class Reader(QtWidgets.QWidget):
         self.search_sel: tuple[int, int] | None = None
         self.speak_block = -1
         self.speaking = False
+        self.paused = False
         self.speaker = None
         self.translator = None
         self.chapters: list[tuple[str, int]] = []
@@ -750,7 +751,7 @@ class Reader(QtWidgets.QWidget):
         self._save_cfg()
         if key in ("theme",):
             self.view.refresh()
-        elif key in ("turn", "tts_rate"):
+        elif key in ("turn", "tts_rate", "tts_voice"):
             pass
         elif key == "spread":
             self.view.relayout()
@@ -1005,14 +1006,39 @@ class Reader(QtWidgets.QWidget):
         if block is None:
             block = self.doc.findBlock(self.view.first_pos()).blockNumber()
         self.speaking = True
+        self.paused = False
+        self._speak_buttons()
         self.speak_next(block)
 
     def stop_speaking(self):
         self.speaking = False
+        self.paused = False
         if self.speaker:
             self.speaker.stop()
         self.speak_block = -1
+        self._speak_buttons()
         self.view.refresh()
+
+    def toggle_speaking(self):
+        """Jedno tlačítko: Číst nahlas → Pozastavit → Pokračovat."""
+        if not self.speaking:
+            self.start_speaking()
+        elif self.paused:
+            self.paused = False
+            self.speaker.resume()
+        else:
+            self.paused = True
+            self.speaker.pause()
+        self._speak_buttons()
+
+    def _speak_buttons(self):
+        b = getattr(self, "b_speak", None)
+        if b is not None:
+            b.setText(tr("Pokračovat") if self.paused else tr("Pozastavit") if self.speaking else tr("Číst nahlas"))
+            b.setIcon(emoji_icon("▶️" if self.paused else "⏸️" if self.speaking else "🔊"))
+        st = getattr(self, "b_stop", None)
+        if st is not None:
+            st.setEnabled(self.speaking)
 
     def speak_next(self, n: int):
         if not self.speaking:
@@ -1031,7 +1057,8 @@ class Reader(QtWidgets.QWidget):
         lang = LANG_CODES.get(str(self.project.get("language", "čeština")).lower(), "cs")
         nxt = b.blockNumber() + 1
         self.speaker.speak(b.text(), lang, float(self.prefs.get("tts_rate", 1.0)),
-                           on_done=lambda: bridge().later(lambda: self.speak_next(nxt)))
+                           on_done=lambda: bridge().later(lambda: self.speak_next(nxt)),
+                           voice_name=self.prefs.get("tts_voice") or None)
 
     def set_rate(self, d: float):
         r = max(0.5, min(2.0, round(float(self.prefs.get("tts_rate", 1.0)) + d, 1)))
@@ -1059,10 +1086,27 @@ def reader_ribbon(reader: Reader, big, row, group_cls) -> QtWidgets.QWidget:
     book.grid.addWidget(big(emoji_icon("🔖"), tr("Záložka"), reader.add_bookmark), 0, 2)
     book.grid.addWidget(big(emoji_icon("🖍️"), tr("Označené"), lambda: (reader.toggle_panel(True), reader.panel.setCurrentIndex(2))), 0, 3)
     voice = group_cls("Nahlas")
-    reader.b_speak = big(emoji_icon("🔊"), tr("Číst nahlas"), lambda: reader.stop_speaking() if reader.speaking else reader.start_speaking())
+    reader.b_speak = big(emoji_icon("🔊"), tr("Číst nahlas"), reader.toggle_speaking)
+    reader.b_speak.setToolTip(tr("Číst nahlas od začátku stránky; během čtení pozastavit a pokračovat"))
     voice.grid.addWidget(reader.b_speak, 0, 0)
-    voice.grid.addWidget(big(emoji_icon("🐢"), tr("Pomaleji"), lambda: reader.set_rate(-0.1)), 0, 1)
-    voice.grid.addWidget(big(emoji_icon("🐇"), tr("Rychleji"), lambda: reader.set_rate(0.1)), 0, 2)
+    reader.b_stop = big(emoji_icon("⏹️"), tr("Zastavit"), reader.stop_speaking)
+    reader.b_stop.setEnabled(False)
+    voice.grid.addWidget(reader.b_stop, 0, 1)
+    voice.grid.addWidget(big(emoji_icon("🐢"), tr("Pomaleji"), lambda: reader.set_rate(-0.1)), 0, 2)
+    voice.grid.addWidget(big(emoji_icon("🐇"), tr("Rychleji"), lambda: reader.set_rate(0.1)), 0, 3)
+    import tts_win
+
+    voices = tts_win.list_voices()
+    vc = QtWidgets.QComboBox()
+    vc.setToolTip(tr("Hlas pro čtení nahlas (hlasy nainstalované ve Windows: Nastavení → Čas a jazyk → Řeč)"))
+    vc.addItem(tr("Hlas podle jazyka knihy"), "")
+    book_lang = LANG_CODES.get(str(reader.project.get("language", "čeština")).lower(), "cs")
+    for v in sorted(voices, key=lambda v: (v["lang"] != book_lang, v["name"])):
+        vc.addItem(f"{v['name']}" + (f" ({tr(v['gender'])}, {v['lang']})" if v["gender"] else f" ({v['lang']})"), v["name"])
+    vc.setCurrentIndex(max(0, vc.findData(reader.prefs.get("tts_voice", ""))))
+    vc.currentIndexChanged.connect(lambda _i: reader.set_pref("tts_voice", vc.currentData()))
+    vc.setEnabled(bool(voices))
+    voice.grid.addWidget(vc, 1, 0, 1, 4)
     lang = group_cls("Překlad")
     lang.grid.addWidget(big(emoji_icon("📒"), tr("Slovníček"), reader.open_vocab), 0, 0)
     look = group_cls("Vzhled")

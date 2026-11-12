@@ -697,6 +697,55 @@ function OfflineBox({ settings, update }: { settings: Settings; update: (s: Part
   );
 }
 
+function VoicePicker({ visible, lang, value, onPick, onClose }: { visible: boolean; lang: string; value: string; onPick: (id: string) => void; onClose: () => void }) {
+  const [voices, setVoices] = useState<Speech.Voice[] | null>(null);
+  const [all, setAll] = useState(false);
+  useEffect(() => {
+    if (visible) Speech.getAvailableVoicesAsync().then(setVoices).catch(() => setVoices([]));
+  }, [visible]);
+  const base = lang.slice(0, 2).toLowerCase();
+  const mine = (voices ?? []).filter((v) => v.language.toLowerCase().replace('_', '-').startsWith(base));
+  const shown = all ? voices ?? [] : mine;
+  const sample: Record<string, string> = { cs: 'Dobrý den, takhle zní můj hlas.', sk: 'Dobrý deň, takto znie môj hlas.', de: 'Guten Tag, so klingt meine Stimme.', en: 'Hello, this is how my voice sounds.' };
+  const label = (v: Speech.Voice, i: number) => {
+    const local = /local/i.test(v.identifier) ? 'v telefonu' : /network/i.test(v.identifier) ? 'přes internet' : '';
+    return `Hlas ${i + 1}${v.quality === 'Enhanced' ? ' · vylepšený' : ''}${local ? ` · ${local}` : ''}`;
+  };
+  return (
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+      <Pressable style={st.modalBack} onPress={onClose}>
+        <Pressable style={[st.modal, { maxHeight: '80%' }]} onPress={() => undefined}>
+          <Text style={st.boxTitle}>🗣 Hlas pro čtení nahlas</Text>
+          <Text style={st.hint}>
+            Hlasy jsou z Androidu. Android neříká, který hlas je mužský a který ženský – klepnutím si hlas poslechnete a vyberete. Další hlasy přidáte v
+            Nastavení Androidu → Převod textu na řeč (Google) → Nainstalovat hlasová data.
+          </Text>
+          <ScrollView>
+            <Pressable onPress={() => onPick('')} style={st.chapterRow}>
+              <Text style={[st.btnText, { flex: 1 }, !value && { fontWeight: '700', color: C.accent }]}>Výchozí hlas pro jazyk knihy</Text>
+            </Pressable>
+            {voices === null ? <ActivityIndicator color={C.accent} /> : null}
+            {voices !== null && !shown.length ? <Text style={st.hint}>Pro tento jazyk není v telefonu žádný hlas – použije se výchozí.</Text> : null}
+            {shown.map((v, i) => (
+              <Pressable key={v.identifier} onPress={() => { onPick(v.identifier); Speech.stop().then(() => Speech.speak(sample[v.language.slice(0, 2).toLowerCase()] ?? v.name, { voice: v.identifier, language: v.language })).catch(() => undefined); }} style={st.chapterRow}>
+                <View style={{ flex: 1 }}>
+                  <Text style={[st.btnText, v.identifier === value && { fontWeight: '700', color: C.accent }]}>{label(v, i)}</Text>
+                  <Text style={st.hint} numberOfLines={1}>{v.language} · {v.name}</Text>
+                </View>
+                <Text style={{ color: C.accent }}>▶</Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+          <View style={st.row}>
+            <Btn small label={all ? 'Jen hlasy jazyka knihy' : 'Ukázat všechny hlasy'} onPress={() => setAll(!all)} />
+            <Btn small label="Hotovo" primary onPress={onClose} />
+          </View>
+        </Pressable>
+      </Pressable>
+    </Modal>
+  );
+}
+
 function SkinSwatch({ skin }: { skin: Skin }) {
   const k = skin.colors;
   return (
@@ -963,17 +1012,23 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
   const [speaking, setSpeaking] = useState(false);
   const speakingRef = useRef(false);
   const pendingSpeak = useRef(false);
-  const speakFromRef = useRef<(i: number) => void>(() => undefined);
+  const speakFromRef = useRef<(i: number, part?: number) => void>(() => undefined);
   const ttsLang = ({ cs: 'cs-CZ', sk: 'sk-SK', en: 'en-US', de: 'de-DE', pl: 'pl-PL', fr: 'fr-FR', es: 'es-ES', it: 'it-IT', ru: 'ru-RU', uk: 'uk-UA', hu: 'hu-HU' } as Record<string, string>)[book.language] ?? (book.language || 'cs-CZ');
   const stopSpeaking = () => {
     speakingRef.current = false;
     pendingSpeak.current = false;
+    pausedRef.current = false;
+    setPaused(false);
     setSpeaking(false);
     Speech.stop().catch(() => undefined);
     web.current?.injectJavaScript('window.readerSpeak&&window.readerSpeak(-1);true;');
   };
-  speakFromRef.current = (from: number) => {
-    if (!speakingRef.current) return;
+  // místo čtení: odstavec a věta (Android neumí hlas pozastavit – pokračuje se od věty, kde se zastavil)
+  const speakAt = useRef({ block: 0, part: 0 });
+  const pausedRef = useRef(false);
+  const [paused, setPaused] = useState(false);
+  speakFromRef.current = (from: number, fromPart = 0) => {
+    if (!speakingRef.current || pausedRef.current) return;
     const blocks = book.chapters[chapter]?.blocks ?? [];
     let i = from;
     while (i < blocks.length && !((blocks[i].type === 'p' || blocks[i].type === 'h') && (blocks[i] as { text: string }).text.trim())) i++;
@@ -986,11 +1041,11 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
     }
     const text = (blocks[i] as { text: string }).text;
     web.current?.injectJavaScript(`window.readerSpeak&&window.readerSpeak(${i});true;`);
-    // dlouhý odstavec po větách do kousků, které hlas zvládne najednou
+    // odstavec po větách (krátké věty dohromady), aby šlo pokračovat od věty
     const parts: string[] = [];
     let cur = '';
     for (const sent of text.match(/[^.!?…]+[.!?…]*\s*/g) ?? [text]) {
-      if ((cur + sent).length > 3000 && cur) {
+      if ((cur + sent).length > 280 && cur) {
         parts.push(cur);
         cur = '';
       }
@@ -998,14 +1053,34 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
     }
     if (cur.trim()) parts.push(cur);
     const say = (k: number) => {
-      if (!speakingRef.current) return;
+      if (!speakingRef.current || pausedRef.current) return;
       if (k >= parts.length) return speakFromRef.current(i + 1);
-      Speech.speak(parts[k], { language: ttsLang, rate: prefs.ttsRate ?? 1, onDone: () => say(k + 1), onError: () => stopSpeaking() });
+      speakAt.current = { block: i, part: k };
+      Speech.speak(parts[k], {
+        language: ttsLang,
+        voice: prefs.ttsVoice || undefined,
+        rate: prefs.ttsRate ?? 1,
+        onDone: () => say(k + 1),
+        onError: () => stopSpeaking(),
+      });
     };
-    say(0);
+    say(Math.min(fromPart, Math.max(0, parts.length - 1)));
   };
+  const pauseSpeaking = () => {
+    pausedRef.current = true;
+    setPaused(true);
+    Speech.stop().catch(() => undefined);
+  };
+  const resumeSpeaking = () => {
+    pausedRef.current = false;
+    setPaused(false);
+    speakFromRef.current(speakAt.current.block, speakAt.current.part);
+  };
+  const [voicePick, setVoicePick] = useState(false);
   const startSpeaking = () => {
     speakingRef.current = true;
+    pausedRef.current = false;
+    setPaused(false);
     setSpeaking(true);
     setMenu(false);
     setPanel('');
@@ -1037,13 +1112,25 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
       </View>
       {speaking ? (
         <View style={[st.ttsBar, { backgroundColor: theme.bg, borderColor: theme.muted + '55' }]}>
-          <Text style={{ color: theme.fg }}>🔊</Text>
+          <Pressable onPress={() => (paused ? resumeSpeaking() : pauseSpeaking())} hitSlop={8} accessibilityLabel={paused ? 'Pokračovat ve čtení' : 'Pozastavit čtení'}>
+            <Text style={{ color: theme.fg, fontSize: 17 }}>{paused ? '▶' : '⏸'}</Text>
+          </Pressable>
           <Pressable onPress={() => update({ reader: { ...prefs, ttsRate: Math.max(0.5, Math.round(((prefs.ttsRate ?? 1) - 0.1) * 10) / 10) } })} hitSlop={8}><Text style={{ color: theme.fg, fontSize: 17 }}>−</Text></Pressable>
           <Text style={{ color: theme.muted, fontVariant: ['tabular-nums'] }}>{(prefs.ttsRate ?? 1).toFixed(1)}×</Text>
           <Pressable onPress={() => update({ reader: { ...prefs, ttsRate: Math.min(2, Math.round(((prefs.ttsRate ?? 1) + 0.1) * 10) / 10) } })} hitSlop={8}><Text style={{ color: theme.fg, fontSize: 17 }}>+</Text></Pressable>
+          <Pressable onPress={() => setVoicePick(true)} hitSlop={8} accessibilityLabel="Vybrat hlas"><Text style={{ color: theme.fg, fontSize: 17 }}>🗣</Text></Pressable>
           <Pressable onPress={stopSpeaking} hitSlop={8} accessibilityLabel="Zastavit čtení"><Text style={{ color: theme.fg, fontSize: 17 }}>⏹</Text></Pressable>
         </View>
       ) : null}
+      <VoicePicker visible={voicePick} lang={ttsLang} value={prefs.ttsVoice ?? ''} onClose={() => setVoicePick(false)}
+        onPick={(id) => {
+          update({ reader: { ...prefs, ttsVoice: id } });
+          if (speakingRef.current && !pausedRef.current) {
+            // hned dál novým hlasem od stejné věty
+            pausedRef.current = true;
+            Speech.stop().then(() => { pausedRef.current = false; setTimeout(() => speakFromRef.current(speakAt.current.block, speakAt.current.part), 50); }).catch(() => undefined);
+          }
+        }} />
       <Pressable onPress={() => openMenu('toc')} style={[st.burger, { backgroundColor: theme.bg, borderColor: theme.muted + '55' }]} accessibilityRole="button" accessibilityLabel="Nabídka: kapitoly, hledat, označené" hitSlop={8}>
         <Text style={{ color: theme.fg, fontSize: 20, lineHeight: 22 }}>☰</Text>
       </Pressable>

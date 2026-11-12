@@ -1094,6 +1094,13 @@ E += [
     ('strana', 'page', 'strana', 'Seite'),
     ('uloženo do slovníčku', 'saved to the word list', 'uložené do slovníčka', 'in der Wortliste gespeichert'),
     ('Čtení nahlas používá hlasy Windows. Na tomto počítači nejsou k dispozici.', 'Read-aloud uses Windows voices. They are not available on this computer.', 'Čítanie nahlas používa hlasy Windows. Na tomto počítači nie sú k dispozícii.', 'Vorlesen verwendet Windows-Stimmen. Auf diesem Computer sind sie nicht verfügbar.'),
+    ('Pokračovat', 'Resume', 'Pokračovať', 'Fortsetzen'),
+    ('Pozastavit', 'Pause', 'Pozastaviť', 'Pause'),
+    ('Číst nahlas od začátku stránky; během čtení pozastavit a pokračovat', 'Read aloud from the top of the page; pause and resume while reading', 'Čítať nahlas od začiatku strany; počas čítania pozastaviť a pokračovať', 'Ab Seitenanfang vorlesen; beim Vorlesen pausieren und fortsetzen'),
+    ('Hlas pro čtení nahlas (hlasy nainstalované ve Windows: Nastavení → Čas a jazyk → Řeč)', 'Voice for reading aloud (voices installed in Windows: Settings → Time & language → Speech)', 'Hlas na čítanie nahlas (hlasy nainštalované vo Windows: Nastavenia → Čas a jazyk → Reč)', 'Stimme zum Vorlesen (in Windows installierte Stimmen: Einstellungen → Zeit und Sprache → Sprache)'),
+    ('Hlas podle jazyka knihy', 'Voice by book language', 'Hlas podľa jazyka knihy', 'Stimme nach Buchsprache'),
+    ('žena', 'female', 'žena', 'weiblich'),
+    ('muž', 'male', 'muž', 'männlich'),
 ]
 
 

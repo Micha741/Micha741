@@ -613,5 +613,12 @@
  "Číst knihu jako v čtečce: stránky, otáčení, hledání, záložky, označování, překlad a čtení nahlas (F6)": "Čítať knihu ako v čítačke: strany, otáčanie, hľadanie, záložky, označovanie, preklad a čítanie nahlas (F6)",
  "strana": "strana",
  "uloženo do slovníčku": "uložené do slovníčka",
- "Čtení nahlas používá hlasy Windows. Na tomto počítači nejsou k dispozici.": "Čítanie nahlas používa hlasy Windows. Na tomto počítači nie sú k dispozícii."
+ "Čtení nahlas používá hlasy Windows. Na tomto počítači nejsou k dispozici.": "Čítanie nahlas používa hlasy Windows. Na tomto počítači nie sú k dispozícii.",
+ "Pokračovat": "Pokračovať",
+ "Pozastavit": "Pozastaviť",
+ "Číst nahlas od začátku stránky; během čtení pozastavit a pokračovat": "Čítať nahlas od začiatku strany; počas čítania pozastaviť a pokračovať",
+ "Hlas pro čtení nahlas (hlasy nainstalované ve Windows: Nastavení → Čas a jazyk → Řeč)": "Hlas na čítanie nahlas (hlasy nainštalované vo Windows: Nastavenia → Čas a jazyk → Reč)",
+ "Hlas podle jazyka knihy": "Hlas podľa jazyka knihy",
+ "žena": "žena",
+ "muž": "muž"
 }

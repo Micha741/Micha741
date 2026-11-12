@@ -193,3 +193,54 @@ def test_pdf_with_password_and_protected(tmp_path):
     rc4.write_bytes((fx / "heslo-rc4.pdf").read_bytes())
     assert ebook_more.set_pdf_password(str(rc4), "majitel")  # heslo vlastníka
     assert len(ebook.read_book(str(rc4)).chapters) == 3
+
+
+def test_read_aloud_pause_resume_stop_and_voice(qapp, monkeypatch):
+    import tts_win
+    from qt_editor import BookEditor
+
+    calls = []
+
+    class FakeSpeaker:
+        def speak(self, text, lang, rate, on_done=None, voice_name=None):
+            calls.append(("speak", text[:12], lang, voice_name))
+            self.on_done = on_done
+
+        def pause(self):
+            calls.append(("pause",))
+
+        def resume(self):
+            calls.append(("resume",))
+
+        def stop(self):
+            calls.append(("stop",))
+
+    monkeypatch.setattr(tts_win, "available", lambda: True)
+    monkeypatch.setattr(tts_win, "Speaker", FakeSpeaker)
+    monkeypatch.setattr(tts_win, "list_voices", lambda: [{"name": "Microsoft Jakub", "lang": "cs", "gender": "muž"},
+                                                          {"name": "Microsoft Zira", "lang": "en", "gender": "žena"}])
+    proj = project(1, 4)
+    ed = BookEditor(proj, Path("x.kniha.json"), None, text_assist={}, save_options=lambda: None, app_cfg={})
+    ed.set_mode(True)
+    r = ed.reader
+    vc = [c for c in ed.findChildren(QtWidgets.QComboBox) if c.findData("Microsoft Jakub") >= 0][0]
+    assert "Microsoft Jakub (muž, cs)" in [vc.itemText(i) for i in range(vc.count())]
+    vc.setCurrentIndex(vc.findData("Microsoft Jakub"))
+    assert r.prefs["tts_voice"] == "Microsoft Jakub"
+    r.b_speak.click()  # číst
+    assert r.speaking and calls[-1][0] == "speak" and calls[-1][2] == "cs" and calls[-1][3] == "Microsoft Jakub"
+    assert r.b_speak.text() == "Pozastavit" and r.b_stop.isEnabled()
+    r.b_speak.click()  # pozastavit
+    assert calls[-1] == ("pause",) and r.b_speak.text() == "Pokračovat"
+    r.b_speak.click()  # pokračovat
+    assert calls[-1] == ("resume",) and r.b_speak.text() == "Pozastavit"
+    first = r.speak_block
+    r.speaker.on_done()  # odstavec dočten → další
+    qapp.processEvents()
+    QtCore.QCoreApplication.sendPostedEvents()
+    qapp.processEvents()
+    assert r.speak_block > first
+    r.b_stop.click()
+    assert not r.speaking and calls[-1] == ("stop",) and r.b_speak.text() == "Číst nahlas" and not r.b_stop.isEnabled()
+    ed.dirty = False
+    ed.close()
