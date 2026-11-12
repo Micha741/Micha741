@@ -87,6 +87,14 @@
             {
               "scheme": "file",
               "mimeType": "application/octet-stream"
+            },
+            {
+              "scheme": "content",
+              "mimeType": "application/json"
+            },
+            {
+              "scheme": "file",
+              "mimeType": "application/json"
             }
           ]
         }
