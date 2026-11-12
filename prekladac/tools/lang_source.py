@@ -1132,7 +1132,58 @@ E += [
     ('Pokračovat', 'Resume', 'Pokračovať', 'Fortsetzen'),
     ('Pozastavit', 'Pause', 'Pozastaviť', 'Pause'),
     ('Číst nahlas od začátku stránky; během čtení pozastavit a pokračovat', 'Read aloud from the top of the page; pause and resume while reading', 'Čítať nahlas od začiatku strany; počas čítania pozastaviť a pokračovať', 'Ab Seitenanfang vorlesen; beim Vorlesen pausieren und fortsetzen'),
-    ('Hlas pro čtení nahlas (hlasy nainstalované ve Windows: Nastavení → Čas a jazyk → Řeč)', 'Voice for reading aloud (voices installed in Windows: Settings → Time & language → Speech)', 'Hlas na čítanie nahlas (hlasy nainštalované vo Windows: Nastavenia → Čas a jazyk → Reč)', 'Stimme zum Vorlesen (in Windows installierte Stimmen: Einstellungen → Zeit und Sprache → Sprache)'),
+    ("Hlas pro čtení nahlas: hlasy Windows (Nastavení → Čas a jazyk → Řeč) a stažené hlasy, které čtou bez internetu",
+     "Voice for reading aloud: Windows voices (Settings → Time & language → Speech) and downloaded voices that work "
+     "offline", "Hlas na čítanie nahlas: hlasy Windows (Nastavenia → Čas a jazyk → Reč) a stiahnuté hlasy, ktoré "
+     "čítajú bez internetu", "Vorlesestimme: Windows-Stimmen (Einstellungen → Zeit und Sprache → Sprache) und "
+     "heruntergeladene Stimmen, die offline funktionieren"),
+    ("Ve Windows není {} hlas, proto by kniha zněla anglicky.\n\nProgram může stáhnout {} hlas {} (zdarma, asi {} MB). "
+     "Čte bez internetu, přímo v počítači.\n\nJiná možnost: v Nastavení Windows → Čas a jazyk → Řeč → Přidat hlasy "
+     "zvolte Čeština (hlas Microsoft Jakub) a program ho pak najde sám.",
+     "Windows has no {} voice, so the book would sound English.\n\nThe program can download the {} voice {} (free, "
+     "about {} MB). It reads offline, right on your computer.\n\nAlternatively: in Windows Settings → Time & "
+     "language → Speech → Add voices choose Czech (Microsoft Jakub) and the program will find it.",
+     "Vo Windows nie je {} hlas, preto by kniha znela anglicky.\n\nProgram môže stiahnuť {} hlas {} (zadarmo, asi {} "
+     "MB). Číta bez internetu, priamo v počítači.\n\nIná možnosť: v Nastaveniach Windows → Čas a jazyk → Reč → "
+     "Pridať hlasy zvoľte Slovenčina a program ho potom nájde sám.",
+     "Windows hat keine Stimme ({}), das Buch würde englisch klingen.\n\nDas Programm kann die Stimme ({}) {} "
+     "herunterladen (kostenlos, etwa {} MB). Sie liest offline auf Ihrem Computer.\n\nAlternativ: Windows-"
+     "Einstellungen → Zeit und Sprache → Sprache → Stimmen hinzufügen."),
+    ("český", "Czech", "český", "Tschechisch"),
+    ("slovenský", "Slovak", "slovenský", "Slowakisch"),
+    ("⬇ Stáhnout hlas", "⬇ Download voice", "⬇ Stiahnuť hlas", "⬇ Stimme herunterladen"),
+    ("Číst hlasem Windows", "Read with Windows voice", "Čítať hlasom Windows", "Mit Windows-Stimme lesen"),
+    ("Zrušit", "Cancel", "Zrušiť", "Abbrechen"),
+    ("Stahuji hlas {}…", "Downloading voice {}…", "Sťahujem hlas {}…", "Stimme {} wird heruntergeladen…"),
+    ("Hlas se nepodařilo stáhnout:\n{}", "The voice could not be downloaded:\n{}",
+     "Hlas sa nepodarilo stiahnuť:\n{}", "Die Stimme konnte nicht heruntergeladen werden:\n{}"),
+    ("⬇ Stáhnout hlas {} ({}, bez internetu)…", "⬇ Download voice {} ({}, offline)…",
+     "⬇ Stiahnuť hlas {} ({}, bez internetu)…", "⬇ Stimme {} herunterladen ({}, offline)…"),
+    ("Stahuji program pro čtení nahlas Piper (asi 22 MB)…", "Downloading the Piper reading program (about 22 MB)…",
+     "Sťahujem program na čítanie nahlas Piper (asi 22 MB)…", "Lade das Vorleseprogramm Piper (etwa 22 MB)…"),
+    ("Čtečka", "Reader", "Čítačka", "Lesen"),
+    ("📖 Čtečka", "📖 Reader", "📖 Čítačka", "📖 Lesen"),
+    ("Otevřete knihu a čtěte ji jako v e-čtečce: listování stránek, záložky, označování barvami s poznámkou, "
+     "hledání, překlad slova, slovníček a čtení nahlas. Mezi čtením a úpravami knihy přepnete v levém panelu "
+     "(Napsat knihu / Čtečka) nebo klávesou F6.", "Open a book and read it like on an e-reader: page turning, "
+     "bookmarks, colour highlights with notes, search, word translation, vocabulary and reading aloud. Switch between "
+     "reading and editing in the left panel (Write a book / Reader) or with F6.",
+     "Otvorte knihu a čítajte ju ako v e-čítačke: listovanie strán, záložky, označovanie farbami s poznámkou, "
+     "hľadanie, preklad slova, slovníček a čítanie nahlas. Medzi čítaním a úpravami prepnete v ľavom paneli "
+     "(Napísať knihu / Čítačka) alebo klávesom F6.", "Öffnen Sie ein Buch und lesen Sie es wie auf einem E-Reader: "
+     "Blättern, Lesezeichen, farbige Markierungen mit Notiz, Suche, Wortübersetzung, Vokabeln und Vorlesen. "
+     "Zwischen Lesen und Bearbeiten wechseln Sie im linken Bereich (Buch schreiben / Lesen) oder mit F6."),
+    (" Otevřít knihu ke čtení…", " Open a book to read…", " Otvoriť knihu na čítanie…", " Buch zum Lesen öffnen…"),
+    ("Otevřít knihu ke čtení", "Open a book to read", "Otvoriť knihu na čítanie", "Buch zum Lesen öffnen"),
+    ("EPUB, PDF (i s heslem), DOCX, MOBI, AZW3, FB2, ODT, RTF, TXT nebo projekt knihy *.kniha.json",
+     "EPUB, PDF (also password-protected), DOCX, MOBI, AZW3, FB2, ODT, RTF, TXT or a book project *.kniha.json",
+     "EPUB, PDF (aj s heslom), DOCX, MOBI, AZW3, FB2, ODT, RTF, TXT alebo projekt knihy *.kniha.json",
+     "EPUB, PDF (auch mit Passwort), DOCX, MOBI, AZW3, FB2, ODT, RTF, TXT oder ein Buchprojekt *.kniha.json"),
+    ("Naposledy otevřené knihy", "Recently opened books", "Naposledy otvorené knihy", "Zuletzt geöffnete Bücher"),
+    ("Zatím žádné – otevřené knihy se objeví tady.", "None yet – opened books will appear here.",
+     "Zatiaľ žiadne – otvorené knihy sa objavia tu.", "Noch keine – geöffnete Bücher erscheinen hier."),
+    ("Kniha nemá žádný text ke čtení.", "The book has no text to read.", "Kniha nemá žiadny text na čítanie.",
+     "Das Buch enthält keinen Text zum Lesen."),
     ('Hlas podle jazyka knihy', 'Voice by book language', 'Hlas podľa jazyka knihy', 'Stimme nach Buchsprache'),
     ('žena', 'female', 'žena', 'weiblich'),
     ('muž', 'male', 'muž', 'männlich'),

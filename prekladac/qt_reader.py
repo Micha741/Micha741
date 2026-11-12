@@ -210,9 +210,17 @@ class PageView(QtWidgets.QWidget):
         lay.setPaintDevice(self)
         if getattr(lay, "_reader_watch", None) is not self:
             lay._reader_watch = self
-            lay.documentSizeChanged.connect(lambda _s: QtCore.QTimer.singleShot(0, self._layout_changed))
+            lay.documentSizeChanged.connect(self._size_changed)  # metoda okna: po zavření se odpojí sama
+
+    def _size_changed(self, _size=None):
+        QtCore.QTimer.singleShot(0, self, self._layout_changed)  # s oknem jako kontextem – po zavření se nezavolá
 
     def _layout_changed(self):
+        try:
+            if not self.isVisible() and not self.starts:
+                return
+        except RuntimeError:  # okno už je zrušené
+            return
         if self.doc is None or self._in_relayout or self.turning:
             return
         old = list(self.starts)
@@ -744,6 +752,8 @@ class VocabDialog(QtWidgets.QDialog):
 class Reader(QtWidgets.QWidget):
     """Čtečka pro okno knihy. project = projekt knihy, app_cfg = nastavení programu (překladač, vzhled)."""
 
+    voices_changed = QtCore.Signal()  # stažen nový hlas → obnovit výběr hlasů
+
     def __init__(self, project: dict, app_cfg: dict | None = None, save_cfg=None, parent=None):
         super().__init__(parent)
         self.project = project
@@ -1042,7 +1052,14 @@ class Reader(QtWidgets.QWidget):
     def start_speaking(self, block: int | None = None):
         import tts_win
 
-        if not tts_win.available():
+        lang = self.book_lang()
+        chosen = self.prefs.get("tts_voice") or ""
+        if not chosen and tts_win.has_voice(lang) is not True and tts_win.PIPER_VOICES.get(lang):
+            if self.offer_voice_download(lang):
+                return  # čtení začne samo po stažení hlasu
+            if not tts_win.available():
+                return
+        elif not tts_win.any_voice():
             QtWidgets.QMessageBox.information(self, tr("Čtení nahlas"), tr(
                 "Čtení nahlas používá hlasy Windows. Na tomto počítači nejsou k dispozici."))
             return
@@ -1054,6 +1071,49 @@ class Reader(QtWidgets.QWidget):
         self.paused = False
         self._speak_buttons()
         self.speak_next(block)
+
+    def book_lang(self) -> str:
+        return LANG_CODES.get(str(self.project.get("language", "čeština")).lower(), "cs")
+
+    def offer_voice_download(self, lang: str, ask: bool = True) -> bool:
+        """Ve Windows chybí hlas pro jazyk knihy → nabídnout stažení hlasu Piper. True = stahuje se."""
+        import tts_win
+        from qt_common import run_bg
+
+        model, name, gender, mb = tts_win.PIPER_VOICES[lang][0]
+        lang_name = {"cs": "český", "sk": "slovenský"}.get(lang, lang)
+        if ask:
+            box = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Question, tr("Čtení nahlas"), tr(
+                "Ve Windows není {} hlas, proto by kniha zněla anglicky.\n\n"
+                "Program může stáhnout {} hlas {} (zdarma, asi {} MB). Čte bez internetu, přímo v počítači.\n\n"
+                "Jiná možnost: v Nastavení Windows → Čas a jazyk → Řeč → Přidat hlasy zvolte Čeština "
+                "(hlas Microsoft Jakub) a program ho pak najde sám.").format(lang_name, lang_name, name, mb + 22),
+                parent=self)
+            b_dl = box.addButton(tr("⬇ Stáhnout hlas"), QtWidgets.QMessageBox.AcceptRole)
+            box.addButton(tr("Číst hlasem Windows") if tts_win.available() else tr("Zrušit"),
+                          QtWidgets.QMessageBox.RejectRole)
+            box.setDefaultButton(b_dl)
+            box.exec()
+            if box.clickedButton() is not b_dl:
+                return False
+        prog = QtWidgets.QProgressDialog(tr("Stahuji hlas {}…").format(name), None, 0, 0, self)
+        prog.setWindowTitle(tr("Čtení nahlas"))
+        prog.setMinimumDuration(0)
+        prog.show()
+        log = lambda m: bridge().later(lambda: prog.setLabelText(m))  # noqa: E731
+
+        def done(voice, err):
+            prog.close()
+            if err:
+                QtWidgets.QMessageBox.warning(self, tr("Čtení nahlas"),
+                                              tr("Hlas se nepodařilo stáhnout:\n{}").format(err))
+                return
+            self.set_pref("tts_voice", voice["name"])
+            self.voices_changed.emit()
+            self.start_speaking()
+
+        run_bg(lambda: tts_win.download_piper(lang, log), done)
+        return True
 
     def stop_speaking(self):
         self.speaking = False
@@ -1099,7 +1159,7 @@ class Reader(QtWidgets.QWidget):
         if not (self.view.page <= page < self.view.page + self.view.step()):
             self.view.goto_page(page, animate=True)
         self.view.refresh()
-        lang = LANG_CODES.get(str(self.project.get("language", "čeština")).lower(), "cs")
+        lang = self.book_lang()
         nxt = b.blockNumber() + 1
         self.speaker.speak(b.text(), lang, float(self.prefs.get("tts_rate", 1.0)),
                            on_done=lambda: bridge().later(lambda: self.speak_next(nxt)),
@@ -1139,18 +1199,37 @@ def reader_ribbon(reader: Reader, big, row, group_cls) -> QtWidgets.QWidget:
     voice.grid.addWidget(reader.b_stop, 0, 1)
     voice.grid.addWidget(big(emoji_icon("🐢"), tr("Pomaleji"), lambda: reader.set_rate(-0.1)), 0, 2)
     voice.grid.addWidget(big(emoji_icon("🐇"), tr("Rychleji"), lambda: reader.set_rate(0.1)), 0, 3)
-    import tts_win
-
-    voices = tts_win.list_voices()
     vc = QtWidgets.QComboBox()
-    vc.setToolTip(tr("Hlas pro čtení nahlas (hlasy nainstalované ve Windows: Nastavení → Čas a jazyk → Řeč)"))
-    vc.addItem(tr("Hlas podle jazyka knihy"), "")
-    book_lang = LANG_CODES.get(str(reader.project.get("language", "čeština")).lower(), "cs")
-    for v in sorted(voices, key=lambda v: (v["lang"] != book_lang, v["name"])):
-        vc.addItem(f"{v['name']}" + (f" ({tr(v['gender'])}, {v['lang']})" if v["gender"] else f" ({v['lang']})"), v["name"])
-    vc.setCurrentIndex(max(0, vc.findData(reader.prefs.get("tts_voice", ""))))
-    vc.currentIndexChanged.connect(lambda _i: reader.set_pref("tts_voice", vc.currentData()))
-    vc.setEnabled(bool(voices))
+    vc.setToolTip(tr("Hlas pro čtení nahlas: hlasy Windows (Nastavení → Čas a jazyk → Řeč) "
+                     "a stažené hlasy, které čtou bez internetu"))
+
+    def fill_voices():
+        import tts_win
+
+        vc.blockSignals(True)
+        vc.clear()
+        voices = tts_win.list_voices()
+        vc.addItem(tr("Hlas podle jazyka knihy"), "")
+        book_lang = reader.book_lang()
+        for v in sorted(voices, key=lambda v: (v["lang"] != book_lang, v["name"])):
+            vc.addItem(v.get("label", v["name"]) + (f" ({tr(v['gender'])}, {v['lang']})" if v["gender"] else f" ({v['lang']})"),
+                       v["name"])
+        if book_lang in tts_win.PIPER_VOICES and not tts_win.piper_installed(book_lang):
+            m = tts_win.PIPER_VOICES[book_lang][0]
+            vc.addItem(tr("⬇ Stáhnout hlas {} ({}, bez internetu)…").format(m[1], book_lang), "download")
+        vc.setCurrentIndex(max(0, vc.findData(reader.prefs.get("tts_voice", ""))))
+        vc.blockSignals(False)
+
+    def chosen(_i):
+        if vc.currentData() == "download":
+            vc.setCurrentIndex(max(0, vc.findData(reader.prefs.get("tts_voice", ""))))
+            reader.offer_voice_download(reader.book_lang(), ask=False)
+            return
+        reader.set_pref("tts_voice", vc.currentData())
+
+    fill_voices()
+    vc.currentIndexChanged.connect(chosen)
+    reader.voices_changed.connect(fill_voices)
     voice.grid.addWidget(vc, 1, 0, 1, 4)
     lang = group_cls("Překlad")
     lang.grid.addWidget(big(emoji_icon("📒"), tr("Slovníček"), reader.open_vocab), 0, 0)

@@ -280,6 +280,7 @@ class FindDialog(QtWidgets.QDialog):
 
 class BookEditor(QtWidgets.QMainWindow):
     closed = QtCore.Signal()  # editor byl zavřen (hlavní okno se vrátí na Napsat knihu)
+    mode_changed = QtCore.Signal(bool)  # True = čtečka (levý panel hlavního okna přepne na Čtečka)
 
     def __init__(self, project: dict, path: Path, ebook_convert: str | None, parent=None,
                  autosave: dict | None = None, text_assist: dict | None = None, save_options=None,
@@ -477,6 +478,7 @@ class BookEditor(QtWidgets.QMainWindow):
             self.text.setFocus()
         self.b_mode_read.setChecked(read)
         self.b_mode_edit.setChecked(not read)
+        self.mode_changed.emit(read)
 
     def _file_tab(self) -> QtWidgets.QWidget:
         """Karta Soubor jako ve Wordu: uložit, uložit jako (DOCX, PDF, MOBI, ODT, TXT…), export, tisk."""

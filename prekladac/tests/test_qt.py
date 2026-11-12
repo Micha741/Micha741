@@ -113,9 +113,9 @@ def test_main_window_builds(qapp):
     import qt_main
 
     w = qt_main.MainWindow()
-    for i in range(3):
+    for i in range(4):
         w.nav.setCurrentRow(i)
-    assert w.stack.currentIndex() == 2
+    assert w.stack.currentIndex() == 3
     w.book.desc.setPlainText("krátce")
     w.close()
 
@@ -920,4 +920,38 @@ def test_stale_calibre_path_is_forgotten(qapp, monkeypatch):
     monkeypatch.setattr(qt_main, "find_ebook_convert", lambda *a: None)
     win = qt_main.MainWindow()
     assert win.cfg["paths"]["ebook_convert"] == ""
+    win.close()
+
+
+def test_reader_in_sidebar_opens_book_for_reading(qapp, tmp_path):
+    """Levý panel → Čtečka: otevřít knihu rovnou ke čtení; Napsat knihu / Čtečka přepíná úpravy a čtení."""
+    import qt_main
+    win = qt_main.MainWindow()
+    win.show()
+    texts = [win.nav.item(i).text() for i in range(win.nav.count())]
+    assert texts == ["Překlad", "Napsat knihu", "Čtečka", "Nastavení"]
+    win.nav.setCurrentRow(win.READER_ROW)
+    assert win.stack.currentWidget().findChild(qt_main.ReaderPage) is win.reader_page
+    proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000,
+            "chapters": [{"text": "Bouře zuřila nad mořem. " * 40, "summary": ""}]}
+    path = tmp_path / "k.kniha.json"
+    bw.save_project(path, proj)
+    win.reader_page.open_path(str(path))
+    ed = win.editor
+    assert ed is not None and win.stack.currentWidget() is ed and ed.reading()
+    assert win.nav.currentRow() == win.READER_ROW
+    win.nav.setCurrentRow(win.BOOK_ROW)                     # Napsat knihu = úpravy téže knihy
+    assert win.stack.currentWidget() is ed and not ed.reading()
+    ed.b_mode_read.click()                                  # přepínač v okně knihy označí Čtečku v panelu
+    assert win.nav.currentRow() == win.READER_ROW and ed.reading()
+    win.nav.setCurrentRow(0)
+    win.nav.setCurrentRow(win.READER_ROW)
+    assert win.stack.currentWidget() is ed and ed.reading()
+    win.reader_page.open_path(str(path))                    # tatáž kniha = jen přepnout
+    assert win.editor is ed
+    ed.dirty = False
+    ed.b_back.click()
+    assert win.editor is None and win.stack.currentIndex() == win.READER_ROW
+    win.reader_page.rebuild_recent()
+    assert any(str(path) == w.toolTip() for w in win.reader_page.recent_box.findChildren(QtWidgets.QToolButton))
     win.close()

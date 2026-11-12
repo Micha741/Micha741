@@ -36,6 +36,11 @@ jobs:
       - name: Testy
         run: python -m pytest tests -q -p no:cacheprovider
 
+      - name: Čtení nahlas – český hlas Piper (skutečné stažení a namluvení věty)
+        run: |
+          $env:APPDATA = "$env:RUNNER_TEMP\appdata"
+          python -c "import sys; sys.path.insert(0, '.'); import tts_win as t; v = t.download_piper('cs', print); out = r'$env:RUNNER_TEMP\veta.wav'; t.piper_synthesize('Dobrý den, tohle je český hlas pro čtení knih.', v['model'], 1.0, out); s = t.wav_seconds(out); print('délka', s); assert s > 1.5; print([x['name'] for x in t.list_voices()])"
+
       - name: Sestavení programu (složka, bez rozbalování do Temp)
         run: |
           "VERSION = `"1.0.$env:GITHUB_RUN_NUMBER`"" | Set-Content -Encoding utf8 version.py
@@ -47,7 +52,7 @@ jobs:
             --add-binary "$spl;sentencepiece.libs" `
             --version-file "$PWD\build\version_info.txt" `
             --collect-all ctranslate2 --collect-all sentencepiece --collect-data sacremoses `
-            --collect-all pypdfium2 --collect-all pypdfium2_raw --hidden-import comtypes.client --exclude-module tkinter `
+            --collect-all pypdfium2 --collect-all pypdfium2_raw --hidden-import comtypes.client --hidden-import winsound --exclude-module tkinter `
             --icon "$PWD\assets\icon.ico" --add-data "$PWD\assets;assets" `
             --distpath build\dist --workpath build\work --specpath build app.py
           Move-Item build\dist\Prekladac build\app
