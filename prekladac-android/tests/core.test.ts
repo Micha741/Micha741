@@ -370,7 +370,7 @@ test('PDF: jednoduché písmo s WinAnsi a Differences, TJ s mezerami, objektový
 test('PDF: zašifrované a sken bez textu dají srozumitelnou chybu', async () => {
   const enc = makePdf(['<< /Type /Catalog /Pages 2 0 R >>', '<< /Type /Pages /Kids [] /Count 0 >>']);
   const withEncrypt = Uint8Array.from([...enc.subarray(0, enc.length - 20), ...Uint8Array.from('trailer << /Root 1 0 R /Encrypt 9 0 R >>\n', (c) => c.charCodeAt(0))]);
-  assert.throws(() => readPdf(withEncrypt, 'a.pdf'), /heslem/);
+  assert.throws(() => readPdf(withEncrypt, 'a.pdf'), /DRM/); // šifrování, které nejde přečíst (např. Adobe DRM)
   const scan = makePdf([
     '<< /Type /Catalog /Pages 2 0 R >>',
     '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
