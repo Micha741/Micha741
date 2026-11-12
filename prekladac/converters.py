@@ -533,12 +533,9 @@ def pdf_to_docx(src: str, dst: str, tr: Translator, translate: bool, log: Log = 
     import docx
     from pypdf import PdfReader, PdfWriter
 
-    reader = PdfReader(src)
-    if reader.is_encrypted:
-        try:
-            reader.decrypt("")
-        except Exception as e:
-            raise RuntimeError("PDF je zaheslované.") from e
+    from ebook_more import open_pdf
+
+    reader = open_pdf(Path(src).read_bytes())  # zašifrované PDF: prázdné nebo zadané heslo
     total = len(reader.pages)
     chunks = [(s, min(s + PDF_PAGES_PER_CHUNK, total)) for s in range(0, total, PDF_PAGES_PER_CHUNK)]
     log(f"  PDF: {total} stran, {len(chunks)} částí po {PDF_PAGES_PER_CHUNK} stranách")

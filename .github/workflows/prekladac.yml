@@ -47,7 +47,7 @@ jobs:
             --add-binary "$spl;sentencepiece.libs" `
             --version-file "$PWD\build\version_info.txt" `
             --collect-all ctranslate2 --collect-all sentencepiece --collect-data sacremoses `
-            --collect-all pypdfium2 --collect-all pypdfium2_raw --exclude-module tkinter `
+            --collect-all pypdfium2 --collect-all pypdfium2_raw --hidden-import comtypes.client --exclude-module tkinter `
             --icon "$PWD\assets\icon.ico" --add-data "$PWD\assets;assets" `
             --distpath build\dist --workpath build\work --specpath build app.py
           Move-Item build\dist\Prekladac build\app

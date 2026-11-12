@@ -23,6 +23,8 @@
 - Instalátor s Tesseractem a českým slovníkem (asi o 300 MB menší), upozornění na novou verzi.
 - Vlastní převody EPUB, MOBI, PDB, DOCX, RTF, ODT, FB2, HTMLZ, TXT a PDF bez Calibre; Calibre volitelně pro zápis AZW3, KFX a LIT.
 - Jazyk programu: čeština, angličtina, slovenština, němčina (další jazyky jde doinstalovat).
+- Čtečka v okně knihy (přepínač ✏️ Úpravy / 📖 Čtení, F6): stránky jedna/dvě vedle sebe, animace otočení stránky, obsah, hledání v knize, záložky, zvýraznění 4 barvami s poznámkami, překlad odstavce a slova se slovníčkem, čtení nahlas hlasem Windows.
+- PDF s heslem: program se zeptá na heslo (uživatele nebo vlastníka); PDF chráněná jen proti tisku/kopírování otevře rovnou.
 - Skiny (vzhledy) jako ve Winampu: Výchozí, Tmavý, Sépie, Vysoký kontrast a doinstalování dalších ze souboru .skin – i na Androidu.
 - Srozumitelná hláška, když neběží vlastní server (LibreTranslate, Ollama), a podrobný návod k LibreTranslate (Python, Docker, server pro domácí síť).
 - Android: překlad „Offline v telefonu“ (Google ML Kit) – bez internetu a bez klíče, jazyky se stahují jednou.

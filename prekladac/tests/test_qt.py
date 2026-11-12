@@ -581,7 +581,8 @@ def test_editor_file_tab_save_as_and_panel(qapp, tmp_path, monkeypatch):
     opts = {}
     ed = BookEditor(proj, p, None, text_assist=opts, save_options=lambda: None)
     ed.show()
-    assert [ed.ribbon.tabText(i) for i in range(ed.ribbon.count())] == ["Soubor", "Domů", "Kniha", "Zobrazení"]
+    assert [ed.ribbon.tabText(i) for i in range(ed.ribbon.count()) if ed.ribbon.isTabVisible(i)] == [
+        "Soubor", "Domů", "Kniha", "Zobrazení"]  # karta Čtení je jen v režimu čtení
     assert ed.ribbon.currentIndex() == 1
     # panel kapitol
     assert ed.chapters_dock.isVisible()

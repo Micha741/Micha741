@@ -87,6 +87,28 @@ Výsledek se uloží vedle originálu jako `název (čeština).přípona`.
 uloží se tlačítkem Uložit nastavení. Instalátor i `Prekladac.exe` mají ve Vlastnostech → Podrobnosti verzi souboru,
 autorská práva a popis.
 
+### Čtečka (režim Čtení)
+
+V okně knihy vpravo nahoře přepnete **✏️ Úpravy / 📖 Čtení** (nebo F6). V režimu čtení se kniha vysází do stránek –
+na široké obrazovce dvě vedle sebe jako otevřená kniha – a pás karet ukáže nabídku čtečky:
+
+- **Listovat:** klepnutím na okraj stránky, kolečkem myši, šipkami, PgUp/PgDn nebo tažením myší; animace
+  *otočení stránky* (stránka se otáčí kolem hřbetu se stínem), *posun*, *prolnutí* nebo bez animace.
+- **Kniha:** Obsah, **Hledat** v celé knize (bez ohledu na háčky a velikost písmen, Ctrl+F), **Záložka**, **Označené**.
+- **Označit odstavec** 4 barvami s **poznámkou** (pravé tlačítko myši na odstavci); označené a poznámky jdou uložit
+  jako text.
+- **Překlad:** pravé tlačítko → Přeložit odstavec; **dvojklik na slovo** přeloží slovo a uloží ho do **📒 Slovníčku**
+  i s větou (slovníček jde uložit jako text pro kartičky).
+- **Číst nahlas** hlasem Windows (bez internetu), odstavec po odstavci s otáčením stránek, rychlost pomaleji/rychleji.
+  Český hlas je ve Windows v *Nastavení → Čas a jazyk → Řeč* (hlas „Jakub“).
+- **Vzhled:** barvy Den/Sépie/Noc, patkové/bezpatkové písmo, velikost, řádkování, okraje, zarovnání do bloku,
+  jedna/dvě strany.
+
+Kniha se při čtení nemění; místo čtení, záložky a označení se ukládají zvlášť v `%APPDATA%\Prekladac\reader`.
+
+PDF **chráněné heslem** program otevře po zadání hesla (heslo uživatele i vlastníka); PDF chráněná jen proti tisku
+nebo kopírování otevře bez dotazu. PDF s Adobe DRM otevřít nejde.
+
 ### Vzhled (skiny)
 
 Jako ve Winampu: *⚙ Nastavení → Vzhled*. Vestavěné skiny **Výchozí**, **Tmavý**, **Sépie (papír)** a **Vysoký

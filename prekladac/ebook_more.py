@@ -8,6 +8,7 @@ from __future__ import annotations
 import base64
 import html as htmllib
 import io
+from pathlib import Path
 import re
 import struct
 import time
@@ -965,12 +966,63 @@ def kf8_start(recs: list[bytes]) -> int | None:
 
 
 # ================================================================== PDF – čtení textu
+# hesla k PDF zadaná v tomto spuštění programu (podle otisku souboru, na disk se neukládají)
+PDF_PASSWORDS: dict[str, str] = {}
+
+
+class PdfPasswordRequired(ValueError):
+    """PDF chráněné heslem pro otevření – okno se zeptá na heslo a zkusí to znovu."""
+
+    def __init__(self, digest: str, wrong: bool):
+        super().__init__("Heslo k PDF nesouhlasí." if wrong else "PDF je chráněné heslem – zadejte heslo k otevření.")
+        self.digest, self.wrong = digest, wrong
+
+
+def pdf_digest(data: bytes) -> str:
+    import hashlib
+
+    return hashlib.sha1(data).hexdigest()
+
+
+def open_pdf(data: bytes):
+    """PdfReader; zašifrované PDF odemkne prázdným heslem (jen zákaz tisku/kopírování) nebo zadaným heslem."""
+    from pypdf import PdfReader
+
+    r = PdfReader(io.BytesIO(data))
+    if r.is_encrypted:
+        d = pdf_digest(data)
+        pw = PDF_PASSWORDS.get(d, "")
+        try:
+            ok = r.decrypt(pw)
+        except Exception as e:  # noqa: BLE001 – např. chybějící knihovna pro AES
+            raise ValueError(f"PDF je zašifrované a nepodařilo se ho odemknout: {e}") from e
+        if not ok:
+            raise PdfPasswordRequired(d, bool(pw))
+    return r
+
+
+def pdf_needs_password(path: str) -> bool:
+    try:
+        open_pdf(Path(path).read_bytes())
+        return False
+    except PdfPasswordRequired:
+        return True
+    except Exception:  # noqa: BLE001 – jiné chyby nahlásí až samotný převod
+        return False
+
+
+def set_pdf_password(path: str, password: str) -> bool:
+    """Zapamatuje heslo k souboru; vrátí True, když s ním PDF jde otevřít."""
+    PDF_PASSWORDS[pdf_digest(Path(path).read_bytes())] = password
+    return not pdf_needs_password(path)
+
+
 def read_pdf(data: bytes, base: str = "Kniha") -> RichBook:
     try:
-        from pypdf import PdfReader
+        import pypdf  # noqa: F401
     except ImportError as e:  # pragma: no cover
         raise ebook.NeedsCalibre("chybí knihovna pypdf") from e
-    r = PdfReader(io.BytesIO(data))
+    r = open_pdf(data)
     meta = r.metadata or {}
     pages = [(p.extract_text() or "") for p in r.pages]
     if not "".join(pages).strip():

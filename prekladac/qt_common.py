@@ -241,3 +241,21 @@ def set_status(lb: QtWidgets.QLabel, ok: bool | None, text: str) -> None:
     lb.setObjectName({True: "Ok", False: "Warn", None: "Hint"}[ok])
     lb.style().unpolish(lb)
     lb.style().polish(lb)
+
+
+def ask_pdf_passwords(parent, paths) -> bool:
+    """U PDF chráněných heslem se zeptá na heslo (i opakovaně). False = uživatel zrušil."""
+    from ebook_more import pdf_needs_password, set_pdf_password
+
+    for p in paths:
+        if not str(p).lower().endswith(".pdf") or not pdf_needs_password(str(p)):
+            continue
+        msg = tr("PDF je chráněné heslem:") + f"\n{Path(p).name}\n\n" + tr("Zadejte heslo k otevření (nebo heslo vlastníka):")
+        while True:
+            pw, ok = QtWidgets.QInputDialog.getText(parent, tr("🔒 Heslo k PDF"), msg, QtWidgets.QLineEdit.Password)
+            if not ok:
+                return False
+            if set_pdf_password(str(p), pw):
+                break
+            msg = tr("Heslo nesouhlasí. Zkuste ho zadat znovu:") + f"\n{Path(p).name}"
+    return True

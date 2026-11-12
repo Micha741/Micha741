@@ -282,8 +282,11 @@ class BookEditor(QtWidgets.QMainWindow):
     closed = QtCore.Signal()  # editor byl zavřen (hlavní okno se vrátí na Napsat knihu)
 
     def __init__(self, project: dict, path: Path, ebook_convert: str | None, parent=None,
-                 autosave: dict | None = None, text_assist: dict | None = None, save_options=None):
+                 autosave: dict | None = None, text_assist: dict | None = None, save_options=None,
+                 app_cfg: dict | None = None):
         super().__init__(parent)
+        self.app_cfg = app_cfg  # nastavení programu (překladač a vzhled čtečky)
+        self.reader = None  # režim Čtení (qt_reader.Reader) – vytvoří se při prvním přepnutí
         self.autosave = {**AUTOSAVE_DEFAULT, **(autosave or {})}
         self._chars_since_save = 0
         self._last_save = 0.0
@@ -335,7 +338,9 @@ class BookEditor(QtWidgets.QMainWindow):
         cl.setContentsMargins(0, 0, 0, 0)
         cl.setSpacing(0)
         cl.addWidget(self._build_ribbon())
-        cl.addWidget(page, 1)
+        self.stack = QtWidgets.QStackedWidget()  # 0 = úpravy (stránka s pravítky), 1 = čtení
+        self.stack.addWidget(page)
+        cl.addWidget(self.stack, 1)
         self.setCentralWidget(central)
         self._build_chapters_dock()
         self.set_chapters_panel(bool(self.view_opts.get("chapters_panel", True)), save=False)
@@ -402,8 +407,76 @@ class BookEditor(QtWidgets.QMainWindow):
         back.clicked.connect(self.go_back)
         tabs.setCornerWidget(back, Qt.TopLeftCorner)
         self.b_back = back
+        # přepínač režimu vpravo nahoře: ✏️ Úpravy / 📖 Čtení
+        mode = QtWidgets.QWidget()
+        ml = QtWidgets.QHBoxLayout(mode)
+        ml.setContentsMargins(0, 0, 6, 0)
+        ml.setSpacing(2)
+        self.b_mode_edit = QtWidgets.QToolButton()
+        self.b_mode_edit.setText(tr("✏️ Úpravy"))
+        self.b_mode_read = QtWidgets.QToolButton()
+        self.b_mode_read.setText(tr("📖 Čtení"))
+        self.b_mode_read.setToolTip(tr("Číst knihu jako v čtečce: stránky, otáčení, hledání, záložky, označování, "
+                                       "překlad a čtení nahlas (F6)"))
+        grp = QtWidgets.QButtonGroup(mode)
+        for b in (self.b_mode_edit, self.b_mode_read):
+            b.setCheckable(True)
+            b.setAutoRaise(True)
+            b.setCursor(Qt.PointingHandCursor)
+            grp.addButton(b)
+            ml.addWidget(b)
+        self.b_mode_edit.setChecked(True)
+        self.b_mode_edit.clicked.connect(lambda: self.set_mode(False))
+        self.b_mode_read.clicked.connect(lambda: self.set_mode(True))
+        tabs.setCornerWidget(mode, Qt.TopRightCorner)
+        self.read_tab = tabs.addTab(QtWidgets.QWidget(), tr("Čtení"))
+        tabs.setTabVisible(self.read_tab, False)
         self.ribbon = tabs
         return tabs
+
+    # ================================================================ režim Čtení
+    def reading(self) -> bool:
+        return self.stack.currentIndex() == 1
+
+    def set_mode(self, read: bool):
+        """Přepne okno knihy mezi úpravami a čtečkou (kniha se při čtení nemění)."""
+        from qt_reader import Reader, reader_ribbon
+
+        if read == self.reading():
+            return
+        if read:
+            self.store_current()
+            if self.reader is None:
+                self.reader = Reader(self.project, self.app_cfg, self._save_view)
+                self.stack.addWidget(self.reader)
+                cur = self.ribbon.currentIndex()
+                self.ribbon.removeTab(self.read_tab)
+                self.read_tab = self.ribbon.insertTab(self.read_tab, reader_ribbon(self.reader, self._big, self._row, RibbonGroup),
+                                                      tr("Čtení"))
+                self.ribbon.setCurrentIndex(cur)
+            else:
+                self.reader.rebuild()
+            self._edit_tab = self.ribbon.currentIndex()
+            for i in range(self.ribbon.count()):
+                self.ribbon.setTabVisible(i, i in (0, self.read_tab))  # Soubor (uložit, tisk) zůstává
+            self.ribbon.setCurrentIndex(self.read_tab)
+            self.stack.setCurrentIndex(1)
+            self.chapters_dock.setVisible(False)
+            self.statusBar().setVisible(False)
+            self.reader.view.setFocus()
+        else:
+            if self.reader:
+                self.reader.stop_speaking()
+                self.reader.state.save()
+            for i in range(self.ribbon.count()):
+                self.ribbon.setTabVisible(i, i != self.read_tab)
+            self.ribbon.setCurrentIndex(getattr(self, "_edit_tab", 1) if getattr(self, "_edit_tab", 1) != self.read_tab else 1)
+            self.stack.setCurrentIndex(0)
+            self.chapters_dock.setVisible(bool(self.view_opts.get("chapters_panel", True)))
+            self.statusBar().setVisible(True)
+            self.text.setFocus()
+        self.b_mode_read.setChecked(read)
+        self.b_mode_edit.setChecked(not read)
 
     def _file_tab(self) -> QtWidgets.QWidget:
         """Karta Soubor jako ve Wordu: uložit, uložit jako (DOCX, PDF, MOBI, ODT, TXT…), export, tisk."""
@@ -1140,7 +1213,7 @@ class BookEditor(QtWidgets.QMainWindow):
                         ("Ctrl+P", lambda: self.print_book(True)), ("Ctrl+Shift+S", self.save_as),
                         ("F9", lambda: self.set_chapters_panel(not self.chapters_dock.isVisible())),
                         ("Alt+Left", self.go_back), ("Ctrl+PgUp", lambda: self.go_chapter(-1)),
-                        ("Ctrl+PgDown", lambda: self.go_chapter(1))):
+                        ("Ctrl+PgDown", lambda: self.go_chapter(1)), ("F6", lambda: self.set_mode(not self.reading()))):
             sc = QtGui.QShortcut(QtGui.QKeySequence(seq), self, activated=fn)
             sc.setContext(Qt.WidgetWithChildrenShortcut)  # jen v editoru, ne na jiných stránkách okna
 
@@ -1350,6 +1423,11 @@ class BookEditor(QtWidgets.QMainWindow):
         run_bg(lambda: bw.export(self.project, self.path.parent, formats, lambda *_: None, self.ebook_convert), done, owner=self)
 
     def open_find(self):
+        if self.reading():  # ve čtečce hledá panel Hledat (celá kniha)
+            self.reader.toggle_panel(True)
+            self.reader.panel.setCurrentIndex(1)
+            self.reader.panel.search.setFocus()
+            return
         if not self.find_dlg:
             self.find_dlg = FindDialog(self)
         c = self.text.textCursor()
@@ -1360,6 +1438,9 @@ class BookEditor(QtWidgets.QMainWindow):
         self.find_dlg.find.setFocus()
 
     def closeEvent(self, e):
+        if self.reader is not None:
+            self.reader.stop_speaking()
+            self.reader.state.save()
         if self.dirty:
             ans = QtWidgets.QMessageBox.question(
                 self, "Upravit knihu", "Uložit změny?",

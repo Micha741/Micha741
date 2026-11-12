@@ -19,7 +19,7 @@ from claude_client import DEFAULT_MODEL, MODELS, Cancelled
 from converters import DOC_ONLY_EXT, OUTPUT_FORMATS, SUPPORTED_EXT, find_ebook_convert
 from free_engines import ENGINE_LABELS, OCR_LABELS, EngineError, GeminiEngine, OllamaEngine, find_tesseract
 from guides import GUIDES
-from qt_common import STYLESHEET, app_icon, asset, bridge, emoji_icon, label, run_bg, set_status
+from qt_common import STYLESHEET, app_icon, ask_pdf_passwords, asset, bridge, emoji_icon, label, run_bg, set_status
 import i18n
 import skins
 import updater
@@ -564,6 +564,8 @@ class TranslatePage(QtWidgets.QWidget):
                 cfg["engine"] != "microsoft_doc" or not translate):
             QtWidgets.QMessageBox.warning(self, core.APP_NAME, "PPTX, XLSX a MD umí přeložit jen překladač "
                                                                "„Microsoft – překlad celých dokumentů“.")
+            return
+        if not ask_pdf_passwords(self, files):  # PDF s heslem: zeptat se teď, ne až uprostřed převodu
             return
         self.cancel.clear()
         try:
@@ -1171,6 +1173,8 @@ class BookPage(QtWidgets.QWidget):
 
         if self.win.editor is not None and not self.win.close_editor():
             return
+        if not ask_pdf_passwords(self, [f]):
+            return
         self.logv.log(f"Otevírám knihu {Path(f).name} – rozděluji na kapitoly…")
         self.set_busy(True)
         conv = self.win.cfg["paths"].get("ebook_convert") or None
@@ -1359,7 +1363,8 @@ class BookPage(QtWidgets.QWidget):
             return  # jiná kniha v editoru a uživatel zavření zrušil
         ed = BookEditor(self.project, self.path, self.win.cfg["paths"].get("ebook_convert") or None,
                         autosave=self.win.cfg.get("autosave"),
-                        text_assist=self.win.cfg.setdefault("text_assist", {}), save_options=self.win.save_cfg)
+                        text_assist=self.win.cfg.setdefault("text_assist", {}), save_options=self.win.save_cfg,
+                        app_cfg=self.win.cfg)
         self.win.show_editor(ed)
         self.update_buttons()
 
