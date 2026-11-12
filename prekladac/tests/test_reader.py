@@ -71,11 +71,11 @@ def test_reader_pages_turn_search_marks_and_state(qapp):
     assert v.turning is not None
     v.grab()  # vykreslení rozpracované animace
     v.finish_turn()  # jako po doběhnutí animace (nezávisle na časovačích Qt)
-    page_after_finish, anchor = v.page, v.anchor
+    page_after_finish, anchor, starts = v.page, v.anchor, list(v.starts[:5])
     qapp.processEvents()
     assert v.page == 2 and v.turning is None, (
         f"po dokončení {page_after_finish}, kotva {anchor} → strana {v.page_of(anchor)}, první znak {v.first_pos()}, "
-        f"stran {v.pages}, ph {v.ph}, pw {v.pw}, velikost {v.width()}x{v.height()}")
+        f"stran {v.pages}, ph {v.ph}, pw {v.pw}, velikost {v.width()}x{v.height()}, začátky {starts} → {v.starts[:5]}")
     # tažení myší: krátké se vrátí, dlouhé otočí
     for dx, expect in ((-40, 2), (-500, 3)):
         start = QtCore.QPointF(600, 400)

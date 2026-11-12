@@ -233,6 +233,10 @@ class PageView(QtWidgets.QWidget):
     def _compute_starts(self):
         """První znak na každé stránce – jediný zdroj pro „na které stránce je znak“ i „kde stránka začíná“."""
         lay = self.doc.documentLayout()
+        # Qt sází dlouhý dokument postupně – dokončit sazbu celé knihy, jinak by začátky stránek nesouhlasily
+        lay.documentSize()
+        lay.blockBoundingRect(self.doc.lastBlock())
+        self.pages = max(1, self.doc.pageCount())
         m = self.doc.documentMargin()
         step = max(3.0, QtGui.QFontMetricsF(self.doc.defaultFont()).height() / 3)
         starts = [0]
