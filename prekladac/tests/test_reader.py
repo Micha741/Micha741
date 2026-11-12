@@ -26,6 +26,17 @@ def project(n=3, paras=14):
             "language": "čeština", "format": {"font": "Georgia", "size": 12}}
 
 
+def settle(app, w):
+    """Počkat, až okno dostane konečnou velikost (ve Windows chodí změna velikosti se zpožděním)."""
+    from PySide6.QtTest import QTest
+
+    QTest.qWaitForWindowExposed(w, 2000)
+    w.layout().activate()
+    for _ in range(10):
+        app.processEvents()
+        QTest.qWait(10)
+
+
 @pytest.fixture()
 def qapp(tmp_path, monkeypatch):
     monkeypatch.setenv("APPDATA", str(tmp_path / "appdata"))
@@ -49,7 +60,7 @@ def test_reader_pages_turn_search_marks_and_state(qapp):
     r = Reader(project(), cfg)
     r.resize(700, 900)  # na výšku → jedna strana
     r.show()
-    qapp.processEvents()
+    settle(qapp, r)
     v = r.view
     assert not v.two and v.pages > 5
     assert [n for n, _p in r.chapters] == ["Cesta číslo 1", "Cesta číslo 2", "Cesta číslo 3"]
