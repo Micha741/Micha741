@@ -1191,6 +1191,7 @@ class Reader(QtWidgets.QWidget):
         """Číst nahlas: od věty na pozici pos, od označeného místa, od odstavce block, jinak od začátku stránky."""
         import tts_win
 
+        tts_win.configure_cloud(self.app_cfg.get("engines") or {})
         lang = self.book_lang()
         chosen = self.prefs.get("tts_voice") or ""
         if not chosen and tts_win.has_voice(lang) is not True and tts_win.PIPER_VOICES.get(lang):
@@ -1297,6 +1298,11 @@ class Reader(QtWidgets.QWidget):
     def speak_next(self, n: int, offset: int = 0):
         if not self.speaking:
             return
+        err = getattr(self.speaker, "error", "")
+        if err:  # hlas selhal (např. bez internetu nebo s neplatným klíčem) – nečíst dál potichu
+            self.stop_speaking()
+            QtWidgets.QMessageBox.warning(self, tr("Čtení nahlas"), err)
+            return
         b = self.doc.findBlockByNumber(n)
         if offset and b.isValid() and not b.text()[offset:].strip():
             b, offset = b.next(), 0
@@ -1360,6 +1366,7 @@ def reader_ribbon(reader: Reader, big, row, group_cls) -> QtWidgets.QWidget:
     def fill_voices():
         import tts_win
 
+        tts_win.configure_cloud(reader.app_cfg.get("engines") or {})
         vc.blockSignals(True)
         vc.clear()
         voices = tts_win.list_voices()
@@ -1371,10 +1378,20 @@ def reader_ribbon(reader: Reader, big, row, group_cls) -> QtWidgets.QWidget:
         if book_lang in tts_win.PIPER_VOICES and not tts_win.piper_installed(book_lang):
             m = tts_win.PIPER_VOICES[book_lang][0]
             vc.addItem(tr("⬇ Stáhnout hlas {} ({}, bez internetu)…").format(m[1], book_lang), "download")
+        if not tts_win.cloud_voices():
+            vc.addItem(tr("☁ Přirozené hlasy (Azure, Google) – jak nastavit…"), "cloud_help")
         vc.setCurrentIndex(max(0, vc.findData(reader.prefs.get("tts_voice", ""))))
         vc.blockSignals(False)
 
     def chosen(_i):
+        if vc.currentData() == "cloud_help":
+            vc.setCurrentIndex(max(0, vc.findData(reader.prefs.get("tts_voice", ""))))
+            QtWidgets.QMessageBox.information(reader, tr("Přirozené hlasy"), tr(
+                "Přirozenější hlasy (česky Vlasta a Antonín od Microsoftu, Wavenet od Googlu) čtou přes internet "
+                "a potřebují klíč. Obě služby mají měsíční limit zdarma.\n\nNastavíte je v ⚙ Nastavení → Služby "
+                "a klíče → „Hlasy Microsoft Azure“ nebo „Hlasy Google Cloud“ (tlačítko Návod). Po uložení se hlasy "
+                "objeví v této nabídce."))
+            return
         if vc.currentData() == "download":
             vc.setCurrentIndex(max(0, vc.findData(reader.prefs.get("tts_voice", ""))))
             reader.offer_voice_download(reader.book_lang(), ask=False)

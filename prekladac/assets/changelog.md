@@ -18,6 +18,7 @@
 - Kniha bez obrázku obálky dostane obálku s názvem a autorem.
 - Karta Hledání v okně knihy (Ctrl+F): předchozí/další výskyt (F3), celá slova, velká/malá písmena, nahradit, všechny výskyty v knize, přejít na kapitolu. Obálka je vidět v panelu kapitol.
 - Návody ke službám mají klikací odkazy.
+- Přirozené hlasy pro čtení nahlas přes internet: Microsoft Azure (Vlasta, Antonín) a Google Cloud (Wavenet) – klíč v Nastavení → Služby a klíče (šifrovaně), měsíčně zdarma.
 - Čtečka na celou obrazovku (⛶ v kartě Čtení nebo F11, návrat Esc); v Nastavení → Obecné → Čtečka volba jedné nebo dvou stránek a čtení rovnou na celé obrazovce.
 - Čtečka → Hledat knihy: Project Gutenberg a Google Books přímo v programu (našeptávač, obálky, stažení volných knih a otevření ve čtečce, ukázky, odkaz na koupi), obchody a knihovny (Amazon, Alza, Kosmas, Martinus, Palmknihy, Google Play, knihovny Praha, Brno, Plzeň, České Budějovice…). Moje knihy: otevřít z odkazu, knihy ze složky Stažené soubory, odkazy na „moje knihy“ v obchodech.
 

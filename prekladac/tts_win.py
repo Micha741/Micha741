@@ -199,6 +199,109 @@ def wav_tail(path: str, start: float, out: str) -> str:
     return out
 
 
+# ------------------------------------------------------------------ přirozené hlasy na internetu (klíč v Nastavení)
+CLOUD_PREFIX = "cloud:"
+# jazyk → (služba, hlas, jméno, pohlaví)
+CLOUD_VOICES = {
+    "cs": [("azure", "cs-CZ-VlastaNeural", "Vlasta", "žena"), ("azure", "cs-CZ-AntoninNeural", "Antonín", "muž"),
+           ("google", "cs-CZ-Wavenet-A", "Google Wavenet", "žena")],
+    "sk": [("azure", "sk-SK-ViktoriaNeural", "Viktória", "žena"), ("azure", "sk-SK-LukasNeural", "Lukáš", "muž"),
+           ("google", "sk-SK-Wavenet-A", "Google Wavenet", "žena")],
+    "en": [("azure", "en-US-AvaNeural", "Ava", "žena"), ("azure", "en-US-AndrewNeural", "Andrew", "muž"),
+           ("google", "en-US-Wavenet-F", "Google Wavenet", "žena")],
+    "de": [("azure", "de-DE-KatjaNeural", "Katja", "žena"), ("azure", "de-DE-ConradNeural", "Conrad", "muž"),
+           ("google", "de-DE-Wavenet-C", "Google Wavenet", "žena")],
+}
+_cloud: dict = {}  # klíče z Nastavení (v paměti, na disk je ukládá program šifrovaně)
+
+
+def configure_cloud(engines: dict) -> None:
+    """Klíče hlasů z nastavení programu (engines = cfg["engines"])."""
+    az = engines.get("azure_speech") or {}
+    gk = (engines.get("google_tts") or {}).get("api_key") or (engines.get("google_cloud") or {}).get("api_key") or ""
+    _cloud.clear()
+    if az.get("api_key") and az.get("region"):
+        _cloud["azure"] = (az["api_key"].strip(), az["region"].strip().lower().replace(" ", ""))
+    if gk.strip():  # vlastní klíč, jinak klíč Google Cloud Translation (v projektu musí být zapnuté Text-to-Speech)
+        _cloud["google"] = (gk.strip(),)
+
+
+def cloud_voices(lang: str | None = None) -> list[dict]:
+    """Přirozené hlasy služeb, které mají v Nastavení klíč."""
+    out = []
+    for code, voices in CLOUD_VOICES.items():
+        if lang and code != lang:
+            continue
+        for svc, vid, name, gender in voices:
+            if svc in _cloud:
+                out.append({"name": f"{CLOUD_PREFIX}{svc}:{vid}", "label": f"{name} ({'Azure' if svc == 'azure' else 'Google'}, "
+                            "přirozený, online)", "lang": code, "gender": gender})
+    return out
+
+
+def _escape(t: str) -> str:
+    return t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+def cloud_synthesize(text: str, service: str, voice: str, rate: float, out: str) -> None:
+    """Text → WAV přirozeným hlasem Azure nebo Google (potřebuje internet a klíč)."""
+    import base64
+    import json
+
+    from free_engines import EngineError, http_request
+
+    if service not in _cloud:
+        raise EngineError("Chybí klíč – ⚙ Nastavení → Služby a klíče → Hlasy " +
+                          ("Microsoft Azure" if service == "azure" else "Google Cloud"))
+    pct = round((max(0.5, min(2.0, rate)) - 1) * 100)
+    if service == "azure":
+        key, region = _cloud["azure"]
+        lang = voice[:5]
+        ssml = (f"<speak version='1.0' xml:lang='{lang}'><voice name='{voice}'><prosody rate='{pct:+d}%'>"
+                f"{_escape(text)}</prosody></voice></speak>")
+        data = http_request(f"https://{region}.tts.speech.microsoft.com/cognitiveservices/v1",
+                            data=ssml.encode("utf-8"), method="POST", timeout=60, retries=2, service="Hlas Azure",
+                            headers={"Ocp-Apim-Subscription-Key": key, "Content-Type": "application/ssml+xml",
+                                     "X-Microsoft-OutputFormat": "riff-24khz-16bit-mono-pcm"})
+    else:
+        (key,) = _cloud["google"]
+        body = {"input": {"text": text}, "voice": {"languageCode": voice[:5], "name": voice},
+                "audioConfig": {"audioEncoding": "LINEAR16", "sampleRateHertz": 24000,
+                                "speakingRate": max(0.5, min(2.0, rate))}}
+        res = json.loads(http_request("https://texttospeech.googleapis.com/v1/text:synthesize?key=" + key,
+                                      data=body, method="POST", timeout=60, retries=2, service="Hlas Google"))
+        data = base64.b64decode(res.get("audioContent") or "")
+    if not data.startswith(b"RIFF"):
+        raise EngineError("Služba nevrátila zvuk.")
+    Path(out).write_bytes(data)
+
+
+def split_for_voice(text: str, limit: int = 1200) -> list[str]:
+    """Dlouhý odstavec na kratší kusy podle vět (služby mají limit délky a kratší kus začne hrát dřív)."""
+    import re as _re
+
+    if len(text) <= limit:
+        return [text]
+    parts, cur = [], ""
+    for sent in _re.split(r"(?<=[.!?…])\s+", text):
+        while len(sent) > limit:  # extrémně dlouhá „věta“ bez teček
+            cut = sent.rfind(" ", 0, limit)
+            cut = cut if cut > limit // 2 else limit
+            if cur:
+                parts.append(cur)
+                cur = ""
+            parts.append(sent[:cut])
+            sent = sent[cut:].lstrip()
+        if cur and len(cur) + 1 + len(sent) > limit:
+            parts.append(cur)
+            cur = sent
+        else:
+            cur = f"{cur} {sent}".strip()
+    if cur:
+        parts.append(cur)
+    return parts
+
+
 class WavPlayer:
     """Přehrání WAV ve Windows (winsound) – asynchronně, s ukončením."""
 
@@ -253,9 +356,18 @@ class Speaker:
             text, lang, rate, on_done, name, self._cur = cmd
             if self._cur != self._gen:  # zastaveno dřív, než na větu přišla řada
                 continue
+            self.error = ""
             try:
                 piper = None
-                if name and name.startswith(PIPER_PREFIX):
+                if name and name.startswith(CLOUD_PREFIX):
+                    _p, svc, vid = name.split(":", 2)
+                    for part in split_for_voice(text):
+                        if self._halted():
+                            break
+                        self._speak_file(lambda out, t=part: cloud_synthesize(t, svc, vid, rate, out))
+                    name = None
+                    piper = False
+                elif name and name.startswith(PIPER_PREFIX):
                     piper = next((v for v in piper_installed() if v["name"] == name), None)
                 elif not name and not available():  # bez hlasů Windows: stažený hlas pro jazyk knihy
                     piper = next(iter(piper_installed(lang)), None)
@@ -266,7 +378,9 @@ class Speaker:
                             piper = next(iter(piper_installed(lang)), None)
                     except Exception:  # noqa: BLE001
                         piper = next(iter(piper_installed(lang)), None)
-                if piper is not None:
+                if piper is False:
+                    pass  # přečteno hlasem z internetu
+                elif piper is not None:
                     self._speak_piper(text, piper["model"], rate)
                 else:
                     self._speak_sapi(text, lang, rate, name)
@@ -294,9 +408,13 @@ class Speaker:
                 voice.Pause() if paused else voice.Resume()
 
     def _speak_piper(self, text, model, rate):
+        self._speak_file(lambda out: piper_synthesize(text, model, rate, out))
+
+    def _speak_file(self, synth):
+        """synth(cesta) vytvoří WAV; přehraje se s pozastavením a pokračováním."""
         tmp = Path(tempfile.gettempdir()) / f"prekladac_tts_{os.getpid()}_{threading.get_ident()}"
         wav, rest = str(tmp) + ".wav", str(tmp) + "_dal.wav"
-        piper_synthesize(text, model, rate, wav)
+        synth(wav)
         if self._halted():
             return
         player = self.player_cls()
@@ -361,7 +479,8 @@ class Speaker:
 
 def list_voices() -> list[dict]:
     """Hlasy: jméno, popis, jazyk (cs, en…), pohlaví (žena/muž). Hlasy Windows i stažené hlasy Piper."""
-    out = [{"name": v["name"], "label": v["label"], "lang": v["lang"], "gender": v["gender"]} for v in piper_installed()]
+    out = cloud_voices() + [{"name": v["name"], "label": v["label"], "lang": v["lang"], "gender": v["gender"]}
+                            for v in piper_installed()]
     if not available():
         return out
     try:

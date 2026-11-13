@@ -145,3 +145,68 @@ def test_fix_piper_config(tmp_path):
     cfg = json.loads(p.read_text(encoding="utf-8"))
     assert cfg["phoneme_id_map"] == {"a": [1], "ʃ": [2]} and cfg["audio"]["sample_rate"] == 22050
     assert tts_win.fix_piper_config(p) is False  # podruhé už není co upravit
+
+
+def test_cloud_voices_azure_google(tmp_path, monkeypatch):
+    """Přirozené hlasy z internetu: Azure (SSML → WAV) a Google (JSON → WAV), klíče z Nastavení."""
+    import base64
+    import json
+    import free_engines
+
+    tts_win.configure_cloud({})
+    assert tts_win.cloud_voices() == []
+    tts_win.configure_cloud({"azure_speech": {"api_key": "AZ", "region": "West Europe"},
+                             "google_cloud": {"api_key": "GC"}})
+    names = [v["name"] for v in tts_win.cloud_voices("cs")]
+    assert names == ["cloud:azure:cs-CZ-VlastaNeural", "cloud:azure:cs-CZ-AntoninNeural", "cloud:google:cs-CZ-Wavenet-A"]
+    wav = tmp_path / "w.wav"
+    make_wav(wav, 0.3)
+    calls = []
+
+    def fake(url, data=None, headers=None, method=None, **k):
+        calls.append((url, data, headers))
+        if "googleapis" in url:
+            return json.dumps({"audioContent": base64.b64encode(wav.read_bytes()).decode()}).encode()
+        return wav.read_bytes()
+
+    monkeypatch.setattr(free_engines, "http_request", fake)
+    out = tmp_path / "o.wav"
+    tts_win.cloud_synthesize("Dobrý den <a> & ty", "azure", "cs-CZ-VlastaNeural", 1.2, str(out))
+    url, data, headers = calls[-1]
+    assert url == "https://westeurope.tts.speech.microsoft.com/cognitiveservices/v1"
+    assert headers["Ocp-Apim-Subscription-Key"] == "AZ" and headers["X-Microsoft-OutputFormat"].startswith("riff")
+    assert "name='cs-CZ-VlastaNeural'" in data.decode() and "rate='+20%'" in data.decode()
+    assert "Dobrý den &lt;a&gt; &amp; ty" in data.decode()
+    assert abs(tts_win.wav_seconds(str(out)) - 0.3) < 0.01
+    tts_win.cloud_synthesize("Ahoj", "google", "cs-CZ-Wavenet-A", 1.0, str(out))
+    url, data, _h = calls[-1]
+    assert url.endswith("?key=GC") and data["voice"]["name"] == "cs-CZ-Wavenet-A"
+    # vlastní klíč pro hlasy má přednost před klíčem překladače
+    tts_win.configure_cloud({"google_tts": {"api_key": "TTS"}, "google_cloud": {"api_key": "GC"}})
+    tts_win.cloud_synthesize("Ahoj", "google", "cs-CZ-Wavenet-A", 1.0, str(out))
+    assert calls[-1][0].endswith("?key=TTS")
+    with pytest.raises(Exception, match="Chybí klíč"):
+        tts_win.cloud_synthesize("x", "azure", "cs-CZ-VlastaNeural", 1.0, str(out))
+    assert [len(p) <= 1200 for p in tts_win.split_for_voice("Věta číslo jedna. " * 300)] == [True] * 5
+
+
+def test_speaker_cloud_voice_and_error(appdata, monkeypatch):
+    synth = []
+
+    def fake(text, svc, vid, rate, out):
+        synth.append((text[:10], svc, vid))
+        if text.startswith("CHYBA"):
+            raise RuntimeError("bez internetu")
+        make_wav(out, 0.2)
+
+    monkeypatch.setattr(tts_win, "cloud_synthesize", fake)
+    FakePlayer.log = []
+    sp = tts_win.Speaker()
+    sp.player_cls = FakePlayer
+    done = threading.Event()
+    sp.speak("Dlouhá věta. " * 200, "cs", 1.0, on_done=done.set, voice_name="cloud:azure:cs-CZ-VlastaNeural")
+    assert done.wait(5) and not sp.error
+    assert len(synth) == 3 and all(s[1:] == ("azure", "cs-CZ-VlastaNeural") for s in synth)  # po kouscích
+    done2 = threading.Event()
+    sp.speak("CHYBA", "cs", 1.0, on_done=done2.set, voice_name="cloud:google:cs-CZ-Wavenet-A")
+    assert done2.wait(3) and "bez internetu" in sp.error

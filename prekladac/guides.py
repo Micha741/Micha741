@@ -202,4 +202,35 @@ OpenRouter – jeden klíč na stovky modelů (DeepSeek, Llama, Gemma, Qwen, Mis
 
 Hodí se pro překlad i pro „Napsat knihu“. Kvalita češtiny se liší podle modelu – vyzkoušejte
 nejdřív krátký text nebo knihu o 3 kratších kapitolách.""",
+    "azure_speech": """Hlasy Microsoft Azure pro čtení nahlas – zdarma 500 000 znaků měsíčně (úroveň F0)
+
+Přirozené české hlasy Vlasta (žena) a Antonín (muž), slovenské Viktória a Lukáš.
+Čtou se přes internet; text odstavce se pošle do Microsoftu a vrátí se zvuk.
+
+1. Účet Azure: https://azure.microsoft.com/free (stejný jako pro Azure Translator).
+2. Otevřete https://portal.azure.com, nahoře vyhledejte „Speech service“ (Služba Speech)
+   a klikněte na „+ Vytvořit“.
+3. Vyplňte: Předplatné, Skupina prostředků (např. prekladac), Oblast (např. West Europe),
+   Název (libovolný jedinečný), Cenová úroveň: Free F0.
+4. „Zkontrolovat a vytvořit“ → „Vytvořit“ → „Přejít k prostředku“.
+5. V levém menu „Klíče a koncový bod“ zkopírujte KLÍČ 1 a Umístění/oblast (např. westeurope)
+   do polí v Nastavení. Pozor: je to jiný klíč než u Translatoru (jiná služba).
+6. Uložit → Otestovat. Ve čtečce pak v kartě Čtení → Nahlas vyberte hlas „Vlasta“ nebo „Antonín“.
+
+Celá kniha mívá 300 000 – 600 000 znaků; nad měsíční limit F0 služba čtení odmítne (nic se neúčtuje).""",
+    "google_tts": """Hlasy Google Cloud pro čtení nahlas – zdarma 1 milion znaků měsíčně (Wavenet)
+
+Přirozený český ženský hlas (Wavenet). Čte se přes internet.
+
+Když už máte klíč pro Google Cloud Translation:
+1. Otevřete https://console.cloud.google.com/apis/library/texttospeech.googleapis.com
+   (stejný projekt jako pro překlad) a klikněte na „Povolit“ (Enable).
+2. Pole „API klíč“ tady nechte prázdné – použije se klíč Google Cloud Translation.
+   Pokud má klíč omezení na vybraná API, přidejte k nim „Cloud Text-to-Speech API“.
+
+Nový klíč:
+1. https://console.cloud.google.com → vytvořte projekt (účet s platební kartou, limit zdarma se neúčtuje).
+2. Povolte „Cloud Text-to-Speech API“ (odkaz výše).
+3. „API a služby“ → „Přihlašovací údaje“ → „Vytvořit přihlašovací údaje“ → „Klíč API“.
+4. Klíč vložte sem → Uložit → Otestovat. Ve čtečce vyberte hlas „Google Wavenet“.""",
 }

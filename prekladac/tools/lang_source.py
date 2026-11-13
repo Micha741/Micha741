@@ -925,6 +925,30 @@ E += [
     ("Nenalezeno.", "Not found.", "Nenájdené.", "Nicht gefunden."),
     ("Hledání", "Search", "Hľadanie", "Suchen"),
     ("Moje knihy", "My books", "Moje knihy", "Meine Bücher"),
+    ("Hlasy Microsoft Azure pro čtení nahlas (Vlasta, Antonín)", "Microsoft Azure voices for reading aloud (Vlasta, "
+     "Antonín)", "Hlasy Microsoft Azure na čítanie nahlas (Vlasta, Antonín)", "Microsoft-Azure-Stimmen zum Vorlesen "
+     "(Vlasta, Antonín)"),
+    ("Hlasy Google Cloud pro čtení nahlas (Wavenet)", "Google Cloud voices for reading aloud (Wavenet)",
+     "Hlasy Google Cloud na čítanie nahlas (Wavenet)", "Google-Cloud-Stimmen zum Vorlesen (Wavenet)"),
+    ("KLÍČ 1 (služba Speech)", "KEY 1 (Speech service)", "KĽÚČ 1 (služba Speech)", "SCHLÜSSEL 1 (Speech-Dienst)"),
+    ("API klíč (prázdné = klíč Google Cloud Translation)", "API key (empty = Google Cloud Translation key)",
+     "API kľúč (prázdne = kľúč Google Cloud Translation)", "API-Schlüssel (leer = Google-Cloud-Translation-Schlüssel)"),
+    ("☁ Přirozené hlasy (Azure, Google) – jak nastavit…", "☁ Natural voices (Azure, Google) – how to set up…",
+     "☁ Prirodzené hlasy (Azure, Google) – ako nastaviť…", "☁ Natürliche Stimmen (Azure, Google) – einrichten…"),
+    ("Přirozené hlasy", "Natural voices", "Prirodzené hlasy", "Natürliche Stimmen"),
+    ("Přirozenější hlasy (česky Vlasta a Antonín od Microsoftu, Wavenet od Googlu) čtou přes internet a potřebují "
+     "klíč. Obě služby mají měsíční limit zdarma.\n\nNastavíte je v ⚙ Nastavení → Služby a klíče → „Hlasy Microsoft "
+     "Azure“ nebo „Hlasy Google Cloud“ (tlačítko Návod). Po uložení se hlasy objeví v této nabídce.",
+     "More natural voices (Czech Vlasta and Antonín from Microsoft, Wavenet from Google) read over the internet and "
+     "need a key. Both services have a free monthly limit.\n\nSet them up in ⚙ Settings → Services and keys → "
+     "“Microsoft Azure voices” or “Google Cloud voices” (Guide button). After saving, the voices appear in this menu.",
+     "Prirodzenejšie hlasy (Vlasta a Antonín od Microsoftu, Wavenet od Googlu) čítajú cez internet a potrebujú "
+     "kľúč. Obe služby majú mesačný limit zadarmo.\n\nNastavíte ich v ⚙ Nastaveniach → Služby a kľúče → „Hlasy "
+     "Microsoft Azure“ alebo „Hlasy Google Cloud“ (tlačidlo Návod). Po uložení sa hlasy objavia v tejto ponuke.",
+     "Natürlichere Stimmen (Vlasta und Antonín von Microsoft, Wavenet von Google) lesen über das Internet und "
+     "brauchen einen Schlüssel. Beide Dienste haben ein kostenloses Monatslimit.\n\nEinrichten unter ⚙ "
+     "Einstellungen → Dienste und Schlüssel → „Microsoft-Azure-Stimmen“ oder „Google-Cloud-Stimmen“ (Taste "
+     "Anleitung). Nach dem Speichern erscheinen die Stimmen in diesem Menü."),
     ("Celá\nobrazovka", "Full\nscreen", "Celá\nobrazovka", "Vollbild"),
     ("Číst na celé obrazovce – bez pásu karet a panelů (F11, návrat Esc)", "Read in full screen – without the ribbon "
      "and panels (F11, Esc to return)", "Čítať na celej obrazovke – bez pásu kariet a panelov (F11, návrat Esc)",

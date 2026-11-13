@@ -2007,6 +2007,8 @@ class SettingsPage(QtWidgets.QWidget):
         cfg.setdefault("reader", {})["spread"] = self.r_spread.currentData()
         cfg["reader_fullscreen"] = self.r_full.isChecked()
         ed = self.win.editor
+        if ed is not None and ed.reader is not None:
+            ed.reader.voices_changed.emit()  # nové klíče hlasů → obnovit nabídku hlasů ve čtečce
         if ed is not None and ed.reader is not None and ed.reader.prefs.get("spread") != self.r_spread.currentData():
             ed.reader.prefs["spread"] = self.r_spread.currentData()
             ed.reader.view.relayout()

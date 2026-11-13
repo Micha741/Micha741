@@ -410,3 +410,32 @@ def test_reader_fullscreen_and_settings(qapp, tmp_path, monkeypatch):
     ed.dirty = False
     ed.close()
     win.close()
+
+
+def test_reader_voice_error_stops_and_cloud_help(qapp, monkeypatch):
+    from qt_editor import BookEditor
+    import tts_win
+
+    monkeypatch.setattr(tts_win, "list_voices", lambda: [])
+    monkeypatch.setattr(tts_win, "cloud_voices", lambda lang=None: [])
+    ed = BookEditor(project(1, 3), Path("x.kniha.json"), None, text_assist={}, save_options=lambda: None, app_cfg={})
+    ed.set_mode(True)
+    r = ed.reader
+    shown = []
+    monkeypatch.setattr(QtWidgets.QMessageBox, "warning", lambda *a, **k: shown.append(a[2]))
+    monkeypatch.setattr(QtWidgets.QMessageBox, "information", lambda *a, **k: shown.append(a[2]))
+
+    class Broken:
+        error = "Hlas není k dispozici: bez internetu"
+
+        def stop(self):
+            pass
+
+    r.speaker, r.speaking = Broken(), True
+    r.speak_next(1)
+    assert not r.speaking and shown == ["Hlas není k dispozici: bez internetu"]
+    vc = [c for c in ed.findChildren(QtWidgets.QComboBox) if c.findData("cloud_help") >= 0][0]
+    vc.setCurrentIndex(vc.findData("cloud_help"))  # nápověda, jak nastavit přirozené hlasy; výběr se vrátí
+    assert "Vlasta" in shown[-1] and vc.currentData() != "cloud_help"
+    ed.dirty = False
+    ed.close()
