@@ -19,7 +19,7 @@ from pathlib import Path
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from i18n import tr
-from qt_common import bridge, emoji_icon, run_bg
+from qt_common import bridge, emoji_icon, run_bg, text_icon
 
 Qt = QtCore.Qt
 
@@ -1404,10 +1404,65 @@ def reader_ribbon(reader: Reader, big, row, group_cls) -> QtWidgets.QWidget:
     voice.grid.addWidget(vc, 1, 0, 1, 4)
     lang = group_cls("Překlad")
     lang.grid.addWidget(big(emoji_icon("📒"), tr("Slovníček"), reader.open_vocab), 0, 0)
-    look = group_cls("Vzhled")
-    combos = QtWidgets.QWidget()
-    g = QtWidgets.QGridLayout(combos)
-    g.setContentsMargins(0, 0, 0, 0)
+    return row(nav, book, voice, lang)
+
+
+def reader_look_ribbon(reader: Reader, big, row, group_cls) -> QtWidgets.QWidget:
+    """Karta „Vzhled“ čtečky: barvy, písmo, odstavce, stránky, celá obrazovka."""
+    buttons: dict[str, dict] = {}
+
+    def choice(group, key: str, items: dict, icon_of=None, col0: int = 0):
+        """Řada tlačítek, z nichž je vždy jedno zvolené (jako přepínač)."""
+        grp = QtWidgets.QButtonGroup(group)
+        grp.setExclusive(True)
+        buttons[key] = {}
+        for i, (k, text) in enumerate(items.items()):
+            b = big(icon_of(k) if icon_of else emoji_icon("▫️"), tr(text),
+                    lambda _=False, k=k: reader.set_pref(key, k))
+            b.setCheckable(True)
+            b.setChecked(str(reader.prefs.get(key)) == str(k))
+            grp.addButton(b)
+            group.grid.addWidget(b, 0, col0 + i)
+            buttons[key][k] = b
+
+    def swatch(bg: str, fg: str) -> QtGui.QIcon:
+        pm = QtGui.QPixmap(28, 28)
+        pm.fill(QtGui.QColor(bg))
+        p = QtGui.QPainter(pm)
+        p.setPen(QtGui.QColor("#9ca3af"))
+        p.drawRect(0, 0, 27, 27)
+        p.setPen(QtGui.QColor(fg))
+        f = p.font()
+        f.setPointSize(13)
+        f.setBold(True)
+        p.setFont(f)
+        p.drawText(pm.rect(), Qt.AlignCenter, "Aa")
+        p.end()
+        return QtGui.QIcon(pm)
+
+    colors = group_cls("Barvy")
+    choice(colors, "theme", {k: v[0] for k, v in THEMES.items()}, lambda k: swatch(THEMES[k][1], THEMES[k][2]))
+
+    font = group_cls("Písmo")
+    choice(font, "font", {"serif": "Patkové", "sans": "Bezpatkové"},
+           lambda k: text_icon("Aa", family="Georgia" if k == "serif" else "Segoe UI", size_pt=13))
+    size_lb = QtWidgets.QLabel()
+    size_lb.setAlignment(Qt.AlignCenter)
+
+    def show_size():
+        size_lb.setText(tr("{} bodů").format(int(float(reader.prefs.get("size", 13)))))
+
+    def resize(d):
+        reader.set_pref("size", max(8.0, min(32.0, float(reader.prefs["size"]) + d)))
+        show_size()
+
+    font.grid.addWidget(big(emoji_icon("🔠"), tr("Menší"), lambda: resize(-1)), 0, 2)
+    font.grid.addWidget(big(emoji_icon("🔡"), tr("Větší"), lambda: resize(1)), 0, 3)
+    font.grid.addWidget(size_lb, 1, 2, 1, 2)
+    show_size()
+
+    para = group_cls("Odstavce")
+    g = QtWidgets.QGridLayout()
     g.setSpacing(4)
 
     def combo(items: dict, key: str, cast=str):
@@ -1418,26 +1473,35 @@ def reader_ribbon(reader: Reader, big, row, group_cls) -> QtWidgets.QWidget:
         cb.currentIndexChanged.connect(lambda _i: reader.set_pref(key, cast(cb.currentData())))
         return cb
 
-    g.addWidget(QtWidgets.QLabel(tr("Barvy")), 0, 0)
-    g.addWidget(combo({k: v[0] for k, v in THEMES.items()}, "theme"), 0, 1)
-    g.addWidget(QtWidgets.QLabel(tr("Písmo")), 0, 2)
-    g.addWidget(combo({"serif": "patkové", "sans": "bezpatkové"}, "font"), 0, 3)
-    g.addWidget(QtWidgets.QLabel(tr("Listování")), 1, 0)
-    g.addWidget(combo(TURNS, "turn"), 1, 1)
-    g.addWidget(QtWidgets.QLabel(tr("Strany")), 1, 2)
-    g.addWidget(combo(SPREADS, "spread"), 1, 3)
-    g.addWidget(QtWidgets.QLabel(tr("Řádkování")), 2, 0)
-    g.addWidget(combo({1.2: "těsné", 1.45: "běžné", 1.75: "volné"}, "line", float), 2, 1)
-    g.addWidget(QtWidgets.QLabel(tr("Okraje")), 2, 2)
-    g.addWidget(combo({24: "úzké", 48: "střední", 80: "široké"}, "margin", int), 2, 3)
-    look.grid.addWidget(big(emoji_icon("🔠"), tr("Menší"), lambda: reader.set_pref("size", max(8.0, float(reader.prefs["size"]) - 1))), 0, 0)
-    look.grid.addWidget(big(emoji_icon("🔡"), tr("Větší"), lambda: reader.set_pref("size", min(32.0, float(reader.prefs["size"]) + 1))), 0, 1)
+    g.addWidget(QtWidgets.QLabel(tr("Řádkování")), 0, 0)
+    g.addWidget(combo({1.2: "těsné", 1.45: "běžné", 1.75: "volné"}, "line", float), 0, 1)
+    g.addWidget(QtWidgets.QLabel(tr("Okraje")), 1, 0)
+    g.addWidget(combo({24: "úzké", 48: "střední", 80: "široké"}, "margin", int), 1, 1)
+    w = QtWidgets.QWidget()
+    w.setLayout(g)
+    g.setContentsMargins(0, 0, 0, 0)
+    para.grid.addWidget(w, 0, 1, 2, 1)
     just = big(emoji_icon("📰"), tr("Do bloku"), lambda: reader.set_pref("justify", just.isChecked()))
     just.setCheckable(True)
     just.setChecked(bool(reader.prefs.get("justify", True)))
-    look.grid.addWidget(just, 0, 2)
-    look.grid.addWidget(combos, 0, 3)
+    para.grid.addWidget(just, 0, 0, 2, 1)
+
+    pages = group_cls("Stránky")
+    choice(pages, "spread", {"auto": "Podle okna", "1": "Jedna", "2": "Dvě"},
+           lambda k: emoji_icon({"auto": "🪟", "1": "📄", "2": "📖"}[k]))
+    tw = QtWidgets.QWidget()
+    tl = QtWidgets.QHBoxLayout(tw)
+    tl.setContentsMargins(0, 0, 0, 0)
+    tl.addWidget(QtWidgets.QLabel(tr("Listování")))
+    tl.addWidget(combo(TURNS, "turn"))
+    pages.grid.addWidget(tw, 1, 0, 1, 3)
+
+    view = group_cls("Zobrazení")
     full = big(emoji_icon("⛶"), tr("Celá\nobrazovka"), lambda: reader.fullscreen_requested.emit(not reader.fullscreen))
     full.setToolTip(tr("Číst na celé obrazovce – bez pásu karet a panelů (F11, návrat Esc)"))
-    look.grid.addWidget(full, 0, 4)
-    return row(nav, book, voice, lang, look)
+    view.grid.addWidget(full, 0, 0)
+    panel = big(emoji_icon("📑"), tr("Postranní\npanel"), lambda: reader.toggle_panel())
+    panel.setToolTip(tr("Obsah, hledání a označené vedle stránek"))
+    view.grid.addWidget(panel, 0, 1)
+    reader.look_buttons = buttons
+    return row(colors, font, para, pages, view)
