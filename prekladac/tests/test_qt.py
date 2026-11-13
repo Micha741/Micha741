@@ -1064,6 +1064,6 @@ def test_export_tab(qapp, tmp_path, monkeypatch):
     ed.export_after.setChecked(True)
     assert cfg["export_open_folder"] is True
     ed.export(["docx"])
-    assert wait(lambda: opened) and opened == [str(out)]
+    assert wait(lambda: opened) and [Path(x) for x in opened] == [out]  # Qt vrací cestu s „/“
     ed.dirty = False
     ed.close()
