@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import re
 import threading
 import time
 import unicodedata
@@ -116,6 +117,42 @@ def vocab_text(items: list[dict]) -> str:
 
 
 # ------------------------------------------------------------------ sazba knihy pro čtení
+def fit_images(doc: QtGui.QTextDocument, pw: float, ph: float) -> None:
+    """Obrázky podle velikosti stránky čtečky: obálka a obrázky „celá stránka“ co největší přes celou stránku,
+    ostatní v šířce z editoru (vůči stránce 800 bodů), ale nikdy větší než stránka – nic se neořízne."""
+    images = doc.property("reader_images") or []
+    if not images:
+        return
+    m = doc.documentMargin()
+    aw = max(40.0, pw - 2 * m - 4)
+    ah = max(40.0, ph - 2 * m - 24)  # rezerva na řádek a mezery kolem obrázku
+    cur = QtGui.QTextCursor(doc)
+    cur.beginEditBlock()
+    for im in images:
+        nw, nh = im["nw"], im["nh"]
+        if not nw or not nh:
+            continue
+        if im["cover"] or im["page"]:
+            w = aw
+        else:
+            w = min(aw, aw * float(im["want"]) / 800.0) if im["want"] else min(aw, nw)
+        h = w * nh / nw
+        if h > ah:
+            h, w = ah, ah * nw / nh
+        c = QtGui.QTextCursor(doc)
+        c.setPosition(im["pos"])
+        c.setPosition(im["pos"] + 1, QtGui.QTextCursor.KeepAnchor)
+        f = c.charFormat().toImageFormat()
+        if not f.isValid():
+            continue
+        nf = QtGui.QTextImageFormat()
+        nf.setName(im["name"])
+        nf.setWidth(round(w, 1))
+        nf.setHeight(round(h, 1))
+        c.setCharFormat(nf)
+    cur.endEditBlock()
+
+
 def build_reader_doc(project: dict, prefs: dict) -> tuple[QtGui.QTextDocument, list[tuple[str, int]]]:
     """Kniha jako dokument pro čtení + seznam kapitol (název, pozice). Vzhled podle nastavení čtečky."""
     from qt_bookdoc import book_document
@@ -133,10 +170,18 @@ def build_reader_doc(project: dict, prefs: dict) -> tuple[QtGui.QTextDocument, l
     cur = QtGui.QTextCursor(doc)
     cur.beginEditBlock()
     frags: list[tuple[int, int, QtGui.QTextCharFormat]] = []
+    images: list[dict] = []  # obrázky se při každé změně velikosti stránky přizpůsobí (fit_images)
+    cover = project.get("cover")
     b = doc.begin()
     while b.isValid():
         bf = b.blockFormat()
-        bf.setLineHeight(line * 100, prop)
+        has_img = any(it.fragment().isValid() and it.fragment().charFormat().isImageFormat() for it in b)
+        if has_img:  # řádek s obrázkem bez řádkování navíc (jinak by obrázek přetekl stránku)
+            bf.setLineHeight(100, prop)
+            bf.setTopMargin(min(bf.topMargin(), 6))
+            bf.setAlignment(Qt.AlignHCenter)  # obrázek vždy na střed stránky
+        else:
+            bf.setLineHeight(line * 100, prop)
         al = bf.alignment()
         al = int(al.value) if hasattr(al, "value") else int(al)
         if prefs.get("justify", True) and not (al & (0x2 | 0x4 | 0x8)) and len(b.text()) > 80:
@@ -144,7 +189,16 @@ def build_reader_doc(project: dict, prefs: dict) -> tuple[QtGui.QTextDocument, l
         QtGui.QTextCursor(b).setBlockFormat(bf)
         for it in b:  # písmo a velikost podle čtečky, barvu textu určuje motiv (Den/Sépie/Noc)
             frag = it.fragment()
-            if frag.isValid() and not frag.charFormat().isImageFormat():
+            if not frag.isValid():
+                continue
+            if frag.charFormat().isImageFormat():
+                f = frag.charFormat().toImageFormat()
+                img = doc.resource(QtGui.QTextDocument.ImageResource, QtCore.QUrl(f.name()))
+                nw, nh = (img.width(), img.height()) if isinstance(img, QtGui.QImage) and not img.isNull() else (0, 0)
+                images.append({"pos": frag.position(), "name": f.name(), "want": f.width() or nw, "nw": nw, "nh": nh,
+                               "cover": bool(cover) and f.name() == cover and b.blockNumber() <= 1,
+                               "page": (f.width() or 0) >= 790})  # „celá stránka“ z editoru (100 % šířky)
+            else:
                 frags.append((frag.position(), frag.length(), frag.charFormat()))
         b = b.next()
     for pos, ln, cf in frags:
@@ -157,6 +211,7 @@ def build_reader_doc(project: dict, prefs: dict) -> tuple[QtGui.QTextDocument, l
         fc.setPosition(pos + ln, QtGui.QTextCursor.KeepAnchor)
         fc.setCharFormat(cf)
     cur.endEditBlock()
+    doc.setProperty("reader_images", images)
     # kapitoly: book_document začíná každou kapitolu nadpisem „N. Název“ na nové stránce
     chapters: list[tuple[str, int]] = []
     titles = project.get("outline", {}).get("chapters", [])
@@ -196,7 +251,7 @@ class PageView(QtWidgets.QWidget):
         self._press: QtCore.QPointF | None = None
         self._dragging = False
         self.setFocusPolicy(Qt.StrongFocus)
-        self.setMouseTracking(False)
+        self.setMouseTracking(True)  # kurzor: nad textem „I“ (klik = odsud číst nahlas), u okrajů ruka (listovat)
         self.setMinimumSize(300, 300)
 
     # ---- sazba
@@ -210,9 +265,17 @@ class PageView(QtWidgets.QWidget):
         lay.setPaintDevice(self)
         if getattr(lay, "_reader_watch", None) is not self:
             lay._reader_watch = self
-            lay.documentSizeChanged.connect(lambda _s: QtCore.QTimer.singleShot(0, self._layout_changed))
+            lay.documentSizeChanged.connect(self._size_changed)  # metoda okna: po zavření se odpojí sama
+
+    def _size_changed(self, _size=None):
+        QtCore.QTimer.singleShot(0, self, self._layout_changed)  # s oknem jako kontextem – po zavření se nezavolá
 
     def _layout_changed(self):
+        try:
+            if not self.isVisible() and not self.starts:
+                return
+        except RuntimeError:  # okno už je zrušené
+            return
         if self.doc is None or self._in_relayout or self.turning:
             return
         old = list(self.starts)
@@ -238,6 +301,7 @@ class PageView(QtWidgets.QWidget):
         self.pw = (w - gutter) / 2 if self.two else min(w, 900)
         self.ph = h
         self.doc.setPageSize(QtCore.QSizeF(self.pw, self.ph))
+        fit_images(self.doc, self.pw, self.ph)  # obálka a obrázky celé na stránce
         self.pages = max(1, self.doc.pageCount())
         self._compute_starts()
         self.cache.clear()
@@ -507,8 +571,17 @@ class PageView(QtWidgets.QWidget):
             self._dragging = False
         super().mousePressEvent(e)
 
+    EDGE = 0.15  # klik do pruhu u levého / pravého okraje = otočit stránku
+
+    def _edge(self, pt: QtCore.QPointF) -> int:
+        x = pt.x() / max(1, self.width())
+        return -1 if x < self.EDGE else 1 if x > 1 - self.EDGE else 0
+
     def mouseMoveEvent(self, e):
         if self._press is None:
+            over_text = not self._edge(e.position()) and self.hit(e.position()) is not None
+            self.setCursor(Qt.IBeamCursor if over_text else Qt.PointingHandCursor if self._edge(e.position())
+                           else Qt.ArrowCursor)
             return
         dx = e.position().x() - self._press.x()
         if not self._dragging and abs(dx) > 10:
@@ -536,11 +609,14 @@ class PageView(QtWidgets.QWidget):
             self.anim.start()
             return
         if e.button() == Qt.LeftButton and (e.position() - press).manhattanLength() < 6:
-            x = e.position().x() / max(1, self.width())
-            if x < 0.3:
-                self.turn(-1)
-            elif x > 0.7:
-                self.turn(1)
+            edge = self._edge(e.position())
+            pos = None if edge else self.hit(e.position())
+            if pos is not None:
+                self.reader.click_text(pos)  # odsud číst nahlas
+            elif edge:
+                self.turn(edge)
+            else:  # mimo text uprostřed (prázdný konec kapitoly…) – listovat podle poloviny
+                self.turn(-1 if e.position().x() < self.width() / 2 else 1)
 
     def mouseDoubleClickEvent(self, e):
         pos = self.hit(e.position())
@@ -741,8 +817,33 @@ class VocabDialog(QtWidgets.QDialog):
 
 
 # ------------------------------------------------------------------ čtečka
+SENTENCE_END = re.compile(r"[.!?…]+[\"'»“”)\]]*\s+")
+
+
+def sentence_bounds(doc: QtGui.QTextDocument, pos: int) -> tuple[int, int]:
+    """Začátek a konec věty (pozice v knize), ve které je pos – věta nepřesahuje odstavec."""
+    b = doc.findBlock(max(0, pos))
+    text, base = b.text(), b.position()
+    i = max(0, min(len(text), pos - base))
+    start = 0
+    for m in SENTENCE_END.finditer(text):
+        if m.end() <= i:
+            start = m.end()
+        else:
+            end = m.end()
+            break
+    else:
+        end = len(text)
+    if start >= len(text):
+        start = 0
+    return base + start, base + end
+
+
 class Reader(QtWidgets.QWidget):
     """Čtečka pro okno knihy. project = projekt knihy, app_cfg = nastavení programu (překladač, vzhled)."""
+
+    voices_changed = QtCore.Signal()  # stažen nový hlas → obnovit výběr hlasů
+    fullscreen_requested = QtCore.Signal(bool)  # celá obrazovka zapnout / vypnout (řídí okno knihy)
 
     def __init__(self, project: dict, app_cfg: dict | None = None, save_cfg=None, parent=None):
         super().__init__(parent)
@@ -753,6 +854,8 @@ class Reader(QtWidgets.QWidget):
         self.state = ReaderState(project)
         self.search_sel: tuple[int, int] | None = None
         self.speak_block = -1
+        self.speak_from = 0       # odkud v čteném odstavci se čte (pozice v knize)
+        self.read_start: int | None = None  # kliknutím označené místo, odkud začne čtení nahlas
         self.speaking = False
         self.paused = False
         self.speaker = None
@@ -774,6 +877,15 @@ class Reader(QtWidgets.QWidget):
         lay.addWidget(self.panel)
         lay.addLayout(right, 1)
         self.panel.setVisible(bool(self.app_cfg.get("reader_panel", True)))
+        self.fullscreen = False
+        # na celé obrazovce: malé tlačítko vpravo nahoře pro návrat (a klávesa Esc / F11)
+        self.b_exit_full = QtWidgets.QToolButton(self.view)
+        self.b_exit_full.setText(tr("✕ Ukončit celou obrazovku (Esc)"))
+        self.b_exit_full.setCursor(Qt.PointingHandCursor)
+        self.b_exit_full.setStyleSheet("QToolButton{background:rgba(0,0,0,0.45);color:white;border:none;"
+                                       "border-radius:6px;padding:4px 10px;}")
+        self.b_exit_full.clicked.connect(lambda: self.fullscreen_requested.emit(False))
+        self.b_exit_full.hide()
         self._save_t = QtCore.QTimer(self)
         self._save_t.setSingleShot(True)
         self._save_t.setInterval(800)
@@ -789,6 +901,29 @@ class Reader(QtWidgets.QWidget):
         self.view.relayout(keep_pos=pos)
         self.panel.fill_toc(self.chapters)
         self.panel.fill_marks()
+
+    def set_fullscreen_look(self, on: bool):
+        """Vzhled na celé obrazovce: bez postranního panelu, jen stránky a tlačítko pro návrat."""
+        self.fullscreen = on
+        if on:
+            self._panel_before = self.panel.isVisible()
+            self.panel.setVisible(False)
+        else:
+            self.panel.setVisible(getattr(self, "_panel_before", bool(self.app_cfg.get("reader_panel", True))))
+        self.b_exit_full.setVisible(on)
+        self._place_exit()
+        self.view.setFocus()
+
+    def _place_exit(self):
+        b = self.b_exit_full
+        b.adjustSize()
+        b.move(max(0, self.view.width() - b.width() - 12), 10)
+        b.raise_()
+
+    def resizeEvent(self, e):
+        super().resizeEvent(e)
+        if self.fullscreen:
+            QtCore.QTimer.singleShot(0, self._place_exit)
 
     def set_pref(self, key: str, value):
         self.prefs[key] = value
@@ -867,7 +1002,10 @@ class Reader(QtWidgets.QWidget):
         if self.speak_block >= 0:
             b = self.doc.findBlockByNumber(self.speak_block)
             if b.isValid():
-                sel(b.position(), b.position() + b.length() - 1, "#3b4f7a" if night else "#dbe8ff")
+                sel(max(b.position(), self.speak_from), b.position() + b.length() - 1, "#3b4f7a" if night else "#dbe8ff")
+        if self.read_start is not None and not self.speaking:
+            a, z = sentence_bounds(self.doc, self.read_start)
+            sel(a, z, "#2f5d3a" if night else "#c9efcf")
         if self.search_sel:
             sel(self.search_sel[0], self.search_sel[0] + self.search_sel[1], "#ffb300")
         return out
@@ -977,7 +1115,8 @@ class Reader(QtWidgets.QWidget):
             m.addAction(tr("📝 Označit a připsat poznámku…"), lambda: (self.mark(pos, "y"), self.edit_note(
                 next(x for x in self.state.highlights if x.get("block") == b.blockNumber()))))
         m.addSeparator()
-        m.addAction(tr("🔊 Číst nahlas odsud"), lambda: self.start_speaking(b.blockNumber()))
+        m.addAction(tr("🔊 Číst nahlas od této věty"), lambda: self.start_speaking(pos=pos))
+        m.addAction(tr("🔊 Číst nahlas celý odstavec"), lambda: self.start_speaking(b.blockNumber()))
         m.addAction(tr("📋 Kopírovat odstavec"), lambda: QtWidgets.QApplication.clipboard().setText(b.text()))
         m.exec(gpos)
 
@@ -1039,21 +1178,92 @@ class Reader(QtWidgets.QWidget):
         VocabDialog(self).exec()
 
     # ---- čtení nahlas
-    def start_speaking(self, block: int | None = None):
+    def click_text(self, pos: int):
+        """Klik do textu: označit větu, od které se bude číst nahlas; během čtení na ni rovnou přeskočit."""
+        if self.speaking:
+            self.start_speaking(pos=pos)
+            return
+        a, _z = sentence_bounds(self.doc, pos)
+        self.read_start = None if self.read_start is not None and sentence_bounds(self.doc, self.read_start)[0] == a else a
+        self.view.refresh()
+
+    def start_speaking(self, block: int | None = None, pos: int | None = None):
+        """Číst nahlas: od věty na pozici pos, od označeného místa, od odstavce block, jinak od začátku stránky."""
         import tts_win
 
-        if not tts_win.available():
+        tts_win.configure_cloud(self.app_cfg.get("engines") or {})
+        lang = self.book_lang()
+        chosen = self.prefs.get("tts_voice") or ""
+        if not chosen and tts_win.has_voice(lang) is not True and tts_win.PIPER_VOICES.get(lang):
+            if self.offer_voice_download(lang):
+                return  # čtení začne samo po stažení hlasu
+            if not tts_win.available():
+                return
+        elif not tts_win.any_voice():
             QtWidgets.QMessageBox.information(self, tr("Čtení nahlas"), tr(
                 "Čtení nahlas používá hlasy Windows. Na tomto počítači nejsou k dispozici."))
             return
         if self.speaker is None:
             self.speaker = tts_win.Speaker()
-        if block is None:
+        if pos is None and block is None and self.read_start is not None:
+            pos = self.read_start
+        offset = 0
+        if pos is not None:
+            start = sentence_bounds(self.doc, pos)[0]
+            b = self.doc.findBlock(start)
+            block, offset = b.blockNumber(), start - b.position()
+        elif block is None:
             block = self.doc.findBlock(self.view.first_pos()).blockNumber()
+        self.read_start = None
+        if self.speaking:  # přeskočit jinam během čtení
+            self.speaker.stop()
         self.speaking = True
         self.paused = False
         self._speak_buttons()
-        self.speak_next(block)
+        self.speak_next(block, offset)
+
+    def book_lang(self) -> str:
+        return LANG_CODES.get(str(self.project.get("language", "čeština")).lower(), "cs")
+
+    def offer_voice_download(self, lang: str, ask: bool = True) -> bool:
+        """Ve Windows chybí hlas pro jazyk knihy → nabídnout stažení hlasu Piper. True = stahuje se."""
+        import tts_win
+        from qt_common import run_bg
+
+        model, name, gender, mb = tts_win.PIPER_VOICES[lang][0]
+        lang_name = {"cs": "český", "sk": "slovenský"}.get(lang, lang)
+        if ask:
+            box = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Question, tr("Čtení nahlas"), tr(
+                "Ve Windows není {} hlas, proto by kniha zněla anglicky.\n\n"
+                "Program může stáhnout {} hlas {} (zdarma, asi {} MB). Čte bez internetu, přímo v počítači.\n\n"
+                "Jiná možnost: v Nastavení Windows → Čas a jazyk → Řeč → Přidat hlasy zvolte Čeština "
+                "(hlas Microsoft Jakub) a program ho pak najde sám.").format(lang_name, lang_name, name, mb + 22),
+                parent=self)
+            b_dl = box.addButton(tr("⬇ Stáhnout hlas"), QtWidgets.QMessageBox.AcceptRole)
+            box.addButton(tr("Číst hlasem Windows") if tts_win.available() else tr("Zrušit"),
+                          QtWidgets.QMessageBox.RejectRole)
+            box.setDefaultButton(b_dl)
+            box.exec()
+            if box.clickedButton() is not b_dl:
+                return False
+        prog = QtWidgets.QProgressDialog(tr("Stahuji hlas {}…").format(name), None, 0, 0, self)
+        prog.setWindowTitle(tr("Čtení nahlas"))
+        prog.setMinimumDuration(0)
+        prog.show()
+        log = lambda m: bridge().later(lambda: prog.setLabelText(m))  # noqa: E731
+
+        def done(voice, err):
+            prog.close()
+            if err:
+                QtWidgets.QMessageBox.warning(self, tr("Čtení nahlas"),
+                                              tr("Hlas se nepodařilo stáhnout:\n{}").format(err))
+                return
+            self.set_pref("tts_voice", voice["name"])
+            self.voices_changed.emit()
+            self.start_speaking()
+
+        run_bg(lambda: tts_win.download_piper(lang, log), done)
+        return True
 
     def stop_speaking(self):
         self.speaking = False
@@ -1085,23 +1295,31 @@ class Reader(QtWidgets.QWidget):
         if st is not None:
             st.setEnabled(self.speaking)
 
-    def speak_next(self, n: int):
+    def speak_next(self, n: int, offset: int = 0):
         if not self.speaking:
             return
+        err = getattr(self.speaker, "error", "")
+        if err:  # hlas selhal (např. bez internetu nebo s neplatným klíčem) – nečíst dál potichu
+            self.stop_speaking()
+            QtWidgets.QMessageBox.warning(self, tr("Čtení nahlas"), err)
+            return
         b = self.doc.findBlockByNumber(n)
+        if offset and b.isValid() and not b.text()[offset:].strip():
+            b, offset = b.next(), 0
         while b.isValid() and not b.text().strip():
-            b = b.next()
+            b, offset = b.next(), 0
         if not b.isValid():
             self.stop_speaking()
             return
         self.speak_block = b.blockNumber()
-        page = self.view.page_of(b.position())
+        self.speak_from = b.position() + offset
+        page = self.view.page_of(self.speak_from)
         if not (self.view.page <= page < self.view.page + self.view.step()):
             self.view.goto_page(page, animate=True)
         self.view.refresh()
-        lang = LANG_CODES.get(str(self.project.get("language", "čeština")).lower(), "cs")
+        lang = self.book_lang()
         nxt = b.blockNumber() + 1
-        self.speaker.speak(b.text(), lang, float(self.prefs.get("tts_rate", 1.0)),
+        self.speaker.speak(b.text()[offset:].replace("\u2028", " "), lang, float(self.prefs.get("tts_rate", 1.0)),
                            on_done=lambda: bridge().later(lambda: self.speak_next(nxt)),
                            voice_name=self.prefs.get("tts_voice") or None)
 
@@ -1132,25 +1350,57 @@ def reader_ribbon(reader: Reader, big, row, group_cls) -> QtWidgets.QWidget:
     book.grid.addWidget(big(emoji_icon("🖍️"), tr("Označené"), lambda: (reader.toggle_panel(True), reader.panel.setCurrentIndex(2))), 0, 3)
     voice = group_cls("Nahlas")
     reader.b_speak = big(emoji_icon("🔊"), tr("Číst nahlas"), reader.toggle_speaking)
-    reader.b_speak.setToolTip(tr("Číst nahlas od začátku stránky; během čtení pozastavit a pokračovat"))
+    reader.b_speak.setToolTip(tr("Číst nahlas od začátku stránky, nebo od věty, na kterou kliknete v textu "
+                                 "(zezelená); během čtení klik do textu přeskočí na tu větu. "
+                                 "Tlačítkem pak pozastavit a pokračovat."))
     voice.grid.addWidget(reader.b_speak, 0, 0)
     reader.b_stop = big(emoji_icon("⏹️"), tr("Zastavit"), reader.stop_speaking)
     reader.b_stop.setEnabled(False)
     voice.grid.addWidget(reader.b_stop, 0, 1)
     voice.grid.addWidget(big(emoji_icon("🐢"), tr("Pomaleji"), lambda: reader.set_rate(-0.1)), 0, 2)
     voice.grid.addWidget(big(emoji_icon("🐇"), tr("Rychleji"), lambda: reader.set_rate(0.1)), 0, 3)
-    import tts_win
-
-    voices = tts_win.list_voices()
     vc = QtWidgets.QComboBox()
-    vc.setToolTip(tr("Hlas pro čtení nahlas (hlasy nainstalované ve Windows: Nastavení → Čas a jazyk → Řeč)"))
-    vc.addItem(tr("Hlas podle jazyka knihy"), "")
-    book_lang = LANG_CODES.get(str(reader.project.get("language", "čeština")).lower(), "cs")
-    for v in sorted(voices, key=lambda v: (v["lang"] != book_lang, v["name"])):
-        vc.addItem(f"{v['name']}" + (f" ({tr(v['gender'])}, {v['lang']})" if v["gender"] else f" ({v['lang']})"), v["name"])
-    vc.setCurrentIndex(max(0, vc.findData(reader.prefs.get("tts_voice", ""))))
-    vc.currentIndexChanged.connect(lambda _i: reader.set_pref("tts_voice", vc.currentData()))
-    vc.setEnabled(bool(voices))
+    vc.setToolTip(tr("Hlas pro čtení nahlas: hlasy Windows (Nastavení → Čas a jazyk → Řeč) "
+                     "a stažené hlasy, které čtou bez internetu"))
+
+    def fill_voices():
+        import tts_win
+
+        tts_win.configure_cloud(reader.app_cfg.get("engines") or {})
+        vc.blockSignals(True)
+        vc.clear()
+        voices = tts_win.list_voices()
+        vc.addItem(tr("Hlas podle jazyka knihy"), "")
+        book_lang = reader.book_lang()
+        for v in sorted(voices, key=lambda v: (v["lang"] != book_lang, v["name"])):
+            vc.addItem(v.get("label", v["name"]) + (f" ({tr(v['gender'])}, {v['lang']})" if v["gender"] else f" ({v['lang']})"),
+                       v["name"])
+        if book_lang in tts_win.PIPER_VOICES and not tts_win.piper_installed(book_lang):
+            m = tts_win.PIPER_VOICES[book_lang][0]
+            vc.addItem(tr("⬇ Stáhnout hlas {} ({}, bez internetu)…").format(m[1], book_lang), "download")
+        if not tts_win.cloud_voices():
+            vc.addItem(tr("☁ Přirozené hlasy (Azure, Google) – jak nastavit…"), "cloud_help")
+        vc.setCurrentIndex(max(0, vc.findData(reader.prefs.get("tts_voice", ""))))
+        vc.blockSignals(False)
+
+    def chosen(_i):
+        if vc.currentData() == "cloud_help":
+            vc.setCurrentIndex(max(0, vc.findData(reader.prefs.get("tts_voice", ""))))
+            QtWidgets.QMessageBox.information(reader, tr("Přirozené hlasy"), tr(
+                "Přirozenější hlasy (česky Vlasta a Antonín od Microsoftu, Wavenet od Googlu) čtou přes internet "
+                "a potřebují klíč. Obě služby mají měsíční limit zdarma.\n\nNastavíte je v ⚙ Nastavení → Služby "
+                "a klíče → „Hlasy Microsoft Azure“ nebo „Hlasy Google Cloud“ (tlačítko Návod). Po uložení se hlasy "
+                "objeví v této nabídce."))
+            return
+        if vc.currentData() == "download":
+            vc.setCurrentIndex(max(0, vc.findData(reader.prefs.get("tts_voice", ""))))
+            reader.offer_voice_download(reader.book_lang(), ask=False)
+            return
+        reader.set_pref("tts_voice", vc.currentData())
+
+    fill_voices()
+    vc.currentIndexChanged.connect(chosen)
+    reader.voices_changed.connect(fill_voices)
     voice.grid.addWidget(vc, 1, 0, 1, 4)
     lang = group_cls("Překlad")
     lang.grid.addWidget(big(emoji_icon("📒"), tr("Slovníček"), reader.open_vocab), 0, 0)
@@ -1187,4 +1437,7 @@ def reader_ribbon(reader: Reader, big, row, group_cls) -> QtWidgets.QWidget:
     just.setChecked(bool(reader.prefs.get("justify", True)))
     look.grid.addWidget(just, 0, 2)
     look.grid.addWidget(combos, 0, 3)
+    full = big(emoji_icon("⛶"), tr("Celá\nobrazovka"), lambda: reader.fullscreen_requested.emit(not reader.fullscreen))
+    full.setToolTip(tr("Číst na celé obrazovce – bez pásu karet a panelů (F11, návrat Esc)"))
+    look.grid.addWidget(full, 0, 4)
     return row(nav, book, voice, lang, look)

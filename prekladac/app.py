@@ -57,7 +57,16 @@ SERVICES = {
         ("api_key", "API klíč", True, "", None),
         ("model", "Model", False, "", None),
     ]),
+    # hlasy pro čtení nahlas ve čtečce (nejsou to překladače)
+    "azure_speech": ("Hlasy Microsoft Azure pro čtení nahlas (Vlasta, Antonín)", [
+        ("api_key", "KLÍČ 1 (služba Speech)", True, "", None),
+        ("region", "Umístění/oblast (např. westeurope)", False, "", None),
+    ]),
+    "google_tts": ("Hlasy Google Cloud pro čtení nahlas (Wavenet)", [
+        ("api_key", "API klíč (prázdné = klíč Google Cloud Translation)", True, "", None),
+    ]),
 }
+TTS_SERVICES = ("azure_speech", "google_tts")
 ENGINE_SERVICE = {"microsoft_doc": "microsoft"}  # překladač → služba, jejíž nastavení používá
 ENV_KEYS = {"claude": "ANTHROPIC_API_KEY", "deepl": "DEEPL_API_KEY", "gemini": "GEMINI_API_KEY",
             "google_cloud": "GOOGLE_TRANSLATE_API_KEY",
@@ -74,6 +83,12 @@ SERVICE_HELP = {
     "microsoft": ("Zdarma 2 mil. znaků/měsíc (úroveň F0). Azure → Translator → Klíče a koncový bod. "
                   "„Překlad dokumentu“ je druhé API – přeloží celý DOCX/PDF/PPTX a zachová vzhled.",
                   "https://portal.azure.com"),
+    "azure_speech": ("Přirozené (neuronové) hlasy pro čtení nahlas ve čtečce – česky Vlasta a Antonín, slovensky "
+                     "Viktória a Lukáš. Zdarma 500 000 znaků/měsíc (úroveň F0), potřebuje internet. Azure → Speech "
+                     "service → Klíče a koncový bod.", "https://portal.azure.com"),
+    "google_tts": ("Přirozený hlas Google (Wavenet) pro čtení nahlas ve čtečce. Zdarma 1 milion znaků/měsíc, "
+                   "potřebuje internet. Stačí klíč Google Cloud Translation, když v projektu zapnete Cloud "
+                   "Text-to-Speech API.", "https://console.cloud.google.com/apis/library/texttospeech.googleapis.com"),
     "gemini": ("Bezplatná úroveň s limity. Klíč: aistudio.google.com → Get API key.",
                "https://aistudio.google.com/apikey"),
     "ollama": ("Offline, zdarma. Nainstalujte Ollama a stáhněte model: ollama pull gemma3:12b", "https://ollama.com"),
@@ -287,6 +302,18 @@ def test_service(service: str, cfg: dict, lang: str) -> str:
     """Zkusí krátký překlad, aby uživatel hned viděl, jestli klíč funguje."""
     sample = "Hello, this is a test of the translation service."
     sect = cfg.get("engines", {}).get(service, {})
+    if service in TTS_SERVICES:
+        import tempfile
+
+        import tts_win
+
+        tts_win.configure_cloud(cfg.get("engines", {}))
+        voice = next(v for v in tts_win.CLOUD_VOICES["cs"] if v[0] == service.split("_")[0])
+        with tempfile.TemporaryDirectory() as tmp:
+            out = os.path.join(tmp, "test.wav")
+            tts_win.cloud_synthesize("Dobrý den, tohle je hlas pro čtení knih.", voice[0], voice[1], 1.0, out)
+            sec = tts_win.wav_seconds(out)
+        return f"Hlas {voice[2]} funguje – namluveno {sec:.1f} s zvuku. Vyberte ho ve čtečce v kartě Čtení → Nahlas."
     if service == "claude":
         s = {"engine": "claude", "lang": lang, "engines": cfg.get("engines", {})}
         tr = build_translator(s, True, False, lambda *_: None, threading.Event())

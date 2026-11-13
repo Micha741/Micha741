@@ -113,7 +113,7 @@ def test_apply_skin_in_window(tmp_path):
 
     win = qt_main.MainWindow()
     try:
-        win.nav.setCurrentRow(2)
+        win.nav.setCurrentRow(3)
         tab = win.settings.skins_tab
         ids = [tab.list.item(i).data(QtCore.Qt.UserRole) for i in range(tab.list.count())]
         assert ids[:4] == ["default", "dark", "sepia", "contrast"]

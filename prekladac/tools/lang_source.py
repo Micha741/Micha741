@@ -923,6 +923,137 @@ E += [
      "beachten"),
     ("Hledat v celé knize", "Search the whole book", "Hľadať v celej knihe", "Im ganzen Buch suchen"),
     ("Nenalezeno.", "Not found.", "Nenájdené.", "Nicht gefunden."),
+    ("Hledání", "Search", "Hľadanie", "Suchen"),
+    ("Moje knihy", "My books", "Moje knihy", "Meine Bücher"),
+    ("Hlasy Microsoft Azure pro čtení nahlas (Vlasta, Antonín)", "Microsoft Azure voices for reading aloud (Vlasta, "
+     "Antonín)", "Hlasy Microsoft Azure na čítanie nahlas (Vlasta, Antonín)", "Microsoft-Azure-Stimmen zum Vorlesen "
+     "(Vlasta, Antonín)"),
+    ("Hlasy Google Cloud pro čtení nahlas (Wavenet)", "Google Cloud voices for reading aloud (Wavenet)",
+     "Hlasy Google Cloud na čítanie nahlas (Wavenet)", "Google-Cloud-Stimmen zum Vorlesen (Wavenet)"),
+    ("KLÍČ 1 (služba Speech)", "KEY 1 (Speech service)", "KĽÚČ 1 (služba Speech)", "SCHLÜSSEL 1 (Speech-Dienst)"),
+    ("API klíč (prázdné = klíč Google Cloud Translation)", "API key (empty = Google Cloud Translation key)",
+     "API kľúč (prázdne = kľúč Google Cloud Translation)", "API-Schlüssel (leer = Google-Cloud-Translation-Schlüssel)"),
+    ("☁ Přirozené hlasy (Azure, Google) – jak nastavit…", "☁ Natural voices (Azure, Google) – how to set up…",
+     "☁ Prirodzené hlasy (Azure, Google) – ako nastaviť…", "☁ Natürliche Stimmen (Azure, Google) – einrichten…"),
+    ("Přirozené hlasy", "Natural voices", "Prirodzené hlasy", "Natürliche Stimmen"),
+    ("Přirozenější hlasy (česky Vlasta a Antonín od Microsoftu, Wavenet od Googlu) čtou přes internet a potřebují "
+     "klíč. Obě služby mají měsíční limit zdarma.\n\nNastavíte je v ⚙ Nastavení → Služby a klíče → „Hlasy Microsoft "
+     "Azure“ nebo „Hlasy Google Cloud“ (tlačítko Návod). Po uložení se hlasy objeví v této nabídce.",
+     "More natural voices (Czech Vlasta and Antonín from Microsoft, Wavenet from Google) read over the internet and "
+     "need a key. Both services have a free monthly limit.\n\nSet them up in ⚙ Settings → Services and keys → "
+     "“Microsoft Azure voices” or “Google Cloud voices” (Guide button). After saving, the voices appear in this menu.",
+     "Prirodzenejšie hlasy (Vlasta a Antonín od Microsoftu, Wavenet od Googlu) čítajú cez internet a potrebujú "
+     "kľúč. Obe služby majú mesačný limit zadarmo.\n\nNastavíte ich v ⚙ Nastaveniach → Služby a kľúče → „Hlasy "
+     "Microsoft Azure“ alebo „Hlasy Google Cloud“ (tlačidlo Návod). Po uložení sa hlasy objavia v tejto ponuke.",
+     "Natürlichere Stimmen (Vlasta und Antonín von Microsoft, Wavenet von Google) lesen über das Internet und "
+     "brauchen einen Schlüssel. Beide Dienste haben ein kostenloses Monatslimit.\n\nEinrichten unter ⚙ "
+     "Einstellungen → Dienste und Schlüssel → „Microsoft-Azure-Stimmen“ oder „Google-Cloud-Stimmen“ (Taste "
+     "Anleitung). Nach dem Speichern erscheinen die Stimmen in diesem Menü."),
+    ("Celá\nobrazovka", "Full\nscreen", "Celá\nobrazovka", "Vollbild"),
+    ("Číst na celé obrazovce – bez pásu karet a panelů (F11, návrat Esc)", "Read in full screen – without the ribbon "
+     "and panels (F11, Esc to return)", "Čítať na celej obrazovke – bez pásu kariet a panelov (F11, návrat Esc)",
+     "Im Vollbild lesen – ohne Menüband und Bereiche (F11, zurück mit Esc)"),
+    ("✕ Ukončit celou obrazovku (Esc)", "✕ Exit full screen (Esc)", "✕ Ukončiť celú obrazovku (Esc)",
+     "✕ Vollbild beenden (Esc)"),
+    ("Čtečka", "Reader", "Čítačka", "Lesen"),
+    ("Zobrazit stránky:", "Show pages:", "Zobraziť strany:", "Seiten anzeigen:"),
+    ("Podle okna = dvě strany vedle sebe, když je okno široké; jinak jedna", "By window = two pages side by side "
+     "when the window is wide; otherwise one", "Podľa okna = dve strany vedľa seba, keď je okno široké; inak jedna",
+     "Nach Fenster = zwei Seiten nebeneinander bei breitem Fenster, sonst eine"),
+    ("Číst na celé obrazovce (bez pásu karet a panelů; návrat Esc nebo F11)", "Read in full screen (without the "
+     "ribbon and panels; Esc or F11 to return)", "Čítať na celej obrazovke (bez pásu kariet a panelov; návrat Esc "
+     "alebo F11)", "Im Vollbild lesen (ohne Menüband und Bereiche; zurück mit Esc oder F11)"),
+    ("Hledat knihy", "Find books", "Hľadať knihy", "Bücher suchen"),
+    ("Název knihy nebo autor…", "Book title or author…", "Názov knihy alebo autor…", "Buchtitel oder Autor…"),
+    ("Všechny jazyky", "All languages", "Všetky jazyky", "Alle Sprachen"),
+    (" Hledat", " Search", " Hľadať", " Suchen"),
+    ("Hledá v Project Gutenberg a Google Books. Volná díla se stáhnou a otevřou ve čtečce, u ostatních je ukázka a "
+     "odkaz na obchod.", "Searches Project Gutenberg and Google Books. Free books are downloaded and opened in the "
+     "reader, others have a preview and a store link.", "Hľadá v Project Gutenberg a Google Books. Voľné diela sa "
+     "stiahnu a otvoria v čítačke, pri ostatných je ukážka a odkaz na obchod.", "Sucht in Project Gutenberg und "
+     "Google Books. Freie Werke werden heruntergeladen und im Reader geöffnet, sonst Leseprobe und Shop-Link."),
+    (" Stáhnout a číst", " Download and read", " Stiahnuť a čítať", " Herunterladen und lesen"),
+    (" Ukázka", " Preview", " Ukážka", " Leseprobe"),
+    ("Ukázka knihy na webu (Google Books / Project Gutenberg)", "Book preview on the web (Google Books / Project "
+     "Gutenberg)", "Ukážka knihy na webe (Google Books / Project Gutenberg)", "Leseprobe im Web (Google Books / "
+     "Project Gutenberg)"),
+    (" Koupit / podrobnosti", " Buy / details", " Kúpiť / podrobnosti", " Kaufen / Details"),
+    ("Hledat v obchodech a knihovnách (otevře se v prohlížeči):", "Search stores and libraries (opens in the "
+     "browser):", "Hľadať v obchodoch a knižniciach (otvorí sa v prehliadači):", "In Shops und Bibliotheken suchen "
+     "(öffnet sich im Browser):"),
+    ("🆓 zdarma · 🛍️ koupě bez šifrování (otevře se ve čtečce) · 🔒 jen v aplikaci obchodu (Kindle, Google Play) · "
+     "🏛️ knihovna", "🆓 free · 🛍️ purchase without encryption (opens in the reader) · 🔒 only in the store's app "
+     "(Kindle, Google Play) · 🏛️ library", "🆓 zadarmo · 🛍️ kúpa bez šifrovania (otvorí sa v čítačke) · 🔒 len "
+     "v aplikácii obchodu (Kindle, Google Play) · 🏛️ knižnica", "🆓 kostenlos · 🛍️ Kauf ohne Verschlüsselung (öffnet "
+     "im Reader) · 🔒 nur in der Shop-App (Kindle, Google Play) · 🏛️ Bibliothek"),
+    ("Hledám „{}“…", "Searching for “{}”…", "Hľadám „{}“…", "Suche „{}“…"),
+    ("Hledání se nepodařilo: {}", "Search failed: {}", "Hľadanie sa nepodarilo: {}", "Suche fehlgeschlagen: {}"),
+    ("Nalezeno {} knih.", "Found {} books.", "Nájdených {} kníh.", "{} Bücher gefunden."),
+    ("V katalozích nic – zkuste jiný název nebo obchody a knihovny vpravo.", "Nothing in the catalogues – try "
+     "another title or the stores and libraries on the right.", "V katalógoch nič – skúste iný názov alebo obchody "
+     "a knižnice vpravo.", "Nichts in den Katalogen – anderen Titel oder Shops und Bibliotheken rechts versuchen."),
+    ("Nedostupné: {}", "Unavailable: {}", "Nedostupné: {}", "Nicht erreichbar: {}"),
+    ("zdarma ke stažení", "free download", "zadarmo na stiahnutie", "kostenlos herunterladen"),
+    ("ukázka", "preview", "ukážka", "Leseprobe"),
+    ("Hledání knih", "Book search", "Hľadanie kníh", "Büchersuche"),
+    ("Napište název nebo autora a stiskněte Enter. Při psaní se nabízejí názvy.", "Type a title or author and press "
+     "Enter. Titles are suggested as you type.", "Napíšte názov alebo autora a stlačte Enter. Pri písaní sa "
+     "ponúkajú názvy.", "Titel oder Autor eingeben und Enter drücken. Beim Tippen werden Titel vorgeschlagen."),
+    ("Stahuji knihu…", "Downloading the book…", "Sťahujem knihu…", "Buch wird heruntergeladen…"),
+    ("Stažení se nepodařilo.", "Download failed.", "Stiahnutie sa nepodarilo.", "Download fehlgeschlagen."),
+    ("Stáhnout knihu", "Download book", "Stiahnuť knihu", "Buch herunterladen"),
+    ("Uloženo: {}", "Saved: {}", "Uložené: {}", "Gespeichert: {}"),
+    (" Otevřít z odkazu…", " Open from link…", " Otvoriť z odkazu…", " Aus Link öffnen…"),
+    ("Odkaz na soubor knihy nebo ukázky (EPUB, PDF, MOBI…) – stáhne se a otevře ve čtečce", "Link to a book or "
+     "preview file (EPUB, PDF, MOBI…) – it is downloaded and opened in the reader", "Odkaz na súbor knihy alebo "
+     "ukážky (EPUB, PDF, MOBI…) – stiahne sa a otvorí v čítačke", "Link zu einer Buch- oder Leseprobendatei (EPUB, "
+     "PDF, MOBI…) – wird heruntergeladen und im Reader geöffnet"),
+    ("Ve složce Stažené soubory (knihy a ukázky z obchodů)", "In the Downloads folder (books and previews from "
+     "stores)", "V priečinku Stiahnuté súbory (knihy a ukážky z obchodov)", "Im Download-Ordner (Bücher und "
+     "Leseproben aus Shops)"),
+    ("Koupené knihy v obchodech", "Books bought in stores", "Kúpené knihy v obchodoch", "In Shops gekaufte Bücher"),
+    ("Přihlaste se v prohlížeči a knihu stáhněte (EPUB nebo PDF bez šifrování) – objeví se výše ve Stažených "
+     "souborech. Program vaše hesla nezná a nikam je neposílá. Knihy z Kindle a Google Play jsou zašifrované (DRM) "
+     "– čtou se jen v jejich aplikaci.", "Sign in in the browser and download the book (EPUB or PDF without "
+     "encryption) – it will appear above under Downloads. The program never knows or sends your passwords. Kindle "
+     "and Google Play books are encrypted (DRM) – they can only be read in their apps.", "Prihláste sa v "
+     "prehliadači a knihu stiahnite (EPUB alebo PDF bez šifrovania) – objaví sa vyššie v Stiahnutých súboroch. "
+     "Program vaše heslá nepozná a nikam ich neposiela. Knihy z Kindle a Google Play sú zašifrované (DRM) – čítajú "
+     "sa len v ich aplikácii.", "Melden Sie sich im Browser an und laden Sie das Buch herunter (EPUB oder PDF ohne "
+     "Verschlüsselung) – es erscheint oben unter Downloads. Das Programm kennt Ihre Passwörter nicht. Kindle- und "
+     "Google-Play-Bücher sind verschlüsselt (DRM) und nur in deren Apps lesbar."),
+    ("Zatím žádné knihy – stažené EPUB, PDF a další se objeví tady.", "No books yet – downloaded EPUB, PDF and "
+     "others will appear here.", "Zatiaľ žiadne knihy – stiahnuté EPUB, PDF a ďalšie sa objavia tu.", "Noch keine "
+     "Bücher – heruntergeladene EPUB, PDF usw. erscheinen hier."),
+    ("Otevřít z odkazu", "Open from link", "Otvoriť z odkazu", "Aus Link öffnen"),
+    ("Odkaz na soubor knihy nebo ukázky (EPUB, PDF, MOBI…):", "Link to a book or preview file (EPUB, PDF, MOBI…):",
+     "Odkaz na súbor knihy alebo ukážky (EPUB, PDF, MOBI…):", "Link zu einer Buch- oder Leseprobendatei (EPUB, PDF, "
+     "MOBI…):"),
+    ("Hledaný text…", "Text to find…", "Hľadaný text…", "Suchtext…"),
+    ("Předchozí výskyt", "Previous match", "Predchádzajúci výskyt", "Vorheriger Treffer"),
+    ("Další výskyt", "Next match", "Ďalší výskyt", "Nächster Treffer"),
+    ("Možnosti", "Options", "Možnosti", "Optionen"),
+    ("Velká a malá písmena", "Match case", "Veľké a malé písmená", "Groß-/Kleinschreibung"),
+    ("Jen celá slova", "Whole words only", "Len celé slová", "Nur ganze Wörter"),
+    ("V celé knize", "In the whole book", "V celej knihe", "Im ganzen Buch"),
+    ("Nahradit čím…", "Replace with…", "Nahradiť čím…", "Ersetzen durch…"),
+    ("Výsledky", "Results", "Výsledky", "Ergebnisse"),
+    ("Všechny\nvýskyty", "All\nmatches", "Všetky\nvýskyty", "Alle\nTreffer"),
+    ("Všechny výskyty", "All matches", "Všetky výskyty", "Alle Treffer"),
+    ("Nalezeno {}× – dvojklikem přejdete na místo v knize.", "Found {}× – double-click to go to the place in the book.",
+     "Nájdené {}× – dvojklikom prejdete na miesto v knihe.", "{}× gefunden – Doppelklick springt zur Stelle im Buch."),
+    ("Přejít", "Go to", "Prejsť", "Gehe zu"),
+    ("Přejít na kapitolu", "Go to chapter", "Prejsť na kapitolu", "Zu Kapitel gehen"),
+    ("Začátek kapitoly", "Start of chapter", "Začiatok kapitoly", "Kapitelanfang"),
+    ("Konec kapitoly", "End of chapter", "Koniec kapitoly", "Kapitelende"),
+    ("Celá slova", "Whole words", "Celé slová", "Ganze Wörter"),
+    ("📕 Obálka", "📕 Cover", "📕 Obálka", "📕 Umschlag"),
+    ("Změnit…", "Change…", "Zmeniť…", "Ändern…"),
+    ("kliknutím změníte", "click to change", "kliknutím zmeníte", "zum Ändern klicken"),
+    ("vlastní obrázek", "own picture", "vlastný obrázok", "eigenes Bild"),
+    ("jen s názvem a autorem – přidejte obrázek tlačítkem Změnit", "title and author only – add a picture with "
+     "Change", "len s názvom a autorom – pridajte obrázok tlačidlom Zmeniť", "nur Titel und Autor – Bild mit Ändern "
+     "hinzufügen"),
     ("Nahrazeno {}×.", "Replaced {}×.", "Nahradené {}×.", "{}× ersetzt."),
     ("Zpět", "Undo", "Späť", "Rückgängig"),
     ("Znovu", "Redo", "Znova", "Wiederholen"),
@@ -1122,7 +1253,10 @@ E += [
     ('📝 Upravit poznámku…', '📝 Edit note…', '📝 Upraviť poznámku…', '📝 Notiz bearbeiten…'),
     ('📤 Uložit jako text…', '📤 Save as text…', '📤 Uložiť ako text…', '📤 Als Text speichern…'),
     ('📤 Uložit označené a poznámky…', '📤 Save highlights and notes…', '📤 Uložiť označené a poznámky…', '📤 Markierungen und Notizen speichern…'),
-    ('🔊 Číst nahlas odsud', '🔊 Read aloud from here', '🔊 Čítať nahlas odtiaľto', '🔊 Ab hier vorlesen'),
+    ("🔊 Číst nahlas od této věty", "🔊 Read aloud from this sentence", "🔊 Čítať nahlas od tejto vety",
+     "🔊 Ab diesem Satz vorlesen"),
+    ("🔊 Číst nahlas celý odstavec", "🔊 Read the whole paragraph aloud", "🔊 Čítať nahlas celý odsek",
+     "🔊 Ganzen Absatz vorlesen"),
     ('🔒 Heslo k PDF', '🔒 PDF password', '🔒 Heslo k PDF', '🔒 PDF-Passwort'),
     ('🖍 Označit', '🖍 Highlight', '🖍 Označiť', '🖍 Markieren'),
     ('Číst knihu jako v čtečce: stránky, otáčení, hledání, záložky, označování, překlad a čtení nahlas (F6)', 'Read the book like in an e-reader: pages, page turning, search, bookmarks, highlights, translation and read-aloud (F6)', 'Čítať knihu ako v čítačke: strany, otáčanie, hľadanie, záložky, označovanie, preklad a čítanie nahlas (F6)', 'Buch wie im E-Reader lesen: Seiten, Umblättern, Suche, Lesezeichen, Markierungen, Übersetzung und Vorlesen (F6)'),
@@ -1131,8 +1265,65 @@ E += [
     ('Čtení nahlas používá hlasy Windows. Na tomto počítači nejsou k dispozici.', 'Read-aloud uses Windows voices. They are not available on this computer.', 'Čítanie nahlas používa hlasy Windows. Na tomto počítači nie sú k dispozícii.', 'Vorlesen verwendet Windows-Stimmen. Auf diesem Computer sind sie nicht verfügbar.'),
     ('Pokračovat', 'Resume', 'Pokračovať', 'Fortsetzen'),
     ('Pozastavit', 'Pause', 'Pozastaviť', 'Pause'),
-    ('Číst nahlas od začátku stránky; během čtení pozastavit a pokračovat', 'Read aloud from the top of the page; pause and resume while reading', 'Čítať nahlas od začiatku strany; počas čítania pozastaviť a pokračovať', 'Ab Seitenanfang vorlesen; beim Vorlesen pausieren und fortsetzen'),
-    ('Hlas pro čtení nahlas (hlasy nainstalované ve Windows: Nastavení → Čas a jazyk → Řeč)', 'Voice for reading aloud (voices installed in Windows: Settings → Time & language → Speech)', 'Hlas na čítanie nahlas (hlasy nainštalované vo Windows: Nastavenia → Čas a jazyk → Reč)', 'Stimme zum Vorlesen (in Windows installierte Stimmen: Einstellungen → Zeit und Sprache → Sprache)'),
+    ("Číst nahlas od začátku stránky, nebo od věty, na kterou kliknete v textu (zezelená); během čtení klik do textu "
+     "přeskočí na tu větu. Tlačítkem pak pozastavit a pokračovat.", "Read aloud from the top of the page, or from the "
+     "sentence you click in the text (it turns green); while reading, a click in the text jumps to that sentence. "
+     "Use the button to pause and resume.", "Čítať nahlas od začiatku strany alebo od vety, na ktorú kliknete v texte "
+     "(zozelenie); počas čítania klik do textu preskočí na tú vetu. Tlačidlom potom pozastaviť a pokračovať.",
+     "Ab Seitenanfang vorlesen oder ab dem Satz, den Sie im Text anklicken (er wird grün); beim Vorlesen springt ein "
+     "Klick in den Text zu diesem Satz. Mit der Taste pausieren und fortsetzen."),
+    ("Hlas pro čtení nahlas: hlasy Windows (Nastavení → Čas a jazyk → Řeč) a stažené hlasy, které čtou bez internetu",
+     "Voice for reading aloud: Windows voices (Settings → Time & language → Speech) and downloaded voices that work "
+     "offline", "Hlas na čítanie nahlas: hlasy Windows (Nastavenia → Čas a jazyk → Reč) a stiahnuté hlasy, ktoré "
+     "čítajú bez internetu", "Vorlesestimme: Windows-Stimmen (Einstellungen → Zeit und Sprache → Sprache) und "
+     "heruntergeladene Stimmen, die offline funktionieren"),
+    ("Ve Windows není {} hlas, proto by kniha zněla anglicky.\n\nProgram může stáhnout {} hlas {} (zdarma, asi {} MB). "
+     "Čte bez internetu, přímo v počítači.\n\nJiná možnost: v Nastavení Windows → Čas a jazyk → Řeč → Přidat hlasy "
+     "zvolte Čeština (hlas Microsoft Jakub) a program ho pak najde sám.",
+     "Windows has no {} voice, so the book would sound English.\n\nThe program can download the {} voice {} (free, "
+     "about {} MB). It reads offline, right on your computer.\n\nAlternatively: in Windows Settings → Time & "
+     "language → Speech → Add voices choose Czech (Microsoft Jakub) and the program will find it.",
+     "Vo Windows nie je {} hlas, preto by kniha znela anglicky.\n\nProgram môže stiahnuť {} hlas {} (zadarmo, asi {} "
+     "MB). Číta bez internetu, priamo v počítači.\n\nIná možnosť: v Nastaveniach Windows → Čas a jazyk → Reč → "
+     "Pridať hlasy zvoľte Slovenčina a program ho potom nájde sám.",
+     "Windows hat keine Stimme ({}), das Buch würde englisch klingen.\n\nDas Programm kann die Stimme ({}) {} "
+     "herunterladen (kostenlos, etwa {} MB). Sie liest offline auf Ihrem Computer.\n\nAlternativ: Windows-"
+     "Einstellungen → Zeit und Sprache → Sprache → Stimmen hinzufügen."),
+    ("český", "Czech", "český", "Tschechisch"),
+    ("slovenský", "Slovak", "slovenský", "Slowakisch"),
+    ("⬇ Stáhnout hlas", "⬇ Download voice", "⬇ Stiahnuť hlas", "⬇ Stimme herunterladen"),
+    ("Číst hlasem Windows", "Read with Windows voice", "Čítať hlasom Windows", "Mit Windows-Stimme lesen"),
+    ("Zrušit", "Cancel", "Zrušiť", "Abbrechen"),
+    ("Stahuji hlas {}…", "Downloading voice {}…", "Sťahujem hlas {}…", "Stimme {} wird heruntergeladen…"),
+    ("Hlas se nepodařilo stáhnout:\n{}", "The voice could not be downloaded:\n{}",
+     "Hlas sa nepodarilo stiahnuť:\n{}", "Die Stimme konnte nicht heruntergeladen werden:\n{}"),
+    ("⬇ Stáhnout hlas {} ({}, bez internetu)…", "⬇ Download voice {} ({}, offline)…",
+     "⬇ Stiahnuť hlas {} ({}, bez internetu)…", "⬇ Stimme {} herunterladen ({}, offline)…"),
+    ("Stahuji program pro čtení nahlas Piper (asi 22 MB)…", "Downloading the Piper reading program (about 22 MB)…",
+     "Sťahujem program na čítanie nahlas Piper (asi 22 MB)…", "Lade das Vorleseprogramm Piper (etwa 22 MB)…"),
+    ("Čtečka", "Reader", "Čítačka", "Lesen"),
+    ("📖 Čtečka", "📖 Reader", "📖 Čítačka", "📖 Lesen"),
+    ("Otevřete knihu a čtěte ji jako v e-čtečce: listování stránek, záložky, označování barvami s poznámkou, "
+     "hledání, překlad slova, slovníček a čtení nahlas. Mezi čtením a úpravami knihy přepnete v levém panelu "
+     "(Napsat knihu / Čtečka) nebo klávesou F6.", "Open a book and read it like on an e-reader: page turning, "
+     "bookmarks, colour highlights with notes, search, word translation, vocabulary and reading aloud. Switch between "
+     "reading and editing in the left panel (Write a book / Reader) or with F6.",
+     "Otvorte knihu a čítajte ju ako v e-čítačke: listovanie strán, záložky, označovanie farbami s poznámkou, "
+     "hľadanie, preklad slova, slovníček a čítanie nahlas. Medzi čítaním a úpravami prepnete v ľavom paneli "
+     "(Napísať knihu / Čítačka) alebo klávesom F6.", "Öffnen Sie ein Buch und lesen Sie es wie auf einem E-Reader: "
+     "Blättern, Lesezeichen, farbige Markierungen mit Notiz, Suche, Wortübersetzung, Vokabeln und Vorlesen. "
+     "Zwischen Lesen und Bearbeiten wechseln Sie im linken Bereich (Buch schreiben / Lesen) oder mit F6."),
+    (" Otevřít knihu ke čtení…", " Open a book to read…", " Otvoriť knihu na čítanie…", " Buch zum Lesen öffnen…"),
+    ("Otevřít knihu ke čtení", "Open a book to read", "Otvoriť knihu na čítanie", "Buch zum Lesen öffnen"),
+    ("EPUB, PDF (i s heslem), DOCX, MOBI, AZW3, FB2, ODT, RTF, TXT nebo projekt knihy *.kniha.json",
+     "EPUB, PDF (also password-protected), DOCX, MOBI, AZW3, FB2, ODT, RTF, TXT or a book project *.kniha.json",
+     "EPUB, PDF (aj s heslom), DOCX, MOBI, AZW3, FB2, ODT, RTF, TXT alebo projekt knihy *.kniha.json",
+     "EPUB, PDF (auch mit Passwort), DOCX, MOBI, AZW3, FB2, ODT, RTF, TXT oder ein Buchprojekt *.kniha.json"),
+    ("Naposledy otevřené knihy", "Recently opened books", "Naposledy otvorené knihy", "Zuletzt geöffnete Bücher"),
+    ("Zatím žádné – otevřené knihy se objeví tady.", "None yet – opened books will appear here.",
+     "Zatiaľ žiadne – otvorené knihy sa objavia tu.", "Noch keine – geöffnete Bücher erscheinen hier."),
+    ("Kniha nemá žádný text ke čtení.", "The book has no text to read.", "Kniha nemá žiadny text na čítanie.",
+     "Das Buch enthält keinen Text zum Lesen."),
     ('Hlas podle jazyka knihy', 'Voice by book language', 'Hlas podľa jazyka knihy', 'Stimme nach Buchsprache'),
     ('žena', 'female', 'žena', 'weiblich'),
     ('muž', 'male', 'muž', 'männlich'),

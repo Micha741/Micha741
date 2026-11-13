@@ -191,67 +191,64 @@ def vline() -> QtWidgets.QFrame:
     return f
 
 
-class FindDialog(QtWidgets.QDialog):
-    def __init__(self, editor: "BookEditor"):
-        super().__init__(editor)
-        self.ed = editor
-        self.setWindowTitle("Najít a nahradit")
-        form = QtWidgets.QFormLayout(self)
-        self.find = QtWidgets.QLineEdit()
-        self.repl = QtWidgets.QLineEdit()
-        self.case = QtWidgets.QCheckBox("Rozlišovat velká a malá písmena")
-        self.whole = QtWidgets.QCheckBox("Hledat v celé knize")
-        self.whole.setChecked(True)
-        self.info = label("", "Hint")
-        form.addRow("Najít:", self.find)
-        form.addRow("Nahradit:", self.repl)
-        form.addRow(self.case)
-        form.addRow(self.whole)
-        row = QtWidgets.QHBoxLayout()
-        for text, fn in (("Najít další", self.find_next), ("Nahradit", self.replace_one),
-                         ("Nahradit vše", self.replace_all)):
-            b = QtWidgets.QPushButton(text)
-            b.clicked.connect(fn)
-            row.addWidget(b)
-        form.addRow(row)
-        form.addRow(self.info)
-        self.find.returnPressed.connect(self.find_next)
+class FindLogic:
+    """Hledání a nahrazování v knize (karta Hledání). Potřebuje: self.ed, self.find, self.repl, self.case,
+    self.words, self.whole (zaškrtávátka) a self.info (štítek)."""
 
-    def _flags(self):
-        return QtGui.QTextDocument.FindCaseSensitively if self.case.isChecked() else QtGui.QTextDocument.FindFlags()
+    def _flags(self, back: bool = False):
+        f = QtGui.QTextDocument.FindFlags()
+        if self.case.isChecked():
+            f |= QtGui.QTextDocument.FindCaseSensitively
+        if self.words.isChecked():
+            f |= QtGui.QTextDocument.FindWholeWords
+        if back:
+            f |= QtGui.QTextDocument.FindBackward
+        return f
+
+    def _pattern(self) -> re.Pattern:
+        p = re.escape(self.find.text())
+        if self.words.isChecked():
+            p = rf"(?<!\w){p}(?!\w)"
+        return re.compile(p, 0 if self.case.isChecked() else re.IGNORECASE)
+
+    def _chapter_has(self, j: int) -> bool:
+        return bool(self._pattern().search(self.ed.project["chapters"][j]["text"]))
 
     def find_next(self) -> bool:
+        return self._find(back=False)
+
+    def find_prev(self) -> bool:
+        return self._find(back=True)
+
+    def _find(self, back: bool) -> bool:
         needle = self.find.text()
         if not needle:
             return False
         ed = self.ed
-        if ed.text.find(needle, self._flags()):
+        if ed.text.find(needle, self._flags(back)):
             self.info.setText("")
             return True
         if self.whole.isChecked():
             ed.store_current()
             n = len(ed.project["chapters"])
             for step in range(1, n + 1):
-                j = (ed.cur + step) % n
-                hay = ed.project["chapters"][j]["text"]
-                hit = needle in hay if self.case.isChecked() else needle.lower() in hay.lower()
-                if hit:
+                j = (ed.cur + (-step if back else step)) % n
+                if self._chapter_has(j):
                     ed.select_chapter(j)
-                    ed.text.moveCursor(QtGui.QTextCursor.Start)
-                    if ed.text.find(needle, self._flags()):
+                    ed.text.moveCursor(QtGui.QTextCursor.End if back else QtGui.QTextCursor.Start)
+                    if ed.text.find(needle, self._flags(back)):
                         self.info.setText(f"Kapitola {j + 1}")
                         return True
         else:
-            ed.text.moveCursor(QtGui.QTextCursor.Start)
-            if ed.text.find(needle, self._flags()):
+            ed.text.moveCursor(QtGui.QTextCursor.End if back else QtGui.QTextCursor.Start)
+            if ed.text.find(needle, self._flags(back)):
                 return True
         self.info.setText("Nenalezeno.")
         return False
 
     def replace_one(self):
         c = self.ed.text.textCursor()
-        if c.hasSelection() and (c.selectedText() == self.find.text() or
-                                 (not self.case.isChecked() and c.selectedText().lower() == self.find.text().lower())):
+        if c.hasSelection() and self._pattern().fullmatch(c.selectedText()):
             c.insertText(self.repl.text())
         self.find_next()
 
@@ -265,6 +262,8 @@ class FindDialog(QtWidgets.QDialog):
         total = 0
         current = ed.cur
         for j in targets:
+            if j != ed.cur and not self._chapter_has(j):
+                continue
             ed.select_chapter(j)
             ed.text.moveCursor(QtGui.QTextCursor.Start)
             cur = ed.text.textCursor()
@@ -277,9 +276,159 @@ class FindDialog(QtWidgets.QDialog):
         ed.select_chapter(current)
         self.info.setText(f"Nahrazeno {total}×.")
 
+    def all_hits(self) -> list[tuple[int, int, str]]:
+        """Všechny výskyty v knize: (kapitola, pořadí výskytu v kapitole, ukázka textu kolem)."""
+        if not self.find.text():
+            return []
+        self.ed.store_current()
+        pat, out = self._pattern(), []
+        for j, ch in enumerate(self.ed.project["chapters"]):
+            text = ch["text"]
+            for k, m in enumerate(pat.finditer(text)):
+                a, z = max(0, m.start() - 40), min(len(text), m.end() + 40)
+                snip = ("…" if a else "") + text[a:z].replace("\n", " ") + ("…" if z < len(text) else "")
+                out.append((j, k, snip))
+        return out
+
+    def goto_hit(self, chapter: int, nth: int):
+        ed = self.ed
+        ed.select_chapter(chapter)
+        ed.text.moveCursor(QtGui.QTextCursor.Start)
+        for _ in range(nth + 1):
+            if not ed.text.find(self.find.text(), self._flags()):
+                break
+        ed.text.setFocus()
+
+
+class FindDialog(FindLogic, QtWidgets.QDialog):
+    """Starší okno Najít a nahradit (hledání je teď v kartě Hledání)."""
+
+    def __init__(self, editor: "BookEditor"):
+        super().__init__(editor)
+        self.ed = editor
+        self.setWindowTitle("Najít a nahradit")
+        form = QtWidgets.QFormLayout(self)
+        self.find = QtWidgets.QLineEdit()
+        self.repl = QtWidgets.QLineEdit()
+        self.case = QtWidgets.QCheckBox("Rozlišovat velká a malá písmena")
+        self.words = QtWidgets.QCheckBox("Celá slova")
+        self.whole = QtWidgets.QCheckBox("Hledat v celé knize")
+        self.whole.setChecked(True)
+        self.info = label("", "Hint")
+        form.addRow("Najít:", self.find)
+        form.addRow("Nahradit:", self.repl)
+        form.addRow(self.case)
+        form.addRow(self.words)
+        form.addRow(self.whole)
+        row = QtWidgets.QHBoxLayout()
+        for text, fn in (("Najít další", self.find_next), ("Nahradit", self.replace_one),
+                         ("Nahradit vše", self.replace_all)):
+            b = QtWidgets.QPushButton(text)
+            b.clicked.connect(fn)
+            row.addWidget(b)
+        form.addRow(row)
+        form.addRow(self.info)
+        self.find.returnPressed.connect(self.find_next)
+
+
+class SearchTab(FindLogic, QtWidgets.QWidget):
+    """Karta Hledání v pásu karet: najít, předchozí/další, nahradit, všechny výskyty, přejít na kapitolu."""
+
+    def __init__(self, editor: "BookEditor"):
+        super().__init__()
+        self.ed = editor
+        ed = editor
+        lay = QtWidgets.QHBoxLayout(self)
+        lay.setContentsMargins(4, 4, 4, 2)
+        lay.setSpacing(4)
+
+        g_find = RibbonGroup("Najít")
+        self.find = QtWidgets.QLineEdit()
+        self.find.setPlaceholderText(tr("Hledaný text…"))
+        self.find.setClearButtonEnabled(True)
+        self.find.setMinimumWidth(220)
+        self.find.returnPressed.connect(self.find_next)
+        g_find.grid.addWidget(self.find, 0, 0, 1, 3)
+        g_find.grid.addWidget(ed._tb(emoji_icon("⬆️"), "Předchozí výskyt", self.find_prev, shortcut="Shift+F3"), 1, 0)
+        g_find.grid.addWidget(ed._tb(emoji_icon("⬇️"), "Další výskyt", self.find_next, shortcut="F3"), 1, 1)
+        self.info = label("", "Hint", wrap=False)
+        g_find.grid.addWidget(self.info, 1, 2)
+
+        g_opt = RibbonGroup("Možnosti")
+        self.case = QtWidgets.QCheckBox(tr("Velká a malá písmena"))
+        self.words = QtWidgets.QCheckBox(tr("Jen celá slova"))
+        self.whole = QtWidgets.QCheckBox(tr("V celé knize"))
+        self.whole.setChecked(True)
+        g_opt.grid.addWidget(self.case, 0, 0)
+        g_opt.grid.addWidget(self.words, 1, 0)
+        g_opt.grid.addWidget(self.whole, 0, 1)
+
+        g_rep = RibbonGroup("Nahradit")
+        self.repl = QtWidgets.QLineEdit()
+        self.repl.setPlaceholderText(tr("Nahradit čím…"))
+        self.repl.setMinimumWidth(180)
+        g_rep.grid.addWidget(self.repl, 0, 0, 1, 2)
+        b1 = QtWidgets.QPushButton(tr("Nahradit"))
+        b1.clicked.connect(self.replace_one)
+        b2 = QtWidgets.QPushButton(tr("Nahradit vše"))
+        b2.clicked.connect(self.replace_all)
+        g_rep.grid.addWidget(b1, 1, 0)
+        g_rep.grid.addWidget(b2, 1, 1)
+
+        g_all = RibbonGroup("Výsledky")
+        g_all.grid.addWidget(ed._big(emoji_icon("📋"), tr("Všechny\nvýskyty"), self.show_all), 0, 0, 2, 1)
+
+        g_go = RibbonGroup("Přejít")
+        self.go = QtWidgets.QComboBox()
+        self.go.setMinimumWidth(200)
+        self.go.setToolTip(tr("Přejít na kapitolu"))
+        self.go.activated.connect(lambda i: i >= 0 and ed.select_chapter(i))
+        g_go.grid.addWidget(self.go, 0, 0, 1, 2)
+        g_go.grid.addWidget(ed._tb(emoji_icon("⏮️"), "Začátek kapitoly",
+                                   lambda: (ed.text.moveCursor(QtGui.QTextCursor.Start), ed.text.setFocus())), 1, 0)
+        g_go.grid.addWidget(ed._tb(emoji_icon("⏭️"), "Konec kapitoly",
+                                   lambda: (ed.text.moveCursor(QtGui.QTextCursor.End), ed.text.setFocus())), 1, 1)
+
+        for i, g in enumerate((g_find, g_opt, g_rep, g_all, g_go)):
+            if i:
+                lay.addWidget(vline())
+            lay.addWidget(g)
+        lay.addStretch(1)
+
+    def fill_chapters(self):
+        self.go.blockSignals(True)
+        self.go.clear()
+        for i, ch in enumerate(self.ed.outline.get("chapters", [])[:len(self.ed.project["chapters"])]):
+            self.go.addItem(f"{i + 1}. {ch.get('title', '')}")
+        self.go.setCurrentIndex(self.ed.cur)
+        self.go.blockSignals(False)
+
+    def show_all(self):
+        hits = self.all_hits()
+        d = QtWidgets.QDialog(self.ed)
+        d.setWindowTitle(tr("Všechny výskyty"))
+        d.resize(640, 460)
+        lay = QtWidgets.QVBoxLayout(d)
+        lay.addWidget(label(tr("Nalezeno {}× – dvojklikem přejdete na místo v knize.").format(len(hits))
+                            if hits else tr("Nenalezeno."), "Hint"))
+        lst = QtWidgets.QListWidget()
+        titles = self.ed.outline.get("chapters", [])
+        for j, k, snip in hits:
+            it = QtWidgets.QListWidgetItem(f"{j + 1}. {titles[j]['title'] if j < len(titles) else ''}\n   {snip}")
+            it.setData(Qt.UserRole, (j, k))
+            lst.addItem(it)
+        lst.itemDoubleClicked.connect(lambda it: (self.goto_hit(*it.data(Qt.UserRole)), d.accept()))
+        lay.addWidget(lst, 1)
+        b = QtWidgets.QPushButton(tr("Zavřít"))
+        b.clicked.connect(d.reject)
+        lay.addWidget(b, 0, Qt.AlignRight)
+        self.hits_dialog = d
+        d.show()
+
 
 class BookEditor(QtWidgets.QMainWindow):
     closed = QtCore.Signal()  # editor byl zavřen (hlavní okno se vrátí na Napsat knihu)
+    mode_changed = QtCore.Signal(bool)  # True = čtečka (levý panel hlavního okna přepne na Čtečka)
 
     def __init__(self, project: dict, path: Path, ebook_convert: str | None, parent=None,
                  autosave: dict | None = None, text_assist: dict | None = None, save_options=None,
@@ -395,6 +544,8 @@ class BookEditor(QtWidgets.QMainWindow):
         tabs.setDocumentMode(True)
         tabs.addTab(self._file_tab(), "Soubor")
         tabs.addTab(self._home_tab(), "Domů")
+        self.search_tab = SearchTab(self)
+        self.search_tab_index = tabs.addTab(HScroll(self.search_tab), emoji_icon("🔍"), "Hledání")
         tabs.addTab(self._book_tab(), "Kniha")
         tabs.addTab(self._view_tab(), "Zobrazení")
         tabs.setCurrentIndex(1)
@@ -438,6 +589,41 @@ class BookEditor(QtWidgets.QMainWindow):
     def reading(self) -> bool:
         return self.stack.currentIndex() == 1
 
+    def is_fullscreen(self) -> bool:
+        return bool(getattr(self, "_full", None))
+
+    def set_fullscreen(self, on: bool):
+        """Čtení na celé obrazovce: skryje pás karet, panely hlavního okna a lištu; Esc nebo F11 vrátí zpět."""
+        if on == self.is_fullscreen() or (on and not self.reading()):
+            return
+        win = self.window()
+        if on:
+            self._full = {"maximized": win.isMaximized(), "was_full": win.isFullScreen(),
+                          "hidden": [w for w in self._fullscreen_hide(win) if w.isVisible()]}
+            for w in self._full["hidden"]:
+                w.setVisible(False)
+            if not self._full["was_full"]:
+                win.showFullScreen()
+        else:
+            st, self._full = self._full, None
+            for w in st["hidden"]:
+                w.setVisible(True)
+            if not st["was_full"]:
+                win.showMaximized() if st["maximized"] else win.showNormal()
+        if self.reader is not None:
+            self.reader.set_fullscreen_look(on)
+
+    def _fullscreen_hide(self, win) -> list:
+        """Co se na celé obrazovce schová: pás karet, lišta, panel kapitol a levý panel hlavního okna."""
+        out = [self.ribbon, self.statusBar(), self.chapters_dock]
+        corner = self.ribbon.cornerWidget(Qt.TopRightCorner)
+        if getattr(self, "b_back", None) is not None:
+            out.append(self.b_back)
+        side = getattr(win, "side", None)
+        if side is not None and win is not self:
+            out.append(side)
+        return [w for w in out if w is not None] + ([corner] if corner is not None and corner not in out else [])
+
     def set_mode(self, read: bool):
         """Přepne okno knihy mezi úpravami a čtečkou (kniha se při čtení nemění)."""
         from qt_reader import Reader, reader_ribbon
@@ -448,6 +634,7 @@ class BookEditor(QtWidgets.QMainWindow):
             self.store_current()
             if self.reader is None:
                 self.reader = Reader(self.project, self.app_cfg, self._save_view)
+                self.reader.fullscreen_requested.connect(self.set_fullscreen)
                 self.stack.addWidget(self.reader)
                 cur = self.ribbon.currentIndex()
                 self.ribbon.removeTab(self.read_tab)
@@ -464,7 +651,10 @@ class BookEditor(QtWidgets.QMainWindow):
             self.chapters_dock.setVisible(False)
             self.statusBar().setVisible(False)
             self.reader.view.setFocus()
+            if self.app_cfg.get("reader_fullscreen"):  # Nastavení: čtení rovnou na celé obrazovce
+                QtCore.QTimer.singleShot(0, lambda: self.reading() and self.set_fullscreen(True))
         else:
+            self.set_fullscreen(False)
             if self.reader:
                 self.reader.stop_speaking()
                 self.reader.state.save()
@@ -477,6 +667,7 @@ class BookEditor(QtWidgets.QMainWindow):
             self.text.setFocus()
         self.b_mode_read.setChecked(read)
         self.b_mode_edit.setChecked(not read)
+        self.mode_changed.emit(read)
 
     def _file_tab(self) -> QtWidgets.QWidget:
         """Karta Soubor jako ve Wordu: uložit, uložit jako (DOCX, PDF, MOBI, ODT, TXT…), export, tisk."""
@@ -651,11 +842,10 @@ class BookEditor(QtWidgets.QMainWindow):
 
         # --- Úpravy
         edit = RibbonGroup("Úpravy")
-        edit.grid.addWidget(self._big(emoji_icon("🔍"), "Najít", self.open_find), 0, 0, 2, 1)
-        edit.grid.addWidget(self._tb(emoji_icon("↩️"), "Zpět", t.undo, shortcut="Ctrl+Z"), 0, 1)
-        edit.grid.addWidget(self._tb(emoji_icon("↪️"), "Znovu", t.redo, shortcut="Ctrl+Y"), 1, 1)
-        edit.grid.addWidget(self._tb(emoji_icon("🔎"), "Přiblížit", lambda: t.zoomIn(1)), 0, 2)
-        edit.grid.addWidget(self._tb(emoji_icon("🔍"), "Oddálit", lambda: t.zoomOut(1)), 1, 2)
+        edit.grid.addWidget(self._tb(emoji_icon("↩️"), "Zpět", t.undo, shortcut="Ctrl+Z"), 0, 0)
+        edit.grid.addWidget(self._tb(emoji_icon("↪️"), "Znovu", t.redo, shortcut="Ctrl+Y"), 1, 0)
+        edit.grid.addWidget(self._tb(emoji_icon("➕"), "Přiblížit", lambda: t.zoomIn(1)), 0, 1)
+        edit.grid.addWidget(self._tb(emoji_icon("➖"), "Oddálit", lambda: t.zoomOut(1)), 1, 1)
 
         ins = RibbonGroup("Vložení")
         b_img = self._big(emoji_icon("🖼️"), "Obrázek", self.pick_image)
@@ -858,6 +1048,28 @@ class BookEditor(QtWidgets.QMainWindow):
         self.chapters_dock = dock
         w = QtWidgets.QWidget()
         lay = QtWidgets.QVBoxLayout(w)
+        # obálka knihy nahoře nad kapitolami – je hned vidět, jakou obálku kniha má
+        cov = QtWidgets.QHBoxLayout()
+        self.dock_cover = QtWidgets.QToolButton()
+        self.dock_cover.setObjectName("CoverThumb")
+        self.dock_cover.setFixedSize(84, 124)
+        self.dock_cover.setIconSize(QtCore.QSize(80, 120))
+        self.dock_cover.setAutoRaise(True)
+        self.dock_cover.setCursor(Qt.PointingHandCursor)
+        self.dock_cover.clicked.connect(self.pick_cover)
+        cov.addWidget(self.dock_cover)
+        cl = QtWidgets.QVBoxLayout()
+        t_cov = label("📕 Obálka", "", wrap=False)
+        t_cov.setStyleSheet("font-weight:600;")
+        cl.addWidget(t_cov)
+        self.dock_cover_info = label("", "Hint")
+        cl.addWidget(self.dock_cover_info)
+        b_ch = QtWidgets.QPushButton(tr("Změnit…"))
+        b_ch.clicked.connect(self.pick_cover)
+        cl.addWidget(b_ch, 0, Qt.AlignLeft)
+        cl.addStretch(1)
+        cov.addLayout(cl, 1)
+        lay.addLayout(cov)
         self.chapters = QtWidgets.QListWidget()
         self.chapters.currentRowChanged.connect(lambda r: r >= 0 and r != self.cur and self.select_chapter(r))
         self.ch_title = QtWidgets.QLineEdit()
@@ -869,6 +1081,7 @@ class BookEditor(QtWidgets.QMainWindow):
         dock.setWidget(w)
         dock.setMinimumWidth(240)
         self.addDockWidget(Qt.LeftDockWidgetArea, dock)
+        self.update_cover_thumb()
 
     def refresh_list(self):
         self.chapters.blockSignals(True)
@@ -878,6 +1091,8 @@ class BookEditor(QtWidgets.QMainWindow):
         if self.project["chapters"]:
             self.chapters.setCurrentRow(min(self.cur, len(self.project["chapters"]) - 1))
         self.chapters.blockSignals(False)
+        if getattr(self, "search_tab", None) is not None:
+            self.search_tab.fill_chapters()
 
     def store_current(self):
         if not self.project["chapters"] or self.cur >= len(self.project["chapters"]):
@@ -903,6 +1118,8 @@ class BookEditor(QtWidgets.QMainWindow):
         self.chapters.blockSignals(True)
         self.chapters.setCurrentRow(i)
         self.chapters.blockSignals(False)
+        if getattr(self, "search_tab", None) is not None and self.search_tab.go.count() > i:
+            self.search_tab.go.setCurrentIndex(i)
         self.text.moveCursor(QtGui.QTextCursor.Start)
         self.update_stats()
 
@@ -1214,13 +1431,16 @@ class BookEditor(QtWidgets.QMainWindow):
         sb.addPermanentWidget(self.saved)
 
     def _shortcuts(self):
-        for seq, fn in (("Ctrl+S", self.save), ("Ctrl+F", self.open_find), ("Ctrl+H", self.open_find),
+        for seq, fn in (("Ctrl+S", self.save), ("Ctrl+F", self.open_find), ("Ctrl+H", self.open_replace),
+                        ("F3", lambda: self.search_tab.find_next()), ("Shift+F3", lambda: self.search_tab.find_prev()),
                         ("Ctrl+B", lambda: self.b_bold.click()), ("Ctrl+I", lambda: self.b_italic.click()),
                         ("Ctrl+U", lambda: self.b_under.click()), ("Ctrl+Return", self._page_break),
                         ("Ctrl+P", lambda: self.print_book(True)), ("Ctrl+Shift+S", self.save_as),
                         ("F9", lambda: self.set_chapters_panel(not self.chapters_dock.isVisible())),
                         ("Alt+Left", self.go_back), ("Ctrl+PgUp", lambda: self.go_chapter(-1)),
-                        ("Ctrl+PgDown", lambda: self.go_chapter(1)), ("F6", lambda: self.set_mode(not self.reading()))):
+                        ("Ctrl+PgDown", lambda: self.go_chapter(1)), ("F6", lambda: self.set_mode(not self.reading())),
+                        ("F11", lambda: self.set_fullscreen(not self.is_fullscreen())),
+                        ("Escape", lambda: self.set_fullscreen(False))):
             sc = QtGui.QShortcut(QtGui.QKeySequence(seq), self, activated=fn)
             sc.setContext(Qt.WidgetWithChildrenShortcut)  # jen v editoru, ne na jiných stránkách okna
 
@@ -1487,27 +1707,38 @@ class BookEditor(QtWidgets.QMainWindow):
             self.update_cover_thumb()
             self._changed()
 
-    def update_cover_thumb(self):
+    def cover_pixmap(self) -> tuple[QtGui.QPixmap, bool]:
+        """Obálka knihy jako obrázek; False = vlastní obrázek chybí, je to obálka jen s názvem a autorem."""
+        pm = QtGui.QPixmap()
         data = book_images.get_image(self.project, self.project.get("cover") or "")
         if data:
-            pm = QtGui.QPixmap()
             pm.loadFromData(data)
-            self.cover_thumb.setPixmap(pm.scaled(self.cover_thumb.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
-            self.cover_thumb.setToolTip("Obálka knihy")
-        else:  # bez obrázku: obálka jen s názvem a autorem (tak se uloží i do e-knihy)
-            pm = QtGui.QPixmap()
-            try:
-                title = (self.project.get("outline") or {}).get("title") or "Kniha"
-                pm.loadFromData(book_images.text_cover(title, self.project.get("author") or "", (300, 450)))
-            except Exception:  # noqa: BLE001
-                pass
+            return pm, True
+        try:
+            title = (self.project.get("outline") or {}).get("title") or "Kniha"
+            pm.loadFromData(book_images.text_cover(title, self.project.get("author") or "", (300, 450)))
+        except Exception:  # noqa: BLE001
+            pass
+        return pm, False
+
+    def update_cover_thumb(self):
+        pm, own = self.cover_pixmap()
+        tip = "Obálka knihy" if own else "Obálka jen s názvem a autorem (kniha nemá obrázek obálky)"
+        thumbs = [t for t in (getattr(self, "cover_thumb", None),) if t is not None]
+        for t in thumbs:
             if pm.isNull():
-                self.cover_thumb.setPixmap(QtGui.QPixmap())
-                self.cover_thumb.setText("bez\nobálky")
+                t.setPixmap(QtGui.QPixmap())
+                t.setText("bez\nobálky")
             else:
-                self.cover_thumb.setPixmap(pm.scaled(self.cover_thumb.size(), Qt.KeepAspectRatio,
-                                                     Qt.SmoothTransformation))
-            self.cover_thumb.setToolTip("Obálka jen s názvem a autorem (kniha nemá obrázek obálky)")
+                t.setPixmap(pm.scaled(t.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
+            t.setToolTip(tr(tip))
+        dc = getattr(self, "dock_cover", None)
+        if dc is not None:
+            dc.setIcon(QtGui.QIcon(pm.scaled(QtCore.QSize(80, 120), Qt.KeepAspectRatio, Qt.SmoothTransformation))
+                       if not pm.isNull() else QtGui.QIcon())
+            dc.setToolTip(tr(tip) + " – " + tr("kliknutím změníte"))
+            self.dock_cover_info.setText(tr("vlastní obrázek") if own else
+                                         tr("jen s názvem a autorem – přidejte obrázek tlačítkem Změnit"))
 
     def save(self):
         import time
@@ -1545,16 +1776,21 @@ class BookEditor(QtWidgets.QMainWindow):
             self.reader.panel.setCurrentIndex(1)
             self.reader.panel.search.setFocus()
             return
-        if not self.find_dlg:
-            self.find_dlg = FindDialog(self)
+        # hledání je v kartě Hledání (Ctrl+F); označený text se rovnou vyplní
+        self.ribbon.setCurrentIndex(self.search_tab_index)
         c = self.text.textCursor()
-        if c.hasSelection():
-            self.find_dlg.find.setText(c.selectedText())
-        self.find_dlg.show()
-        self.find_dlg.raise_()
-        self.find_dlg.find.setFocus()
+        if c.hasSelection() and "\u2029" not in c.selectedText():
+            self.search_tab.find.setText(c.selectedText())
+        self.search_tab.find.setFocus()
+        self.search_tab.find.selectAll()
+
+    def open_replace(self):
+        self.open_find()
+        if not self.reading():
+            self.search_tab.repl.setFocus()
 
     def closeEvent(self, e):
+        self.set_fullscreen(False)
         if self.reader is not None:
             self.reader.stop_speaking()
             self.reader.state.save()

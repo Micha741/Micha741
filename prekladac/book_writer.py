@@ -55,10 +55,10 @@ class BookError(Exception):
 
 # ------------------------------------------------------------ osnova jako text
 def outline_to_text(o: dict) -> str:
-    lines = [f"NÁZEV: {o['title']}", "", "SHRNUTÍ:", o["synopsis"].strip(), "", "POSTAVY:"]
-    lines += [f"- {c['name']}: {c['description']}" for c in o.get("characters", [])]
+    lines = [f"NÁZEV: {o.get('title', '')}", "", "SHRNUTÍ:", str(o.get("synopsis") or "").strip(), "", "POSTAVY:"]
+    lines += [f"- {c.get('name', '')}: {c.get('description', '')}" for c in o.get("characters", [])]
     lines += ["", "KAPITOLY:"]
-    lines += [f"{i}. {ch['title']}{words_tag(ch.get('words'))} — {ch['summary']}"
+    lines += [f"{i}. {ch.get('title', '')}{words_tag(ch.get('words'))} — {ch.get('summary', '')}"
               for i, ch in enumerate(o["chapters"], 1)]
     return "\n".join(lines) + "\n"
 

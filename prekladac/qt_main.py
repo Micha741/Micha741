@@ -1167,8 +1167,9 @@ class BookPage(QtWidgets.QWidget):
             return False
         return self.show_project(proj, f)
 
-    def import_book(self, f):
-        """Hotová kniha (DOCX, EPUB, TXT, MOBI…) → nový projekt *.kniha.json vedle ní, pak jde upravit v editoru."""
+    def import_book(self, f, then=None):
+        """Hotová kniha (DOCX, EPUB, TXT, MOBI…) → nový projekt *.kniha.json vedle ní, pak jde upravit v editoru.
+        then = co udělat po načtení místo dotazu na otevření v editoru (např. otevřít ve čtečce)."""
         import book_import
 
         if self.win.editor is not None and not self.win.close_editor():
@@ -1193,6 +1194,9 @@ class BookPage(QtWidgets.QWidget):
             proj, dst = res
             self.show_project(proj, dst)
             n = len(proj["chapters"])
+            if then is not None:
+                then()
+                return
             self.logv.log(f"✓ Kniha {Path(f).name} načtena: {n} kapitol. Uložena jako projekt {dst} – "
                           "upravíte ji tlačítkem Upravit knihu.")
             if QtWidgets.QMessageBox.question(
@@ -1350,14 +1354,14 @@ class BookPage(QtWidgets.QWidget):
         ed = self.win.editor
         return ed if ed is not None and path and ed.path == Path(path) else None
 
-    def open_editor(self):
+    def open_editor(self, read: bool = False):
         from qt_editor import BookEditor
 
         if not self.project or not self.project["chapters"]:
             QtWidgets.QMessageBox.information(self, "Upravit knihu", "Kniha zatím nemá napsanou žádnou kapitolu.")
             return
         if self.open_editor_for(self.path):
-            self.win.show_editor(self.open_editor_for(self.path))
+            self.win.show_editor(self.open_editor_for(self.path), read=read)
             return
         if self.win.editor is not None and not self.win.close_editor():
             return  # jiná kniha v editoru a uživatel zavření zrušil
@@ -1365,8 +1369,109 @@ class BookPage(QtWidgets.QWidget):
                         autosave=self.win.cfg.get("autosave"),
                         text_assist=self.win.cfg.setdefault("text_assist", {}), save_options=self.win.save_cfg,
                         app_cfg=self.win.cfg)
-        self.win.show_editor(ed)
+        self.win.show_editor(ed, read=read)
         self.update_buttons()
+
+
+# ===================================================================== Čtečka
+class ReaderPage(QtWidgets.QWidget):
+    """Levý panel → Čtečka: otevřít knihu rovnou ke čtení (EPUB, PDF, DOCX, MOBI, TXT, projekt knihy)."""
+
+    def __init__(self, win: "MainWindow"):
+        super().__init__()
+        self.win = win
+        from qt_booksearch import BookSearch, MyBooksExtras
+
+        outer = QtWidgets.QVBoxLayout(self)
+        outer.setContentsMargins(24, 18, 24, 12)
+        outer.addWidget(label("📖 Čtečka", "PageTitle", wrap=False))
+        self.tabs = QtWidgets.QTabWidget()
+        outer.addWidget(self.tabs, 1)
+
+        mine = QtWidgets.QWidget()
+        lay = QtWidgets.QVBoxLayout(mine)
+        lay.setSpacing(12)
+        lay.addWidget(label("Otevřete knihu a čtěte ji jako v e-čtečce: listování stránek, záložky, označování "
+                            "barvami s poznámkou, hledání, překlad slova, slovníček a čtení nahlas. "
+                            "Mezi čtením a úpravami knihy přepnete v levém panelu (Napsat knihu / Čtečka) "
+                            "nebo klávesou F6.", "Hint"))
+        b = QtWidgets.QPushButton(emoji_icon("📂"), " Otevřít knihu ke čtení…")
+        b.setObjectName("BigPrimary")
+        b.setMinimumHeight(48)
+        b.setToolTip("EPUB, PDF (i s heslem), DOCX, MOBI, AZW3, FB2, ODT, RTF, TXT nebo projekt knihy *.kniha.json")
+        b.clicked.connect(self.pick)
+        row = QtWidgets.QHBoxLayout()
+        row.addWidget(b)
+        row.addStretch(1)
+        lay.addLayout(row)
+        self.recent_box = QtWidgets.QGroupBox("Naposledy otevřené knihy")
+        self.recent = QtWidgets.QVBoxLayout(self.recent_box)
+        lay.addWidget(self.recent_box)
+        self.search = BookSearch(win.cfg, win.save_cfg, self.open_path)
+        self.extras = MyBooksExtras(self.open_path, self.search.download_and_open)
+        lay.addWidget(self.extras)
+        lay.addStretch(1)
+        scroll = QtWidgets.QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QtWidgets.QFrame.NoFrame)
+        scroll.setWidget(mine)
+        self.tabs.addTab(scroll, emoji_icon("📚"), "Moje knihy")
+        self.tabs.addTab(self.search, emoji_icon("🔎"), "Hledat knihy")
+
+    def showEvent(self, e):
+        self.rebuild_recent()
+        self.extras.refresh()
+        super().showEvent(e)
+
+    def rebuild_recent(self):
+        while self.recent.count():
+            w = self.recent.takeAt(0).widget()
+            if w:
+                w.deleteLater()
+        recent = [p for p in self.win.cfg.get("recent_books", []) if Path(p).exists()][:8]
+        if not recent:
+            self.recent.addWidget(label("Zatím žádné – otevřené knihy se objeví tady.", "Hint"))
+        for p in recent:
+            name = Path(p).name[:-len(bw.PROJECT_SUFFIX)] if p.endswith(bw.PROJECT_SUFFIX) else Path(p).name
+            b = QtWidgets.QToolButton()
+            b.setObjectName("RecentBook")
+            b.setText("📘 " + (name if len(name) <= 60 else name[:59] + "…"))
+            b.setToolTip(p)
+            b.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+            b.clicked.connect(lambda _=False, p=p: self.open_path(p))
+            self.recent.addWidget(b)
+
+    def pick(self):
+        import book_import
+
+        f, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Otevřít knihu ke čtení", str(self.win.book.book_dir()),
+                                                     book_import.OPEN_FILTER)
+        if f:
+            self.open_path(f)
+
+    def open_path(self, f) -> None:
+        """Otevře knihu v okně knihy rovnou v režimu čtení (hotová kniha se nejdřív převede na projekt)."""
+        import book_import
+
+        book = self.win.book
+        ed = book.open_editor_for(f)
+        if ed is not None:
+            self.win.show_editor(ed, read=True)
+            return
+        if book_import.is_project(f):
+            if self.win.editor is not None and not self.win.close_editor():
+                return
+            if book.load_path(f):
+                self.read_current()
+        else:
+            book.import_book(f, then=self.read_current)
+
+    def read_current(self):
+        book = self.win.book
+        if not book.project or not book.project.get("chapters"):
+            QtWidgets.QMessageBox.information(self, "Čtečka", "Kniha nemá žádný text ke čtení.")
+            return
+        book.open_editor(read=True)
 
 
 # ===================================================================== Nastavení
@@ -1465,8 +1570,9 @@ class SettingsPage(QtWidgets.QWidget):
         d.setWindowTitle(f"Návod – {core.SERVICES[name][0]}")
         d.resize(760, 520)
         lay = QtWidgets.QVBoxLayout(d)
-        t = QtWidgets.QPlainTextEdit(GUIDES.get(name, "Návod není k dispozici."))
-        t.setReadOnly(True)
+        from qt_common import guide_view
+
+        t = guide_view(GUIDES.get(name, "Návod není k dispozici."))
         lay.addWidget(t)
         b = QtWidgets.QPushButton("Zavřít")
         b.clicked.connect(d.accept)
@@ -1724,6 +1830,22 @@ class SettingsPage(QtWidgets.QWidget):
         self.check_updates.setChecked(cfg.get("check_updates", True))
         g.addWidget(self.check_updates, 3, 0, 1, 3)
 
+        from qt_reader import SPREADS
+
+        rbox = QtWidgets.QGroupBox("Čtečka")
+        rg = QtWidgets.QGridLayout(rbox)
+        self.r_spread = QtWidgets.QComboBox()
+        for key, text in SPREADS.items():
+            self.r_spread.addItem(text, key)
+        self.r_spread.setCurrentIndex(max(0, self.r_spread.findData((cfg.get("reader") or {}).get("spread", "auto"))))
+        self.r_spread.setToolTip("Podle okna = dvě strany vedle sebe, když je okno široké; jinak jedna")
+        self.r_full = QtWidgets.QCheckBox("Číst na celé obrazovce (bez pásu karet a panelů; návrat Esc nebo F11)")
+        self.r_full.setChecked(bool(cfg.get("reader_fullscreen")))
+        rg.addWidget(QtWidgets.QLabel("Zobrazit stránky:"), 0, 0)
+        rg.addWidget(self.r_spread, 0, 1)
+        rg.addWidget(self.r_full, 1, 0, 1, 3)
+        rg.setColumnStretch(2, 1)
+
         tbox = QtWidgets.QGroupBox("Psaní textu (editor knihy, popis a osnova)")
         tg = QtWidgets.QGridLayout(tbox)
         ta = cfg.get("text_assist", {})
@@ -1759,9 +1881,10 @@ class SettingsPage(QtWidgets.QWidget):
         lg.addWidget(label("Texty programu; návody ke službám a podrobné chybové hlášky zůstávají česky.", "Hint"),
                      1, 0, 1, 3)
         lg.setColumnStretch(1, 1)
-        g.addWidget(lbox, 5, 0, 1, 3)
-        g.addWidget(label(f"Nastavení programu: {core.config_path()}", "Hint"), 6, 0, 1, 3)
-        g.setRowStretch(7, 1)
+        g.addWidget(rbox, 5, 0, 1, 3)
+        g.addWidget(lbox, 6, 0, 1, 3)
+        g.addWidget(label(f"Nastavení programu: {core.config_path()}", "Hint"), 7, 0, 1, 3)
+        g.setRowStretch(8, 1)
         g.setColumnStretch(1, 1)
         self.refresh_dictionary()
         return w
@@ -1881,6 +2004,14 @@ class SettingsPage(QtWidgets.QWidget):
         cfg["autosave"] = {"mode": self.auto_mode.currentData(), "seconds": self.auto_seconds.value(),
                            "chars": self.auto_chars.value()}
         cfg["check_updates"] = self.check_updates.isChecked()
+        cfg.setdefault("reader", {})["spread"] = self.r_spread.currentData()
+        cfg["reader_fullscreen"] = self.r_full.isChecked()
+        ed = self.win.editor
+        if ed is not None and ed.reader is not None:
+            ed.reader.voices_changed.emit()  # nové klíče hlasů → obnovit nabídku hlasů ve čtečce
+        if ed is not None and ed.reader is not None and ed.reader.prefs.get("spread") != self.r_spread.currentData():
+            ed.reader.prefs["spread"] = self.r_spread.currentData()
+            ed.reader.view.relayout()
         ta = cfg.setdefault("text_assist", {})  # stejný slovník sdílí otevřená textová pole
         ta["spell"] = self.ta_spell.isChecked()
         ta["complete"] = self.ta_complete.isChecked()
@@ -1961,7 +2092,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.nav.setIconSize(QtCore.QSize(22, 22))
         self.nav.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.nav.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        for icon, text in (("🌍", "Překlad"), ("✍️", "Napsat knihu"), ("⚙️", "Nastavení")):
+        for icon, text in (("🌍", "Překlad"), ("✍️", "Napsat knihu"), ("📖", "Čtečka"), ("⚙️", "Nastavení")):
             it = QtWidgets.QListWidgetItem(emoji_icon(icon), text)
             it.setData(Qt.UserRole, text)
             self.nav.addItem(it)
@@ -1972,8 +2103,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.stack = QtWidgets.QStackedWidget()
         self.translate = TranslatePage(self)
         self.book = BookPage(self)
+        self.reader_page = ReaderPage(self)
         self.settings = SettingsPage(self)
-        for page in (self.translate, self.book, self.settings):
+        for page in (self.translate, self.book, self.reader_page, self.settings):
             wrap = QtWidgets.QWidget()
             wl = QtWidgets.QVBoxLayout(wrap)
             wl.setContentsMargins(*((20, 12, 20, 12) if page is self.settings else (0, 0, 0, 0)))
@@ -1992,28 +2124,43 @@ class MainWindow(QtWidgets.QMainWindow):
     def title(self) -> str:
         return f"{core.APP_NAME} – verze {VERSION}"
 
+    BOOK_ROW, READER_ROW, SETTINGS_ROW = 1, 2, 3
+
     def _nav_changed(self, row: int):
-        if row == 1 and self.editor is not None:
+        if row in (self.BOOK_ROW, self.READER_ROW) and self.editor is not None:
+            # otevřená kniha: Napsat knihu = úpravy, Čtečka = čtení téže knihy
             self.stack.setCurrentWidget(self.editor)
+            self.editor.set_mode(row == self.READER_ROW)
             self.editor._update_title()
         else:
             self.stack.setCurrentIndex(row)
             self.setWindowTitle(self.title())
 
-    def show_editor(self, ed):
-        """Editor knihy se zobrazí v hlavním okně místo stránky Napsat knihu (jako ve Wordu)."""
+    def _editor_mode_changed(self, read: bool):
+        """Přepínač Úpravy / Čtení v okně knihy → označit v levém panelu Napsat knihu nebo Čtečka."""
+        row = self.READER_ROW if read else self.BOOK_ROW
+        if self.nav.currentRow() in (self.BOOK_ROW, self.READER_ROW) and self.nav.currentRow() != row:
+            self.nav.blockSignals(True)
+            self.nav.setCurrentRow(row)
+            self.nav.blockSignals(False)
+
+    def show_editor(self, ed, read: bool = False):
+        """Editor knihy se zobrazí v hlavním okně místo stránky Napsat knihu (jako ve Wordu); read = rovnou čtečka."""
         if ed is not self.editor:
             ed.setWindowFlags(Qt.Widget)
             self.stack.addWidget(ed)
             self.editor = ed
             ed.destroyed.connect(self._editor_destroyed)
             ed.closed.connect(lambda e=ed: self._editor_closed(e))
-        if self.nav.currentRow() != 1:
-            self.nav.setCurrentRow(1)  # → _nav_changed
+            ed.mode_changed.connect(self._editor_mode_changed)
+        row = self.READER_ROW if read else self.BOOK_ROW
+        if self.nav.currentRow() != row:
+            self.nav.setCurrentRow(row)  # → _nav_changed
         else:
-            self._nav_changed(1)
+            self._nav_changed(row)
         ed.show()
-        ed.text.setFocus()
+        if not read:
+            ed.text.setFocus()
 
     def close_editor(self) -> bool:
         """Zavře editor (zeptá se na neuložené změny); False, když uživatel zavření zrušil."""
@@ -2065,7 +2212,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def open_skin_file(self, path: str):
         """Soubor .skin otevřený dvojklikem ve Windows: nainstalovat a ukázat v Nastavení → Vzhled."""
-        self.nav.setCurrentRow(2)
+        self.nav.setCurrentRow(self.SETTINGS_ROW)
         self.settings.tabs.setCurrentWidget(self.settings.skins_tab)
         self.settings.skins_tab.install_file(path)
 

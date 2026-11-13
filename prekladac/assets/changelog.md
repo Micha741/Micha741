@@ -16,6 +16,11 @@
 - Obrázky: vložení více najednou (první se nabídne jako obálka), velikost malý / střední / velký,
   roztažení na celou stránku, vyjmutí části (ořez myší nebo poměr 2:3, čtverec, 16:9) a otočení.
 - Kniha bez obrázku obálky dostane obálku s názvem a autorem.
+- Karta Hledání v okně knihy (Ctrl+F): předchozí/další výskyt (F3), celá slova, velká/malá písmena, nahradit, všechny výskyty v knize, přejít na kapitolu. Obálka je vidět v panelu kapitol.
+- Návody ke službám mají klikací odkazy.
+- Přirozené hlasy pro čtení nahlas přes internet: Microsoft Azure (Vlasta, Antonín) a Google Cloud (Wavenet) – klíč v Nastavení → Služby a klíče (šifrovaně), měsíčně zdarma.
+- Čtečka na celou obrazovku (⛶ v kartě Čtení nebo F11, návrat Esc); v Nastavení → Obecné → Čtečka volba jedné nebo dvou stránek a čtení rovnou na celé obrazovce.
+- Čtečka → Hledat knihy: Project Gutenberg a Google Books přímo v programu (našeptávač, obálky, stažení volných knih a otevření ve čtečce, ukázky, odkaz na koupi), obchody a knihovny (Amazon, Alza, Kosmas, Martinus, Palmknihy, Google Play, knihovny Praha, Brno, Plzeň, České Budějovice…). Moje knihy: otevřít z odkazu, knihy ze složky Stažené soubory, odkazy na „moje knihy“ v obchodech.
 
 **Editor knihy (jako Word)**
 - Pás karet (písmo, odstavec, styly, úpravy), kapitoly, najít a nahradit v celé knize, statistiky.
@@ -27,6 +32,7 @@
 - Vlastní převody EPUB, MOBI, PDB, DOCX, RTF, ODT, FB2, HTMLZ, TXT a PDF bez Calibre; Calibre volitelně pro zápis AZW3, KFX a LIT.
 - Jazyk programu: čeština, angličtina, slovenština, němčina (další jazyky jde doinstalovat).
 - Čtečka v okně knihy (přepínač ✏️ Úpravy / 📖 Čtení, F6): stránky jedna/dvě vedle sebe, animace otočení stránky, obsah, hledání v knize, záložky, zvýraznění 4 barvami s poznámkami, překlad odstavce a slova se slovníčkem, čtení nahlas hlasem Windows.
+- Čtečka v levém panelu (📖 Čtečka) – otevře knihu rovnou ke čtení. Český hlas pro čtení nahlas: stažený hlas Jirka (bez internetu) nebo Microsoft Jakub z Windows 10/11.
 - PDF s heslem: program se zeptá na heslo (uživatele nebo vlastníka); PDF chráněná jen proti tisku/kopírování otevře rovnou.
 - Skiny (vzhledy) jako ve Winampu: Výchozí, Tmavý, Sépie, Vysoký kontrast a doinstalování dalších ze souboru .skin – i na Androidu.
 - Srozumitelná hláška, když neběží vlastní server (LibreTranslate, Ollama), a podrobný návod k LibreTranslate (Python, Docker, server pro domácí síť).

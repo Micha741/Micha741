@@ -101,7 +101,19 @@ na široké obrazovce dvě vedle sebe jako otevřená kniha – a pás karet uk�
   i s větou (slovníček jde uložit jako text pro kartičky).
 - **Číst nahlas** hlasem Windows (bez internetu), odstavec po odstavci s otáčením stránek; **Pozastavit / Pokračovat**,
   **Zastavit**, rychlost pomaleji/rychleji a **výběr hlasu** (u hlasů Windows je uvedeno muž/žena).
-  Český hlas je ve Windows v *Nastavení → Čas a jazyk → Řeč* (hlas „Jakub“).
+  **Odkud číst:** klikněte do textu na větu, ze které se má začít (zezelená), pak Číst nahlas; během čtení
+  klik do textu přeskočí na tu větu. Stránky se listují klikem u levého/pravého okraje, tažením nebo kolečkem.
+  **Český hlas:** když ve Windows chybí, program nabídne stažení hlasu **Jirka** (Piper, zdarma, asi 85 MB,
+  čte bez internetu; slovenský hlas Lili). Program najde i hlas **Microsoft Jakub** z Windows 10/11
+  (*Nastavení → Čas a jazyk → Řeč → Přidat hlasy → Čeština*).
+- Čtečka je i v **levém panelu (📖 Čtečka)**: otevře knihu rovnou ke čtení; *Napsat knihu* / *Čtečka* přepíná úpravy
+  a čtení téže knihy.
+- **🔎 Hledat knihy** (Čtečka): Project Gutenberg a Google Books přímo v programu – našeptávač, obálky, volné knihy
+  se stáhnou do *Dokumenty\Knihy z Překladače* a otevřou ve čtečce, u ostatních **Ukázka** a **Koupit**. Tlačítka
+  obchodů a knihoven (Amazon, Alza, Kosmas, Martinus, Palmknihy, Google Play, knihovny…) otevřou hledání v prohlížeči.
+- **📚 Moje knihy:** *Otevřít z odkazu* (stáhne EPUB/PDF z odkazu), knihy a ukázky ze složky **Stažené soubory**
+  a odkazy na „moje knihy“ v obchodech. Účty se nepřipojují do programu – přihlášení a stažení proběhne v prohlížeči
+  (program hesla nezná); knihy z Kindle a Google Play jsou šifrované (DRM) a čtou se jen v jejich aplikaci.
 - **Vzhled:** barvy Den/Sépie/Noc, patkové/bezpatkové písmo, velikost, řádkování, okraje, zarovnání do bloku,
   jedna/dvě strany.
 

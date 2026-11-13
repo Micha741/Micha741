@@ -264,5 +264,178 @@ def test_read_aloud_pause_resume_stop_and_voice(qapp, monkeypatch):
     assert r.speak_block > first
     r.b_stop.click()
     assert not r.speaking and calls[-1] == ("stop",) and r.b_speak.text() == "Číst nahlas" and not r.b_stop.isEnabled()
+
+    # klik do textu označí větu, od které se bude číst (zezelená); čtení pak začne přesně od ní
+    from qt_reader import sentence_bounds
+
+    b = r.doc.findBlockByNumber(r.speak_block if r.speak_block >= 0 else 2)
+    b = next(x for x in (r.doc.findBlockByNumber(i) for i in range(r.doc.blockCount())) if x.text().count(". ") >= 2)
+    second = b.position() + b.text().index(". ") + 2           # začátek 2. věty odstavce
+    r.click_text(second + 5)
+    assert r.read_start == second and sentence_bounds(r.doc, second + 5)[0] == second
+    assert any(sel.cursor.selectionStart() == second for sel in r.selections())
+    r.click_text(second + 3)                                    # klik na tutéž větu = zrušit označení
+    assert r.read_start is None
+    r.click_text(second + 5)
+    r.b_speak.click()
+    assert r.speaking and r.read_start is None and r.speak_from == second
+    assert calls[-1][1] == b.text()[second - b.position():][:12]
+    # během čtení klik jinam = přeskočit tam (předchozí věta se zastaví)
+    n = len(calls)
+    r.click_text(b.position() + 1)
+    assert calls[n] == ("stop",) and calls[n + 1][0] == "speak" and r.speak_from == b.position()
+    r.stop_speaking()
+
+    # bez zvoleného hlasu a s hlasem Windows pro jazyk knihy: čte hned (žádná nabídka stažení)
+    monkeypatch.setattr(tts_win, "has_voice", lambda lang: True)
+    r.set_pref("tts_voice", "")
+    r.start_speaking()
+    assert r.speaking and calls[-1][0] == "speak" and calls[-1][3] is None
+    r.stop_speaking()
+    # bez českého hlasu: nabídne stažení; „Číst hlasem Windows“ čte dál bez stahování
+    monkeypatch.setattr(tts_win, "has_voice", lambda lang: False)
+    asked = []
+    monkeypatch.setattr(r, "offer_voice_download", lambda lang, ask=True: asked.append(lang) or False)
+    r.start_speaking()
+    assert asked == ["cs"] and r.speaking
+    r.stop_speaking()
+
+    # myší: klik doprostřed textu označí větu, klik k pravému okraji otočí stránku
+    from PySide6.QtTest import QTest
+
+    ed.show()
+    settle(qapp, ed)
+    v = r.view
+    slot = v.slots()[0]
+    mid = QtCore.QPoint(int(v.width() / 2) if not v.two else int(slot.center().x()), int(slot.top() + 30))
+    assert v._edge(QtCore.QPointF(mid)) == 0 and v.hit(QtCore.QPointF(mid)) is not None
+    QTest.mouseClick(v, QtCore.Qt.LeftButton, pos=mid)
+    assert r.read_start is not None
+    page = v.page
+    QTest.mouseClick(v, QtCore.Qt.LeftButton, pos=QtCore.QPoint(v.width() - 3, int(v.height() / 2)))
+    v.finish_turn()
+    assert v.page > page
+    ed.dirty = False
+    ed.close()
+
+
+def test_reader_cover_and_images_fit_page(qapp):
+    """Obálka celá na první stránce a žádný obrázek větší než stránka (jinak by se ořízl)."""
+    import io as _io
+
+    import book_images
+    from PIL import Image
+    from qt_reader import Reader
+
+    def pic(w, h):
+        b = _io.BytesIO()
+        Image.new("RGB", (w, h), (120, 30, 60)).save(b, "PNG")
+        return b.getvalue()
+
+    proj = project(1, 6)
+    proj["images"] = {}
+    proj["cover"] = book_images.add_image(proj, pic(1024, 1536), "png")
+    wide = book_images.add_image(proj, pic(1600, 1000), "png")
+    small = book_images.add_image(proj, pic(800, 600), "png")
+    text = proj["chapters"][0]["text"].replace("\n\n", "</p><p>")
+    proj["chapters"][0] = {"html": f'<p>{text}</p><p><img src="{wide}" width="800"/></p>'
+                                   f'<p><img src="{small}" width="280"/></p><p>{text}</p>', "summary": ""}
+    r = Reader(proj, {})
+    for w in (700, 1500):  # jedna stránka i dvě vedle sebe
+        r.resize(w, 600)
+        r.show()
+        settle(qapp, r)
+        r.view.relayout()
+        v, doc = r.view, r.doc
+        m = doc.documentMargin()
+        sizes = {}
+        b = doc.begin()
+        while b.isValid():
+            for it in b:
+                f = it.fragment()
+                if f.isValid() and f.charFormat().isImageFormat():
+                    im = f.charFormat().toImageFormat()
+                    sizes[im.name()] = (im.width(), im.height(), v.page_of(f.position()))
+                    assert b.blockFormat().alignment() & QtCore.Qt.AlignHCenter
+            b = b.next()
+        for name, (iw, ih, _p) in sizes.items():
+            assert iw <= v.pw - 2 * m + 0.5 and ih <= v.ph - 2 * m, (name, iw, ih, v.pw, v.ph)
+        cw, ch, cpage = sizes[proj["cover"]]
+        assert cpage == 0 and abs(cw / ch - 1024 / 1536) < 0.01
+        assert ch >= (v.ph - 2 * m) * 0.85 or cw >= (v.pw - 2 * m) * 0.95  # obálka co největší
+        assert sizes[small][0] < sizes[wide][0]
+
+
+def test_reader_fullscreen_and_settings(qapp, tmp_path, monkeypatch):
+    """Čtečka na celé obrazovce (F11 / tlačítko, Esc zpět) a volby čtečky v Nastavení."""
+    import qt_main
+
+    monkeypatch.setenv("APPDATA", str(tmp_path / "appdata"))
+    win = qt_main.MainWindow()
+    win.show()
+    proj = project(1, 8)
+    p = tmp_path / "k.kniha.json"
+    p.write_text(json.dumps(proj, ensure_ascii=False), encoding="utf-8")
+    win.reader_page.open_path(str(p))
+    ed = win.editor
+    assert ed.reading()
+    r = ed.reader
+    full = next(b for b in ed.findChildren(QtWidgets.QToolButton) if b.text().replace("\n", " ") == "Celá obrazovka")
+    full.click()
+    qapp.processEvents()
+    assert ed.is_fullscreen() and win.isFullScreen() and r.fullscreen
+    assert not ed.ribbon.isVisible() and not win.side.isVisible() and not r.panel.isVisible()
+    assert r.b_exit_full.isVisible()
+    r.b_exit_full.click()                                   # tlačítko „Ukončit celou obrazovku“
+    qapp.processEvents()
+    assert not ed.is_fullscreen() and not win.isFullScreen() and ed.ribbon.isVisible() and win.side.isVisible()
+    ed.set_fullscreen(True)
+    ed.set_mode(False)                                      # přepnutí na úpravy celou obrazovku ukončí
+    assert not ed.is_fullscreen() and not win.isFullScreen()
+    ed.set_fullscreen(True)                                 # mimo čtení se nezapne
+    assert not ed.is_fullscreen()
+    # Nastavení: stránky a čtení na celé obrazovce
+    st = win.settings
+    st.r_spread.setCurrentIndex(st.r_spread.findData("1"))
+    st.r_full.setChecked(True)
+    monkeypatch.setattr(QtWidgets.QMessageBox, "information", lambda *a, **k: None)
+    st.save()
+    assert win.cfg["reader"]["spread"] == "1" and win.cfg["reader_fullscreen"] is True
+    ed.set_mode(True)
+    qapp.processEvents()
+    QtCore.QCoreApplication.sendPostedEvents()
+    qapp.processEvents()
+    assert ed.is_fullscreen() and not r.view.two
+    ed.set_fullscreen(False)
+    ed.dirty = False
+    ed.close()
+    win.close()
+
+
+def test_reader_voice_error_stops_and_cloud_help(qapp, monkeypatch):
+    from qt_editor import BookEditor
+    import tts_win
+
+    monkeypatch.setattr(tts_win, "list_voices", lambda: [])
+    monkeypatch.setattr(tts_win, "cloud_voices", lambda lang=None: [])
+    ed = BookEditor(project(1, 3), Path("x.kniha.json"), None, text_assist={}, save_options=lambda: None, app_cfg={})
+    ed.set_mode(True)
+    r = ed.reader
+    shown = []
+    monkeypatch.setattr(QtWidgets.QMessageBox, "warning", lambda *a, **k: shown.append(a[2]))
+    monkeypatch.setattr(QtWidgets.QMessageBox, "information", lambda *a, **k: shown.append(a[2]))
+
+    class Broken:
+        error = "Hlas není k dispozici: bez internetu"
+
+        def stop(self):
+            pass
+
+    r.speaker, r.speaking = Broken(), True
+    r.speak_next(1)
+    assert not r.speaking and shown == ["Hlas není k dispozici: bez internetu"]
+    vc = [c for c in ed.findChildren(QtWidgets.QComboBox) if c.findData("cloud_help") >= 0][0]
+    vc.setCurrentIndex(vc.findData("cloud_help"))  # nápověda, jak nastavit přirozené hlasy; výběr se vrátí
+    assert "Vlasta" in shown[-1] and vc.currentData() != "cloud_help"
     ed.dirty = False
     ed.close()
