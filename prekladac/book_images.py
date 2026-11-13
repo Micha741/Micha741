@@ -132,11 +132,12 @@ def _font(size: int, bold: bool = True):
 
 
 def text_cover(title: str, author: str = "", size: tuple[int, int] = (1200, 1800)) -> bytes:
-    """Obálka bez obrázku: jen název a autor na barevném pozadí (JPEG)."""
+    """Obálka bez obrázku: jen název a autor na barevném pozadí (JPEG). Kreslí se ve velikosti 1200×1800
+    a pak se zmenší – vypadá stejně v náhledu i v e-knize."""
     from PIL import Image, ImageDraw
 
-    W, H = size
-    im = Image.new("RGB", size)
+    W, H = 1200, 1800
+    im = Image.new("RGB", (W, H))
     d = ImageDraw.Draw(im)
     top, bottom = (43, 58, 85), (20, 32, 58)
     for y in range(H):  # přechod barvy shora dolů
@@ -168,6 +169,8 @@ def text_cover(title: str, author: str = "", size: tuple[int, int] = (1200, 1800
     d.line([(W / 2 - 160, y + 30), (W / 2 + 160, y + 30)], fill=gold, width=4)
     if author:
         d.text((W / 2, H - 300), author.strip(), font=_font(60, bold=False), fill=(230, 215, 184), anchor="ma")
+    if size != (W, H):
+        im = im.resize(size, Image.LANCZOS)
     out = io.BytesIO()
     im.save(out, "JPEG", quality=90)
     return out.getvalue()

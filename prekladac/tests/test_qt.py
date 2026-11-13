@@ -582,7 +582,7 @@ def test_editor_file_tab_save_as_and_panel(qapp, tmp_path, monkeypatch):
     ed = BookEditor(proj, p, None, text_assist=opts, save_options=lambda: None)
     ed.show()
     assert [ed.ribbon.tabText(i) for i in range(ed.ribbon.count()) if ed.ribbon.isTabVisible(i)] == [
-        "Soubor", "Domů", "Hledání", "Kniha", "Zobrazení"]  # karta Čtení je jen v režimu čtení
+        "Soubor", "Domů", "Hledání", "Kniha", "Export", "Zobrazení"]  # karta Čtení je jen v režimu čtení
     assert ed.ribbon.currentIndex() == 1
     # panel kapitol
     assert ed.chapters_dock.isVisible()
@@ -1014,5 +1014,56 @@ def test_search_tab_and_cover_in_chapters_panel(qapp, tmp_path):
     ed.set_cover_data(buf.getvalue())
     assert ed.dock_cover_info.text() == "vlastní obrázek" and not ed.dock_cover.icon().isNull()
     assert book_images.get_image(ed.project, ed.project["cover"])
+    ed.dirty = False
+    ed.close()
+
+
+def test_export_tab(qapp, tmp_path, monkeypatch):
+    from PySide6 import QtCore
+    from qt_editor import BookEditor
+    proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000,
+            "chapters": [{"text": "Bouře zuřila nad mořem.", "summary": ""}]}
+    p = tmp_path / "k.kniha.json"
+    bw.save_project(p, proj)
+    cfg = {}
+    ed = BookEditor(proj, p, None, text_assist={}, save_options=lambda: None, app_cfg=cfg)
+    ed.show()
+    assert ed.ribbon.tabText(ed.export_tab_index) == "Export"
+    shown = []
+    monkeypatch.setattr(QtWidgets.QMessageBox, "information", lambda *a, **k: shown.append(a[2]))
+    saved = []
+    monkeypatch.setattr(bw, "save_as", lambda project, dst, log=None, conv=None: saved.append(str(dst)) or str(dst))
+
+    def wait(cond):
+        for _ in range(300):
+            qapp.processEvents()
+            QtCore.QCoreApplication.sendPostedEvents()
+            if cond():
+                return True
+            import time
+            time.sleep(0.01)
+        return False
+
+    ed.export(["epub"])                                   # rychlý export jednoho formátu
+    assert wait(lambda: shown) and saved == [str(tmp_path / f"{bw.safe_name(OUTLINE['title'])}.epub")]
+    for f, cb in ed.fmt_checks.items():
+        cb.setChecked(f in ("pdf", "odt", "txt"))
+    assert cfg["export_formats"] == ["pdf", "odt", "txt"]  # volba formátů se pamatuje
+    out = tmp_path / "vystup"
+    out.mkdir()
+    monkeypatch.setattr(QtWidgets.QFileDialog, "getExistingDirectory", lambda *a, **k: str(out))
+    ed.pick_export_dir()
+    assert ed.project["export_dir"] == str(out) and ed.export_dir_lb.toolTip() == str(out)
+    saved.clear()
+    shown.clear()
+    ed.export()
+    assert wait(lambda: shown)
+    assert sorted(Path(x).suffix for x in saved) == [".odt", ".pdf", ".txt"] and all(str(out) in x for x in saved)
+    opened = []
+    monkeypatch.setattr(QtGui.QDesktopServices, "openUrl", lambda u: opened.append(u.toLocalFile()))
+    ed.export_after.setChecked(True)
+    assert cfg["export_open_folder"] is True
+    ed.export(["docx"])
+    assert wait(lambda: opened) and [Path(x) for x in opened] == [out]  # Qt vrací cestu s „/“
     ed.dirty = False
     ed.close()

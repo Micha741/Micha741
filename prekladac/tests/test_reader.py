@@ -151,7 +151,7 @@ def test_editor_switches_to_reading_mode(qapp, tmp_path):
     assert "Čtení" not in visible()
     ed.b_mode_read.click()
     qapp.processEvents()
-    assert ed.reading() and visible() == ["Soubor", "Čtení"] and ed.ribbon.currentIndex() == ed.read_tab
+    assert ed.reading() and visible() == ["Soubor", "Čtení", "Vzhled"] and ed.ribbon.currentIndex() == ed.read_tab
     assert ed.reader.view.pages >= 2 and not ed.chapters_dock.isVisible()
     ed.open_find()  # Ctrl+F ve čtečce = hledání v celé knize
     assert ed.reader.panel.currentIndex() == 1
@@ -437,5 +437,33 @@ def test_reader_voice_error_stops_and_cloud_help(qapp, monkeypatch):
     vc = [c for c in ed.findChildren(QtWidgets.QComboBox) if c.findData("cloud_help") >= 0][0]
     vc.setCurrentIndex(vc.findData("cloud_help"))  # nápověda, jak nastavit přirozené hlasy; výběr se vrátí
     assert "Vlasta" in shown[-1] and vc.currentData() != "cloud_help"
+    ed.dirty = False
+    ed.close()
+
+
+def test_reader_look_tab(qapp):
+    from qt_editor import BookEditor
+
+    cfg = {}
+    ed = BookEditor(project(1, 4), Path("x.kniha.json"), None, text_assist={}, save_options=lambda: None, app_cfg=cfg)
+    ed.set_mode(True)
+    r = ed.reader
+    assert ed.ribbon.tabText(ed.look_tab) == "Vzhled" and ed.ribbon.isTabVisible(ed.look_tab)
+    b = r.look_buttons
+    b["theme"]["night"].click()
+    assert r.prefs["theme"] == "night" and cfg["reader"]["theme"] == "night" and b["theme"]["night"].isChecked()
+    assert not b["theme"]["day"].isChecked()
+    b["spread"]["2"].click()
+    assert r.prefs["spread"] == "2" and r.view.two
+    b["spread"]["1"].click()
+    assert not r.view.two
+    b["font"]["sans"].click()
+    assert r.prefs["font"] == "sans"
+    size = float(r.prefs["size"])
+    bigger = next(x for x in ed.findChildren(QtWidgets.QToolButton) if x.text() == "Větší")
+    bigger.click()
+    assert float(r.prefs["size"]) == size + 1
+    ed.set_mode(False)
+    assert not ed.ribbon.isTabVisible(ed.look_tab) and not ed.ribbon.isTabVisible(ed.read_tab)
     ed.dirty = False
     ed.close()

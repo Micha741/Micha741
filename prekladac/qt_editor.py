@@ -547,6 +547,7 @@ class BookEditor(QtWidgets.QMainWindow):
         self.search_tab = SearchTab(self)
         self.search_tab_index = tabs.addTab(HScroll(self.search_tab), emoji_icon("🔍"), "Hledání")
         tabs.addTab(self._book_tab(), "Kniha")
+        self.export_tab_index = tabs.addTab(self._export_tab(), emoji_icon("📤"), "Export")
         tabs.addTab(self._view_tab(), "Zobrazení")
         tabs.setCurrentIndex(1)
         back = QtWidgets.QToolButton()
@@ -582,6 +583,8 @@ class BookEditor(QtWidgets.QMainWindow):
         tabs.setCornerWidget(mode, Qt.TopRightCorner)
         self.read_tab = tabs.addTab(QtWidgets.QWidget(), tr("Čtení"))
         tabs.setTabVisible(self.read_tab, False)
+        self.look_tab = tabs.addTab(QtWidgets.QWidget(), tr("Vzhled"))
+        tabs.setTabVisible(self.look_tab, False)
         self.ribbon = tabs
         return tabs
 
@@ -626,7 +629,7 @@ class BookEditor(QtWidgets.QMainWindow):
 
     def set_mode(self, read: bool):
         """Přepne okno knihy mezi úpravami a čtečkou (kniha se při čtení nemění)."""
-        from qt_reader import Reader, reader_ribbon
+        from qt_reader import Reader, reader_look_ribbon, reader_ribbon
 
         if read == self.reading():
             return
@@ -640,12 +643,16 @@ class BookEditor(QtWidgets.QMainWindow):
                 self.ribbon.removeTab(self.read_tab)
                 self.read_tab = self.ribbon.insertTab(self.read_tab, reader_ribbon(self.reader, self._big, self._row, RibbonGroup),
                                                       tr("Čtení"))
+                self.ribbon.removeTab(self.look_tab)
+                self.look_tab = self.ribbon.insertTab(
+                    self.look_tab, reader_look_ribbon(self.reader, self._big, self._row, RibbonGroup),
+                    emoji_icon("🎨"), tr("Vzhled"))
                 self.ribbon.setCurrentIndex(cur)
             else:
                 self.reader.rebuild()
             self._edit_tab = self.ribbon.currentIndex()
             for i in range(self.ribbon.count()):
-                self.ribbon.setTabVisible(i, i in (0, self.read_tab))  # Soubor (uložit, tisk) zůstává
+                self.ribbon.setTabVisible(i, i in (0, self.read_tab, self.look_tab))  # Soubor (uložit, tisk) zůstává
             self.ribbon.setCurrentIndex(self.read_tab)
             self.stack.setCurrentIndex(1)
             self.chapters_dock.setVisible(False)
@@ -659,8 +666,9 @@ class BookEditor(QtWidgets.QMainWindow):
                 self.reader.stop_speaking()
                 self.reader.state.save()
             for i in range(self.ribbon.count()):
-                self.ribbon.setTabVisible(i, i != self.read_tab)
-            self.ribbon.setCurrentIndex(getattr(self, "_edit_tab", 1) if getattr(self, "_edit_tab", 1) != self.read_tab else 1)
+                self.ribbon.setTabVisible(i, i not in (self.read_tab, self.look_tab))
+            back = getattr(self, "_edit_tab", 1)
+            self.ribbon.setCurrentIndex(back if back not in (self.read_tab, self.look_tab) else 1)
             self.stack.setCurrentIndex(0)
             self.chapters_dock.setVisible(bool(self.view_opts.get("chapters_panel", True)))
             self.statusBar().setVisible(True)
@@ -677,7 +685,8 @@ class BookEditor(QtWidgets.QMainWindow):
         self.b_saveas.setToolTip("Uložit knihu do jednoho souboru: DOCX, PDF, MOBI, EPUB, AZW3, ODT, TXT, "
                                  "nebo jako projekt *.kniha.json (Ctrl+Shift+S)")
         f.grid.addWidget(self.b_saveas, 0, 1)
-        f.grid.addWidget(self._big(emoji_icon("📤"), "Exportovat", self.export), 0, 2)
+        f.grid.addWidget(self._big(emoji_icon("📤"), "Exportovat",
+                                   lambda: self.ribbon.setCurrentIndex(self.export_tab_index)), 0, 2)
         pr = RibbonGroup("Tisk")
         self.b_print = self._big(emoji_icon("🖨️"), "Tisk", lambda: self.print_book(True))
         self.b_print.setToolTip("Vytisknout knihu (Ctrl+P). Šipkou vyberete tisk kapitoly nebo náhled.")
@@ -695,6 +704,83 @@ class BookEditor(QtWidgets.QMainWindow):
         win.grid.addWidget(self._big(emoji_icon("⬅️"), "Hlavní okno", self.go_back), 0, 0)
         win.grid.addWidget(self._big(emoji_icon("✖️"), "Zavřít", self.close), 0, 1)
         return self._row(f, pr, win)
+
+    # ================================================================ karta Export
+    EXPORT_QUICK = (("epub", "📗", "EPUB", "E-kniha pro čtečky a telefony"),
+                    ("pdf", "📕", "PDF", "Pro tisk a čtení na počítači"),
+                    ("docx", "📘", "Word", "DOCX pro Word a LibreOffice"),
+                    ("mobi", "📙", "Kindle", "MOBI pro starší Kindle"))
+
+    def _export_tab(self) -> QtWidgets.QWidget:
+        """Karta Export: jedním klikem do jednoho formátu, nebo více formátů najednou do zvolené složky."""
+        quick = RibbonGroup("Rychlý export")
+        for i, (fmt, icon, text, tip) in enumerate(self.EXPORT_QUICK):
+            b = self._big(emoji_icon(icon), text, lambda _=False, f=fmt: self.export([f]))
+            b.setToolTip(tr(tip) + " – " + tr("uloží se do složky exportu"))
+            quick.grid.addWidget(b, 0, i)
+
+        more = RibbonGroup("Více formátů najednou")
+        saved = set((self.app_cfg or {}).get("export_formats") or ["epub", "docx"])
+        self.fmt_checks = {}
+        labels = {"epub": "EPUB", "docx": "DOCX", "pdf": "PDF", "mobi": "MOBI", "azw3": "AZW3 (Calibre)",
+                  "odt": "ODT", "rtf": "RTF", "fb2": "FB2", "pdb": "PDB", "htmlz": "HTMLZ", "txt": "TXT"}
+        for i, f in enumerate(labels):
+            cb = QtWidgets.QCheckBox(labels[f])
+            cb.setToolTip(bw.SAVE_FORMATS.get(f, f))
+            cb.setChecked(f in saved)
+            cb.toggled.connect(self._remember_formats)
+            self.fmt_checks[f] = cb
+            more.grid.addWidget(cb, i % 3, i // 3)
+        more.grid.addWidget(self._big(emoji_icon("📤"), "Exportovat\nvybrané", lambda: self.export()), 0, 4, 3, 1)
+
+        where = RibbonGroup("Složka exportu")
+        self.export_dir_lb = QtWidgets.QLabel()
+        self.export_dir_lb.setMinimumWidth(220)
+        self.export_dir_lb.setMaximumWidth(360)
+        self.export_dir_lb.setObjectName("Hint")
+        where.grid.addWidget(self.export_dir_lb, 0, 0, 1, 2)
+        where.grid.addWidget(self._tb(emoji_icon("📁"), "Změnit složku exportu…", self.pick_export_dir), 1, 0)
+        where.grid.addWidget(self._tb(emoji_icon("📂"), "Otevřít složku exportu", self.open_export_dir), 1, 1)
+        self.export_after = QtWidgets.QCheckBox(tr("Po exportu otevřít složku"))
+        self.export_after.setChecked(bool((self.app_cfg or {}).get("export_open_folder")))
+        self.export_after.toggled.connect(lambda on: self._set_app("export_open_folder", on))
+        where.grid.addWidget(self.export_after, 2, 0, 1, 2)
+        self._show_export_dir()
+
+        other = RibbonGroup("Další")
+        other.grid.addWidget(self._big(emoji_icon("🗂️"), "Uložit jako…", self.save_as), 0, 0)
+        other.grid.addWidget(self._big(emoji_icon("🖨️"), "Tisk", lambda: self.print_book(True)), 0, 1)
+        return self._row(quick, more, where, other)
+
+    def _set_app(self, key, value):
+        if self.app_cfg is not None:
+            self.app_cfg[key] = value
+            self._save_view()
+
+    def _remember_formats(self, *_):
+        self._set_app("export_formats", [f for f, cb in self.fmt_checks.items() if cb.isChecked()])
+
+    def export_dir(self) -> Path:
+        d = self.project.get("export_dir")
+        return Path(d) if d else self.path.parent
+
+    def _show_export_dir(self):
+        d = str(self.export_dir())
+        self.export_dir_lb.setText(d if len(d) <= 48 else "…" + d[-47:])
+        self.export_dir_lb.setToolTip(d)
+
+    def pick_export_dir(self):
+        d = QtWidgets.QFileDialog.getExistingDirectory(self, tr("Složka exportu"), str(self.export_dir()))
+        if d:
+            if Path(d) == self.path.parent:
+                self.project.pop("export_dir", None)
+            else:
+                self.project["export_dir"] = d
+            self._show_export_dir()
+            self._changed()
+
+    def open_export_dir(self):
+        QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(str(self.export_dir())))
 
     def go_back(self):
         """Zpět na hlavní obrazovku: kniha se uloží a editor zavře (bez dotazu)."""
@@ -989,15 +1075,6 @@ class BookEditor(QtWidgets.QMainWindow):
             sig = getattr(w_, "currentFontChanged", None) or getattr(w_, "valueChanged", None) or w_.toggled
             sig.connect(self._changed)
 
-        exp = RibbonGroup("Export")
-        self.fmt_checks = {}
-        for i, f in enumerate(("epub", "docx", "pdf", "azw3", "mobi", "odt", "rtf", "txt")):
-            cb = QtWidgets.QCheckBox(f.upper())
-            cb.setChecked(f in ("epub", "docx"))
-            self.fmt_checks[f] = cb
-            exp.grid.addWidget(cb, i % 2, i // 2)
-        exp.grid.addWidget(self._big(emoji_icon("📤"), "Exportovat", self.export), 0, 4, 2, 1)
-
         chap = RibbonGroup("Kapitoly")
         chap.grid.addWidget(self._big(emoji_icon("➕"), "Nová kapitola", self.add_chapter), 0, 0, 2, 1)
         chap.grid.addWidget(self._tb(emoji_icon("⬆️"), "Posunout nahoru", lambda: self.move_chapter(-1)), 0, 1)
@@ -1015,7 +1092,7 @@ class BookEditor(QtWidgets.QMainWindow):
         cov.grid.addWidget(b_cov, 0, 1, 2, 1)
         cov.grid.addWidget(self._tb(emoji_icon("🗑️"), "Odebrat obálku", self.remove_cover), 0, 2)
         self.update_cover_thumb()
-        return self._row(info, look, cov, exp, chap)
+        return self._row(info, look, cov, chap)
 
     def _color_menu(self, colors, fn, extra_text):
         menu = QtWidgets.QMenu(self)
@@ -1756,19 +1833,39 @@ class BookEditor(QtWidgets.QMainWindow):
         self.text.document().setModified(False)
         self.update_stats()
 
-    def export(self):
+    def export(self, formats: list[str] | None = None):
+        """Uloží knihu do zvolených formátů do složky exportu (soubory se jmenují podle názvu knihy)."""
         self.save()
-        formats = [f for f, cb in self.fmt_checks.items() if cb.isChecked()] or ["docx"]
-        self.statusBar().showMessage("Exportuji…")
+        formats = formats or [f for f, cb in self.fmt_checks.items() if cb.isChecked()] or ["docx"]
+        folder = self.export_dir()
+        base = bw.safe_name(self.title_edit.text().strip() or self.outline["title"])
+        targets = [folder / f"{base}.{f}" for f in formats]
+        self.statusBar().showMessage(tr("Exportuji…"))
 
         def done(files, err):
             self.statusBar().clearMessage()
             if err:
-                QtWidgets.QMessageBox.critical(self, "Export", str(err))
+                QtWidgets.QMessageBox.critical(self, tr("Export"), str(err))
+                return
+            self.statusBar().showMessage(tr("Exportováno: {}").format(", ".join(Path(f).name for f in files)), 10000)
+            if self.export_after.isChecked():
+                self.open_export_dir()
             else:
-                QtWidgets.QMessageBox.information(self, "Export", "Uloženo:\n\n" + "\n".join(files))
+                QtWidgets.QMessageBox.information(self, tr("Export"), tr("Uloženo:") + "\n\n" + "\n".join(files))
 
-        run_bg(lambda: bw.export(self.project, self.path.parent, formats, lambda *_: None, self.ebook_convert), done, owner=self)
+        # ODT zapisuje Qt – musí běžet v okenním vlákně; ostatní formáty na pozadí
+        odt = [t for t in targets if t.suffix == ".odt"]
+        rest = [t for t in targets if t.suffix != ".odt"]
+        try:
+            first = [bw.save_as(self.project, t, lambda *_: None, self.ebook_convert) for t in odt]
+        except Exception as e:  # noqa: BLE001
+            done(None, e)
+            return
+        if not rest:
+            done(first, None)
+            return
+        run_bg(lambda: first + [bw.save_as(self.project, t, lambda *_: None, self.ebook_convert) for t in rest],
+               done, owner=self)
 
     def open_find(self):
         if self.reading():  # ve čtečce hledá panel Hledat (celá kniha)
