@@ -58,6 +58,9 @@ def test_search_merges_catalogs_and_survives_one_failing(monkeypatch):
             return GUTENDEX
         raise RuntimeError("HTTP 429")
 
+    import free_engines
+    monkeypatch.setattr(free_engines, "http_request", lambda url, **k: (_ for _ in ()).throw(RuntimeError("x")))
+
     monkeypatch.setattr(bs, "_get_json", fake)
     books, errors = bs.search("frankenstein")
     assert [b.title for b in books] == ["Frankenstein"] and errors and errors[0].startswith("Google Books")
@@ -155,3 +158,28 @@ def test_search_window(tmp_path, monkeypatch):
     b.click()
     assert opened[-1] == str(tmp_path / "ukazka.pdf")
     w.close()
+
+
+OPDS = """<?xml version="1.0"?><feed xmlns="http://www.w3.org/2005/Atom">
+<entry><title>Sort Alphabetically</title><link href="/ebooks/search.opds/?sort_order=title"/></entry>
+<entry><updated>2026</updated><title>Frankenstein; Or, The Modern Prometheus</title>
+<content type="text">Mary Wollstonecraft Shelley</content><id>https://www.gutenberg.org/ebooks/84.opds</id>
+<link type="application/atom+xml;profile=opds-catalog" href="/ebooks/84.opds"/></entry>
+<entry><title>R.U.R. &amp; další</title><content type="text">Karel Čapek</content>
+<link href="/ebooks/59112.opds" rel="subsection"/></entry></feed>"""
+
+
+def test_gutenberg_fallback_when_gutendex_blocked(monkeypatch):
+    import free_engines
+
+    def blocked(url, service):
+        raise RuntimeError("HTTP 403 Just a moment...")
+
+    monkeypatch.setattr(bs, "_get_json", blocked)
+    seen = []
+    monkeypatch.setattr(free_engines, "http_request", lambda url, **k: seen.append(url) or OPDS.encode())
+    books = bs.gutenberg_search("frankenstein")
+    assert seen == ["https://www.gutenberg.org/ebooks/search.opds/?query=frankenstein"]
+    assert [(b.title, b.authors) for b in books] == [("Frankenstein; Or, The Modern Prometheus",
+                                                      "Mary Wollstonecraft Shelley"), ("R.U.R. & další", "Karel Čapek")]
+    assert books[0].download == "https://www.gutenberg.org/ebooks/84.epub3.images" and books[0].price == "zdarma"

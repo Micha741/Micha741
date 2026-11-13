@@ -132,6 +132,44 @@ def parse_gutendex(j: dict) -> list[FoundBook]:
     return out
 
 
+def gutenberg_opds_url(q: str) -> str:
+    """Záloha, když Gutendex nejde: vyhledávání přímo v katalogu gutenberg.org (formát OPDS)."""
+    return f"https://www.gutenberg.org/ebooks/search.opds/?query={quote(q)}"
+
+
+def parse_gutenberg_opds(xml: str) -> list[FoundBook]:
+    import html as _html
+
+    out, seen = [], set()
+    for entry in re.findall(r"<entry>(.*?)</entry>", xml, re.S):
+        m = re.search(r"/ebooks/(\d+)(?:\.opds)?[\"<]", entry)
+        if not m or m.group(1) in seen:
+            continue
+        n = m.group(1)
+        seen.add(n)
+        title = _html.unescape(re.sub(r"<[^>]+>", "", (re.search(r"<title[^>]*>(.*?)</title>", entry, re.S) or [None, ""])[1])).strip()
+        author = _html.unescape(re.sub(r"<[^>]+>", "", (re.search(r"<content[^>]*>(.*?)</content>", entry, re.S) or [None, ""])[1])).strip()
+        if not title:
+            continue
+        out.append(FoundBook(id=f"pg{n}", title=title, authors=author if len(author) < 120 else "",
+                             source="Project Gutenberg", price="zdarma",
+                             download=f"https://www.gutenberg.org/ebooks/{n}.epub3.images",
+                             cover=f"https://www.gutenberg.org/cache/epub/{n}/pg{n}.cover.medium.jpg",
+                             preview=f"https://www.gutenberg.org/ebooks/{n}"))
+    return out
+
+
+def gutenberg_search(q: str, lang: str | None = None) -> list[FoundBook]:
+    """Gutendex (umí filtr jazyka); když nejde (ochrana proti robotům, výpadek), přímo katalog gutenberg.org."""
+    from free_engines import http_request
+
+    try:
+        return parse_gutendex(_get_json(gutendex_url(q, lang), "Project Gutenberg"))
+    except Exception:  # noqa: BLE001
+        xml = http_request(gutenberg_opds_url(q), timeout=30, retries=1, service="Project Gutenberg")
+        return parse_gutenberg_opds(xml.decode("utf-8", "replace"))
+
+
 GB_FIELDS = ("items(id,volumeInfo(title,subtitle,authors,description,language,imageLinks/thumbnail,previewLink,"
              "infoLink),saleInfo(saleability,listPrice,retailPrice,buyLink),accessInfo(publicDomain,webReaderLink,"
              "viewability,epub(isAvailable,downloadLink),pdf(isAvailable,downloadLink)))")
@@ -178,7 +216,7 @@ def search(q: str, lang: str | None = None, key: str | None = None) -> tuple[lis
     """Hledá v Project Gutenberg i Google Books. Vrátí (knihy, chyby jednotlivých katalogů)."""
     from concurrent.futures import ThreadPoolExecutor
 
-    jobs = {"Project Gutenberg": lambda: parse_gutendex(_get_json(gutendex_url(q, lang), "Project Gutenberg")),
+    jobs = {"Project Gutenberg": lambda: gutenberg_search(q, lang),
             "Google Books": lambda: parse_google_books(_get_json(google_books_url(q, lang, key), "Google Books"))}
     books, errors = [], []
     with ThreadPoolExecutor(2) as ex:
