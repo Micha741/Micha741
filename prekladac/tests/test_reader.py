@@ -364,3 +364,49 @@ def test_reader_cover_and_images_fit_page(qapp):
         assert cpage == 0 and abs(cw / ch - 1024 / 1536) < 0.01
         assert ch >= (v.ph - 2 * m) * 0.85 or cw >= (v.pw - 2 * m) * 0.95  # obálka co největší
         assert sizes[small][0] < sizes[wide][0]
+
+
+def test_reader_fullscreen_and_settings(qapp, tmp_path, monkeypatch):
+    """Čtečka na celé obrazovce (F11 / tlačítko, Esc zpět) a volby čtečky v Nastavení."""
+    import qt_main
+
+    monkeypatch.setenv("APPDATA", str(tmp_path / "appdata"))
+    win = qt_main.MainWindow()
+    win.show()
+    proj = project(1, 8)
+    p = tmp_path / "k.kniha.json"
+    p.write_text(json.dumps(proj, ensure_ascii=False), encoding="utf-8")
+    win.reader_page.open_path(str(p))
+    ed = win.editor
+    assert ed.reading()
+    r = ed.reader
+    full = next(b for b in ed.findChildren(QtWidgets.QToolButton) if b.text().replace("\n", " ") == "Celá obrazovka")
+    full.click()
+    qapp.processEvents()
+    assert ed.is_fullscreen() and win.isFullScreen() and r.fullscreen
+    assert not ed.ribbon.isVisible() and not win.side.isVisible() and not r.panel.isVisible()
+    assert r.b_exit_full.isVisible()
+    r.b_exit_full.click()                                   # tlačítko „Ukončit celou obrazovku“
+    qapp.processEvents()
+    assert not ed.is_fullscreen() and not win.isFullScreen() and ed.ribbon.isVisible() and win.side.isVisible()
+    ed.set_fullscreen(True)
+    ed.set_mode(False)                                      # přepnutí na úpravy celou obrazovku ukončí
+    assert not ed.is_fullscreen() and not win.isFullScreen()
+    ed.set_fullscreen(True)                                 # mimo čtení se nezapne
+    assert not ed.is_fullscreen()
+    # Nastavení: stránky a čtení na celé obrazovce
+    st = win.settings
+    st.r_spread.setCurrentIndex(st.r_spread.findData("1"))
+    st.r_full.setChecked(True)
+    monkeypatch.setattr(QtWidgets.QMessageBox, "information", lambda *a, **k: None)
+    st.save()
+    assert win.cfg["reader"]["spread"] == "1" and win.cfg["reader_fullscreen"] is True
+    ed.set_mode(True)
+    qapp.processEvents()
+    QtCore.QCoreApplication.sendPostedEvents()
+    qapp.processEvents()
+    assert ed.is_fullscreen() and not r.view.two
+    ed.set_fullscreen(False)
+    ed.dirty = False
+    ed.close()
+    win.close()

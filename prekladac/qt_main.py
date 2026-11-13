@@ -1830,6 +1830,22 @@ class SettingsPage(QtWidgets.QWidget):
         self.check_updates.setChecked(cfg.get("check_updates", True))
         g.addWidget(self.check_updates, 3, 0, 1, 3)
 
+        from qt_reader import SPREADS
+
+        rbox = QtWidgets.QGroupBox("Čtečka")
+        rg = QtWidgets.QGridLayout(rbox)
+        self.r_spread = QtWidgets.QComboBox()
+        for key, text in SPREADS.items():
+            self.r_spread.addItem(text, key)
+        self.r_spread.setCurrentIndex(max(0, self.r_spread.findData((cfg.get("reader") or {}).get("spread", "auto"))))
+        self.r_spread.setToolTip("Podle okna = dvě strany vedle sebe, když je okno široké; jinak jedna")
+        self.r_full = QtWidgets.QCheckBox("Číst na celé obrazovce (bez pásu karet a panelů; návrat Esc nebo F11)")
+        self.r_full.setChecked(bool(cfg.get("reader_fullscreen")))
+        rg.addWidget(QtWidgets.QLabel("Zobrazit stránky:"), 0, 0)
+        rg.addWidget(self.r_spread, 0, 1)
+        rg.addWidget(self.r_full, 1, 0, 1, 3)
+        rg.setColumnStretch(2, 1)
+
         tbox = QtWidgets.QGroupBox("Psaní textu (editor knihy, popis a osnova)")
         tg = QtWidgets.QGridLayout(tbox)
         ta = cfg.get("text_assist", {})
@@ -1865,9 +1881,10 @@ class SettingsPage(QtWidgets.QWidget):
         lg.addWidget(label("Texty programu; návody ke službám a podrobné chybové hlášky zůstávají česky.", "Hint"),
                      1, 0, 1, 3)
         lg.setColumnStretch(1, 1)
-        g.addWidget(lbox, 5, 0, 1, 3)
-        g.addWidget(label(f"Nastavení programu: {core.config_path()}", "Hint"), 6, 0, 1, 3)
-        g.setRowStretch(7, 1)
+        g.addWidget(rbox, 5, 0, 1, 3)
+        g.addWidget(lbox, 6, 0, 1, 3)
+        g.addWidget(label(f"Nastavení programu: {core.config_path()}", "Hint"), 7, 0, 1, 3)
+        g.setRowStretch(8, 1)
         g.setColumnStretch(1, 1)
         self.refresh_dictionary()
         return w
@@ -1987,6 +2004,12 @@ class SettingsPage(QtWidgets.QWidget):
         cfg["autosave"] = {"mode": self.auto_mode.currentData(), "seconds": self.auto_seconds.value(),
                            "chars": self.auto_chars.value()}
         cfg["check_updates"] = self.check_updates.isChecked()
+        cfg.setdefault("reader", {})["spread"] = self.r_spread.currentData()
+        cfg["reader_fullscreen"] = self.r_full.isChecked()
+        ed = self.win.editor
+        if ed is not None and ed.reader is not None and ed.reader.prefs.get("spread") != self.r_spread.currentData():
+            ed.reader.prefs["spread"] = self.r_spread.currentData()
+            ed.reader.view.relayout()
         ta = cfg.setdefault("text_assist", {})  # stejný slovník sdílí otevřená textová pole
         ta["spell"] = self.ta_spell.isChecked()
         ta["complete"] = self.ta_complete.isChecked()

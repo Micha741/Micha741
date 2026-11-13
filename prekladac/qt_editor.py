@@ -589,6 +589,41 @@ class BookEditor(QtWidgets.QMainWindow):
     def reading(self) -> bool:
         return self.stack.currentIndex() == 1
 
+    def is_fullscreen(self) -> bool:
+        return bool(getattr(self, "_full", None))
+
+    def set_fullscreen(self, on: bool):
+        """Čtení na celé obrazovce: skryje pás karet, panely hlavního okna a lištu; Esc nebo F11 vrátí zpět."""
+        if on == self.is_fullscreen() or (on and not self.reading()):
+            return
+        win = self.window()
+        if on:
+            self._full = {"maximized": win.isMaximized(), "was_full": win.isFullScreen(),
+                          "hidden": [w for w in self._fullscreen_hide(win) if w.isVisible()]}
+            for w in self._full["hidden"]:
+                w.setVisible(False)
+            if not self._full["was_full"]:
+                win.showFullScreen()
+        else:
+            st, self._full = self._full, None
+            for w in st["hidden"]:
+                w.setVisible(True)
+            if not st["was_full"]:
+                win.showMaximized() if st["maximized"] else win.showNormal()
+        if self.reader is not None:
+            self.reader.set_fullscreen_look(on)
+
+    def _fullscreen_hide(self, win) -> list:
+        """Co se na celé obrazovce schová: pás karet, lišta, panel kapitol a levý panel hlavního okna."""
+        out = [self.ribbon, self.statusBar(), self.chapters_dock]
+        corner = self.ribbon.cornerWidget(Qt.TopRightCorner)
+        if getattr(self, "b_back", None) is not None:
+            out.append(self.b_back)
+        side = getattr(win, "side", None)
+        if side is not None and win is not self:
+            out.append(side)
+        return [w for w in out if w is not None] + ([corner] if corner is not None and corner not in out else [])
+
     def set_mode(self, read: bool):
         """Přepne okno knihy mezi úpravami a čtečkou (kniha se při čtení nemění)."""
         from qt_reader import Reader, reader_ribbon
@@ -599,6 +634,7 @@ class BookEditor(QtWidgets.QMainWindow):
             self.store_current()
             if self.reader is None:
                 self.reader = Reader(self.project, self.app_cfg, self._save_view)
+                self.reader.fullscreen_requested.connect(self.set_fullscreen)
                 self.stack.addWidget(self.reader)
                 cur = self.ribbon.currentIndex()
                 self.ribbon.removeTab(self.read_tab)
@@ -615,7 +651,10 @@ class BookEditor(QtWidgets.QMainWindow):
             self.chapters_dock.setVisible(False)
             self.statusBar().setVisible(False)
             self.reader.view.setFocus()
+            if self.app_cfg.get("reader_fullscreen"):  # Nastavení: čtení rovnou na celé obrazovce
+                QtCore.QTimer.singleShot(0, lambda: self.reading() and self.set_fullscreen(True))
         else:
+            self.set_fullscreen(False)
             if self.reader:
                 self.reader.stop_speaking()
                 self.reader.state.save()
@@ -1399,7 +1438,9 @@ class BookEditor(QtWidgets.QMainWindow):
                         ("Ctrl+P", lambda: self.print_book(True)), ("Ctrl+Shift+S", self.save_as),
                         ("F9", lambda: self.set_chapters_panel(not self.chapters_dock.isVisible())),
                         ("Alt+Left", self.go_back), ("Ctrl+PgUp", lambda: self.go_chapter(-1)),
-                        ("Ctrl+PgDown", lambda: self.go_chapter(1)), ("F6", lambda: self.set_mode(not self.reading()))):
+                        ("Ctrl+PgDown", lambda: self.go_chapter(1)), ("F6", lambda: self.set_mode(not self.reading())),
+                        ("F11", lambda: self.set_fullscreen(not self.is_fullscreen())),
+                        ("Escape", lambda: self.set_fullscreen(False))):
             sc = QtGui.QShortcut(QtGui.QKeySequence(seq), self, activated=fn)
             sc.setContext(Qt.WidgetWithChildrenShortcut)  # jen v editoru, ne na jiných stránkách okna
 
@@ -1749,6 +1790,7 @@ class BookEditor(QtWidgets.QMainWindow):
             self.search_tab.repl.setFocus()
 
     def closeEvent(self, e):
+        self.set_fullscreen(False)
         if self.reader is not None:
             self.reader.stop_speaking()
             self.reader.state.save()

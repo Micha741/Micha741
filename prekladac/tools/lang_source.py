@@ -925,6 +925,20 @@ E += [
     ("Nenalezeno.", "Not found.", "Nenájdené.", "Nicht gefunden."),
     ("Hledání", "Search", "Hľadanie", "Suchen"),
     ("Moje knihy", "My books", "Moje knihy", "Meine Bücher"),
+    ("Celá\nobrazovka", "Full\nscreen", "Celá\nobrazovka", "Vollbild"),
+    ("Číst na celé obrazovce – bez pásu karet a panelů (F11, návrat Esc)", "Read in full screen – without the ribbon "
+     "and panels (F11, Esc to return)", "Čítať na celej obrazovke – bez pásu kariet a panelov (F11, návrat Esc)",
+     "Im Vollbild lesen – ohne Menüband und Bereiche (F11, zurück mit Esc)"),
+    ("✕ Ukončit celou obrazovku (Esc)", "✕ Exit full screen (Esc)", "✕ Ukončiť celú obrazovku (Esc)",
+     "✕ Vollbild beenden (Esc)"),
+    ("Čtečka", "Reader", "Čítačka", "Lesen"),
+    ("Zobrazit stránky:", "Show pages:", "Zobraziť strany:", "Seiten anzeigen:"),
+    ("Podle okna = dvě strany vedle sebe, když je okno široké; jinak jedna", "By window = two pages side by side "
+     "when the window is wide; otherwise one", "Podľa okna = dve strany vedľa seba, keď je okno široké; inak jedna",
+     "Nach Fenster = zwei Seiten nebeneinander bei breitem Fenster, sonst eine"),
+    ("Číst na celé obrazovce (bez pásu karet a panelů; návrat Esc nebo F11)", "Read in full screen (without the "
+     "ribbon and panels; Esc or F11 to return)", "Čítať na celej obrazovke (bez pásu kariet a panelov; návrat Esc "
+     "alebo F11)", "Im Vollbild lesen (ohne Menüband und Bereiche; zurück mit Esc oder F11)"),
     ("Hledat knihy", "Find books", "Hľadať knihy", "Bücher suchen"),
     ("Název knihy nebo autor…", "Book title or author…", "Názov knihy alebo autor…", "Buchtitel oder Autor…"),
     ("Všechny jazyky", "All languages", "Všetky jazyky", "Alle Sprachen"),

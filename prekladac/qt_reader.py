@@ -843,6 +843,7 @@ class Reader(QtWidgets.QWidget):
     """Čtečka pro okno knihy. project = projekt knihy, app_cfg = nastavení programu (překladač, vzhled)."""
 
     voices_changed = QtCore.Signal()  # stažen nový hlas → obnovit výběr hlasů
+    fullscreen_requested = QtCore.Signal(bool)  # celá obrazovka zapnout / vypnout (řídí okno knihy)
 
     def __init__(self, project: dict, app_cfg: dict | None = None, save_cfg=None, parent=None):
         super().__init__(parent)
@@ -876,6 +877,15 @@ class Reader(QtWidgets.QWidget):
         lay.addWidget(self.panel)
         lay.addLayout(right, 1)
         self.panel.setVisible(bool(self.app_cfg.get("reader_panel", True)))
+        self.fullscreen = False
+        # na celé obrazovce: malé tlačítko vpravo nahoře pro návrat (a klávesa Esc / F11)
+        self.b_exit_full = QtWidgets.QToolButton(self.view)
+        self.b_exit_full.setText(tr("✕ Ukončit celou obrazovku (Esc)"))
+        self.b_exit_full.setCursor(Qt.PointingHandCursor)
+        self.b_exit_full.setStyleSheet("QToolButton{background:rgba(0,0,0,0.45);color:white;border:none;"
+                                       "border-radius:6px;padding:4px 10px;}")
+        self.b_exit_full.clicked.connect(lambda: self.fullscreen_requested.emit(False))
+        self.b_exit_full.hide()
         self._save_t = QtCore.QTimer(self)
         self._save_t.setSingleShot(True)
         self._save_t.setInterval(800)
@@ -891,6 +901,29 @@ class Reader(QtWidgets.QWidget):
         self.view.relayout(keep_pos=pos)
         self.panel.fill_toc(self.chapters)
         self.panel.fill_marks()
+
+    def set_fullscreen_look(self, on: bool):
+        """Vzhled na celé obrazovce: bez postranního panelu, jen stránky a tlačítko pro návrat."""
+        self.fullscreen = on
+        if on:
+            self._panel_before = self.panel.isVisible()
+            self.panel.setVisible(False)
+        else:
+            self.panel.setVisible(getattr(self, "_panel_before", bool(self.app_cfg.get("reader_panel", True))))
+        self.b_exit_full.setVisible(on)
+        self._place_exit()
+        self.view.setFocus()
+
+    def _place_exit(self):
+        b = self.b_exit_full
+        b.adjustSize()
+        b.move(max(0, self.view.width() - b.width() - 12), 10)
+        b.raise_()
+
+    def resizeEvent(self, e):
+        super().resizeEvent(e)
+        if self.fullscreen:
+            QtCore.QTimer.singleShot(0, self._place_exit)
 
     def set_pref(self, key: str, value):
         self.prefs[key] = value
@@ -1387,4 +1420,7 @@ def reader_ribbon(reader: Reader, big, row, group_cls) -> QtWidgets.QWidget:
     just.setChecked(bool(reader.prefs.get("justify", True)))
     look.grid.addWidget(just, 0, 2)
     look.grid.addWidget(combos, 0, 3)
+    full = big(emoji_icon("⛶"), tr("Celá\nobrazovka"), lambda: reader.fullscreen_requested.emit(not reader.fullscreen))
+    full.setToolTip(tr("Číst na celé obrazovce – bez pásu karet a panelů (F11, návrat Esc)"))
+    look.grid.addWidget(full, 0, 4)
     return row(nav, book, voice, lang, look)
