@@ -1380,10 +1380,17 @@ class ReaderPage(QtWidgets.QWidget):
     def __init__(self, win: "MainWindow"):
         super().__init__()
         self.win = win
-        lay = QtWidgets.QVBoxLayout(self)
-        lay.setContentsMargins(40, 30, 40, 30)
-        lay.setSpacing(14)
-        lay.addWidget(label("📖 Čtečka", "PageTitle", wrap=False))
+        from qt_booksearch import BookSearch, MyBooksExtras
+
+        outer = QtWidgets.QVBoxLayout(self)
+        outer.setContentsMargins(24, 18, 24, 12)
+        outer.addWidget(label("📖 Čtečka", "PageTitle", wrap=False))
+        self.tabs = QtWidgets.QTabWidget()
+        outer.addWidget(self.tabs, 1)
+
+        mine = QtWidgets.QWidget()
+        lay = QtWidgets.QVBoxLayout(mine)
+        lay.setSpacing(12)
         lay.addWidget(label("Otevřete knihu a čtěte ji jako v e-čtečce: listování stránek, záložky, označování "
                             "barvami s poznámkou, hledání, překlad slova, slovníček a čtení nahlas. "
                             "Mezi čtením a úpravami knihy přepnete v levém panelu (Napsat knihu / Čtečka) "
@@ -1400,10 +1407,20 @@ class ReaderPage(QtWidgets.QWidget):
         self.recent_box = QtWidgets.QGroupBox("Naposledy otevřené knihy")
         self.recent = QtWidgets.QVBoxLayout(self.recent_box)
         lay.addWidget(self.recent_box)
+        self.search = BookSearch(win.cfg, win.save_cfg, self.open_path)
+        self.extras = MyBooksExtras(self.open_path, self.search.download_and_open)
+        lay.addWidget(self.extras)
         lay.addStretch(1)
+        scroll = QtWidgets.QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QtWidgets.QFrame.NoFrame)
+        scroll.setWidget(mine)
+        self.tabs.addTab(scroll, emoji_icon("📚"), "Moje knihy")
+        self.tabs.addTab(self.search, emoji_icon("🔎"), "Hledat knihy")
 
     def showEvent(self, e):
         self.rebuild_recent()
+        self.extras.refresh()
         super().showEvent(e)
 
     def rebuild_recent(self):

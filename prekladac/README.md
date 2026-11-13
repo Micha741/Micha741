@@ -108,6 +108,12 @@ na široké obrazovce dvě vedle sebe jako otevřená kniha – a pás karet uk�
   (*Nastavení → Čas a jazyk → Řeč → Přidat hlasy → Čeština*).
 - Čtečka je i v **levém panelu (📖 Čtečka)**: otevře knihu rovnou ke čtení; *Napsat knihu* / *Čtečka* přepíná úpravy
   a čtení téže knihy.
+- **🔎 Hledat knihy** (Čtečka): Project Gutenberg a Google Books přímo v programu – našeptávač, obálky, volné knihy
+  se stáhnou do *Dokumenty\Knihy z Překladače* a otevřou ve čtečce, u ostatních **Ukázka** a **Koupit**. Tlačítka
+  obchodů a knihoven (Amazon, Alza, Kosmas, Martinus, Palmknihy, Google Play, knihovny…) otevřou hledání v prohlížeči.
+- **📚 Moje knihy:** *Otevřít z odkazu* (stáhne EPUB/PDF z odkazu), knihy a ukázky ze složky **Stažené soubory**
+  a odkazy na „moje knihy“ v obchodech. Účty se nepřipojují do programu – přihlášení a stažení proběhne v prohlížeči
+  (program hesla nezná); knihy z Kindle a Google Play jsou šifrované (DRM) a čtou se jen v jejich aplikaci.
 - **Vzhled:** barvy Den/Sépie/Noc, patkové/bezpatkové písmo, velikost, řádkování, okraje, zarovnání do bloku,
   jedna/dvě strany.
 

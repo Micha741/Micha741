@@ -924,6 +924,73 @@ E += [
     ("Hledat v celé knize", "Search the whole book", "Hľadať v celej knihe", "Im ganzen Buch suchen"),
     ("Nenalezeno.", "Not found.", "Nenájdené.", "Nicht gefunden."),
     ("Hledání", "Search", "Hľadanie", "Suchen"),
+    ("Moje knihy", "My books", "Moje knihy", "Meine Bücher"),
+    ("Hledat knihy", "Find books", "Hľadať knihy", "Bücher suchen"),
+    ("Název knihy nebo autor…", "Book title or author…", "Názov knihy alebo autor…", "Buchtitel oder Autor…"),
+    ("Všechny jazyky", "All languages", "Všetky jazyky", "Alle Sprachen"),
+    (" Hledat", " Search", " Hľadať", " Suchen"),
+    ("Hledá v Project Gutenberg a Google Books. Volná díla se stáhnou a otevřou ve čtečce, u ostatních je ukázka a "
+     "odkaz na obchod.", "Searches Project Gutenberg and Google Books. Free books are downloaded and opened in the "
+     "reader, others have a preview and a store link.", "Hľadá v Project Gutenberg a Google Books. Voľné diela sa "
+     "stiahnu a otvoria v čítačke, pri ostatných je ukážka a odkaz na obchod.", "Sucht in Project Gutenberg und "
+     "Google Books. Freie Werke werden heruntergeladen und im Reader geöffnet, sonst Leseprobe und Shop-Link."),
+    (" Stáhnout a číst", " Download and read", " Stiahnuť a čítať", " Herunterladen und lesen"),
+    (" Ukázka", " Preview", " Ukážka", " Leseprobe"),
+    ("Ukázka knihy na webu (Google Books / Project Gutenberg)", "Book preview on the web (Google Books / Project "
+     "Gutenberg)", "Ukážka knihy na webe (Google Books / Project Gutenberg)", "Leseprobe im Web (Google Books / "
+     "Project Gutenberg)"),
+    (" Koupit / podrobnosti", " Buy / details", " Kúpiť / podrobnosti", " Kaufen / Details"),
+    ("Hledat v obchodech a knihovnách (otevře se v prohlížeči):", "Search stores and libraries (opens in the "
+     "browser):", "Hľadať v obchodoch a knižniciach (otvorí sa v prehliadači):", "In Shops und Bibliotheken suchen "
+     "(öffnet sich im Browser):"),
+    ("🆓 zdarma · 🛍️ koupě bez šifrování (otevře se ve čtečce) · 🔒 jen v aplikaci obchodu (Kindle, Google Play) · "
+     "🏛️ knihovna", "🆓 free · 🛍️ purchase without encryption (opens in the reader) · 🔒 only in the store's app "
+     "(Kindle, Google Play) · 🏛️ library", "🆓 zadarmo · 🛍️ kúpa bez šifrovania (otvorí sa v čítačke) · 🔒 len "
+     "v aplikácii obchodu (Kindle, Google Play) · 🏛️ knižnica", "🆓 kostenlos · 🛍️ Kauf ohne Verschlüsselung (öffnet "
+     "im Reader) · 🔒 nur in der Shop-App (Kindle, Google Play) · 🏛️ Bibliothek"),
+    ("Hledám „{}“…", "Searching for “{}”…", "Hľadám „{}“…", "Suche „{}“…"),
+    ("Hledání se nepodařilo: {}", "Search failed: {}", "Hľadanie sa nepodarilo: {}", "Suche fehlgeschlagen: {}"),
+    ("Nalezeno {} knih.", "Found {} books.", "Nájdených {} kníh.", "{} Bücher gefunden."),
+    ("V katalozích nic – zkuste jiný název nebo obchody a knihovny vpravo.", "Nothing in the catalogues – try "
+     "another title or the stores and libraries on the right.", "V katalógoch nič – skúste iný názov alebo obchody "
+     "a knižnice vpravo.", "Nichts in den Katalogen – anderen Titel oder Shops und Bibliotheken rechts versuchen."),
+    ("Nedostupné: {}", "Unavailable: {}", "Nedostupné: {}", "Nicht erreichbar: {}"),
+    ("zdarma ke stažení", "free download", "zadarmo na stiahnutie", "kostenlos herunterladen"),
+    ("ukázka", "preview", "ukážka", "Leseprobe"),
+    ("Hledání knih", "Book search", "Hľadanie kníh", "Büchersuche"),
+    ("Napište název nebo autora a stiskněte Enter. Při psaní se nabízejí názvy.", "Type a title or author and press "
+     "Enter. Titles are suggested as you type.", "Napíšte názov alebo autora a stlačte Enter. Pri písaní sa "
+     "ponúkajú názvy.", "Titel oder Autor eingeben und Enter drücken. Beim Tippen werden Titel vorgeschlagen."),
+    ("Stahuji knihu…", "Downloading the book…", "Sťahujem knihu…", "Buch wird heruntergeladen…"),
+    ("Stažení se nepodařilo.", "Download failed.", "Stiahnutie sa nepodarilo.", "Download fehlgeschlagen."),
+    ("Stáhnout knihu", "Download book", "Stiahnuť knihu", "Buch herunterladen"),
+    ("Uloženo: {}", "Saved: {}", "Uložené: {}", "Gespeichert: {}"),
+    (" Otevřít z odkazu…", " Open from link…", " Otvoriť z odkazu…", " Aus Link öffnen…"),
+    ("Odkaz na soubor knihy nebo ukázky (EPUB, PDF, MOBI…) – stáhne se a otevře ve čtečce", "Link to a book or "
+     "preview file (EPUB, PDF, MOBI…) – it is downloaded and opened in the reader", "Odkaz na súbor knihy alebo "
+     "ukážky (EPUB, PDF, MOBI…) – stiahne sa a otvorí v čítačke", "Link zu einer Buch- oder Leseprobendatei (EPUB, "
+     "PDF, MOBI…) – wird heruntergeladen und im Reader geöffnet"),
+    ("Ve složce Stažené soubory (knihy a ukázky z obchodů)", "In the Downloads folder (books and previews from "
+     "stores)", "V priečinku Stiahnuté súbory (knihy a ukážky z obchodov)", "Im Download-Ordner (Bücher und "
+     "Leseproben aus Shops)"),
+    ("Koupené knihy v obchodech", "Books bought in stores", "Kúpené knihy v obchodoch", "In Shops gekaufte Bücher"),
+    ("Přihlaste se v prohlížeči a knihu stáhněte (EPUB nebo PDF bez šifrování) – objeví se výše ve Stažených "
+     "souborech. Program vaše hesla nezná a nikam je neposílá. Knihy z Kindle a Google Play jsou zašifrované (DRM) "
+     "– čtou se jen v jejich aplikaci.", "Sign in in the browser and download the book (EPUB or PDF without "
+     "encryption) – it will appear above under Downloads. The program never knows or sends your passwords. Kindle "
+     "and Google Play books are encrypted (DRM) – they can only be read in their apps.", "Prihláste sa v "
+     "prehliadači a knihu stiahnite (EPUB alebo PDF bez šifrovania) – objaví sa vyššie v Stiahnutých súboroch. "
+     "Program vaše heslá nepozná a nikam ich neposiela. Knihy z Kindle a Google Play sú zašifrované (DRM) – čítajú "
+     "sa len v ich aplikácii.", "Melden Sie sich im Browser an und laden Sie das Buch herunter (EPUB oder PDF ohne "
+     "Verschlüsselung) – es erscheint oben unter Downloads. Das Programm kennt Ihre Passwörter nicht. Kindle- und "
+     "Google-Play-Bücher sind verschlüsselt (DRM) und nur in deren Apps lesbar."),
+    ("Zatím žádné knihy – stažené EPUB, PDF a další se objeví tady.", "No books yet – downloaded EPUB, PDF and "
+     "others will appear here.", "Zatiaľ žiadne knihy – stiahnuté EPUB, PDF a ďalšie sa objavia tu.", "Noch keine "
+     "Bücher – heruntergeladene EPUB, PDF usw. erscheinen hier."),
+    ("Otevřít z odkazu", "Open from link", "Otvoriť z odkazu", "Aus Link öffnen"),
+    ("Odkaz na soubor knihy nebo ukázky (EPUB, PDF, MOBI…):", "Link to a book or preview file (EPUB, PDF, MOBI…):",
+     "Odkaz na súbor knihy alebo ukážky (EPUB, PDF, MOBI…):", "Link zu einer Buch- oder Leseprobendatei (EPUB, PDF, "
+     "MOBI…):"),
     ("Hledaný text…", "Text to find…", "Hľadaný text…", "Suchtext…"),
     ("Předchozí výskyt", "Previous match", "Predchádzajúci výskyt", "Vorheriger Treffer"),
     ("Další výskyt", "Next match", "Ďalší výskyt", "Nächster Treffer"),
