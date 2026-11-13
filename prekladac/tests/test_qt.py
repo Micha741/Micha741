@@ -582,7 +582,7 @@ def test_editor_file_tab_save_as_and_panel(qapp, tmp_path, monkeypatch):
     ed = BookEditor(proj, p, None, text_assist=opts, save_options=lambda: None)
     ed.show()
     assert [ed.ribbon.tabText(i) for i in range(ed.ribbon.count()) if ed.ribbon.isTabVisible(i)] == [
-        "Soubor", "Domů", "Kniha", "Zobrazení"]  # karta Čtení je jen v režimu čtení
+        "Soubor", "Domů", "Hledání", "Kniha", "Zobrazení"]  # karta Čtení je jen v režimu čtení
     assert ed.ribbon.currentIndex() == 1
     # panel kapitol
     assert ed.chapters_dock.isVisible()
@@ -955,3 +955,64 @@ def test_reader_in_sidebar_opens_book_for_reading(qapp, tmp_path):
     win.reader_page.rebuild_recent()
     assert any(str(path) == w.toolTip() for w in win.reader_page.recent_box.findChildren(QtWidgets.QToolButton))
     win.close()
+
+
+def test_guide_links_are_clickable(qapp):
+    from guides import GUIDES
+    from qt_common import guide_view, linkify
+
+    h = linkify("1. Otevřete https://portal.azure.com, pak (https://www.python.org).\n   http://localhost:5000 a "
+                "https://...cognitiveservices.azure.com/ a https://api.openai.com/v1 <b>")
+    assert '<a href="https://portal.azure.com">https://portal.azure.com</a>,' in h
+    assert '<a href="https://www.python.org">https://www.python.org</a>).' in h
+    assert h.count("<a ") == 2 and "&lt;b&gt;" in h and "&nbsp;&nbsp;&nbsp;http://localhost:5000" in h
+    t = guide_view(GUIDES["microsoft"])
+    assert t.openExternalLinks() and "https://portal.azure.com" in t.toPlainText()
+    assert 'href="https://azure.microsoft.com/free"' in t.toHtml()
+
+
+def test_search_tab_and_cover_in_chapters_panel(qapp, tmp_path):
+    import book_images
+    from qt_editor import BookEditor
+    proj = {"language": "čeština", "outline": {"title": "Kůň", "chapters": [
+        {"title": "Jedna", "summary": ""}, {"title": "Dvě", "summary": ""}, {"title": "Tři", "summary": ""}]},
+        "chapters": [{"text": "Pes běžel. Kočka spala.", "summary": ""},
+                     {"text": "Žádné zvíře tu není.", "summary": ""},
+                     {"text": "Kočka a kočkovitá šelma. Kočka!", "summary": ""}]}
+    p = tmp_path / "s.kniha.json"
+    bw.save_project(p, proj)
+    ed = BookEditor(proj, p, None, text_assist={}, save_options=lambda: None)
+    ed.show()
+    st = ed.search_tab
+    assert [st.go.itemText(i) for i in range(st.go.count())] == ["1. Jedna", "2. Dvě", "3. Tři"]
+    ed.open_find()  # Ctrl+F = karta Hledání
+    assert ed.ribbon.currentIndex() == ed.search_tab_index
+    st.find.setText("kočka")
+    st.words.setChecked(True)
+    assert [(j, k) for j, k, _s in st.all_hits()] == [(0, 0), (2, 0), (2, 1)]  # „kočkovitá“ ne (celá slova)
+    assert st.find_next() and ed.cur == 0 and ed.text.textCursor().selectedText() == "Kočka"
+    assert st.find_next() and ed.cur == 2                          # přeskočí kapitolu bez výskytu
+    assert st.go.currentIndex() == 2
+    assert st.find_prev() is True and ed.cur == 0                  # zpět do 1. kapitoly
+    st.show_all()
+    lst = st.hits_dialog.findChild(QtWidgets.QListWidget)
+    assert lst.count() == 3 and "Kočka spala" in lst.item(0).text()
+    st.goto_hit(2, 1)
+    assert ed.cur == 2 and ed.text.textCursor().selectionStart() > 10
+    st.hits_dialog.close()
+    st.repl.setText("Myš")
+    st.replace_all()
+    assert "Myš a kočkovitá šelma. Myš!" == ed.project["chapters"][2]["text"].strip()
+    st.go.activated.emit(1)
+    assert ed.cur == 1
+    # obálka v panelu kapitol: bez obrázku obálka s názvem, po nastavení obrázku jeho náhled
+    assert not ed.dock_cover.icon().isNull() and "jen s názvem" in ed.dock_cover_info.text()
+    from PIL import Image
+    import io
+    buf = io.BytesIO()
+    Image.new("RGB", (100, 150), (200, 0, 0)).save(buf, "PNG")
+    ed.set_cover_data(buf.getvalue())
+    assert ed.dock_cover_info.text() == "vlastní obrázek" and not ed.dock_cover.icon().isNull()
+    assert book_images.get_image(ed.project, ed.project["cover"])
+    ed.dirty = False
+    ed.close()

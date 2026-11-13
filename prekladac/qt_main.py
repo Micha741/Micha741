@@ -1553,8 +1553,9 @@ class SettingsPage(QtWidgets.QWidget):
         d.setWindowTitle(f"Návod – {core.SERVICES[name][0]}")
         d.resize(760, 520)
         lay = QtWidgets.QVBoxLayout(d)
-        t = QtWidgets.QPlainTextEdit(GUIDES.get(name, "Návod není k dispozici."))
-        t.setReadOnly(True)
+        from qt_common import guide_view
+
+        t = guide_view(GUIDES.get(name, "Návod není k dispozici."))
         lay.addWidget(t)
         b = QtWidgets.QPushButton("Zavřít")
         b.clicked.connect(d.accept)

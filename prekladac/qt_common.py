@@ -259,3 +259,42 @@ def ask_pdf_passwords(parent, paths) -> bool:
                 break
             msg = tr("Heslo nesouhlasí. Zkuste ho zadat znovu:") + f"\n{Path(p).name}"
     return True
+
+
+_URL_RE = None
+
+
+def linkify(text: str) -> str:
+    """Text návodu → HTML s klikacími odkazy na webové stránky (adresy služeb k opsání zůstávají textem)."""
+    import html as _html
+    import re as _re
+
+    global _URL_RE
+    if _URL_RE is None:
+        _URL_RE = _re.compile(r"https?://[^\s<>\"“”„]+")
+
+    def link(m):
+        url = m.group(0)
+        tail = ""
+        while url and url[-1] in ".,;:)!?“”":
+            tail = url[-1] + tail
+            url = url[:-1]
+        plain = (_re.search(r"localhost|\d+\.\d+\.\d+\.\d+|IP-adresa|\.\.\.|…|/v1$", url)
+                 or url.rstrip("/") in ("http:", "https:"))
+        if plain:
+            return url + tail
+        return f'<a href="{url}">{url}</a>{tail}'
+
+    out = []
+    for line in _html.escape(text, quote=False).split("\n"):
+        lead = len(line) - len(line.lstrip(" "))
+        out.append("&nbsp;" * lead + _URL_RE.sub(link, line[lead:]))
+    return "<div style='line-height:1.35'>" + "<br>".join(out) + "</div>"
+
+
+def guide_view(text: str) -> QtWidgets.QTextBrowser:
+    """Návod s klikacími odkazy (otevřou se v prohlížeči); text jde označit a kopírovat."""
+    t = QtWidgets.QTextBrowser()
+    t.setOpenExternalLinks(True)
+    t.setHtml(linkify(text))
+    return t

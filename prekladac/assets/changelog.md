@@ -16,6 +16,8 @@
 - Obrázky: vložení více najednou (první se nabídne jako obálka), velikost malý / střední / velký,
   roztažení na celou stránku, vyjmutí části (ořez myší nebo poměr 2:3, čtverec, 16:9) a otočení.
 - Kniha bez obrázku obálky dostane obálku s názvem a autorem.
+- Karta Hledání v okně knihy (Ctrl+F): předchozí/další výskyt (F3), celá slova, velká/malá písmena, nahradit, všechny výskyty v knize, přejít na kapitolu. Obálka je vidět v panelu kapitol.
+- Návody ke službám mají klikací odkazy.
 
 **Editor knihy (jako Word)**
 - Pás karet (písmo, odstavec, styly, úpravy), kapitoly, najít a nahradit v celé knize, statistiky.
