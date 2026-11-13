@@ -925,6 +925,12 @@ E += [
     ("Nenalezeno.", "Not found.", "Nenájdené.", "Nicht gefunden."),
     ("Hledání", "Search", "Hľadanie", "Suchen"),
     ("Moje knihy", "My books", "Moje knihy", "Meine Bücher"),
+    ("Zobrazit nebo skrýt panel (obsah, hledání, označené) – F9", "Show or hide the panel (contents, search, "
+     "highlights) – F9", "Zobraziť alebo skryť panel (obsah, hľadanie, označené) – F9", "Bereich ein-/ausblenden "
+     "(Inhalt, Suche, Markierungen) – F9"),
+    ("Skrýt panel (F9)", "Hide panel (F9)", "Skryť panel (F9)", "Bereich ausblenden (F9)"),
+    ("Obsah, hledání a označené vedle stránek (F9)", "Contents, search and highlights beside the pages (F9)",
+     "Obsah, hľadanie a označené vedľa strán (F9)", "Inhalt, Suche und Markierungen neben den Seiten (F9)"),
     ("Export", "Export", "Export", "Export"),
     ("Rychlý export", "Quick export", "Rýchly export", "Schnellexport"),
     ("E-kniha pro čtečky a telefony", "E-book for readers and phones", "E-kniha pre čítačky a telefóny",

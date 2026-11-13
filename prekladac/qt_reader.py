@@ -669,6 +669,12 @@ class SidePanel(QtWidgets.QTabWidget):
         self.reader = reader
         self.setMinimumWidth(240)
         self.setMaximumWidth(380)
+        close = QtWidgets.QToolButton()
+        close.setText("✕")
+        close.setAutoRaise(True)
+        close.setToolTip(tr("Skrýt panel (F9)"))
+        close.clicked.connect(lambda: reader.toggle_panel(False))
+        self.setCornerWidget(close, Qt.TopRightCorner)
         self.toc = QtWidgets.QListWidget()
         self.toc.itemClicked.connect(lambda it: reader.goto_pos(it.data(Qt.UserRole)))
         self.addTab(self.toc, tr("Obsah"))
@@ -870,13 +876,27 @@ class Reader(QtWidgets.QWidget):
         right.setContentsMargins(0, 0, 0, 0)
         right.setSpacing(0)
         right.addWidget(self.view, 1)
+        from qt_editor import panel_icon
+
+        bar = QtWidgets.QHBoxLayout()  # spodní lišta: panel zobrazit/skrýt (jako v okně knihy) + kde v knize jsem
+        bar.setContentsMargins(4, 0, 4, 0)
+        self.b_panel = QtWidgets.QToolButton()
+        self.b_panel.setIcon(panel_icon())
+        self.b_panel.setCheckable(True)
+        self.b_panel.setAutoRaise(True)
+        self.b_panel.setToolTip(tr("Zobrazit nebo skrýt panel (obsah, hledání, označené) – F9"))
+        self.b_panel.clicked.connect(lambda on: self.toggle_panel(on))
+        bar.addWidget(self.b_panel)
         self.info = QtWidgets.QLabel("")
         self.info.setObjectName("Hint")
         self.info.setAlignment(Qt.AlignCenter)
-        right.addWidget(self.info)
+        bar.addWidget(self.info, 1)
+        bar.addSpacing(self.b_panel.sizeHint().width())  # číslo stránky zůstane uprostřed
+        right.addLayout(bar)
         lay.addWidget(self.panel)
         lay.addLayout(right, 1)
         self.panel.setVisible(bool(self.app_cfg.get("reader_panel", True)))
+        self.b_panel.setChecked(not self.panel.isHidden())
         self.fullscreen = False
         # na celé obrazovce: malé tlačítko vpravo nahoře pro návrat (a klávesa Esc / F11)
         self.b_exit_full = QtWidgets.QToolButton(self.view)
@@ -906,10 +926,13 @@ class Reader(QtWidgets.QWidget):
         """Vzhled na celé obrazovce: bez postranního panelu, jen stránky a tlačítko pro návrat."""
         self.fullscreen = on
         if on:
-            self._panel_before = self.panel.isVisible()
+            self._panel_before = not self.panel.isHidden()
             self.panel.setVisible(False)
         else:
             self.panel.setVisible(getattr(self, "_panel_before", bool(self.app_cfg.get("reader_panel", True))))
+        self.b_panel.setChecked(not self.panel.isHidden())
+        for b in getattr(self, "panel_buttons", []):
+            b.setChecked(not self.panel.isHidden())
         self.b_exit_full.setVisible(on)
         self._place_exit()
         self.view.setFocus()
@@ -939,8 +962,12 @@ class Reader(QtWidgets.QWidget):
             self.rebuild()
 
     def toggle_panel(self, on: bool | None = None):
-        on = not self.panel.isVisible() if on is None else on
+        """Panel vlevo (obsah, hledání, označené) zobrazit nebo skrýt – stránka pak má celou šířku; pamatuje se."""
+        on = self.panel.isHidden() if on is None else on
         self.panel.setVisible(on)
+        self.b_panel.setChecked(on)
+        for b in getattr(self, "panel_buttons", []):
+            b.setChecked(on)
         self.app_cfg["reader_panel"] = on
         self._save_cfg()
 
@@ -1500,8 +1527,11 @@ def reader_look_ribbon(reader: Reader, big, row, group_cls) -> QtWidgets.QWidget
     full = big(emoji_icon("⛶"), tr("Celá\nobrazovka"), lambda: reader.fullscreen_requested.emit(not reader.fullscreen))
     full.setToolTip(tr("Číst na celé obrazovce – bez pásu karet a panelů (F11, návrat Esc)"))
     view.grid.addWidget(full, 0, 0)
-    panel = big(emoji_icon("📑"), tr("Postranní\npanel"), lambda: reader.toggle_panel())
-    panel.setToolTip(tr("Obsah, hledání a označené vedle stránek"))
+    panel = big(emoji_icon("📑"), tr("Postranní\npanel"), lambda: reader.toggle_panel(panel.isChecked()))
+    panel.setToolTip(tr("Obsah, hledání a označené vedle stránek (F9)"))
+    panel.setCheckable(True)
+    panel.setChecked(not reader.panel.isHidden())
+    reader.panel_buttons = [panel]
     view.grid.addWidget(panel, 0, 1)
     reader.look_buttons = buttons
     return row(colors, font, para, pages, view)

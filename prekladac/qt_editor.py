@@ -1513,7 +1513,8 @@ class BookEditor(QtWidgets.QMainWindow):
                         ("Ctrl+B", lambda: self.b_bold.click()), ("Ctrl+I", lambda: self.b_italic.click()),
                         ("Ctrl+U", lambda: self.b_under.click()), ("Ctrl+Return", self._page_break),
                         ("Ctrl+P", lambda: self.print_book(True)), ("Ctrl+Shift+S", self.save_as),
-                        ("F9", lambda: self.set_chapters_panel(not self.chapters_dock.isVisible())),
+                        ("F9", lambda: self.reader.toggle_panel() if self.reading()
+                         else self.set_chapters_panel(not self.chapters_dock.isVisible())),
                         ("Alt+Left", self.go_back), ("Ctrl+PgUp", lambda: self.go_chapter(-1)),
                         ("Ctrl+PgDown", lambda: self.go_chapter(1)), ("F6", lambda: self.set_mode(not self.reading())),
                         ("F11", lambda: self.set_fullscreen(not self.is_fullscreen())),
