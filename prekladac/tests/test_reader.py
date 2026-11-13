@@ -317,3 +317,50 @@ def test_read_aloud_pause_resume_stop_and_voice(qapp, monkeypatch):
     assert v.page > page
     ed.dirty = False
     ed.close()
+
+
+def test_reader_cover_and_images_fit_page(qapp):
+    """Obálka celá na první stránce a žádný obrázek větší než stránka (jinak by se ořízl)."""
+    import io as _io
+
+    import book_images
+    from PIL import Image
+    from qt_reader import Reader
+
+    def pic(w, h):
+        b = _io.BytesIO()
+        Image.new("RGB", (w, h), (120, 30, 60)).save(b, "PNG")
+        return b.getvalue()
+
+    proj = project(1, 6)
+    proj["images"] = {}
+    proj["cover"] = book_images.add_image(proj, pic(1024, 1536), "png")
+    wide = book_images.add_image(proj, pic(1600, 1000), "png")
+    small = book_images.add_image(proj, pic(800, 600), "png")
+    text = proj["chapters"][0]["text"].replace("\n\n", "</p><p>")
+    proj["chapters"][0] = {"html": f'<p>{text}</p><p><img src="{wide}" width="800"/></p>'
+                                   f'<p><img src="{small}" width="280"/></p><p>{text}</p>', "summary": ""}
+    r = Reader(proj, {})
+    for w in (700, 1500):  # jedna stránka i dvě vedle sebe
+        r.resize(w, 600)
+        r.show()
+        settle(qapp, r)
+        r.view.relayout()
+        v, doc = r.view, r.doc
+        m = doc.documentMargin()
+        sizes = {}
+        b = doc.begin()
+        while b.isValid():
+            for it in b:
+                f = it.fragment()
+                if f.isValid() and f.charFormat().isImageFormat():
+                    im = f.charFormat().toImageFormat()
+                    sizes[im.name()] = (im.width(), im.height(), v.page_of(f.position()))
+                    assert b.blockFormat().alignment() & QtCore.Qt.AlignHCenter
+            b = b.next()
+        for name, (iw, ih, _p) in sizes.items():
+            assert iw <= v.pw - 2 * m + 0.5 and ih <= v.ph - 2 * m, (name, iw, ih, v.pw, v.ph)
+        cw, ch, cpage = sizes[proj["cover"]]
+        assert cpage == 0 and abs(cw / ch - 1024 / 1536) < 0.01
+        assert ch >= (v.ph - 2 * m) * 0.85 or cw >= (v.pw - 2 * m) * 0.95  # obálka co největší
+        assert sizes[small][0] < sizes[wide][0]

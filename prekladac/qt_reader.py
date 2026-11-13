@@ -117,6 +117,42 @@ def vocab_text(items: list[dict]) -> str:
 
 
 # ------------------------------------------------------------------ sazba knihy pro čtení
+def fit_images(doc: QtGui.QTextDocument, pw: float, ph: float) -> None:
+    """Obrázky podle velikosti stránky čtečky: obálka a obrázky „celá stránka“ co největší přes celou stránku,
+    ostatní v šířce z editoru (vůči stránce 800 bodů), ale nikdy větší než stránka – nic se neořízne."""
+    images = doc.property("reader_images") or []
+    if not images:
+        return
+    m = doc.documentMargin()
+    aw = max(40.0, pw - 2 * m - 4)
+    ah = max(40.0, ph - 2 * m - 24)  # rezerva na řádek a mezery kolem obrázku
+    cur = QtGui.QTextCursor(doc)
+    cur.beginEditBlock()
+    for im in images:
+        nw, nh = im["nw"], im["nh"]
+        if not nw or not nh:
+            continue
+        if im["cover"] or im["page"]:
+            w = aw
+        else:
+            w = min(aw, aw * float(im["want"]) / 800.0) if im["want"] else min(aw, nw)
+        h = w * nh / nw
+        if h > ah:
+            h, w = ah, ah * nw / nh
+        c = QtGui.QTextCursor(doc)
+        c.setPosition(im["pos"])
+        c.setPosition(im["pos"] + 1, QtGui.QTextCursor.KeepAnchor)
+        f = c.charFormat().toImageFormat()
+        if not f.isValid():
+            continue
+        nf = QtGui.QTextImageFormat()
+        nf.setName(im["name"])
+        nf.setWidth(round(w, 1))
+        nf.setHeight(round(h, 1))
+        c.setCharFormat(nf)
+    cur.endEditBlock()
+
+
 def build_reader_doc(project: dict, prefs: dict) -> tuple[QtGui.QTextDocument, list[tuple[str, int]]]:
     """Kniha jako dokument pro čtení + seznam kapitol (název, pozice). Vzhled podle nastavení čtečky."""
     from qt_bookdoc import book_document
@@ -134,10 +170,18 @@ def build_reader_doc(project: dict, prefs: dict) -> tuple[QtGui.QTextDocument, l
     cur = QtGui.QTextCursor(doc)
     cur.beginEditBlock()
     frags: list[tuple[int, int, QtGui.QTextCharFormat]] = []
+    images: list[dict] = []  # obrázky se při každé změně velikosti stránky přizpůsobí (fit_images)
+    cover = project.get("cover")
     b = doc.begin()
     while b.isValid():
         bf = b.blockFormat()
-        bf.setLineHeight(line * 100, prop)
+        has_img = any(it.fragment().isValid() and it.fragment().charFormat().isImageFormat() for it in b)
+        if has_img:  # řádek s obrázkem bez řádkování navíc (jinak by obrázek přetekl stránku)
+            bf.setLineHeight(100, prop)
+            bf.setTopMargin(min(bf.topMargin(), 6))
+            bf.setAlignment(Qt.AlignHCenter)  # obrázek vždy na střed stránky
+        else:
+            bf.setLineHeight(line * 100, prop)
         al = bf.alignment()
         al = int(al.value) if hasattr(al, "value") else int(al)
         if prefs.get("justify", True) and not (al & (0x2 | 0x4 | 0x8)) and len(b.text()) > 80:
@@ -145,7 +189,16 @@ def build_reader_doc(project: dict, prefs: dict) -> tuple[QtGui.QTextDocument, l
         QtGui.QTextCursor(b).setBlockFormat(bf)
         for it in b:  # písmo a velikost podle čtečky, barvu textu určuje motiv (Den/Sépie/Noc)
             frag = it.fragment()
-            if frag.isValid() and not frag.charFormat().isImageFormat():
+            if not frag.isValid():
+                continue
+            if frag.charFormat().isImageFormat():
+                f = frag.charFormat().toImageFormat()
+                img = doc.resource(QtGui.QTextDocument.ImageResource, QtCore.QUrl(f.name()))
+                nw, nh = (img.width(), img.height()) if isinstance(img, QtGui.QImage) and not img.isNull() else (0, 0)
+                images.append({"pos": frag.position(), "name": f.name(), "want": f.width() or nw, "nw": nw, "nh": nh,
+                               "cover": bool(cover) and f.name() == cover and b.blockNumber() <= 1,
+                               "page": (f.width() or 0) >= 790})  # „celá stránka“ z editoru (100 % šířky)
+            else:
                 frags.append((frag.position(), frag.length(), frag.charFormat()))
         b = b.next()
     for pos, ln, cf in frags:
@@ -158,6 +211,7 @@ def build_reader_doc(project: dict, prefs: dict) -> tuple[QtGui.QTextDocument, l
         fc.setPosition(pos + ln, QtGui.QTextCursor.KeepAnchor)
         fc.setCharFormat(cf)
     cur.endEditBlock()
+    doc.setProperty("reader_images", images)
     # kapitoly: book_document začíná každou kapitolu nadpisem „N. Název“ na nové stránce
     chapters: list[tuple[str, int]] = []
     titles = project.get("outline", {}).get("chapters", [])
@@ -247,6 +301,7 @@ class PageView(QtWidgets.QWidget):
         self.pw = (w - gutter) / 2 if self.two else min(w, 900)
         self.ph = h
         self.doc.setPageSize(QtCore.QSizeF(self.pw, self.ph))
+        fit_images(self.doc, self.pw, self.ph)  # obálka a obrázky celé na stránce
         self.pages = max(1, self.doc.pageCount())
         self._compute_starts()
         self.cache.clear()
