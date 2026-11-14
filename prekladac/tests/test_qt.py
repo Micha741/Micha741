@@ -113,9 +113,9 @@ def test_main_window_builds(qapp):
     import qt_main
 
     w = qt_main.MainWindow()
-    for i in range(4):
+    for i in range(5):
         w.nav.setCurrentRow(i)
-    assert w.stack.currentIndex() == 3
+    assert w.stack.currentIndex() == 4
     w.book.desc.setPlainText("krátce")
     w.close()
 
@@ -929,7 +929,7 @@ def test_reader_in_sidebar_opens_book_for_reading(qapp, tmp_path):
     win = qt_main.MainWindow()
     win.show()
     texts = [win.nav.item(i).text() for i in range(win.nav.count())]
-    assert texts == ["Překlad", "Napsat knihu", "Čtečka", "Nastavení"]
+    assert texts == ["Překlad", "Napsat knihu", "Čtečka", "Nastavení", "Nápověda"]
     win.nav.setCurrentRow(win.READER_ROW)
     assert win.stack.currentWidget().findChild(qt_main.ReaderPage) is win.reader_page
     proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000,
@@ -1078,4 +1078,30 @@ def test_images_one_or_many_choice(qapp):
     assert not t.merge.isChecked()                                    # přepínač: jen jedna možnost
     t.merge.setChecked(True)
     assert not t.merge_separate.isChecked()
+    win.close()
+
+
+
+def test_help_page(qapp):
+    from PySide6 import QtCore
+    from PySide6.QtTest import QTest
+    import help_content
+    import qt_main
+    win = qt_main.MainWindow()
+    win.show()
+    f1 = [sc for sc in win.findChildren(QtGui.QShortcut) if sc.key().toString() == "F1"]
+    assert len(f1) == 1
+    f1[0].activated.emit()                                         # F1 = Nápověda
+    assert win.nav.currentRow() == win.HELP_ROW
+    hp = win.help_page
+    assert "Překladač knih a dokumentů" in hp.about.toPlainText() and "Čtečka" in hp.about.toPlainText()
+    text = hp.keys.toPlainText()
+    for key in ("F1", "F3", "F6", "F9", "F11", "Ctrl+F", "Ctrl+H", "Ctrl+S", "Ctrl+Shift+S", "Ctrl+P", "Ctrl+Enter",
+                "Ctrl+PgUp / Ctrl+PgDown", "Alt+←", "Esc"):
+        assert key in text, key
+    hp.key_filter.setText("celá obrazovka")
+    assert "F11" in hp.keys.toPlainText() and "Ctrl+P" not in hp.keys.toPlainText()
+    hp.key_filter.setText("xyz nic")
+    assert "Nic nenalezeno" in hp.keys.toPlainText()
+    assert help_content.shortcuts_html().count("<h3>") == len(help_content.SHORTCUTS)
     win.close()

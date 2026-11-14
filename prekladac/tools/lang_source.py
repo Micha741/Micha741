@@ -925,6 +925,14 @@ E += [
     ("Nenalezeno.", "Not found.", "Nenájdené.", "Nicht gefunden."),
     ("Hledání", "Search", "Hľadanie", "Suchen"),
     ("Moje knihy", "My books", "Moje knihy", "Meine Bücher"),
+    ("Nápověda", "Help", "Pomocník", "Hilfe"),
+    ("❓ Nápověda", "❓ Help", "❓ Pomocník", "❓ Hilfe"),
+    ("O programu", "About", "O programe", "Über das Programm"),
+    ("Klávesové zkratky", "Keyboard shortcuts", "Klávesové skratky", "Tastenkürzel"),
+    ("Co program umí", "What the program can do", "Čo program dokáže", "Was das Programm kann"),
+    ("Hledat zkratku nebo činnost… (např. F11, uložit, čtečka)", "Find a shortcut or action… (e.g. F11, save, "
+     "reader)", "Hľadať skratku alebo činnosť… (napr. F11, uložiť, čítačka)", "Kürzel oder Aktion suchen… (z. B. "
+     "F11, speichern, Lesen)"),
     ("📄 Všechny do jednoho dokumentu", "📄 All into one document", "📄 Všetky do jedného dokumentu",
      "📄 Alle in ein Dokument"),
     ("📑 Každý obrázek zvlášť", "📑 Each picture separately", "📑 Každý obrázok zvlášť", "📑 Jedes Bild einzeln"),
