@@ -251,6 +251,12 @@ def files_need_ocr(files: list[str], out_fmt: str | None, translate: bool, engin
     return False
 
 
+def natural_key(path: str):
+    """Řazení jako v Průzkumníku Windows: strana2 před strana10, bez ohledu na velká a malá písmena."""
+    name = Path(path).name.lower()
+    return [(0, int(t), "") if t.isdigit() else (1, 0, t) for t in re.split(r"(\d+)", name) if t]
+
+
 def run_jobs(files, translate, out_fmt, tr, out_dir, merge_images, log, progress, ebook_convert, cancel_event):
     """Zpracuje seznam souborů; vrátí seznam výsledných cest."""
     from claude_client import Cancelled
@@ -274,7 +280,7 @@ def run_jobs(files, translate, out_fmt, tr, out_dir, merge_images, log, progress
         step = lambda f, n=n: progress((n + max(0.0, min(1.0, f))) / len(jobs))  # noqa: E731
         try:
             if kind == "images":
-                out = process_images_together(sorted(paths), translate, tr, out_dir, log, step,
+                out = process_images_together(sorted(paths, key=natural_key), translate, tr, out_dir, log, step,
                                               fmt=merged_fmt, ebook_convert=ebook_convert)
             else:
                 fmt = None if out_fmt in (None, SAME_FORMAT) else out_fmt
