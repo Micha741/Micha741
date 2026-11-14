@@ -267,14 +267,71 @@ def parse_wikisource(j: dict, lang: str = "cs") -> list[FoundBook]:
     out = []
     for r in ((j or {}).get("query") or {}).get("search") or []:
         title = str(r.get("title") or "")
-        if not title or "/" in title:  # podstránky (kapitoly) vynechat
+        if not title or "/" in title or "rozcestník" in title.lower():  # kapitoly a rozcestníky vynechat
             continue
         page = quote(title.replace(" ", "_"))
         out.append(FoundBook(id=f"ws{lang}{r.get('pageid', title)}", title=title, authors="", source="Wikizdroje",
                              language=lang, price="zdarma", drm="free", opens=True, store="Wikizdroje",
-                             download=f"https://ws-export.wmcloud.org/?format=epub&lang={lang}&page={page}",
+                             download=f"{WIKISOURCE_PREFIX}{lang}:{title}",
                              preview=f"https://{lang}.wikisource.org/wiki/{page}"))
     return out
+
+
+WIKISOURCE_PREFIX = "wikisource:"
+
+
+def _ws_parse(lang: str, page: str) -> dict:
+    url = (f"https://{lang}.wikisource.org/w/api.php?action=parse&format=json&formatversion=2&redirects=1"
+           f"&prop=text%7Clinks&disableeditsection=1&page={quote(page.replace(' ', '_'))}")
+    j = _get_json(url, "Wikizdroje")
+    if "error" in j:
+        from free_engines import EngineError
+
+        raise EngineError(f"Wikizdroje: {j['error'].get('info', 'stránka nenalezena')}")
+    return j.get("parse") or {}
+
+
+def _ws_clean(html: str) -> str:
+    """Text stránky Wikizdrojů bez navigace, poznámek editorů a odkazů na úpravy."""
+    from bs4 import BeautifulSoup
+
+    soup = BeautifulSoup(html, "html.parser")
+    for sel in (".ws-noexport", ".noprint", ".mw-editsection", ".navbox", "#headertemplate", ".header_notes",
+                ".ws-header", "table.headertemplate", ".reference", ".mw-references-wrap", "style", "script"):
+        for el in soup.select(sel):
+            el.decompose()
+    for a in soup.find_all("a"):
+        a.unwrap()
+    return str(soup)
+
+
+def wikisource_epub(lang: str, title: str, max_chapters: int = 150) -> tuple[bytes, str]:
+    """Kniha z Wikizdrojů jako EPUB: hlavní stránka a její kapitoly (podstránky „Název/…“). Vrátí (data, název)."""
+    import ebook
+
+    main = _ws_parse(lang, title)
+    real = main.get("title") or title
+    subs, seen = [], set()
+    for link in main.get("links") or []:
+        t = link.get("title", "")
+        if link.get("ns") == 0 and link.get("exists", True) and t.startswith(real + "/") and t not in seen:
+            seen.add(t)
+            subs.append(t)
+    book = ebook.RichBook(title=real, author="", language=lang)
+    if subs:
+        for t in subs[:max_chapters]:
+            part = _ws_parse(lang, t)
+            name = t.split("/", 1)[1].replace("_", " ")
+            blocks = ebook.clean_html(_ws_clean(part.get("text") or ""))
+            book.chapters.append(ebook.Chapter(name, f"<h2>{ebook.esc(name)}</h2>" + "".join(blocks)))
+    else:
+        blocks = ebook.clean_html(_ws_clean(main.get("text") or ""))
+        book.chapters.append(ebook.Chapter(real, f"<h2>{ebook.esc(real)}</h2>" + "".join(blocks)))
+    if not any(ebook.plain_text(c.html).strip() for c in book.chapters):
+        from free_engines import EngineError
+
+        raise EngineError("Stránka na Wikizdrojích neobsahuje text knihy.")
+    return ebook.write_epub(book), real
 
 
 # zdroje hledané přímo v programu: id → (název, popis)
@@ -447,6 +504,13 @@ def download_book(url: str, title: str | None = None, dest: Path | None = None) 
     """Stáhne knihu nebo ukázku z odkazu a uloží ji se správnou příponou. Vrátí cestu k souboru."""
     from free_engines import EngineError, http_request
 
+    if url.startswith(WIKISOURCE_PREFIX):  # Wikizdroje: EPUB se sestaví z textu stránek
+        lang, _, page = url[len(WIKISOURCE_PREFIX):].partition(":")
+        data, real = wikisource_epub(lang, page)
+        dest = dest or books_dir()
+        path = dest / (file_name_from_url("", title or real) + ".epub")
+        path.write_bytes(data)
+        return path
     if not re.match(r"^https?://", url.strip(), re.I):
         raise EngineError("Odkaz musí začínat http:// nebo https://")
     data = http_request(url.strip(), timeout=300, retries=2, service="Stažení knihy")

@@ -195,7 +195,8 @@ def test_more_catalogs_and_drm():
     ws = bs.parse_wikisource({"query": {"search": [{"title": "Babička", "pageid": 7},
                                                    {"title": "Babička/Kapitola 1", "pageid": 8}]}})
     assert len(ws) == 1 and ws[0].opens and ws[0].drm == "free"
-    assert ws[0].download == "https://ws-export.wmcloud.org/?format=epub&lang=cs&page=Babi%C4%8Dka"
+    assert ws[0].download == "wikisource:cs:Babička"
+    assert bs.parse_wikisource({"query": {"search": [{"title": "Babička (rozcestník)", "pageid": 9}]}}) == []
     assert bs.google_query("Babička", "Němcová", "venkov") == "venkov intitle:Babička inauthor:Němcová"
     g = bs.parse_google_books({"items": [{"id": "z", "volumeInfo": {"title": "T"}, "saleInfo": {"saleability": "FOR_SALE"},
                                           "accessInfo": {"epub": {"acsTokenLink": "http://x"}}}]})
@@ -245,3 +246,35 @@ def test_gutenberg_fallback_when_gutendex_blocked(monkeypatch):
     assert [(b.title, b.authors) for b in books] == [("Frankenstein; Or, The Modern Prometheus",
                                                       "Mary Wollstonecraft Shelley"), ("R.U.R. & další", "Karel Čapek")]
     assert books[0].download == "https://www.gutenberg.org/ebooks/84.epub3.images" and books[0].price == "zdarma"
+
+
+
+def test_wikisource_book_as_epub(tmp_path, monkeypatch):
+    """Wikizdroje: hlavní stránka s odkazy na kapitoly → EPUB, který program otevře."""
+    pages = {
+        "Babička": {"parse": {"title": "Babička", "text": "<div class='ws-noexport'>navigace</div><p>Obsah</p>",
+                              "links": [{"ns": 0, "title": "Babička/I.", "exists": True},
+                                        {"ns": 0, "title": "Babička/II.", "exists": True},
+                                        {"ns": 0, "title": "Jiná kniha", "exists": True},
+                                        {"ns": 0, "title": "Babička/I.", "exists": True}]}},
+        "Babička/I.": {"parse": {"title": "Babička/I.", "text": "<p>Dávno, dávno již tomu.</p><span class='mw-editsection'>[editovat]</span>"}},
+        "Babička/II.": {"parse": {"title": "Babička/II.", "text": "<p>Babička měla <a href='x'>syna</a>.</p>"}},
+    }
+    from urllib.parse import unquote
+
+    def fake(url, service):
+        page = unquote(url.split("page=")[1]).replace("_", " ")
+        return pages.get(page, {"error": {"info": "The page you specified doesn't exist."}})
+
+    monkeypatch.setattr(bs, "_get_json", fake)
+    p = bs.download_book("wikisource:cs:Babička", "Babička", tmp_path)
+    assert p.name == "Babička.epub" and p.read_bytes()[:2] == b"PK"
+    import ebook
+
+    book = ebook.read_book(str(p)) if hasattr(ebook, "read_book") else ebook.read_epub(p.read_bytes())
+    texts = [ebook.plain_text(c.html) for c in book.chapters]
+    joined = " ".join(texts)
+    assert "Dávno, dávno již tomu." in joined and "Babička měla syna." in joined
+    assert "editovat" not in joined and "navigace" not in joined
+    with pytest.raises(Exception, match="Wikizdroje"):
+        bs.download_book("wikisource:cs:Neexistuje", None, tmp_path)

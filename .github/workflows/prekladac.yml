@@ -44,7 +44,7 @@ jobs:
       - name: Hledání knih – skutečné katalogy (Gutenberg, Wikizdroje, Open Library, Google) a stažení
         continue-on-error: true  # katalogy mohou omezit dotazy ze sdílených serverů GitHubu – jen pro informaci
         run: |
-          python -c "import sys, tempfile, pathlib; sys.path.insert(0, '.'); import book_search as bs; b, st = bs.search_sources('Babička', 'Božena Němcová', ''); print('STAV', st); [print(x.store, '|', x.title[:50], '|', x.authors[:30], '|', x.price, '|', x.drm, x.opens) for x in b[:12]]; d = next(x for x in b if x.opens and x.download); p = bs.download_book(d.download, d.title, pathlib.Path(tempfile.mkdtemp())); print('stazeno', d.store, p.name, p.stat().st_size); b2, st2 = bs.search_sources('Frankenstein', '', ''); print('STAV2', st2, len(b2))"
+          python -c "import sys, tempfile, pathlib; sys.path.insert(0, '.'); import book_search as bs; b, st = bs.search_sources('Babička', 'Božena Němcová', ''); print('STAV', st); [print(x.store, '|', x.title[:50], '|', x.authors[:30], '|', x.price, '|', x.drm, x.opens) for x in b[:12]]; d = next(x for x in b if x.store == 'Wikizdroje' and x.title == 'Babička'); p = bs.download_book(d.download, d.title, pathlib.Path(tempfile.mkdtemp())); print('stazeno', d.store, p.name, p.stat().st_size); import book_import; pr = book_import.import_book(str(p), None); print('kapitol', len(pr['chapters']), [c['title'] for c in pr['outline']['chapters']][:20]); assert len(pr['chapters']) > 5; b2, st2 = bs.search_sources('Frankenstein', '', ''); print('STAV2', st2, len(b2))"
 
       - name: Sestavení programu (složka, bez rozbalování do Temp)
         run: |
