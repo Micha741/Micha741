@@ -472,6 +472,9 @@ def build_docx(project: dict, dst: str | Path, cover_page: bool = True) -> None:
                 run = p.add_run(line)
                 if li < len(lines) - 1:
                     run.add_break()  # zalomení řádku uvnitř odstavce
+    from converters import stamp_docx
+
+    stamp_docx(d)
     d.save(str(dst))
 
 

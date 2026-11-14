@@ -376,8 +376,18 @@ class TranslatePage(QtWidgets.QWidget):
         self.ocr_lang.setEditable(True)
         self.ocr_lang.addItems(list(components.OCR_LANGUAGES) + ["eng+ces", "eng+deu"])
         self.ocr_lang.setCurrentText(cfg.get("ocr_lang", "eng"))
-        self.merge = QtWidgets.QCheckBox("Více obrázků spojit do jednoho dokumentu (DOCX, nebo vícestránkové PDF)")
-        self.merge.setChecked(cfg.get("merge_images", True))
+        # více obrázků najednou: jeden dokument (stránky za sebou), nebo každý obrázek vlastní soubor
+        self.merge = QtWidgets.QRadioButton("📄 Všechny do jednoho dokumentu")
+        self.merge.setToolTip("Obrázky se seřadí podle názvu (strana1, strana2 … strana10) a každý bude na nové "
+                              "stránce jednoho DOCX – nebo vícestránkového PDF, když zvolíte výstup PDF")
+        self.merge_separate = QtWidgets.QRadioButton("📑 Každý obrázek zvlášť")
+        self.merge_separate.setToolTip("Každý obrázek se uloží do vlastního souboru (např. foto1 (čeština).docx)")
+        (self.merge if cfg.get("merge_images", True) else self.merge_separate).setChecked(True)
+        merge_w = QtWidgets.QWidget()
+        mw = QtWidgets.QVBoxLayout(merge_w)
+        mw.setContentsMargins(0, 0, 0, 0)
+        mw.addWidget(self.merge)
+        mw.addWidget(self.merge_separate)
         self.notes = QtWidgets.QPlainTextEdit(cfg.get("notes", ""))
         self.notes.setObjectName("DocText")
         self.notes.setPlaceholderText("Pokyny pro překlad – glosář, styl (Claude, Gemini, Ollama, OpenAI…)")
@@ -411,7 +421,7 @@ class TranslatePage(QtWidgets.QWidget):
         ocr_tab = ribbon_row(
             ribbon_group("Text z obrázků a skenů (OCR)", [("Rozpoznávání:", self.ocr),
                                                           ("Jazyk originálu:", self.ocr_lang)]),
-            ribbon_group("Obrázky", [("", self.merge)]))
+            ribbon_group("Více obrázků najednou", [("", merge_w)]))
         ribbon = QtWidgets.QTabWidget()
         ribbon.setObjectName("Ribbon")
         ribbon.setDocumentMode(True)

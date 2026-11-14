@@ -925,6 +925,19 @@ E += [
     ("Nenalezeno.", "Not found.", "Nenájdené.", "Nicht gefunden."),
     ("Hledání", "Search", "Hľadanie", "Suchen"),
     ("Moje knihy", "My books", "Moje knihy", "Meine Bücher"),
+    ("📄 Všechny do jednoho dokumentu", "📄 All into one document", "📄 Všetky do jedného dokumentu",
+     "📄 Alle in ein Dokument"),
+    ("📑 Každý obrázek zvlášť", "📑 Each picture separately", "📑 Každý obrázok zvlášť", "📑 Jedes Bild einzeln"),
+    ("Více obrázků najednou", "Several pictures at once", "Viac obrázkov naraz", "Mehrere Bilder auf einmal"),
+    ("Obrázky se seřadí podle názvu (strana1, strana2 … strana10) a každý bude na nové stránce jednoho DOCX – nebo "
+     "vícestránkového PDF, když zvolíte výstup PDF", "Pictures are sorted by name (page1, page2 … page10) and each "
+     "starts a new page of one DOCX – or a multi-page PDF when PDF output is chosen", "Obrázky sa zoradia podľa názvu "
+     "(strana1, strana2 … strana10) a každý bude na novej strane jedného DOCX – alebo viacstranového PDF, keď "
+     "zvolíte výstup PDF", "Bilder werden nach Namen sortiert (Seite1, Seite2 … Seite10), jedes auf einer neuen "
+     "Seite eines DOCX – oder eines mehrseitigen PDF bei PDF-Ausgabe"),
+    ("Každý obrázek se uloží do vlastního souboru (např. foto1 (čeština).docx)", "Each picture is saved to its "
+     "own file (e.g. photo1 (English).docx)", "Každý obrázok sa uloží do vlastného súboru (napr. foto1 "
+     "(slovenčina).docx)", "Jedes Bild wird in eine eigene Datei gespeichert (z. B. Foto1 (Deutsch).docx)"),
     ("Zobrazit nebo skrýt panel (obsah, hledání, označené) – F9", "Show or hide the panel (contents, search, "
      "highlights) – F9", "Zobraziť alebo skryť panel (obsah, hľadanie, označené) – F9", "Bereich ein-/ausblenden "
      "(Inhalt, Suche, Markierungen) – F9"),

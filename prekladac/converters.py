@@ -428,6 +428,7 @@ def translate_docx(src: str, dst: str, tr: Translator, log: Log = _noop, progres
     code = LANG_CODES.get(tr.target_lang.lower())
     if code:
         document.core_properties.language = code
+    stamp_docx(document)
     document.save(dst)
 
 
@@ -513,6 +514,24 @@ def blocks_to_docx(document, blocks: list[dict]) -> None:
     flush_table()
 
 
+def stamp_docx(document, title: str | None = None) -> None:
+    """Vlastnosti dokumentu (Word → Soubor → Informace): skutečné datum a čas vytvoření a úpravy místo
+    data prázdné šablony knihovny (23. 12. 2013) a bez autora „python-docx“."""
+    import datetime as _dt
+
+    cp = document.core_properties
+    now = _dt.datetime.now(_dt.timezone.utc).replace(microsecond=0)
+    if (cp.author or "").strip() == "python-docx":
+        cp.author = ""
+    created = cp.created
+    if created is None or (created.year, created.month, created.day) == (2013, 12, 23):
+        cp.created = now
+    cp.modified = now
+    cp.last_modified_by = "Překladač"
+    if title and not (cp.title or "").strip():
+        cp.title = title
+
+
 def images_to_docx(paths: list[str], dst: str, tr: Translator, translate: bool, log: Log = _noop,
                    progress: Progress = _noop) -> None:
     import docx
@@ -525,6 +544,7 @@ def images_to_docx(paths: list[str], dst: str, tr: Translator, translate: bool, 
             document.add_page_break()
         blocks_to_docx(document, blocks)
         progress((n + 1) / len(paths))
+    stamp_docx(document, Path(paths[0]).stem if paths else None)
     document.save(dst)
 
 
@@ -560,6 +580,7 @@ def pdf_to_docx(src: str, dst: str, tr: Translator, translate: bool, log: Log = 
             done += 1
             log(f"  hotovo {min(done * PDF_PAGES_PER_CHUNK, total)}/{total} stran")
             progress(done / len(chunks))
+    stamp_docx(document, Path(src).stem)
     document.save(dst)
 
 

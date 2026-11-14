@@ -1067,3 +1067,15 @@ def test_export_tab(qapp, tmp_path, monkeypatch):
     assert wait(lambda: opened) and [Path(x) for x in opened] == [out]  # Qt vrací cestu s „/“
     ed.dirty = False
     ed.close()
+
+
+def test_images_one_or_many_choice(qapp):
+    import qt_main
+    win = qt_main.MainWindow()
+    t = win.translate
+    assert t.merge.isChecked() and not t.merge_separate.isChecked()   # výchozí: jeden dokument
+    t.merge_separate.setChecked(True)
+    assert not t.merge.isChecked()                                    # přepínač: jen jedna možnost
+    t.merge.setChecked(True)
+    assert not t.merge_separate.isChecked()
+    win.close()

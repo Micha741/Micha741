@@ -275,7 +275,8 @@ def run_jobs(files, translate, out_fmt, tr, out_dir, merge_images, log, progress
             log("Zastaveno.")
             break
         merged_fmt = out_fmt if out_fmt not in (None, SAME_FORMAT) else "docx"
-        label = Path(paths[0]).name if kind == "file" else f"{len(paths)} obrázků → jeden {merged_fmt.upper()}"
+        label = Path(paths[0]).name if kind == "file" else (
+            f"{len(paths)} obrázků → jeden {merged_fmt.upper()} (každý obrázek zvlášť: karta Obrázky a OCR)")
         log(f"[{n + 1}/{len(jobs)}] {label}")
         step = lambda f, n=n: progress((n + max(0.0, min(1.0, f))) / len(jobs))  # noqa: E731
         try:
