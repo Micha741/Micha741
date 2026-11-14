@@ -925,6 +925,8 @@ E += [
     ("Nenalezeno.", "Not found.", "Nenájdené.", "Nicht gefunden."),
     ("Hledání", "Search", "Hľadanie", "Suchen"),
     ("Moje knihy", "My books", "Moje knihy", "Meine Bücher"),
+    ("Výstupní formáty", "Output formats", "Výstupné formáty", "Ausgabeformate"),
+    ("Uložit hotovou knihu do formátů", "Save the finished book as", "Uložiť hotovú knihu do formátov", "Fertiges Buch speichern als"),
     ("Upravit\nknihu", "Edit\nbook", "Upraviť\nknihu", "Buch\nbearbeiten"),
     ("Otevře okno knihy s úpravami ve stylu Wordu", "Opens the book window with Word-style editing",
      "Otvorí okno knihy s úpravami v štýle Wordu", "Öffnet das Buchfenster mit Bearbeitung wie in Word"),

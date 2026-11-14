@@ -287,13 +287,16 @@ def test_sidebar_collapse_and_section_order(qapp):
     win2.set_sidebar_collapsed(False)
     assert win2.nav.item(0).text() == "Překlad"
     ribbon = win.book.findChild(qt_main.QtWidgets.QTabWidget, "Ribbon")
-    assert [ribbon.tabText(i) for i in range(ribbon.count())] == ["Soubor", "Napsat knihu", "Kniha", "Žánr a styl", "Rozsah", "Zobrazení"]
-    assert ribbon.currentIndex() == 1                               # karta Napsat knihu
+    assert [ribbon.tabText(i) for i in range(ribbon.count())] == ["Soubor", "Kniha", "Žánr a styl", "Rozsah a služba",
+                                                                    "Výstupní formáty", "Zobrazení"]
+    assert ribbon.currentIndex() == 1                               # karta Kniha
     b = win.book
-    assert b.b_outline.isVisibleTo(ribbon.widget(1)) and b.service.isVisibleTo(ribbon.widget(1))
-    assert b.b_edit.isVisibleTo(ribbon.widget(2)) and b.b_read.isVisibleTo(ribbon.widget(2))
-    assert not b.b_edit.isEnabled() and not b.b_read.isEnabled()  # bez napsaného textu nejde upravit ani číst
-    assert b.cats["genre"].isVisibleTo(ribbon.widget(3)) and b.desc.objectName() == "DocText"
+    for w in (b.b_outline, b.b_write, b.b_stop, b.b_edit):
+        assert w.isVisibleTo(ribbon.widget(1))
+    assert not b.b_edit.isEnabled()                               # bez napsaného textu nejde upravit
+    assert b.cats["genre"].isVisibleTo(ribbon.widget(2)) and b.desc.objectName() == "DocText"
+    assert b.service.isVisibleTo(ribbon.widget(3)) and b.nchap.isVisibleTo(ribbon.widget(3))
+    assert b.bdir.isVisibleTo(ribbon.widget(4)) and all(cb.isVisibleTo(ribbon.widget(4)) for cb in b.fmts.values())
     assert not win.windowIcon().isNull()
     win.close()
     win2.close()
@@ -1108,27 +1111,4 @@ def test_help_page(qapp):
     hp.key_filter.setText("xyz nic")
     assert "Nic nenalezeno" in hp.keys.toPlainText()
     assert help_content.shortcuts_html().count("<h3>") == len(help_content.SHORTCUTS)
-    win.close()
-
-
-def test_book_tab_read_and_export(qapp, tmp_path):
-    import qt_main
-    win = qt_main.MainWindow()
-    win.show()
-    b = win.book
-    proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000,
-            "chapters": [{"text": "Bouře zuřila nad mořem. " * 30, "summary": ""}]}
-    path = tmp_path / "k.kniha.json"
-    bw.save_project(path, proj)
-    b.show_project(proj, path)
-    assert b.b_read.isEnabled() and b.b_export.isEnabled()
-    b.b_read.click()                                   # Kniha → Číst knihu = okno knihy ve čtečce
-    ed = win.editor
-    assert ed is not None and ed.reading() and win.nav.currentRow() == win.READER_ROW
-    win.nav.setCurrentRow(win.BOOK_ROW)
-    win.nav.setCurrentRow(0)
-    b.b_export.click()                                 # Kniha → Exportovat = karta Export v okně knihy
-    assert win.editor is ed and not ed.reading() and ed.ribbon.currentIndex() == ed.export_tab_index
-    ed.dirty = False
-    ed.close()
     win.close()
