@@ -416,8 +416,13 @@ class TranslatePage(QtWidgets.QWidget):
         files_tab = ribbon_row(add, sel)
         tr_tab = ribbon_row(
             ribbon_group("Režim", [("", mode_w)]),
-            ribbon_group("Jazyk a formát", [("Cílový jazyk:", self.lang), ("Výstupní formát:", self.out_fmt)]),
-            ribbon_group("Překladač", [("", self.engine), ("", self.status)]))
+            ribbon_group("Jazyk a formát", [("Cílový jazyk:", self.lang), ("Výstupní formát:", self.out_fmt)]))
+        keys_btn = QtWidgets.QPushButton(emoji_icon("🔑"), " Klíče a návody…")
+        keys_btn.setToolTip("Nastavení → Služby a klíče: klíče k překladačům, návody a test")
+        keys_btn.clicked.connect(self.win.open_services)
+        engine_tab = ribbon_row(
+            ribbon_group("Překladač", [("", self.engine), ("", self.status)]),
+            ribbon_group("Nastavení služby", [("", keys_btn)]))
         ocr_tab = ribbon_row(
             ribbon_group("Text z obrázků a skenů (OCR)", [("Rozpoznávání:", self.ocr),
                                                           ("Jazyk originálu:", self.ocr_lang)]),
@@ -427,6 +432,7 @@ class TranslatePage(QtWidgets.QWidget):
         ribbon.setDocumentMode(True)
         ribbon.addTab(files_tab, "Soubory")
         ribbon.addTab(tr_tab, "Překlad")
+        self.engine_tab_index = ribbon.addTab(engine_tab, emoji_icon("🌐"), "Překladač")
         ribbon.addTab(ocr_tab, "Obrázky a OCR")
         ribbon.setCurrentIndex(1)
         self.ribbon = ribbon
@@ -2267,6 +2273,11 @@ class MainWindow(QtWidgets.QMainWindow):
         from qt_skins import apply_logo
 
         apply_logo(self.logo, app_icon())
+
+    def open_services(self):
+        """Nastavení → Služby a klíče."""
+        self.nav.setCurrentRow(self.SETTINGS_ROW)
+        self.settings.tabs.setCurrentIndex(0)
 
     def open_skin_file(self, path: str):
         """Soubor .skin otevřený dvojklikem ve Windows: nainstalovat a ukázat v Nastavení → Vzhled."""

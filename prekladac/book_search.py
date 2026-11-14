@@ -106,6 +106,9 @@ class FoundBook:
     buy: str | None = None
     downloads: int = 0
     extra: dict = field(default_factory=dict)
+    drm: str = "unknown"        # "free" = bez šifrování, "drm" = zašifrované, "none" = jen katalog, "unknown"
+    opens: bool | None = None   # otevře ji Překladač? (True / False / None = nevíme)
+    store: str = ""             # zobrazený název obchodu nebo knihovny
 
 
 def _https(u: str | None) -> str | None:
@@ -128,7 +131,8 @@ def parse_gutendex(j: dict) -> list[FoundBook]:
                              source="Project Gutenberg", language=",".join(r.get("languages") or []),
                              cover=_https(f.get("image/jpeg")), price="zdarma", download=_https(epub),
                              preview=f"https://www.gutenberg.org/ebooks/{r.get('id')}",
-                             downloads=int(r.get("download_count") or 0)))
+                             downloads=int(r.get("download_count") or 0), drm="free", opens=True,
+                             store="Project Gutenberg"))
     return out
 
 
@@ -155,7 +159,8 @@ def parse_gutenberg_opds(xml: str) -> list[FoundBook]:
                              source="Project Gutenberg", price="zdarma",
                              download=f"https://www.gutenberg.org/ebooks/{n}.epub3.images",
                              cover=f"https://www.gutenberg.org/cache/epub/{n}/pg{n}.cover.medium.jpg",
-                             preview=f"https://www.gutenberg.org/ebooks/{n}"))
+                             preview=f"https://www.gutenberg.org/ebooks/{n}", drm="free", opens=True,
+                             store="Project Gutenberg"))
     return out
 
 
@@ -193,6 +198,15 @@ def parse_google_books(j: dict) -> list[FoundBook]:
         download = None
         if acc.get("publicDomain"):
             download = _https((acc.get("epub") or {}).get("downloadLink")) or _https((acc.get("pdf") or {}).get("downloadLink"))
+        acs = (acc.get("epub") or {}).get("acsTokenLink") or (acc.get("pdf") or {}).get("acsTokenLink")
+        if download:
+            drm, opens = "free", True
+        elif acs or sale.get("saleability") in ("FOR_SALE", "FOR_SALE_AND_RENTAL", "FOR_RENTAL_ONLY"):
+            drm, opens = "drm", False  # Google Play Knihy: šifrované (Adobe DRM), jen v aplikaci Google
+        elif sale.get("saleability") == "NOT_FOR_SALE":
+            drm, opens = "none", None
+        else:
+            drm, opens = "unknown", None
         view = acc.get("viewability")
         title = ": ".join(x for x in (v.get("title"), v.get("subtitle")) if x)
         if not title:
@@ -202,8 +216,151 @@ def parse_google_books(j: dict) -> list[FoundBook]:
             language=v.get("language") or "", description=re.sub(r"<[^>]+>", "", str(v.get("description") or ""))[:600],
             cover=_https((v.get("imageLinks") or {}).get("thumbnail")), price=price, download=download,
             preview=_https(acc.get("webReaderLink") or v.get("previewLink")) if view and view != "NO_PAGES" else None,
-            buy=_https(sale.get("buyLink")) or _https(v.get("infoLink"))))
+            buy=_https(sale.get("buyLink")) or _https(v.get("infoLink")), drm=drm, opens=opens,
+            store="Google Play Knihy" if sale.get("buyLink") else "Google Books"))
     return out
+
+
+# ------------------------------------------------------------------ Open Library / Internet Archive
+def openlibrary_url(title: str = "", author: str = "", q: str = "") -> str:
+    parts = []
+    if title:
+        parts.append(f"title={quote(title)}")
+    if author:
+        parts.append(f"author={quote(author)}")
+    if q:
+        parts.append(f"q={quote(q)}")
+    return ("https://openlibrary.org/search.json?" + "&".join(parts) +
+            "&limit=20&fields=key,title,author_name,language,cover_i,ebook_access,ia,first_publish_year")
+
+
+def parse_openlibrary(j: dict) -> list[FoundBook]:
+    out = []
+    for d in (j or {}).get("docs") or []:
+        title = str(d.get("title") or "")
+        if not title:
+            continue
+        access = d.get("ebook_access") or "no_ebook"
+        ia = (d.get("ia") or [None])[0]
+        b = FoundBook(id="ol" + str(d.get("key", "")), title=title, authors=", ".join((d.get("author_name") or [])[:3]),
+                      source="Open Library", language=",".join((d.get("language") or [])[:3]),
+                      cover=f"https://covers.openlibrary.org/b/id/{d['cover_i']}-M.jpg" if d.get("cover_i") else None,
+                      preview=f"https://openlibrary.org{d.get('key', '')}", buy=f"https://openlibrary.org{d.get('key', '')}",
+                      store="Internet Archive" if ia else "Open Library")
+        if access == "public" and ia:
+            b.download, b.drm, b.opens, b.price = f"https://archive.org/download/{ia}/{ia}.epub", "free", True, "zdarma"
+        elif access in ("borrowable", "printdisabled"):
+            b.drm, b.opens, b.price = "drm", False, "výpůjčka"
+        else:
+            b.drm, b.opens = "none", None
+        out.append(b)
+    return out
+
+
+# ------------------------------------------------------------------ Wikizdroje (volná díla v češtině)
+def wikisource_url(q: str, lang: str = "cs") -> str:
+    return (f"https://{lang}.wikisource.org/w/api.php?action=query&list=search&format=json&srlimit=20"
+            f"&srnamespace=0&srsearch={quote(q)}")
+
+
+def parse_wikisource(j: dict, lang: str = "cs") -> list[FoundBook]:
+    out = []
+    for r in ((j or {}).get("query") or {}).get("search") or []:
+        title = str(r.get("title") or "")
+        if not title or "/" in title or "rozcestník" in title.lower():  # kapitoly a rozcestníky vynechat
+            continue
+        page = quote(title.replace(" ", "_"))
+        out.append(FoundBook(id=f"ws{lang}{r.get('pageid', title)}", title=title, authors="", source="Wikizdroje",
+                             language=lang, price="zdarma", drm="free", opens=True, store="Wikizdroje",
+                             download=f"{WIKISOURCE_PREFIX}{lang}:{title}",
+                             preview=f"https://{lang}.wikisource.org/wiki/{page}"))
+    return out
+
+
+WIKISOURCE_PREFIX = "wikisource:"
+
+
+def _ws_parse(lang: str, page: str) -> dict:
+    url = (f"https://{lang}.wikisource.org/w/api.php?action=parse&format=json&formatversion=2&redirects=1"
+           f"&prop=text%7Clinks&disableeditsection=1&page={quote(page.replace(' ', '_'))}")
+    j = _get_json(url, "Wikizdroje")
+    if "error" in j:
+        from free_engines import EngineError
+
+        raise EngineError(f"Wikizdroje: {j['error'].get('info', 'stránka nenalezena')}")
+    return j.get("parse") or {}
+
+
+def _ws_clean(html: str) -> str:
+    """Text stránky Wikizdrojů bez navigace, poznámek editorů a odkazů na úpravy."""
+    from bs4 import BeautifulSoup
+
+    soup = BeautifulSoup(html, "html.parser")
+    for sel in (".ws-noexport", ".noprint", ".mw-editsection", ".navbox", "#headertemplate", ".header_notes",
+                ".ws-header", "table.headertemplate", ".reference", ".mw-references-wrap", "style", "script"):
+        for el in soup.select(sel):
+            el.decompose()
+    for a in soup.find_all("a"):
+        a.unwrap()
+    return str(soup)
+
+
+def _ws_chapter_order(real: str, main: dict) -> list[str]:
+    """Kapitoly (podstránky „Název/…“) v pořadí, v jakém jsou v obsahu knihy; rozhraní vrací odkazy podle abecedy."""
+    from urllib.parse import unquote
+
+    from bs4 import BeautifulSoup
+
+    existing = {l.get("title", "") for l in main.get("links") or []
+                if l.get("ns") == 0 and l.get("exists", True)}
+    order, seen = [], set()
+    for a in BeautifulSoup(main.get("text") or "", "html.parser").find_all("a", href=True):
+        t = a.get("title") or unquote(a["href"].split("/wiki/", 1)[-1]).replace("_", " ")
+        t = t.split("#", 1)[0]
+        if t.startswith(real + "/") and t not in seen and (not existing or t in existing):
+            seen.add(t)
+            order.append(t)
+    for t in sorted(existing):  # podstránky, které v obsahu nejsou, na konec
+        if t.startswith(real + "/") and t not in seen:
+            seen.add(t)
+            order.append(t)
+    return order
+
+
+def wikisource_epub(lang: str, title: str, max_chapters: int = 150) -> tuple[bytes, str]:
+    """Kniha z Wikizdrojů jako EPUB: hlavní stránka a její kapitoly (podstránky „Název/…“). Vrátí (data, název)."""
+    import ebook
+
+    main = _ws_parse(lang, title)
+    real = main.get("title") or title
+    subs = _ws_chapter_order(real, main)
+    book = ebook.RichBook(title=real, author="", language=lang)
+    if subs:
+        from concurrent.futures import ThreadPoolExecutor
+
+        with ThreadPoolExecutor(4) as ex:  # kapitoly souběžně, pořadí zůstává podle obsahu knihy
+            parts = list(ex.map(lambda t: _ws_parse(lang, t), subs[:max_chapters]))
+        for t, part in zip(subs, parts):
+            name = t.split("/", 1)[1].replace("_", " ")
+            blocks = ebook.clean_html(_ws_clean(part.get("text") or ""))
+            book.chapters.append(ebook.Chapter(name, f"<h2>{ebook.esc(name)}</h2>" + "".join(blocks)))
+    else:
+        blocks = ebook.clean_html(_ws_clean(main.get("text") or ""))
+        book.chapters.append(ebook.Chapter(real, f"<h2>{ebook.esc(real)}</h2>" + "".join(blocks)))
+    if not any(ebook.plain_text(c.html).strip() for c in book.chapters):
+        from free_engines import EngineError
+
+        raise EngineError("Stránka na Wikizdrojích neobsahuje text knihy.")
+    return ebook.write_epub(book), real
+
+
+# zdroje hledané přímo v programu: id → (název, popis)
+CATALOGS = {
+    "gutenberg": ("Project Gutenberg", "volná díla, hlavně v angličtině – stáhne se a otevře"),
+    "wikisource": ("Wikizdroje", "volná díla v češtině – stáhne se jako EPUB a otevře"),
+    "openlibrary": ("Open Library / Internet Archive", "volná díla ke stažení, ostatní jen k zapůjčení"),
+    "google": ("Google Books / Google Play", "katalog, ukázky a ceny; koupené knihy jsou šifrované"),
+}
 
 
 def _get_json(url: str, service: str) -> dict:
@@ -212,23 +369,57 @@ def _get_json(url: str, service: str) -> dict:
     return json.loads(http_request(url, timeout=30, retries=1, service=service).decode("utf-8"))
 
 
-def search(q: str, lang: str | None = None, key: str | None = None) -> tuple[list[FoundBook], list[str]]:
-    """Hledá v Project Gutenberg i Google Books. Vrátí (knihy, chyby jednotlivých katalogů)."""
+def google_query(title: str = "", author: str = "", keyword: str = "") -> str:
+    parts = [keyword.strip()] if keyword.strip() else []
+    if title.strip():
+        parts.append(f"intitle:{title.strip()}")
+    if author.strip():
+        parts.append(f"inauthor:{author.strip()}")
+    return " ".join(parts)
+
+
+def search_sources(title: str = "", author: str = "", keyword: str = "", sources=None, lang: str | None = None,
+                   key: str | None = None) -> tuple[list[FoundBook], dict[str, str]]:
+    """Hledá ve zvolených katalozích (CATALOGS) podle názvu, autora a klíčového slova.
+    Vrátí (knihy, stav každého zdroje: „12 knih“ nebo text chyby)."""
     from concurrent.futures import ThreadPoolExecutor
 
-    jobs = {"Project Gutenberg": lambda: gutenberg_search(q, lang),
-            "Google Books": lambda: parse_google_books(_get_json(google_books_url(q, lang, key), "Google Books"))}
-    books, errors = [], []
-    with ThreadPoolExecutor(2) as ex:
-        futs = {name: ex.submit(fn) for name, fn in jobs.items()}
-        for name, f in futs.items():
+    sources = list(sources or CATALOGS)
+    plain = " ".join(x.strip() for x in (title, author, keyword) if x.strip())
+    if not plain:
+        return [], {}
+    wlang = lang if lang in ("cs", "sk", "en", "de", "fr", "pl") else "cs"
+
+    def wikisource():
+        return parse_wikisource(_get_json(wikisource_url(plain, wlang), "Wikizdroje"), wlang)
+
+    jobs = {
+        "gutenberg": lambda: gutenberg_search(plain, lang),
+        "wikisource": wikisource,
+        "openlibrary": lambda: parse_openlibrary(_get_json(openlibrary_url(title, author, keyword), "Open Library")),
+        "google": lambda: parse_google_books(_get_json(google_books_url(google_query(title, author, keyword), lang, key),
+                                                       "Google Books")),
+    }
+    books, status = [], {}
+    with ThreadPoolExecutor(4) as ex:
+        futs = {s: ex.submit(jobs[s]) for s in sources if s in jobs}
+        for s, f in futs.items():
             try:
-                books.extend(f.result())
-            except Exception as e:  # noqa: BLE001 – jeden katalog nedostupný, druhý může fungovat
-                errors.append(f"{name}: {e}")
-    # nejdřív knihy ke stažení zdarma, pak s ukázkou, pak ostatní
-    books.sort(key=lambda b: (not b.download, not b.preview, -b.downloads))
-    return books, errors
+                found = f.result()
+                books.extend(found)
+                status[s] = f"{len(found)}"
+            except Exception as e:  # noqa: BLE001 – jeden katalog nedostupný, ostatní mohou fungovat
+                status[s] = "chyba: " + str(e).split(". ")[0][:160]
+    # nejdřív knihy, které Překladač otevře, pak s ukázkou, pak ostatní
+    books.sort(key=lambda b: (b.opens is not True, not b.preview, -b.downloads))
+    return books, status
+
+
+def search(q: str, lang: str | None = None, key: str | None = None) -> tuple[list[FoundBook], list[str]]:
+    """Jednoduché hledání jedním textem (Project Gutenberg a Google Books). Vrátí (knihy, chyby)."""
+    books, status = search_sources(keyword=q, sources=["gutenberg", "google"], lang=lang, key=key)
+    names = {"gutenberg": "Project Gutenberg", "google": "Google Books"}
+    return books, [f"{names[s]}: {v[7:]}" for s, v in status.items() if v.startswith("chyba")]
 
 
 # ------------------------------------------------------------------ našeptávač
@@ -333,6 +524,13 @@ def download_book(url: str, title: str | None = None, dest: Path | None = None) 
     """Stáhne knihu nebo ukázku z odkazu a uloží ji se správnou příponou. Vrátí cestu k souboru."""
     from free_engines import EngineError, http_request
 
+    if url.startswith(WIKISOURCE_PREFIX):  # Wikizdroje: EPUB se sestaví z textu stránek
+        lang, _, page = url[len(WIKISOURCE_PREFIX):].partition(":")
+        data, real = wikisource_epub(lang, page)
+        dest = dest or books_dir()
+        path = dest / (file_name_from_url("", title or real) + ".epub")
+        path.write_bytes(data)
+        return path
     if not re.match(r"^https?://", url.strip(), re.I):
         raise EngineError("Odkaz musí začínat http:// nebo https://")
     data = http_request(url.strip(), timeout=300, retries=2, service="Stažení knihy")

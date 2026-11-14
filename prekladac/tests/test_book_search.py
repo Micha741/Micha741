@@ -119,8 +119,14 @@ def test_search_window(tmp_path, monkeypatch):
     from PySide6 import QtCore
 
     monkeypatch.setattr(free_engines, "http_request", lambda url, **k: (_ for _ in ()).throw(RuntimeError("offline")))
-    monkeypatch.setattr(bs, "search", lambda q, lang=None, key=None: (bs.parse_gutendex(GUTENDEX)
-                                                                    + bs.parse_google_books(GOOGLE), []))
+    asked = []
+
+    def fake_search(title="", author="", keyword="", sources=None, lang=None, key=None):
+        asked.append((title, author, keyword, sorted(sources)))
+        books = bs.parse_gutendex(GUTENDEX) + bs.parse_google_books(GOOGLE)
+        return books, {"gutenberg": "1", "google": "2", "wikisource": "chyba: HTTP 503"}
+
+    monkeypatch.setattr(bs, "search_sources", fake_search)
     monkeypatch.setattr(bs, "download_book", lambda url, title=None, dest=None: tmp_path / "kniha.epub")
     opened, browsed, saved = [], [], []
     monkeypatch.setattr(qt_booksearch.webbrowser, "open", lambda u: browsed.append(u))
@@ -137,20 +143,36 @@ def test_search_window(tmp_path, monkeypatch):
             time.sleep(0.01)
         return False
 
-    w.q.setText("frankenstein")
+    w.src_checks["openlibrary"].setChecked(False)
+    assert "openlibrary" not in cfg["book_search_sources"]
+    w.author.setText("božena němcová")
+    w.q.setText("babička")
     w.search()
-    assert wait(lambda: w.results.count() == 3)
-    assert cfg["book_search_history"] == ["frankenstein"] and saved
+    assert wait(lambda: w.results.rowCount() == 3)
+    assert asked == [("babička", "božena němcová", "", ["google", "gutenberg", "wikisource"])]
+    assert cfg["book_search_history"] == ["babička božena němcová"] and saved
+    head = [w.results.horizontalHeaderItem(c).text() for c in range(w.results.columnCount())]
+    assert head == ["Obálka", "Název a autor", "Cena", "DRM", "Obchod", "Otevře Překladač"]
+    row = {w.books[r].title: r for r in range(len(w.books))}
+    assert w.results.item(row["Frankenstein"], 5).text().startswith("✅")
+    assert w.results.item(row["Frankenstein"], 3).text().startswith("🔓")
+    assert w.results.item(row["Babička"], 5).text().startswith("❌") and "149 Kč" == w.results.item(row["Babička"], 2).text()
+    assert "Nalezeno 3 knih, z toho 2 otevře Překladač" in w.status.text() and "⚠ chyba: HTTP 503" in w.status.text()
+    w.results.selectRow(row["Frankenstein"])
     assert w.b_read.isVisible() and w.b_preview.isVisible()  # Gutenberg: stáhnout i ukázka
     w.read_selected()
     assert wait(lambda: opened == [str(tmp_path / "kniha.epub")])
-    w.results.setCurrentRow([b.title for b in w.books].index("Babička"))  # jen ukázka a koupě
+    w.results.selectRow(row["Babička"])                       # jen ukázka a koupě
     assert not w.b_read.isVisible() and w.b_preview.isVisible() and w.b_buy.isVisible()
     w.b_preview.click()
     assert browsed[-1].startswith("https://play.google.com/books/reader")
-    kosmas = next(b for b in w.findChildren(QtWidgets.QPushButton) if "Kosmas" in b.text())
-    kosmas.click()
-    assert "kosmas.cz" in browsed[-1] and "frankenstein" in browsed[-1]
+    kosmas = next(w.stores.item(i) for i in range(w.stores.count()) if "Kosmas" in w.stores.item(i).text())
+    w._open_store(kosmas)
+    assert "kosmas.cz" in browsed[-1] and "babi" in browsed[-1].lower()
+    for cb in w.src_checks.values():
+        cb.setChecked(False)
+    w.search()
+    assert "aspoň jeden zdroj" in w.status.text()
     extras = qt_booksearch.MyBooksExtras(opened.append, w.download_and_open)
     monkeypatch.setattr(bs, "recent_downloads", lambda limit=8: [tmp_path / "ukazka.pdf"])
     extras.refresh()
@@ -158,6 +180,47 @@ def test_search_window(tmp_path, monkeypatch):
     b.click()
     assert opened[-1] == str(tmp_path / "ukazka.pdf")
     w.close()
+
+
+def test_more_catalogs_and_drm():
+    ol = bs.parse_openlibrary({"docs": [
+        {"key": "/works/OL1W", "title": "Babička", "author_name": ["Božena Němcová"], "ebook_access": "public",
+         "ia": ["babicka00nemc"], "cover_i": 5},
+        {"key": "/works/OL2W", "title": "Nová kniha", "author_name": ["X"], "ebook_access": "borrowable", "ia": ["x"]},
+        {"key": "/works/OL3W", "title": "Bez e-knihy", "ebook_access": "no_ebook"}]})
+    assert [(b.drm, b.opens) for b in ol] == [("free", True), ("drm", False), ("none", None)]
+    assert ol[0].download == "https://archive.org/download/babicka00nemc/babicka00nemc.epub"
+    assert ol[0].cover == "https://covers.openlibrary.org/b/id/5-M.jpg" and ol[1].price == "výpůjčka"
+    assert "title=Babi%C4%8Dka" in bs.openlibrary_url("Babička", "Němcová") and "author=N%C4%9Bmcov%C3%A1" in bs.openlibrary_url("Babička", "Němcová")
+    ws = bs.parse_wikisource({"query": {"search": [{"title": "Babička", "pageid": 7},
+                                                   {"title": "Babička/Kapitola 1", "pageid": 8}]}})
+    assert len(ws) == 1 and ws[0].opens and ws[0].drm == "free"
+    assert ws[0].download == "wikisource:cs:Babička"
+    assert bs.parse_wikisource({"query": {"search": [{"title": "Babička (rozcestník)", "pageid": 9}]}}) == []
+    assert bs.google_query("Babička", "Němcová", "venkov") == "venkov intitle:Babička inauthor:Němcová"
+    g = bs.parse_google_books({"items": [{"id": "z", "volumeInfo": {"title": "T"}, "saleInfo": {"saleability": "FOR_SALE"},
+                                          "accessInfo": {"epub": {"acsTokenLink": "http://x"}}}]})
+    assert (g[0].drm, g[0].opens) == ("drm", False)
+
+
+def test_search_sources_status(monkeypatch):
+    import free_engines
+
+    def fake(url, service):
+        if "gutendex" in url:
+            return GUTENDEX
+        if "wikisource" in url:
+            return {"query": {"search": [{"title": "Babička", "pageid": 1}]}}
+        if "openlibrary" in url:
+            raise RuntimeError("HTTP 503. Zkuste později")
+        return GOOGLE
+
+    monkeypatch.setattr(bs, "_get_json", fake)
+    monkeypatch.setattr(free_engines, "http_request", lambda url, **k: (_ for _ in ()).throw(RuntimeError("x")))
+    books, status = bs.search_sources("Babička", "Němcová", "")
+    assert status == {"gutenberg": "1", "wikisource": "1", "openlibrary": "chyba: HTTP 503", "google": "2"}
+    assert books[-1].opens is False and all(b.opens for b in books[:3])  # nejdřív knihy, které jdou otevřít
+    assert bs.search_sources("", "", "") == ([], {})
 
 
 OPDS = """<?xml version="1.0"?><feed xmlns="http://www.w3.org/2005/Atom">
@@ -183,3 +246,38 @@ def test_gutenberg_fallback_when_gutendex_blocked(monkeypatch):
     assert [(b.title, b.authors) for b in books] == [("Frankenstein; Or, The Modern Prometheus",
                                                       "Mary Wollstonecraft Shelley"), ("R.U.R. & další", "Karel Čapek")]
     assert books[0].download == "https://www.gutenberg.org/ebooks/84.epub3.images" and books[0].price == "zdarma"
+
+
+
+def test_wikisource_book_as_epub(tmp_path, monkeypatch):
+    """Wikizdroje: hlavní stránka s odkazy na kapitoly → EPUB, který program otevře."""
+    pages = {
+        "Babička": {"parse": {"title": "Babička", "text": "<div class='ws-noexport'>navigace</div><p>Obsah: "
+                              "<a href='/wiki/Babi%C4%8Dka/II.' title='Babička/II.'>II</a> "
+                              "<a href='/wiki/Babi%C4%8Dka/I.' title='Babička/I.'>I</a></p>",
+                              "links": [{"ns": 0, "title": "Babička/I.", "exists": True},
+                                        {"ns": 0, "title": "Babička/II.", "exists": True},
+                                        {"ns": 0, "title": "Jiná kniha", "exists": True},
+                                        {"ns": 0, "title": "Babička/I.", "exists": True}]}},
+        "Babička/I.": {"parse": {"title": "Babička/I.", "text": "<p>Dávno, dávno již tomu.</p><span class='mw-editsection'>[editovat]</span>"}},
+        "Babička/II.": {"parse": {"title": "Babička/II.", "text": "<p>Babička měla <a href='x'>syna</a>.</p>"}},
+    }
+    from urllib.parse import unquote
+
+    def fake(url, service):
+        page = unquote(url.split("page=")[1]).replace("_", " ")
+        return pages.get(page, {"error": {"info": "The page you specified doesn't exist."}})
+
+    monkeypatch.setattr(bs, "_get_json", fake)
+    p = bs.download_book("wikisource:cs:Babička", "Babička", tmp_path)
+    assert p.name == "Babička.epub" and p.read_bytes()[:2] == b"PK"
+    import ebook
+
+    book = ebook.read_book(str(p)) if hasattr(ebook, "read_book") else ebook.read_epub(p.read_bytes())
+    texts = [ebook.plain_text(c.html) for c in book.chapters]
+    assert texts[0].startswith("II.") and texts[1].startswith("I.")  # pořadí podle obsahu knihy, ne podle abecedy
+    joined = " ".join(texts)
+    assert "Dávno, dávno již tomu." in joined and "Babička měla syna." in joined
+    assert "editovat" not in joined and "navigace" not in joined
+    with pytest.raises(Exception, match="Wikizdroje"):
+        bs.download_book("wikisource:cs:Neexistuje", None, tmp_path)
