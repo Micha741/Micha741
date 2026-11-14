@@ -41,10 +41,10 @@ jobs:
           $env:APPDATA = "$env:RUNNER_TEMP\appdata"
           python -c "import sys; sys.path.insert(0, '.'); import tts_win as t; v = t.download_piper('cs', print); out = r'$env:RUNNER_TEMP\veta.wav'; t.piper_synthesize('Dobrý den, tohle je český hlas pro čtení knih.', v['model'], 1.0, out); s = t.wav_seconds(out); print('délka', s); assert s > 1.5; print([x['name'] for x in t.list_voices()])"
 
-      - name: Hledání knih – skutečné katalogy (Gutenberg, Google Books) a stažení volné knihy
+      - name: Hledání knih – skutečné katalogy (Gutenberg, Wikizdroje, Open Library, Google) a stažení
         continue-on-error: true  # katalogy mohou omezit dotazy ze sdílených serverů GitHubu – jen pro informaci
         run: |
-          python -c "import sys, tempfile, pathlib; sys.path.insert(0, '.'); import book_search as bs; b, e = bs.search('Frankenstein'); print(len(b), 'knih', e); [print(x.source, '|', x.title[:50], '|', x.price, '|', bool(x.download), bool(x.preview)) for x in b[:8]]; d = next(x for x in b if x.download and x.source == 'Project Gutenberg'); p = bs.download_book(d.download, d.title, pathlib.Path(tempfile.mkdtemp())); print('stazeno', p.name, p.stat().st_size); assert p.suffix == '.epub' and p.stat().st_size > 50000; print(bs.suggest('babi', [], 'cs'))"
+          python -c "import sys, tempfile, pathlib; sys.path.insert(0, '.'); import book_search as bs; b, st = bs.search_sources('Babička', 'Božena Němcová', ''); print('STAV', st); [print(x.store, '|', x.title[:50], '|', x.authors[:30], '|', x.price, '|', x.drm, x.opens) for x in b[:12]]; d = next(x for x in b if x.opens and x.download); p = bs.download_book(d.download, d.title, pathlib.Path(tempfile.mkdtemp())); print('stazeno', d.store, p.name, p.stat().st_size); b2, st2 = bs.search_sources('Frankenstein', '', ''); print('STAV2', st2, len(b2))"
 
       - name: Sestavení programu (složka, bez rozbalování do Temp)
         run: |
