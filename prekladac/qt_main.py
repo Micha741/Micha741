@@ -692,7 +692,7 @@ class BookPage(QtWidgets.QWidget):
         self.b_write = big("✍️", "2. Napsat\nknihu", "AI napíše knihu kapitolu po kapitole podle osnovy",
                            "BigPrimary")
         self.b_stop = big("⏹️", "Zastavit", "Zastaví psaní (rozepsaná kniha zůstane uložená)")
-        self.b_edit = big("📖", "Upravit\nknihu", "Otevře editor ve stylu Wordu")
+        self.b_edit = big("✏️", "Upravit\nknihu", "Otevře okno knihy s úpravami ve stylu Wordu")
         self.b_load = big("📂", "Otevřít\nrozepsanou", "Pokračovat v rozepsané knize (*.kniha.json)")
 
         # ---------- pás karet
@@ -738,8 +738,10 @@ class BookPage(QtWidgets.QWidget):
         dl.addWidget(pick)
         scope_tab = ribbon_row(
             group("Kniha", [("Jazyk knihy:", self.blang), ("Kapitol:", self.nchap), ("Slov na kapitolu:", self.nwords)]),
-            group("Umělá inteligence", [("Služba:", self.service), ("Model Claude:", self.model)]),
-            group("Uložit jako", [("", fmt_w), ("Složka:", dir_w)]))
+            group("Umělá inteligence", [("Služba:", self.service), ("Model Claude:", self.model)]))
+        out_tab = ribbon_row(
+            group("Uložit hotovou knihu do formátů", [("", fmt_w)]),
+            group("Výstupní složka", [("", dir_w)]))
         # karta Soubor (jako ve Wordu): nová, otevřít, uložit, uložit jako, naposledy otevřené
         self.b_new = big("📄", "Nová\nkniha", "Začít novou knihu (Ctrl+N)")
         self.b_save = big("💾", "Uložit", "Uložit knihu – popis, žánr, rozsah i osnovu (Ctrl+S)")
@@ -753,26 +755,29 @@ class BookPage(QtWidgets.QWidget):
         self.recent_grp.setMinimumWidth(320)
         self.path_info = label("", "Hint")
         self.path_info.setMaximumWidth(420)
+        file_tab = ribbon_row(filegrp, self.recent_grp)
+        # karta Kniha: navrhnout osnovu, napsat, zastavit, upravit
+        steps = RibbonGroup("Kniha")
+        for i, b in enumerate((self.b_outline, self.b_write, self.b_stop, self.b_edit)):
+            steps.grid.addWidget(b, 0, i)
         cur = RibbonGroup("Otevřená kniha")
         cur.grid.addWidget(self.path_info, 0, 0)
-        file_tab = ribbon_row(filegrp, self.recent_grp, cur)
+        book_tab = ribbon_row(steps, cur)
         ribbon = QtWidgets.QTabWidget()
         ribbon.setObjectName("Ribbon")
         ribbon.setDocumentMode(True)
         ribbon.addTab(file_tab, "Soubor")
+        self.book_tab_index = ribbon.addTab(book_tab, emoji_icon("📘"), "Kniha")
         ribbon.addTab(style_tab, "Žánr a styl")
         ribbon.addTab(scope_tab, "Rozsah a služba")
-        ribbon.setCurrentIndex(1)
-        actions = RibbonGroup("Kniha")
-        for i, b in enumerate((self.b_outline, self.b_write, self.b_stop, self.b_edit)):
-            actions.grid.addWidget(b, 0, i)
+        self.out_tab_index = ribbon.addTab(out_tab, emoji_icon("💾"), "Výstupní formáty")
+        ribbon.setCurrentIndex(self.book_tab_index)
+        self.ribbon = ribbon
         top = QtWidgets.QFrame()
         top.setObjectName("RibbonBar")
         tl = QtWidgets.QHBoxLayout(top)
         tl.setContentsMargins(0, 0, 8, 0)
         tl.addWidget(ribbon, 1)
-        tl.addWidget(vline())
-        tl.addWidget(actions)
 
         # informační řádek pod pásem (jako ve Wordu)
         info = QtWidgets.QFrame()

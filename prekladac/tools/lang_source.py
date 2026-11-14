@@ -925,6 +925,22 @@ E += [
     ("Nenalezeno.", "Not found.", "Nenájdené.", "Nicht gefunden."),
     ("Hledání", "Search", "Hľadanie", "Suchen"),
     ("Moje knihy", "My books", "Moje knihy", "Meine Bücher"),
+    ("Výstupní formáty", "Output formats", "Výstupné formáty", "Ausgabeformate"),
+    ("Uložit hotovou knihu do formátů", "Save the finished book as", "Uložiť hotovú knihu do formátov", "Fertiges Buch speichern als"),
+    ("Upravit\nknihu", "Edit\nbook", "Upraviť\nknihu", "Buch\nbearbeiten"),
+    ("Otevře okno knihy s úpravami ve stylu Wordu", "Opens the book window with Word-style editing",
+     "Otvorí okno knihy s úpravami v štýle Wordu", "Öffnet das Buchfenster mit Bearbeitung wie in Word"),
+    ("Číst\nknihu", "Read\nbook", "Čítať\nknihu", "Buch\nlesen"),
+    ("Otevře knihu ve čtečce (stránky, záložky, čtení nahlas)", "Opens the book in the reader (pages, bookmarks, "
+     "reading aloud)", "Otvorí knihu v čítačke (strany, záložky, čítanie nahlas)", "Öffnet das Buch im Reader "
+     "(Seiten, Lesezeichen, Vorlesen)"),
+    ("Exportovat…", "Export…", "Exportovať…", "Exportieren…"),
+    ("Otevře okno knihy na kartě Export (EPUB, PDF, Word, Kindle…)", "Opens the book window on the Export tab (EPUB, "
+     "PDF, Word, Kindle…)", "Otvorí okno knihy na karte Export (EPUB, PDF, Word, Kindle…)", "Öffnet das Buchfenster "
+     "auf der Registerkarte Export (EPUB, PDF, Word, Kindle…)"),
+    ("Postup", "Steps", "Postup", "Ablauf"),
+    ("Otevřít v okně knihy", "Open in the book window", "Otvoriť v okne knihy", "Im Buchfenster öffnen"),
+    ("Rozsah", "Length", "Rozsah", "Umfang"),
     ("Nápověda", "Help", "Pomocník", "Hilfe"),
     ("❓ Nápověda", "❓ Help", "❓ Pomocník", "❓ Hilfe"),
     ("O programu", "About", "O programe", "Über das Programm"),

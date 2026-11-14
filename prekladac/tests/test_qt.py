@@ -287,9 +287,16 @@ def test_sidebar_collapse_and_section_order(qapp):
     win2.set_sidebar_collapsed(False)
     assert win2.nav.item(0).text() == "Překlad"
     ribbon = win.book.findChild(qt_main.QtWidgets.QTabWidget, "Ribbon")
-    assert [ribbon.tabText(i) for i in range(ribbon.count())] == ["Soubor", "Žánr a styl", "Rozsah a služba", "Zobrazení"]
-    assert ribbon.currentIndex() == 1
-    assert win.book.cats["genre"].isVisibleTo(ribbon.widget(1)) and win.book.desc.objectName() == "DocText"
+    assert [ribbon.tabText(i) for i in range(ribbon.count())] == ["Soubor", "Kniha", "Žánr a styl", "Rozsah a služba",
+                                                                    "Výstupní formáty", "Zobrazení"]
+    assert ribbon.currentIndex() == 1                               # karta Kniha
+    b = win.book
+    for w in (b.b_outline, b.b_write, b.b_stop, b.b_edit):
+        assert w.isVisibleTo(ribbon.widget(1))
+    assert not b.b_edit.isEnabled()                               # bez napsaného textu nejde upravit
+    assert b.cats["genre"].isVisibleTo(ribbon.widget(2)) and b.desc.objectName() == "DocText"
+    assert b.service.isVisibleTo(ribbon.widget(3)) and b.nchap.isVisibleTo(ribbon.widget(3))
+    assert b.bdir.isVisibleTo(ribbon.widget(4)) and all(cb.isVisibleTo(ribbon.widget(4)) for cb in b.fmts.values())
     assert not win.windowIcon().isNull()
     win.close()
     win2.close()
