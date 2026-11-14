@@ -252,7 +252,9 @@ def test_gutenberg_fallback_when_gutendex_blocked(monkeypatch):
 def test_wikisource_book_as_epub(tmp_path, monkeypatch):
     """Wikizdroje: hlavní stránka s odkazy na kapitoly → EPUB, který program otevře."""
     pages = {
-        "Babička": {"parse": {"title": "Babička", "text": "<div class='ws-noexport'>navigace</div><p>Obsah</p>",
+        "Babička": {"parse": {"title": "Babička", "text": "<div class='ws-noexport'>navigace</div><p>Obsah: "
+                              "<a href='/wiki/Babi%C4%8Dka/II.' title='Babička/II.'>II</a> "
+                              "<a href='/wiki/Babi%C4%8Dka/I.' title='Babička/I.'>I</a></p>",
                               "links": [{"ns": 0, "title": "Babička/I.", "exists": True},
                                         {"ns": 0, "title": "Babička/II.", "exists": True},
                                         {"ns": 0, "title": "Jiná kniha", "exists": True},
@@ -273,6 +275,7 @@ def test_wikisource_book_as_epub(tmp_path, monkeypatch):
 
     book = ebook.read_book(str(p)) if hasattr(ebook, "read_book") else ebook.read_epub(p.read_bytes())
     texts = [ebook.plain_text(c.html) for c in book.chapters]
+    assert texts[0].startswith("II.") and texts[1].startswith("I.")  # pořadí podle obsahu knihy, ne podle abecedy
     joined = " ".join(texts)
     assert "Dávno, dávno již tomu." in joined and "Babička měla syna." in joined
     assert "editovat" not in joined and "navigace" not in joined

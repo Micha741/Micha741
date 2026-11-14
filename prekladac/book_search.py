@@ -305,22 +305,42 @@ def _ws_clean(html: str) -> str:
     return str(soup)
 
 
+def _ws_chapter_order(real: str, main: dict) -> list[str]:
+    """Kapitoly (podstránky „Název/…“) v pořadí, v jakém jsou v obsahu knihy; rozhraní vrací odkazy podle abecedy."""
+    from urllib.parse import unquote
+
+    from bs4 import BeautifulSoup
+
+    existing = {l.get("title", "") for l in main.get("links") or []
+                if l.get("ns") == 0 and l.get("exists", True)}
+    order, seen = [], set()
+    for a in BeautifulSoup(main.get("text") or "", "html.parser").find_all("a", href=True):
+        t = a.get("title") or unquote(a["href"].split("/wiki/", 1)[-1]).replace("_", " ")
+        t = t.split("#", 1)[0]
+        if t.startswith(real + "/") and t not in seen and (not existing or t in existing):
+            seen.add(t)
+            order.append(t)
+    for t in sorted(existing):  # podstránky, které v obsahu nejsou, na konec
+        if t.startswith(real + "/") and t not in seen:
+            seen.add(t)
+            order.append(t)
+    return order
+
+
 def wikisource_epub(lang: str, title: str, max_chapters: int = 150) -> tuple[bytes, str]:
     """Kniha z Wikizdrojů jako EPUB: hlavní stránka a její kapitoly (podstránky „Název/…“). Vrátí (data, název)."""
     import ebook
 
     main = _ws_parse(lang, title)
     real = main.get("title") or title
-    subs, seen = [], set()
-    for link in main.get("links") or []:
-        t = link.get("title", "")
-        if link.get("ns") == 0 and link.get("exists", True) and t.startswith(real + "/") and t not in seen:
-            seen.add(t)
-            subs.append(t)
+    subs = _ws_chapter_order(real, main)
     book = ebook.RichBook(title=real, author="", language=lang)
     if subs:
-        for t in subs[:max_chapters]:
-            part = _ws_parse(lang, t)
+        from concurrent.futures import ThreadPoolExecutor
+
+        with ThreadPoolExecutor(4) as ex:  # kapitoly souběžně, pořadí zůstává podle obsahu knihy
+            parts = list(ex.map(lambda t: _ws_parse(lang, t), subs[:max_chapters]))
+        for t, part in zip(subs, parts):
             name = t.split("/", 1)[1].replace("_", " ")
             blocks = ebook.clean_html(_ws_clean(part.get("text") or ""))
             book.chapters.append(ebook.Chapter(name, f"<h2>{ebook.esc(name)}</h2>" + "".join(blocks)))
