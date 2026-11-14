@@ -19,6 +19,7 @@
 - Karta Hledání v okně knihy (Ctrl+F): předchozí/další výskyt (F3), celá slova, velká/malá písmena, nahradit, všechny výskyty v knize, přejít na kapitolu. Obálka je vidět v panelu kapitol.
 - Návody ke službám mají klikací odkazy.
 - Přirozené hlasy pro čtení nahlas přes internet: Microsoft Azure (Vlasta, Antonín) a Google Cloud (Wavenet) – klíč v Nastavení → Služby a klíče (šifrovaně), měsíčně zdarma.
+- Napsat knihu: vlastní karty „Napsat knihu“ (1. Navrhnout osnovu, 2. Napsat knihu, Zastavit, služba a model) a „Kniha“ (Upravit knihu, Číst knihu, Exportovat…, otevřená kniha).
 - Nápověda (levý panel nebo F1): popis programu, klávesové zkratky s hledáním a přehled, co program umí.
 - Více obrázků najednou: přepínač „Všechny do jednoho dokumentu“ / „Každý obrázek zvlášť“ (karta Obrázky a OCR). DOCX má ve vlastnostech skutečné datum a čas vytvoření (ne 23. 12. 2013) a bez autora „python-docx“.
 - Oprava: více obrázků spojených do jednoho dokumentu má stránky ve správném pořadí (strana2 před strana10, bez ohledu na velká písmena).

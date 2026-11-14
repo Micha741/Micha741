@@ -692,7 +692,9 @@ class BookPage(QtWidgets.QWidget):
         self.b_write = big("✍️", "2. Napsat\nknihu", "AI napíše knihu kapitolu po kapitole podle osnovy",
                            "BigPrimary")
         self.b_stop = big("⏹️", "Zastavit", "Zastaví psaní (rozepsaná kniha zůstane uložená)")
-        self.b_edit = big("📖", "Upravit\nknihu", "Otevře editor ve stylu Wordu")
+        self.b_edit = big("✏️", "Upravit\nknihu", "Otevře okno knihy s úpravami ve stylu Wordu")
+        self.b_read = big("📖", "Číst\nknihu", "Otevře knihu ve čtečce (stránky, záložky, čtení nahlas)")
+        self.b_export = big("📤", "Exportovat…", "Otevře okno knihy na kartě Export (EPUB, PDF, Word, Kindle…)")
         self.b_load = big("📂", "Otevřít\nrozepsanou", "Pokračovat v rozepsané knize (*.kniha.json)")
 
         # ---------- pás karet
@@ -738,7 +740,6 @@ class BookPage(QtWidgets.QWidget):
         dl.addWidget(pick)
         scope_tab = ribbon_row(
             group("Kniha", [("Jazyk knihy:", self.blang), ("Kapitol:", self.nchap), ("Slov na kapitolu:", self.nwords)]),
-            group("Umělá inteligence", [("Služba:", self.service), ("Model Claude:", self.model)]),
             group("Uložit jako", [("", fmt_w), ("Složka:", dir_w)]))
         # karta Soubor (jako ve Wordu): nová, otevřít, uložit, uložit jako, naposledy otevřené
         self.b_new = big("📄", "Nová\nkniha", "Začít novou knihu (Ctrl+N)")
@@ -753,26 +754,34 @@ class BookPage(QtWidgets.QWidget):
         self.recent_grp.setMinimumWidth(320)
         self.path_info = label("", "Hint")
         self.path_info.setMaximumWidth(420)
+        file_tab = ribbon_row(filegrp, self.recent_grp)
+        # karta Napsat knihu: postup psaní s AI
+        steps = RibbonGroup("Postup")
+        for i, b in enumerate((self.b_outline, self.b_write, self.b_stop)):
+            steps.grid.addWidget(b, 0, i)
+        write_tab = ribbon_row(steps, group("Umělá inteligence", [("Služba:", self.service), ("Model Claude:", self.model)]))
+        # karta Kniha: hotová (rozepsaná) kniha – úpravy, čtení, export
+        use = RibbonGroup("Otevřít v okně knihy")
+        for i, b in enumerate((self.b_edit, self.b_read, self.b_export)):
+            use.grid.addWidget(b, 0, i)
         cur = RibbonGroup("Otevřená kniha")
         cur.grid.addWidget(self.path_info, 0, 0)
-        file_tab = ribbon_row(filegrp, self.recent_grp, cur)
+        book_tab = ribbon_row(use, cur)
         ribbon = QtWidgets.QTabWidget()
         ribbon.setObjectName("Ribbon")
         ribbon.setDocumentMode(True)
         ribbon.addTab(file_tab, "Soubor")
+        self.write_tab_index = ribbon.addTab(write_tab, emoji_icon("✍️"), "Napsat knihu")
+        self.book_tab_index = ribbon.addTab(book_tab, emoji_icon("📘"), "Kniha")
         ribbon.addTab(style_tab, "Žánr a styl")
-        ribbon.addTab(scope_tab, "Rozsah a služba")
-        ribbon.setCurrentIndex(1)
-        actions = RibbonGroup("Kniha")
-        for i, b in enumerate((self.b_outline, self.b_write, self.b_stop, self.b_edit)):
-            actions.grid.addWidget(b, 0, i)
+        ribbon.addTab(scope_tab, "Rozsah")
+        ribbon.setCurrentIndex(self.write_tab_index)
+        self.ribbon = ribbon
         top = QtWidgets.QFrame()
         top.setObjectName("RibbonBar")
         tl = QtWidgets.QHBoxLayout(top)
         tl.setContentsMargins(0, 0, 8, 0)
         tl.addWidget(ribbon, 1)
-        tl.addWidget(vline())
-        tl.addWidget(actions)
 
         # informační řádek pod pásem (jako ve Wordu)
         info = QtWidgets.QFrame()
@@ -860,6 +869,8 @@ class BookPage(QtWidgets.QWidget):
         self.b_write.clicked.connect(self.do_write)
         self.b_stop.clicked.connect(self.cancel.set)
         self.b_edit.clicked.connect(self.open_editor)
+        self.b_read.clicked.connect(lambda: self.open_editor(read=True))
+        self.b_export.clicked.connect(self.open_export)
         self.b_load.clicked.connect(self.do_load)
         self.b_new.clicked.connect(self.new_book)
         self.b_save.clicked.connect(lambda: self.save_book(False))
@@ -972,7 +983,8 @@ class BookPage(QtWidgets.QWidget):
         self.b_load.setEnabled(not self.busy)
         for b in (self.b_new, self.b_save, self.b_saveas):
             b.setEnabled(not self.busy)
-        self.b_edit.setEnabled(not self.busy and has_text)
+        for b in (self.b_edit, self.b_read, self.b_export):
+            b.setEnabled(not self.busy and has_text)
 
     def set_busy(self, on: bool):
         self.busy = on
@@ -1363,6 +1375,14 @@ class BookPage(QtWidgets.QWidget):
         """Otevřený editor této knihy (nebo None)."""
         ed = self.win.editor
         return ed if ed is not None and path and ed.path == Path(path) else None
+
+    def open_export(self):
+        """Okno knihy rovnou na kartě Export."""
+        self.open_editor()
+        ed = self.win.editor
+        if ed is not None and self.open_editor_for(self.path) is ed:
+            ed.set_mode(False)
+            ed.ribbon.setCurrentIndex(ed.export_tab_index)
 
     def open_editor(self, read: bool = False):
         from qt_editor import BookEditor
