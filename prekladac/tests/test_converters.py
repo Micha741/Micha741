@@ -267,3 +267,36 @@ def test_images_to_multipage_pdf(tmp_path):
     assert not app.files_need_ocr(paths, "pdf", False)
     assert app.files_need_ocr(paths, "docx", False)
     assert app.files_need_ocr(paths, "pdf", True)
+
+
+def test_run_jobs_images_merged_in_natural_order_or_separate(tmp_path):
+    """Více obrázků: zaškrtnuté „spojit“ = jeden DOCX se stránkami v pořadí 1, 2, 3, 10;
+    jinak každý obrázek vlastní DOCX."""
+    import threading
+
+    import docx
+    from PIL import Image
+
+    import app
+
+    names = ["strana1.jpg", "strana2.jpg", "strana10.jpg", "Strana3.png"]
+    for n in names:
+        Image.new("RGB", (40, 40), "white").save(tmp_path / n)
+    files = [str(tmp_path / n) for n in names]
+    out = tmp_path / "out"
+    res = app.run_jobs(files, True, app.SAME_FORMAT, FakeTranslator(), str(out), True, lambda *_: None,
+                       lambda *_: None, None, threading.Event())
+    assert len(res) == 1 and Path(res[0]).name.startswith("strana1 ") and res[0].endswith(".docx")
+    texts = [p.text for p in docx.Document(res[0]).paragraphs if p.text.startswith("Text ")]
+    assert texts == ["Text strana1", "Text strana2", "Text Strana3", "Text strana10"]
+    import datetime as dt
+
+    cp = docx.Document(res[0]).core_properties  # Word → Informace: skutečné datum, ne šablona z roku 2013
+    now = dt.datetime.now(dt.timezone.utc)
+    assert abs((now - cp.created.replace(tzinfo=dt.timezone.utc)).total_seconds()) < 120
+    assert cp.modified >= cp.created.replace(tzinfo=None) if cp.modified.tzinfo is None else True
+    assert cp.author == "" and cp.last_modified_by == "Překladač" and cp.title == "strana1"
+    res = app.run_jobs(files, True, app.SAME_FORMAT, FakeTranslator(), str(tmp_path / "out2"), False,
+                       lambda *_: None, lambda *_: None, None, threading.Event())
+    assert len(res) == 4 and all(r.endswith(".docx") for r in res)
+    assert app.natural_key("IMG_9.jpg") < app.natural_key("img_10.JPG")

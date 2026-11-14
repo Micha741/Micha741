@@ -376,8 +376,18 @@ class TranslatePage(QtWidgets.QWidget):
         self.ocr_lang.setEditable(True)
         self.ocr_lang.addItems(list(components.OCR_LANGUAGES) + ["eng+ces", "eng+deu"])
         self.ocr_lang.setCurrentText(cfg.get("ocr_lang", "eng"))
-        self.merge = QtWidgets.QCheckBox("Více obrázků spojit do jednoho dokumentu (DOCX, nebo vícestránkové PDF)")
-        self.merge.setChecked(cfg.get("merge_images", True))
+        # více obrázků najednou: jeden dokument (stránky za sebou), nebo každý obrázek vlastní soubor
+        self.merge = QtWidgets.QRadioButton("📄 Všechny do jednoho dokumentu")
+        self.merge.setToolTip("Obrázky se seřadí podle názvu (strana1, strana2 … strana10) a každý bude na nové "
+                              "stránce jednoho DOCX – nebo vícestránkového PDF, když zvolíte výstup PDF")
+        self.merge_separate = QtWidgets.QRadioButton("📑 Každý obrázek zvlášť")
+        self.merge_separate.setToolTip("Každý obrázek se uloží do vlastního souboru (např. foto1 (čeština).docx)")
+        (self.merge if cfg.get("merge_images", True) else self.merge_separate).setChecked(True)
+        merge_w = QtWidgets.QWidget()
+        mw = QtWidgets.QVBoxLayout(merge_w)
+        mw.setContentsMargins(0, 0, 0, 0)
+        mw.addWidget(self.merge)
+        mw.addWidget(self.merge_separate)
         self.notes = QtWidgets.QPlainTextEdit(cfg.get("notes", ""))
         self.notes.setObjectName("DocText")
         self.notes.setPlaceholderText("Pokyny pro překlad – glosář, styl (Claude, Gemini, Ollama, OpenAI…)")
@@ -411,7 +421,7 @@ class TranslatePage(QtWidgets.QWidget):
         ocr_tab = ribbon_row(
             ribbon_group("Text z obrázků a skenů (OCR)", [("Rozpoznávání:", self.ocr),
                                                           ("Jazyk originálu:", self.ocr_lang)]),
-            ribbon_group("Obrázky", [("", self.merge)]))
+            ribbon_group("Více obrázků najednou", [("", merge_w)]))
         ribbon = QtWidgets.QTabWidget()
         ribbon.setObjectName("Ribbon")
         ribbon.setDocumentMode(True)
@@ -2032,6 +2042,46 @@ class SettingsPage(QtWidgets.QWidget):
         QtWidgets.QMessageBox.information(self, "Nastavení", "Nastavení uloženo.")
 
 
+# ==================================================================== Nápověda
+class HelpPage(QtWidgets.QWidget):
+    """Levý panel → Nápověda (F1): popis programu, klávesové zkratky a co je nového."""
+
+    def __init__(self, win: "MainWindow"):
+        super().__init__()
+        import help_content
+
+        self.win = win
+        lay = QtWidgets.QVBoxLayout(self)
+        lay.setContentsMargins(24, 18, 24, 12)
+        lay.addWidget(label("❓ Nápověda", "PageTitle", wrap=False))
+        self.tabs = QtWidgets.QTabWidget()
+        lay.addWidget(self.tabs, 1)
+        self.about = QtWidgets.QTextBrowser()
+        self.about.setOpenExternalLinks(True)
+        ver = f"Verze {VERSION}" if VERSION[:1].isdigit() else VERSION.capitalize()
+        self.about.setHtml(help_content.ABOUT + f"<p style='color:gray'>{ver}</p>")
+        self.tabs.addTab(self.about, emoji_icon("ℹ️"), "O programu")
+        keys = QtWidgets.QWidget()
+        kl = QtWidgets.QVBoxLayout(keys)
+        kl.setContentsMargins(0, 6, 0, 0)
+        self.key_filter = QtWidgets.QLineEdit()
+        self.key_filter.setPlaceholderText("Hledat zkratku nebo činnost… (např. F11, uložit, čtečka)")
+        self.key_filter.setClearButtonEnabled(True)
+        self.keys = QtWidgets.QTextBrowser()
+        self.key_filter.textChanged.connect(lambda t: self.keys.setHtml(help_content.shortcuts_html(t)))
+        self.keys.setHtml(help_content.shortcuts_html())
+        kl.addWidget(self.key_filter)
+        kl.addWidget(self.keys, 1)
+        self.tabs.addTab(keys, emoji_icon("⌨️"), "Klávesové zkratky")
+        news = QtWidgets.QTextBrowser()
+        news.setOpenExternalLinks(True)
+        try:
+            news.setMarkdown(Path(asset("changelog.md")).read_text(encoding="utf-8"))
+        except OSError:
+            news.setPlainText("Seznam změn není k dispozici.")
+        self.tabs.addTab(news, emoji_icon("📋"), "Co program umí")
+
+
 # ==================================================================== hlavní okno
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -2092,7 +2142,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.nav.setIconSize(QtCore.QSize(22, 22))
         self.nav.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.nav.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        for icon, text in (("🌍", "Překlad"), ("✍️", "Napsat knihu"), ("📖", "Čtečka"), ("⚙️", "Nastavení")):
+        for icon, text in (("🌍", "Překlad"), ("✍️", "Napsat knihu"), ("📖", "Čtečka"), ("⚙️", "Nastavení"),
+                           ("❓", "Nápověda")):
             it = QtWidgets.QListWidgetItem(emoji_icon(icon), text)
             it.setData(Qt.UserRole, text)
             self.nav.addItem(it)
@@ -2105,7 +2156,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.book = BookPage(self)
         self.reader_page = ReaderPage(self)
         self.settings = SettingsPage(self)
-        for page in (self.translate, self.book, self.reader_page, self.settings):
+        self.help_page = HelpPage(self)
+        for page in (self.translate, self.book, self.reader_page, self.settings, self.help_page):
             wrap = QtWidgets.QWidget()
             wl = QtWidgets.QVBoxLayout(wrap)
             wl.setContentsMargins(*((20, 12, 20, 12) if page is self.settings else (0, 0, 0, 0)))
@@ -2117,6 +2169,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.nav.currentRowChanged.connect(self._nav_changed)
         self.nav.setCurrentRow(0)
         self.set_sidebar_collapsed(bool(self.cfg.get("sidebar_collapsed")), save=False)
+        QtGui.QShortcut(QtGui.QKeySequence("F1"), self, activated=lambda: self.nav.setCurrentRow(self.HELP_ROW))
 
         if self.cfg.get("check_updates", True):
             QtCore.QTimer.singleShot(3000, self.check_updates)
@@ -2124,7 +2177,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def title(self) -> str:
         return f"{core.APP_NAME} – verze {VERSION}"
 
-    BOOK_ROW, READER_ROW, SETTINGS_ROW = 1, 2, 3
+    BOOK_ROW, READER_ROW, SETTINGS_ROW, HELP_ROW = 1, 2, 3, 4
 
     def _nav_changed(self, row: int):
         if row in (self.BOOK_ROW, self.READER_ROW) and self.editor is not None:

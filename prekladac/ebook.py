@@ -1169,6 +1169,9 @@ def write_docx(book: RichBook, dst: str | Path) -> None:
     for ch in book.chapters:
         d.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
         add_html(d, ch.html, book.images)
+    from converters import stamp_docx
+
+    stamp_docx(d)
     d.save(str(dst))
 
 
