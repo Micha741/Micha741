@@ -19,6 +19,7 @@
 - Karta Hledání v okně knihy (Ctrl+F): předchozí/další výskyt (F3), celá slova, velká/malá písmena, nahradit, všechny výskyty v knize, přejít na kapitolu. Obálka je vidět v panelu kapitol.
 - Návody ke službám mají klikací odkazy.
 - Přirozené hlasy pro čtení nahlas přes internet: Microsoft Azure (Vlasta, Antonín) a Google Cloud (Wavenet) – klíč v Nastavení → Služby a klíče (šifrovaně), měsíčně zdarma.
+- Překlad: nová karta „Překladač“ (výběr služby, stav a tlačítko Klíče a návody); pás karet se vejde bez posouvání.
 - Hledat knihy jako v Calibre: pole Název / Autor / Klíčové slovo, zdroje se zaškrtávátky (Project Gutenberg, Wikizdroje, Open Library / Internet Archive, Google Books), tabulka s obálkou, cenou, DRM, obchodem a sloupcem „Otevře Překladač“; u každého zdroje počet knih nebo chyba.
 - Napsat knihu: karta „Kniha“ (1. Navrhnout osnovu, 2. Napsat knihu, Zastavit, Upravit knihu, otevřená kniha) a nová karta „Výstupní formáty“ (formáty a výstupní složka); pás karet se už nemusí posouvat.
 - Nápověda (levý panel nebo F1): popis programu, klávesové zkratky s hledáním a přehled, co program umí.

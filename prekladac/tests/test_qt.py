@@ -1112,3 +1112,16 @@ def test_help_page(qapp):
     assert "Nic nenalezeno" in hp.keys.toPlainText()
     assert help_content.shortcuts_html().count("<h3>") == len(help_content.SHORTCUTS)
     win.close()
+
+
+def test_translate_engine_tab(qapp):
+    import qt_main
+    win = qt_main.MainWindow()
+    t = win.translate
+    tabs = [t.ribbon.tabText(i) for i in range(t.ribbon.count())]
+    assert tabs[:4] == ["Soubory", "Překlad", "Překladač", "Obrázky a OCR"]
+    assert t.engine.isVisibleTo(t.ribbon.widget(t.engine_tab_index))
+    assert not t.engine.isVisibleTo(t.ribbon.widget(1)) and t.lang.isVisibleTo(t.ribbon.widget(1))
+    win.open_services()
+    assert win.nav.currentRow() == win.SETTINGS_ROW and win.settings.tabs.tabText(win.settings.tabs.currentIndex()) == "Služby a klíče"
+    win.close()
