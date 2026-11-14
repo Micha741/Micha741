@@ -467,3 +467,30 @@ def test_reader_look_tab(qapp):
     assert not ed.ribbon.isTabVisible(ed.look_tab) and not ed.ribbon.isTabVisible(ed.read_tab)
     ed.dirty = False
     ed.close()
+
+
+def test_reader_panel_hide_like_editor(qapp):
+    from PySide6.QtTest import QTest
+    from qt_editor import BookEditor
+
+    cfg = {}
+    ed = BookEditor(project(1, 4), Path("x.kniha.json"), None, text_assist={}, save_options=lambda: None, app_cfg=cfg)
+    ed.show()
+    ed.set_mode(True)
+    qapp.processEvents()
+    r = ed.reader
+    assert r.panel.isVisible() and r.b_panel.isChecked() and r.panel_buttons[0].isChecked()
+    r.panel.cornerWidget(QtCore.Qt.TopRightCorner).click()      # ✕ v rohu panelu
+    assert not r.panel.isVisible() and not r.b_panel.isChecked() and cfg["reader_panel"] is False
+    assert not r.panel_buttons[0].isChecked()
+    r.b_panel.click()                                             # tlačítko na spodní liště
+    assert r.panel.isVisible() and cfg["reader_panel"] is True
+    QTest.keyClick(r.view, QtCore.Qt.Key_F9)                      # F9 ve čtečce = panel čtečky
+    assert not r.panel.isVisible() and ed.chapters_dock.isHidden()
+    r.panel_buttons[0].click()                                    # karta Vzhled → Postranní panel
+    assert r.panel.isVisible()
+    ed.set_mode(False)
+    QTest.keyClick(ed.text, QtCore.Qt.Key_F9)                     # v úpravách F9 = panel kapitol
+    assert not ed.chapters_dock.isVisible()
+    ed.dirty = False
+    ed.close()
