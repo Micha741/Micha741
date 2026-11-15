@@ -589,7 +589,7 @@ def test_editor_file_tab_save_as_and_panel(qapp, tmp_path, monkeypatch):
     ed = BookEditor(proj, p, None, text_assist=opts, save_options=lambda: None)
     ed.show()
     assert [ed.ribbon.tabText(i) for i in range(ed.ribbon.count()) if ed.ribbon.isTabVisible(i)] == [
-        "Soubor", "Domů", "Hledání", "Kniha", "Export", "Zobrazení"]  # karta Čtení je jen v režimu čtení
+        "Soubor", "Domů", "Hledání", "Kniha", "Metadata", "Export", "Zobrazení"]  # karta Čtení je jen v režimu čtení
     assert ed.ribbon.currentIndex() == 1
     # panel kapitol
     assert ed.chapters_dock.isVisible()
@@ -1255,5 +1255,53 @@ def test_editor_file_tab_has_export_folder_no_duplicates(qapp, tmp_path):
     names = [b.text() for b in export_tab.findChildren(QtWidgets.QToolButton)]
     assert "Uložit jako…" not in names and "Tisk" not in names       # jen v kartě Soubor
     assert "Uložit jako…" in [b.text() for b in file_tab.findChildren(QtWidgets.QToolButton)]
+    ed.dirty = False
+    ed.close()
+
+
+def test_metadata_tab_and_export(qapp, tmp_path, monkeypatch):
+    """Karta Metadata: údaje se uloží do knihy a do EPUB, MOBI a Wordu."""
+    import zipfile
+    import docx
+    import ebook
+    from qt_editor import BookEditor
+    proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000,
+            "chapters": [{"text": "Text kapitoly.", "summary": ""}]}
+    p = tmp_path / "m.kniha.json"
+    bw.save_project(p, proj)
+    ed = BookEditor(proj, p, None, text_assist={}, save_options=lambda: None, app_cfg={})
+    mt = ed.ribbon.widget(ed.meta_tab_index)
+    assert ed.title_edit.isVisibleTo(mt) and ed.author_edit.isVisibleTo(mt)
+    assert not ed.title_edit.isVisibleTo(ed.ribbon.widget(3))           # už ne v kartě Kniha
+    assert "Exportovat" not in [b.text() for b in ed.ribbon.widget(0).findChildren(QtWidgets.QToolButton)]
+    vals = {"subtitle": "Obrazy venkovského života", "publisher": "Nakladatel & syn", "date": "2026-11-15",
+            "isbn": "978-80-000-0000-0", "subjects": "román, venkov", "series": "Klasika", "series_index": "2",
+            "rights": "© 2026 Autor"}
+    for k, v in vals.items():
+        ed.meta_edits[k].setText(v)
+        ed.meta_edits[k].textEdited.emit(v)
+    monkeypatch.setattr(QtWidgets.QDialog, "exec", lambda self: (ed._desc_dialog[1].setPlainText("Krásná kniha."), 1)[1])
+    ed.edit_description()
+    ed.save()
+    meta = bw.load_project(p)["metadata"]
+    assert meta == {**vals, "description": "Krásná kniha."}
+    ed.meta_edits["rights"].setText("")
+    ed.meta_edits["rights"].textEdited.emit("")
+    assert "rights" not in ed.project["metadata"]
+    book = ebook.from_project(ed.project)
+    epub = tmp_path / "m.epub"
+    ebook.write_book(book, epub)
+    opf = zipfile.ZipFile(epub).read("OEBPS/content.opf").decode("utf-8")
+    for part in ("<dc:publisher>Nakladatel &amp; syn</dc:publisher>", "<dc:date>2026-11-15</dc:date>",
+                 "urn:isbn:978-80-000-0000-0", "<dc:subject>román</dc:subject>", "<dc:subject>venkov</dc:subject>",
+                 "<dc:description>Krásná kniha.</dc:description>", 'calibre:series" content="Klasika"',
+                 'calibre:series_index" content="2"', "Obrazy venkovského života"):
+        assert part in opf, part
+    mobi = ebook.write_mobi(book)
+    assert "Nakladatel & syn".encode() in mobi and b"978-80-000-0000-0" in mobi
+    d = tmp_path / "m.docx"
+    bw.save_as(ed.project, d, lambda *_: None)
+    cp = docx.Document(str(d)).core_properties
+    assert cp.keywords == "román, venkov" and cp.comments == "Krásná kniha." and cp.category == "Klasika 2"
     ed.dirty = False
     ed.close()

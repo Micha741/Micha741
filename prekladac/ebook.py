@@ -50,6 +50,9 @@ class RichBook:
     images: dict[str, bytes] = field(default_factory=dict)
     cover: str | None = None
     toc_title: str = ""  # neprázdné = v textu se vytvoří stránka obsahu s odkazy na kapitoly (Napsat knihu)
+    # metadata knihy (karta Metadata v okně knihy): subtitle, publisher, date, isbn, description, subjects,
+    # series, series_index, rights
+    meta: dict = field(default_factory=dict)
 
     def add_image(self, data: bytes, ext: str | None = None) -> str:
         ext = (ext or image_ext(data)).lstrip(".")
@@ -811,6 +814,7 @@ def from_project(proj: dict) -> RichBook:
     lang = str(proj.get("language") or "cs").lower()
     code = {"čeština": "cs", "slovenčina": "sk", "angličtina": "en", "němčina": "de"}.get(lang, lang[:2])
     book = RichBook(title=o.get("title") or "Kniha", author=proj.get("author") or "", language=code)
+    book.meta = dict(proj.get("metadata") or {})
     from book_writer import DEFAULT_FORMAT, TOC_TITLES
 
     if {**DEFAULT_FORMAT, **(proj.get("format") or {})}.get("toc"):
@@ -925,6 +929,31 @@ def _safe(name: str) -> str:
     return re.sub(r"[^A-Za-z0-9._-]", "_", name)
 
 
+def epub_meta(meta: dict) -> str:
+    """Další metadata do content.opf (EPUB 3 + značky Calibre pro sérii, aby je čtečky znaly)."""
+    m = meta or {}
+    out = []
+    if m.get("subtitle"):
+        out.append(f'<dc:title id="subtitle">{esc(m["subtitle"])}</dc:title>'
+                   '<meta refines="#subtitle" property="title-type">subtitle</meta>')
+    for key, tag in (("publisher", "publisher"), ("date", "date"), ("description", "description"),
+                     ("rights", "rights")):
+        if str(m.get(key) or "").strip():
+            out.append(f"<dc:{tag}>{esc(str(m[key]).strip())}</dc:{tag}>")
+    if str(m.get("isbn") or "").strip():
+        out.append(f'<dc:identifier id="isbn">urn:isbn:{esc(str(m["isbn"]).strip())}</dc:identifier>')
+    for subj in [x.strip() for x in str(m.get("subjects") or "").split(",") if x.strip()]:
+        out.append(f"<dc:subject>{esc(subj)}</dc:subject>")
+    if str(m.get("series") or "").strip():
+        idx = str(m.get("series_index") or "1").strip() or "1"
+        out.append(f'<meta property="belongs-to-collection" id="series">{esc(m["series"].strip())}</meta>'
+                   f'<meta refines="#series" property="collection-type">series</meta>'
+                   f'<meta refines="#series" property="group-position">{esc(idx)}</meta>'
+                   f'<meta name="calibre:series" content="{esc(m["series"].strip())}"/>'
+                   f'<meta name="calibre:series_index" content="{esc(idx)}"/>')
+    return "".join(out)
+
+
 def write_epub(book: RichBook) -> bytes:
     buf = io.BytesIO()
     lang = book.language or "cs"
@@ -1000,6 +1029,7 @@ def write_epub(book: RichBook) -> bytes:
             f'unique-identifier="bookid" xml:lang="{lang}"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/">'
             f'<dc:identifier id="bookid">{uid}</dc:identifier><dc:title>{esc(book.title)}</dc:title><dc:language>{lang}'
             f'</dc:language>{f"<dc:creator>{esc(book.author)}</dc:creator>" if book.author else ""}'
+            f'{epub_meta(book.meta)}'
             f'<meta property="dcterms:modified">{modified}</meta>'
             f'{f"<meta name=\"cover\" content=\"{cover_id}\"/>" if cover_id else ""}</metadata>'
             f'<manifest>{"".join(manifest)}</manifest><spine toc="ncx">{"".join(spine)}</spine>'
@@ -1098,7 +1128,13 @@ def write_mobi(book: RichBook) -> bytes:
         exth(100, book.author.encode("utf-8"))
     exth(503, book.title.encode("utf-8"))
     exth(524, (book.language or "cs").encode("utf-8"))
-    exth(106, time.strftime("%Y-%m-%d").encode())
+    m = book.meta or {}
+    for kind, key in ((101, "publisher"), (103, "description"), (104, "isbn"), (109, "rights")):
+        if str(m.get(key) or "").strip():
+            exth(kind, str(m[key]).strip().encode("utf-8"))
+    for subj in [x.strip() for x in str(m.get("subjects") or "").split(",") if x.strip()]:
+        exth(105, subj.encode("utf-8"))
+    exth(106, (str(m.get("date") or "").strip() or time.strftime("%Y-%m-%d")).encode())
     exth(108, "Prekladac".encode())
     if book.cover in rec:
         exth(201, struct.pack(">I", 0))
@@ -1147,6 +1183,7 @@ def write_docx(book: RichBook, dst: str | Path) -> None:
     d = docx.Document()
     d.core_properties.title = book.title
     d.core_properties.author = book.author
+    docx_meta(d, book.meta)
     try:
         d.core_properties.language = book.language
     except Exception:  # noqa: BLE001
@@ -1310,3 +1347,19 @@ def convert(src: str | Path, dst: str | Path, log=print) -> str:
     write_book(book, dst)
     log(f"Převedeno bez Calibre: {s.name} → {Path(dst).name} ({len(book.chapters)} kapitol, {len(book.images)} obrázků)")
     return str(dst)
+
+
+def docx_meta(d, meta: dict) -> None:
+    """Metadata knihy do vlastností dokumentu Word (Soubor → Informace)."""
+    m = meta or {}
+    cp = d.core_properties
+    if m.get("subtitle"):
+        cp.subject = str(m["subtitle"])
+    if m.get("subjects"):
+        cp.keywords = str(m["subjects"])
+    if m.get("description"):
+        cp.comments = str(m["description"])[:2000]
+    if m.get("series"):
+        cp.category = f'{m["series"]} {m.get("series_index") or ""}'.strip()
+    if m.get("isbn"):
+        cp.identifier = "ISBN " + str(m["isbn"]).strip()

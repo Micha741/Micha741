@@ -547,6 +547,7 @@ class BookEditor(QtWidgets.QMainWindow):
         self.search_tab = SearchTab(self)
         self.search_tab_index = tabs.addTab(HScroll(self.search_tab), emoji_icon("🔍"), "Hledání")
         tabs.addTab(self._book_tab(), "Kniha")
+        self.meta_tab_index = tabs.addTab(self._meta_tab(), emoji_icon("🏷️"), "Metadata")
         self.export_tab_index = tabs.addTab(self._export_tab(), emoji_icon("📤"), "Export")
         lay = self._file_row.widget().layout()  # karta Soubor: Uložit, Tisk, Okno, Složka exportu
         lay.insertWidget(lay.count() - 1, vline())
@@ -688,8 +689,6 @@ class BookEditor(QtWidgets.QMainWindow):
         self.b_saveas.setToolTip("Uložit knihu do jednoho souboru: DOCX, PDF, MOBI, EPUB, AZW3, ODT, TXT, "
                                  "nebo jako projekt *.kniha.json (Ctrl+Shift+S)")
         f.grid.addWidget(self.b_saveas, 0, 1)
-        f.grid.addWidget(self._big(emoji_icon("📤"), "Exportovat",
-                                   lambda: self.ribbon.setCurrentIndex(self.export_tab_index)), 0, 2)
         pr = RibbonGroup("Tisk")
         self.b_print = self._big(emoji_icon("🖨️"), "Tisk", lambda: self.print_book(True))
         self.b_print.setToolTip("Vytisknout knihu (Ctrl+P). Šipkou vyberete tisk kapitoly nebo náhled.")
@@ -708,6 +707,94 @@ class BookEditor(QtWidgets.QMainWindow):
         win.grid.addWidget(self._big(emoji_icon("✖️"), "Zavřít", self.close), 0, 1)
         self._file_row = self._row(f, pr, win)  # Složka exportu se doplní po vytvoření karty Export
         return self._file_row
+
+    # ================================================================ karta Metadata
+    META_FIELDS = (("subtitle", "Podtitul:", "např. Obrazy venkovského života"),
+                   ("publisher", "Vydavatel:", "jméno nebo nakladatelství"),
+                   ("date", "Datum vydání:", "RRRR nebo RRRR-MM-DD"),
+                   ("isbn", "ISBN:", "978-80-…"),
+                   ("subjects", "Žánr:", "žánr, klíčová slova – oddělte čárkou"),
+                   ("series", "Série:", "název série (nepovinné)"),
+                   ("series_index", "Díl:", "1"),
+                   ("rights", "Práva:", "např. © 2026 Jan Novák, všechna práva vyhrazena"))
+
+    def _meta_tab(self) -> QtWidgets.QWidget:
+        """Karta Metadata: údaje o knize, které se uloží do EPUB, MOBI (Kindle) a Wordu – čtečky a obchody je ukazují."""
+        meta = self.project.setdefault("metadata", {})
+        self.meta_edits: dict[str, QtWidgets.QLineEdit] = {}
+
+        def edit(key, ph):
+            e = QtWidgets.QLineEdit(str(meta.get(key, "")))
+            e.setPlaceholderText(tr(ph))
+            e.textEdited.connect(lambda t, k=key: self._set_meta(k, t))
+            self.meta_edits[key] = e
+            return e
+
+        info = self._title_group
+        info.grid.addWidget(QtWidgets.QLabel(tr("Podtitul:")), 2, 0)
+        info.grid.addWidget(edit("subtitle", self.META_FIELDS[0][2]), 2, 1)
+        groups = {"Vydání": ("publisher", "date", "isbn"), "Zařazení": ("subjects", "series", "rights")}
+        out = [info]
+        labels = {k: (lbl, ph) for k, lbl, ph in self.META_FIELDS}
+        for title, keys in groups.items():
+            g = RibbonGroup(title)
+            for r, k in enumerate(keys):
+                g.grid.addWidget(QtWidgets.QLabel(tr(labels[k][0])), r, 0)
+                e = edit(k, labels[k][1])
+                e.setMinimumWidth(150)
+                if k == "series":  # série a díl na jednom řádku
+                    row = QtWidgets.QHBoxLayout()
+                    row.setContentsMargins(0, 0, 0, 0)
+                    row.addWidget(e, 1)
+                    row.addWidget(QtWidgets.QLabel(tr("Díl:")))
+                    idx = edit("series_index", labels["series_index"][1])
+                    idx.setFixedWidth(40)
+                    row.addWidget(idx)
+                    w = QtWidgets.QWidget()
+                    w.setLayout(row)
+                    g.grid.addWidget(w, r, 1)
+                else:
+                    g.grid.addWidget(e, r, 1)
+            out.append(g)
+        desc = RibbonGroup("Popis knihy")
+        b = self._big(emoji_icon("📝"), "Anotace…", self.edit_description)
+        b.setToolTip(tr("Krátký popis knihy (anotace) – ukáže se ve čtečkách a obchodech"))
+        desc.grid.addWidget(b, 0, 0)
+        self.desc_info = label("", "Hint")
+        self.desc_info.setMaximumWidth(130)
+        desc.grid.addWidget(self.desc_info, 0, 1)
+        self._show_desc_info()
+        out.insert(1, desc)
+        return self._row(*out)
+
+    def _set_meta(self, key: str, value: str):
+        meta = self.project.setdefault("metadata", {})
+        if value.strip():
+            meta[key] = value.strip()
+        else:
+            meta.pop(key, None)
+        self._changed()
+
+    def _show_desc_info(self):
+        d = (self.project.get("metadata") or {}).get("description", "")
+        self.desc_info.setText((d[:90] + "…" if len(d) > 90 else d) or tr("zatím bez anotace"))
+
+    def edit_description(self):
+        dlg = QtWidgets.QDialog(self)
+        dlg.setWindowTitle(tr("Anotace knihy"))
+        dlg.resize(560, 320)
+        lay = QtWidgets.QVBoxLayout(dlg)
+        lay.addWidget(label("Krátký popis knihy – ukáže se ve čtečkách (EPUB, Kindle) a ve vlastnostech Wordu.", "Hint"))
+        t = QtWidgets.QPlainTextEdit((self.project.get("metadata") or {}).get("description", ""))
+        lay.addWidget(t, 1)
+        bb = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel)
+        bb.accepted.connect(dlg.accept)
+        bb.rejected.connect(dlg.reject)
+        lay.addWidget(bb)
+        self._desc_dialog = (dlg, t)
+        if dlg.exec() == QtWidgets.QDialog.Accepted:
+            self._set_meta("description", t.toPlainText())
+            self._show_desc_info()
 
     # ================================================================ karta Export
     EXPORT_QUICK = (("epub", "📗", "EPUB", "E-kniha pro čtečky a telefony"),
@@ -1076,7 +1163,7 @@ class BookEditor(QtWidgets.QMainWindow):
         info = RibbonGroup("Kniha")
         self.title_edit = QtWidgets.QLineEdit(self.outline["title"])
         self.author_edit = QtWidgets.QLineEdit(self.project.get("author", ""))
-        self.title_edit.setMinimumWidth(260)
+        self.title_edit.setMinimumWidth(200)
         info.grid.addWidget(QtWidgets.QLabel("Název:"), 0, 0)
         info.grid.addWidget(self.title_edit, 0, 1)
         info.grid.addWidget(QtWidgets.QLabel("Autor:"), 1, 0)
@@ -1116,7 +1203,8 @@ class BookEditor(QtWidgets.QMainWindow):
         cov.grid.addWidget(b_cov, 0, 1, 2, 1)
         cov.grid.addWidget(self._tb(emoji_icon("🗑️"), "Odebrat obálku", self.remove_cover), 0, 2)
         self.update_cover_thumb()
-        return self._row(info, look, cov, chap)
+        self._title_group = info  # Název a Autor jsou v kartě Metadata
+        return self._row(look, cov, chap)
 
     def _color_menu(self, colors, fn, extra_text):
         menu = QtWidgets.QMenu(self)
