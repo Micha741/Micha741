@@ -246,3 +246,17 @@ def test_title_page_only_without_cover(tmp_path):
             assert doc.core_properties.title == "Kůň a louka"
             has_img_cover = name == "obrazek" or (writer == "docx_ebook" and name == "nazev")
             assert (body == ["Kůň a louka"]) is (not has_img_cover), (name, writer, body)
+
+
+def test_first_chapter_without_heading_is_not_lost():
+    """Krátký začátek bez nadpisu se zahodí jen jako titulní strana (na střed / s názvem), jinak zůstane."""
+    import ebook
+
+    blocks = ["<p>Bouře zuřila nad mořem.</p>", "<p>Žluťoučký kůň úpěl.</p>", "<h2>2. Mapa</h2>", "<p>Mapa.</p>",
+              "<h2>3. Návrat</h2>", "<p>Konec.</p>"]
+    ch = ebook.split_chapters(blocks, "Strážce majáku")
+    assert [c.title for c in ch] == ["Úvod", "Mapa", "Návrat"] and "Žluťoučký" in ch[0].html
+    title_page = ['<p style="text-align:center">Jan Novák</p>', "<hr/>"] + blocks[2:]
+    assert [c.title for c in ebook.split_chapters(title_page, "Strážce majáku")] == ["Mapa", "Návrat"]
+    named = ["<p>Strážce majáku</p>"] + blocks[2:]
+    assert [c.title for c in ebook.split_chapters(named, "Strážce majáku")] == ["Mapa", "Návrat"]

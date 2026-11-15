@@ -338,7 +338,11 @@ def split_chapters(blocks: list[str], book_title: str) -> list[Chapter]:
     if len(chapters) > 1 and (not chapters[0][0] or chapters[0][0].lower() == book_title.strip().lower()):
         body = chapters[0][1]
         text = plain_text("".join(body))
-        if len(text) < 200 and "<img" not in "".join(body):
+        # krátká titulní strana (jen název a autor) se zahodí; text bez názvu knihy je začátek knihy
+        # (např. první kapitola bez nadpisu) – ten se nesmí ztratit
+        centered = all(b == "<hr/>" or "text-align:center" in b or b.startswith("<h") for b in body)
+        is_title_page = centered or (book_title.strip() and book_title.strip().lower() in text.lower())
+        if len(text) < 200 and "<img" not in "".join(body) and is_title_page:
             chapters.pop(0)
         else:
             chapters[0] = ("Úvod", body)
