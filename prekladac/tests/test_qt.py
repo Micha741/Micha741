@@ -1125,3 +1125,119 @@ def test_translate_engine_tab(qapp):
     win.open_services()
     assert win.nav.currentRow() == win.SETTINGS_ROW and win.settings.tabs.tabText(win.settings.tabs.currentIndex()) == "Služby a klíče"
     win.close()
+
+
+def test_notes_hide_and_after_translation_read_or_edit(qapp, tmp_path, monkeypatch):
+    import qt_main
+    win = qt_main.MainWindow()
+    win.show()
+    t = win.translate
+    assert t.notes.isVisible() and t.b_notes.isChecked()
+    t.b_notes.setChecked(False)                                   # skrýt pokyny pro překlad
+    assert not t.notes.isVisible() and not t.notes_head.isVisible() and win.cfg["show_notes"] is False
+    win2 = qt_main.MainWindow()
+    assert not win2.translate.b_notes.isChecked() and win2.translate.notes.isHidden()   # pamatuje se
+    win2.close()
+    t.b_notes.setChecked(True)
+    assert t.notes.isVisible()
+    # po překladu: tlačítka Číst / Upravit u výsledku
+    proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000,
+            "chapters": [{"text": "Bouře zuřila nad mořem. " * 30, "summary": ""}]}
+    res = tmp_path / "k.kniha.json"
+    bw.save_project(res, proj)
+    opened = []
+    monkeypatch.setattr(win.reader_page, "open_independent", lambda f, read=True: opened.append((f, read)))
+    for want in ("📖 Číst", "✏️ Upravit"):
+        monkeypatch.setattr(QtWidgets.QMessageBox, "exec", lambda self: 0)
+        monkeypatch.setattr(QtWidgets.QMessageBox, "clickedButton",
+                            lambda self, w=want: next(b for b in self.buttons() if b.text() == w))
+        t.finished_dialog([str(tmp_path / "kniha (čeština).epub")])
+    assert opened == [(str(tmp_path / "kniha (čeština).epub"), True), (str(tmp_path / "kniha (čeština).epub"), False)]
+    win.close()
+
+
+def test_read_other_book_while_ai_writes(qapp, tmp_path):
+    import qt_main
+    win = qt_main.MainWindow()
+    win.show()
+    b = win.book
+    writing = tmp_path / "pise.kniha.json"
+    other = tmp_path / "jina.kniha.json"
+    for p, text in ((writing, "Rozepsaná kniha."), (other, "Jiná kniha ke čtení. " * 30)):
+        bw.save_project(p, {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000,
+                            "chapters": [{"text": text, "summary": ""}]})
+    b.show_project(bw.load_project(writing), writing)
+    b.busy = True                                                 # jako když AI píše knihu
+    win.reader_page.open_path(str(other))
+    ed = win.editor
+    assert ed is not None and ed.reading() and Path(ed.path) == other
+    assert Path(b.path) == writing                                # psaná kniha zůstala na stránce Napsat knihu
+    shown = []
+    import pytest
+    mp = pytest.MonkeyPatch()
+    mp.setattr(QtWidgets.QMessageBox, "information", lambda *a, **k: shown.append(a[2]))
+    win.reader_page.open_independent(str(writing))                # tu, kterou AI píše, otevřít nejde
+    mp.undo()
+    assert shown and "píše AI" in shown[0] and Path(win.editor.path) == other
+    b.busy = False
+    ed.dirty = False
+    ed.close()
+    win.close()
+
+
+def test_export_with_watermark_and_pdf_password(qapp, tmp_path, monkeypatch):
+    """Ochrana vlastní knihy: vodoznak „Licence pro“ ve všech formátech, PDF s heslem bez tisku a kopírování."""
+    import time
+    from PySide6 import QtCore
+    from pypdf import PdfReader
+    from pypdf.constants import UserAccessPermissions as P
+    import book_protect
+    from qt_editor import BookEditor
+
+    proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000,
+            "chapters": [{"text": "Bouře zuřila nad mořem. " * 20, "summary": ""}]}
+    wm = book_protect.watermark_project(proj, "Jan Novák, jan@example.cz")
+    assert "Licence pro: Jan Novák, jan@example.cz" in wm["chapters"][0]["text"]
+    assert "Licence pro" not in proj["chapters"][0]["text"]                # originál se nemění
+    p = tmp_path / "k.kniha.json"
+    bw.save_project(p, proj)
+    ed = BookEditor(proj, p, None, text_assist={}, save_options=lambda: None, app_cfg={})
+    ed.show()
+    shown = []
+    monkeypatch.setattr(QtWidgets.QMessageBox, "information", lambda *a, **k: shown.append(a[2]))
+    monkeypatch.setattr(QtWidgets.QMessageBox, "warning", lambda *a, **k: shown.append(a[2]))
+    ed.pdf_lock.setChecked(True)
+    ed.export(["pdf"])                                                      # bez hesla nejde
+    assert shown and "heslo" in shown[-1].lower()
+    ed.wm_text.setText("Jan Novák")
+    ed.wm_check.setChecked(True)
+    ed.pdf_pw.setText("tajne")
+    shown.clear()
+    real_save, used = bw.save_as, {}
+
+    def spy(project, dst, *a, **k):  # kniha, ze které vzniká každý formát
+        used[Path(dst).suffix] = project
+        return real_save(project, dst, *a, **k)
+
+    monkeypatch.setattr(bw, "save_as", spy)
+    ed.export(["pdf", "txt"])
+    for _ in range(600):
+        qapp.processEvents()
+        QtCore.QCoreApplication.sendPostedEvents()
+        if shown:
+            break
+        time.sleep(0.02)
+    base = bw.safe_name(OUTLINE["title"])
+    txt = (tmp_path / f"{base}.txt").read_text(encoding="utf-8")
+    assert "Licence pro: Jan Novák" in txt
+    r = PdfReader(str(tmp_path / f"{base}.pdf"))
+    assert r.is_encrypted and not r.decrypt("spatne") and r.decrypt("tajne")
+    perms = int(r.trailer["/Encrypt"]["/P"])
+    assert not perms & int(P.PRINT) and not perms & int(P.EXTRACT)
+    assert "Licence pro: Jan Novák" in used[".pdf"]["chapters"][0]["html"]
+    pdf_text = " ".join("".join(pg.extract_text() or "" for pg in r.pages).split())
+    if pdf_text:  # PDF z Qt ve Windows nemá text čitelný pro pypdf – tam stačí kontrola knihy výše
+        assert "Licence pro: Jan Novák" in pdf_text
+    assert "Licence pro" not in ed.project["chapters"][0]["text"]           # kniha sama zůstala bez vodoznaku
+    ed.dirty = False
+    ed.close()

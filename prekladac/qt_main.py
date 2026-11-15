@@ -420,9 +420,13 @@ class TranslatePage(QtWidgets.QWidget):
         keys_btn = QtWidgets.QPushButton(emoji_icon("🔑"), " Klíče a návody…")
         keys_btn.setToolTip("Nastavení → Služby a klíče: klíče k překladačům, návody a test")
         keys_btn.clicked.connect(self.win.open_services)
+        self.b_notes = QtWidgets.QPushButton(emoji_icon("📝"), " Pokyny pro překlad")
+        self.b_notes.setCheckable(True)
+        self.b_notes.setToolTip("Zobrazit nebo skrýt pole Pokyny pro překlad (glosář, styl) pod seznamem souborů")
+        self.b_notes.toggled.connect(lambda on: self.set_notes_visible(on))
         engine_tab = ribbon_row(
             ribbon_group("Překladač", [("", self.engine), ("", self.status)]),
-            ribbon_group("Nastavení služby", [("", keys_btn)]))
+            ribbon_group("Nastavení služby", [("", keys_btn), ("", self.b_notes)]))
         ocr_tab = ribbon_row(
             ribbon_group("Text z obrázků a skenů (OCR)", [("Rozpoznávání:", self.ocr),
                                                           ("Jazyk originálu:", self.ocr_lang)]),
@@ -448,14 +452,16 @@ class TranslatePage(QtWidgets.QWidget):
         tl.addWidget(actions)
 
         # ---------- stránka: soubory a pokyny
+        self.notes_head = doc_heading("Pokyny pro překlad", "Nepovinné – glosář, jména, tykání/vykání, styl. Platí pro "
+                                                            "Claude, Gemini, Ollama a OpenAI-kompatibilní služby.")
         canvas = paper_canvas([
             doc_heading("Soubory", "Přetáhněte sem soubory, nebo je přidejte na kartě Soubory. Pravé tlačítko "
                                    "a klávesa Delete fungují i v seznamu."),
             self.files,
-            doc_heading("Pokyny pro překlad", "Nepovinné – glosář, jména, tykání/vykání, styl. Platí pro Claude, "
-                                              "Gemini, Ollama a OpenAI-kompatibilní služby."),
+            self.notes_head,
             self.notes,
         ])
+        self.set_notes_visible(bool(cfg.get("show_notes", True)), save=False)
 
         # ---------- průběh a záznam dole
         bottom = self.work = WorkPanel()
@@ -480,6 +486,40 @@ class TranslatePage(QtWidgets.QWidget):
         self.engine.currentIndexChanged.connect(self.refresh_status)
         self.ocr.currentIndexChanged.connect(self.refresh_status)
         self.refresh_status()
+
+    READABLE = (".epub", ".docx", ".pdf", ".txt", ".mobi", ".azw3", ".fb2", ".odt", ".rtf", ".html", ".htm", ".pdb")
+
+    def finished_dialog(self, res: list[str]):
+        """Hotovo: u jednoho výsledku rovnou nabídnout Číst / Upravit (přeložit → číst, přeložit → upravit)."""
+        box = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Information, core.APP_NAME,
+                                    f"Hotovo. Vytvořeno souborů: {len(res)}", parent=self)
+        box.setInformativeText("\n".join(Path(r).name for r in res[:8]) + ("\n…" if len(res) > 8 else ""))
+        b_read = b_edit = None
+        if len(res) == 1 and Path(res[0]).suffix.lower() in self.READABLE:
+            b_read = box.addButton("📖 Číst", QtWidgets.QMessageBox.AcceptRole)
+            b_edit = box.addButton("✏️ Upravit", QtWidgets.QMessageBox.AcceptRole)
+        b_dir = box.addButton("📂 Otevřít složku", QtWidgets.QMessageBox.ActionRole)
+        box.addButton(QtWidgets.QMessageBox.Close)
+        box.exec()
+        clicked = box.clickedButton()
+        if clicked is b_dir:
+            QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(str(Path(res[0]).parent)))
+        elif b_read is not None and clicked is b_read:
+            self.win.reader_page.open_independent(res[0], read=True)
+        elif b_edit is not None and clicked is b_edit:
+            self.win.reader_page.open_independent(res[0], read=False)
+
+    def set_notes_visible(self, on: bool, save: bool = True):
+        """Pokyny pro překlad zobrazit / skrýt (stav se pamatuje)."""
+        self.notes_head.setVisible(on)
+        self.notes.setVisible(on)
+        if hasattr(self, "b_notes") and self.b_notes.isChecked() != on:
+            self.b_notes.blockSignals(True)
+            self.b_notes.setChecked(on)
+            self.b_notes.blockSignals(False)
+        if save:
+            self.win.cfg["show_notes"] = on
+            self.win.save_cfg()
 
     def open_output(self):
         """Otevře výstupní složku (z Nastavení), jinak složku prvního souboru v seznamu."""
@@ -611,7 +651,7 @@ class TranslatePage(QtWidgets.QWidget):
             if err:
                 self.logv.log(f"Neočekávaná chyba: {err}")
             elif res:
-                QtWidgets.QMessageBox.information(self, core.APP_NAME, f"Hotovo. Vytvořeno souborů: {len(res)}")
+                self.finished_dialog(res)
 
         run_bg(job, done)
 
@@ -1479,6 +1519,9 @@ class ReaderPage(QtWidgets.QWidget):
         if ed is not None:
             self.win.show_editor(ed, read=True)
             return
+        if book.busy:  # AI právě píše knihu (nebo se načítá) – jinou knihu otevřít zvlášť, psaní pokračuje
+            self.open_independent(f, read=True)
+            return
         if book_import.is_project(f):
             if self.win.editor is not None and not self.win.close_editor():
                 return
@@ -1486,6 +1529,56 @@ class ReaderPage(QtWidgets.QWidget):
                 self.read_current()
         else:
             book.import_book(f, then=self.read_current)
+
+    def open_independent(self, f, read: bool = True):
+        """Otevře knihu v okně knihy, aniž by se změnila kniha na stránce Napsat knihu (ta se může právě psát)."""
+        import book_import
+        from qt_editor import BookEditor
+
+        win, book = self.win, self.win.book
+        f = str(f)
+        ed = win.editor
+        if ed is not None and Path(ed.path) == Path(f):
+            win.show_editor(ed, read=read)
+            return
+        if book.busy and book.path and Path(f) == Path(book.path):
+            QtWidgets.QMessageBox.information(self, "Čtečka", "Tuto knihu právě píše AI – otevřít ji půjde, "
+                                              "až psaní skončí (nebo ho zastavte).")
+            return
+        if ed is not None and not win.close_editor():
+            return
+        conv = win.cfg["paths"].get("ebook_convert") or None
+
+        def show(res, err):
+            if err:
+                QtWidgets.QMessageBox.critical(self, "Otevřít knihu", f"Knihu se nepodařilo otevřít:\n{err}")
+                return
+            proj, path = res
+            if not proj.get("chapters"):
+                QtWidgets.QMessageBox.information(self, "Čtečka", "Kniha nemá žádný text ke čtení.")
+                return
+            editor = BookEditor(proj, Path(path), conv, autosave=win.cfg.get("autosave"),
+                                text_assist=win.cfg.setdefault("text_assist", {}), save_options=win.save_cfg,
+                                app_cfg=win.cfg)
+            win.show_editor(editor, read=read)
+            book.remember_recent(path)
+
+        if book_import.is_project(f):
+            try:
+                show((bw.load_project(f), f), None)
+            except Exception as e:  # noqa: BLE001
+                show(None, e)
+            return
+        if not ask_pdf_passwords(self, [f]):
+            return
+
+        def job():
+            proj = book_import.import_book(f, conv)
+            dst = book_import.project_path_for(f)
+            bw.save_project(dst, proj, backup=False)
+            return proj, str(dst)
+
+        run_bg(job, show, owner=self)
 
     def read_current(self):
         book = self.win.book
