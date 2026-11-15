@@ -1213,6 +1213,13 @@ def test_export_with_watermark_and_pdf_password(qapp, tmp_path, monkeypatch):
     ed.wm_check.setChecked(True)
     ed.pdf_pw.setText("tajne")
     shown.clear()
+    real_save, used = bw.save_as, {}
+
+    def spy(project, dst, *a, **k):  # kniha, ze které vzniká každý formát
+        used[Path(dst).suffix] = project
+        return real_save(project, dst, *a, **k)
+
+    monkeypatch.setattr(bw, "save_as", spy)
     ed.export(["pdf", "txt"])
     for _ in range(600):
         qapp.processEvents()
@@ -1227,8 +1234,10 @@ def test_export_with_watermark_and_pdf_password(qapp, tmp_path, monkeypatch):
     assert r.is_encrypted and not r.decrypt("spatne") and r.decrypt("tajne")
     perms = int(r.trailer["/Encrypt"]["/P"])
     assert not perms & int(P.PRINT) and not perms & int(P.EXTRACT)
+    assert "Licence pro: Jan Novák" in used[".pdf"]["chapters"][0]["html"]
     pdf_text = " ".join("".join(pg.extract_text() or "" for pg in r.pages).split())
-    assert "Licence pro: Jan Novák" in pdf_text
+    if pdf_text:  # PDF z Qt ve Windows nemá text čitelný pro pypdf – tam stačí kontrola knihy výše
+        assert "Licence pro: Jan Novák" in pdf_text
     assert "Licence pro" not in ed.project["chapters"][0]["text"]           # kniha sama zůstala bez vodoznaku
     ed.dirty = False
     ed.close()
