@@ -257,8 +257,13 @@ def natural_key(path: str):
     return [(0, int(t), "") if t.isdigit() else (1, 0, t) for t in re.split(r"(\d+)", name) if t]
 
 
-def run_jobs(files, translate, out_fmt, tr, out_dir, merge_images, log, progress, ebook_convert, cancel_event):
-    """Zpracuje seznam souborů; vrátí seznam výsledných cest."""
+def run_jobs(files, translate, out_fmt, tr, out_dir, merge_images, log, progress, ebook_convert, cancel_event,
+             skipped: list | None = None):
+    """Zpracuje seznam souborů; vrátí seznam výsledných cest. Obrázky bez textu se přeskočí (jejich jména
+    se přidají do skipped)."""
+    from converters import NoTextFound
+
+    skipped = skipped if skipped is not None else []
     from claude_client import Cancelled
 
     images = [f for f in files if Path(f).suffix.lower() in IMAGE_EXT]
@@ -282,7 +287,7 @@ def run_jobs(files, translate, out_fmt, tr, out_dir, merge_images, log, progress
         try:
             if kind == "images":
                 out = process_images_together(sorted(paths, key=natural_key), translate, tr, out_dir, log, step,
-                                              fmt=merged_fmt, ebook_convert=ebook_convert)
+                                              fmt=merged_fmt, ebook_convert=ebook_convert, skipped=skipped)
             else:
                 fmt = None if out_fmt in (None, SAME_FORMAT) else out_fmt
                 out = process_file(paths[0], fmt, translate, tr, out_dir, log, step, ebook_convert)
@@ -291,6 +296,10 @@ def run_jobs(files, translate, out_fmt, tr, out_dir, merge_images, log, progress
         except Cancelled:
             log("Zastaveno.")
             break
+        except NoTextFound as e:
+            skipped.extend(e.names)
+            log("  ⚠ V obrázku nebyl nalezen žádný text – přeskočeno (nic se neuložilo)."
+                if len(e.names) == 1 else "  ⚠ V žádném z obrázků nebyl nalezen text – nic se neuložilo.")
         except (CalibreMissing, EngineError) as e:
             log(f"  ✗ {e}")
         except Exception as e:  # noqa: BLE001 – chyba jednoho souboru nemá zastavit ostatní
@@ -301,6 +310,8 @@ def run_jobs(files, translate, out_fmt, tr, out_dir, merge_images, log, progress
         summary = tr.cost_summary()
         if summary:
             log(summary)
+    if skipped:
+        log(f"Přeskočené obrázky bez textu ({len(skipped)}): " + ", ".join(skipped))
     progress(1.0)
     return results
 

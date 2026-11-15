@@ -68,6 +68,14 @@ def find_ebook_convert(custom: str | None = None) -> str | None:
     return None
 
 
+class NoTextFound(ValueError):
+    """V obrázku (obrázcích) nebyl rozpoznán žádný text – nic se neuloží."""
+
+    def __init__(self, names: list[str]):
+        self.names = names
+        super().__init__("V obrázku nebyl nalezen žádný text: " + ", ".join(names))
+
+
 class CalibreMissing(Exception):
     pass
 
@@ -533,19 +541,31 @@ def stamp_docx(document, title: str | None = None) -> None:
 
 
 def images_to_docx(paths: list[str], dst: str, tr: Translator, translate: bool, log: Log = _noop,
-                   progress: Progress = _noop) -> None:
+                   progress: Progress = _noop) -> list[str]:
+    """Obrázky → DOCX (každý obrázek od nové stránky). Obrázky bez textu se přeskočí (žádná prázdná stránka);
+    vrátí jejich jména. Když text není v žádném, vyhodí NoTextFound a nic neuloží."""
     import docx
 
     document = docx.Document()
+    skipped, written = [], []
     for n, path in enumerate(paths):
         log(f"  Obrázek {n + 1}/{len(paths)}: {Path(path).name}")
         blocks = tr.image_blocks(path, translate)
-        if n > 0:
+        if not any(str(b.get("text") or "").strip() for b in blocks or []):
+            log("    ⚠ žádný text nenalezen – obrázek se přeskočí")
+            skipped.append(Path(path).name)
+            progress((n + 1) / len(paths))
+            continue
+        if written:
             document.add_page_break()
         blocks_to_docx(document, blocks)
+        written.append(path)
         progress((n + 1) / len(paths))
-    stamp_docx(document, Path(paths[0]).stem if paths else None)
+    if not written:
+        raise NoTextFound(skipped)
+    stamp_docx(document, Path(written[0]).stem)
     document.save(dst)
+    return skipped
 
 
 def pdf_to_docx(src: str, dst: str, tr: Translator, translate: bool, log: Log = _noop,
@@ -723,8 +743,10 @@ def images_pdf_only(translate: bool, fmt: str | None) -> bool:
 def process_images_together(
     paths: list[str], translate: bool, tr: Translator | None, out_dir: str | None = None,
     log: Log = _noop, progress: Progress = _noop, fmt: str | None = None, ebook_convert: str | None = None,
+    skipped: list | None = None,
 ) -> str:
-    """Více obrázků (např. nafocené stránky) → jeden dokument (DOCX, nebo vícestránkové PDF a další formáty)."""
+    """Více obrázků (např. nafocené stránky) → jeden dokument (DOCX, nebo vícestránkové PDF a další formáty).
+    Obrázky bez textu se přeskočí a jejich jména se přidají do skipped."""
     fmt = fmt if fmt and fmt != "docx" else "docx"
     if images_pdf_only(translate, fmt):
         dst = output_path(paths[0], out_dir, "pdf", " (stránky)")
@@ -733,13 +755,17 @@ def process_images_together(
     if tr is None:
         raise ValueError("Pro text z obrázků je potřeba nastavit OCR (Tesseract, Gemini nebo Claude).")
     suffix = f" ({tr.target_lang})" if translate else " (přepis)"
-    dst = output_path(paths[0], out_dir, fmt, suffix)
-    if fmt == "docx":
-        images_to_docx(paths, dst, tr, translate, log, progress)
-        return dst
     tmp = Path(tempfile.mkdtemp(prefix="prekladac_")) / "obrazky.docx"
     try:
-        images_to_docx(paths, str(tmp), tr, translate, log, lambda f: progress(f * 0.9))
+        found = images_to_docx(paths, str(tmp), tr, translate, log, lambda f: progress(f * 0.9))
+        if skipped is not None:
+            skipped.extend(found)
+        first = next(p for p in paths if Path(p).name not in found)  # jméno podle prvního obrázku s textem
+        dst = output_path(first, out_dir, fmt, suffix)
+        if fmt == "docx":
+            shutil.move(str(tmp), dst)
+            progress(1.0)
+            return dst
         log(f"  převádím do {fmt.upper()}…")
         convert(str(tmp), dst, log, ebook_convert)
     finally:

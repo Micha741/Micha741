@@ -300,3 +300,38 @@ def test_run_jobs_images_merged_in_natural_order_or_separate(tmp_path):
                        lambda *_: None, lambda *_: None, None, threading.Event())
     assert len(res) == 4 and all(r.endswith(".docx") for r in res)
     assert app.natural_key("IMG_9.jpg") < app.natural_key("img_10.JPG")
+
+
+def test_images_without_text_are_skipped(tmp_path):
+    """Obrázek bez textu: žádná chyba, ale ani prázdný soubor nebo prázdná stránka – přeskočí se a nahlásí."""
+    import threading
+
+    import docx
+    from PIL import Image
+
+    import app
+
+    class Tr(FakeTranslator):
+        def image_blocks(self, path, translate):
+            return [] if "prazdny" in path else super().image_blocks(path, translate)
+
+    for n in ("prazdny.png", "foto1.png", "foto2.png"):
+        Image.new("RGB", (40, 40), "white").save(tmp_path / n)
+    files = [str(tmp_path / n) for n in ("prazdny.png", "foto1.png", "foto2.png")]
+    sk, logs = [], []
+    res = app.run_jobs(files, False, app.SAME_FORMAT, Tr(), str(tmp_path / "a"), False, logs.append,
+                       lambda *_: None, None, threading.Event(), sk)
+    assert [Path(r).name for r in res] == ["foto1 (převod).docx", "foto2 (převod).docx"] and sk == ["prazdny.png"]
+    assert not any("prazdny" in p.name for p in (tmp_path / "a").iterdir())
+    assert any("Přeskočené obrázky bez textu (1): prazdny.png" in line for line in logs)
+    sk = []
+    res = app.run_jobs(files, False, app.SAME_FORMAT, Tr(), str(tmp_path / "b"), True, lambda *_: None,
+                       lambda *_: None, None, threading.Event(), sk)
+    assert [Path(r).name for r in res] == ["foto1 (přepis).docx"] and sk == ["prazdny.png"]
+    texts = [p.text for p in docx.Document(res[0]).paragraphs if p.text.startswith("Text ")]
+    assert texts == ["Text foto1", "Text foto2"]
+    xml = docx.Document(res[0]).element.xml
+    assert xml.count('w:type="page"') == 1                      # jen zalomení mezi foto1 a foto2
+    sk = []
+    assert app.run_jobs([files[0]], False, app.SAME_FORMAT, Tr(), str(tmp_path / "c"), True, lambda *_: None,
+                        lambda *_: None, None, threading.Event(), sk) == [] and sk == ["prazdny.png"]
