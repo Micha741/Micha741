@@ -594,3 +594,38 @@ def save_as(project: dict, dst: str | Path, log: Callable[[str], None] = print,
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     return str(dst)
+
+
+# ------------------------------------------------------------ další díl (pokračování knihy)
+def sequel_brief(project: dict) -> tuple[str, dict]:
+    """Zadání pro další díl podle hotové (rozepsané) knihy: původní zadání, děj, postavy a kapitoly.
+    Vrátí (popis pro AI, metadata série pro nový díl). Popis jde před návrhem osnovy upravit."""
+    o = project.get("outline") or {}
+    title = o.get("title") or "Kniha"
+    meta = project.get("metadata") or {}
+    series = meta.get("series") or title
+    try:
+        part = int(str(meta.get("series_index") or "1").strip()) + 1
+    except ValueError:
+        part = 2
+    lines = [f"Pokračování knihy „{title}“ – {part}. díl. Navazuje na konec předchozího dílu, hlavní postavy, "
+             "svět a styl zůstávají; děj se posouvá dál a nesmí odporovat předchozímu dílu.", ""]
+    desc = (project.get("description") or "").strip()
+    if desc:
+        lines += ["Zadání předchozího dílu:", desc, ""]
+    if (o.get("synopsis") or "").strip():
+        lines += ["Děj předchozího dílu:", o["synopsis"].strip(), ""]
+    written = project.get("chapters") or []
+    chapters = o.get("chapters") or []
+    summ = []
+    for i, ch in enumerate(chapters):
+        s_ = (written[i].get("summary") if i < len(written) else "") or ch.get("summary") or ""
+        if s_.strip():
+            summ.append(f"{i + 1}. {ch.get('title', '')} – {s_.strip()}")
+    if summ:
+        lines += ["Co se stalo v jednotlivých kapitolách:", *summ, ""]
+    chars = [f"- {c.get('name', '')}: {c.get('description', '')}" for c in o.get("characters") or [] if c.get("name")]
+    if chars:
+        lines += ["Postavy:", *chars, ""]
+    lines += ["O čem má být nový díl (doplňte vlastními slovy):", ""]
+    return "\n".join(lines), {"series": series, "series_index": str(part)}

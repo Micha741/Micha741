@@ -19,6 +19,7 @@
 - Karta Hledání v okně knihy (Ctrl+F): předchozí/další výskyt (F3), celá slova, velká/malá písmena, nahradit, všechny výskyty v knize, přejít na kapitolu. Obálka je vidět v panelu kapitol.
 - Návody ke službám mají klikací odkazy.
 - Přirozené hlasy pro čtení nahlas přes internet: Microsoft Azure (Vlasta, Antonín) a Google Cloud (Wavenet) – klíč v Nastavení → Služby a klíče (šifrovaně), měsíčně zdarma.
+- Napsat knihu → Kniha → 📚 Další díl: zadání pro pokračování z hotové knihy (původní zadání, děj, postavy, co se stalo v kapitolách); nový díl se uloží jako nová kniha se sérií a číslem dílu v metadatech.
 - Obrázky bez textu (OCR nic nenajde) se přeskočí: nevznikne prázdný soubor ani prázdná stránka, v záznamu a v okně Hotovo je vidět, které obrázky se přeskočily.
 - Okno knihy: karta Metadata (název, podtitul, autor, anotace, vydavatel, datum, ISBN, žánr a klíčová slova, série a díl, práva) – ukládá se do EPUB, MOBI a Wordu. Tlačítko Exportovat jen v kartě Export.
 - Okno knihy: Složka exportu je v kartě Soubor (u ukládání a tisku); z karty Export odebrány zdvojené Uložit jako a Tisk.
