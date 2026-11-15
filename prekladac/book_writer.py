@@ -430,6 +430,9 @@ def build_docx(project: dict, dst: str | Path, cover_page: bool = True) -> None:
     _set_fonts(d, fmt_cfg["font"], int(fmt_cfg["size"]))
     d.core_properties.title = o["title"]
     d.core_properties.author = project.get("author", "")
+    from ebook import docx_meta
+
+    docx_meta(d, project.get("metadata") or {})
     code = LANG_CODES.get(project.get("language", "").lower())
     if code:
         d.core_properties.language = code
