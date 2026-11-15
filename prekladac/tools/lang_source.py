@@ -925,6 +925,7 @@ E += [
     ("Nenalezeno.", "Not found.", "Nenájdené.", "Nicht gefunden."),
     ("Hledání", "Search", "Hľadanie", "Suchen"),
     ("Moje knihy", "My books", "Moje knihy", "Meine Bücher"),
+    ("V obrázcích nebyl nalezen žádný text, nic se neuložilo.", "No text was found in the pictures; nothing was saved.", "V obrázkoch sa nenašiel žiadny text, nič sa neuložilo.", "In den Bildern wurde kein Text gefunden, nichts wurde gespeichert."),
     ("žánr, klíčová slova – oddělte čárkou", "genre, keywords – separate with commas", "žáner, kľúčové slová – oddeľte čiarkou", "Genre, Stichwörter – durch Komma getrennt"),
     ("Metadata", "Metadata", "Metadáta", "Metadaten"),
     ("Podtitul:", "Subtitle:", "Podtitul:", "Untertitel:"),

@@ -489,11 +489,15 @@ class TranslatePage(QtWidgets.QWidget):
 
     READABLE = (".epub", ".docx", ".pdf", ".txt", ".mobi", ".azw3", ".fb2", ".odt", ".rtf", ".html", ".htm", ".pdb")
 
-    def finished_dialog(self, res: list[str]):
+    def finished_dialog(self, res: list[str], skipped: list[str] | None = None):
         """Hotovo: u jednoho výsledku rovnou nabídnout Číst / Upravit (přeložit → číst, přeložit → upravit)."""
         box = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Information, core.APP_NAME,
                                     f"Hotovo. Vytvořeno souborů: {len(res)}", parent=self)
-        box.setInformativeText("\n".join(Path(r).name for r in res[:8]) + ("\n…" if len(res) > 8 else ""))
+        info = "\n".join(Path(r).name for r in res[:8]) + ("\n…" if len(res) > 8 else "")
+        if skipped:
+            info += (f"\n\nPřeskočeno – bez textu ({len(skipped)}):\n" + "\n".join(skipped[:8])
+                     + ("\n…" if len(skipped) > 8 else ""))
+        box.setInformativeText(info)
         b_read = b_edit = None
         if len(res) == 1 and Path(res[0]).suffix.lower() in self.READABLE:
             b_read = box.addButton("📖 Číst", QtWidgets.QMessageBox.AcceptRole)
@@ -639,10 +643,12 @@ class TranslatePage(QtWidgets.QWidget):
         def progress(f):
             bridge().later(lambda: self.bar.setValue(int(f * 1000)))
 
+        skipped: list[str] = []
+
         def job():
             return core.run_jobs(files, translate, cfg["out_fmt"], tr, cfg.get("out_dir") or None,
                                  cfg["merge_images"], self.logv.log, progress,
-                                 cfg["paths"].get("ebook_convert") or None, self.cancel)
+                                 cfg["paths"].get("ebook_convert") or None, self.cancel, skipped)
 
         def done(res, err):
             self.start_btn.setEnabled(True)
@@ -651,7 +657,12 @@ class TranslatePage(QtWidgets.QWidget):
             if err:
                 self.logv.log(f"Neočekávaná chyba: {err}")
             elif res:
-                self.finished_dialog(res)
+                self.finished_dialog(res, skipped)
+            elif skipped:
+                QtWidgets.QMessageBox.information(
+                    self, core.APP_NAME, "V obrázcích nebyl nalezen žádný text, nic se neuložilo.\n\n"
+                    + "\n".join(skipped[:10]) + ("\n…" if len(skipped) > 10 else "")
+                    + "\n\nZkuste jiný jazyk originálu (karta Obrázky a OCR), ostřejší snímek, nebo OCR Gemini / Claude.")
 
         run_bg(job, done)
 
