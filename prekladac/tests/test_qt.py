@@ -1183,3 +1183,52 @@ def test_read_other_book_while_ai_writes(qapp, tmp_path):
     ed.dirty = False
     ed.close()
     win.close()
+
+
+def test_export_with_watermark_and_pdf_password(qapp, tmp_path, monkeypatch):
+    """Ochrana vlastní knihy: vodoznak „Licence pro“ ve všech formátech, PDF s heslem bez tisku a kopírování."""
+    import time
+    from PySide6 import QtCore
+    from pypdf import PdfReader
+    from pypdf.constants import UserAccessPermissions as P
+    import book_protect
+    from qt_editor import BookEditor
+
+    proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000,
+            "chapters": [{"text": "Bouře zuřila nad mořem. " * 20, "summary": ""}]}
+    wm = book_protect.watermark_project(proj, "Jan Novák, jan@example.cz")
+    assert "Licence pro: Jan Novák, jan@example.cz" in wm["chapters"][0]["text"]
+    assert "Licence pro" not in proj["chapters"][0]["text"]                # originál se nemění
+    p = tmp_path / "k.kniha.json"
+    bw.save_project(p, proj)
+    ed = BookEditor(proj, p, None, text_assist={}, save_options=lambda: None, app_cfg={})
+    ed.show()
+    shown = []
+    monkeypatch.setattr(QtWidgets.QMessageBox, "information", lambda *a, **k: shown.append(a[2]))
+    monkeypatch.setattr(QtWidgets.QMessageBox, "warning", lambda *a, **k: shown.append(a[2]))
+    ed.pdf_lock.setChecked(True)
+    ed.export(["pdf"])                                                      # bez hesla nejde
+    assert shown and "heslo" in shown[-1].lower()
+    ed.wm_text.setText("Jan Novák")
+    ed.wm_check.setChecked(True)
+    ed.pdf_pw.setText("tajne")
+    shown.clear()
+    ed.export(["pdf", "txt"])
+    for _ in range(600):
+        qapp.processEvents()
+        QtCore.QCoreApplication.sendPostedEvents()
+        if shown:
+            break
+        time.sleep(0.02)
+    base = bw.safe_name(OUTLINE["title"])
+    txt = (tmp_path / f"{base}.txt").read_text(encoding="utf-8")
+    assert "Licence pro: Jan Novák" in txt
+    r = PdfReader(str(tmp_path / f"{base}.pdf"))
+    assert r.is_encrypted and not r.decrypt("spatne") and r.decrypt("tajne")
+    perms = int(r.trailer["/Encrypt"]["/P"])
+    assert not perms & int(P.PRINT) and not perms & int(P.EXTRACT)
+    pdf_text = " ".join("".join(pg.extract_text() or "" for pg in r.pages).split())
+    assert "Licence pro: Jan Novák" in pdf_text
+    assert "Licence pro" not in ed.project["chapters"][0]["text"]           # kniha sama zůstala bez vodoznaku
+    ed.dirty = False
+    ed.close()

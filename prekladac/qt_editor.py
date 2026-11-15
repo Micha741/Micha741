@@ -747,10 +747,32 @@ class BookEditor(QtWidgets.QMainWindow):
         where.grid.addWidget(self.export_after, 2, 0, 1, 2)
         self._show_export_dir()
 
+        prot = RibbonGroup("Ochrana knihy")
+        self.wm_check = QtWidgets.QCheckBox(tr("💧 Vodoznak – licence pro:"))
+        self.wm_check.setToolTip(tr("Tzv. sociální DRM: do každé kapitoly se vloží „Licence pro: …“ – kniha jde otevřít "
+                                    "všude, ale je vidět, komu patří (platí pro všechny formáty exportu)"))
+        self.wm_text = QtWidgets.QLineEdit(self.project.get("license_for", ""))
+        self.wm_text.setPlaceholderText(tr("jméno a e-mail kupujícího"))
+        self.wm_text.setMinimumWidth(190)
+        self.wm_text.textEdited.connect(lambda t: self.wm_check.setChecked(bool(t.strip())))
+        self.pdf_lock = QtWidgets.QCheckBox(tr("🔒 PDF s heslem:"))
+        self.pdf_lock.setToolTip(tr("PDF se otevře jen po zadání hesla (šifrování AES-256). Heslo se nikam neukládá."))
+        self.pdf_pw = QtWidgets.QLineEdit()
+        self.pdf_pw.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.pdf_pw.setPlaceholderText(tr("heslo pro čtenáře"))
+        self.pdf_pw.textEdited.connect(lambda t: self.pdf_lock.setChecked(bool(t)))
+        self.pdf_noprint = QtWidgets.QCheckBox(tr("zakázat tisk a kopírování textu"))
+        self.pdf_noprint.setChecked(True)
+        prot.grid.addWidget(self.wm_check, 0, 0)
+        prot.grid.addWidget(self.wm_text, 0, 1)
+        prot.grid.addWidget(self.pdf_lock, 1, 0)
+        prot.grid.addWidget(self.pdf_pw, 1, 1)
+        prot.grid.addWidget(self.pdf_noprint, 2, 0, 1, 2)
+
         other = RibbonGroup("Další")
         other.grid.addWidget(self._big(emoji_icon("🗂️"), "Uložit jako…", self.save_as), 0, 0)
         other.grid.addWidget(self._big(emoji_icon("🖨️"), "Tisk", lambda: self.print_book(True)), 0, 1)
-        return self._row(quick, more, where, other)
+        return self._row(quick, more, prot, where, other)
 
     def _set_app(self, key, value):
         if self.app_cfg is not None:
@@ -1838,6 +1860,24 @@ class BookEditor(QtWidgets.QMainWindow):
         """Uloží knihu do zvolených formátů do složky exportu (soubory se jmenují podle názvu knihy)."""
         self.save()
         formats = formats or [f for f, cb in self.fmt_checks.items() if cb.isChecked()] or ["docx"]
+        import book_protect
+
+        password = self.pdf_pw.text() if self.pdf_lock.isChecked() else ""
+        if self.pdf_lock.isChecked() and not password and "pdf" in formats:
+            QtWidgets.QMessageBox.warning(self, tr("Export"), tr("Zadejte heslo k PDF, nebo zrušte „PDF s heslem“."))
+            self.pdf_pw.setFocus()
+            return
+        project = self.project
+        if self.wm_check.isChecked() and self.wm_text.text().strip():
+            project = book_protect.watermark_project(self.project, self.wm_text.text())
+        no_print = self.pdf_noprint.isChecked()
+
+        def save_one(t):
+            out = bw.save_as(project, t, lambda *_: None, self.ebook_convert)
+            if password and str(out).lower().endswith(".pdf"):
+                book_protect.protect_pdf(out, password, no_print)
+            return out
+
         folder = self.export_dir()
         base = bw.safe_name(self.title_edit.text().strip() or self.outline["title"])
         targets = [folder / f"{base}.{f}" for f in formats]
@@ -1858,15 +1898,14 @@ class BookEditor(QtWidgets.QMainWindow):
         odt = [t for t in targets if t.suffix == ".odt"]
         rest = [t for t in targets if t.suffix != ".odt"]
         try:
-            first = [bw.save_as(self.project, t, lambda *_: None, self.ebook_convert) for t in odt]
+            first = [save_one(t) for t in odt]
         except Exception as e:  # noqa: BLE001
             done(None, e)
             return
         if not rest:
             done(first, None)
             return
-        run_bg(lambda: first + [bw.save_as(self.project, t, lambda *_: None, self.ebook_convert) for t in rest],
-               done, owner=self)
+        run_bg(lambda: first + [save_one(t) for t in rest], done, owner=self)
 
     def open_find(self):
         if self.reading():  # ve čtečce hledá panel Hledat (celá kniha)
