@@ -95,14 +95,23 @@ def test_speaker_piper_pause_resume(appdata, monkeypatch):
     sp.player_cls = FakePlayer
     done = threading.Event()
     sp.speak("Dobrý den.", "cs", 1.2, on_done=done.set)  # bez hlasu Windows → stažený český hlas
-    time.sleep(0.2)
+
+    def wait_for(cond, limit=5.0):  # nezávisle na rychlosti počítače
+        end = time.monotonic() + limit
+        while not cond() and time.monotonic() < end:
+            time.sleep(0.01)
+        return cond()
+
+    assert wait_for(lambda: len(FakePlayer.log) >= 1)               # hlas už hraje
+    time.sleep(0.15)
     sp.pause()
-    time.sleep(0.3)
+    assert wait_for(lambda: ("stop",) in FakePlayer.log)            # pozastaveno
+    time.sleep(0.1)
     sp.resume()
     assert done.wait(3), sp.error
     assert calls == [("Dobrý den.", "cs_CZ-jirka-medium.onnx", 1.2)]
     assert FakePlayer.log[0] == ("play", 0.6) and FakePlayer.log[1] == ("stop",)
-    assert FakePlayer.log[2][0] == "play" and 0.3 <= FakePlayer.log[2][1] <= 0.5  # pokračuje od místa pauzy
+    assert FakePlayer.log[2][0] == "play" and 0 < FakePlayer.log[2][1] < 0.6  # pokračuje od místa pauzy (zbytek, ne od začátku)
     # zastavení během čtení: on_done se nezavolá
     done2 = threading.Event()
     sp.speak("Druhá věta.", "cs", 1.0, on_done=done2.set, voice_name="piper:cs_CZ-jirka-medium")
