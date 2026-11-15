@@ -338,7 +338,11 @@ def split_chapters(blocks: list[str], book_title: str) -> list[Chapter]:
     if len(chapters) > 1 and (not chapters[0][0] or chapters[0][0].lower() == book_title.strip().lower()):
         body = chapters[0][1]
         text = plain_text("".join(body))
-        if len(text) < 200 and "<img" not in "".join(body):
+        # krátká titulní strana (jen název a autor) se zahodí; text bez názvu knihy je začátek knihy
+        # (např. první kapitola bez nadpisu) – ten se nesmí ztratit
+        centered = all(b == "<hr/>" or "text-align:center" in b or b.startswith("<h") for b in body)
+        is_title_page = centered or (book_title.strip() and book_title.strip().lower() in text.lower())
+        if len(text) < 200 and "<img" not in "".join(body) and is_title_page:
             chapters.pop(0)
         else:
             chapters[0] = ("Úvod", body)
@@ -994,10 +998,11 @@ def write_epub(book: RichBook) -> bytes:
                                                            f'alt="Obálka" style="max-height:100%"/></div>', lang))
             manifest.append('<item id="cover" href="cover.xhtml" media-type="application/xhtml+xml"/>')
             spine.append('<itemref idref="cover" linear="no"/>')
-        z.writestr("OEBPS/title.xhtml", _xhtml(book.title, f'<h1 class="title">{esc(book.title)}</h1>' + (
-            f'<p class="author">{esc(book.author)}</p>' if book.author else ""), lang))
-        manifest.append('<item id="titlepage" href="title.xhtml" media-type="application/xhtml+xml"/>')
-        spine.append('<itemref idref="titlepage"/>')
+        if book.cover not in files:  # s obálkou je název jen v metadatech, bez titulní strany
+            z.writestr("OEBPS/title.xhtml", _xhtml(book.title, f'<h1 class="title">{esc(book.title)}</h1>' + (
+                f'<p class="author">{esc(book.author)}</p>' if book.author else ""), lang))
+            manifest.append('<item id="titlepage" href="title.xhtml" media-type="application/xhtml+xml"/>')
+            spine.append('<itemref idref="titlepage"/>')
         if book.toc_title and book.chapters:
             items = "".join(f'<p class="toc"><a href="ch{i:03d}.xhtml#c{i}">{i}. {esc(c.title)}</a></p>'
                             for i, c in enumerate(book.chapters, 1))
@@ -1084,10 +1089,11 @@ def write_mobi(book: RichBook) -> bytes:
                     'title="Začátek" filepos=@start /></guide></head><body>']
     if book.cover in rec:
         pieces.append(f'<p align="center"><img recindex="{rec[book.cover]}"/></p><mbp:pagebreak/>')
-    pieces.append(f'<p align="center"><font size="+3"><b>{esc(book.title)}</b></font></p>')
-    if book.author:
-        pieces.append(f'<p align="center"><font size="+1">{esc(book.author)}</font></p>')
-    pieces.append("<mbp:pagebreak/>")
+    if book.cover not in rec:  # s obálkou je název jen v metadatech
+        pieces.append(f'<p align="center"><font size="+3"><b>{esc(book.title)}</b></font></p>')
+        if book.author:
+            pieces.append(f'<p align="center"><font size="+1">{esc(book.author)}</font></p>')
+        pieces.append("<mbp:pagebreak/>")
     pieces += [("mark", "toc"), "<h2>Obsah</h2>"]
     pieces += [f"<p><a filepos=@ch{i}>{esc(c.title)}</a></p>" for i, c in enumerate(book.chapters)]
     pieces += ["<mbp:pagebreak/>", ("mark", "start")]
@@ -1197,12 +1203,12 @@ def write_docx(book: RichBook, dst: str | Path) -> None:
         p = d.add_paragraph()
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
         p.add_run().add_picture(io.BytesIO(data), width=Inches(min(6.0, 9.0 * w / max(1, h))))
-        p.add_run().add_break(WD_BREAK.PAGE)
-    t = d.add_paragraph(book.title, style="Title")
-    t.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    if book.author:
-        a = d.add_paragraph(book.author)
-        a.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    else:  # bez obálky titulní strana s názvem (s obálkou je název jen v metadatech)
+        t = d.add_paragraph(book.title, style="Title")
+        t.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        if book.author:
+            a = d.add_paragraph(book.author)
+            a.alignment = WD_ALIGN_PARAGRAPH.CENTER
     for ch in book.chapters:
         d.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
         add_html(d, ch.html, book.images)
@@ -1225,11 +1231,11 @@ def book_html(book: RichBook, inline_images: bool = False) -> str:
 
     parts = []
     if book.cover in book.images:
-        parts.append(f'<p style="text-align:center"><img src="{esc(book.cover)}" height="900"/></p>'
-                     '<p style="page-break-after:always"></p>')
-    parts.append(f'<h1 style="text-align:center;margin-top:200px">{esc(book.title)}</h1>')
-    if book.author:
-        parts.append(f'<p style="text-align:center">{esc(book.author)}</p>')
+        parts.append(f'<p style="text-align:center"><img src="{esc(book.cover)}" height="900"/></p>')
+    else:  # bez obálky titulní strana s názvem
+        parts.append(f'<h1 style="text-align:center;margin-top:200px">{esc(book.title)}</h1>')
+        if book.author:
+            parts.append(f'<p style="text-align:center">{esc(book.author)}</p>')
     for ch in book.chapters:
         html = ch.html.replace("<hr/>", '<p style="page-break-after:always"></p>')
         parts.append(f'<div style="page-break-before:always">{html}</div>')

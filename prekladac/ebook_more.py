@@ -141,10 +141,11 @@ def write_rtf(book: RichBook) -> bytes:
 
     q = {"center": "\\qc", "right": "\\qr", "justify": "\\qj"}
     if book.cover in book.images:
-        out.append(f"\\pard\\qc {_rtf_pict(book.images[book.cover], 640)}\\par\\page ")
-    out.append(f"\\pard\\qc\\sb2400\\sa480{{\\b\\fs56 {_rtf_text(book.title)}}}\\par ")
-    if book.author:
-        out.append(f"\\pard\\qc{{\\fs30 {_rtf_text(book.author)}}}\\par ")
+        out.append(f"\\pard\\qc {_rtf_pict(book.images[book.cover], 640)}\\par ")
+    else:  # bez obálky titulní strana s názvem
+        out.append(f"\\pard\\qc\\sb2400\\sa480{{\\b\\fs56 {_rtf_text(book.title)}}}\\par ")
+        if book.author:
+            out.append(f"\\pard\\qc{{\\fs30 {_rtf_text(book.author)}}}\\par ")
     for ch in book.chapters:
         out.append("\\page ")
         for blk in _blocks(ch.html):
@@ -737,10 +738,10 @@ def write_odt(book: RichBook, dst) -> None:
     body = []
     if book.cover in book.images:
         body.append(f'<text:p text:style-name="Pc">{frame(book.cover, 640)}</text:p>')
-    body.append(f'<text:p text:style-name="{"PTitleBreak" if book.cover in book.images else "Title"}">'
-                f'{esc(book.title)}</text:p>')
-    if book.author:
-        body.append(f'<text:p text:style-name="Pc">{esc(book.author)}</text:p>')
+    if book.cover not in book.images:  # s obálkou je název jen v metadatech
+        body.append(f'<text:p text:style-name="Title">{esc(book.title)}</text:p>')
+        if book.author:
+            body.append(f'<text:p text:style-name="Pc">{esc(book.author)}</text:p>')
     for ch in book.chapters:
         first = True
         brk = False

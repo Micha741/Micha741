@@ -443,12 +443,12 @@ def build_docx(project: dict, dst: str | Path, cover_page: bool = True) -> None:
         cp = d.add_paragraph()
         cp.alignment = WD_ALIGN_PARAGRAPH.CENTER
         cp.add_run().add_picture(io.BytesIO(cover), width=Inches(width))
-        cp.add_run().add_break(WD_BREAK.PAGE)
-    t = d.add_paragraph(o["title"], style="Title")
-    t.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    if project.get("author"):
-        a = d.add_paragraph(project["author"])
-        a.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    else:  # bez obálky titulní strana s názvem (s obálkou je název jen v metadatech)
+        t = d.add_paragraph(o["title"], style="Title")
+        t.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        if project.get("author"):
+            a = d.add_paragraph(project["author"])
+            a.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
     if fmt_cfg.get("toc") and written:
         d.add_paragraph().add_run().add_break(WD_BREAK.PAGE)

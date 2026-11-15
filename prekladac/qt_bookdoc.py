@@ -66,7 +66,8 @@ def book_document(project: dict, chapter_index: int | None = None, title: str | 
         w, h = (img.width(), img.height()) if hasattr(img, "width") else (600, 900)
         f.setWidth(min(600.0, 860.0 * w / max(1, h)))
         cur.insertImage(f)
-    if whole:  # titulní strana (po obálce od nové stránky)
+    has_cover = whole and cover and (project.get("images") or {}).get(cover)
+    if whole and not has_cover:  # titulní strana jen bez obálky (s obálkou je název jen v metadatech)
         block(True, Qt.AlignHCenter, top=220)
         text(title, 26)
         if author:
