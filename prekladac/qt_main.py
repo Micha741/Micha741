@@ -750,6 +750,8 @@ class BookPage(QtWidgets.QWidget):
                            "BigPrimary")
         self.b_stop = big("⏹️", "Zastavit", "Zastaví psaní (rozepsaná kniha zůstane uložená)")
         self.b_edit = big("✏️", "Upravit\nknihu", "Otevře okno knihy s úpravami ve stylu Wordu")
+        self.b_sequel = big("📚", "Další\ndíl", "Připraví zadání pro pokračování: původní zadání, děj, postavy a co se "
+                                               "stalo v kapitolách. Zadání pak upravíte a navrhnete osnovu nového dílu.")
         self.b_load = big("📂", "Otevřít\nrozepsanou", "Pokračovat v rozepsané knize (*.kniha.json)")
 
         # ---------- pás karet
@@ -815,7 +817,7 @@ class BookPage(QtWidgets.QWidget):
         file_tab = ribbon_row(filegrp, self.recent_grp)
         # karta Kniha: navrhnout osnovu, napsat, zastavit, upravit
         steps = RibbonGroup("Kniha")
-        for i, b in enumerate((self.b_outline, self.b_write, self.b_stop, self.b_edit)):
+        for i, b in enumerate((self.b_outline, self.b_write, self.b_stop, self.b_edit, self.b_sequel)):
             steps.grid.addWidget(b, 0, i)
         cur = RibbonGroup("Otevřená kniha")
         cur.grid.addWidget(self.path_info, 0, 0)
@@ -922,6 +924,7 @@ class BookPage(QtWidgets.QWidget):
         self.b_write.clicked.connect(self.do_write)
         self.b_stop.clicked.connect(self.cancel.set)
         self.b_edit.clicked.connect(self.open_editor)
+        self.b_sequel.clicked.connect(self.start_sequel)
         self.b_load.clicked.connect(self.do_load)
         self.b_new.clicked.connect(self.new_book)
         self.b_save.clicked.connect(lambda: self.save_book(False))
@@ -1035,6 +1038,7 @@ class BookPage(QtWidgets.QWidget):
         for b in (self.b_new, self.b_save, self.b_saveas):
             b.setEnabled(not self.busy)
         self.b_edit.setEnabled(not self.busy and has_text)
+        self.b_sequel.setEnabled(not self.busy and bool(self.project and (self.project.get("outline") or {}).get("title")))
 
     def set_busy(self, on: bool):
         self.busy = on
@@ -1059,6 +1063,11 @@ class BookPage(QtWidgets.QWidget):
             while path.exists():
                 path = self.book_dir() / f"{bw.safe_name(outline['title'])} ({n}){bw.PROJECT_SUFFIX}"
                 n += 1
+        seq = getattr(self, "_sequel_meta", None)
+        if seq:  # nový díl: série a číslo dílu do metadat, odkaz na předchozí díl
+            proj["metadata"] = {"series": seq["series"], "series_index": seq["series_index"]}
+            proj["previous_part"] = seq.get("previous", "")
+            self._sequel_meta = None
         self.project, self.path = proj, path
         bw.save_project(path, proj)
         self.remember_recent(path)
@@ -1281,6 +1290,7 @@ class BookPage(QtWidgets.QWidget):
 
     def show_project(self, proj: dict, f) -> bool:
         self.project, self.path = proj, Path(f)
+        self._sequel_meta = None
         self.desc.setPlainText(proj.get("description", ""))
         parts = proj.get("style_parts") or {}
         for key, cb in self.cats.items():
@@ -1306,6 +1316,28 @@ class BookPage(QtWidgets.QWidget):
         self.logv.log(f"Otevřeno: {f} – napsáno {len(proj['chapters'])} z {n} kapitol.")
         return True
 
+    def start_sequel(self):
+        """Další díl: zadání podle této knihy; nový díl se uloží jako nová kniha (původní zůstane beze změny)."""
+        if self.busy or not self.project:
+            return
+        if self.path:
+            self.save_book(False)  # aby se neztratily úpravy zadání původní knihy
+        brief, series = bw.sequel_brief(self.project)
+        prev = self.path
+        self.project, self.path = None, None
+        self._sequel_meta = {**series, "previous": str(prev) if prev else ""}
+        self.desc.setPlainText(brief)
+        self.outline.clear()
+        self.bar.setValue(0)
+        self.update_buttons()
+        self.update_path_info()
+        self.logv.log(f"📚 Zadání pro {series['series_index']}. díl připraveno – upravte popis (hlavně konec: o čem má "
+                      "nový díl být) a klikněte na 1. Navrhnout osnovu. Původní kniha zůstala beze změny.")
+        c = self.desc.textCursor()
+        c.movePosition(c.MoveOperation.End)
+        self.desc.setTextCursor(c)
+        self.desc.setFocus()
+
     def new_book(self):
         if self.busy:
             return
@@ -1315,6 +1347,7 @@ class BookPage(QtWidgets.QWidget):
                                     "zachovat, nejdřív klikněte na Uložit.") != QtWidgets.QMessageBox.Yes:
             return
         self.project, self.path = None, None
+        self._sequel_meta = None
         self.desc.clear()
         self.outline.clear()
         for cb in self.cats.values():

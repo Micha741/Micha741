@@ -925,6 +925,8 @@ E += [
     ("Nenalezeno.", "Not found.", "Nenájdené.", "Nicht gefunden."),
     ("Hledání", "Search", "Hľadanie", "Suchen"),
     ("Moje knihy", "My books", "Moje knihy", "Meine Bücher"),
+    ("Další\ndíl", "Next\nvolume", "Ďalší\ndiel", "Nächster\nBand"),
+    ("Připraví zadání pro pokračování: původní zadání, děj, postavy a co se stalo v kapitolách. Zadání pak upravíte a navrhnete osnovu nového dílu.", "Prepares a brief for a sequel: the original brief, plot, characters and what happened in each chapter. Then edit the brief and propose the outline of the new volume.", "Pripraví zadanie pre pokračovanie: pôvodné zadanie, dej, postavy a čo sa stalo v kapitolách. Zadanie potom upravíte a navrhnete osnovu nového dielu.", "Bereitet die Vorgabe für eine Fortsetzung vor: ursprüngliche Vorgabe, Handlung, Figuren und Kapitelinhalte. Dann Vorgabe anpassen und Gliederung des neuen Bandes vorschlagen."),
     ("V obrázcích nebyl nalezen žádný text, nic se neuložilo.", "No text was found in the pictures; nothing was saved.", "V obrázkoch sa nenašiel žiadny text, nič sa neuložilo.", "In den Bildern wurde kein Text gefunden, nichts wurde gespeichert."),
     ("žánr, klíčová slova – oddělte čárkou", "genre, keywords – separate with commas", "žáner, kľúčové slová – oddeľte čiarkou", "Genre, Stichwörter – durch Komma getrennt"),
     ("Metadata", "Metadata", "Metadáta", "Metadaten"),

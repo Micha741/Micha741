@@ -1305,3 +1305,38 @@ def test_metadata_tab_and_export(qapp, tmp_path, monkeypatch):
     assert cp.keywords == "román, venkov" and cp.comments == "Krásná kniha." and cp.category == "Klasika 2"
     ed.dirty = False
     ed.close()
+
+
+def test_sequel_from_book_brief(qapp, tmp_path, monkeypatch):
+    """Další díl: zadání podle hotové knihy (zadání, děj, postavy, kapitoly), nový díl jako nová kniha se sérií."""
+    import qt_main
+    win = qt_main.MainWindow()
+    b = win.book
+    b.bdir.setText(str(tmp_path))
+    proj = {"language": "čeština", "description": "Drak Ferda chce být knihovníkem.", "words": 1000,
+            "style_parts": {"genre": "Pohádka"},
+            "outline": {"title": "Ferda", "synopsis": "Ferda najde knihovnu a stane se knihovníkem.",
+                        "characters": [{"name": "Ferda", "description": "mladý drak"}],
+                        "chapters": [{"title": "Jeskyně", "summary": "plán"}, {"title": "Město", "summary": "plán"}]},
+            "chapters": [{"text": "…", "summary": "Ferda opustí jeskyni."},
+                         {"text": "…", "summary": "Ve městě najde knihovnu."}]}
+    path = tmp_path / "Ferda.kniha.json"
+    bw.save_project(path, proj)
+    b.show_project(bw.load_project(path), path)
+    assert b.b_sequel.isEnabled()
+    b.start_sequel()
+    brief = b.desc.toPlainText()
+    for part in ("Pokračování knihy „Ferda“ – 2. díl", "Drak Ferda chce být knihovníkem.",
+                 "Ferda najde knihovnu", "1. Jeskyně – Ferda opustí jeskyni.", "2. Město – Ve městě najde knihovnu.",
+                 "- Ferda: mladý drak", "O čem má být nový díl"):
+        assert part in brief, part
+    assert b.project is None and b.path is None and not b.outline.toPlainText()
+    assert b.cats["genre"].currentText() == "Pohádka"                  # styl zůstal
+    assert bw.load_project(path)["outline"]["title"] == "Ferda"         # původní kniha beze změny
+    b.new_project({"title": "Ferda a drak z hor", "synopsis": "", "characters": [], "chapters": []})
+    new = bw.load_project(b.path)
+    assert b.path != path and new["metadata"] == {"series": "Ferda", "series_index": "2"}
+    assert new["previous_part"] == str(path) and new["description"].startswith("Pokračování")
+    _brief3, meta3 = bw.sequel_brief(new)                              # 3. díl ze 2. dílu
+    assert meta3 == {"series": "Ferda", "series_index": "3"}
+    win.close()
