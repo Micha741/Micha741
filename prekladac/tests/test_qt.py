@@ -1125,3 +1125,61 @@ def test_translate_engine_tab(qapp):
     win.open_services()
     assert win.nav.currentRow() == win.SETTINGS_ROW and win.settings.tabs.tabText(win.settings.tabs.currentIndex()) == "Služby a klíče"
     win.close()
+
+
+def test_notes_hide_and_after_translation_read_or_edit(qapp, tmp_path, monkeypatch):
+    import qt_main
+    win = qt_main.MainWindow()
+    win.show()
+    t = win.translate
+    assert t.notes.isVisible() and t.b_notes.isChecked()
+    t.b_notes.setChecked(False)                                   # skrýt pokyny pro překlad
+    assert not t.notes.isVisible() and not t.notes_head.isVisible() and win.cfg["show_notes"] is False
+    win2 = qt_main.MainWindow()
+    assert not win2.translate.b_notes.isChecked() and win2.translate.notes.isHidden()   # pamatuje se
+    win2.close()
+    t.b_notes.setChecked(True)
+    assert t.notes.isVisible()
+    # po překladu: tlačítka Číst / Upravit u výsledku
+    proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000,
+            "chapters": [{"text": "Bouře zuřila nad mořem. " * 30, "summary": ""}]}
+    res = tmp_path / "k.kniha.json"
+    bw.save_project(res, proj)
+    opened = []
+    monkeypatch.setattr(win.reader_page, "open_independent", lambda f, read=True: opened.append((f, read)))
+    for want in ("📖 Číst", "✏️ Upravit"):
+        monkeypatch.setattr(QtWidgets.QMessageBox, "exec", lambda self: 0)
+        monkeypatch.setattr(QtWidgets.QMessageBox, "clickedButton",
+                            lambda self, w=want: next(b for b in self.buttons() if b.text() == w))
+        t.finished_dialog([str(tmp_path / "kniha (čeština).epub")])
+    assert opened == [(str(tmp_path / "kniha (čeština).epub"), True), (str(tmp_path / "kniha (čeština).epub"), False)]
+    win.close()
+
+
+def test_read_other_book_while_ai_writes(qapp, tmp_path):
+    import qt_main
+    win = qt_main.MainWindow()
+    win.show()
+    b = win.book
+    writing = tmp_path / "pise.kniha.json"
+    other = tmp_path / "jina.kniha.json"
+    for p, text in ((writing, "Rozepsaná kniha."), (other, "Jiná kniha ke čtení. " * 30)):
+        bw.save_project(p, {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000,
+                            "chapters": [{"text": text, "summary": ""}]})
+    b.show_project(bw.load_project(writing), writing)
+    b.busy = True                                                 # jako když AI píše knihu
+    win.reader_page.open_path(str(other))
+    ed = win.editor
+    assert ed is not None and ed.reading() and Path(ed.path) == other
+    assert Path(b.path) == writing                                # psaná kniha zůstala na stránce Napsat knihu
+    shown = []
+    import pytest
+    mp = pytest.MonkeyPatch()
+    mp.setattr(QtWidgets.QMessageBox, "information", lambda *a, **k: shown.append(a[2]))
+    win.reader_page.open_independent(str(writing))                # tu, kterou AI píše, otevřít nejde
+    mp.undo()
+    assert shown and "píše AI" in shown[0] and Path(win.editor.path) == other
+    b.busy = False
+    ed.dirty = False
+    ed.close()
+    win.close()
