@@ -204,3 +204,45 @@ def test_epub_from_written_book_has_linked_toc(tmp_path):
         assert f'id="{anchor}"' in z.read(f"OEBPS/{fn}").decode()
     proj["format"] = {"toc": False}
     assert "OEBPS/toc.xhtml" not in zipfile.ZipFile(io.BytesIO(ebook.write_epub(ebook.from_project(proj)))).namelist()
+
+
+def test_title_page_only_without_cover(tmp_path):
+    """S obálkou (obrázek nebo obálka s názvem) je název jen v metadatech – bez titulní strany;
+    bez obálky je na začátku jen název."""
+    import io
+    import zipfile
+
+    import docx
+    from PIL import Image
+
+    import book_images
+    import book_writer as bw
+    import ebook
+
+    proj = {"language": "čeština", "outline": {"title": "Kůň a louka", "chapters": [{"title": "Jedna", "summary": ""}]},
+            "author": "Autor", "chapters": [{"text": "Text kapitoly.", "summary": ""}]}
+    buf = io.BytesIO()
+    Image.new("RGB", (300, 450), (200, 0, 0)).save(buf, "JPEG")
+    with_img = json.loads(json.dumps(proj))
+    with_img["cover"] = book_images.add_image(with_img, buf.getvalue(), "jpg")
+    no_cover = {**json.loads(json.dumps(proj)), "text_cover": False}
+    for name, p, title_page in (("obrazek", with_img, False), ("nazev", proj, False), ("bez", no_cover, True)):
+        book = ebook.from_project(p)
+        epub = tmp_path / f"{name}.epub"
+        ebook.write_book(book, epub)
+        names = zipfile.ZipFile(epub).namelist()
+        assert ("OEBPS/title.xhtml" in names) is title_page, name
+        assert ("OEBPS/cover.xhtml" in names) is (not title_page), name
+        opf = zipfile.ZipFile(epub).read("OEBPS/content.opf").decode()
+        assert "<dc:title>Kůň a louka</dc:title>" in opf                       # název vždy v metadatech
+        for writer in ("docx_ebook", "docx_book"):
+            d = tmp_path / f"{name}_{writer}.docx"
+            if writer == "docx_ebook":
+                ebook.write_docx(book, d)
+            else:
+                bw.build_docx(p, d)
+            doc = docx.Document(str(d))
+            body = [x.text for x in doc.paragraphs if x.style.name == "Title"]
+            assert doc.core_properties.title == "Kůň a louka"
+            has_img_cover = name == "obrazek" or (writer == "docx_ebook" and name == "nazev")
+            assert (body == ["Kůň a louka"]) is (not has_img_cover), (name, writer, body)
