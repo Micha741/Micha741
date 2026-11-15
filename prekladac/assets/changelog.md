@@ -19,6 +19,7 @@
 - Karta Hledání v okně knihy (Ctrl+F): předchozí/další výskyt (F3), celá slova, velká/malá písmena, nahradit, všechny výskyty v knize, přejít na kapitolu. Obálka je vidět v panelu kapitol.
 - Návody ke službám mají klikací odkazy.
 - Přirozené hlasy pro čtení nahlas přes internet: Microsoft Azure (Vlasta, Antonín) a Google Cloud (Wavenet) – klíč v Nastavení → Služby a klíče (šifrovaně), měsíčně zdarma.
+- Okno knihy: Složka exportu je v kartě Soubor (u ukládání a tisku); z karty Export odebrány zdvojené Uložit jako a Tisk.
 - Ochrana vlastní knihy (okno knihy → Export → Ochrana knihy): vodoznak „Licence pro: …“ ve všech formátech (sociální DRM) a PDF s heslem (AES-256), volitelně bez tisku a kopírování.
 - Překlad: pokyny pro překlad jdou skrýt (karta Překladač → Pokyny pro překlad); po dokončení jednoho souboru tlačítka 📖 Číst a ✏️ Upravit. Čtečka: jinou knihu jde číst i upravovat, zatímco AI píše knihu.
 - Překlad: nová karta „Překladač“ (výběr služby, stav a tlačítko Klíče a návody); pás karet se vejde bez posouvání.

@@ -1241,3 +1241,19 @@ def test_export_with_watermark_and_pdf_password(qapp, tmp_path, monkeypatch):
     assert "Licence pro" not in ed.project["chapters"][0]["text"]           # kniha sama zůstala bez vodoznaku
     ed.dirty = False
     ed.close()
+
+
+def test_editor_file_tab_has_export_folder_no_duplicates(qapp, tmp_path):
+    from qt_editor import BookEditor
+    proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000,
+            "chapters": [{"text": "Text.", "summary": ""}]}
+    p = tmp_path / "k.kniha.json"
+    bw.save_project(p, proj)
+    ed = BookEditor(proj, p, None, text_assist={}, save_options=lambda: None, app_cfg={})
+    file_tab, export_tab = ed.ribbon.widget(0), ed.ribbon.widget(ed.export_tab_index)
+    assert ed.export_dir_lb.isVisibleTo(file_tab) and not ed.export_dir_lb.isVisibleTo(export_tab)
+    names = [b.text() for b in export_tab.findChildren(QtWidgets.QToolButton)]
+    assert "Uložit jako…" not in names and "Tisk" not in names       # jen v kartě Soubor
+    assert "Uložit jako…" in [b.text() for b in file_tab.findChildren(QtWidgets.QToolButton)]
+    ed.dirty = False
+    ed.close()

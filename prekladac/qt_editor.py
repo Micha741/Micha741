@@ -548,6 +548,9 @@ class BookEditor(QtWidgets.QMainWindow):
         self.search_tab_index = tabs.addTab(HScroll(self.search_tab), emoji_icon("🔍"), "Hledání")
         tabs.addTab(self._book_tab(), "Kniha")
         self.export_tab_index = tabs.addTab(self._export_tab(), emoji_icon("📤"), "Export")
+        lay = self._file_row.widget().layout()  # karta Soubor: Uložit, Tisk, Okno, Složka exportu
+        lay.insertWidget(lay.count() - 1, vline())
+        lay.insertWidget(lay.count() - 1, self.export_where)
         tabs.addTab(self._view_tab(), "Zobrazení")
         tabs.setCurrentIndex(1)
         back = QtWidgets.QToolButton()
@@ -703,7 +706,8 @@ class BookEditor(QtWidgets.QMainWindow):
         win = RibbonGroup("Okno")
         win.grid.addWidget(self._big(emoji_icon("⬅️"), "Hlavní okno", self.go_back), 0, 0)
         win.grid.addWidget(self._big(emoji_icon("✖️"), "Zavřít", self.close), 0, 1)
-        return self._row(f, pr, win)
+        self._file_row = self._row(f, pr, win)  # Složka exportu se doplní po vytvoření karty Export
+        return self._file_row
 
     # ================================================================ karta Export
     EXPORT_QUICK = (("epub", "📗", "EPUB", "E-kniha pro čtečky a telefony"),
@@ -769,10 +773,8 @@ class BookEditor(QtWidgets.QMainWindow):
         prot.grid.addWidget(self.pdf_pw, 1, 1)
         prot.grid.addWidget(self.pdf_noprint, 2, 0, 1, 2)
 
-        other = RibbonGroup("Další")
-        other.grid.addWidget(self._big(emoji_icon("🗂️"), "Uložit jako…", self.save_as), 0, 0)
-        other.grid.addWidget(self._big(emoji_icon("🖨️"), "Tisk", lambda: self.print_book(True)), 0, 1)
-        return self._row(quick, more, prot, where, other)
+        self.export_where = where  # skupina Složka exportu je v kartě Soubor (u ukládání a tisku)
+        return self._row(quick, more, prot)
 
     def _set_app(self, key, value):
         if self.app_cfg is not None:
