@@ -60,7 +60,7 @@
 # Historie verzí
 
 **Nová verze**
-- (zatím nic – další změny se zapíšou sem)
+- Synchronizace mezi více počítači: u místa čtení je vidět i název počítače („Pokračujete tam, kde jste skončil (Windows – PRACOVNA, kapitola 5)“).
 
 **1.0.119 (16. 11. 2026)**
 - ☁ Synchronizace s telefonem přes Google Disk: začnete číst v počítači a pokračujete v telefonu (a obráceně) –
