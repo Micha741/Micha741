@@ -60,6 +60,9 @@
 # Historie verzí
 
 **Nová verze**
+- (zatím nic – další změny se zapíšou sem)
+
+**1.0.121 (16. 11. 2026)**
 - Synchronizace mezi více počítači: u místa čtení je vidět i název počítače („Pokračujete tam, kde jste skončil (Windows – PRACOVNA, kapitola 5)“).
 
 **1.0.119 (16. 11. 2026)**
