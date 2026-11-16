@@ -63,6 +63,15 @@ def book_key(project: dict) -> str:
     return hashlib.sha1(raw.encode("utf-8")).hexdigest()[:16]
 
 
+def device_name() -> str:
+    """Název zařízení do synchronizace – u více počítačů je vidět, na kterém se naposledy četlo."""
+    import os
+    import socket
+
+    name = (os.environ.get("COMPUTERNAME") or socket.gethostname() or "").strip()
+    return f"Windows – {name}" if name else "Windows"
+
+
 class ReaderState:
     def __init__(self, project: dict):
         self.path = _app_dir() / "reader" / f"{book_key(project)}.json"
@@ -1057,7 +1066,7 @@ class Reader(QtWidgets.QWidget):
         ch, fr = self.pos_to_sync(self.state.pos)
         o = self.project.get("outline", {})
         return {"title": o.get("title", ""), "author": self.project.get("author", ""),
-                "pos": {"chapter": ch, "fraction": fr, "at": self.state.at, "device": "Windows"} if self.state.at else None,
+                "pos": {"chapter": ch, "fraction": fr, "at": self.state.at, "device": device_name()} if self.state.at else None,
                 "bookmarks": [self._sync_mark("b", m) for m in self.state.bookmarks],
                 "highlights": [self._sync_mark("h", m) for m in self.state.highlights],
                 "gone": dict(self.state.gone), "file": None}

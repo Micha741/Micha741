@@ -60,6 +60,9 @@
 # Historie verzí
 
 **Nová verze**
+- Synchronizace mezi více počítači: u místa čtení je vidět i název počítače („Pokračujete tam, kde jste skončil (Windows – PRACOVNA, kapitola 5)“).
+
+**1.0.119 (16. 11. 2026)**
 - ☁ Synchronizace s telefonem přes Google Disk: začnete číst v počítači a pokračujete v telefonu (a obráceně) –
   místo čtení, záložky, označené s poznámkami a knihy (EPUB) ve složce „Překladač“ na vašem Disku. Přihlášení
   kódem na google.com/device, návod v Nastavení → Služby a klíče → Google Disk; knihy z telefonu v Čtečce → Moje knihy.
