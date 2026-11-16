@@ -6,7 +6,8 @@ import { useKeepAwake } from 'expo-keep-awake';
 import { blockText, bookProgress, chapterHtml, DEFAULT_PREFS, parseReaderMessage, searchBook, THEMES, TURNS, type ReaderPrefs, type ReaderTheme, type ReaderTurn, type StartAt } from './src/core/reader';
 import { addVocab, MARK_COLORS, vocabText, type Highlight, type LibraryEntry, type MarkColor, type VocabItem } from './src/core/library';
 import * as Speech from 'expo-speech';
-import { addToHistory, googleBooksSuggestUrl, googleBooksUrl, parseGoogleBooksFull, type StoreBook, gutendexUrl, KIND_LABEL, mergeSuggestions, openLibrarySuggestUrl, parseGoogleBooks, parseGutendex, parseOpenLibrary, SOURCES, suggestionQuery, type FoundBook, type SourceKind, type Suggestion } from './src/core/sources';
+import { ANDROID_HELP, ANDROID_HISTORY } from './src/core/changelog';
+import { addToHistory, googleBooksSuggestUrl, googleBooksUrl, opensLabel, openLibraryUrl, parseGoogleBooksFull, parseOpenLibraryFull, parseWikisourceSearch, wikisourceSearchUrl, type StoreBook, gutendexUrl, KIND_LABEL, mergeSuggestions, openLibrarySuggestUrl, parseGoogleBooks, parseGutendex, parseOpenLibrary, SOURCES, suggestionQuery, type FoundBook, type SourceKind, type Suggestion } from './src/core/sources';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { addImage, bookStats, cleanMeta, coverKind, CROPS, META_FIELDS, watermarkBook, IMG_SIZES, imageAsCover, insertImages, listImages, pruneImages, removeImageAt, replaceImage, setImageSize, type Book, type BookMeta, type ImgSize } from './src/core/book';
 import { toBase64 } from './src/core/bytes';
@@ -216,7 +217,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={st.root} edges={['top', 'bottom']}>
-        <StatusBar style={isDark(C.sidebar) ? 'light' : 'dark'} />
+        <StatusBar style={isDark(C.sidebar) ? 'light' : 'dark'} hidden={!!reading && !!settings.reader?.fullscreen} />
         {reading ? (
           <ReaderView
             reading={reading}
@@ -769,6 +770,7 @@ function SettingsScreen({ settings, update, skin }: { settings: Settings; update
         ) : tab === 1 ? (
           <SkinsBox api={skin} />
         ) : (
+          <>
           <Box title="O programu">
             <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
               <Image source={require('./assets/logo.png')} style={{ width: 56, height: 56 }} />
@@ -783,6 +785,23 @@ function SettingsScreen({ settings, update, skin }: { settings: Settings; update
               verze pro Windows. AZW3 a KFX jako vstup a skeny PDF (OCR) zatím převádějte na počítači.
             </Text>
           </Box>
+          <Box title="Nápověda">
+            {ANDROID_HELP.map((h) => (
+              <View key={h.title} style={{ marginTop: 6 }}>
+                <Text style={[st.btnText, { fontWeight: '600' }]}>{h.title}</Text>
+                <Text style={st.hint}>{h.text}</Text>
+              </View>
+            ))}
+          </Box>
+          <Box title="Historie verzí">
+            {ANDROID_HISTORY.map((r) => (
+              <View key={r.version} style={{ marginTop: 6 }}>
+                <Text style={[st.btnText, { fontWeight: '600' }]}>{r.version}{r.date ? ` (${r.date})` : ' – nová verze'}{r.version === VERSION ? ' · tato verze' : ''}</Text>
+                {r.items.map((t, k) => <Text key={k} style={st.hint}>• {t}</Text>)}
+              </View>
+            ))}
+          </Box>
+          </>
         )}
       </ScrollView>
     </View>
@@ -1233,6 +1252,17 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
     setPanel('');
     web.current?.injectJavaScript('window.readerFirst&&window.readerFirst();true;');
   };
+  /** Čtení nahlas od zvoleného odstavce (podržení prstu na odstavci → Číst odsud); během čtení přeskočí na něj. */
+  const speakFrom = (i: number) => {
+    Speech.stop().catch(() => undefined);
+    speakingRef.current = true;
+    pausedRef.current = false;
+    setPaused(false);
+    setSpeaking(true);
+    setMenu(false);
+    setPanel('');
+    setTimeout(() => speakFromRef.current(i, 0), 60);
+  };
   useEffect(() => () => {
     speakingRef.current = false;
     Speech.stop().catch(() => undefined);
@@ -1388,6 +1418,10 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
             <Chips items={[{ id: '1.3', label: 'těsné' }, { id: '1.55', label: 'běžné' }, { id: '1.8', label: 'volné' }]} value={String(prefs.line)} onChange={(v) => setPrefs({ line: Number(v) })} />
             <Text style={st.label}>Okraje</Text>
             <Chips items={[{ id: '12', label: 'úzké' }, { id: '22', label: 'střední' }, { id: '34', label: 'široké' }]} value={String(prefs.margin)} onChange={(v) => setPrefs({ margin: Number(v) })} />
+            <Text style={st.label}>Stránky (telefon na šířku)</Text>
+            <Chips items={[{ id: '2', label: '📖 dvě vedle sebe' }, { id: '1', label: 'jedna' }]} value={prefs.spread === false ? '1' : '2'} onChange={(v) => setPrefs({ spread: v === '2' })} />
+            <Text style={st.label}>Celá obrazovka</Text>
+            <Chips items={[{ id: 'on', label: '⛶ skrýt horní lištu' }, { id: 'off', label: 's lištou' }]} value={prefs.fullscreen ? 'on' : 'off'} onChange={(v) => update({ reader: { ...prefs, fullscreen: v === 'on' } })} />
             <Text style={st.label}>Zarovnání</Text>
             <Chips items={[{ id: 'j', label: 'do bloku' }, { id: 'l', label: 'vlevo' }]} value={prefs.justify ? 'j' : 'l'} onChange={(v) => setPrefs({ justify: v === 'j' })} />
           </Pressable>
@@ -1415,6 +1449,7 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
               ) : null}
               <View style={[st.row, { marginTop: 4 }]}>
                 {tr.busy ? <ActivityIndicator color={C.accent} /> : <Btn label={sheet?.kind === 'word' ? '🌍 Přeložit slovo' : '🌍 Přeložit odstavec'} onPress={translateNow} primary />}
+                {sheet && sheet.i >= 0 ? <Btn label="🔊 Číst odsud" onPress={() => { const i = sheet.i; setSheet(null); speakFrom(i); }} /> : null}
                 {sheet?.kind === 'word' && tr.text && !tr.text.startsWith('⚠') ? <Text style={st.hint}>📒 Uloženo do slovníčku</Text> : null}
                 <Btn label="Zavřít" onPress={() => setSheet(null)} />
               </View>
@@ -1447,6 +1482,17 @@ function SearchScreen({ onBook, settings, update, library }: { onBook: (b: Book)
   const [lang, setLang] = useState('');
   const [found, setFound] = useState<FoundBook[] | null>(null);
   const [store, setStore] = useState<StoreBook[] | null>(null);
+  // katalogy hledané přímo v aplikaci (jako ve Windows) a stav každého z nich
+  const wsLang = lang && lang !== 'cs' ? lang : 'cs';
+  const CATS = [
+    { id: 'wikisource', name: 'Wikizdroje', url: (t: string) => wikisourceSearchUrl(t, wsLang), parse: (j: any) => parseWikisourceSearch(j, wsLang) },
+    { id: 'openlibrary', name: 'Open Library', url: (t: string) => openLibraryUrl(t, lang), parse: parseOpenLibraryFull },
+    { id: 'google', name: 'Google Books', url: (t: string) => googleBooksUrl(t, lang), parse: parseGoogleBooksFull },
+  ];
+  const cats = settings.searchCats ?? ['wikisource', 'openlibrary', 'google', 'gutenberg'];
+  const toggleCat = (id: string) => update({ searchCats: cats.includes(id) ? cats.filter((c) => c !== id) : [...cats, id] });
+  const [catStatus, setCatStatus] = useState<Record<string, string>>({});
+  const [onlyOpen, setOnlyOpen] = useState(false);
   const [open, setOpen] = useState('');
   const [busy, setBusy] = useState('');
   const [link, setLink] = useState('');
@@ -1492,21 +1538,37 @@ function SearchScreen({ onBook, settings, update, library }: { onBook: (b: Book)
     setFocus(false);
     update({ searchHistory: addToHistory(settings.searchHistory, text) });
     setBusy('Hledám knihy…');
-    // katalog Google Books (obchody, ukázky, volná díla) souběžně s Project Gutenberg
-    fetch(googleBooksUrl(text, lang))
-      .then((r) => (r.ok ? r.json() : null))
-      .then((j) => setStore(j ? parseGoogleBooksFull(j) : []))
-      .catch(() => setStore([]));
-    try {
-      const res = await fetch(gutendexUrl(text, lang));
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      setFound(parseGutendex(await res.json()).books.slice(0, 30));
-    } catch (e: any) {
-      setFound([]);
-      Alert.alert('Hledání', `Project Gutenberg teď neodpovídá (${e?.message ?? e}). Zkuste to za chvíli nebo použijte obchody a knihovny níže.`);
-    } finally {
-      setBusy('');
+    // katalogy (Wikizdroje, Open Library, Google Books) souběžně s Project Gutenberg; u každého počet nebo chyba
+    setStore(null);
+    setCatStatus({});
+    const catRuns = CATS.filter((c) => cats.includes(c.id)).map(async (c) => {
+      try {
+        const r = await fetch(c.url(text));
+        if (!r.ok) throw new Error(r.status === 429 ? 'příliš mnoho dotazů, zkuste později' : `HTTP ${r.status}`);
+        const list: StoreBook[] = c.parse(await r.json());
+        setCatStatus((s0) => ({ ...s0, [c.id]: `${list.length}` }));
+        return list;
+      } catch (e: any) {
+        setCatStatus((s0) => ({ ...s0, [c.id]: `⚠ ${e?.message ?? e}` }));
+        return [] as StoreBook[];
+      }
+    });
+    const all = Promise.all(catRuns).then((lists) => setStore(lists.flat()));
+    if (!cats.includes('gutenberg')) setFound(null);
+    else {
+      try {
+        const res = await fetch(gutendexUrl(text, lang));
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const g = parseGutendex(await res.json()).books.slice(0, 30);
+        setFound(g);
+        setCatStatus((s0) => ({ ...s0, gutenberg: `${g.length}` }));
+      } catch (e: any) {
+        setFound([]);
+        setCatStatus((s0) => ({ ...s0, gutenberg: `⚠ ${e?.message ?? e}` }));
+      }
     }
+    await all;
+    setBusy('');
   };
   const get = async (url: string, label: string) => {
     setBusy(`Stahuji: ${label}…`);
@@ -1544,19 +1606,28 @@ function SearchScreen({ onBook, settings, update, library }: { onBook: (b: Book)
             ) : null}
           </View>
         ) : null}
+        <View style={[st.row, { flexWrap: 'wrap', gap: 6 }]}>
+          {[...CATS, { id: 'gutenberg', name: 'Project Gutenberg' }].map((c) => (
+            <Pressable key={c.id} onPress={() => toggleCat(c.id)} style={[st.btn, st.btnSmall, cats.includes(c.id) && { borderColor: C.accent }]} accessibilityRole="checkbox" accessibilityState={{ checked: cats.includes(c.id) }}>
+              <Text style={st.btnText}>{cats.includes(c.id) ? '☑' : '☐'} {c.name}{catStatus[c.id] ? ` (${catStatus[c.id]})` : ''}</Text>
+            </Pressable>
+          ))}
+        </View>
         <Chips items={[{ id: '', label: 'všechny jazyky' }, { id: 'cs', label: 'čeština' }, { id: 'en', label: 'angličtina' }, { id: 'de', label: 'němčina' }, { id: 'fr', label: 'francouzština' }]} value={lang} onChange={setLang} />
         {busy ? <View style={st.row}><ActivityIndicator color={C.accent} /><Text style={st.hint}>{busy}</Text></View> : null}
       </View>
       <ScrollView contentContainerStyle={{ padding: 12, gap: 10 }} keyboardShouldPersistTaps="handled">
         {store && store.length ? (
-          <Box title={`Knihy v katalogu Google Books – ${store.length}`}>
-            {store.map((b) => (
+          <Box title={`Knihy v katalozích – ${store.length}`}>
+            <Chips items={[{ id: 'all', label: 'všechny' }, { id: 'open', label: '✓ jen ty, které otevře Překladač' }]} value={onlyOpen ? 'open' : 'all'} onChange={(v) => setOnlyOpen(v === 'open')} />
+            {store.filter((b) => !onlyOpen || b.download).map((b) => (
               <View key={b.id} style={[st.chapterRow, { alignItems: 'flex-start' }]}>
                 {b.cover ? <Image source={{ uri: b.cover }} style={[st.libCover, { width: 52, height: 76 }]} /> : <View style={[st.libCover, st.libNoCover, { width: 52, height: 76 }]}><Text>📖</Text></View>}
                 <View style={{ flex: 1, gap: 2 }}>
                   <Pressable onPress={() => setOpen(open === b.id ? '' : b.id)}>
                     <Text style={st.btnText} numberOfLines={open === b.id ? undefined : 2}>{b.title}</Text>
-                    <Text style={st.hint} numberOfLines={1}>{b.authors}{b.language ? ` · ${b.language}` : ''}{b.price ? ` · ${b.price}` : ''}</Text>
+                    <Text style={st.hint} numberOfLines={1}>{b.store ? `${b.store} · ` : ''}{b.authors}{b.language ? ` · ${b.language}` : ''}{b.price ? ` · ${b.price}` : ''}</Text>
+                    <Text style={[st.hint, { color: b.download ? C.ok : b.drm === 'drm' ? C.warn : C.disabled }]}>{opensLabel(b)}</Text>
                     {b.description ? <Text style={st.hint} numberOfLines={open === b.id ? undefined : 2}>{b.description}</Text> : null}
                   </Pressable>
                   <View style={[st.row, { gap: 6 }]}>

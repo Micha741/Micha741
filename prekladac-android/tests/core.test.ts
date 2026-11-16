@@ -575,3 +575,58 @@ test('vodoznak: věta „Licence pro“ na konci každé kapitoly, originál bez
   assert.ok(!b.chapters[0].blocks.some((x) => x.type === 'p' && x.text.startsWith('Licence pro')));
   assert.equal(watermarkBook(b, '  '), b);
 });
+
+test('hledání: Open Library (volné dílo ke stažení, výpůjčka = DRM) a Wikizdroje (bez kapitol a rozcestníků)', async () => {
+  const { parseOpenLibraryFull, parseWikisourceSearch, opensLabel, wikisourceChapterOrder, wikisourceClean } = await import('../src/core/sources');
+  const ol = parseOpenLibraryFull({ docs: [
+    { key: '/works/OL1W', title: 'Frankenstein', author_name: ['Mary Shelley'], ebook_access: 'public', ia: ['frank1818'], cover_i: 7 },
+    { key: '/works/OL2W', title: 'Nová kniha', ebook_access: 'borrowable', ia: ['nova'] },
+    { key: '/works/OL3W', title: 'Jen katalog', ebook_access: 'no_ebook' },
+  ] });
+  assert.equal(ol[0].download, 'https://archive.org/download/frank1818/frank1818.epub');
+  assert.equal(opensLabel(ol[0]), '✓ otevře Překladač');
+  assert.equal(ol[1].drm, 'drm');
+  assert.ok(!ol[1].download && opensLabel(ol[1]).includes('DRM'));
+  assert.equal(ol[2].drm, 'none');
+  const ws = parseWikisourceSearch({ query: { search: [{ title: 'Babička', pageid: 1 }, { title: 'Babička/I', pageid: 2 }, { title: 'Kytice (rozcestník)', pageid: 3 }] } });
+  assert.deepEqual(ws.map((b) => b.download), ['wikisource:cs:Babička']);
+  const order = wikisourceChapterOrder('Babička', {
+    text: '<a href="/wiki/Babi%C4%8Dka/I" title="Babička/I">I</a><a title="Babička/II">II</a><a title="Babička/IV">IV</a><a title="Babička/III">III</a><a title="Jiná">x</a>',
+    links: ['Babička/I', 'Babička/II', 'Babička/III', 'Babička/IV', 'Babička/IX', 'Jiná'].map((t) => ({ ns: 0, title: t, exists: true })),
+  });
+  assert.deepEqual(order, ['Babička/I', 'Babička/II', 'Babička/IV', 'Babička/III', 'Babička/IX']);
+  const clean = wikisourceClean('<div class="ws-noexport"><div>Navigace</div>skryto</div><p>Text kapitoly.</p><span class="mw-editsection">[upravit]</span><sup class="reference">[1]</sup>');
+  assert.equal(clean, '<p>Text kapitoly.</p>');
+});
+
+test('Wikizdroje: kniha z hlavní stránky a kapitol v pořadí obsahu', async () => {
+  const { wikisourceBook, parseWikisourceLink } = await import('../src/core/wikisource');
+  assert.deepEqual(parseWikisourceLink('wikisource:cs:Babička'), { lang: 'cs', title: 'Babička' });
+  const pages: Record<string, any> = {
+    'Babička': { title: 'Babička', text: '<a title="Babička/II">II</a><a title="Babička/I">I</a>', links: [{ ns: 0, title: 'Babička/I' }, { ns: 0, title: 'Babička/II' }] },
+    'Babička/I': { title: 'Babička/I', text: '<div class="ws-header">hlavička</div><p>Byla jednou jedna babička.</p>' },
+    'Babička/II': { title: 'Babička/II', text: '<p>Druhá kapitola.</p>' },
+  };
+  const get = async (url: string) => ({ parse: pages[decodeURIComponent(/page=([^&]+)/.exec(url)![1]).replace(/_/g, ' ')] });
+  const b = await wikisourceBook(get, 'cs', 'Babička');
+  assert.deepEqual(b.chapters.map((c) => c.title), ['II', 'I']);
+  assert.equal((b.chapters[1].blocks[0] as any).text, 'Byla jednou jedna babička.');
+  await assert.rejects(wikisourceBook(async () => ({ error: { info: 'Stránka neexistuje' } }), 'cs', 'X'), /Stránka neexistuje/);
+});
+
+test('čtečka: dvě stránky na šířku (lze vypnout) a začátek knihy podle obálky', () => {
+  const b = sample(false);
+  assert.ok(chapterHtml(b, 0, DEFAULT_PREFS).includes('@media (orientation:landscape){.pg{column-width:auto;column-count:2}}'));
+  assert.ok(!chapterHtml(b, 0, { ...DEFAULT_PREFS, spread: false }).includes('column-count:2'));
+  assert.ok(chapterHtml(b, 0, DEFAULT_PREFS).includes('figure class="cover"'), 'obálka s názvem');
+  const none = chapterHtml({ ...b, coverMode: 'none' }, 0, DEFAULT_PREFS);
+  assert.ok(none.includes('class="titlepg"') && none.includes('Strážce majáku') && !none.includes('figure class="cover"'), 'bez obálky jen název');
+  assert.ok(!chapterHtml(b, 1, DEFAULT_PREFS).includes('class="titlepg"'));
+});
+
+test('historie verzí: nejnovější záznam odpovídá verzi v app.json', async () => {
+  const { ANDROID_HISTORY } = await import('../src/core/changelog');
+  const app = JSON.parse(readFileSync(`${process.cwd()}/app.json`, 'utf8'));
+  assert.equal(ANDROID_HISTORY[0].version, app.expo.version, 'nová verze v app.json musí mít záznam v src/core/changelog.ts');
+  assert.ok(ANDROID_HISTORY.every((r) => r.items.length));
+});

@@ -21,6 +21,10 @@ export interface ReaderPrefs {
   ttsRate?: number;
   /** hlas pro čtení nahlas (identifikátor hlasu Androidu; prázdné = výchozí) */
   ttsVoice?: string;
+  /** telefon na šířku: dvě stránky vedle sebe jako v knize (výchozí ano) */
+  spread?: boolean;
+  /** celá obrazovka – skryje horní lištu telefonu (čas, baterie) */
+  fullscreen?: boolean;
 }
 
 export type ReaderTurn = 'curl' | 'slide' | 'fade' | 'none';
@@ -102,6 +106,7 @@ h2,h3,h4{font-size:1.15em;margin:1em 0 .5em;line-height:1.3;break-after:avoid}
 figure{margin:.6em 0;text-align:center;break-inside:avoid}figure img{max-width:100%;max-height:calc(100vh - ${Math.max(50, Math.round(m * 1.4)) + Math.round(m * 1.8)}px);object-fit:contain}
 figure.cover{margin:0;height:calc(100vh - ${Math.max(50, Math.round(m * 1.4)) + Math.round(m * 1.4) + 6}px);display:flex;align-items:center;justify-content:center;break-after:column}
 .pb{break-after:column;height:0}
+${prefs.spread === false ? '' : `@media (orientation:landscape){.pg{column-width:auto;column-count:2}}`}
 .titlepg{height:calc(100vh - ${Math.max(50, Math.round(m * 1.4)) + Math.round(m * 1.4) + 6}px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;break-after:column}
 .titlepg .bt{font-size:1.9em;font-weight:bold;line-height:1.25}.titlepg .ba{font-size:1.15em;margin-top:1em;color:${t.muted}}
 .hl{background:${t.accent}33;border-radius:3px}
