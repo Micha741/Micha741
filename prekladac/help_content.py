@@ -79,7 +79,7 @@ v <b>⚙ Nastavení → Služby a klíče</b>.</li>
 <li>Napište popis (asi 20 vět), zvolte žánr, styl a délku. AI navrhne osnovu, kterou můžete upravit,
 a pak píše kapitolu po kapitole.</li>
 <li>Hotovou knihu otevřete v <b>okně knihy</b>: úpravy textu jako ve Wordu, obrázky a obálka,
-karty Hledání a Export (EPUB, PDF, Word, Kindle…), tisk.</li>
+karty Hledání, Metadata (anotace, série, ISBN… se uloží do všech formátů) a Export (EPUB, PDF, Word, Kindle…), tisk.</li>
 <li>Otevřít jde i hotovou knihu (DOCX, EPUB, PDF, MOBI…) – rozdělí se na kapitoly.</li>
 </ul>
 

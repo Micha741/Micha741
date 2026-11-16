@@ -779,6 +779,12 @@ class BookEditor(QtWidgets.QMainWindow):
         d = (self.project.get("metadata") or {}).get("description", "")
         self.desc_info.setText((d[:90] + "…" if len(d) > 90 else d) or tr("zatím bez anotace"))
 
+    def description_source(self, key: str) -> str:
+        """Text, ze kterého jde převzít anotaci: shrnutí děje z osnovy, nebo popis ze zadání pro AI."""
+        if key == "synopsis":
+            return str((self.project.get("outline") or {}).get("synopsis") or "").strip()
+        return str(self.project.get("description") or "").strip()
+
     def edit_description(self):
         dlg = QtWidgets.QDialog(self)
         dlg.setWindowTitle(tr("Anotace knihy"))
@@ -787,6 +793,22 @@ class BookEditor(QtWidgets.QMainWindow):
         lay.addWidget(label("Krátký popis knihy – ukáže se ve čtečkách (EPUB, Kindle) a ve vlastnostech Wordu.", "Hint"))
         t = QtWidgets.QPlainTextEdit((self.project.get("metadata") or {}).get("description", ""))
         lay.addWidget(t, 1)
+        row = QtWidgets.QHBoxLayout()
+        self._desc_sources = {}
+        for key, (caption, tip, none) in {
+                "synopsis": ("📖 Převzít shrnutí děje", "Shrnutí děje z osnovy knihy (Napsat knihu)",
+                             "Kniha nemá osnovu se shrnutím děje."),
+                "brief": ("📝 Převzít popis ze zadání", "Popis, podle kterého AI knihu psala",
+                          "Kniha nemá popis zadání (nevznikla na stránce Napsat knihu).")}.items():
+            text = self.description_source(key)
+            b = QtWidgets.QPushButton(tr(caption))
+            b.setToolTip(tr(tip if text else none))
+            b.setEnabled(bool(text))
+            b.clicked.connect(lambda _=False, x=text: t.setPlainText(x))
+            self._desc_sources[key] = b
+            row.addWidget(b)
+        row.addStretch(1)
+        lay.addLayout(row)
         bb = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel)
         bb.accepted.connect(dlg.accept)
         bb.rejected.connect(dlg.reject)

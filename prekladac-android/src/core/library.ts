@@ -80,7 +80,7 @@ export function newEntry(book: Book, id: string, originalId?: string): LibraryEn
 export function serializeBook(book: Book): Uint8Array {
   const images: Record<string, { mime: string; b64: string }> = {};
   for (const [n, im] of Object.entries(book.images)) images[n] = { mime: im.mime, b64: toBase64(im.data) };
-  return utf8Encode(JSON.stringify({ v: 1, title: book.title, author: book.author, language: book.language, chapters: book.chapters, cover: book.cover, source: book.source, images }));
+  return utf8Encode(JSON.stringify({ v: 1, title: book.title, author: book.author, language: book.language, chapters: book.chapters, cover: book.cover, coverMode: book.coverMode, meta: book.meta, source: book.source, images }));
 }
 
 export function deserializeBook(data: Uint8Array): Book {
@@ -88,7 +88,7 @@ export function deserializeBook(data: Uint8Array): Book {
   if (j?.v !== 1 || !Array.isArray(j.chapters)) throw new Error('Kniha v knihovně je poškozená.');
   const images: Book['images'] = {};
   for (const [n, im] of Object.entries(j.images ?? {}) as [string, { mime: string; b64: string }][]) images[n] = { mime: im.mime, data: fromBase64(im.b64) };
-  return { title: j.title, author: j.author ?? '', language: j.language ?? '', chapters: j.chapters, cover: j.cover, source: j.source, images };
+  return { title: j.title, author: j.author ?? '', language: j.language ?? '', chapters: j.chapters, cover: j.cover, coverMode: j.coverMode, meta: j.meta, source: j.source, images };
 }
 
 /** Typ souboru podle obsahu (soubor otevřený z jiné aplikace nemusí mít příponu). */

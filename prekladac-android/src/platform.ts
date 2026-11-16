@@ -6,7 +6,8 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Print from 'expo-print';
 import * as SecureStore from 'expo-secure-store';
 import * as Sharing from 'expo-sharing';
-import type { Book } from './core/book';
+import { cropRect, type Book } from './core/book';
+import { parseWikisourceLink, wikisourceBook } from './core/wikisource';
 import { type OutputFormat, OUTPUT_FORMATS, readBook, writeBook } from './core/formats';
 import { pdfHtml } from './core/pdf';
 import type { EngineSettings } from './core/translate';
@@ -43,11 +44,46 @@ export async function pickBook(): Promise<Book | null> {
 }
 
 /** Vybere obrázek z galerie; vrátí JPEG (zmenšený na delší stranu max. 1600 px). */
-export async function pickImage(): Promise<Uint8Array | null> {
-  const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 1 });
+export async function pickImage(opts: { cropCover?: boolean } = {}): Promise<Uint8Array | null> {
+  const res = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ['images'], quality: 1,
+    // obálka: výřez v poměru 2:3 hned při výběru (systémový editor Androidu)
+    ...(opts.cropCover ? { allowsEditing: true, aspect: [2, 3] as [number, number] } : {}),
+  });
   if (res.canceled || !res.assets?.length) return null;
   const a = res.assets[0];
   return toJpeg(a.uri, a.width, a.height);
+}
+
+/** Výběr více obrázků najednou (v pořadí, jak je uživatel vybral). */
+export async function pickImages(): Promise<Uint8Array[]> {
+  const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 1, allowsMultipleSelection: true, orderedSelection: true });
+  if (res.canceled || !res.assets?.length) return [];
+  const out: Uint8Array[] = [];
+  for (const a of res.assets) out.push(await toJpeg(a.uri, a.width, a.height));
+  return out;
+}
+
+/** Otočí (po směru hodinových ručiček) nebo ořízne obrázek na poměr stran; vrátí JPEG. */
+export async function transformImage(data: Uint8Array, op: { rotate?: number; aspect?: number }): Promise<Uint8Array> {
+  const tmp = new File(Paths.cache, `edit_${Date.now()}.img`);
+  tmp.write(data);
+  try {
+    const ctx = ImageManipulator.manipulate(tmp.uri);
+    if (op.rotate) ctx.rotate(op.rotate);
+    if (op.aspect) {
+      const probe = await ImageManipulator.manipulate(tmp.uri).renderAsync();
+      ctx.crop(cropRect(probe.width, probe.height, op.aspect));
+    }
+    const img = await ctx.renderAsync();
+    const out = await img.saveAsync({ format: SaveFormat.JPEG, compress: 0.9 });
+    const f = new File(out.uri);
+    const bytes = await f.bytes();
+    f.delete();
+    return bytes;
+  } finally {
+    tmp.delete();
+  }
 }
 
 async function toJpeg(uri: string, w = 0, h = 0, maxSide = 1600): Promise<Uint8Array> {
@@ -120,9 +156,14 @@ export interface Settings extends EngineSettings {
   reader?: Partial<import('./core/reader').ReaderPrefs>;
   /** poslední hledané knihy (našeptávač) */
   searchHistory?: string[];
+  /** katalogy hledané přímo v aplikaci (wikisource, openlibrary, google, gutenberg) */
+  searchCats?: string[];
   engine?: string;
   target?: string;
   format?: string;
+  /** ochrana vlastní knihy: „Licence pro: …“ do každé kapitoly při ukládání (prázdné = vypnuto) */
+  watermark?: string;
+  watermarkOn?: boolean;
 }
 
 const KEY = 'prekladac_settings_v1';
@@ -269,6 +310,15 @@ export async function openBookUri(uri: string): Promise<Book> {
 
 /** Stáhne knihu z odkazu (Project Gutenberg, ukázka z obchodu…) a otevře ji. */
 export async function downloadBook(url: string, signal?: AbortSignal): Promise<Book> {
+  const ws = parseWikisourceLink(url);
+  if (ws) {
+    // Wikizdroje: kniha se sestaví z textu stránek (kapitoly v pořadí obsahu)
+    return wikisourceBook(async (u) => {
+      const r = await fetch(u, { signal });
+      if (!r.ok) throw new Error(`Wikizdroje neodpovídají (HTTP ${r.status}).`);
+      return r.json();
+    }, ws.lang, ws.title);
+  }
   const res = await fetch(url, { signal });
   if (!res.ok) throw new Error(`Stažení se nepodařilo (HTTP ${res.status}).`);
   const data = new Uint8Array(await res.arrayBuffer());

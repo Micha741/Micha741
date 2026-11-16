@@ -260,3 +260,62 @@ def test_first_chapter_without_heading_is_not_lost():
     assert [c.title for c in ebook.split_chapters(title_page, "Strážce majáku")] == ["Mapa", "Návrat"]
     named = ["<p>Strážce majáku</p>"] + blocks[2:]
     assert [c.title for c in ebook.split_chapters(named, "Strážce majáku")] == ["Mapa", "Návrat"]
+
+
+@pytest.mark.parametrize("ext", ["epub", "docx", "fb2", "odt", "rtf", "pdf"])
+def test_metadata_roundtrip_formats(tmp_path, ext):
+    """Metadata (karta Metadata) se zapíšou i do FB2, ODT, RTF a PDF a při otevření knihy se načtou zpět."""
+    if ext == "pdf":
+        QtWidgets = pytest.importorskip("PySide6.QtWidgets")
+        _app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])  # noqa: F841 – Qt tiskne PDF
+    meta = {"subtitle": "Podtitul", "publisher": "Vydavatel", "date": "2025-03-01", "isbn": "978-80-1",
+            "description": "Krátká anotace.", "subjects": "fantasy, dobrodružství", "series": "Sága",
+            "series_index": "2", "rights": "© Autor"}
+    book = ebook.RichBook(title="Kůň", author="Jan Novák", meta=dict(meta),
+                          chapters=[ebook.Chapter("Jedna", "<h2>Jedna</h2><p>" + "text " * 80 + "</p>")])
+    path = tmp_path / f"k.{ext}"
+    ebook.write_book(book, path)
+    if ext == "pdf":
+        # text PDF z Qt ve Windows pypdf nepřečte – metadata se ověří ve vlastnostech souboru
+        from pypdf import PdfReader
+        info = PdfReader(str(path)).metadata
+        assert (info.get("/Title"), info.get("/Author")) == ("Kůň", "Jan Novák")
+        assert (info.get("/Subject"), info.get("/Keywords")) == (meta["description"], meta["subjects"])
+        return
+    got = ebook.read_book(path).meta
+    expect = {"epub": meta, "odt": meta,
+              "docx": {k: meta[k] for k in ("subtitle", "subjects", "description", "isbn", "series", "series_index")},
+              "fb2": {k: meta[k] for k in ("description", "subjects", "date", "series", "series_index", "publisher",
+                                           "isbn")},
+              "rtf": {k: meta[k] for k in ("subtitle", "subjects", "description", "publisher")}}[ext]
+    assert got == expect
+    assert ebook.to_project(ebook.read_book(path))["metadata"] == expect
+
+
+def test_read_pdf_metadata():
+    """Anotace a klíčová slova z vlastností PDF se načtou do metadat knihy."""
+    from pypdf import PdfWriter
+
+    import ebook_more
+
+    w = PdfWriter()
+    w.add_blank_page(200, 200)
+    w.add_metadata({"/Title": "Kůň", "/Subject": "Krátká anotace.", "/Keywords": "fantasy"})
+    buf = io.BytesIO()
+    w.write(buf)
+    orig = ebook_more.open_pdf
+
+    class Page:
+        def extract_text(self):
+            return "Text knihy. " * 30
+
+    class Reader:
+        def __init__(self, r):
+            self.metadata, self.pages = r.metadata, [Page()]
+
+    ebook_more.open_pdf = lambda data: Reader(orig(data))
+    try:
+        book = ebook_more.read_pdf(buf.getvalue(), "k")
+    finally:
+        ebook_more.open_pdf = orig
+    assert book.meta == {"description": "Krátká anotace.", "subjects": "fantasy"}

@@ -1,7 +1,7 @@
 // EPUB 3 (s toc.ncx pro starší čtečky) – zápis i čtení.
 import JSZip from 'jszip';
 import type { Book } from './book';
-import { emptyBook, extFromMime, sniffMime, mimeFromName, textCoverSvg } from './book';
+import { cleanMeta, coverKind, emptyBook, extFromMime, sniffMime, mimeFromName, textCoverSvg, type BookMeta } from './book';
 import { decodeAny, decodeEntities, escapeXml } from './bytes';
 import { chaptersFromBlocks } from './chapters';
 import { htmlToBlocks } from './html';
@@ -41,7 +41,8 @@ export async function writeEpub(book: Book): Promise<Uint8Array> {
     if (n === book.cover) coverId = `img${k + 1}`;
     manifest.push(`<item id="img${++k}" href="${file}" media-type="${im.mime}"${n === book.cover ? ' properties="cover-image"' : ''}/>`);
   }
-  if (!book.cover || !imgId[book.cover]) {
+  const kind = coverKind(book);
+  if (kind === 'text') {
     // bez obrázku: obálka jen s názvem a autorem
     zip.file('OEBPS/images/cover.svg', textCoverSvg(book.title, book.author));
     manifest.push('<item id="coversvg" href="images/cover.svg" media-type="image/svg+xml" properties="cover-image"/>');
@@ -49,14 +50,17 @@ export async function writeEpub(book: Book): Promise<Uint8Array> {
     manifest.push('<item id="cover" href="cover.xhtml" media-type="application/xhtml+xml"/>');
     spine.push('<itemref idref="cover" linear="no"/>');
     coverId = 'coversvg';
-  } else if (book.cover && imgId[book.cover]) {
+  } else if (kind === 'image' && book.cover && imgId[book.cover]) {
     zip.file('OEBPS/cover.xhtml', xhtml('Obálka', `<div style="text-align:center"><img src="${imgId[book.cover]}" alt="Obálka" style="max-height:100%"/></div>`, lang));
     manifest.push('<item id="cover" href="cover.xhtml" media-type="application/xhtml+xml"/>');
     spine.push('<itemref idref="cover" linear="no"/>');
   }
-  zip.file('OEBPS/title.xhtml', xhtml(book.title, `<h1 class="title">${escapeXml(book.title)}</h1>${book.author ? `<p class="author">${escapeXml(book.author)}</p>` : ''}`, lang));
-  manifest.push('<item id="titlepage" href="title.xhtml" media-type="application/xhtml+xml"/>');
-  spine.push('<itemref idref="titlepage"/>');
+  if (kind === 'none') {
+    // bez obálky jen titulní strana s názvem; s obálkou je název jen v metadatech
+    zip.file('OEBPS/title.xhtml', xhtml(book.title, `<h1 class="title">${escapeXml(book.title)}</h1>${book.author ? `<p class="author">${escapeXml(book.author)}</p>` : ''}`, lang));
+    manifest.push('<item id="titlepage" href="title.xhtml" media-type="application/xhtml+xml"/>');
+    spine.push('<itemref idref="titlepage"/>');
+  }
   const navItems: string[] = [];
   const ncxItems: string[] = [];
   book.chapters.forEach((ch, i) => {
@@ -84,11 +88,64 @@ export async function writeEpub(book: Book): Promise<Uint8Array> {
   const modified = new Date().toISOString().replace(/\.\d+Z$/, 'Z');
   zip.file('OEBPS/content.opf', `<?xml version="1.0" encoding="utf-8"?><package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="bookid" xml:lang="${lang}">` +
     `<metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:identifier id="bookid">${id}</dc:identifier><dc:title>${escapeXml(book.title)}</dc:title>` +
-    `<dc:language>${lang}</dc:language>${book.author ? `<dc:creator>${escapeXml(book.author)}</dc:creator>` : ''}<meta property="dcterms:modified">${modified}</meta>` +
+    `<dc:language>${lang}</dc:language>${book.author ? `<dc:creator>${escapeXml(book.author)}</dc:creator>` : ''}${epubMeta(book.meta)}<meta property="dcterms:modified">${modified}</meta>` +
     `${book.cover && imgId[book.cover] ? `<meta name="cover" content="${coverId}"/>` : ''}</metadata>` +
     `<manifest>${manifest.join('')}</manifest><spine toc="ncx">${spine.join('')}</spine>` +
     `${book.cover && imgId[book.cover] ? '<guide><reference type="cover" title="Obálka" href="cover.xhtml"/></guide>' : ''}</package>`);
   return zip.generateAsync({ type: 'uint8array', compression: 'DEFLATE', mimeType: 'application/epub+zip' });
+}
+
+/** Další metadata do content.opf (EPUB 3 + značky Calibre pro sérii) – stejné jako ve Windows. */
+export function epubMeta(meta: BookMeta | undefined): string {
+  const m = cleanMeta(meta);
+  let out = '';
+  if (m.subtitle) out += `<dc:title id="subtitle">${escapeXml(m.subtitle)}</dc:title><meta refines="#subtitle" property="title-type">subtitle</meta>`;
+  for (const k of ['publisher', 'date', 'description', 'rights'] as const) if (m[k]) out += `<dc:${k}>${escapeXml(m[k]!)}</dc:${k}>`;
+  if (m.isbn) out += `<dc:identifier id="isbn">urn:isbn:${escapeXml(m.isbn)}</dc:identifier>`;
+  for (const x of (m.subjects ?? '').split(',').map((t) => t.trim()).filter(Boolean)) out += `<dc:subject>${escapeXml(x)}</dc:subject>`;
+  if (m.series) {
+    const idx = m.series_index || '1';
+    out += `<meta property="belongs-to-collection" id="series">${escapeXml(m.series)}</meta><meta refines="#series" property="collection-type">series</meta>` +
+      `<meta refines="#series" property="group-position">${escapeXml(idx)}</meta><meta name="calibre:series" content="${escapeXml(m.series)}"/>` +
+      `<meta name="calibre:series_index" content="${escapeXml(idx)}"/>`;
+  }
+  return out;
+}
+
+/** Metadata z content.opf (protějšek epubMeta; umí i EPUB z Calibre). */
+export function readEpubMeta(opf: string): BookMeta {
+  const md = /<(?:opf:)?metadata\b[\s\S]*?<\/(?:opf:)?metadata>/i.exec(opf)?.[0] ?? '';
+  const all = (name: string) => [...md.matchAll(new RegExp(`<(?:dc:)?${name}\\b([^>]*)>([\\s\\S]*?)</(?:dc:)?${name}>`, 'gi'))]
+    .map((x) => ({ attrs: x[1], text: decodeEntities(x[2].replace(/<[^>]+>/g, ' ')).replace(/[ \t]+/g, ' ').trim() }));
+  const m: BookMeta = {};
+  const titles = all('title');
+  if (titles.length > 1) m.subtitle = titles[1].text;
+  for (const k of ['publisher', 'date', 'rights'] as const) if (all(k)[0]?.text) m[k] = all(k)[0].text;
+  const d = all('description')[0]?.text;
+  if (d) m.description = decodeEntities(d.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
+  for (const x of all('identifier')) {
+    if (/isbn/i.test(x.attrs + x.text)) {
+      m.isbn = x.text.replace(/^urn:isbn:/i, '');
+      break;
+    }
+  }
+  const subj = all('subject').map((x) => x.text).filter(Boolean);
+  if (subj.length) m.subjects = subj.join(', ');
+  const metaTag = (name: string) => attr(new RegExp(`<meta\\b[^>]*name="${name}"[^>]*>`, 'i').exec(md)?.[0] ?? '', 'content');
+  const series = metaTag('calibre:series');
+  if (series) {
+    m.series = series;
+    const idx = metaTag('calibre:series_index');
+    if (idx) m.series_index = idx.replace(/\.0$/, '');
+  } else {
+    const col = /<meta\b[^>]*property="belongs-to-collection"[^>]*>([^<]*)<\/meta>/i.exec(md);
+    if (col?.[1].trim()) {
+      m.series = decodeEntities(col[1].trim());
+      const pos = /<meta\b[^>]*property="group-position"[^>]*>([^<]*)<\/meta>/i.exec(md);
+      if (pos?.[1].trim()) m.series_index = pos[1].trim();
+    }
+  }
+  return cleanMeta(m);
 }
 
 // ------------------------------------------------------------ čtení
@@ -127,6 +184,8 @@ export async function readEpub(data: Uint8Array, fileName: string): Promise<Book
   book.author = tagText('creator');
   book.language = (tagText('language') || 'cs').slice(0, 2).toLowerCase();
   book.source = fileName;
+  const meta = readEpubMeta(opf);
+  if (Object.keys(meta).length) book.meta = meta;
   const items: Record<string, { href: string; type: string; props: string }> = {};
   for (const m of opf.matchAll(/<item\b[^>]*>/gi)) {
     const t = m[0];

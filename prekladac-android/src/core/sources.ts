@@ -158,6 +158,15 @@ export interface StoreBook {
   /** ukázka / čtení na webu */
   preview?: string;
   buy?: string;
+  /** odkud výsledek je (Google Books, Open Library, Wikizdroje…) */
+  store?: string;
+  /** free = otevře se v aplikaci, drm = zašifrované (jen v aplikaci obchodu / výpůjčka), none = nedostupné jako e-kniha */
+  drm?: 'free' | 'drm' | 'none';
+}
+
+/** Štítek „Otevře Překladač“ jako ve Windows. */
+export function opensLabel(b: StoreBook): string {
+  return b.download ? '✓ otevře Překladač' : b.drm === 'drm' ? '🔒 DRM – jen v aplikaci obchodu' : 'jen katalog';
 }
 
 export function googleBooksUrl(q: string, lang?: string): string {
@@ -185,6 +194,121 @@ export function parseGoogleBooksFull(j: any): StoreBook[] {
       download,
       preview: acc.viewability && acc.viewability !== 'NO_PAGES' ? https(acc.webReaderLink ?? v.previewLink) : undefined,
       buy: https(sale.buyLink),
+      store: 'Google Books',
+      drm: download ? 'free' : sale.buyLink ? 'drm' : 'none',
     } as StoreBook;
   }).filter((b: StoreBook) => b.title);
+}
+
+// ------------------------------------------------------------ Open Library / Internet Archive (přímo v aplikaci)
+export function openLibraryUrl(q: string, lang?: string): string {
+  return `https://openlibrary.org/search.json?q=${enc(q)}&limit=20&fields=key,title,author_name,language,cover_i,ebook_access,ia,first_publish_year` +
+    (lang ? `&language=${enc({ cs: 'cze', en: 'eng', de: 'ger', fr: 'fre', sk: 'slo' }[lang] ?? lang)}` : '');
+}
+
+export function parseOpenLibraryFull(j: any): StoreBook[] {
+  return (j?.docs ?? []).filter((d: any) => d?.title).map((d: any) => {
+    const access = d.ebook_access ?? 'no_ebook';
+    const ia = (d.ia ?? [])[0] as string | undefined;
+    const page = `https://openlibrary.org${d.key ?? ''}`;
+    const free = access === 'public' && !!ia;
+    const lend = access === 'borrowable' || access === 'printdisabled';
+    return {
+      id: `ol${d.key ?? d.title}`,
+      title: String(d.title),
+      authors: (d.author_name ?? []).slice(0, 3).join(', '),
+      description: d.first_publish_year ? `Poprvé vydáno ${d.first_publish_year}.` : '',
+      language: (d.language ?? []).slice(0, 3).join(', '),
+      cover: d.cover_i ? `https://covers.openlibrary.org/b/id/${d.cover_i}-M.jpg` : undefined,
+      price: free ? 'zdarma' : lend ? 'výpůjčka' : undefined,
+      download: free ? `https://archive.org/download/${ia}/${ia}.epub` : undefined,
+      preview: page,
+      store: ia ? 'Internet Archive' : 'Open Library',
+      drm: free ? 'free' : lend ? 'drm' : 'none',
+    } as StoreBook;
+  });
+}
+
+// ------------------------------------------------------------ Wikizdroje (volná díla v češtině)
+export const WIKISOURCE_PREFIX = 'wikisource:';
+
+export function wikisourceSearchUrl(q: string, lang = 'cs'): string {
+  return `https://${lang}.wikisource.org/w/api.php?action=query&list=search&format=json&origin=*&srlimit=20&srnamespace=0&srsearch=${enc(q)}`;
+}
+
+export function parseWikisourceSearch(j: any, lang = 'cs'): StoreBook[] {
+  return (j?.query?.search ?? [])
+    .filter((r: any) => r?.title && !String(r.title).includes('/') && !/rozcestník/i.test(r.title))
+    .map((r: any) => ({
+      id: `ws${lang}${r.pageid ?? r.title}`,
+      title: String(r.title),
+      authors: '',
+      description: String(r.snippet ?? '').replace(/<[^>]+>/g, '').replace(/&quot;/g, '"').replace(/&amp;/g, '&').slice(0, 200),
+      language: lang,
+      price: 'zdarma',
+      download: `${WIKISOURCE_PREFIX}${lang}:${r.title}`,
+      preview: `https://${lang}.wikisource.org/wiki/${enc(String(r.title).replace(/ /g, '_'))}`,
+      store: 'Wikizdroje',
+      drm: 'free',
+    } as StoreBook));
+}
+
+export function wikisourceParseUrl(lang: string, page: string): string {
+  return `https://${lang}.wikisource.org/w/api.php?action=parse&format=json&formatversion=2&redirects=1&origin=*&prop=text%7Clinks&disableeditsection=1&page=${enc(page.replace(/ /g, '_'))}`;
+}
+
+/** Kapitoly (podstránky „Název/…“) v pořadí podle obsahu knihy – rozhraní vrací odkazy podle abecedy. */
+export function wikisourceChapterOrder(real: string, parse: { text?: string; links?: { ns?: number; title?: string; exists?: boolean }[] }): string[] {
+  const existing = new Set((parse.links ?? []).filter((l) => l.ns === 0 && l.exists !== false).map((l) => l.title ?? ''));
+  const order: string[] = [];
+  const seen = new Set<string>();
+  for (const m of (parse.text ?? '').matchAll(/<a\b[^>]*>/gi)) {
+    const tag = m[0];
+    const title = /\btitle="([^"]*)"/.exec(tag)?.[1];
+    const href = /\bhref="([^"]*)"/.exec(tag)?.[1] ?? '';
+    let t = title ? decodeHtml(title) : href.includes('/wiki/') ? safeDecode(href.split('/wiki/')[1]).replace(/_/g, ' ') : '';
+    t = t.split('#')[0];
+    if (t.startsWith(`${real}/`) && !seen.has(t) && (!existing.size || existing.has(t))) {
+      seen.add(t);
+      order.push(t);
+    }
+  }
+  for (const t of [...existing].sort()) if (t.startsWith(`${real}/`) && !seen.has(t)) { seen.add(t); order.push(t); }
+  return order;
+}
+
+function safeDecode(s: string): string {
+  try {
+    return decodeURIComponent(s);
+  } catch {
+    return s;
+  }
+}
+function decodeHtml(s: string): string {
+  return s.replace(/&quot;/g, '"').replace(/&#039;|&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+}
+
+const WS_DROP = ['ws-noexport', 'noprint', 'mw-editsection', 'navbox', 'headertemplate', 'header_notes', 'ws-header', 'reference', 'mw-references-wrap'];
+
+/** HTML stránky Wikizdrojů bez navigace, poznámek editorů a odkazů (prvek s danou třídou se odebere i s obsahem). */
+export function wikisourceClean(html: string): string {
+  let out = html.replace(/<(style|script)\b[\s\S]*?<\/\1>/gi, '');
+  const open = /<([a-z][a-z0-9]*)\b([^>]*)>/gi;
+  let m: RegExpExecArray | null;
+  while ((m = open.exec(out))) {
+    const cls = /\b(?:class|id)="([^"]*)"/.exec(m[2])?.[1] ?? '';
+    if (!cls || !cls.split(/\s+/).some((c) => WS_DROP.includes(c)) || m[0].endsWith('/>')) continue;
+    const tag = m[1].toLowerCase();
+    const re = new RegExp(`<(/)?${tag}\\b[^>]*>`, 'gi');
+    re.lastIndex = m.index + m[0].length;
+    let depth = 1, end = out.length, t: RegExpExecArray | null;
+    while ((t = re.exec(out))) {
+      if (t[0].endsWith('/>')) continue;
+      depth += t[1] ? -1 : 1;
+      if (!depth) { end = t.index + t[0].length; break; }
+    }
+    out = out.slice(0, m.index) + out.slice(end);
+    open.lastIndex = m.index;
+  }
+  return out;
 }

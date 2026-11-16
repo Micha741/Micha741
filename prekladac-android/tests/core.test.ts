@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { addImage, emptyBook, insertImage, type Book } from '../src/core/book';
+import { addImage, coverKind, cropRect, emptyBook, imageAsCover, insertImage, insertImages, listImages, replaceImage, watermarkBook, type Book } from '../src/core/book';
 import { cp1250Decode, decodeAny, fromBase64, toBase64, utf8Decode, utf8Encode } from '../src/core/bytes';
 import { readBook, writeBook, bookPlainText } from '../src/core/formats';
 import { compressPalmDoc, decompressPalmDoc, readPdb } from '../src/core/palmdoc';
@@ -494,4 +494,139 @@ test('PDF s heslem: bez hesla dotaz, špatné heslo, správné heslo uživatele 
     assert.equal(tries(f, 'majitel'), 'ok3', f); // heslo vlastníka
   }
   assert.equal(tries('heslo.pdf', 'tajne'), 'ok3');
+});
+
+test('oříznutí: vystředěný výřez se zvoleným poměrem stran', () => {
+  assert.deepEqual(cropRect(1024, 1024, 2 / 3), { originX: 170, originY: 0, width: 683, height: 1024 });
+  assert.deepEqual(cropRect(1024, 1536, 2 / 3), { originX: 0, originY: 0, width: 1024, height: 1536 }); // už je 2:3
+  assert.deepEqual(cropRect(800, 600, 1), { originX: 100, originY: 0, width: 600, height: 600 });
+  assert.deepEqual(cropRect(600, 800, 16 / 9), { originX: 0, originY: 231, width: 600, height: 338 });
+});
+
+test('více obrázků najednou v pořadí výběru, obrázek jako obálka, úprava dat bez změny názvu', () => {
+  const book: Book = emptyBook('Kniha');
+  book.chapters = [{ title: 'Jedna', blocks: [{ type: 'p', text: 'Text.' }] }];
+  const a = addImage(book, png(), 'image/png'), b = addImage(book, png(), 'image/png');
+  insertImages(book, 0, [a, b], 'start');
+  assert.deepEqual(book.chapters[0].blocks.filter((x) => x.type === 'img').map((x) => (x as { name: string }).name), [a, b]);
+  const c = addImage(book, png(), 'image/png'), d = addImage(book, png(), 'image/png');
+  insertImages(book, 0, [c, d], 'end');
+  assert.deepEqual(listImages(book).map((x) => x.name), [a, b, c, d]);
+  imageAsCover(book, c);
+  assert.ok(book.cover && book.cover !== c && book.images[book.cover]);
+  assert.ok(book.images[c], 'obrázek v kapitole zůstane');
+  const jpg = new Uint8Array([0xff, 0xd8, 0xff, 1, 2, 3]);
+  replaceImage(book, a, jpg);
+  assert.equal(book.images[a].mime, 'image/jpeg');
+  assert.equal(book.images[a].data, jpg);
+});
+
+const META = { subtitle: 'Podtitul', publisher: 'Vydavatel', date: '2025-03-01', isbn: '978-80-1', description: 'Krátká anotace.',
+  subjects: 'fantasy, dobrodružství', series: 'Sága', series_index: '2', rights: '© Autor' };
+const META_BACK: Record<string, (keyof typeof META)[]> = {
+  epub: ['subtitle', 'publisher', 'date', 'isbn', 'description', 'subjects', 'series', 'series_index', 'rights'],
+  kniha: ['subtitle', 'publisher', 'date', 'isbn', 'description', 'subjects', 'series', 'series_index', 'rights'],
+  docx: ['subtitle', 'subjects', 'description', 'isbn', 'series', 'series_index'],
+  mobi: ['publisher', 'description', 'isbn', 'subjects', 'rights'],
+};
+for (const fmt of ['epub', 'docx', 'mobi', 'kniha'] as const) {
+  test(`${fmt}: metadata (karta Metadata) se uloží a načtou zpět`, async () => {
+    const src = sample();
+    src.meta = { ...META };
+    const back = await readBook(await writeBook(src, fmt), fmt === 'kniha' ? 'k.kniha.json' : `k.${fmt}`);
+    const want = Object.fromEntries(META_BACK[fmt].map((k) => [k, META[k]]));
+    assert.deepEqual(back.meta, want);
+    assert.deepEqual(back.chapters.map((c) => c.title), ['Bouře', 'Mapa', 'Návrat'], 'kapitoly beze ztráty');
+  });
+}
+
+test('obálka nebo název: s obálkou bez titulní strany, bez obálky jen název', async () => {
+  const JSZip = (await import('jszip')).default;
+  const opfOf = async (b: Book) => {
+    const z = await JSZip.loadAsync(await writeBook(b, 'epub'));
+    return { opf: await z.file('OEBPS/content.opf')!.async('string'), title: !!z.file('OEBPS/title.xhtml'), svg: !!z.file('OEBPS/images/cover.svg') };
+  };
+  const withCover = sample();
+  assert.equal(coverKind(withCover), 'image');
+  let r = await opfOf(withCover);
+  assert.ok(!r.title && !r.svg && r.opf.includes('<dc:title>Strážce majáku</dc:title>'), 'obrázek obálky: název jen v metadatech');
+  const text = sample(false);
+  assert.equal(coverKind(text), 'text');
+  r = await opfOf(text);
+  assert.ok(!r.title && r.svg, 'obálka s názvem: bez další titulní strany');
+  const none = { ...sample(false), coverMode: 'none' as const };
+  assert.equal(coverKind(none), 'none');
+  r = await opfOf(none);
+  assert.ok(r.title && !r.svg, 'bez obálky jen titulní strana s názvem');
+  assert.ok(!pdfHtml(withCover).includes('class="titlepage"') && pdfHtml(none).includes('class="titlepage"') && !pdfHtml(none).includes('class="cover"'));
+  for (const b of [withCover, text, none]) {
+    const back = await readBook(await writeBook(b, 'mobi'), 'k.mobi');
+    assert.deepEqual(back.chapters.map((c) => c.title), ['Bouře', 'Mapa', 'Návrat']);
+  }
+  const docx = await readBook(await writeBook(withCover, 'docx'), 'k.docx');
+  assert.ok(docx.cover, 'obálka DOCX se pozná i bez titulní strany');
+});
+
+test('vodoznak: věta „Licence pro“ na konci každé kapitoly, originál beze změny', () => {
+  const b = sample(false);
+  const w = watermarkBook(b, 'Jana Nováková');
+  assert.ok(w.chapters.every((c) => { const last = c.blocks[c.blocks.length - 1]; return last.type === 'p' && last.text.startsWith('Licence pro: Jana Nováková'); }));
+  assert.equal(w.meta?.rights, 'Licence pro: Jana Nováková');
+  assert.ok(!b.chapters[0].blocks.some((x) => x.type === 'p' && x.text.startsWith('Licence pro')));
+  assert.equal(watermarkBook(b, '  '), b);
+});
+
+test('hledání: Open Library (volné dílo ke stažení, výpůjčka = DRM) a Wikizdroje (bez kapitol a rozcestníků)', async () => {
+  const { parseOpenLibraryFull, parseWikisourceSearch, opensLabel, wikisourceChapterOrder, wikisourceClean } = await import('../src/core/sources');
+  const ol = parseOpenLibraryFull({ docs: [
+    { key: '/works/OL1W', title: 'Frankenstein', author_name: ['Mary Shelley'], ebook_access: 'public', ia: ['frank1818'], cover_i: 7 },
+    { key: '/works/OL2W', title: 'Nová kniha', ebook_access: 'borrowable', ia: ['nova'] },
+    { key: '/works/OL3W', title: 'Jen katalog', ebook_access: 'no_ebook' },
+  ] });
+  assert.equal(ol[0].download, 'https://archive.org/download/frank1818/frank1818.epub');
+  assert.equal(opensLabel(ol[0]), '✓ otevře Překladač');
+  assert.equal(ol[1].drm, 'drm');
+  assert.ok(!ol[1].download && opensLabel(ol[1]).includes('DRM'));
+  assert.equal(ol[2].drm, 'none');
+  const ws = parseWikisourceSearch({ query: { search: [{ title: 'Babička', pageid: 1 }, { title: 'Babička/I', pageid: 2 }, { title: 'Kytice (rozcestník)', pageid: 3 }] } });
+  assert.deepEqual(ws.map((b) => b.download), ['wikisource:cs:Babička']);
+  const order = wikisourceChapterOrder('Babička', {
+    text: '<a href="/wiki/Babi%C4%8Dka/I" title="Babička/I">I</a><a title="Babička/II">II</a><a title="Babička/IV">IV</a><a title="Babička/III">III</a><a title="Jiná">x</a>',
+    links: ['Babička/I', 'Babička/II', 'Babička/III', 'Babička/IV', 'Babička/IX', 'Jiná'].map((t) => ({ ns: 0, title: t, exists: true })),
+  });
+  assert.deepEqual(order, ['Babička/I', 'Babička/II', 'Babička/IV', 'Babička/III', 'Babička/IX']);
+  const clean = wikisourceClean('<div class="ws-noexport"><div>Navigace</div>skryto</div><p>Text kapitoly.</p><span class="mw-editsection">[upravit]</span><sup class="reference">[1]</sup>');
+  assert.equal(clean, '<p>Text kapitoly.</p>');
+});
+
+test('Wikizdroje: kniha z hlavní stránky a kapitol v pořadí obsahu', async () => {
+  const { wikisourceBook, parseWikisourceLink } = await import('../src/core/wikisource');
+  assert.deepEqual(parseWikisourceLink('wikisource:cs:Babička'), { lang: 'cs', title: 'Babička' });
+  const pages: Record<string, any> = {
+    'Babička': { title: 'Babička', text: '<a title="Babička/II">II</a><a title="Babička/I">I</a>', links: [{ ns: 0, title: 'Babička/I' }, { ns: 0, title: 'Babička/II' }] },
+    'Babička/I': { title: 'Babička/I', text: '<div class="ws-header">hlavička</div><p>Byla jednou jedna babička.</p>' },
+    'Babička/II': { title: 'Babička/II', text: '<p>Druhá kapitola.</p>' },
+  };
+  const get = async (url: string) => ({ parse: pages[decodeURIComponent(/page=([^&]+)/.exec(url)![1]).replace(/_/g, ' ')] });
+  const b = await wikisourceBook(get, 'cs', 'Babička');
+  assert.deepEqual(b.chapters.map((c) => c.title), ['II', 'I']);
+  assert.equal((b.chapters[1].blocks[0] as any).text, 'Byla jednou jedna babička.');
+  await assert.rejects(wikisourceBook(async () => ({ error: { info: 'Stránka neexistuje' } }), 'cs', 'X'), /Stránka neexistuje/);
+});
+
+test('čtečka: dvě stránky na šířku (lze vypnout) a začátek knihy podle obálky', () => {
+  const b = sample(false);
+  assert.ok(chapterHtml(b, 0, DEFAULT_PREFS).includes('@media (orientation:landscape){.pg{column-width:auto;column-count:2}}'));
+  assert.ok(!chapterHtml(b, 0, { ...DEFAULT_PREFS, spread: false }).includes('column-count:2'));
+  assert.ok(chapterHtml(b, 0, DEFAULT_PREFS).includes('figure class="cover"'), 'obálka s názvem');
+  const none = chapterHtml({ ...b, coverMode: 'none' }, 0, DEFAULT_PREFS);
+  assert.ok(none.includes('class="titlepg"') && none.includes('Strážce majáku') && !none.includes('figure class="cover"'), 'bez obálky jen název');
+  assert.ok(!chapterHtml(b, 1, DEFAULT_PREFS).includes('class="titlepg"'));
+});
+
+test('historie verzí: nejnovější záznam odpovídá verzi v app.json', async () => {
+  const { ANDROID_HISTORY } = await import('../src/core/changelog');
+  const app = JSON.parse(readFileSync(`${process.cwd()}/app.json`, 'utf8'));
+  assert.equal(ANDROID_HISTORY[0].version, app.expo.version, 'nová verze v app.json musí mít záznam v src/core/changelog.ts');
+  assert.ok(ANDROID_HISTORY.every((r) => r.items.length));
 });

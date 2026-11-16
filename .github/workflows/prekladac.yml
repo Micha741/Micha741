@@ -49,6 +49,10 @@ jobs:
       - name: Sestavení programu (složka, bez rozbalování do Temp)
         run: |
           "VERSION = `"1.0.$env:GITHUB_RUN_NUMBER`"" | Set-Content -Encoding utf8 version.py
+          # historie verzí: „Nová verze“ dostane číslo a datum sestavení (v repozitáři zůstane „Nová verze“)
+          $cl = [IO.File]::ReadAllText("$PWD\assets\changelog.md")
+          $cl = $cl.Replace("**Nová verze**", "**1.0.$env:GITHUB_RUN_NUMBER ($((Get-Date).ToString('d. M. yyyy')))**")
+          [IO.File]::WriteAllText("$PWD\assets\changelog.md", $cl, (New-Object Text.UTF8Encoding $false))
           python tools/make_version_info.py build/version_info.txt
           # DLL knihovny sentencepiece leží vedle balíčku ve složce sentencepiece.libs (delvewheel) – přibalit ručně
           $spl = python -c "import sentencepiece, os; print(os.path.normpath(os.path.join(os.path.dirname(sentencepiece.__file__), os.pardir, 'sentencepiece.libs')))"

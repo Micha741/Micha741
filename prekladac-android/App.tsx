@@ -6,15 +6,16 @@ import { useKeepAwake } from 'expo-keep-awake';
 import { blockText, bookProgress, chapterHtml, DEFAULT_PREFS, parseReaderMessage, searchBook, THEMES, TURNS, type ReaderPrefs, type ReaderTheme, type ReaderTurn, type StartAt } from './src/core/reader';
 import { addVocab, MARK_COLORS, vocabText, type Highlight, type LibraryEntry, type MarkColor, type VocabItem } from './src/core/library';
 import * as Speech from 'expo-speech';
-import { addToHistory, googleBooksSuggestUrl, googleBooksUrl, parseGoogleBooksFull, type StoreBook, gutendexUrl, KIND_LABEL, mergeSuggestions, openLibrarySuggestUrl, parseGoogleBooks, parseGutendex, parseOpenLibrary, SOURCES, suggestionQuery, type FoundBook, type SourceKind, type Suggestion } from './src/core/sources';
+import { ANDROID_HELP, ANDROID_HISTORY } from './src/core/changelog';
+import { addToHistory, googleBooksSuggestUrl, googleBooksUrl, opensLabel, openLibraryUrl, parseGoogleBooksFull, parseOpenLibraryFull, parseWikisourceSearch, wikisourceSearchUrl, type StoreBook, gutendexUrl, KIND_LABEL, mergeSuggestions, openLibrarySuggestUrl, parseGoogleBooks, parseGutendex, parseOpenLibrary, SOURCES, suggestionQuery, type FoundBook, type SourceKind, type Suggestion } from './src/core/sources';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { addImage, bookStats, insertImage, pruneImages, type Book } from './src/core/book';
+import { addImage, bookStats, cleanMeta, coverKind, CROPS, META_FIELDS, watermarkBook, IMG_SIZES, imageAsCover, insertImages, listImages, pruneImages, removeImageAt, replaceImage, setImageSize, type Book, type BookMeta, type ImgSize } from './src/core/book';
 import { toBase64 } from './src/core/bytes';
 import { OUTPUT_FORMATS, type OutputFormat } from './src/core/formats';
 import { CLAUDE_MODELS, DEFAULT_CLAUDE_MODEL, DEFAULT_GEMINI_MODEL, ENGINES, LANGUAGES, makeTranslator, setOfflineBackend, translateBook, type EngineId } from './src/core/translate';
 import Mlkit from './modules/mlkit-translate/src/MlkitTranslateModule';
 import { BUILTIN_SKINS, type Skin } from './src/core/skins';
-import { addToLibrary, downloadBook, installSkinFromPicker, loadInstalledSkins, loadLibrary, loadLibraryBook, loadSettings, makeOutput, openBookUri, pickBook, pickImage, removeFromLibrary, removeSkin, reopenPdf, saveOutputToFolder, saveSettings, saveVocab, loadVocab, shareOutput, shareText, updateEntry, type Output, type Settings } from './src/platform';
+import { addToLibrary, downloadBook, installSkinFromPicker, loadInstalledSkins, loadLibrary, loadLibraryBook, loadSettings, makeOutput, openBookUri, pickBook, pickImage, pickImages, removeFromLibrary, removeSkin, reopenPdf, saveOutputToFolder, saveSettings, saveVocab, loadVocab, shareOutput, shareText, transformImage, updateEntry, type Output, type Settings } from './src/platform';
 
 import appConfig from './app.json';
 
@@ -216,7 +217,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={st.root} edges={['top', 'bottom']}>
-        <StatusBar style={isDark(C.sidebar) ? 'light' : 'dark'} />
+        <StatusBar style={isDark(C.sidebar) ? 'light' : 'dark'} hidden={!!reading && !!settings.reader?.fullscreen} />
         {reading ? (
           <ReaderView
             reading={reading}
@@ -312,7 +313,10 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
   const [output, setOutput] = useState<Output | null>(null);
   const [translated, setTranslated] = useState<Book | null>(null);
   const [translate, setTranslate] = useState(true);
-  const [imgPick, setImgPick] = useState<Uint8Array | null>(null);
+  const [imgPick, setImgPick] = useState<Uint8Array[] | null>(null);
+  const [imgEdit, setImgEdit] = useState(false);
+  const [cropFor, setCropFor] = useState<string | null>(null);
+  const [metaEdit, setMetaEdit] = useState<BookMeta | null>(null);
   const [rtab, setRtab] = useState(1);
   const abort = useRef<AbortController | null>(null);
   const engine = (settings.engine as EngineId) || 'google';
@@ -346,10 +350,10 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
     setTranslated(null);
   };
 
-  const setCover = async () => {
+  const applyCover = async (crop: boolean) => {
     if (!book) return;
     try {
-      const data = await pickImage();
+      const data = await pickImage({ cropCover: crop });
       if (!data) return;
       book.cover = addImage(book, data, 'image/jpeg');
       pruneImages(book);
@@ -360,10 +364,31 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
     }
   };
 
+  const setCover = () =>
+    Alert.alert('Obálka', 'Vyberte obrázek z galerie. Oříznout ho můžete hned na poměr obálky 2:3, nebo použít celý (zobrazí se celý, nic se neořízne).', [
+      { text: 'Zrušit', style: 'cancel' },
+      { text: 'Celý obrázek', onPress: () => applyCover(false) },
+      { text: '✂ Oříznout 2:3', onPress: () => applyCover(true) },
+    ]);
+
   const startInsert = async () => {
     try {
-      const data = await pickImage();
-      if (data) setImgPick(data);
+      const list = await pickImages();
+      if (!list.length || !book) return;
+      if (!book.cover) {
+        // první obrázek se nabídne jako obálka (jako ve Windows)
+        Alert.alert('Obálka', list.length > 1 ? 'Použít první vybraný obrázek jako obálku knihy?' : 'Použít obrázek jako obálku knihy?', [
+          { text: 'Ne, vložit do textu', onPress: () => setImgPick(list) },
+          {
+            text: 'Ano, obálka', onPress: () => {
+              book.cover = addImage(book, list[0], 'image/jpeg');
+              changed(book);
+              say('🖼 Obálka nastavena.');
+              if (list.length > 1) setImgPick(list.slice(1));
+            },
+          },
+        ]);
+      } else setImgPick(list);
     } catch (e) {
       fail(e);
     }
@@ -371,10 +396,26 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
 
   const insertInto = (chapter: number, where: 'start' | 'end') => {
     if (!book || !imgPick) return;
-    insertImage(book, chapter, addImage(book, imgPick, 'image/jpeg'), where);
+    insertImages(book, chapter, imgPick.map((d) => addImage(book, d, 'image/jpeg')), where);
+    const n = imgPick.length;
     setImgPick(null);
     changed(book);
-    say(`🖼 Obrázek vložen na ${where === 'start' ? 'začátek' : 'konec'} kapitoly ${chapter + 1}.`);
+    say(`🖼 ${n > 1 ? `${n} obrázků vloženo` : 'Obrázek vložen'} na ${where === 'start' ? 'začátek' : 'konec'} kapitoly ${chapter + 1}.`);
+  };
+
+  /** Otočení nebo oříznutí obrázku (v kapitole i obálky) – název obrázku zůstane, změní se jen data. */
+  const editImage = async (name: string, op: { rotate?: number; aspect?: number }, what: string) => {
+    if (!book?.images[name]) return;
+    try {
+      setBusy('Upravuji obrázek…');
+      replaceImage(book, name, await transformImage(book.images[name].data, op));
+      changed(book);
+      say(`🖼 ${what}.`);
+    } catch (e) {
+      fail(e);
+    } finally {
+      setBusy('');
+    }
   };
 
   const run = async () => {
@@ -394,6 +435,10 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
         say('✓ Přeloženo.');
       }
       setBusy(`Ukládám ${OUTPUT_FORMATS.find((f) => f.id === fmt)!.label}…`);
+      if (settings.watermarkOn && settings.watermark?.trim()) {
+        result = watermarkBook(result, settings.watermark);
+        say(`🔏 Vodoznak: Licence pro ${settings.watermark.trim()}`);
+      }
       const out = await makeOutput(result, fmt);
       setOutput(out);
       say(`✓ Uloženo: ${out.name}`);
@@ -417,7 +462,7 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
   return (
     <View style={{ flex: 1, backgroundColor: C.window }}>
       <Ribbon
-        tabs={['Soubor', 'Překlad', 'Uložit jako', 'Obrázky']}
+        tabs={['Soubor', 'Překlad', 'Uložit', 'Obrázky', 'Metadata']}
         active={rtab}
         onTab={setRtab}
         actions={
@@ -454,18 +499,40 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
           </>
         )}
         {rtab === 2 && (
-          <Group label="Výstupní formát">
-            <Chips items={OUTPUT_FORMATS.map((f) => ({ id: f.id, label: f.label }))} value={fmt} onChange={(v) => update({ format: v })} rows={2} />
-          </Group>
+          <>
+            <Group label="Výstupní formát">
+              <Chips items={OUTPUT_FORMATS.map((f) => ({ id: f.id, label: f.label }))} value={fmt} onChange={(v) => update({ format: v })} rows={2} />
+            </Group>
+            <Group label="Ochrana knihy (vodoznak)">
+              <View style={{ gap: 4, width: 200 }}>
+                <Chips items={[{ id: 'off', label: 'vypnuto' }, { id: 'on', label: '🔏 zapnuto' }]} value={settings.watermarkOn ? 'on' : 'off'} onChange={(v) => update({ watermarkOn: v === 'on' })} />
+                <TextInput style={[st.input, { paddingVertical: 4 }]} value={settings.watermark ?? ''} onChangeText={(v) => update({ watermark: v })} placeholder="Licence pro: jméno, e-mail…" placeholderTextColor={C.disabled} />
+              </View>
+            </Group>
+          </>
         )}
         {rtab === 3 && (
           <>
             <Group label="Obálka">
               <Big icon="🖼️" label="Obálka…" onPress={setCover} disabled={!book} />
-              <Big icon="✖️" label="Odebrat" onPress={() => { if (book) { book.cover = undefined; pruneImages(book); changed(book); } }} disabled={!book?.cover} />
+              <Big icon="🅰️" label="S názvem" onPress={() => { if (book) { book.cover = undefined; book.coverMode = 'text'; pruneImages(book); changed(book); say('🅰 Obálka s názvem a autorem (bez další titulní strany).'); } }} on={!!book && coverKind(book) === 'text'} disabled={!book} />
+              <Big icon="🔤" label="Jen název" onPress={() => { if (book) { book.cover = undefined; book.coverMode = 'none'; pruneImages(book); changed(book); say('🔤 Bez obálky – na začátku jen název knihy.'); } }} on={!!book && coverKind(book) === 'none'} disabled={!book} />
             </Group>
             <Group label="Vložení">
-              <Big icon="➕" label="Obrázek…" onPress={startInsert} disabled={!book} />
+              <Big icon="➕" label="Obrázky…" onPress={startInsert} disabled={!book} />
+              <Big icon="🛠️" label="Upravit…" onPress={() => setImgEdit(true)} disabled={!book || (!book.cover && !listImages(book).length)} />
+            </Group>
+          </>
+        )}
+        {rtab === 4 && (
+          <>
+            <Group label="Údaje o knize">
+              <Big icon="📝" label="Upravit…" onPress={() => book && setMetaEdit({ ...(book.meta ?? {}) })} disabled={!book} />
+            </Group>
+            <Group label="Vyplněno">
+              <Text style={[st.paperHint, { width: 210 }]} numberOfLines={4}>
+                {book ? (Object.keys(cleanMeta(book.meta)).length ? META_FIELDS.filter((f) => cleanMeta(book.meta)[f.key]).map((f) => f.label).join(', ') : 'zatím nic – anotace, série, ISBN… se uloží do EPUB, Kindle a Wordu') : '—'}
+              </Text>
             </Group>
           </>
         )}
@@ -497,7 +564,7 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
                   {cover ? (
                     <Image source={{ uri: `data:${cover.mime};base64,${toBase64(cover.data)}` }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
                   ) : (
-                    <Text style={[st.paperHint, { textAlign: 'center' }]}>＋{'\n'}obálka</Text>
+                    <Text style={[st.paperHint, { textAlign: 'center' }]}>{coverKind(book) === 'none' ? `jen název${'\n'}＋ obálka` : `🅰 obálka${'\n'}s názvem`}</Text>
                   )}
                 </Pressable>
                 <View style={{ flex: 1, gap: 4 }}>
@@ -554,7 +621,7 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
       <Modal visible={!!imgPick} animationType="slide" transparent onRequestClose={() => setImgPick(null)}>
         <View style={st.modalBack}>
           <View style={st.modal}>
-            <Text style={st.docHeading}>Kam vložit obrázek?</Text>
+            <Text style={st.docHeading}>{(imgPick?.length ?? 0) > 1 ? `Kam vložit ${imgPick!.length} obrázků?` : 'Kam vložit obrázek?'}</Text>
             <ScrollView style={{ maxHeight: 420 }}>
               {book?.chapters.map((c, i) => (
                 <View key={i} style={st.chapterRow}>
@@ -568,6 +635,87 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
           </View>
         </View>
       </Modal>
+
+      <Modal visible={imgEdit && !!book} animationType="slide" transparent onRequestClose={() => { setImgEdit(false); setCropFor(null); }}>
+        <View style={st.modalBack}>
+          <View style={st.modal}>
+            <Text style={st.docHeading}>Obrázky v knize</Text>
+            <Text style={st.paperHint}>Velikost, celá stránka (obrázek sám na stránce), otočení, oříznutí, obálka.</Text>
+            <ScrollView style={{ maxHeight: 480 }}>
+              {book && book.cover && book.images[book.cover] ? (
+                <ImageRow book={book} name={book.cover} title="Obálka" busy={!!busy}
+                  cropOpen={cropFor === book.cover} onCrop={() => setCropFor(cropFor === book.cover ? null : book.cover!)}
+                  onRotate={() => editImage(book.cover!, { rotate: 90 }, 'Obálka otočena')}
+                  onAspect={(a, l) => { setCropFor(null); editImage(book.cover!, { aspect: a }, `Obálka oříznuta (${l})`); }}
+                  onRemove={() => { book.cover = undefined; pruneImages(book); changed(book); say('🔤 Obálka jen s názvem a autorem.'); }} />
+              ) : null}
+              {book ? listImages(book).map((it) => (
+                <ImageRow key={`${it.chapter}-${it.idx}`} book={book} name={it.name} title={`Kapitola ${it.chapter + 1}: ${book.chapters[it.chapter].title}`} busy={!!busy}
+                  size={it.size} onSize={(sz) => { setImageSize(book, it.chapter, it.idx, sz); changed(book); }}
+                  cropOpen={cropFor === `${it.chapter}-${it.idx}`} onCrop={() => setCropFor(cropFor === `${it.chapter}-${it.idx}` ? null : `${it.chapter}-${it.idx}`)}
+                  onRotate={() => editImage(it.name, { rotate: 90 }, 'Obrázek otočen')}
+                  onAspect={(a, l) => { setCropFor(null); editImage(it.name, { aspect: a }, `Obrázek oříznut (${l})`); }}
+                  onCover={() => { imageAsCover(book, it.name); changed(book); say('🖼 Obrázek použit jako obálka.'); }}
+                  onRemove={() => { removeImageAt(book, it.chapter, it.idx); changed(book); say('🗑 Obrázek odebrán.'); }} />
+              )) : null}
+            </ScrollView>
+            <Btn label="Hotovo" onPress={() => { setImgEdit(false); setCropFor(null); }} primary />
+          </View>
+        </View>
+      </Modal>
+
+      <Modal visible={!!metaEdit && !!book} animationType="slide" transparent onRequestClose={() => setMetaEdit(null)}>
+        <View style={st.modalBack}>
+          <View style={st.modal}>
+            <Text style={st.docHeading}>Metadata knihy</Text>
+            <Text style={st.paperHint}>Uloží se do EPUB, Kindle (MOBI), Wordu a projektu pro počítač – čtečky a obchody je ukazují.</Text>
+            <ScrollView style={{ maxHeight: 460 }} keyboardShouldPersistTaps="handled">
+              {metaEdit ? META_FIELDS.map((f) => (
+                <View key={f.key} style={{ marginTop: 6 }}>
+                  <Text style={st.label}>{f.label}</Text>
+                  <TextInput style={[st.input, f.multiline && { minHeight: 90, textAlignVertical: 'top' }]} multiline={!!f.multiline} value={metaEdit[f.key] ?? ''}
+                    onChangeText={(v) => setMetaEdit({ ...metaEdit, [f.key]: v })} placeholder={f.hint} placeholderTextColor={C.disabled} keyboardType={f.key === 'series_index' ? 'number-pad' : 'default'} />
+                </View>
+              )) : null}
+            </ScrollView>
+            <View style={st.row}>
+              <Btn label="Uložit" primary onPress={() => { if (book && metaEdit) { book.meta = cleanMeta(metaEdit); changed(book); say('📝 Metadata uložena.'); } setMetaEdit(null); }} />
+              <Btn label="Zrušit" onPress={() => setMetaEdit(null)} />
+            </View>
+          </View>
+        </View>
+      </Modal>
+    </View>
+  );
+}
+
+/** Jeden obrázek v okně „Obrázky v knize“: náhled a úpravy. */
+function ImageRow({ book, name, title, size, busy, cropOpen, onSize, onRotate, onCrop, onAspect, onCover, onRemove }: {
+  book: Book; name: string; title: string; size?: ImgSize; busy: boolean; cropOpen: boolean;
+  onSize?: (s: ImgSize) => void; onRotate: () => void; onCrop: () => void; onAspect: (aspect: number, label: string) => void;
+  onCover?: () => void; onRemove: () => void;
+}) {
+  const im = book.images[name];
+  return (
+    <View style={[st.chapterRow, { alignItems: 'flex-start', gap: 10 }]}>
+      <Image source={{ uri: `data:${im.mime};base64,${toBase64(im.data)}` }} style={{ width: 60, height: 84, borderRadius: 2, backgroundColor: C.infobar }} resizeMode="contain" />
+      <View style={{ flex: 1, gap: 6 }}>
+        <Text style={{ color: C.text, fontWeight: '600' }} numberOfLines={2}>{title}</Text>
+        {onSize && size ? (
+          <Chips items={(Object.keys(IMG_SIZES) as ImgSize[]).map((k) => ({ id: k, label: IMG_SIZES[k].label }))} value={size} onChange={(v) => onSize(v as ImgSize)} />
+        ) : null}
+        <View style={[st.row, { flexWrap: 'wrap' }]}>
+          <Btn label="↻ Otočit" onPress={onRotate} small disabled={busy} />
+          <Btn label="✂ Oříznout" onPress={onCrop} small disabled={busy} />
+          {onCover ? <Btn label="📕 Obálka" onPress={onCover} small disabled={busy} /> : null}
+          <Btn label="🗑" onPress={onRemove} small disabled={busy} />
+        </View>
+        {cropOpen ? (
+          <View style={[st.row, { flexWrap: 'wrap' }]}>
+            {CROPS.map((c) => <Btn key={c.id} label={c.label} onPress={() => onAspect(c.aspect, c.label)} small primary={c.id === 'cover'} />)}
+          </View>
+        ) : null}
+      </View>
     </View>
   );
 }
@@ -622,6 +770,7 @@ function SettingsScreen({ settings, update, skin }: { settings: Settings; update
         ) : tab === 1 ? (
           <SkinsBox api={skin} />
         ) : (
+          <>
           <Box title="O programu">
             <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
               <Image source={require('./assets/logo.png')} style={{ width: 56, height: 56 }} />
@@ -636,6 +785,23 @@ function SettingsScreen({ settings, update, skin }: { settings: Settings; update
               verze pro Windows. AZW3 a KFX jako vstup a skeny PDF (OCR) zatím převádějte na počítači.
             </Text>
           </Box>
+          <Box title="Nápověda">
+            {ANDROID_HELP.map((h) => (
+              <View key={h.title} style={{ marginTop: 6 }}>
+                <Text style={[st.btnText, { fontWeight: '600' }]}>{h.title}</Text>
+                <Text style={st.hint}>{h.text}</Text>
+              </View>
+            ))}
+          </Box>
+          <Box title="Historie verzí">
+            {ANDROID_HISTORY.map((r) => (
+              <View key={r.version} style={{ marginTop: 6 }}>
+                <Text style={[st.btnText, { fontWeight: '600' }]}>{r.version}{r.date ? ` (${r.date})` : ' – nová verze'}{r.version === VERSION ? ' · tato verze' : ''}</Text>
+                {r.items.map((t, k) => <Text key={k} style={st.hint}>• {t}</Text>)}
+              </View>
+            ))}
+          </Box>
+          </>
         )}
       </ScrollView>
     </View>
@@ -1086,6 +1252,17 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
     setPanel('');
     web.current?.injectJavaScript('window.readerFirst&&window.readerFirst();true;');
   };
+  /** Čtení nahlas od zvoleného odstavce (podržení prstu na odstavci → Číst odsud); během čtení přeskočí na něj. */
+  const speakFrom = (i: number) => {
+    Speech.stop().catch(() => undefined);
+    speakingRef.current = true;
+    pausedRef.current = false;
+    setPaused(false);
+    setSpeaking(true);
+    setMenu(false);
+    setPanel('');
+    setTimeout(() => speakFromRef.current(i, 0), 60);
+  };
   useEffect(() => () => {
     speakingRef.current = false;
     Speech.stop().catch(() => undefined);
@@ -1241,6 +1418,10 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
             <Chips items={[{ id: '1.3', label: 'těsné' }, { id: '1.55', label: 'běžné' }, { id: '1.8', label: 'volné' }]} value={String(prefs.line)} onChange={(v) => setPrefs({ line: Number(v) })} />
             <Text style={st.label}>Okraje</Text>
             <Chips items={[{ id: '12', label: 'úzké' }, { id: '22', label: 'střední' }, { id: '34', label: 'široké' }]} value={String(prefs.margin)} onChange={(v) => setPrefs({ margin: Number(v) })} />
+            <Text style={st.label}>Stránky (telefon na šířku)</Text>
+            <Chips items={[{ id: '2', label: '📖 dvě vedle sebe' }, { id: '1', label: 'jedna' }]} value={prefs.spread === false ? '1' : '2'} onChange={(v) => setPrefs({ spread: v === '2' })} />
+            <Text style={st.label}>Celá obrazovka</Text>
+            <Chips items={[{ id: 'on', label: '⛶ skrýt horní lištu' }, { id: 'off', label: 's lištou' }]} value={prefs.fullscreen ? 'on' : 'off'} onChange={(v) => update({ reader: { ...prefs, fullscreen: v === 'on' } })} />
             <Text style={st.label}>Zarovnání</Text>
             <Chips items={[{ id: 'j', label: 'do bloku' }, { id: 'l', label: 'vlevo' }]} value={prefs.justify ? 'j' : 'l'} onChange={(v) => setPrefs({ justify: v === 'j' })} />
           </Pressable>
@@ -1268,6 +1449,7 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
               ) : null}
               <View style={[st.row, { marginTop: 4 }]}>
                 {tr.busy ? <ActivityIndicator color={C.accent} /> : <Btn label={sheet?.kind === 'word' ? '🌍 Přeložit slovo' : '🌍 Přeložit odstavec'} onPress={translateNow} primary />}
+                {sheet && sheet.i >= 0 ? <Btn label="🔊 Číst odsud" onPress={() => { const i = sheet.i; setSheet(null); speakFrom(i); }} /> : null}
                 {sheet?.kind === 'word' && tr.text && !tr.text.startsWith('⚠') ? <Text style={st.hint}>📒 Uloženo do slovníčku</Text> : null}
                 <Btn label="Zavřít" onPress={() => setSheet(null)} />
               </View>
@@ -1300,6 +1482,17 @@ function SearchScreen({ onBook, settings, update, library }: { onBook: (b: Book)
   const [lang, setLang] = useState('');
   const [found, setFound] = useState<FoundBook[] | null>(null);
   const [store, setStore] = useState<StoreBook[] | null>(null);
+  // katalogy hledané přímo v aplikaci (jako ve Windows) a stav každého z nich
+  const wsLang = lang && lang !== 'cs' ? lang : 'cs';
+  const CATS = [
+    { id: 'wikisource', name: 'Wikizdroje', url: (t: string) => wikisourceSearchUrl(t, wsLang), parse: (j: any) => parseWikisourceSearch(j, wsLang) },
+    { id: 'openlibrary', name: 'Open Library', url: (t: string) => openLibraryUrl(t, lang), parse: parseOpenLibraryFull },
+    { id: 'google', name: 'Google Books', url: (t: string) => googleBooksUrl(t, lang), parse: parseGoogleBooksFull },
+  ];
+  const cats = settings.searchCats ?? ['wikisource', 'openlibrary', 'google', 'gutenberg'];
+  const toggleCat = (id: string) => update({ searchCats: cats.includes(id) ? cats.filter((c) => c !== id) : [...cats, id] });
+  const [catStatus, setCatStatus] = useState<Record<string, string>>({});
+  const [onlyOpen, setOnlyOpen] = useState(false);
   const [open, setOpen] = useState('');
   const [busy, setBusy] = useState('');
   const [link, setLink] = useState('');
@@ -1345,21 +1538,37 @@ function SearchScreen({ onBook, settings, update, library }: { onBook: (b: Book)
     setFocus(false);
     update({ searchHistory: addToHistory(settings.searchHistory, text) });
     setBusy('Hledám knihy…');
-    // katalog Google Books (obchody, ukázky, volná díla) souběžně s Project Gutenberg
-    fetch(googleBooksUrl(text, lang))
-      .then((r) => (r.ok ? r.json() : null))
-      .then((j) => setStore(j ? parseGoogleBooksFull(j) : []))
-      .catch(() => setStore([]));
-    try {
-      const res = await fetch(gutendexUrl(text, lang));
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      setFound(parseGutendex(await res.json()).books.slice(0, 30));
-    } catch (e: any) {
-      setFound([]);
-      Alert.alert('Hledání', `Project Gutenberg teď neodpovídá (${e?.message ?? e}). Zkuste to za chvíli nebo použijte obchody a knihovny níže.`);
-    } finally {
-      setBusy('');
+    // katalogy (Wikizdroje, Open Library, Google Books) souběžně s Project Gutenberg; u každého počet nebo chyba
+    setStore(null);
+    setCatStatus({});
+    const catRuns = CATS.filter((c) => cats.includes(c.id)).map(async (c) => {
+      try {
+        const r = await fetch(c.url(text));
+        if (!r.ok) throw new Error(r.status === 429 ? 'příliš mnoho dotazů, zkuste později' : `HTTP ${r.status}`);
+        const list: StoreBook[] = c.parse(await r.json());
+        setCatStatus((s0) => ({ ...s0, [c.id]: `${list.length}` }));
+        return list;
+      } catch (e: any) {
+        setCatStatus((s0) => ({ ...s0, [c.id]: `⚠ ${e?.message ?? e}` }));
+        return [] as StoreBook[];
+      }
+    });
+    const all = Promise.all(catRuns).then((lists) => setStore(lists.flat()));
+    if (!cats.includes('gutenberg')) setFound(null);
+    else {
+      try {
+        const res = await fetch(gutendexUrl(text, lang));
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const g = parseGutendex(await res.json()).books.slice(0, 30);
+        setFound(g);
+        setCatStatus((s0) => ({ ...s0, gutenberg: `${g.length}` }));
+      } catch (e: any) {
+        setFound([]);
+        setCatStatus((s0) => ({ ...s0, gutenberg: `⚠ ${e?.message ?? e}` }));
+      }
     }
+    await all;
+    setBusy('');
   };
   const get = async (url: string, label: string) => {
     setBusy(`Stahuji: ${label}…`);
@@ -1397,19 +1606,28 @@ function SearchScreen({ onBook, settings, update, library }: { onBook: (b: Book)
             ) : null}
           </View>
         ) : null}
+        <View style={[st.row, { flexWrap: 'wrap', gap: 6 }]}>
+          {[...CATS, { id: 'gutenberg', name: 'Project Gutenberg' }].map((c) => (
+            <Pressable key={c.id} onPress={() => toggleCat(c.id)} style={[st.btn, st.btnSmall, cats.includes(c.id) && { borderColor: C.accent }]} accessibilityRole="checkbox" accessibilityState={{ checked: cats.includes(c.id) }}>
+              <Text style={st.btnText}>{cats.includes(c.id) ? '☑' : '☐'} {c.name}{catStatus[c.id] ? ` (${catStatus[c.id]})` : ''}</Text>
+            </Pressable>
+          ))}
+        </View>
         <Chips items={[{ id: '', label: 'všechny jazyky' }, { id: 'cs', label: 'čeština' }, { id: 'en', label: 'angličtina' }, { id: 'de', label: 'němčina' }, { id: 'fr', label: 'francouzština' }]} value={lang} onChange={setLang} />
         {busy ? <View style={st.row}><ActivityIndicator color={C.accent} /><Text style={st.hint}>{busy}</Text></View> : null}
       </View>
       <ScrollView contentContainerStyle={{ padding: 12, gap: 10 }} keyboardShouldPersistTaps="handled">
         {store && store.length ? (
-          <Box title={`Knihy v katalogu Google Books – ${store.length}`}>
-            {store.map((b) => (
+          <Box title={`Knihy v katalozích – ${store.length}`}>
+            <Chips items={[{ id: 'all', label: 'všechny' }, { id: 'open', label: '✓ jen ty, které otevře Překladač' }]} value={onlyOpen ? 'open' : 'all'} onChange={(v) => setOnlyOpen(v === 'open')} />
+            {store.filter((b) => !onlyOpen || b.download).map((b) => (
               <View key={b.id} style={[st.chapterRow, { alignItems: 'flex-start' }]}>
                 {b.cover ? <Image source={{ uri: b.cover }} style={[st.libCover, { width: 52, height: 76 }]} /> : <View style={[st.libCover, st.libNoCover, { width: 52, height: 76 }]}><Text>📖</Text></View>}
                 <View style={{ flex: 1, gap: 2 }}>
                   <Pressable onPress={() => setOpen(open === b.id ? '' : b.id)}>
                     <Text style={st.btnText} numberOfLines={open === b.id ? undefined : 2}>{b.title}</Text>
-                    <Text style={st.hint} numberOfLines={1}>{b.authors}{b.language ? ` · ${b.language}` : ''}{b.price ? ` · ${b.price}` : ''}</Text>
+                    <Text style={st.hint} numberOfLines={1}>{b.store ? `${b.store} · ` : ''}{b.authors}{b.language ? ` · ${b.language}` : ''}{b.price ? ` · ${b.price}` : ''}</Text>
+                    <Text style={[st.hint, { color: b.download ? C.ok : b.drm === 'drm' ? C.warn : C.disabled }]}>{opensLabel(b)}</Text>
                     {b.description ? <Text style={st.hint} numberOfLines={open === b.id ? undefined : 2}>{b.description}</Text> : null}
                   </Pressable>
                   <View style={[st.row, { gap: 6 }]}>
@@ -1535,8 +1753,8 @@ function makeStyles() {
   navItemOn: { backgroundColor: C.accent },
   navText: { fontSize: 11.5, color: C.sideText, marginTop: 2 },
   ribbon: { backgroundColor: C.surface, borderBottomWidth: 1, borderColor: C.ribbonBorder },
-  ribbonTabs: { flexDirection: 'row', paddingHorizontal: 6, borderBottomWidth: 1, borderColor: C.border, backgroundColor: C.surface },
-  ribbonTab: { paddingHorizontal: 12, paddingVertical: 8, borderTopLeftRadius: 6, borderTopRightRadius: 6, borderWidth: 1, borderColor: 'transparent', marginBottom: -1 },
+  ribbonTabs: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 4, borderBottomWidth: 1, borderColor: C.border, backgroundColor: C.surface },
+  ribbonTab: { paddingHorizontal: 9, paddingVertical: 8, borderTopLeftRadius: 6, borderTopRightRadius: 6, borderWidth: 1, borderColor: 'transparent', marginBottom: -1 },
   ribbonTabOn: { borderColor: C.border, borderBottomColor: C.surface, backgroundColor: C.surface },
   ribbonTabText: { color: C.text, fontSize: 13.5 },
   ribbonRow: { paddingHorizontal: 6, paddingVertical: 6, gap: 4, alignItems: 'stretch' },

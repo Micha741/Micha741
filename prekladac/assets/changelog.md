@@ -59,15 +59,79 @@
 
 # Historie verzí
 
-**1.0.38 – 1.0.41**
-- Údaje souboru u instalátoru i Prekladac.exe (verze souboru, autorská práva, popis).
-- Nastavení → Info: co program umí, historie verzí, plány a vlastní poznámky.
-- Stránka Překlad ve stylu Wordu: pás karet Soubory / Překlad / Obrázky a OCR, velká tlačítka Spustit,
-  Zastavit a Výstupní složka, stránka se seznamem souborů a pokyny.
-- Offline překlad v počítači bez internetu (Argos Translate): balíčky v Nastavení → Součásti nebo volitelně
-  v instalátoru, němčina a další jazyky přes angličtinu, jazyk originálu se pozná sám.
+**Nová verze**
+- Metadata (anotace, podtitul, žánr, série a díl, vydavatel, ISBN…) se ukládají i do PDF, ODT, FB2 a RTF
+  a při otevření hotové knihy (EPUB, Word, FB2, ODT, RTF, PDF) se načtou zpět do karty Metadata.
+- Anotace… → tlačítka „Převzít shrnutí děje“ (z osnovy) a „Převzít popis ze zadání“ (pro knihy z Napsat knihu).
+- Android 1.2.0: okno Obrázky v knize (velikost, celá stránka, otočení, oříznutí, obálka), více obrázků najednou,
+  obálka 2:3 nebo celý obrázek, obálka s názvem / jen název, karta Metadata, ochrana vodoznakem, Wikizdroje
+  a Open Library v hledání knih, čtečka: číst nahlas od odstavce, celá obrazovka, dvě stránky na šířku, Nápověda.
 
-**1.0.42 a novější**
+**1.0.112 (15. 11. 2026)**
+- Obálka a název: kniha s obálkou nemá navíc titulní stranu (název je jen v metadatech), kniha bez obálky
+  začíná jen názvem – EPUB, MOBI, Word, PDF, ODT, RTF, tisk i čtečka.
+- Oprava: při otevření knihy bez titulní strany se už neztrácí 1. kapitola.
+
+**1.0.108 (15. 11. 2026)**
+- Napsat knihu → Kniha → 📚 Další díl: zadání pro pokračování z hotové knihy (původní zadání, děj, postavy,
+  co se stalo v kapitolách); nový díl dostane sérii a číslo dílu v metadatech.
+
+**1.0.106 (15. 11. 2026)**
+- Obrázky bez textu (OCR nic nenajde) se přeskočí – žádný prázdný soubor ani stránka; v záznamu a v okně
+  Hotovo je vidět, které obrázky se přeskočily.
+
+**1.0.104 (15. 11. 2026)**
+- Okno knihy: karta Metadata (podtitul, anotace, vydavatel, datum, ISBN, žánr, série a díl, práva) – do EPUB,
+  MOBI a Wordu. Složka exportu v kartě Soubor, bez zdvojených tlačítek Uložit jako, Tisk a Exportovat.
+
+**1.0.102 (15. 11. 2026)**
+- Ochrana vlastní knihy (Export → Ochrana knihy): vodoznak „Licence pro: …“ a PDF s heslem (AES-256),
+  volitelně bez tisku a kopírování.
+- Překlad: skrývání pokynů pro překlad, po dokončení tlačítka 📖 Číst a ✏️ Upravit. Jinou knihu jde číst
+  i upravovat, zatímco AI píše knihu.
+
+**1.0.99 (14. 11. 2026)**
+- Překlad: karta Překladač (služba, stav, klíče a návody) – pás karet bez posouvání.
+- Hledat knihy jako v Calibre: název / autor / klíčové slovo, zdroje Project Gutenberg, Wikizdroje,
+  Open Library a Google Books, tabulka s cenou, DRM a sloupcem „Otevře Překladač“.
+
+**1.0.93 (14. 11. 2026)**
+- Napsat knihu: karta Kniha (osnova, psaní, zastavit, upravit) a karta Výstupní formáty.
+
+**1.0.91 (14. 11. 2026)**
+- Nápověda (levý panel, F1): popis programu a klávesové zkratky s hledáním.
+- Více obrázků: volba jeden dokument / každý zvlášť, přirozené pořadí stránek (2 před 10), DOCX se skutečným
+  datem vytvoření.
+
+**1.0.89 (14. 11. 2026)**
+- Čtečka: panel (obsah, hledání, označené) jde skrýt – spodní lišta, ✕, F9 nebo karta Vzhled.
+
+**1.0.87 (13. 11. 2026)**
+- Okno knihy: karta Export; čtečka: karta Vzhled.
+
+**1.0.84 (13. 11. 2026)**
+- Čtečka v levém panelu, český hlas Jirka (bez internetu) nebo Microsoft Jakub, přirozené hlasy Azure
+  a Google; klik do textu určí, odkud číst nahlas.
+- Celá obrazovka (F11), jedna nebo dvě stránky, hledání knih (Gutenberg, Google Books, obchody, knihovny).
+- Okno knihy: karta Hledání, obálka v panelu kapitol; klikací odkazy v návodech.
+
+**1.0.77 (12. 11. 2026)**
+- Obrázky: více najednou, velikosti, celá stránka, ořez a otočení, obálka s názvem a autorem.
+- Čtečka v okně knihy (F6): stránky, animace, obsah, záložky, zvýraznění, překlad, čtení nahlas.
+- PDF s heslem. Android 1.1.0: čtení nahlas, zvýraznění, slovníček, Google Books.
+
+**1.0.66 (10. 11. 2026)**
+- Skiny (vzhledy) i na Androidu, Google Cloud Translation, offline překlad v telefonu (ML Kit),
+  srozumitelné hlášky pro LibreTranslate, Ollama a HTTP 429.
+
+**1.0.63 (10. 11. 2026)**
+- Převody bez Calibre (EPUB, MOBI, PDB, DOCX, RTF, ODT, FB2, HTMLZ, TXT, PDF), instalátor o 300 MB menší.
+- První verze pro Android.
+
+**1.0.46 – 1.0.55 (9. 11. 2026)**
+- Editor knihy v hlavním okně, pás karet se šipkami, celá šířka stránky, otevření hotové knihy k úpravám.
+
+**1.0.42 – 1.0.45 (8.–9. 11. 2026)**
 - Editor knihy: karta Soubor (Uložit, Uložit jako, Exportovat, Tisk, Náhled tisku, Zavřít).
 - Uložit jako / Export do DOCX, PDF, EPUB, MOBI, AZW3, ODT, RTF a TXT (i jako projekt *.kniha.json).
 - Skrývání panelu kapitol v editoru (Zobrazení → Panel kapitol, F9), stav se pamatuje.
@@ -93,6 +157,14 @@
 - Mobilní verze pro Android (převod a překlad knih) se stejnými formáty a podobným vzhledem.
 - Napsat knihu → Soubor → Otevřít: i hotové knihy v DOCX, EPUB, TXT (i starší kódování Windows), MOBI, AZW3,
   PDB, FB2, ODT, RTF, PDF… – rozdělí se na kapitoly a uloží jako projekt vedle původního souboru.
+
+**1.0.38 – 1.0.41**
+- Údaje souboru u instalátoru i Prekladac.exe (verze souboru, autorská práva, popis).
+- Nastavení → Info: co program umí, historie verzí, plány a vlastní poznámky.
+- Stránka Překlad ve stylu Wordu: pás karet Soubory / Překlad / Obrázky a OCR, velká tlačítka Spustit,
+  Zastavit a Výstupní složka, stránka se seznamem souborů a pokyny.
+- Offline překlad v počítači bez internetu (Argos Translate): balíčky v Nastavení → Součásti nebo volitelně
+  v instalátoru, němčina a další jazyky přes angličtinu, jazyk originálu se pozná sám.
 
 **1.0.37**
 - Jazyk programu (EN/SK/DE) s možností doinstalovat další jazyky.
