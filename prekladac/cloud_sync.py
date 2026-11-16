@@ -1,4 +1,4 @@
-"""Synchronizace knih a čtení mezi Windows a Androidem přes Google Disk.
+"""Synchronizace knih a čtení mezi Windows a Androidem přes Google Disk nebo Synology / WebDAV (Nextcloud…).
 
 Na Disku je složka „Překladač“ (aplikace vidí jen soubory, které sama vytvořila – oprávnění drive.file):
 - sync.json – pro každou knihu místo čtení, záložky, označené odstavce s poznámkami a odkaz na soubor knihy,
@@ -97,10 +97,34 @@ class CloudError(Exception):
     pass
 
 
-class GoogleDrive:
+class Storage:
+    """Společné pro úložiště: sync.json ve složce Překladač (get_state / put_state / sync)."""
+
+    name = ""
+
+    def get_state(self) -> tuple[dict, str]:
+        raise NotImplementedError
+
+    def put_state(self, state: dict, file_id: str = "") -> str:
+        return self.upload(STATE_FILE, json.dumps(state, ensure_ascii=False).encode("utf-8"), "application/json", file_id)
+
+    def upload(self, name: str, data: bytes, mime: str, file_id: str = "") -> str:
+        raise NotImplementedError
+
+    def sync(self, local: dict) -> dict:
+        """Stáhne sync.json, sloučí s místním stavem a nahraje výsledek. Vrátí sloučený stav."""
+        remote, fid = self.get_state()
+        merged = merge_state(local, remote)
+        if merged != remote:
+            self.put_state(merged, fid)
+        return merged
+
+
+class GoogleDrive(Storage):
     """Přístup ke Google Disku. client_id a client_secret si uživatel vytvoří v Google Cloud (návod v programu),
     refresh_token vznikne po přihlášení kódem a ukládá se šifrovaně."""
 
+    name = "Google Disk"
     TOKEN_URL = "https://oauth2.googleapis.com/token"
     DEVICE_URL = "https://oauth2.googleapis.com/device/code"
     API = "https://www.googleapis.com/drive/v3/files"
@@ -222,16 +246,137 @@ class GoogleDrive:
         except ValueError:
             return {"v": 1, "books": {}}, f["id"]
 
-    def put_state(self, state: dict, file_id: str = "") -> str:
-        return self.upload(STATE_FILE, json.dumps(state, ensure_ascii=False).encode("utf-8"), "application/json", file_id)
 
-    def sync(self, local: dict) -> dict:
-        """Stáhne sync.json, sloučí s místním stavem a nahraje výsledek. Vrátí sloučený stav."""
-        remote, fid = self.get_state()
-        merged = merge_state(local, remote)
-        if merged != remote:
-            self.put_state(merged, fid)
-        return merged
+class WebDav(Storage):
+    """Synology (balíček WebDAV Server), Nextcloud, ownCloud a další WebDAV: složka Překladač na vašem serveru.
+    Id souboru = jeho název ve složce. Heslo se ukládá šifrovaně; pro Synology je lepší heslo aplikace / zvláštní účet."""
+
+    name = "Synology / WebDAV"
+
+    def __init__(self, url: str, user: str, password: str, folder: str = FOLDER, trust_cert: bool = False, opener=None):
+        url = (url or "").strip().rstrip("/")
+        if url and not re.match(r"^https?://", url, re.I):
+            url = "https://" + url
+        self.base, self.user, self.password = url, (user or "").strip(), password or ""
+        self.folder_name = (folder or FOLDER).strip("/ ") or FOLDER
+        self._open = opener
+        self._ctx = None
+        if trust_cert:  # vlastní (self-signed) certifikát NAS v domácí síti
+            import ssl
+
+            self._ctx = ssl._create_unverified_context()  # noqa: S323 – uživatel to výslovně zapnul pro svůj NAS
+        self._made = False
+
+    def _url(self, name: str = "") -> str:
+        parts = [urllib.parse.quote(self.folder_name)] + ([urllib.parse.quote(name)] if name else [])
+        return f"{self.base}/" + "/".join(parts) + ("" if name else "/")
+
+    def _req(self, method: str, url: str, data: bytes | None = None, headers: dict | None = None, ok=(200, 201, 204, 207)):
+        import base64
+
+        h = {"Authorization": "Basic " + base64.b64encode(f"{self.user}:{self.password}".encode()).decode()}
+        h.update(headers or {})
+        req = urllib.request.Request(url, data=data, method=method, headers=h)
+        try:
+            if self._open:
+                r = self._open(req, timeout=60)
+            else:
+                r = urllib.request.urlopen(req, timeout=60, context=self._ctx)
+            with r:
+                return r.status if hasattr(r, "status") else 200, r.read()
+        except urllib.error.HTTPError as e:
+            if e.code in ok:
+                return e.code, e.read()
+            raise CloudError(_explain_dav(e.code, method)) from None
+        except urllib.error.URLError as e:
+            reason = str(e.reason)
+            if "CERTIFICATE" in reason.upper():
+                raise CloudError("Server má vlastní (nedůvěryhodný) certifikát. V DSM zapněte certifikát Let's Encrypt, "
+                                 "nebo v Nastavení zaškrtněte „Důvěřovat certifikátu serveru“.") from None
+            raise CloudError(f"Server {self.base} není dostupný ({reason}). Je NAS zapnutý a adresa správná "
+                             "(i port, např. :5006 pro HTTPS)?") from None
+
+    def folder(self) -> str:
+        if not self.base or not self.user:
+            raise CloudError("Vyplňte adresu serveru WebDAV, uživatele a heslo (Nastavení → Služby a klíče).")
+        if not self._made:
+            try:
+                self._req("MKCOL", self._url(), ok=(201, 405))  # 405 = složka už existuje
+            except CloudError as e:
+                if "405" not in str(e):
+                    raise
+            self._made = True
+        return self.folder_name
+
+    def list_files(self) -> list[dict]:
+        self.folder()
+        _st, body = self._req("PROPFIND", self._url(), b'<?xml version="1.0"?><d:propfind xmlns:d="DAV:"><d:prop>'
+                              b"<d:getcontentlength/><d:getlastmodified/><d:resourcetype/></d:prop></d:propfind>",
+                              {"Depth": "1", "Content-Type": "application/xml"})
+        return parse_propfind(body.decode("utf-8", "replace"))
+
+    def download(self, file_id: str) -> bytes:
+        self.folder()
+        return self._req("GET", self._url(file_id))[1]
+
+    def upload(self, name: str, data: bytes, mime: str, file_id: str = "") -> str:
+        self.folder()
+        self._req("PUT", self._url(file_id or name), data, {"Content-Type": mime})
+        return file_id or name
+
+    def get_state(self) -> tuple[dict, str]:
+        self.folder()
+        st, body = self._req("GET", self._url(STATE_FILE), ok=(200, 404))
+        if st == 404:
+            return {"v": 1, "books": {}}, ""
+        try:
+            return json.loads(body.decode("utf-8")), STATE_FILE
+        except ValueError:
+            return {"v": 1, "books": {}}, STATE_FILE
+
+
+def parse_propfind(xml: str) -> list[dict]:
+    """Soubory ze složky (odpověď PROPFIND Depth 1) – bez samotné složky a podsložek."""
+    out = []
+    for resp in re.findall(r"<(?:\w+:)?response\b.*?</(?:\w+:)?response>", xml, re.S | re.I):
+        href = re.search(r"<(?:\w+:)?href>(.*?)</(?:\w+:)?href>", resp, re.S | re.I)
+        if not href or re.search(r"<(?:\w+:)?collection\s*/?>", resp, re.I):
+            continue
+        name = urllib.parse.unquote(href.group(1).strip().rstrip("/").rsplit("/", 1)[-1])
+        size = re.search(r"<(?:\w+:)?getcontentlength>(\d+)<", resp, re.I)
+        out.append({"id": name, "name": name, "size": size.group(1) if size else ""})
+    return out
+
+
+def _explain_dav(code: int, method: str) -> str:
+    if code == 401:
+        return "Server odmítl jméno nebo heslo (HTTP 401). Zkontrolujte uživatele a heslo pro WebDAV."
+    if code == 403:
+        return ("Uživatel nemá na serveru právo zápisu (HTTP 403). Na Synology: Ovládací panel → Sdílená složka → "
+                "oprávnění čtení i zápisu pro tohoto uživatele.")
+    if code == 404:
+        return "Adresa na serveru neexistuje (HTTP 404). Zkontrolujte adresu WebDAV (u Synology včetně sdílené složky)."
+    if code == 405 and method == "MKCOL":
+        return "405"
+    if code == 409:
+        return ("Nadřazená složka neexistuje (HTTP 409). U Synology zadejte adresu i se sdílenou složkou, "
+                "např. https://nas.example.com:5006/home.")
+    return f"Server WebDAV vrátil chybu HTTP {code} ({method})."
+
+
+def storage_from_config(engines: dict, provider: str = "") -> Storage | None:
+    """Zvolené úložiště podle nastavení (Google Disk nebo Synology / WebDAV); None = nic nastaveného."""
+    g, w = engines.get("gdrive", {}), engines.get("webdav", {})
+    if not provider:
+        provider = "webdav" if w.get("url") and not g.get("refresh_token") else "gdrive"
+    if provider == "webdav":
+        if not (w.get("url") and w.get("user")):
+            return None
+        return WebDav(w["url"], w["user"], w.get("password", ""), w.get("folder") or FOLDER,
+                      str(w.get("trust_cert", "")).lower() in ("1", "true", "ano", "yes"))
+    if g.get("client_id") and g.get("refresh_token"):
+        return GoogleDrive(g["client_id"], g.get("client_secret", ""), g["refresh_token"])
+    return None
 
 
 def _explain(code: int, err: str, j: dict) -> str:

@@ -218,6 +218,46 @@ Přirozené české hlasy Vlasta (žena) a Antonín (muž), slovenské Viktória
 6. Uložit → Otestovat. Ve čtečce pak v kartě Čtení → Nahlas vyberte hlas „Vlasta“ nebo „Antonín“.
 
 Celá kniha mívá 300 000 – 600 000 znaků; nad měsíční limit F0 služba čtení odmítne (nic se neúčtuje).""",
+    "webdav": """Synology / WebDAV – knihy a čtení v počítači i v telefonu přes vlastní NAS
+
+Místo Google Disku použijete svůj Synology NAS (nebo Nextcloud, ownCloud či jiný WebDAV server). Na serveru
+vznikne složka „Překladač“ s knihami (EPUB) a souborem sync.json (místo čtení, záložky, označené a poznámky).
+Data neopustí váš NAS.
+
+1. Balíček WebDAV Server
+   V DSM otevřete Centrum balíčků → vyhledejte „WebDAV Server“ → Instalovat → Otevřít.
+   Zapněte HTTP (port 5005) a/nebo HTTPS (port 5006) → Použít.
+
+2. Uživatel a sdílená složka (doporučeno)
+   Ovládací panel → Sdílená složka → Vytvořit, např. „knihy“.
+   Ovládací panel → Uživatel a skupina → Vytvořit uživatele, např. „ctecka“ se silným heslem,
+   oprávnění Čtení/zápis jen ke složce „knihy“. (Funguje i váš běžný účet, zvláštní je bezpečnější.)
+
+3. Adresa
+   - Doma (stejná Wi-Fi): http://192.168.1.10:5005/knihy  (místo 192.168.1.10 adresa NAS,
+     najdete ji v DSM → Ovládací panel → Síť nebo v aplikaci Synology Assistant)
+   - Z internetu: https://vas-nas.synology.me:5006/knihy – Ovládací panel → Externí přístup → DDNS
+     (adresa …synology.me), Zabezpečení → Certifikát → Přidat → Let's Encrypt, a na routeru přesměrujte port 5006.
+     QuickConnect s WebDAV nefunguje.
+   Za adresu vždy dejte název sdílené složky (u vlastního účtu může být „home“).
+
+4. Nastavení v Překladači
+   Sem vyplňte adresu, uživatele a heslo → Uložit → ✔ Otestovat. Po úspěšném testu se synchronizace přepne
+   na Synology (Čtečka → Moje knihy → ☁ → Synology / WebDAV).
+   Vlastní certifikát NAS (adresa https://192.168…): zaškrtněte „Důvěřovat vlastnímu certifikátu NAS“ –
+   jen v domácí síti. Heslo se ukládá šifrovaně jen v tomto počítači.
+
+5. Telefon
+   Aplikace pro Android: Nastavení → Služby a klíče → Synchronizace → Synology / WebDAV → stejná adresa,
+   uživatel a heslo → ✔ Otestovat. Telefon nevěří vlastním certifikátům – doma použijte http://…:5005,
+   z internetu https s certifikátem Let's Encrypt.
+
+Časté chyby
+- HTTP 401 – špatný uživatel nebo heslo (u Synology pozor na dvoufázové ověření – pro WebDAV zvláštní účet).
+- HTTP 403 – uživatel nemá právo zápisu do sdílené složky.
+- HTTP 404 / 409 – v adrese chybí nebo je špatně název sdílené složky.
+- „Server není dostupný“ – NAS je vypnutý, jiný port, nebo jste mimo domácí síť s místní adresou.
+""",
     "gdrive": """Google Disk – knihy a čtení v počítači i v telefonu (zdarma)
 
 Začnete číst v počítači a pokračujete v telefonu – a obráceně. Na vašem Google Disku vznikne složka „Překladač“

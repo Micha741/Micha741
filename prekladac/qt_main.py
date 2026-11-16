@@ -1684,6 +1684,13 @@ class SettingsPage(QtWidgets.QWidget):
             r = 1
             for key, text, secret, default, choices in fields:
                 val = cfg["engines"].get(name, {}).get(key) or default
+                if choices == "checkbox":
+                    w = QtWidgets.QCheckBox(text)
+                    w.setChecked(str(val).lower() in ("1", "true", "ano", "yes"))
+                    g.addWidget(w, r, 1)
+                    self.fields[name][key] = w
+                    r += 1
+                    continue
                 if choices == "claude_models":
                     w = QtWidgets.QComboBox()
                     for t, mid in MODELS.items():
@@ -1730,6 +1737,9 @@ class SettingsPage(QtWidgets.QWidget):
         for name, ws in self.fields.items():
             sect = cfg["engines"].setdefault(name, {})
             for key, w in ws.items():
+                if isinstance(w, QtWidgets.QCheckBox):
+                    sect[key] = "ano" if w.isChecked() else ""
+                    continue
                 sect[key] = w.currentData() if isinstance(w, QtWidgets.QComboBox) else w.text().strip()
 
     def gdrive_login(self):
@@ -1774,6 +1784,14 @@ class SettingsPage(QtWidgets.QWidget):
             box.setTextFormat(Qt.PlainText)  # odpověď serveru se nikdy nevykreslí jako webová stránka
             box.exec()
 
+        if name == "webdav":  # otestovaný WebDAV se stane úložištěm pro synchronizaci
+            user_done = done
+
+            def done(res, err):  # noqa: F811
+                if not err:
+                    self.win.cfg["cloud_provider"] = "webdav"
+                    self.win.save_cfg()
+                user_done(res, err)
         run_bg(lambda: core.test_service(name, self.win.cfg, lang), done)
 
     def _components_tab(self, cfg) -> QtWidgets.QWidget:

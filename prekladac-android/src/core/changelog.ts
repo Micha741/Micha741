@@ -22,6 +22,7 @@ export const ANDROID_HISTORY: Release[] = [
       'Čtečka: 🔊 Číst odsud (podržte prst na odstavci), dvě stránky vedle sebe na šířku, celá obrazovka bez horní lišty.',
       'Nastavení → Info: nápověda a historie verzí.',
       '☁ Synchronizace s Windows přes Google Disk: místo čtení, záložky, označené s poznámkami a knihy – začnete číst v počítači a pokračujete v telefonu (a obráceně).',
+      '🗄 Synchronizace i přes vlastní Synology NAS / WebDAV (Nextcloud…) místo Google Disku; v domácí síti funguje i adresa http://.',
     ],
   },
   {
@@ -53,5 +54,6 @@ export const ANDROID_HELP: { title: string; text: string }[] = [
   { title: 'Metadata', text: 'Karta Metadata → Upravit…: anotace, série a díl, ISBN… – uloží se do EPUB, Kindle, Wordu a projektu pro počítač.' },
   { title: 'Hledat knihy', text: 'Zaškrtněte zdroje (Wikizdroje, Open Library, Google Books, Project Gutenberg). U knihy je vidět, jestli ji Překladač otevře, nebo je zašifrovaná (DRM). Obchody a knihovny se otevřou v prohlížeči.' },
   { title: 'Google Disk (synchronizace s Windows)', text: 'Nastavení → Služby a klíče → Google Disk: stejné ID klienta a tajný klíč jako ve Windows, pak Přihlásit (kód se zadá na google.com/device). Knihovna se pak synchronizuje sama: místo čtení, záložky a označené; knihy z počítače se objeví nahoře v Číst → ☁ Google Disk.' },
+  { title: 'Synology / WebDAV', text: 'Nastavení → Služby a klíče → Synchronizace → Synology / WebDAV: adresa (doma http://192.168.x.x:5005/sdílená-složka, z internetu https://…synology.me:5006/…), uživatel a heslo jako ve Windows → Otestovat. V DSM musí běžet balíček WebDAV Server.' },
   { title: 'Klíče', text: 'Klíče ke službám se ukládají zašifrovaně jen v telefonu (Android Keystore) a nikam se neposílají.' },
 ];

@@ -708,3 +708,32 @@ test('synchronizace: záznam v knihovně ↔ Disk (místo, záložky, označené
   const later = applySyncToEntry({ ...e, posAt: 900 }, merged, b);
   assert.ok(!later.moved && later.patch.chapter === undefined);
 });
+
+test('Synology / WebDAV: složka Překladač, sync.json, knihy a srozumitelné chyby (bez serveru)', async () => {
+  const { WebDav, parsePropfind } = await import('../src/core/sync');
+  const files: Record<string, Uint8Array> = {};
+  const dirs = new Set<string>();
+  const auth = `Basic ${Buffer.from('mikes:heslo').toString('base64')}`;
+  const res = (status: number, body: Uint8Array | string = '') => { const raw = typeof body === 'string' ? new TextEncoder().encode(body) : body; return { ok: status < 300, status, text: async () => new TextDecoder().decode(raw), arrayBuffer: async () => raw.buffer.slice(raw.byteOffset, raw.byteOffset + raw.byteLength) as ArrayBuffer }; };
+  const fake = async (url: string, init: any = {}) => {
+    if (init.headers.Authorization !== auth) return res(401);
+    const path = decodeURIComponent(url.split(':8765')[1]);
+    const m = init.method;
+    if (m === 'MKCOL') { if (dirs.has(path)) return res(405); dirs.add(path); return res(201); }
+    if (m === 'PUT') { files[path] = new Uint8Array(init.body); return res(201); }
+    if (m === 'GET') return files[path] ? res(200, files[path]) : res(404);
+    if (m === 'PROPFIND') return res(207, `<d:multistatus xmlns:d="DAV:"><d:response><d:href>${encodeURI(path)}</d:href><d:propstat><d:prop><d:resourcetype><d:collection/></d:resourcetype></d:prop></d:propstat></d:response>` +
+      Object.keys(files).filter((p) => p.startsWith(path)).map((p) => `<d:response><d:href>${encodeURI(p)}</d:href><d:propstat><d:prop><d:getcontentlength>${files[p].length}</d:getcontentlength><d:resourcetype/></d:prop></d:propstat></d:response>`).join('') + '</d:multistatus>');
+    throw new Error(m);
+  };
+  const w = new WebDav('nas:8765/home/', 'mikes', 'heslo', undefined, fake as any);
+  assert.equal(w.base, 'https://nas:8765/home');
+  await w.sync({ books: { 'kniha|': { title: 'Kniha', author: '', pos: { chapter: 1, fraction: 0.5, at: 10, device: 'Android' }, bookmarks: [], highlights: [], gone: {}, file: null } } });
+  assert.ok(dirs.has('/home/Překladač/') && files['/home/Překladač/sync.json']);
+  const id = await w.upload('Babička.epub', new Uint8Array([80, 75]), 'application/epub+zip');
+  assert.deepEqual([...(await w.download(id))], [80, 75]);
+  assert.deepEqual((await w.listFiles()).map((f) => f.name).sort(), ['Babička.epub', 'sync.json']);
+  assert.equal((await w.getState()).state.books['kniha|'].pos!.chapter, 1);
+  await assert.rejects(new WebDav('http://nas:8765/home', 'mikes', 'spatne', undefined, fake as any).getState(), /heslo/);
+  assert.deepEqual(parsePropfind('<D:multistatus xmlns:D="DAV:"><D:response><D:href>/a/P%C5%99eklada%C4%8D/x%20y.epub</D:href><D:getcontentlength>5</D:getcontentlength></D:response></D:multistatus>'), [{ id: 'x y.epub', name: 'x y.epub', size: '5' }]);
+});

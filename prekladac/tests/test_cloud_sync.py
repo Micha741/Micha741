@@ -115,3 +115,71 @@ def test_errors_are_understandable():
         cs.GoogleDrive("", "").device_start()
     except cs.CloudError as e:
         assert "Návod" in str(e)
+
+
+class FakeDav:
+    """Napodobí WebDAV server (Synology, Nextcloud) v paměti: MKCOL, PUT, GET, PROPFIND."""
+
+    def __init__(self, user="mikes", password="heslo"):
+        import base64
+
+        self.auth = "Basic " + base64.b64encode(f"{user}:{password}".encode()).decode()
+        self.files: dict[str, bytes] = {}
+        self.dirs: set[str] = set()
+
+    def __call__(self, req, timeout=0):
+        url, m = urllib.parse.unquote(req.full_url), req.get_method()
+        if req.headers.get("Authorization") != self.auth:
+            raise urllib.error.HTTPError(url, 401, "x", {}, io.BytesIO(b""))
+        path = url.split("8765", 1)[1]
+        if m == "MKCOL":
+            if path in self.dirs:
+                raise urllib.error.HTTPError(url, 405, "exists", {}, io.BytesIO(b""))
+            self.dirs.add(path)
+            return io.BytesIO(b"")
+        if m == "PUT":
+            self.files[path] = req.data
+            return io.BytesIO(b"")
+        if m == "GET":
+            if path not in self.files:
+                raise urllib.error.HTTPError(url, 404, "nf", {}, io.BytesIO(b""))
+            return io.BytesIO(self.files[path])
+        if m == "PROPFIND":
+            items = "".join(f"<d:response><d:href>{urllib.parse.quote(p)}</d:href><d:propstat><d:prop>"
+                            f"<d:getcontentlength>{len(v)}</d:getcontentlength><d:resourcetype/></d:prop></d:propstat></d:response>"
+                            for p, v in self.files.items() if p.startswith(path))
+            xml = (f'<?xml version="1.0"?><d:multistatus xmlns:d="DAV:"><d:response><d:href>{urllib.parse.quote(path)}</d:href>'
+                   f"<d:propstat><d:prop><d:resourcetype><d:collection/></d:resourcetype></d:prop></d:propstat></d:response>{items}</d:multistatus>")
+            return io.BytesIO(xml.encode())
+        raise AssertionError(m)
+
+
+def test_webdav_synology_roundtrip():
+    """Synology / WebDAV: složka Překladač, sync.json a knihy; stejné slučování jako Google Disk."""
+    srv = FakeDav()
+    pc = cs.WebDav("http://nas:8765/home", "mikes", "heslo", opener=srv)
+    key = cs.book_key("Babička", "Němcová")
+    pc.sync({"books": {key: {"title": "Babička", "author": "Němcová", "pos": {"chapter": 1, "fraction": 0.2, "at": 10, "device": "Windows"}}}})
+    assert "/home/Překladač/" in srv.dirs and "/home/Překladač/sync.json" in srv.files
+    fid = pc.upload("babička.epub", b"PK..", "application/epub+zip")
+    phone = cs.WebDav("nas:8765/home/", "mikes", "heslo", opener=srv)  # bez http:// a s lomítkem na konci
+    assert phone.base == "https://nas:8765/home"
+    phone.base = "http://nas:8765/home"
+    assert phone.download(fid) == b"PK.."
+    st = phone.sync({"books": {key: {"title": "Babička", "author": "Němcová", "pos": {"chapter": 4, "fraction": 0.5, "at": 20, "device": "Android"}}}})
+    assert st["books"][key]["pos"]["device"] == "Android" and pc.get_state()[0]["books"][key]["pos"]["chapter"] == 4
+    assert sorted(f["name"] for f in pc.list_files()) == ["babička.epub", "sync.json"]
+    try:
+        cs.WebDav("http://nas:8765/home", "mikes", "spatne", opener=srv).get_state()
+    except cs.CloudError as e:
+        assert "heslo" in str(e)
+    else:
+        raise AssertionError
+
+
+def test_storage_from_config_picks_provider():
+    eng = {"gdrive": {"client_id": "c", "refresh_token": "r"}, "webdav": {"url": "https://nas:5006/home", "user": "u", "password": "p"}}
+    assert isinstance(cs.storage_from_config(eng), cs.GoogleDrive)            # obojí → Google, pokud není zvoleno
+    assert isinstance(cs.storage_from_config(eng, "webdav"), cs.WebDav)
+    assert isinstance(cs.storage_from_config({"webdav": eng["webdav"]}), cs.WebDav)
+    assert cs.storage_from_config({"gdrive": {"client_id": "c"}}) is None     # nepřihlášeno

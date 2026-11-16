@@ -16,7 +16,7 @@ import { OUTPUT_FORMATS, type OutputFormat } from './src/core/formats';
 import { CLAUDE_MODELS, DEFAULT_CLAUDE_MODEL, DEFAULT_GEMINI_MODEL, ENGINES, LANGUAGES, makeTranslator, setOfflineBackend, translateBook, type EngineId } from './src/core/translate';
 import Mlkit from './modules/mlkit-translate/src/MlkitTranslateModule';
 import { BUILTIN_SKINS, type Skin } from './src/core/skins';
-import { addToLibrary, downloadBook, installSkinFromPicker, loadInstalledSkins, loadLibrary, loadLibraryBook, loadSettings, makeOutput, openBookUri, pickBook, pickImage, pickImages, removeFromLibrary, removeSkin, reopenPdf, saveOutputToFolder, saveSettings, saveVocab, loadVocab, shareOutput, shareText, transformImage, updateEntry, driveFromSettings, syncLibrary, downloadCloudBook, syncEntry, type Output, type Settings } from './src/platform';
+import { addToLibrary, downloadBook, installSkinFromPicker, loadInstalledSkins, loadLibrary, loadLibraryBook, loadSettings, makeOutput, openBookUri, pickBook, pickImage, pickImages, removeFromLibrary, removeSkin, reopenPdf, saveOutputToFolder, saveSettings, saveVocab, loadVocab, shareOutput, shareText, transformImage, updateEntry, storageFromSettings, syncLibrary, downloadCloudBook, syncEntry, type Output, type Settings } from './src/platform';
 
 import appConfig from './app.json';
 
@@ -127,9 +127,9 @@ export default function App() {
   // Google Disk: knihy a čtení i ve Windows
   const [cloudOnly, setCloudOnly] = useState<SyncEntry[]>([]);
   const [cloudStatus, setCloudStatus] = useState('');
-  const cloudOn = !!driveFromSettings(settings);
+  const cloudOn = !!storageFromSettings(settings);
   const syncNow = async (silent = false) => {
-    if (!driveFromSettings(settings)) return;
+    if (!storageFromSettings(settings)) return;
     setCloudStatus('☁ Synchronizuji…');
     try {
       const r = await syncLibrary(settings, (m) => setCloudStatus(`☁ ${m}`));
@@ -163,7 +163,7 @@ export default function App() {
       const book = await loadLibraryBook(e.id);
       const original = e.originalId ? await loadLibraryBook(e.originalId).catch(() => null) : null;
       let notice: string | undefined;
-      if (driveFromSettings(settings)) {
+      if (storageFromSettings(settings)) {
         // místo čtení z Disku (když se mezitím četlo ve Windows) – bez internetu se po chvíli otevře místní
         const r = await Promise.race([syncEntry(settings, e).catch(() => null), new Promise<null>((ok) => setTimeout(() => ok(null), 6000))]);
         if (r) {
@@ -270,7 +270,7 @@ export default function App() {
             onClose={(last) => {
               setReading(null);
               loadLibrary().then(setLibrary);
-              if (last && driveFromSettings(settings)) syncEntry(settings, last).catch(() => undefined); // změny na Disk
+              if (last && storageFromSettings(settings)) syncEntry(settings, last).catch(() => undefined); // změny na Disk
             }}
           />
         ) : (
@@ -283,7 +283,7 @@ export default function App() {
           </View>
         </View>
         <View style={{ flex: 1 }}>
-          {tab === 'cist' && <LibraryScreen list={library} onOpen={openEntry} onRemove={removeEntry} onPick={pickToLibrary} busy={libBusy} cloud={{ on: cloudOn, status: cloudStatus, books: cloudOnly, sync: () => syncNow(false), open: openCloud }} />}
+          {tab === 'cist' && <LibraryScreen list={library} onOpen={openEntry} onRemove={removeEntry} onPick={pickToLibrary} busy={libBusy} cloud={{ on: cloudOn, name: storageFromSettings(settings)?.name ?? '', status: cloudStatus, books: cloudOnly, sync: () => syncNow(false), open: openCloud }} />}
           {tab === 'kniha' && <BookScreen settings={settings} update={update} goSettings={() => setTab('nastaveni')} onRead={readBookNow} />}
           {tab === 'hledat' && <SearchScreen onBook={(b) => readBookNow(b)} settings={settings} update={update} library={library} />}
           {tab === 'nastaveni' && <SettingsScreen settings={settings} update={update} skin={skinApi} />}
@@ -806,7 +806,11 @@ function SettingsScreen({ settings, update, skin }: { settings: Settings; update
               <Field label="Adresa API" value={settings.openaiBase} placeholder="https://openrouter.ai/api/v1" onChange={(v) => update({ openaiBase: v })} />
               <Field label="Model" value={settings.openaiModel} placeholder="deepseek/deepseek-chat" onChange={(v) => update({ openaiModel: v })} />
             </Box>
-            <GDriveBox settings={settings} update={update} />
+            <Box title="Synchronizace s Windows (knihy a čtení)">
+              <Text style={st.hint}>Kam se ukládají knihy a místo čtení – v Překladači ve Windows zvolte totéž (Čtečka → Moje knihy).</Text>
+              <Chips items={[{ id: 'gdrive', label: '☁ Google Disk' }, { id: 'webdav', label: '🗄 Synology / WebDAV' }]} value={settings.cloudProvider || (settings.davUrl && !settings.gdriveToken ? 'webdav' : 'gdrive')} onChange={(v) => update({ cloudProvider: v })} />
+            </Box>
+            {(settings.cloudProvider || (settings.davUrl && !settings.gdriveToken ? 'webdav' : 'gdrive')) === 'webdav' ? <DavBox settings={settings} update={update} /> : <GDriveBox settings={settings} update={update} />}
             <OfflineBox settings={settings} update={update} />
             <Box title="Google (zdarma)">
               <Text style={[st.hint, { color: C.ok }]}>✓ Klíč není potřeba.</Text>
@@ -858,7 +862,7 @@ function GDriveBox({ settings, update }: { settings: Settings; update: (s: Parti
   const [login, setLogin] = useState(false);
   const [help, setHelp] = useState(false);
   return (
-    <Box title="Google Disk – knihy a čtení i ve Windows">
+    <Box title="Google Disk">
       <Text style={st.hint}>Začnete číst v počítači a pokračujete v telefonu (a obráceně). Zadejte stejné ID klienta a tajný klíč jako v Překladači ve Windows (Nastavení → Služby a klíče → Google Disk, tam je i návod).</Text>
       <Field label="ID klienta (…apps.googleusercontent.com)" value={settings.gdriveClientId} onChange={(v) => update({ gdriveClientId: v.trim() })} />
       <Field label="Tajný klíč klienta" value={settings.gdriveSecret} onChange={(v) => update({ gdriveSecret: v.trim() })} secret />
@@ -874,6 +878,41 @@ function GDriveBox({ settings, update }: { settings: Settings; update: (s: Parti
         </Text>
       ) : null}
       <LoginModal visible={login} settings={settings} onClose={() => setLogin(false)} onToken={(t) => { update({ gdriveToken: t }); setLogin(false); Alert.alert('Google Disk', 'Přihlášeno ✓ Knihovna se teď synchronizuje s Windows.'); }} />
+    </Box>
+  );
+}
+
+/** Synology (WebDAV Server) / Nextcloud: adresa, uživatel a heslo – stejné jako ve Windows. */
+function DavBox({ settings, update }: { settings: Settings; update: (s: Partial<Settings>) => void }) {
+  const [test, setTest] = useState('');
+  const [help, setHelp] = useState(false);
+  const run = async () => {
+    const w = storageFromSettings({ ...settings, cloudProvider: 'webdav' });
+    if (!w) return setTest('⚠ Vyplňte adresu, uživatele a heslo.');
+    setTest('Zkouším spojení…');
+    try {
+      const files = await w.listFiles();
+      setTest(`✓ Funguje – ve složce „Překladač“ je ${files.filter((f) => /\.epub$/i.test(f.name)).length} knih.`);
+    } catch (e: any) {
+      setTest(`⚠ ${e?.message ?? e}`);
+    }
+  };
+  return (
+    <Box title="Synology / WebDAV (Nextcloud…)">
+      <Text style={st.hint}>Knihy a místo čtení ve složce „Překladač“ na vašem NAS. Zadejte stejnou adresu, uživatele a heslo jako ve Windows.</Text>
+      <Field label="Adresa WebDAV" value={settings.davUrl} placeholder="https://mujnas.synology.me:5006/home" onChange={(v) => update({ davUrl: v.trim() })} />
+      <Field label="Uživatel" value={settings.davUser} onChange={(v) => update({ davUser: v.trim() })} />
+      <Field label="Heslo" value={settings.davPassword} onChange={(v) => update({ davPassword: v })} secret />
+      <View style={st.row}>
+        <Btn small primary label="✔ Otestovat" onPress={run} />
+        <Btn small label="📘 Návod" onPress={() => setHelp((v) => !v)} />
+      </View>
+      {test ? <Text style={[st.hint, test.startsWith('✓') ? { color: C.ok } : test.startsWith('⚠') ? { color: C.warn } : null]}>{test}</Text> : null}
+      {help ? (
+        <Text style={st.hint}>
+          Synology DSM: Centrum balíčků → WebDAV Server → nainstalovat a zapnout (HTTP 5005, HTTPS 5006). Doporučujeme zvláštního uživatele s právem čtení i zápisu jen do jedné sdílené složky. Adresa: doma http://192.168.x.x:5005/sdílená-složka, z internetu https://vas-nas.synology.me:5006/sdílená-složka (DDNS a certifikát Let's Encrypt v DSM, port 5006 přesměrovaný na routeru; QuickConnect WebDAV neumí). Telefon nevěří vlastnímu (self-signed) certifikátu – doma proto použijte http, nebo certifikát Let's Encrypt.
+        </Text>
+      ) : null}
     </Box>
   );
 }
@@ -1123,7 +1162,7 @@ function VocabModal({ visible, onClose }: { visible: boolean; onClose: () => voi
   );
 }
 
-type CloudApi = { on: boolean; status: string; books: SyncEntry[]; sync: () => void; open: (e: SyncEntry) => void };
+type CloudApi = { on: boolean; name: string; status: string; books: SyncEntry[]; sync: () => void; open: (e: SyncEntry) => void };
 
 function LibraryScreen({ list, onOpen, onRemove, onPick, busy, cloud }: { list: LibraryEntry[]; onOpen: (e: LibraryEntry) => void; onRemove: (e: LibraryEntry) => void; onPick: () => void; busy: string; cloud: CloudApi }) {
   const [vocab, setVocab] = useState(false);
@@ -1143,7 +1182,7 @@ function LibraryScreen({ list, onOpen, onRemove, onPick, busy, cloud }: { list: 
         {cloud.on ? (
           <View style={st.box}>
             <View style={[st.row, { justifyContent: 'space-between' }]}>
-              <Text style={[st.boxTitle, { flex: 1 }]}>☁ Google Disk</Text>
+              <Text style={[st.boxTitle, { flex: 1 }]}>{cloud.name === 'Google Disk' ? '☁ Google Disk' : '🗄 Synology / WebDAV'}</Text>
               <Btn small label="🔄 Synchronizovat" onPress={cloud.sync} disabled={cloud.status.includes('Synchronizuji') || /Stahuji|Nahrávám/.test(cloud.status)} />
             </View>
             <Text style={st.hint}>{cloud.status || 'Místo čtení, záložky a označené se synchronizují s Windows.'}</Text>

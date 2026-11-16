@@ -2,7 +2,7 @@
 // (hlídají to společné testovací případy prekladac/tests/fixtures/sync_cases.json).
 // Na Disku je složka „Překladač“: sync.json (místo čtení, záložky, označené) a knihy jako EPUB.
 import type { Book } from './book';
-import { utf8Decode, utf8Encode } from './bytes';
+import { toBase64, utf8Decode, utf8Encode } from './bytes';
 import type { Highlight, LibraryEntry, MarkColor } from './library';
 
 export interface SyncPos { chapter: number; fraction: number; at: number; device: string }
@@ -110,7 +110,25 @@ function explain(status: number, j: any, raw: string): string {
   return `Google Disk: ${msg || e || raw.slice(0, 200)} (HTTP ${status})`;
 }
 
-export class GoogleDrive {
+/** Společné rozhraní úložiště (Google Disk, Synology / WebDAV). */
+export interface Storage {
+  readonly name: string;
+  listFiles(): Promise<{ id: string; name: string; size?: string }[]>;
+  download(fileId: string): Promise<Uint8Array>;
+  upload(name: string, data: Uint8Array, mime: string, fileId?: string): Promise<string>;
+  getState(): Promise<{ state: SyncState; fileId: string }>;
+  sync(local: Partial<SyncState>): Promise<SyncState>;
+}
+
+async function syncWith(st: Storage & { putState(s: SyncState, id: string): Promise<string> }, local: Partial<SyncState>): Promise<SyncState> {
+  const { state: remote, fileId } = await st.getState();
+  const merged = mergeState(local, remote);
+  if (JSON.stringify(merged) !== JSON.stringify(mergeState(remote, null))) await st.putState(merged, fileId);
+  return merged;
+}
+
+export class GoogleDrive implements Storage {
+  readonly name = 'Google Disk';
   private access = '';
   private expires = 0;
   private folderId = '';
@@ -231,12 +249,114 @@ export class GoogleDrive {
   }
 
   /** Stáhne sync.json, sloučí s místním stavem a nahraje výsledek. */
-  async sync(local: Partial<SyncState>): Promise<SyncState> {
-    const { state: remote, fileId } = await this.getState();
-    const merged = mergeState(local, remote);
-    if (JSON.stringify(merged) !== JSON.stringify(mergeState(remote, null))) await this.putState(merged, fileId);
-    return merged;
+  sync(local: Partial<SyncState>): Promise<SyncState> {
+    return syncWith(this, local);
   }
+}
+
+/** Synology (balíček WebDAV Server), Nextcloud a další WebDAV – stejně jako WebDav v prekladac/cloud_sync.py.
+ *  Id souboru = jeho název ve složce Překladač. */
+export class WebDav implements Storage {
+  readonly name = 'Synology / WebDAV';
+  base: string;
+  private made = false;
+  constructor(url: string, private user: string, private password: string, private folderName = FOLDER, private fetchFn: Fetch = fetch as unknown as Fetch) {
+    let u = (url || '').trim().replace(/\/+$/, '');
+    if (u && !/^https?:\/\//i.test(u)) u = `https://${u}`;
+    this.base = u;
+    this.user = (user || '').trim();
+    this.folderName = (folderName || FOLDER).replace(/^[\/ ]+|[\/ ]+$/g, '') || FOLDER;
+  }
+
+  private url(name = ''): string {
+    return `${this.base}/${encodeURIComponent(this.folderName)}${name ? `/${encodeURIComponent(name)}` : '/'}`;
+  }
+
+  private async req(method: string, url: string, body?: string | Uint8Array, headers: Record<string, string> = {}, ok: number[] = [200, 201, 204, 207]): Promise<{ status: number; data: Uint8Array }> {
+    const h = { Authorization: `Basic ${toBase64(utf8Encode(`${this.user}:${this.password}`))}`, ...headers };
+    let r;
+    try {
+      const b = body instanceof Uint8Array ? (body.buffer.slice(body.byteOffset, body.byteOffset + body.byteLength) as ArrayBuffer) : body;
+      r = await this.fetchFn(url, { method, headers: h, body: b });
+    } catch (e: any) {
+      const m = String(e?.message ?? e);
+      throw new CloudError(/certif|ssl|trust/i.test(m)
+        ? 'Server má certifikát, kterému telefon nevěří. V DSM zapněte certifikát Let\'s Encrypt, nebo v domácí síti použijte adresu http://…:5005.'
+        : `Server ${this.base} není dostupný (${m}). Je NAS zapnutý, telefon ve stejné síti (nebo adresa z internetu) a port správně (5005 http, 5006 https)?`);
+    }
+    const data = new Uint8Array(await r.arrayBuffer());
+    if (!r.ok && !ok.includes(r.status)) throw new CloudError(explainDav(r.status, method));
+    return { status: r.status, data };
+  }
+
+  async folder(): Promise<string> {
+    if (!this.base || !this.user) throw new CloudError('Vyplňte adresu serveru WebDAV, uživatele a heslo (Nastavení → Služby a klíče).');
+    if (!this.made) {
+      await this.req('MKCOL', this.url(), undefined, {}, [201, 405]); // 405 = složka už existuje
+      this.made = true;
+    }
+    return this.folderName;
+  }
+
+  async listFiles(): Promise<{ id: string; name: string; size?: string }[]> {
+    await this.folder();
+    const r = await this.req('PROPFIND', this.url(), '<?xml version="1.0"?><d:propfind xmlns:d="DAV:"><d:prop><d:getcontentlength/><d:getlastmodified/><d:resourcetype/></d:prop></d:propfind>',
+      { Depth: '1', 'Content-Type': 'application/xml' });
+    return parsePropfind(utf8Decode(r.data));
+  }
+
+  async download(fileId: string): Promise<Uint8Array> {
+    await this.folder();
+    return (await this.req('GET', this.url(fileId))).data;
+  }
+
+  async upload(name: string, data: Uint8Array, mime: string, fileId = ''): Promise<string> {
+    await this.folder();
+    await this.req('PUT', this.url(fileId || name), data, { 'Content-Type': mime });
+    return fileId || name;
+  }
+
+  async getState(): Promise<{ state: SyncState; fileId: string }> {
+    await this.folder();
+    const r = await this.req('GET', this.url(STATE_FILE), undefined, {}, [200, 404]);
+    if (r.status === 404) return { state: { v: 1, books: {} }, fileId: '' };
+    try {
+      return { state: JSON.parse(utf8Decode(r.data)), fileId: STATE_FILE };
+    } catch {
+      return { state: { v: 1, books: {} }, fileId: STATE_FILE };
+    }
+  }
+
+  putState(state: SyncState, fileId = ''): Promise<string> {
+    return this.upload(STATE_FILE, utf8Encode(JSON.stringify(state)), 'application/json', fileId);
+  }
+
+  sync(local: Partial<SyncState>): Promise<SyncState> {
+    return syncWith(this, local);
+  }
+}
+
+/** Soubory ze složky (odpověď PROPFIND Depth 1) – bez samotné složky a podsložek. */
+export function parsePropfind(xml: string): { id: string; name: string; size?: string }[] {
+  const out: { id: string; name: string; size?: string }[] = [];
+  for (const m of xml.matchAll(/<(?:\w+:)?response\b[\s\S]*?<\/(?:\w+:)?response>/gi)) {
+    const resp = m[0];
+    const href = /<(?:\w+:)?href>([\s\S]*?)<\/(?:\w+:)?href>/i.exec(resp);
+    if (!href || /<(?:\w+:)?collection\s*\/?>/i.test(resp)) continue;
+    let name = href[1].trim().replace(/\/+$/, '').split('/').pop() ?? '';
+    try { name = decodeURIComponent(name); } catch { /* ponechat */ }
+    const size = /<(?:\w+:)?getcontentlength>(\d+)</i.exec(resp);
+    out.push({ id: name, name, size: size?.[1] });
+  }
+  return out;
+}
+
+function explainDav(status: number, method: string): string {
+  if (status === 401) return 'Server odmítl jméno nebo heslo (HTTP 401). Zkontrolujte uživatele a heslo pro WebDAV.';
+  if (status === 403) return 'Uživatel nemá na serveru právo zápisu (HTTP 403). Na Synology: Ovládací panel → Sdílená složka → oprávnění čtení i zápisu.';
+  if (status === 404) return 'Adresa na serveru neexistuje (HTTP 404). Zkontrolujte adresu WebDAV (u Synology včetně sdílené složky).';
+  if (status === 409) return 'Nadřazená složka neexistuje (HTTP 409). U Synology zadejte adresu i se sdílenou složkou, např. https://nas.example.com:5006/home.';
+  return `Server WebDAV vrátil chybu HTTP ${status} (${method}).`;
 }
 
 // ------------------------------------------------------------ knihovna v telefonu ↔ společný formát

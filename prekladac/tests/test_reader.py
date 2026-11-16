@@ -515,7 +515,7 @@ def test_reader_cloud_sync_continue_from_phone(qapp, monkeypatch):
                                 "bookmarks": [{"chapter": 1, "fraction": 0.0, "label": "Z telefonu", "at": far}],
                                 "highlights": [{"chapter": 1, "text": "Odstavec 2.3. " + LOREM, "color": "g",
                                                 "note": "z mobilu", "at": far}], "gone": {}, "file": None}}})
-    monkeypatch.setattr(qt_cloud, "drive_from_cfg", lambda cfg, need_login=True: cs.GoogleDrive("cid", "secret", "RT", opener=g))
+    monkeypatch.setattr(qt_cloud, "storage_from_cfg", lambda cfg: cs.GoogleDrive("cid", "secret", "RT", opener=g))
     r = Reader(project(), {"engines": {"gdrive": {"client_id": "cid", "refresh_token": "RT"}}})
     r.resize(700, 900)
     r.show()

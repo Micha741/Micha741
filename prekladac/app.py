@@ -70,6 +70,12 @@ SERVICES = {
         ("client_id", "ID klienta (…apps.googleusercontent.com)", False, "", None),
         ("client_secret", "Tajný klíč klienta", True, "", None),
     ]),
+    "webdav": ("Synology / WebDAV (Nextcloud…) – knihy a čtení i v telefonu", [
+        ("url", "Adresa WebDAV (např. https://mujnas.synology.me:5006/home)", False, "", None),
+        ("user", "Uživatel", False, "", None),
+        ("password", "Heslo", True, "", None),
+        ("trust_cert", "Důvěřovat vlastnímu certifikátu NAS (jen v domácí síti)", False, "", "checkbox"),
+    ]),
 }
 # po přihlášení ke Google Disku – ukládá se šifrovaně jako klíče, v Nastavení se nezobrazuje
 HIDDEN_SECRETS = {"gdrive": ("refresh_token",)}
@@ -97,6 +103,10 @@ SERVICE_HELP = {
                "a knihy se ukládají do složky „Překladač“ na vašem Google Disku. Jednou vytvoříte přihlašovací "
                "klíč v Google Cloud (Návod, asi 15 minut), stejné ID a tajný klíč zadáte i v telefonu.",
                "https://console.cloud.google.com/apis/library/drive.googleapis.com"),
+    "webdav": ("Místo Google Disku vlastní Synology NAS (balíček WebDAV Server) nebo Nextcloud: knihy a místo čtení "
+               "ve složce „Překladač“ na vašem serveru. Na Synology doporučujeme zvláštního uživatele jen se sdílenou "
+               "složkou pro knihy. V telefonu zadejte stejnou adresu, uživatele a heslo.",
+               "https://kb.synology.com/cs-cz/DSM/help/WebDAVServer/webdav_server"),
     "google_tts": ("Přirozený hlas Google (Wavenet) pro čtení nahlas ve čtečce. Zdarma 1 milion znaků/měsíc, "
                    "potřebuje internet. Stačí klíč Google Cloud Translation, když v projektu zapnete Cloud "
                    "Text-to-Speech API.", "https://console.cloud.google.com/apis/library/texttospeech.googleapis.com"),
@@ -337,6 +347,15 @@ def test_service(service: str, cfg: dict, lang: str) -> str:
     """Zkusí krátký překlad, aby uživatel hned viděl, jestli klíč funguje."""
     sample = "Hello, this is a test of the translation service."
     sect = cfg.get("engines", {}).get(service, {})
+    if service == "webdav":
+        import cloud_sync
+
+        w = cloud_sync.storage_from_config(cfg.get("engines", {}), "webdav")
+        if not w:
+            raise cloud_sync.CloudError("Vyplňte adresu WebDAV, uživatele a heslo.")
+        files = w.list_files()
+        books = sum(1 for f in files if f["name"].lower().endswith(".epub"))
+        return f"Server funguje – ve složce „{cloud_sync.FOLDER}“ je {books} knih. Synchronizace teď používá {w.name}."
     if service == "gdrive":
         import cloud_sync
 

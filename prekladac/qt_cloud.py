@@ -31,6 +31,16 @@ def drive_from_cfg(cfg: dict, need_login: bool = True) -> cloud_sync.GoogleDrive
     return cloud_sync.GoogleDrive(g.get("client_id", ""), g.get("client_secret", ""), g.get("refresh_token", ""))
 
 
+def storage_from_cfg(cfg: dict):
+    """Úložiště pro synchronizaci: Google Disk, nebo Synology / WebDAV (podle volby v Čtečce → Moje knihy)."""
+    return cloud_sync.storage_from_config((cfg or {}).get("engines", {}), (cfg or {}).get("cloud_provider", ""))
+
+
+def provider_of(cfg: dict) -> str:
+    st = storage_from_cfg(cfg)
+    return "webdav" if isinstance(st, cloud_sync.WebDav) else (cfg or {}).get("cloud_provider") or "gdrive"
+
+
 def cloud_dir() -> Path:
     d = components.app_dir() / "cloud"
     d.mkdir(parents=True, exist_ok=True)
@@ -137,12 +147,19 @@ class CloudBooksBox(QtWidgets.QGroupBox):
     """☁ Google Disk: synchronizace a knihy nahrané z telefonu nebo z jiného počítače."""
 
     def __init__(self, cfg: dict, save_cfg, open_path, parent=None):
-        super().__init__(tr("☁ Google Disk – knihy a čtení i v telefonu"), parent)
+        super().__init__(tr("☁ Knihy a čtení i v telefonu (Google Disk nebo Synology)"), parent)
         self.cfg, self.save_cfg, self.open_path = cfg, save_cfg, open_path
         lay = QtWidgets.QVBoxLayout(self)
         self.status = label("", "Hint")
         lay.addWidget(self.status)
         row = QtWidgets.QHBoxLayout()
+        self.provider = QtWidgets.QComboBox()
+        self.provider.addItem(emoji_icon("☁"), tr("Google Disk"), "gdrive")
+        self.provider.addItem(emoji_icon("🗄"), tr("Synology / WebDAV"), "webdav")
+        self.provider.setToolTip(tr("Kam se ukládají knihy a místo čtení – v telefonu zvolte totéž"))
+        self.provider.setCurrentIndex(max(0, self.provider.findData(provider_of(cfg))))
+        self.provider.currentIndexChanged.connect(self._provider_changed)
+        row.addWidget(self.provider)
         self.b_login = QtWidgets.QPushButton(emoji_icon("🔑"), tr(" Přihlásit…"))
         self.b_login.clicked.connect(self.login)
         self.b_sync = QtWidgets.QPushButton(emoji_icon("🔄"), tr(" Synchronizovat"))
@@ -156,8 +173,24 @@ class CloudBooksBox(QtWidgets.QGroupBox):
         lay.addLayout(self.list)
         self.refresh()
 
+    def _provider_changed(self):
+        self.cfg["cloud_provider"] = self.provider.currentData()
+        self.save_cfg()
+        save_cache({"v": 1, "books": {}})  # seznam knih patří k úložišti
+        self.refresh()
+
     def refresh(self):
         g = gdrive_cfg(self.cfg)
+        if self.provider.currentData() == "webdav":
+            ok = storage_from_cfg(self.cfg) is not None
+            self.b_login.setVisible(False)
+            self.b_sync.setEnabled(ok)
+            self.status.setText(tr("Synology / WebDAV: místo čtení, záložky a označené se synchronizují samy při čtení.")
+                                if ok else tr("Nastavení → Služby a klíče → Synology / WebDAV: vyplňte adresu, "
+                                              "uživatele a heslo (podle Návodu) a klikněte na Otestovat."))
+            self.show_books(load_cache())
+            return
+        self.b_login.setVisible(True)
         if not g.get("client_id"):
             self.status.setText(tr("Nastavení → Služby a klíče → Google Disk: vyplňte ID klienta a tajný klíč "
                                    "(podle Návodu), pak se tady přihlaste."))
@@ -180,7 +213,7 @@ class CloudBooksBox(QtWidgets.QGroupBox):
             self.sync()
 
     def sync(self):
-        d = drive_from_cfg(self.cfg)
+        d = storage_from_cfg(self.cfg)
         if not d:
             return
         self.b_sync.setEnabled(False)
@@ -197,7 +230,7 @@ class CloudBooksBox(QtWidgets.QGroupBox):
                 self.status.setText("⚠ " + str(err))
                 return
             n = sum(1 for e in st["books"].values() if e.get("file"))
-            self.status.setText(tr("Synchronizováno – na Disku je {} knih.").format(n))
+            self.status.setText(tr("Synchronizováno ({}) – uloženo {} knih.").format(d.name, n))
             self.show_books(st)
 
         run_bg(work, done, owner=self)
@@ -222,7 +255,7 @@ class CloudBooksBox(QtWidgets.QGroupBox):
             self.list.addWidget(b)
 
     def open_cloud(self, e: dict):
-        d = drive_from_cfg(self.cfg)
+        d = storage_from_cfg(self.cfg)
         if not d:
             return
         target = cloud_dir() / safe_name(e["file"].get("name") or (e.get("title", "kniha") + ".epub"))
@@ -248,7 +281,7 @@ class ReaderCloud(QtCore.QObject):
 
     PUSH_DELAY = 20_000
 
-    def __init__(self, reader, drive: cloud_sync.GoogleDrive):
+    def __init__(self, reader, drive: cloud_sync.Storage):
         super().__init__(reader)
         self.reader, self.drive = reader, drive
         self.key = cloud_sync.book_key(reader.project.get("outline", {}).get("title", ""), reader.project.get("author", ""))
@@ -261,7 +294,7 @@ class ReaderCloud(QtCore.QObject):
 
     @classmethod
     def attach(cls, reader):
-        d = drive_from_cfg(reader.app_cfg)
+        d = storage_from_cfg(reader.app_cfg)
         return cls(reader, d) if d and reader.app_cfg.get("cloud_sync", True) else None
 
     def changed(self):
