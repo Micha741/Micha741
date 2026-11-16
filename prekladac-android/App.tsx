@@ -7,6 +7,7 @@ import { blockText, bookProgress, chapterHtml, DEFAULT_PREFS, parseReaderMessage
 import { addVocab, MARK_COLORS, vocabText, type Highlight, type LibraryEntry, type MarkColor, type VocabItem } from './src/core/library';
 import * as Speech from 'expo-speech';
 import { ANDROID_HELP, ANDROID_HISTORY } from './src/core/changelog';
+import { GoogleDrive, markId, type SyncEntry } from './src/core/sync';
 import { addToHistory, googleBooksSuggestUrl, googleBooksUrl, opensLabel, openLibraryUrl, parseGoogleBooksFull, parseOpenLibraryFull, parseWikisourceSearch, wikisourceSearchUrl, type StoreBook, gutendexUrl, KIND_LABEL, mergeSuggestions, openLibrarySuggestUrl, parseGoogleBooks, parseGutendex, parseOpenLibrary, SOURCES, suggestionQuery, type FoundBook, type SourceKind, type Suggestion } from './src/core/sources';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { addImage, bookStats, cleanMeta, coverKind, CROPS, META_FIELDS, watermarkBook, IMG_SIZES, imageAsCover, insertImages, listImages, pruneImages, removeImageAt, replaceImage, setImageSize, type Book, type BookMeta, type ImgSize } from './src/core/book';
@@ -15,7 +16,7 @@ import { OUTPUT_FORMATS, type OutputFormat } from './src/core/formats';
 import { CLAUDE_MODELS, DEFAULT_CLAUDE_MODEL, DEFAULT_GEMINI_MODEL, ENGINES, LANGUAGES, makeTranslator, setOfflineBackend, translateBook, type EngineId } from './src/core/translate';
 import Mlkit from './modules/mlkit-translate/src/MlkitTranslateModule';
 import { BUILTIN_SKINS, type Skin } from './src/core/skins';
-import { addToLibrary, downloadBook, installSkinFromPicker, loadInstalledSkins, loadLibrary, loadLibraryBook, loadSettings, makeOutput, openBookUri, pickBook, pickImage, pickImages, removeFromLibrary, removeSkin, reopenPdf, saveOutputToFolder, saveSettings, saveVocab, loadVocab, shareOutput, shareText, transformImage, updateEntry, type Output, type Settings } from './src/platform';
+import { addToLibrary, downloadBook, installSkinFromPicker, loadInstalledSkins, loadLibrary, loadLibraryBook, loadSettings, makeOutput, openBookUri, pickBook, pickImage, pickImages, removeFromLibrary, removeSkin, reopenPdf, saveOutputToFolder, saveSettings, saveVocab, loadVocab, shareOutput, shareText, transformImage, updateEntry, storageFromSettings, syncLibrary, downloadCloudBook, syncEntry, type Output, type Settings } from './src/platform';
 
 import appConfig from './app.json';
 
@@ -123,12 +124,54 @@ export default function App() {
   }, []);
 
   // ---- čtečka: otevření knihy z knihovny, z jiné aplikace nebo po překladu
+  // Google Disk: knihy a čtení i ve Windows
+  const [cloudOnly, setCloudOnly] = useState<SyncEntry[]>([]);
+  const [cloudStatus, setCloudStatus] = useState('');
+  const cloudOn = !!storageFromSettings(settings);
+  const syncNow = async (silent = false) => {
+    if (!storageFromSettings(settings)) return;
+    setCloudStatus('☁ Synchronizuji…');
+    try {
+      const r = await syncLibrary(settings, (m) => setCloudStatus(`☁ ${m}`));
+      setCloudOnly(r.cloudOnly);
+      setLibrary(await loadLibrary());
+      setCloudStatus(`☁ Synchronizováno${r.uploaded ? ` · nahráno ${r.uploaded} knih` : ''}${r.cloudOnly.length ? ` · na Disku ${r.cloudOnly.length} dalších knih` : ''}`);
+    } catch (err: any) {
+      setCloudStatus(`⚠ ${err?.message ?? err}`);
+      if (!silent) Alert.alert('Google Disk', String(err?.message ?? err));
+    }
+  };
+  useEffect(() => {
+    if (cloudOn) syncNow(true);
+  }, [cloudOn]);
+  const openCloud = async (e: SyncEntry) => {
+    try {
+      setLibBusy(`Stahuji z Disku: ${e.title}…`);
+      const { book, entry } = await downloadCloudBook(settings, e);
+      setCloudOnly((l) => l.filter((x) => x !== e));
+      setLibrary(await loadLibrary());
+      setReading({ entry, book, original: null, notice: entry.posAt ? `☁ Pokračujete tam, kde jste skončil (${e.pos?.device ?? 'jiné zařízení'})` : undefined });
+    } catch (err: any) {
+      Alert.alert('Google Disk', String(err?.message ?? err));
+    } finally {
+      setLibBusy('');
+    }
+  };
   const openEntry = async (e: LibraryEntry) => {
     try {
       setLibBusy(`Otevírám: ${e.title}…`);
       const book = await loadLibraryBook(e.id);
       const original = e.originalId ? await loadLibraryBook(e.originalId).catch(() => null) : null;
-      setReading({ entry: e, book, original });
+      let notice: string | undefined;
+      if (storageFromSettings(settings)) {
+        // místo čtení z Disku (když se mezitím četlo ve Windows) – bez internetu se po chvíli otevře místní
+        const r = await Promise.race([syncEntry(settings, e).catch(() => null), new Promise<null>((ok) => setTimeout(() => ok(null), 6000))]);
+        if (r) {
+          e = r.entry;
+          if (r.moved) notice = `☁ Pokračujete tam, kde jste skončil (${r.device ?? 'jiné zařízení'})`;
+        }
+      }
+      setReading({ entry: e, book, original, notice });
     } catch (err: any) {
       Alert.alert('Knihovna', String(err?.message ?? err));
     } finally {
@@ -224,9 +267,10 @@ export default function App() {
             settings={settings}
             update={update}
             onEntry={(e) => setLibrary((l) => l.map((x) => (x.id === e.id ? e : x)))}
-            onClose={() => {
+            onClose={(last) => {
               setReading(null);
               loadLibrary().then(setLibrary);
+              if (last && storageFromSettings(settings)) syncEntry(settings, last).catch(() => undefined); // změny na Disk
             }}
           />
         ) : (
@@ -239,7 +283,7 @@ export default function App() {
           </View>
         </View>
         <View style={{ flex: 1 }}>
-          {tab === 'cist' && <LibraryScreen list={library} onOpen={openEntry} onRemove={removeEntry} onPick={pickToLibrary} busy={libBusy} />}
+          {tab === 'cist' && <LibraryScreen list={library} onOpen={openEntry} onRemove={removeEntry} onPick={pickToLibrary} busy={libBusy} cloud={{ on: cloudOn, name: storageFromSettings(settings)?.name ?? '', status: cloudStatus, books: cloudOnly, sync: () => syncNow(false), open: openCloud }} />}
           {tab === 'kniha' && <BookScreen settings={settings} update={update} goSettings={() => setTab('nastaveni')} onRead={readBookNow} />}
           {tab === 'hledat' && <SearchScreen onBook={(b) => readBookNow(b)} settings={settings} update={update} library={library} />}
           {tab === 'nastaveni' && <SettingsScreen settings={settings} update={update} skin={skinApi} />}
@@ -762,6 +806,11 @@ function SettingsScreen({ settings, update, skin }: { settings: Settings; update
               <Field label="Adresa API" value={settings.openaiBase} placeholder="https://openrouter.ai/api/v1" onChange={(v) => update({ openaiBase: v })} />
               <Field label="Model" value={settings.openaiModel} placeholder="deepseek/deepseek-chat" onChange={(v) => update({ openaiModel: v })} />
             </Box>
+            <Box title="Synchronizace s Windows (knihy a čtení)">
+              <Text style={st.hint}>Kam se ukládají knihy a místo čtení – v Překladači ve Windows zvolte totéž (Čtečka → Moje knihy).</Text>
+              <Chips items={[{ id: 'gdrive', label: '☁ Google Disk' }, { id: 'webdav', label: '🗄 Synology / WebDAV' }]} value={settings.cloudProvider || (settings.davUrl && !settings.gdriveToken ? 'webdav' : 'gdrive')} onChange={(v) => update({ cloudProvider: v })} />
+            </Box>
+            {(settings.cloudProvider || (settings.davUrl && !settings.gdriveToken ? 'webdav' : 'gdrive')) === 'webdav' ? <DavBox settings={settings} update={update} /> : <GDriveBox settings={settings} update={update} />}
             <OfflineBox settings={settings} update={update} />
             <Box title="Google (zdarma)">
               <Text style={[st.hint, { color: C.ok }]}>✓ Klíč není potřeba.</Text>
@@ -805,6 +854,118 @@ function SettingsScreen({ settings, update, skin }: { settings: Settings; update
         )}
       </ScrollView>
     </View>
+  );
+}
+
+/** Google Disk – knihy a čtení i ve Windows: ID klienta a tajný klíč (stejné jako ve Windows) a přihlášení kódem. */
+function GDriveBox({ settings, update }: { settings: Settings; update: (s: Partial<Settings>) => void }) {
+  const [login, setLogin] = useState(false);
+  const [help, setHelp] = useState(false);
+  return (
+    <Box title="Google Disk">
+      <Text style={st.hint}>Začnete číst v počítači a pokračujete v telefonu (a obráceně). Zadejte stejné ID klienta a tajný klíč jako v Překladači ve Windows (Nastavení → Služby a klíče → Google Disk, tam je i návod).</Text>
+      <Field label="ID klienta (…apps.googleusercontent.com)" value={settings.gdriveClientId} onChange={(v) => update({ gdriveClientId: v.trim() })} />
+      <Field label="Tajný klíč klienta" value={settings.gdriveSecret} onChange={(v) => update({ gdriveSecret: v.trim() })} secret />
+      <Text style={[st.hint, settings.gdriveToken ? { color: C.ok } : null]}>{settings.gdriveToken ? '✓ Přihlášeno – knihovna se synchronizuje sama, nebo Číst → 🔄 Synchronizovat.' : 'Nepřihlášeno.'}</Text>
+      <View style={st.row}>
+        <Btn small primary label={settings.gdriveToken ? '🔑 Přihlásit znovu' : '🔑 Přihlásit'} onPress={() => (settings.gdriveClientId ? setLogin(true) : Alert.alert('Google Disk', 'Nejdřív vyplňte ID klienta a tajný klíč klienta.'))} />
+        {settings.gdriveToken ? <Btn small label="Odhlásit" onPress={() => update({ gdriveToken: '' })} /> : null}
+        <Btn small label="📘 Návod" onPress={() => setHelp((v) => !v)} />
+      </View>
+      {help ? (
+        <Text style={st.hint}>
+          1. console.cloud.google.com → nový projekt. 2. Zapněte Google Drive API. 3. Google Auth Platform → Začínáme (Externí) → Cílová skupina → Publikovat aplikaci. 4. Přístup k datům → přidat rozsah …/auth/drive.file. 5. Klienti → Vytvořit klienta → „TV a zařízení s omezeným vstupem“ → zkopírujte ID a tajný klíč. Podrobně v návodu ve Windows verzi. Na Disku vznikne složka „Překladač“ – aplikace vidí jen svoje soubory.
+        </Text>
+      ) : null}
+      <LoginModal visible={login} settings={settings} onClose={() => setLogin(false)} onToken={(t) => { update({ gdriveToken: t }); setLogin(false); Alert.alert('Google Disk', 'Přihlášeno ✓ Knihovna se teď synchronizuje s Windows.'); }} />
+    </Box>
+  );
+}
+
+/** Synology (WebDAV Server) / Nextcloud: adresa, uživatel a heslo – stejné jako ve Windows. */
+function DavBox({ settings, update }: { settings: Settings; update: (s: Partial<Settings>) => void }) {
+  const [test, setTest] = useState('');
+  const [help, setHelp] = useState(false);
+  const run = async () => {
+    const w = storageFromSettings({ ...settings, cloudProvider: 'webdav' });
+    if (!w) return setTest('⚠ Vyplňte adresu, uživatele a heslo.');
+    setTest('Zkouším spojení…');
+    try {
+      const files = await w.listFiles();
+      setTest(`✓ Funguje – ve složce „Překladač“ je ${files.filter((f) => /\.epub$/i.test(f.name)).length} knih.`);
+    } catch (e: any) {
+      setTest(`⚠ ${e?.message ?? e}`);
+    }
+  };
+  return (
+    <Box title="Synology / WebDAV (Nextcloud…)">
+      <Text style={st.hint}>Knihy a místo čtení ve složce „Překladač“ na vašem NAS. Zadejte stejnou adresu, uživatele a heslo jako ve Windows.</Text>
+      <Field label="Adresa WebDAV" value={settings.davUrl} placeholder="https://mujnas.synology.me:5006/home" onChange={(v) => update({ davUrl: v.trim() })} />
+      <Field label="Uživatel" value={settings.davUser} onChange={(v) => update({ davUser: v.trim() })} />
+      <Field label="Heslo" value={settings.davPassword} onChange={(v) => update({ davPassword: v })} secret />
+      <View style={st.row}>
+        <Btn small primary label="✔ Otestovat" onPress={run} />
+        <Btn small label="📘 Návod" onPress={() => setHelp((v) => !v)} />
+      </View>
+      {test ? <Text style={[st.hint, test.startsWith('✓') ? { color: C.ok } : test.startsWith('⚠') ? { color: C.warn } : null]}>{test}</Text> : null}
+      {help ? (
+        <Text style={st.hint}>
+          Synology DSM: Centrum balíčků → WebDAV Server → nainstalovat a zapnout (HTTP 5005, HTTPS 5006). Doporučujeme zvláštního uživatele s právem čtení i zápisu jen do jedné sdílené složky. Adresa: doma http://192.168.x.x:5005/sdílená-složka, z internetu https://vas-nas.synology.me:5006/sdílená-složka (DDNS a certifikát Let's Encrypt v DSM, port 5006 přesměrovaný na routeru; QuickConnect WebDAV neumí). Telefon nevěří vlastnímu (self-signed) certifikátu – doma proto použijte http, nebo certifikát Let's Encrypt.
+        </Text>
+      ) : null}
+    </Box>
+  );
+}
+
+/** Přihlášení kódem: kód se zadá na google.com/device (v prohlížeči telefonu nebo v počítači). */
+function LoginModal({ visible, settings, onClose, onToken }: { visible: boolean; settings: Settings; onClose: () => void; onToken: (t: string) => void }) {
+  const [info, setInfo] = useState('Připojuji se ke Googlu…');
+  const [code, setCode] = useState<{ user_code: string; verification_url: string } | null>(null);
+  useEffect(() => {
+    if (!visible) return;
+    let stop = false;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    const d = new GoogleDrive(settings.gdriveClientId ?? '', settings.gdriveSecret ?? '');
+    setCode(null);
+    setInfo('Připojuji se ke Googlu…');
+    d.deviceStart().then((r) => {
+      if (stop) return;
+      setCode(r);
+      setInfo('1. Otevřete stránku níže a přihlaste se účtem Google.\n2. Zadejte tento kód a povolte přístup k Disku:');
+      const poll = async () => {
+        if (stop) return;
+        try {
+          if (await d.devicePoll(r.device_code)) return onToken(d.refreshToken);
+        } catch (e: any) {
+          setInfo(`⚠ ${e?.message ?? e}`);
+          return;
+        }
+        timer = setTimeout(poll, Math.max(5, r.interval) * 1000);
+      };
+      timer = setTimeout(poll, Math.max(5, r.interval) * 1000);
+    }).catch((e: any) => setInfo(`⚠ ${e?.message ?? e}`));
+    return () => {
+      stop = true;
+      if (timer) clearTimeout(timer);
+    };
+  }, [visible]);
+  return (
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+      <View style={st.modalBack}>
+        <View style={st.modal}>
+          <Text style={st.boxTitle}>Přihlášení ke Google Disku</Text>
+          <Text style={st.hint}>{info}</Text>
+          {code ? (
+            <>
+              <Text selectable style={{ fontSize: 30, fontWeight: '700', textAlign: 'center', color: C.strong, letterSpacing: 2, marginVertical: 10 }}>{code.user_code}</Text>
+              <Btn primary label={`🌐 Otevřít ${code.verification_url.replace(/^https?:\/\//, '')}`} onPress={() => Linking.openURL(code.verification_url)} />
+              <Text style={st.hint}>Po potvrzení v prohlížeči se sem vraťte – přihlášení se dokončí samo.</Text>
+            </>
+          ) : null}
+          <Btn label="Zrušit" onPress={onClose} />
+        </View>
+      </View>
+    </Modal>
   );
 }
 
@@ -956,7 +1117,7 @@ function SkinsBox({ api }: { api: SkinApi }) {
 }
 
 // ------------------------------------------------------------ Číst: knihovna
-type Reading = { entry: LibraryEntry; book: Book; original: Book | null };
+type Reading = { entry: LibraryEntry; book: Book; original: Book | null; notice?: string };
 
 function VocabModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
   const [list, setList] = useState<VocabItem[]>([]);
@@ -1001,7 +1162,9 @@ function VocabModal({ visible, onClose }: { visible: boolean; onClose: () => voi
   );
 }
 
-function LibraryScreen({ list, onOpen, onRemove, onPick, busy }: { list: LibraryEntry[]; onOpen: (e: LibraryEntry) => void; onRemove: (e: LibraryEntry) => void; onPick: () => void; busy: string }) {
+type CloudApi = { on: boolean; name: string; status: string; books: SyncEntry[]; sync: () => void; open: (e: SyncEntry) => void };
+
+function LibraryScreen({ list, onOpen, onRemove, onPick, busy, cloud }: { list: LibraryEntry[]; onOpen: (e: LibraryEntry) => void; onRemove: (e: LibraryEntry) => void; onPick: () => void; busy: string; cloud: CloudApi }) {
   const [vocab, setVocab] = useState(false);
   return (
     <View style={{ flex: 1, backgroundColor: C.window }}>
@@ -1016,6 +1179,24 @@ function LibraryScreen({ list, onOpen, onRemove, onPick, busy }: { list: Library
         {busy ? <Text style={st.hint}>{busy}</Text> : null}
       </View>
       <ScrollView contentContainerStyle={{ padding: 12, gap: 10 }}>
+        {cloud.on ? (
+          <View style={st.box}>
+            <View style={[st.row, { justifyContent: 'space-between' }]}>
+              <Text style={[st.boxTitle, { flex: 1 }]}>{cloud.name === 'Google Disk' ? '☁ Google Disk' : '🗄 Synology / WebDAV'}</Text>
+              <Btn small label="🔄 Synchronizovat" onPress={cloud.sync} disabled={cloud.status.includes('Synchronizuji') || /Stahuji|Nahrávám/.test(cloud.status)} />
+            </View>
+            <Text style={st.hint}>{cloud.status || 'Místo čtení, záložky a označené se synchronizují s Windows.'}</Text>
+            {cloud.books.map((e, k) => (
+              <Pressable key={k} onPress={() => cloud.open(e)} style={({ pressed }) => [st.chapterRow, pressed && { opacity: 0.6 }]} disabled={!!busy}>
+                <View style={{ flex: 1 }}>
+                  <Text style={st.btnText} numberOfLines={2}>☁ {e.title}{e.author ? ` – ${e.author}` : ''}</Text>
+                  {e.pos ? <Text style={st.hint}>naposledy: {e.pos.device}, kapitola {e.pos.chapter + 1}</Text> : null}
+                </View>
+                <Text style={{ color: C.accent, fontWeight: '600' }}>⬇ Číst</Text>
+              </Pressable>
+            ))}
+          </View>
+        ) : null}
         {list.length === 0 ? (
           <View style={st.box}>
             <Text style={st.boxTitle}>Zatím tu nejsou žádné knihy</Text>
@@ -1048,7 +1229,7 @@ function LibraryScreen({ list, onOpen, onRemove, onPick, busy }: { list: Library
 // ------------------------------------------------------------ Číst: čtečka
 type Sheet = { kind: 'para' | 'word'; i: number; text: string; word?: string } | null;
 
-function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: Reading; settings: Settings; update: (s: Partial<Settings>) => void; onClose: () => void; onEntry: (e: LibraryEntry) => void }) {
+function ReaderView({ reading, settings, update, onClose: closeReader, onEntry }: { reading: Reading; settings: Settings; update: (s: Partial<Settings>) => void; onClose: (last?: LibraryEntry) => void; onEntry: (e: LibraryEntry) => void }) {
   useKeepAwake();
   const { book, original } = reading;
   const [entry, setEntry] = useState(reading.entry);
@@ -1076,8 +1257,19 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
     [book, chapter, JSON.stringify({ ...prefs, ttsRate: 0 }), start], // označení a rychlost hlasu se mění bez načtení stránky
   );
 
+  const lastEntry = useRef(reading.entry);
+  const onClose = () => closeReader(lastEntry.current);
+  const [notice, setNotice] = useState(reading.notice ?? '');
+  useEffect(() => {
+    if (!notice) return;
+    const t = setTimeout(() => setNotice(''), 5000);
+    return () => clearTimeout(t);
+  }, [notice]);
+  /** Smazaná záložka / označení – zapamatuje se, aby zmizelo i ve Windows (synchronizace). */
+  const goneOf = (kind: 'b' | 'h', m: { chapter: number; fraction?: number; text?: string }) => ({ ...(entry.gone ?? {}), [markId(kind, m)]: Date.now() });
   const persist = (patch: Partial<LibraryEntry>) => {
     const next = { ...entry, ...patch, lastRead: Date.now() };
+    lastEntry.current = next;
     setEntry(next);
     onEntry(next);
     if (saveT.current) clearTimeout(saveT.current);
@@ -1121,7 +1313,9 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
       }
       setPos({ page: m.page, pages: m.pages });
       const f = m.pages > 1 ? m.page / (m.pages - 1) : 0;
-      persist({ chapter, fraction: f, progress: bookProgress(book, chapter, f) });
+      // čas změny místa jen při skutečném posunu (otevření knihy na stejném místě není „novější“ než Windows)
+      const movedHere = chapter !== entry.chapter || Math.abs(f - entry.fraction) > 0.002;
+      persist({ chapter, fraction: f, progress: bookProgress(book, chapter, f), ...(movedHere ? { posAt: Date.now() } : {}) });
     } else if (m.type === 'next') {
       if (chapter < book.chapters.length - 1) goChapter(chapter + 1, 'start');
       else persist({ progress: 1 });
@@ -1168,8 +1362,8 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
   const setMark = (i: number, text: string, color: MarkColor | null, note?: string) => {
     const old = markOf(i);
     const rest = highlights.filter((h) => !(h.chapter === chapter && h.i === i));
-    const next: Highlight[] = color ? [...rest, { chapter, i, text: text.slice(0, 160), at: old?.at ?? Date.now(), color, note: note ?? old?.note }] : rest;
-    persist({ highlights: next });
+    const next: Highlight[] = color ? [...rest, { chapter, i, text: text.slice(0, 160), at: Date.now(), color, note: note ?? old?.note }] : rest;
+    persist({ highlights: next, ...(old && !color ? { gone: goneOf('h', old) } : {}) });
     web.current?.injectJavaScript(`window.readerMark&&window.readerMark(${i},${color ? `'${color}'` : 'false'});true;`);
   };
   const [noteDraft, setNoteDraft] = useState('');
@@ -1281,6 +1475,11 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
         overScrollMode="never"
         textZoom={100}
       />
+      {notice ? (
+        <Pressable onPress={() => setNotice('')} style={[st.ttsBar, { top: 56, right: 8, height: undefined, paddingVertical: 8, backgroundColor: theme.bg, borderColor: theme.muted + '55' }]}>
+          <Text style={{ color: theme.fg }}>{notice}</Text>
+        </Pressable>
+      ) : null}
       {/* tenký řádek průběhu dole (jako v čtečkách) */}
       <View style={[st.readerFoot, { backgroundColor: theme.bg }]}>
         <Text style={[st.readerFootText, { color: theme.muted }]} numberOfLines={1}>
@@ -1383,13 +1582,13 @@ function ReaderView({ reading, settings, update, onClose, onEntry }: { reading: 
                         <Text style={st.btnText} numberOfLines={3}>{h.text}</Text>
                         {h.note ? <Text style={[st.hint, { fontStyle: 'italic' }]}>📝 {h.note}</Text> : null}
                       </Pressable>
-                      <Btn small label="✖" onPress={() => { persist({ highlights: highlights.filter((x) => x !== h) }); if (h.chapter === chapter) web.current?.injectJavaScript(`window.readerMark&&window.readerMark(${h.i},false);true;`); }} />
+                      <Btn small label="✖" onPress={() => { persist({ highlights: highlights.filter((x) => x !== h), gone: goneOf('h', h) }); if (h.chapter === chapter) web.current?.injectJavaScript(`window.readerMark&&window.readerMark(${h.i},false);true;`); }} />
                     </View>
                   ))}
                   {entry.bookmarks.map((b, k) => (
                     <View key={`b${b.at}`} style={st.chapterRow}>
                       <Pressable style={{ flex: 1 }} onPress={() => goChapter(b.chapter, b.fraction)}><Text style={st.btnText}>🔖 {b.label}</Text></Pressable>
-                      <Btn small label="✖" onPress={() => persist({ bookmarks: entry.bookmarks.filter((_, j) => j !== k) })} />
+                      <Btn small label="✖" onPress={() => persist({ bookmarks: entry.bookmarks.filter((_, j) => j !== k), gone: goneOf('b', b) })} />
                     </View>
                   ))}
                 </>

@@ -494,3 +494,57 @@ def test_reader_panel_hide_like_editor(qapp):
     assert not ed.chapters_dock.isVisible()
     ed.dirty = False
     ed.close()
+
+
+def test_reader_cloud_sync_continue_from_phone(qapp, monkeypatch):
+    """Google Disk: čtečka otevře knihu tam, kde se četlo v telefonu, převezme označené a nahraje knihu jako EPUB."""
+    from PySide6.QtTest import QTest
+
+    import cloud_sync as cs
+    import qt_cloud
+    from qt_reader import Reader
+    from test_cloud_sync import FakeGoogle
+
+    g = FakeGoogle()
+    g.pending = 0
+    phone = cs.GoogleDrive("cid", "secret", "RT", opener=g)
+    key = cs.book_key("Kůň a louka", "Autor")
+    far = cs.now_ms() - 60_000  # telefon četl před minutou, v počítači se kniha otevírá poprvé
+    phone.sync({"books": {key: {"title": "Kůň a louka", "author": "Autor",
+                                "pos": {"chapter": 2, "fraction": 0.5, "at": far, "device": "Android"},
+                                "bookmarks": [{"chapter": 1, "fraction": 0.0, "label": "Z telefonu", "at": far}],
+                                "highlights": [{"chapter": 1, "text": "Odstavec 2.3. " + LOREM, "color": "g",
+                                                "note": "z mobilu", "at": far}], "gone": {}, "file": None}}})
+    monkeypatch.setattr(qt_cloud, "storage_from_cfg", lambda cfg: cs.GoogleDrive("cid", "secret", "RT", opener=g))
+    r = Reader(project(), {"engines": {"gdrive": {"client_id": "cid", "refresh_token": "RT"}}})
+    r.resize(700, 900)
+    r.show()
+    settle(qapp, r)
+    for _ in range(1500):  # stažení stavu a nahrání knihy běží ve vlákně (EPUB se zapíše asi za 1 s)
+        qapp.processEvents()
+        QTest.qWait(10)
+        if r.cloud and not r.cloud._busy:
+            break
+    assert r.cloud and not r.cloud._busy
+    assert r.chapter_index(r.view.anchor) == 2, "pokračuje se ve 3. kapitole jako v telefonu"
+    for _ in range(30):  # ve Windows se stránky po otevření ještě přepočítají – zpráva musí zůstat vidět
+        qapp.processEvents()
+        QTest.qWait(10)
+    r.page_changed()
+    assert "Pokračujete" in r.info.text()
+    assert [b["label"] for b in r.state.bookmarks] == ["Z telefonu"]
+    h = r.state.highlights[0]
+    assert h["color"] == "g" and h["note"] == "z mobilu" and h["text"].startswith("Odstavec 2.3.")
+    # kniha se nahrála na Disk jako EPUB a je v sync.json
+    state, _ = phone.get_state()
+    f = state["books"][key]["file"]
+    assert f and f["name"].endswith(".epub") and g.files[f["id"]]["data"][:2] == b"PK"
+    # smazání označení v počítači zmizí i v telefonu
+    r.remove_mark("h", h)
+    r.cloud.push()
+    for _ in range(1500):
+        qapp.processEvents()
+        QTest.qWait(10)
+        if not r.cloud._busy:
+            break
+    assert phone.get_state()[0]["books"][key]["highlights"] == []

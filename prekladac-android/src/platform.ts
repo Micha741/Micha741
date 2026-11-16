@@ -14,6 +14,8 @@ import type { EngineSettings } from './core/translate';
 import { readSkinFile, slug, type Skin } from './core/skins';
 import { deserializeBook, fileNameFromUrl, newEntry, serializeBook, type LibraryEntry, type VocabItem } from './core/library';
 import { toBase64 } from './core/bytes';
+import { applySyncToEntry, entryKey, entryToSync, GoogleDrive, WebDav, type Storage, type SyncEntry, type SyncState } from './core/sync';
+import { writeEpub } from './core/epub';
 
 // PDF chráněné heslem: data se podrží, aby šlo po zadání hesla otevřít znovu bez dalšího výběru
 let pendingPdf: { data: Uint8Array; name: string } | null = null;
@@ -161,6 +163,16 @@ export interface Settings extends EngineSettings {
   engine?: string;
   target?: string;
   format?: string;
+  /** Google Disk – synchronizace s Windows (ID klienta, tajný klíč a přihlášení; vše šifrovaně v Keystore) */
+  gdriveClientId?: string;
+  gdriveSecret?: string;
+  gdriveToken?: string;
+  /** Synology / WebDAV (Nextcloud…) – adresa, uživatel a heslo (heslo šifrovaně v Keystore) */
+  davUrl?: string;
+  davUser?: string;
+  davPassword?: string;
+  /** kam se synchronizuje: 'gdrive' nebo 'webdav' */
+  cloudProvider?: string;
   /** ochrana vlastní knihy: „Licence pro: …“ do každé kapitoly při ukládání (prázdné = vypnuto) */
   watermark?: string;
   watermarkOn?: boolean;
@@ -352,4 +364,88 @@ export async function shareText(name: string, text: string) {
   f.create();
   f.write(text);
   await Sharing.shareAsync(f.uri, { mimeType: 'text/plain', dialogTitle: name });
+}
+
+// ------------------------------------------------------------ Google Disk: knihy a čtení i ve Windows
+/** Zvolené úložiště pro synchronizaci (Google Disk nebo Synology / WebDAV); null = nic nastaveného. */
+export function storageFromSettings(s: Settings): Storage | null {
+  const provider = s.cloudProvider || (s.davUrl && !s.gdriveToken ? 'webdav' : 'gdrive');
+  if (provider === 'webdav') return s.davUrl?.trim() && s.davUser?.trim() ? new WebDav(s.davUrl, s.davUser, s.davPassword ?? '') : null;
+  if (!s.gdriveClientId?.trim() || !s.gdriveToken) return null;
+  return new GoogleDrive(s.gdriveClientId, s.gdriveSecret ?? '', s.gdriveToken);
+}
+
+const safeName = (t: string) => (t || 'kniha').replace(/[\\/:*?"<>|]+/g, '_').trim().slice(0, 80) || 'kniha';
+
+/** Knihy v telefonu podle klíče (název + autor); u více záznamů se stejným klíčem ten naposledy čtený. */
+function byKey(list: LibraryEntry[]): Map<string, LibraryEntry> {
+  const m = new Map<string, LibraryEntry>();
+  for (const e of [...list].sort((a, b) => a.lastRead - b.lastRead)) m.set(entryKey(e), e);
+  return m;
+}
+
+/** Použije sloučený stav na záznam (označené potřebují text knihy – načte se jen když se liší). */
+async function applyToEntry(e: LibraryEntry, s: SyncEntry): Promise<{ entry: LibraryEntry; moved: boolean }> {
+  const same = JSON.stringify(entryToSync(e).highlights) === JSON.stringify(s.highlights);
+  const book = same ? null : await loadLibraryBook(e.id).catch(() => null);
+  const { patch, moved } = applySyncToEntry(e, s, book);
+  if (same) delete patch.highlights;
+  await updateEntry(e.id, patch);
+  return { entry: { ...e, ...patch }, moved };
+}
+
+export interface CloudResult {
+  /** knihy na Disku, které v telefonu ještě nejsou */
+  cloudOnly: SyncEntry[];
+  uploaded: number;
+  state: SyncState;
+}
+
+/** Celá knihovna: sloučí místa čtení a označené s Diskem a nahraje knihy, které tam ještě nejsou. */
+export async function syncLibrary(s: Settings, say: (m: string) => void = () => undefined): Promise<CloudResult> {
+  const d = storageFromSettings(s);
+  if (!d) throw new Error('Synchronizace není nastavená (Nastavení → Služby a klíče → Google Disk nebo Synology).');
+  const local = byKey(await loadLibrary());
+  say('Stahuji stav z Disku…');
+  let state = await d.sync({ v: 1, books: Object.fromEntries([...local].map(([k, e]) => [k, entryToSync(e)])) });
+  let uploaded = 0;
+  const files: Record<string, SyncEntry> = {};
+  for (const [k, e] of local) {
+    const m = state.books[k];
+    if (!m) continue;
+    if (!m.file) {
+      say(`Nahrávám na Disk: ${e.title}…`);
+      const name = `${safeName(e.title)}.epub`;
+      const id = await d.upload(name, await writeEpub(await loadLibraryBook(e.id)), 'application/epub+zip');
+      m.file = { id, name, at: Date.now() };
+      files[k] = m;
+      uploaded++;
+    }
+    await applyToEntry(e, m);
+  }
+  if (uploaded) state = await d.sync({ v: 1, books: files });
+  const cloudOnly = Object.entries(state.books).filter(([k, e]) => e.file && !local.has(k)).map(([, e]) => e);
+  return { cloudOnly, uploaded, state };
+}
+
+/** Stáhne knihu z Disku do knihovny (s místem čtení a označenými). */
+export async function downloadCloudBook(s: Settings, e: SyncEntry): Promise<{ book: Book; entry: LibraryEntry }> {
+  const d = storageFromSettings(s);
+  if (!d || !e.file) throw new Error('Kniha na Disku není k dispozici.');
+  const book = await readBook(await d.download(e.file.id), e.file.name || 'kniha.epub');
+  const added = await addToLibrary(book);
+  const { entry } = await applyToEntry({ ...added, posAt: 0 }, e);
+  return { book, entry };
+}
+
+/** Jedna kniha (při otevření a zavření čtečky): sloučí s Diskem. moved = četlo se jinde později. */
+export async function syncEntry(s: Settings, e: LibraryEntry): Promise<{ entry: LibraryEntry; moved: boolean; device?: string } | null> {
+  const d = storageFromSettings(s);
+  if (!d) return null;
+  const k = entryKey(e);
+  const state = await d.sync({ v: 1, books: { [k]: entryToSync(e) } });
+  const m = state.books[k];
+  if (!m) return null;
+  const r = await applyToEntry(e, m);
+  return { ...r, device: m.pos?.device };
 }

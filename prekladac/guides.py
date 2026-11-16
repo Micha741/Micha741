@@ -218,6 +218,97 @@ Přirozené české hlasy Vlasta (žena) a Antonín (muž), slovenské Viktória
 6. Uložit → Otestovat. Ve čtečce pak v kartě Čtení → Nahlas vyberte hlas „Vlasta“ nebo „Antonín“.
 
 Celá kniha mívá 300 000 – 600 000 znaků; nad měsíční limit F0 služba čtení odmítne (nic se neúčtuje).""",
+    "webdav": """Synology / WebDAV – knihy a čtení v počítači i v telefonu přes vlastní NAS
+
+Místo Google Disku použijete svůj Synology NAS (nebo Nextcloud, ownCloud či jiný WebDAV server). Na serveru
+vznikne složka „Překladač“ s knihami (EPUB) a souborem sync.json (místo čtení, záložky, označené a poznámky).
+Data neopustí váš NAS.
+
+1. Balíček WebDAV Server
+   V DSM otevřete Centrum balíčků → vyhledejte „WebDAV Server“ → Instalovat → Otevřít.
+   Zapněte HTTP (port 5005) a/nebo HTTPS (port 5006) → Použít.
+
+2. Uživatel a sdílená složka (doporučeno)
+   Ovládací panel → Sdílená složka → Vytvořit, např. „knihy“.
+   Ovládací panel → Uživatel a skupina → Vytvořit uživatele, např. „ctecka“ se silným heslem,
+   oprávnění Čtení/zápis jen ke složce „knihy“. (Funguje i váš běžný účet, zvláštní je bezpečnější.)
+
+3. Adresa
+   - Doma (stejná Wi-Fi): http://192.168.1.10:5005/knihy  (místo 192.168.1.10 adresa NAS,
+     najdete ji v DSM → Ovládací panel → Síť nebo v aplikaci Synology Assistant)
+   - Z internetu: https://vas-nas.synology.me:5006/knihy – Ovládací panel → Externí přístup → DDNS
+     (adresa …synology.me), Zabezpečení → Certifikát → Přidat → Let's Encrypt, a na routeru přesměrujte port 5006.
+     QuickConnect s WebDAV nefunguje.
+   Za adresu vždy dejte název sdílené složky (u vlastního účtu může být „home“).
+
+4. Nastavení v Překladači
+   Sem vyplňte adresu, uživatele a heslo → Uložit → ✔ Otestovat. Po úspěšném testu se synchronizace přepne
+   na Synology (Čtečka → Moje knihy → ☁ → Synology / WebDAV).
+   Vlastní certifikát NAS (adresa https://192.168…): zaškrtněte „Důvěřovat vlastnímu certifikátu NAS“ –
+   jen v domácí síti. Heslo se ukládá šifrovaně jen v tomto počítači.
+
+5. Telefon
+   Aplikace pro Android: Nastavení → Služby a klíče → Synchronizace → Synology / WebDAV → stejná adresa,
+   uživatel a heslo → ✔ Otestovat. Telefon nevěří vlastním certifikátům – doma použijte http://…:5005,
+   z internetu https s certifikátem Let's Encrypt.
+
+Časté chyby
+- HTTP 401 – špatný uživatel nebo heslo (u Synology pozor na dvoufázové ověření – pro WebDAV zvláštní účet).
+- HTTP 403 – uživatel nemá právo zápisu do sdílené složky.
+- HTTP 404 / 409 – v adrese chybí nebo je špatně název sdílené složky.
+- „Server není dostupný“ – NAS je vypnutý, jiný port, nebo jste mimo domácí síť s místní adresou.
+""",
+    "gdrive": """Google Disk – knihy a čtení v počítači i v telefonu (zdarma)
+
+Začnete číst v počítači a pokračujete v telefonu – a obráceně. Na vašem Google Disku vznikne složka „Překladač“
+s knihami (EPUB) a souborem sync.json (místo čtení, záložky, označené a poznámky). Program vidí jen soubory,
+které sám vytvořil – zbytek vašeho Disku ne. Přihlašovací klíč si jednou vytvoříte sami (Google to u vlastních
+aplikací vyžaduje), zabere to asi 15 minut a je zdarma.
+
+1. Projekt
+   Otevřete https://console.cloud.google.com, nahoře „Vybrat projekt“ → „Nový projekt“, název např. Překladač → Vytvořit.
+
+2. Zapnout Google Drive API
+   https://console.cloud.google.com/apis/library/drive.googleapis.com → Povolit (Enable).
+
+3. Přihlašovací obrazovka (Google Auth Platform)
+   https://console.cloud.google.com/auth/overview → Začínáme (Get started):
+   název aplikace „Překladač“, váš e-mail, Cílová skupina (Audience): Externí (External), kontaktní e-mail → Vytvořit.
+   Pak v části Cílová skupina (Audience) klikněte na „Publikovat aplikaci“ (Publish app) → V produkci.
+   Bez toho Google přihlášení každých 7 dní zruší. Ověření od Googlu není potřeba – program chce jen přístup
+   k vlastním souborům (drive.file).
+
+4. Oprávnění
+   Přístup k datům (Data access) → Přidat nebo odebrat rozsahy → do pole vložte
+   https://www.googleapis.com/auth/drive.file → Přidat do tabulky → Aktualizovat → Uložit.
+
+5. Klient pro přihlášení kódem
+   Klienti (Clients) → Vytvořit klienta → Typ aplikace: „TV a zařízení s omezeným vstupem“
+   (TVs and Limited Input devices) → název Překladač → Vytvořit.
+   Zkopírujte „ID klienta“ a „Tajný klíč klienta“ a vložte je sem do Nastavení → Uložit.
+   Klíče se ukládají zašifrovaně jen v tomto počítači – nikomu je neposílejte.
+
+6. Přihlášení
+   Klikněte na „🔑 Přihlásit k Disku“. Program ukáže kód – otevřete https://www.google.com/device (klidně
+   v telefonu), zadejte kód, vyberte svůj účet Google a povolte přístup. Google může ukázat
+   „Aplikace není ověřená“ – je to vaše vlastní aplikace: Rozšířené → Přejít na Překladač.
+
+7. Telefon
+   V aplikaci pro Android: Nastavení → Služby a klíče → Google Disk → stejné ID klienta a tajný klíč →
+   Přihlásit. Pak Číst → ☁ Synchronizovat.
+
+Jak to funguje
+- Při otevření knihy ve čtečce se stáhne místo čtení z Disku – když jste mezitím četli v telefonu, kniha se otevře
+  tam. Při čtení se změny po chvíli nahrají zpět (stačí internet).
+- Kniha, kterou čtete, se na Disk nahraje jako EPUB, aby se dala otevřít v telefonu. Knihy z telefonu najdete
+  ve Čtečce → Moje knihy → ☁ Google Disk.
+- Stejná kniha se pozná podle názvu a autora. Smazaná záložka nebo označení zmizí i ve druhém zařízení.
+
+Časté chyby
+- „Google nezná ID klienta“ – klient musí být typu „TV a zařízení s omezeným vstupem“, ID a klíč bez mezer.
+- „Není zapnuté Google Drive API“ – krok 2, pak pár minut počkejte.
+- „Přihlášení vypršelo“ – aplikace není publikovaná (krok 3), přihlaste se znovu.
+""",
     "google_tts": """Hlasy Google Cloud pro čtení nahlas – zdarma 1 milion znaků měsíčně (Wavenet)
 
 Přirozený český ženský hlas (Wavenet). Čte se přes internet.

@@ -60,6 +60,14 @@
 # Historie verzí
 
 **Nová verze**
+- ☁ Synchronizace s telefonem přes Google Disk: začnete číst v počítači a pokračujete v telefonu (a obráceně) –
+  místo čtení, záložky, označené s poznámkami a knihy (EPUB) ve složce „Překladač“ na vašem Disku. Přihlášení
+  kódem na google.com/device, návod v Nastavení → Služby a klíče → Google Disk; knihy z telefonu v Čtečce → Moje knihy.
+- Synology / WebDAV (Nextcloud…) místo Google Disku: knihy a čtení na vašem vlastním NAS (balíček WebDAV Server),
+  adresa, uživatel a heslo v Nastavení → Služby a klíče → Synology / WebDAV (s návodem), volba úložiště v Čtečce →
+  Moje knihy; vlastní certifikát NAS jde v domácí síti povolit.
+
+**1.0.116 (16. 11. 2026)**
 - Metadata (anotace, podtitul, žánr, série a díl, vydavatel, ISBN…) se ukládají i do PDF, ODT, FB2 a RTF
   a při otevření hotové knihy (EPUB, Word, FB2, ODT, RTF, PDF) se načtou zpět do karty Metadata.
 - Anotace… → tlačítka „Převzít shrnutí děje“ (z osnovy) a „Převzít popis ze zadání“ (pro knihy z Napsat knihu).

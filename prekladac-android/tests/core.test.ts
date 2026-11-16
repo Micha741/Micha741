@@ -630,3 +630,110 @@ test('historie verzí: nejnovější záznam odpovídá verzi v app.json', async
   assert.equal(ANDROID_HISTORY[0].version, app.expo.version, 'nová verze v app.json musí mít záznam v src/core/changelog.ts');
   assert.ok(ANDROID_HISTORY.every((r) => r.items.length));
 });
+
+test('synchronizace: stejné klíče a slučování jako ve Windows (společné případy)', async () => {
+  const { bookKey, mergeEntry } = await import('../src/core/sync');
+  const cases = JSON.parse(readFileSync(`${process.cwd()}/../prekladac/tests/fixtures/sync_cases.json`, 'utf8'));
+  for (const c of cases.keys) assert.equal(bookKey(c.title, c.author), c.key);
+  for (const c of cases.merge) {
+    assert.deepEqual(mergeEntry(c.a, c.b), c.expected, c.name);
+    const back = mergeEntry(c.b, c.a);
+    assert.deepEqual([back.bookmarks, back.highlights], [c.expected.bookmarks, c.expected.highlights]);
+  }
+});
+
+test('synchronizace: přihlášení kódem a sync.json přes Google Disk (bez internetu)', async () => {
+  const { GoogleDrive, bookKey } = await import('../src/core/sync');
+  const files: Record<string, { name: string; data: Uint8Array; folder: boolean; parent: string }> = {};
+  let pending = 1;
+  const add = (name: string, data: Uint8Array, folder: boolean, parent = '') => { const id = `id${Object.keys(files).length + 1}`; files[id] = { name, data, folder, parent }; return id; };
+  const res = (obj: unknown, status = 200) => { const raw = obj instanceof Uint8Array ? obj : new TextEncoder().encode(JSON.stringify(obj)); return { ok: status < 400, status, text: async () => new TextDecoder().decode(raw), arrayBuffer: async () => raw.buffer.slice(raw.byteOffset, raw.byteOffset + raw.byteLength) as ArrayBuffer }; };
+  const fake = async (url: string, init: any = {}) => {
+    const m = init.method ?? 'GET';
+    if (url.includes('/device/code')) return res({ device_code: 'DEV', user_code: 'ABCD-EFGH', verification_url: 'https://www.google.com/device', interval: 5 });
+    if (url.endsWith('/token')) {
+      if (String(init.body).includes('device_code') && pending) { pending--; return res({ error: 'authorization_pending' }, 428); }
+      return res({ access_token: 'AT', refresh_token: 'RT', expires_in: 3600 });
+    }
+    assert.equal(init.headers.Authorization, 'Bearer AT');
+    if (m === 'GET' && url.includes('?q=')) {
+      const q = decodeURIComponent(url.split('q=')[1].split('&')[0]);
+      const list = Object.entries(files).filter(([, f]) => (q.includes(`name = '${f.name}'`) || !q.includes('name =')) && ((q.includes("folder'") && !q.includes('!=')) === f.folder) && (q.includes(`'${f.parent}' in parents`) || !q.includes('in parents')));
+      return res({ files: list.map(([id, f]) => ({ id, name: f.name })) });
+    }
+    if (m === 'GET' && url.endsWith('alt=media')) return res(files[url.split('/files/')[1].split('?')[0]].data);
+    if (m === 'POST' && !url.includes('upload')) return res({ id: add(JSON.parse(init.body).name, new Uint8Array(), true) });
+    if (m === 'POST') {
+      const text = new TextDecoder().decode(init.body);
+      const meta = JSON.parse(text.split('\r\n\r\n')[1].split('\r\n--')[0]);
+      const body = text.split('\r\n\r\n').slice(2).join('\r\n\r\n').split('\r\n--').slice(0, -1).join('\r\n--');
+      return res({ id: add(meta.name, new TextEncoder().encode(body), false, meta.parents[0]) });
+    }
+    if (m === 'PATCH') { const id = url.split('/files/')[1].split('?')[0]; files[id].data = new Uint8Array(init.body); return res({ id }); }
+    throw new Error(url);
+  };
+  const d = new GoogleDrive('cid', 'secret', '', fake as any);
+  const s = await d.deviceStart();
+  assert.equal(s.user_code, 'ABCD-EFGH');
+  assert.equal(await d.devicePoll(s.device_code), false);
+  assert.equal(await d.devicePoll(s.device_code), true);
+  assert.equal(d.refreshToken, 'RT');
+  const key = bookKey('Babička', 'Němcová');
+  await d.sync({ books: { [key]: { title: 'Babička', author: 'Němcová', pos: { chapter: 2, fraction: 0.5, at: 10, device: 'Android' }, bookmarks: [], highlights: [], gone: {}, file: null } } });
+  const d2 = new GoogleDrive('cid', 'secret', 'RT', fake as any);
+  const merged = await d2.sync({ books: { [key]: { title: 'Babička', author: 'Němcová', pos: { chapter: 4, fraction: 0.1, at: 20, device: 'Windows' }, bookmarks: [], highlights: [], gone: {}, file: null } } });
+  assert.equal(merged.books[key].pos!.device, 'Windows');
+  assert.equal((await d.getState()).state.books[key].pos!.chapter, 4);
+  const fid = await d.upload('babicka.epub', new Uint8Array([1, 2, 3]), 'application/epub+zip');
+  assert.deepEqual([...(await d.download(fid))], [1, 2, 3]);
+  assert.deepEqual((await d.listFiles()).map((f) => f.name).sort(), ['babicka.epub', 'sync.json']);
+});
+
+test('synchronizace: záznam v knihovně ↔ Disk (místo, záložky, označené podle textu odstavce)', async () => {
+  const { applySyncToEntry, entryToSync, mergeEntry } = await import('../src/core/sync');
+  const { newEntry } = await import('../src/core/library');
+  const b = sample(false);
+  const e = { ...newEntry(b, 'k1'), chapter: 0, fraction: 0.2, posAt: 100 };
+  const fromWindows = { title: b.title, author: b.author, pos: { chapter: 2, fraction: 0.6, at: 500, device: 'Windows' },
+    bookmarks: [{ chapter: 1, fraction: 0.5, label: 'Win', at: 400 }],
+    highlights: [{ chapter: 0, text: TEXTS[0][1], color: 'b', note: 'z počítače', at: 450 }], gone: {}, file: { id: 'f9', name: 'k.epub', at: 1 } };
+  const merged = mergeEntry(entryToSync(e), fromWindows);
+  const { patch, moved } = applySyncToEntry(e, merged, b);
+  assert.ok(moved);
+  assert.deepEqual([patch.chapter, patch.fraction, patch.posAt], [2, 0.6, 500]);
+  assert.equal(patch.highlights![0].i, 1, 'označený odstavec se najde podle textu');
+  assert.equal(patch.highlights![0].color, 'b');
+  assert.equal(patch.cloudFile!.id, 'f9');
+  // v telefonu se četlo později → místo zůstane
+  const later = applySyncToEntry({ ...e, posAt: 900 }, merged, b);
+  assert.ok(!later.moved && later.patch.chapter === undefined);
+});
+
+test('Synology / WebDAV: složka Překladač, sync.json, knihy a srozumitelné chyby (bez serveru)', async () => {
+  const { WebDav, parsePropfind } = await import('../src/core/sync');
+  const files: Record<string, Uint8Array> = {};
+  const dirs = new Set<string>();
+  const auth = `Basic ${Buffer.from('mikes:heslo').toString('base64')}`;
+  const res = (status: number, body: Uint8Array | string = '') => { const raw = typeof body === 'string' ? new TextEncoder().encode(body) : body; return { ok: status < 300, status, text: async () => new TextDecoder().decode(raw), arrayBuffer: async () => raw.buffer.slice(raw.byteOffset, raw.byteOffset + raw.byteLength) as ArrayBuffer }; };
+  const fake = async (url: string, init: any = {}) => {
+    if (init.headers.Authorization !== auth) return res(401);
+    const path = decodeURIComponent(url.split(':8765')[1]);
+    const m = init.method;
+    if (m === 'MKCOL') { if (dirs.has(path)) return res(405); dirs.add(path); return res(201); }
+    if (m === 'PUT') { files[path] = new Uint8Array(init.body); return res(201); }
+    if (m === 'GET') return files[path] ? res(200, files[path]) : res(404);
+    if (m === 'PROPFIND') return res(207, `<d:multistatus xmlns:d="DAV:"><d:response><d:href>${encodeURI(path)}</d:href><d:propstat><d:prop><d:resourcetype><d:collection/></d:resourcetype></d:prop></d:propstat></d:response>` +
+      Object.keys(files).filter((p) => p.startsWith(path)).map((p) => `<d:response><d:href>${encodeURI(p)}</d:href><d:propstat><d:prop><d:getcontentlength>${files[p].length}</d:getcontentlength><d:resourcetype/></d:prop></d:propstat></d:response>`).join('') + '</d:multistatus>');
+    throw new Error(m);
+  };
+  const w = new WebDav('nas:8765/home/', 'mikes', 'heslo', undefined, fake as any);
+  assert.equal(w.base, 'https://nas:8765/home');
+  await w.sync({ books: { 'kniha|': { title: 'Kniha', author: '', pos: { chapter: 1, fraction: 0.5, at: 10, device: 'Android' }, bookmarks: [], highlights: [], gone: {}, file: null } } });
+  assert.ok(dirs.has('/home/Překladač/') && files['/home/Překladač/sync.json']);
+  const id = await w.upload('Babička.epub', new Uint8Array([80, 75]), 'application/epub+zip');
+  assert.deepEqual([...(await w.download(id))], [80, 75]);
+  assert.deepEqual((await w.listFiles()).map((f) => f.name).sort(), ['Babička.epub', 'sync.json']);
+  assert.equal((await w.getState()).state.books['kniha|'].pos!.chapter, 1);
+  await assert.rejects(new WebDav('http://nas:8765/home', 'mikes', 'spatne', undefined, fake as any).getState(), /heslo/);
+  assert.deepEqual(parsePropfind('<D:multistatus xmlns:D="DAV:"><D:response><D:href>/a/P%C5%99eklada%C4%8D/x%20y.epub</D:href><D:getcontentlength>5</D:getcontentlength></D:response></D:multistatus>'), [{ id: 'x y.epub', name: 'x y.epub', size: '5' }]);
+});
