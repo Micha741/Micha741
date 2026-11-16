@@ -997,7 +997,22 @@ class Reader(QtWidgets.QWidget):
         pct = round(100 * pos / max(1, self.doc.characterCount()))
         v = self.view
         shown = f"{v.page + 1}–{min(v.pages, v.page + 2)}" if v.two else f"{v.page + 1}"
-        self.info.setText(f"{ch} · {tr('strana')} {shown} / {v.pages} · {pct} %")
+        text = f"{ch} · {tr('strana')} {shown} / {v.pages} · {pct} %"
+        if getattr(self, "_notice", "") and time.time() < getattr(self, "_notice_until", 0):
+            text = f"{self._notice} · {text}"  # krátká zpráva (např. z telefonu) zůstane vidět i při listování
+        self.info.setText(text)
+
+    def notify(self, text: str, seconds: float = 8.0):
+        """Zpráva na spodní liště na pár sekund (přepočet stránek ji hned nepřepíše)."""
+        self._notice, self._notice_until = text, time.time() + seconds
+        self.info.setText(text)
+        QtCore.QTimer.singleShot(int(seconds * 1000) + 50, self, self._notice_done)
+
+    @QtCore.Slot()
+    def _notice_done(self):
+        if time.time() >= getattr(self, "_notice_until", 0):
+            self._notice = ""
+            self.page_changed()
 
     def chapter_at(self, pos: int) -> str:
         name = ""

@@ -326,11 +326,11 @@ class ReaderCloud(QtCore.QObject):
     def _pulled(self, e, err):
         self._busy = False
         if err:
-            self.reader.info.setText("☁ " + str(err))
+            self.reader.notify("☁ " + str(err))
             return
         if self.reader.apply_sync(e):
             p = e.get("pos") or {}
-            self.reader.info.setText(tr("☁ Pokračujete tam, kde jste skončil ({}, kapitola {}).").format(
+            self.reader.notify(tr("☁ Pokračujete tam, kde jste skončil ({}, kapitola {}).").format(
                 p.get("device", ""), int(p.get("chapter", 0)) + 1))
 
     def push(self):

@@ -527,6 +527,10 @@ def test_reader_cloud_sync_continue_from_phone(qapp, monkeypatch):
             break
     assert r.cloud and not r.cloud._busy
     assert r.chapter_index(r.view.anchor) == 2, "pokračuje se ve 3. kapitole jako v telefonu"
+    for _ in range(30):  # ve Windows se stránky po otevření ještě přepočítají – zpráva musí zůstat vidět
+        qapp.processEvents()
+        QTest.qWait(10)
+    r.page_changed()
     assert "Pokračujete" in r.info.text()
     assert [b["label"] for b in r.state.bookmarks] == ["Z telefonu"]
     h = r.state.highlights[0]
