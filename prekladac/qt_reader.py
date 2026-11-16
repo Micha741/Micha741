@@ -67,21 +67,26 @@ class ReaderState:
     def __init__(self, project: dict):
         self.path = _app_dir() / "reader" / f"{book_key(project)}.json"
         self.pos = 0
+        self.at = 0  # kdy se naposledy změnilo místo čtení (ms) – pro synchronizaci s telefonem
         self.bookmarks: list[dict] = []
         self.highlights: list[dict] = []
+        self.gone: dict[str, int] = {}  # smazané záložky a označení (id → čas smazání ms) pro synchronizaci
         try:
             d = json.loads(self.path.read_text(encoding="utf-8"))
             self.pos = int(d.get("pos", 0))
+            self.at = int(d.get("at", 0))
             self.bookmarks = list(d.get("bookmarks", []))
             self.highlights = list(d.get("highlights", []))
+            self.gone = dict(d.get("gone", {}))
         except Exception:  # noqa: BLE001
             pass
 
     def save(self):
         try:
             self.path.parent.mkdir(parents=True, exist_ok=True)
-            self.path.write_text(json.dumps({"pos": self.pos, "bookmarks": self.bookmarks,
-                                             "highlights": self.highlights}, ensure_ascii=False, indent=1),
+            self.path.write_text(json.dumps({"pos": self.pos, "at": self.at, "bookmarks": self.bookmarks,
+                                             "highlights": self.highlights, "gone": self.gone},
+                                            ensure_ascii=False, indent=1),
                                  encoding="utf-8")
         except OSError:
             pass
@@ -911,6 +916,12 @@ class Reader(QtWidgets.QWidget):
         self._save_t.setInterval(800)
         self._save_t.timeout.connect(self.state.save)
         self.rebuild()
+        try:  # synchronizace s telefonem přes Google Disk (jen když je přihlášení)
+            from qt_cloud import ReaderCloud
+
+            self.cloud = ReaderCloud.attach(self)
+        except Exception:  # noqa: BLE001 – čtečka funguje i bez synchronizace
+            self.cloud = None
 
     # ---- sazba a nastavení
     def rebuild(self, keep_pos: int | None = None):
@@ -976,8 +987,12 @@ class Reader(QtWidgets.QWidget):
         if not hasattr(self, "doc"):
             return
         pos = self.view.anchor
+        if pos != self.state.pos:
+            self.state.at = int(time.time() * 1000)
         self.state.pos = pos
         self._save_t.start()
+        if getattr(self, "cloud", None):
+            self.cloud.changed()
         ch = self.chapter_at(pos)
         pct = round(100 * pos / max(1, self.doc.characterCount()))
         v = self.view
@@ -990,6 +1005,80 @@ class Reader(QtWidgets.QWidget):
             if p <= pos:
                 name = n
         return name
+
+    # ---- synchronizace s telefonem (Google Disk): místo jako kapitola + podíl kapitoly, označené podle textu
+    def _chapter_bounds(self, i: int) -> tuple[int, int]:
+        starts = [p for _n, p in self.chapters] or [0]
+        i = max(0, min(i, len(starts) - 1))
+        end = starts[i + 1] if i + 1 < len(starts) else self.doc.characterCount()
+        return starts[i], max(starts[i] + 1, end)
+
+    def chapter_index(self, pos: int) -> int:
+        idx = 0
+        for k, (_n, p) in enumerate(self.chapters):
+            if p <= pos:
+                idx = k
+        return idx
+
+    def pos_to_sync(self, pos: int) -> tuple[int, float]:
+        i = self.chapter_index(pos)
+        a, b = self._chapter_bounds(i)
+        return i, round(max(0.0, min(1.0, (pos - a) / (b - a))), 4)
+
+    def sync_to_pos(self, chapter: int, fraction: float) -> int:
+        a, b = self._chapter_bounds(chapter)
+        return int(a + (b - a) * max(0.0, min(1.0, fraction)))
+
+    def _sync_mark(self, kind: str, m: dict) -> dict:
+        ch, fr = self.pos_to_sync(int(m.get("pos", 0)))
+        at = m.get("at", 0)
+        at = int(at * 1000) if at and at < 1e11 else int(at or 0)  # starší záznamy v sekundách
+        if kind == "b":
+            return {"chapter": ch, "fraction": fr, "label": m.get("label", ""), "at": at}
+        return {"chapter": ch, "text": m.get("text", ""), "color": m.get("color", "y"), "note": m.get("note", ""), "at": at}
+
+    def sync_entry(self) -> dict:
+        """Stav čtení této knihy ve společném formátu (cloud_sync)."""
+        ch, fr = self.pos_to_sync(self.state.pos)
+        o = self.project.get("outline", {})
+        return {"title": o.get("title", ""), "author": self.project.get("author", ""),
+                "pos": {"chapter": ch, "fraction": fr, "at": self.state.at, "device": "Windows"} if self.state.at else None,
+                "bookmarks": [self._sync_mark("b", m) for m in self.state.bookmarks],
+                "highlights": [self._sync_mark("h", m) for m in self.state.highlights],
+                "gone": dict(self.state.gone), "file": None}
+
+    def apply_sync(self, e: dict) -> bool:
+        """Použije sloučený stav z Disku. Vrátí True, když se místo čtení posunulo (čteno jinde později)."""
+        import re as _re
+
+        moved = False
+        p = e.get("pos")
+        if p and p.get("at", 0) > self.state.at:
+            self.state.at = int(p["at"])
+            pos = self.sync_to_pos(int(p.get("chapter", 0)), float(p.get("fraction", 0)))
+            self.goto_pos(pos)
+            self.state.at = int(p["at"])  # goto_pos ho přepsal na „teď“
+            moved = True
+        self.state.bookmarks = [{"pos": self.sync_to_pos(b["chapter"], b["fraction"]), "label": b.get("label", ""),
+                                 "at": b.get("at", 0)} for b in e.get("bookmarks", [])]
+        norm = lambda t: _re.sub(r"\s+", " ", t or "").strip()  # noqa: E731
+        marks = []
+        for h in e.get("highlights", []):
+            a, b = self._chapter_bounds(int(h.get("chapter", 0)))
+            want = norm(h.get("text", ""))[:40]
+            blk = self.doc.findBlock(a)
+            while blk.isValid() and blk.position() < b and not norm(blk.text()).startswith(want):
+                blk = blk.next()
+            if not blk.isValid() or blk.position() >= b or not want:
+                continue
+            marks.append({"block": blk.blockNumber(), "pos": blk.position(), "color": h.get("color") or "y",
+                          "text": blk.text()[:200], "note": h.get("note", ""), "at": h.get("at", 0)})
+        self.state.highlights = marks
+        self.state.gone = dict(e.get("gone", {}))
+        self.state.save()
+        self.panel.fill_marks()
+        self.view.refresh()
+        return moved
 
     def goto_pos(self, pos: int, length: int = 0):
         if length:
@@ -1077,6 +1166,10 @@ class Reader(QtWidgets.QWidget):
             return
         old = next((h for h in self.state.highlights if h.get("block") == b.blockNumber()), None)
         self.state.highlights = [h for h in self.state.highlights if h is not old]
+        if old and not color:
+            import cloud_sync
+
+            self.state.gone[cloud_sync.mark_id("h", self._sync_mark("h", old))] = int(time.time() * 1000)
         if color:
             self.state.highlights.append({"block": b.blockNumber(), "pos": b.position(), "color": color,
                                           "text": b.text()[:200], "note": note if note is not None else (old or {}).get("note", ""),
@@ -1093,6 +1186,10 @@ class Reader(QtWidgets.QWidget):
             self.panel.fill_marks()
 
     def remove_mark(self, kind: str, obj: dict):
+        import cloud_sync
+
+        sid = cloud_sync.mark_id(kind, self._sync_mark(kind, obj))
+        self.state.gone[sid] = int(time.time() * 1000)
         if kind == "h":
             self.state.highlights = [h for h in self.state.highlights if h is not obj]
         else:

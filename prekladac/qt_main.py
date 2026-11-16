@@ -1513,6 +1513,10 @@ class ReaderPage(QtWidgets.QWidget):
         self.recent = QtWidgets.QVBoxLayout(self.recent_box)
         lay.addWidget(self.recent_box)
         self.search = BookSearch(win.cfg, win.save_cfg, self.open_path)
+        from qt_cloud import CloudBooksBox
+
+        self.cloud = CloudBooksBox(win.cfg, win.save_cfg, self.open_path)
+        lay.addWidget(self.cloud)
         self.extras = MyBooksExtras(self.open_path, self.search.download_and_open)
         lay.addWidget(self.extras)
         lay.addStretch(1)
@@ -1526,6 +1530,7 @@ class ReaderPage(QtWidgets.QWidget):
     def showEvent(self, e):
         self.rebuild_recent()
         self.extras.refresh()
+        self.cloud.refresh()
         super().showEvent(e)
 
     def rebuild_recent(self):
@@ -1705,6 +1710,10 @@ class SettingsPage(QtWidgets.QWidget):
                 wb = QtWidgets.QPushButton("🌐 Získat klíč / web")
                 wb.clicked.connect(lambda _c=False, u=url: webbrowser.open(u))
                 btns.addWidget(wb)
+            if name == "gdrive":  # přihlášení kódem (google.com/device) – heslo se do programu nezadává
+                lb = QtWidgets.QPushButton("🔑 Přihlásit k Disku")
+                lb.clicked.connect(self.gdrive_login)
+                btns.addWidget(lb)
             tb = QtWidgets.QPushButton("✔ Otestovat")
             tb.clicked.connect(lambda _c=False, n=name, b=tb: self.test(n, b))
             btns.addWidget(tb)
@@ -1722,6 +1731,19 @@ class SettingsPage(QtWidgets.QWidget):
             sect = cfg["engines"].setdefault(name, {})
             for key, w in ws.items():
                 sect[key] = w.currentData() if isinstance(w, QtWidgets.QComboBox) else w.text().strip()
+
+    def gdrive_login(self):
+        from qt_cloud import LoginDialog
+
+        self.collect()
+        if not self.win.cfg["engines"].get("gdrive", {}).get("client_id"):
+            QtWidgets.QMessageBox.information(self, "Google Disk", "Nejdřív vyplňte ID klienta a tajný klíč klienta "
+                                              "(📘 Návod popisuje, jak je jednou vytvořit).")
+            return
+        self.win.save_cfg()
+        if LoginDialog(self.win.cfg, self.win.save_cfg, self).exec():
+            QtWidgets.QMessageBox.information(self, "Google Disk", "Přihlášeno ✓\n\nMísto čtení, záložky, označené a knihy "
+                                              "se teď synchronizují s telefonem (Čtečka → Moje knihy → ☁ Google Disk).")
 
     def show_guide(self, name):
         d = QtWidgets.QDialog(self)

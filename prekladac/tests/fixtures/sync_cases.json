@@ -1,0 +1,45 @@
+{
+  "keys": [
+    {"title": "Babička", "author": "Božena Němcová", "key": "babicka|bozena nemcova"},
+    {"title": "  Strážce   majáku! ", "author": "", "key": "strazce majaku|"},
+    {"title": "Kůň & Louka: 2. díl", "author": "Jan NOVÁK", "key": "kun louka 2 dil|jan novak"}
+  ],
+  "merge": [
+    {
+      "name": "novější místo čtení vyhraje, záložky a označené se sloučí",
+      "a": {"title": "Kniha", "author": "A", "pos": {"chapter": 2, "fraction": 0.5, "at": 1000, "device": "Windows"},
+            "bookmarks": [{"chapter": 0, "fraction": 0.1, "label": "Začátek", "at": 100}],
+            "highlights": [{"chapter": 1, "text": "Byla jednou jedna  babička.", "color": "y", "note": "", "at": 200}],
+            "gone": {}},
+      "b": {"title": "Kniha", "author": "A", "pos": {"chapter": 3, "fraction": 0.25, "at": 2000, "device": "Android"},
+            "bookmarks": [{"chapter": 4, "fraction": 0.9, "label": "Konec", "at": 300}],
+            "highlights": [{"chapter": 1, "text": "Byla jednou jedna babička.", "color": "g", "note": "hezké", "at": 500}],
+            "gone": {}},
+      "expected": {"title": "Kniha", "author": "A", "pos": {"chapter": 3, "fraction": 0.25, "at": 2000, "device": "Android"},
+            "bookmarks": [{"chapter": 0, "fraction": 0.1, "label": "Začátek", "at": 100}, {"chapter": 4, "fraction": 0.9, "label": "Konec", "at": 300}],
+            "highlights": [{"chapter": 1, "text": "Byla jednou jedna babička.", "color": "g", "note": "hezké", "at": 500}],
+            "gone": {}, "file": null}
+    },
+    {
+      "name": "smazané v jednom zařízení zmizí i ve druhém, novější znovu přidané zůstane",
+      "a": {"title": "Kniha", "author": "", "pos": null,
+            "bookmarks": [{"chapter": 0, "fraction": 0.1, "label": "X", "at": 100}, {"chapter": 2, "fraction": 0.3333, "label": "Y", "at": 900}],
+            "highlights": [{"chapter": 0, "text": "Odstavec jedna", "color": "y", "note": "", "at": 100}],
+            "gone": {}},
+      "b": {"title": "Kniha", "author": "", "pos": {"chapter": 0, "fraction": 0, "at": 50, "device": "Android"},
+            "bookmarks": [],
+            "highlights": [],
+            "gone": {"b:0:100": 150, "h:0:Odstavec jedna": 150, "b:2:333": 500}, "file": {"id": "f1", "name": "kniha.epub", "at": 40}},
+      "expected": {"title": "Kniha", "author": "", "pos": {"chapter": 0, "fraction": 0, "at": 50, "device": "Android"},
+            "bookmarks": [{"chapter": 2, "fraction": 0.3333, "label": "Y", "at": 900}],
+            "highlights": [],
+            "gone": {"b:0:100": 150, "h:0:Odstavec jedna": 150, "b:2:333": 500}, "file": {"id": "f1", "name": "kniha.epub", "at": 40}}
+    },
+    {
+      "name": "prázdný druhý záznam",
+      "a": {"title": "Jen tady", "author": "B", "pos": {"chapter": 1, "fraction": 0.7, "at": 10, "device": "Windows"}, "bookmarks": [], "highlights": [], "gone": {}},
+      "b": null,
+      "expected": {"title": "Jen tady", "author": "B", "pos": {"chapter": 1, "fraction": 0.7, "at": 10, "device": "Windows"}, "bookmarks": [], "highlights": [], "gone": {}, "file": null}
+    }
+  ]
+}
