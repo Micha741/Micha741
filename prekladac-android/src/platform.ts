@@ -158,6 +158,9 @@ export interface Settings extends EngineSettings {
   engine?: string;
   target?: string;
   format?: string;
+  /** ochrana vlastní knihy: „Licence pro: …“ do každé kapitoly při ukládání (prázdné = vypnuto) */
+  watermark?: string;
+  watermarkOn?: boolean;
 }
 
 const KEY = 'prekladac_settings_v1';

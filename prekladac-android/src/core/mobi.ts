@@ -1,6 +1,6 @@
 // MOBI (starší formát Kindle, „MOBI 6“) a PalmDoc PDB – zápis i čtení bez Calibre.
 import type { Book, Chapter } from './book';
-import { emptyBook, sniffMime } from './book';
+import { cleanMeta, emptyBook, sniffMime } from './book';
 import { concat, cp1252Decode, decodeAny, escapeXml, utf8Decode, utf8Encode } from './bytes';
 import { chaptersFromBlocks, chaptersFromText } from './chapters';
 import { htmlToBlocks } from './html';
@@ -31,8 +31,11 @@ export function writeMobi(book: Book, opts: { toc?: boolean } = {}): Uint8Array 
   pieces.push(`<html><head><guide>${toc ? `<reference type="toc" title="Obsah" filepos=${'@toc'} />` : ''}` +
     `<reference type="text" title="Začátek" filepos=${'@start'} /></guide></head><body>`);
   if (book.cover) pieces.push(`<p><img recindex="${recIndex(book.cover)}" /></p><mbp:pagebreak/>`);
-  pieces.push(`<p height="3em" align="center"><font size="+3"><b>${escapeXml(book.title)}</b></font></p>`);
-  if (book.author) pieces.push(`<p align="center"><font size="+1">${escapeXml(book.author)}</font></p>`);
+  if (!book.cover) {
+    // bez obálky titulní strana s názvem; s obálkou je název jen v metadatech
+    pieces.push(`<p height="3em" align="center"><font size="+3"><b>${escapeXml(book.title)}</b></font></p>`);
+    if (book.author) pieces.push(`<p align="center"><font size="+1">${escapeXml(book.author)}</font></p>`);
+  }
   pieces.push('<mbp:pagebreak/>');
   if (toc && book.chapters.length > 1) {
     pieces.push({ mark: 'toc' }, '<h2>Obsah</h2>');
@@ -90,7 +93,13 @@ export function writeMobi(book: Book, opts: { toc?: boolean } = {}): Uint8Array 
   if (book.author) exth(100, utf8Encode(book.author));
   exth(503, utf8Encode(book.title));
   exth(524, utf8Encode(book.language || 'cs'));
-  exth(106, utf8Encode(new Date().toISOString().slice(0, 10)));
+  const m = cleanMeta(book.meta);
+  if (m.publisher) exth(101, utf8Encode(m.publisher));
+  if (m.description) exth(103, utf8Encode(m.description));
+  if (m.isbn) exth(104, utf8Encode(m.isbn));
+  for (const x of (m.subjects ?? '').split(',').map((t) => t.trim()).filter(Boolean)) exth(105, utf8Encode(x));
+  exth(106, utf8Encode(m.date || new Date().toISOString().slice(0, 10)));
+  if (m.rights) exth(109, utf8Encode(m.rights));
   exth(108, utf8Encode('Prekladac Android'));
   if (book.cover) {
     exth(201, u32(0));
@@ -244,6 +253,11 @@ export function readMobiOrPdb(data: Uint8Array, fileName: string): Book {
   const book = emptyBook(meta[503] ? dec(meta[503][0]) : fullName || base);
   book.author = meta[100] ? meta[100].map(dec).join(', ') : '';
   if (meta[524]) book.language = dec(meta[524][0]).slice(0, 2).toLowerCase();
+  const bm = cleanMeta({
+    publisher: meta[101] ? dec(meta[101][0]) : '', description: meta[103] ? dec(meta[103][0]).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ') : '',
+    isbn: meta[104] ? dec(meta[104][0]) : '', subjects: meta[105] ? meta[105].map(dec).join(', ') : '', rights: meta[109] ? dec(meta[109][0]) : '',
+  });
+  if (Object.keys(bm).length) book.meta = bm;
   book.source = fileName;
   const imageFor = (rec: number): string | null => {
     if (firstImage === 0xffffffff) return null;

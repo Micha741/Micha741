@@ -1,9 +1,36 @@
 // DOCX (Word) – zápis i čtení: nadpisy kapitol, odstavce, obrázky, zalomení stránek.
 import JSZip from 'jszip';
-import type { Block, Book } from './book';
-import { emptyBook, extFromMime, mimeFromName, sniffMime } from './book';
+import type { Block, Book, BookMeta } from './book';
+import { cleanMeta, emptyBook, extFromMime, mimeFromName, sniffMime } from './book';
 import { decodeAny, decodeEntities, escapeXml } from './bytes';
 import { chaptersFromBlocks, TOC_NAMES, cleanTitle } from './chapters';
+
+/** Metadata do vlastností dokumentu (Word: Soubor → Informace) – stejně jako ve Windows. */
+export function docxMeta(meta: BookMeta | undefined): string {
+  const m = cleanMeta(meta);
+  let out = '';
+  if (m.subtitle) out += `<dc:subject>${escapeXml(m.subtitle)}</dc:subject>`;
+  if (m.subjects) out += `<cp:keywords>${escapeXml(m.subjects)}</cp:keywords>`;
+  if (m.description) out += `<dc:description>${escapeXml(m.description.slice(0, 2000))}</dc:description>`;
+  if (m.series) out += `<cp:category>${escapeXml(`${m.series} ${m.series_index ?? ''}`.trim())}</cp:category>`;
+  if (m.isbn) out += `<dc:identifier>ISBN ${escapeXml(m.isbn)}</dc:identifier>`;
+  return out;
+}
+
+/** Vlastnosti dokumentu zpět do metadat (protějšek docxMeta). */
+export function readDocxMeta(core: string): BookMeta {
+  const get = (tag: string) => decodeEntities(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`).exec(core)?.[1] ?? '').trim();
+  const m: BookMeta = { subtitle: get('dc:subject'), subjects: get('cp:keywords'), description: get('dc:description') };
+  const id = get('dc:identifier');
+  if (/^isbn/i.test(id)) m.isbn = id.slice(4).trim();
+  const cat = get('cp:category');
+  if (cat) {
+    const sm = /^(.*?)\s+(\d+)$/.exec(cat);
+    m.series = sm ? sm[1] : cat;
+    if (sm) m.series_index = sm[2];
+  }
+  return cleanMeta(m);
+}
 
 /** Rozměry obrázku v pixelech (JPEG, PNG, GIF, BMP) – bez dekódování. */
 export function imageSize(d: Uint8Array): { w: number; h: number } {
@@ -77,9 +104,10 @@ export async function writeDocx(book: Book): Promise<Uint8Array> {
       `<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>`;
   };
   const body: string[] = [];
-  if (book.cover && book.images[book.cover]) body.push(image(book.cover), pageBreak);
-  body.push(para(book.title, 'Title'));
-  if (book.author) body.push(`<w:p><w:pPr><w:jc w:val="center"/><w:ind w:firstLine="0"/></w:pPr>${run(book.author)}</w:p>`);
+  // s obrázkem obálky je název jen ve vlastnostech dokumentu; jinak titulní strana s názvem
+  if (book.cover && book.images[book.cover]) body.push(image(book.cover));
+  else body.push(para(book.title, 'Title'));
+  if (book.author && !(book.cover && book.images[book.cover])) body.push(`<w:p><w:pPr><w:jc w:val="center"/><w:ind w:firstLine="0"/></w:pPr>${run(book.author)}</w:p>`);
   book.chapters.forEach((ch, i) => {
     body.push(pageBreak, para(`${i + 1}. ${ch.title}`, 'Heading1'));
     for (const b of ch.blocks) {
@@ -97,7 +125,7 @@ export async function writeDocx(book: Book): Promise<Uint8Array> {
     '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>' +
     '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/></Relationships>');
   zip.file('docProps/core.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" ' +
-    `xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:title>${escapeXml(book.title)}</dc:title><dc:creator>${escapeXml(book.author)}</dc:creator><dc:language>${book.language}</dc:language></cp:coreProperties>`);
+    `xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:title>${escapeXml(book.title)}</dc:title><dc:creator>${escapeXml(book.author)}</dc:creator><dc:language>${book.language}</dc:language>${docxMeta(book.meta)}</cp:coreProperties>`);
   const mimeOf: Record<string, string> = { jpg: 'image/jpeg', png: 'image/png', gif: 'image/gif', bmp: 'image/bmp', webp: 'image/webp' };
   zip.file('[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
     '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/>' +
@@ -129,6 +157,8 @@ export async function readDocx(data: Uint8Array, fileName: string): Promise<Book
   const book = emptyBook(meta('title') || fileName.replace(/\.[^.]+$/, ''));
   book.author = meta('creator');
   book.source = fileName;
+  const bm = readDocxMeta(core);
+  if (Object.keys(bm).length) book.meta = bm;
   const imgs: Record<string, string> = {};
   const blocks: Block[] = [];
   let title = '';

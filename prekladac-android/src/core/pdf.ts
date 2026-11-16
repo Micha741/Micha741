@@ -1,5 +1,5 @@
 // HTML knihy pro tisk do PDF (expo-print): obálka, titulní strana, obsah, kapitoly od nové stránky.
-import { textCoverSvg, type Book } from './book';
+import { coverKind, textCoverSvg, type Book } from './book';
 import { escapeXml, toBase64, utf8Encode } from './bytes';
 
 export function pdfHtml(book: Book): string {
@@ -8,10 +8,12 @@ export function pdfHtml(book: Book): string {
     return im ? `<img src="data:${im.mime};base64,${toBase64(im.data)}" style="${style}"/>` : '';
   };
   let body = '';
-  if (book.cover && book.images[book.cover]) body += `<div class="cover">${img(book.cover, 'max-width:100%;max-height:96vh')}</div>`;
-  else body += `<div class="cover"><img src="data:image/svg+xml;base64,${toBase64(utf8Encode(textCoverSvg(book.title, book.author)))}" style="max-width:100%;max-height:96vh"/></div>`;
+  const kind = coverKind(book);
+  if (kind === 'image') body += `<div class="cover">${img(book.cover!, 'max-width:100%;max-height:96vh')}</div>`;
+  else if (kind === 'text') body += `<div class="cover"><img src="data:image/svg+xml;base64,${toBase64(utf8Encode(textCoverSvg(book.title, book.author)))}" style="max-width:100%;max-height:96vh"/></div>`;
   body = body.replace(/<div class="pb"><\/div>(\s*<p class="img">)/g, '$1');
-  body += `<div class="titlepage"><h1>${escapeXml(book.title)}</h1>${book.author ? `<p class="author">${escapeXml(book.author)}</p>` : ''}</div>`;
+  // s obálkou je název jen v metadatech, bez obálky jen titulní strana s názvem
+  if (kind === 'none') body += `<div class="titlepage"><h1>${escapeXml(book.title)}</h1>${book.author ? `<p class="author">${escapeXml(book.author)}</p>` : ''}</div>`;
   if (book.chapters.length > 1) {
     body += '<div class="toc"><h2>Obsah</h2>' + book.chapters.map((c, i) => `<p>${i + 1}. ${escapeXml(c.title)}</p>`).join('') + '</div>';
   }
@@ -25,7 +27,7 @@ export function pdfHtml(book: Book): string {
     }
     body += '</section>';
   });
-  return `<!DOCTYPE html><html lang="${book.language}"><head><meta charset="utf-8"/><style>
+  return `<!DOCTYPE html><html lang="${book.language}"><head><meta charset="utf-8"/><title>${escapeXml(book.title)}</title>${book.author ? `<meta name="author" content="${escapeXml(book.author)}"/>` : ''}${book.meta?.description ? `<meta name="description" content="${escapeXml(book.meta.description)}"/>` : ''}${book.meta?.subjects ? `<meta name="keywords" content="${escapeXml(book.meta.subjects)}"/>` : ''}<style>
 @page{size:A4;margin:22mm 20mm}
 body{font-family:Georgia,'Times New Roman',serif;font-size:12pt;line-height:1.5;color:#111}
 h1{font-size:28pt;text-align:center;margin-top:35%}h2{text-align:center;font-size:18pt;margin:0 0 1em}

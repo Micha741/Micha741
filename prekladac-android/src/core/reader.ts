@@ -2,7 +2,7 @@
 // Klepnutí vlevo/vpravo = stránka zpět/vpřed, uprostřed = nabídka, tažení prstem = listování,
 // podržení prstu na odstavci = originál / překlad odstavce, dvojité klepnutí na slovo = překlad slova.
 // Zprávy do aplikace jdou přes window.ReactNativeWebView.postMessage(JSON).
-import { textCoverSvg, type Book, type Chapter } from './book';
+import { coverKind, textCoverSvg, type Book, type Chapter } from './book';
 import { escapeXml, toBase64, utf8Encode } from './bytes';
 import { MARK_COLORS, type MarkColor } from './library';
 
@@ -75,9 +75,13 @@ export function chapterHtml(book: Book, index: number, prefs: ReaderPrefs, start
   const ch = book.chapters[index];
   const t = THEMES[prefs.theme] ?? THEMES.sepia;
   const family = prefs.font === 'sans' ? 'Roboto, "Noto Sans", sans-serif' : '"Noto Serif", Georgia, serif';
-  const cover = index !== 0 ? '' : book.cover && book.images[book.cover]
-    ? `<figure class="cover"><img src="data:${book.images[book.cover].mime};base64,${toBase64(book.images[book.cover].data)}" alt=""/></figure>`
-    : `<figure class="cover"><img src="data:image/svg+xml;base64,${toBase64(utf8Encode(textCoverSvg(book.title, book.author)))}" alt=""/></figure>`;
+  // začátek knihy: obálka (obrázek nebo obálka s názvem), nebo bez obálky jen titulní strana s názvem
+  const kind = coverKind(book);
+  const cover = index !== 0 ? '' : kind === 'image'
+    ? `<figure class="cover"><img src="data:${book.images[book.cover!].mime};base64,${toBase64(book.images[book.cover!].data)}" alt=""/></figure>`
+    : kind === 'text'
+      ? `<figure class="cover"><img src="data:image/svg+xml;base64,${toBase64(utf8Encode(textCoverSvg(book.title, book.author)))}" alt=""/></figure>`
+      : `<div class="titlepg"><div class="bt">${escapeXml(book.title)}</div>${book.author ? `<div class="ba">${escapeXml(book.author)}</div>` : ''}</div>`;
   const title = ch ? `<h1>${escapeXml(ch.title)}</h1>` : '';
   const body = ch ? blocksHtml(book, ch, new Map(marks.map((x) => [x.i, x.color ?? 'y']))) : '<p>Kniha je prázdná.</p>';
   const m = prefs.margin;
@@ -98,6 +102,8 @@ h2,h3,h4{font-size:1.15em;margin:1em 0 .5em;line-height:1.3;break-after:avoid}
 figure{margin:.6em 0;text-align:center;break-inside:avoid}figure img{max-width:100%;max-height:calc(100vh - ${Math.max(50, Math.round(m * 1.4)) + Math.round(m * 1.8)}px);object-fit:contain}
 figure.cover{margin:0;height:calc(100vh - ${Math.max(50, Math.round(m * 1.4)) + Math.round(m * 1.4) + 6}px);display:flex;align-items:center;justify-content:center;break-after:column}
 .pb{break-after:column;height:0}
+.titlepg{height:calc(100vh - ${Math.max(50, Math.round(m * 1.4)) + Math.round(m * 1.4) + 6}px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;break-after:column}
+.titlepg .bt{font-size:1.9em;font-weight:bold;line-height:1.25}.titlepg .ba{font-size:1.15em;margin-top:1em;color:${t.muted}}
 .hl{background:${t.accent}33;border-radius:3px}
 ${(Object.keys(MARK_COLORS) as MarkColor[]).map((k) => { const col = prefs.theme === 'night' ? MARK_COLORS[k].night : MARK_COLORS[k].day; return `.mk-${k}{background:${col};box-shadow:0 0 0 2px ${col};border-radius:2px}`; }).join('')}
 .sp{outline:2px solid ${t.accent};outline-offset:3px;border-radius:2px}

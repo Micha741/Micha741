@@ -8,7 +8,7 @@ import { addVocab, MARK_COLORS, vocabText, type Highlight, type LibraryEntry, ty
 import * as Speech from 'expo-speech';
 import { addToHistory, googleBooksSuggestUrl, googleBooksUrl, parseGoogleBooksFull, type StoreBook, gutendexUrl, KIND_LABEL, mergeSuggestions, openLibrarySuggestUrl, parseGoogleBooks, parseGutendex, parseOpenLibrary, SOURCES, suggestionQuery, type FoundBook, type SourceKind, type Suggestion } from './src/core/sources';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { addImage, bookStats, CROPS, IMG_SIZES, imageAsCover, insertImages, listImages, pruneImages, removeImageAt, replaceImage, setImageSize, type Book, type ImgSize } from './src/core/book';
+import { addImage, bookStats, cleanMeta, coverKind, CROPS, META_FIELDS, watermarkBook, IMG_SIZES, imageAsCover, insertImages, listImages, pruneImages, removeImageAt, replaceImage, setImageSize, type Book, type BookMeta, type ImgSize } from './src/core/book';
 import { toBase64 } from './src/core/bytes';
 import { OUTPUT_FORMATS, type OutputFormat } from './src/core/formats';
 import { CLAUDE_MODELS, DEFAULT_CLAUDE_MODEL, DEFAULT_GEMINI_MODEL, ENGINES, LANGUAGES, makeTranslator, setOfflineBackend, translateBook, type EngineId } from './src/core/translate';
@@ -315,6 +315,7 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
   const [imgPick, setImgPick] = useState<Uint8Array[] | null>(null);
   const [imgEdit, setImgEdit] = useState(false);
   const [cropFor, setCropFor] = useState<string | null>(null);
+  const [metaEdit, setMetaEdit] = useState<BookMeta | null>(null);
   const [rtab, setRtab] = useState(1);
   const abort = useRef<AbortController | null>(null);
   const engine = (settings.engine as EngineId) || 'google';
@@ -433,6 +434,10 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
         say('✓ Přeloženo.');
       }
       setBusy(`Ukládám ${OUTPUT_FORMATS.find((f) => f.id === fmt)!.label}…`);
+      if (settings.watermarkOn && settings.watermark?.trim()) {
+        result = watermarkBook(result, settings.watermark);
+        say(`🔏 Vodoznak: Licence pro ${settings.watermark.trim()}`);
+      }
       const out = await makeOutput(result, fmt);
       setOutput(out);
       say(`✓ Uloženo: ${out.name}`);
@@ -456,7 +461,7 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
   return (
     <View style={{ flex: 1, backgroundColor: C.window }}>
       <Ribbon
-        tabs={['Soubor', 'Překlad', 'Uložit jako', 'Obrázky']}
+        tabs={['Soubor', 'Překlad', 'Uložit', 'Obrázky', 'Metadata']}
         active={rtab}
         onTab={setRtab}
         actions={
@@ -493,19 +498,40 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
           </>
         )}
         {rtab === 2 && (
-          <Group label="Výstupní formát">
-            <Chips items={OUTPUT_FORMATS.map((f) => ({ id: f.id, label: f.label }))} value={fmt} onChange={(v) => update({ format: v })} rows={2} />
-          </Group>
+          <>
+            <Group label="Výstupní formát">
+              <Chips items={OUTPUT_FORMATS.map((f) => ({ id: f.id, label: f.label }))} value={fmt} onChange={(v) => update({ format: v })} rows={2} />
+            </Group>
+            <Group label="Ochrana knihy (vodoznak)">
+              <View style={{ gap: 4, width: 200 }}>
+                <Chips items={[{ id: 'off', label: 'vypnuto' }, { id: 'on', label: '🔏 zapnuto' }]} value={settings.watermarkOn ? 'on' : 'off'} onChange={(v) => update({ watermarkOn: v === 'on' })} />
+                <TextInput style={[st.input, { paddingVertical: 4 }]} value={settings.watermark ?? ''} onChangeText={(v) => update({ watermark: v })} placeholder="Licence pro: jméno, e-mail…" placeholderTextColor={C.disabled} />
+              </View>
+            </Group>
+          </>
         )}
         {rtab === 3 && (
           <>
             <Group label="Obálka">
               <Big icon="🖼️" label="Obálka…" onPress={setCover} disabled={!book} />
-              <Big icon="🔤" label="Jen název" onPress={() => { if (book) { book.cover = undefined; pruneImages(book); changed(book); say('🔤 Obálka jen s názvem a autorem.'); } }} disabled={!book?.cover} />
+              <Big icon="🅰️" label="S názvem" onPress={() => { if (book) { book.cover = undefined; book.coverMode = 'text'; pruneImages(book); changed(book); say('🅰 Obálka s názvem a autorem (bez další titulní strany).'); } }} on={!!book && coverKind(book) === 'text'} disabled={!book} />
+              <Big icon="🔤" label="Jen název" onPress={() => { if (book) { book.cover = undefined; book.coverMode = 'none'; pruneImages(book); changed(book); say('🔤 Bez obálky – na začátku jen název knihy.'); } }} on={!!book && coverKind(book) === 'none'} disabled={!book} />
             </Group>
             <Group label="Vložení">
               <Big icon="➕" label="Obrázky…" onPress={startInsert} disabled={!book} />
               <Big icon="🛠️" label="Upravit…" onPress={() => setImgEdit(true)} disabled={!book || (!book.cover && !listImages(book).length)} />
+            </Group>
+          </>
+        )}
+        {rtab === 4 && (
+          <>
+            <Group label="Údaje o knize">
+              <Big icon="📝" label="Upravit…" onPress={() => book && setMetaEdit({ ...(book.meta ?? {}) })} disabled={!book} />
+            </Group>
+            <Group label="Vyplněno">
+              <Text style={[st.paperHint, { width: 210 }]} numberOfLines={4}>
+                {book ? (Object.keys(cleanMeta(book.meta)).length ? META_FIELDS.filter((f) => cleanMeta(book.meta)[f.key]).map((f) => f.label).join(', ') : 'zatím nic – anotace, série, ISBN… se uloží do EPUB, Kindle a Wordu') : '—'}
+              </Text>
             </Group>
           </>
         )}
@@ -537,7 +563,7 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
                   {cover ? (
                     <Image source={{ uri: `data:${cover.mime};base64,${toBase64(cover.data)}` }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
                   ) : (
-                    <Text style={[st.paperHint, { textAlign: 'center' }]}>＋{'\n'}obálka</Text>
+                    <Text style={[st.paperHint, { textAlign: 'center' }]}>{coverKind(book) === 'none' ? `jen název${'\n'}＋ obálka` : `🅰 obálka${'\n'}s názvem`}</Text>
                   )}
                 </Pressable>
                 <View style={{ flex: 1, gap: 4 }}>
@@ -633,6 +659,28 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
               )) : null}
             </ScrollView>
             <Btn label="Hotovo" onPress={() => { setImgEdit(false); setCropFor(null); }} primary />
+          </View>
+        </View>
+      </Modal>
+
+      <Modal visible={!!metaEdit && !!book} animationType="slide" transparent onRequestClose={() => setMetaEdit(null)}>
+        <View style={st.modalBack}>
+          <View style={st.modal}>
+            <Text style={st.docHeading}>Metadata knihy</Text>
+            <Text style={st.paperHint}>Uloží se do EPUB, Kindle (MOBI), Wordu a projektu pro počítač – čtečky a obchody je ukazují.</Text>
+            <ScrollView style={{ maxHeight: 460 }} keyboardShouldPersistTaps="handled">
+              {metaEdit ? META_FIELDS.map((f) => (
+                <View key={f.key} style={{ marginTop: 6 }}>
+                  <Text style={st.label}>{f.label}</Text>
+                  <TextInput style={[st.input, f.multiline && { minHeight: 90, textAlignVertical: 'top' }]} multiline={!!f.multiline} value={metaEdit[f.key] ?? ''}
+                    onChangeText={(v) => setMetaEdit({ ...metaEdit, [f.key]: v })} placeholder={f.hint} placeholderTextColor={C.disabled} keyboardType={f.key === 'series_index' ? 'number-pad' : 'default'} />
+                </View>
+              )) : null}
+            </ScrollView>
+            <View style={st.row}>
+              <Btn label="Uložit" primary onPress={() => { if (book && metaEdit) { book.meta = cleanMeta(metaEdit); changed(book); say('📝 Metadata uložena.'); } setMetaEdit(null); }} />
+              <Btn label="Zrušit" onPress={() => setMetaEdit(null)} />
+            </View>
           </View>
         </View>
       </Modal>
@@ -1634,8 +1682,8 @@ function makeStyles() {
   navItemOn: { backgroundColor: C.accent },
   navText: { fontSize: 11.5, color: C.sideText, marginTop: 2 },
   ribbon: { backgroundColor: C.surface, borderBottomWidth: 1, borderColor: C.ribbonBorder },
-  ribbonTabs: { flexDirection: 'row', paddingHorizontal: 6, borderBottomWidth: 1, borderColor: C.border, backgroundColor: C.surface },
-  ribbonTab: { paddingHorizontal: 12, paddingVertical: 8, borderTopLeftRadius: 6, borderTopRightRadius: 6, borderWidth: 1, borderColor: 'transparent', marginBottom: -1 },
+  ribbonTabs: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 4, borderBottomWidth: 1, borderColor: C.border, backgroundColor: C.surface },
+  ribbonTab: { paddingHorizontal: 9, paddingVertical: 8, borderTopLeftRadius: 6, borderTopRightRadius: 6, borderWidth: 1, borderColor: 'transparent', marginBottom: -1 },
   ribbonTabOn: { borderColor: C.border, borderBottomColor: C.surface, backgroundColor: C.surface },
   ribbonTabText: { color: C.text, fontSize: 13.5 },
   ribbonRow: { paddingHorizontal: 6, paddingVertical: 6, gap: 4, alignItems: 'stretch' },

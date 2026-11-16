@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { addImage, cropRect, emptyBook, imageAsCover, insertImage, insertImages, listImages, replaceImage, type Book } from '../src/core/book';
+import { addImage, coverKind, cropRect, emptyBook, imageAsCover, insertImage, insertImages, listImages, replaceImage, watermarkBook, type Book } from '../src/core/book';
 import { cp1250Decode, decodeAny, fromBase64, toBase64, utf8Decode, utf8Encode } from '../src/core/bytes';
 import { readBook, writeBook, bookPlainText } from '../src/core/formats';
 import { compressPalmDoc, decompressPalmDoc, readPdb } from '../src/core/palmdoc';
@@ -519,4 +519,59 @@ test('více obrázků najednou v pořadí výběru, obrázek jako obálka, úpra
   replaceImage(book, a, jpg);
   assert.equal(book.images[a].mime, 'image/jpeg');
   assert.equal(book.images[a].data, jpg);
+});
+
+const META = { subtitle: 'Podtitul', publisher: 'Vydavatel', date: '2025-03-01', isbn: '978-80-1', description: 'Krátká anotace.',
+  subjects: 'fantasy, dobrodružství', series: 'Sága', series_index: '2', rights: '© Autor' };
+const META_BACK: Record<string, (keyof typeof META)[]> = {
+  epub: ['subtitle', 'publisher', 'date', 'isbn', 'description', 'subjects', 'series', 'series_index', 'rights'],
+  kniha: ['subtitle', 'publisher', 'date', 'isbn', 'description', 'subjects', 'series', 'series_index', 'rights'],
+  docx: ['subtitle', 'subjects', 'description', 'isbn', 'series', 'series_index'],
+  mobi: ['publisher', 'description', 'isbn', 'subjects', 'rights'],
+};
+for (const fmt of ['epub', 'docx', 'mobi', 'kniha'] as const) {
+  test(`${fmt}: metadata (karta Metadata) se uloží a načtou zpět`, async () => {
+    const src = sample();
+    src.meta = { ...META };
+    const back = await readBook(await writeBook(src, fmt), fmt === 'kniha' ? 'k.kniha.json' : `k.${fmt}`);
+    const want = Object.fromEntries(META_BACK[fmt].map((k) => [k, META[k]]));
+    assert.deepEqual(back.meta, want);
+    assert.deepEqual(back.chapters.map((c) => c.title), ['Bouře', 'Mapa', 'Návrat'], 'kapitoly beze ztráty');
+  });
+}
+
+test('obálka nebo název: s obálkou bez titulní strany, bez obálky jen název', async () => {
+  const JSZip = (await import('jszip')).default;
+  const opfOf = async (b: Book) => {
+    const z = await JSZip.loadAsync(await writeBook(b, 'epub'));
+    return { opf: await z.file('OEBPS/content.opf')!.async('string'), title: !!z.file('OEBPS/title.xhtml'), svg: !!z.file('OEBPS/images/cover.svg') };
+  };
+  const withCover = sample();
+  assert.equal(coverKind(withCover), 'image');
+  let r = await opfOf(withCover);
+  assert.ok(!r.title && !r.svg && r.opf.includes('<dc:title>Strážce majáku</dc:title>'), 'obrázek obálky: název jen v metadatech');
+  const text = sample(false);
+  assert.equal(coverKind(text), 'text');
+  r = await opfOf(text);
+  assert.ok(!r.title && r.svg, 'obálka s názvem: bez další titulní strany');
+  const none = { ...sample(false), coverMode: 'none' as const };
+  assert.equal(coverKind(none), 'none');
+  r = await opfOf(none);
+  assert.ok(r.title && !r.svg, 'bez obálky jen titulní strana s názvem');
+  assert.ok(!pdfHtml(withCover).includes('class="titlepage"') && pdfHtml(none).includes('class="titlepage"') && !pdfHtml(none).includes('class="cover"'));
+  for (const b of [withCover, text, none]) {
+    const back = await readBook(await writeBook(b, 'mobi'), 'k.mobi');
+    assert.deepEqual(back.chapters.map((c) => c.title), ['Bouře', 'Mapa', 'Návrat']);
+  }
+  const docx = await readBook(await writeBook(withCover, 'docx'), 'k.docx');
+  assert.ok(docx.cover, 'obálka DOCX se pozná i bez titulní strany');
+});
+
+test('vodoznak: věta „Licence pro“ na konci každé kapitoly, originál beze změny', () => {
+  const b = sample(false);
+  const w = watermarkBook(b, 'Jana Nováková');
+  assert.ok(w.chapters.every((c) => { const last = c.blocks[c.blocks.length - 1]; return last.type === 'p' && last.text.startsWith('Licence pro: Jana Nováková'); }));
+  assert.equal(w.meta?.rights, 'Licence pro: Jana Nováková');
+  assert.ok(!b.chapters[0].blocks.some((x) => x.type === 'p' && x.text.startsWith('Licence pro')));
+  assert.equal(watermarkBook(b, '  '), b);
 });

@@ -25,7 +25,58 @@ export interface Book {
   chapters: Chapter[];
   images: Record<string, BookImage>;
   cover?: string; // název obrázku obálky v images
+  /** bez obrázku obálky: 'text' = obálka s názvem a autorem (výchozí), 'none' = bez obálky, jen titulní strana s názvem */
+  coverMode?: 'text' | 'none';
+  /** metadata (stejné klíče jako ve Windows): subtitle, publisher, date, isbn, description, subjects, series, series_index, rights */
+  meta?: BookMeta;
   source?: string; // původní název souboru
+}
+
+export interface BookMeta {
+  subtitle?: string;
+  publisher?: string;
+  date?: string;
+  isbn?: string;
+  description?: string;
+  subjects?: string;
+  series?: string;
+  series_index?: string;
+  rights?: string;
+}
+
+export const META_FIELDS: { key: keyof BookMeta; label: string; hint: string; multiline?: boolean }[] = [
+  { key: 'subtitle', label: 'Podtitul', hint: 'nepovinné' },
+  { key: 'description', label: 'Anotace', hint: 'krátký popis knihy – ukáže se ve čtečkách a obchodech', multiline: true },
+  { key: 'subjects', label: 'Žánr a klíčová slova', hint: 'oddělte čárkou' },
+  { key: 'series', label: 'Série', hint: 'název série (nepovinné)' },
+  { key: 'series_index', label: 'Díl', hint: '1' },
+  { key: 'publisher', label: 'Vydavatel', hint: 'nakladatelství nebo vaše jméno' },
+  { key: 'date', label: 'Datum vydání', hint: 'RRRR-MM-DD' },
+  { key: 'isbn', label: 'ISBN', hint: '978-80-…' },
+  { key: 'rights', label: 'Práva', hint: 'např. © 2026 Jan Novák' },
+];
+
+/** Jen vyplněná metadata (prázdné hodnoty pryč). */
+export function cleanMeta(m: BookMeta | undefined): BookMeta {
+  const out: BookMeta = {};
+  for (const [k, v] of Object.entries(m ?? {})) if (typeof v === 'string' && v.trim()) (out as Record<string, string>)[k] = v.trim();
+  return out;
+}
+
+/** Jak kniha začíná: obrázek obálky, obálka s názvem (SVG), nebo bez obálky jen titulní strana s názvem.
+ *  S obálkou (obrázek i obálka s názvem) už není titulní strana – název je v metadatech (jako ve Windows). */
+export function coverKind(book: Book): 'image' | 'text' | 'none' {
+  if (book.cover && book.images[book.cover]) return 'image';
+  return book.coverMode === 'none' ? 'none' : 'text';
+}
+
+/** Sociální DRM: kopie knihy s větou „Licence pro: …“ na konci každé kapitoly (originál se nemění). */
+export function watermarkBook(book: Book, licensee: string): Book {
+  const who = licensee.trim();
+  if (!who) return book;
+  const line = `Licence pro: ${who} – šíření bez souhlasu autora je zakázáno.`;
+  return { ...book, meta: { ...(book.meta ?? {}), rights: book.meta?.rights || `Licence pro: ${who}` },
+    chapters: book.chapters.map((c) => ({ ...c, blocks: [...c.blocks, { type: 'p', text: line }] })) };
 }
 
 export function emptyBook(title = 'Kniha'): Book {
@@ -264,6 +315,8 @@ export function toProject(book: Book): Record<string, unknown> {
     imported_from: book.source,
   };
   if (book.cover) proj.cover = book.cover;
+  const meta = cleanMeta(book.meta);
+  if (Object.keys(meta).length) proj.metadata = meta;
   return proj;
 }
 
@@ -287,6 +340,10 @@ export function fromProject(proj: any, htmlToBlocks: (html: string) => Block[]):
     book.images[n] = { data, mime: sniffMime(data) || mimeFromName(n) };
   }
   if (proj.cover && book.images[proj.cover]) book.cover = proj.cover;
+  if (proj.metadata && typeof proj.metadata === 'object') {
+    const meta = cleanMeta(Object.fromEntries(Object.entries(proj.metadata).map(([k, v]) => [k, String(v ?? '')])) as BookMeta);
+    if (Object.keys(meta).length) book.meta = meta;
+  }
   proj.chapters.forEach((ch: any, i: number) => {
     const title = proj.outline.chapters?.[i]?.title || `Kapitola ${i + 1}`;
     const blocks: Block[] = ch.html
