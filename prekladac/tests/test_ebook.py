@@ -275,12 +275,47 @@ def test_metadata_roundtrip_formats(tmp_path, ext):
                           chapters=[ebook.Chapter("Jedna", "<h2>Jedna</h2><p>" + "text " * 80 + "</p>")])
     path = tmp_path / f"k.{ext}"
     ebook.write_book(book, path)
+    if ext == "pdf":
+        # text PDF z Qt ve Windows pypdf nepřečte – metadata se ověří ve vlastnostech souboru
+        from pypdf import PdfReader
+        info = PdfReader(str(path)).metadata
+        assert (info.get("/Title"), info.get("/Author")) == ("Kůň", "Jan Novák")
+        assert (info.get("/Subject"), info.get("/Keywords")) == (meta["description"], meta["subjects"])
+        return
     got = ebook.read_book(path).meta
     expect = {"epub": meta, "odt": meta,
               "docx": {k: meta[k] for k in ("subtitle", "subjects", "description", "isbn", "series", "series_index")},
               "fb2": {k: meta[k] for k in ("description", "subjects", "date", "series", "series_index", "publisher",
                                            "isbn")},
-              "rtf": {k: meta[k] for k in ("subtitle", "subjects", "description", "publisher")},
-              "pdf": {k: meta[k] for k in ("description", "subjects")}}[ext]
+              "rtf": {k: meta[k] for k in ("subtitle", "subjects", "description", "publisher")}}[ext]
     assert got == expect
     assert ebook.to_project(ebook.read_book(path))["metadata"] == expect
+
+
+def test_read_pdf_metadata():
+    """Anotace a klíčová slova z vlastností PDF se načtou do metadat knihy."""
+    from pypdf import PdfWriter
+
+    import ebook_more
+
+    w = PdfWriter()
+    w.add_blank_page(200, 200)
+    w.add_metadata({"/Title": "Kůň", "/Subject": "Krátká anotace.", "/Keywords": "fantasy"})
+    buf = io.BytesIO()
+    w.write(buf)
+    orig = ebook_more.open_pdf
+
+    class Page:
+        def extract_text(self):
+            return "Text knihy. " * 30
+
+    class Reader:
+        def __init__(self, r):
+            self.metadata, self.pages = r.metadata, [Page()]
+
+    ebook_more.open_pdf = lambda data: Reader(orig(data))
+    try:
+        book = ebook_more.read_pdf(buf.getvalue(), "k")
+    finally:
+        ebook_more.open_pdf = orig
+    assert book.meta == {"description": "Krátká anotace.", "subjects": "fantasy"}
