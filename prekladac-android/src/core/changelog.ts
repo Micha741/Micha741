@@ -21,6 +21,7 @@ export const ANDROID_HISTORY: Release[] = [
       'Hledat knihy: Wikizdroje (kniha se sestaví z kapitol v pořadí obsahu) a Open Library / Internet Archive přímo v aplikaci, zaškrtávátka zdrojů s počtem výsledků, štítek „otevře Překladač“ / DRM.',
       'Čtečka: 🔊 Číst odsud (podržte prst na odstavci), dvě stránky vedle sebe na šířku, celá obrazovka bez horní lišty.',
       'Nastavení → Info: nápověda a historie verzí.',
+      '☁ Synchronizace s Windows přes Google Disk: místo čtení, záložky, označené s poznámkami a knihy – začnete číst v počítači a pokračujete v telefonu (a obráceně).',
     ],
   },
   {
@@ -51,5 +52,6 @@ export const ANDROID_HELP: { title: string; text: string }[] = [
   { title: 'Obrázky a obálka', text: 'Karta Obrázky: obálka (oříznout 2:3 nebo celá), obálka s názvem, jen název, vložení více obrázků a Upravit… (velikost, celá stránka, otočit, oříznout, obálka, odebrat).' },
   { title: 'Metadata', text: 'Karta Metadata → Upravit…: anotace, série a díl, ISBN… – uloží se do EPUB, Kindle, Wordu a projektu pro počítač.' },
   { title: 'Hledat knihy', text: 'Zaškrtněte zdroje (Wikizdroje, Open Library, Google Books, Project Gutenberg). U knihy je vidět, jestli ji Překladač otevře, nebo je zašifrovaná (DRM). Obchody a knihovny se otevřou v prohlížeči.' },
+  { title: 'Google Disk (synchronizace s Windows)', text: 'Nastavení → Služby a klíče → Google Disk: stejné ID klienta a tajný klíč jako ve Windows, pak Přihlásit (kód se zadá na google.com/device). Knihovna se pak synchronizuje sama: místo čtení, záložky a označené; knihy z počítače se objeví nahoře v Číst → ☁ Google Disk.' },
   { title: 'Klíče', text: 'Klíče ke službám se ukládají zašifrovaně jen v telefonu (Android Keystore) a nikam se neposílají.' },
 ];

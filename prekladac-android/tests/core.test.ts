@@ -669,7 +669,7 @@ test('synchronizace: přihlášení kódem a sync.json přes Google Disk (bez in
       const body = text.split('\r\n\r\n').slice(2).join('\r\n\r\n').split('\r\n--').slice(0, -1).join('\r\n--');
       return res({ id: add(meta.name, new TextEncoder().encode(body), false, meta.parents[0]) });
     }
-    if (m === 'PATCH') { const id = url.split('/files/')[1].split('?')[0]; files[id].data = init.body; return res({ id }); }
+    if (m === 'PATCH') { const id = url.split('/files/')[1].split('?')[0]; files[id].data = new Uint8Array(init.body); return res({ id }); }
     throw new Error(url);
   };
   const d = new GoogleDrive('cid', 'secret', '', fake as any);
@@ -687,4 +687,24 @@ test('synchronizace: přihlášení kódem a sync.json přes Google Disk (bez in
   const fid = await d.upload('babicka.epub', new Uint8Array([1, 2, 3]), 'application/epub+zip');
   assert.deepEqual([...(await d.download(fid))], [1, 2, 3]);
   assert.deepEqual((await d.listFiles()).map((f) => f.name).sort(), ['babicka.epub', 'sync.json']);
+});
+
+test('synchronizace: záznam v knihovně ↔ Disk (místo, záložky, označené podle textu odstavce)', async () => {
+  const { applySyncToEntry, entryToSync, mergeEntry } = await import('../src/core/sync');
+  const { newEntry } = await import('../src/core/library');
+  const b = sample(false);
+  const e = { ...newEntry(b, 'k1'), chapter: 0, fraction: 0.2, posAt: 100 };
+  const fromWindows = { title: b.title, author: b.author, pos: { chapter: 2, fraction: 0.6, at: 500, device: 'Windows' },
+    bookmarks: [{ chapter: 1, fraction: 0.5, label: 'Win', at: 400 }],
+    highlights: [{ chapter: 0, text: TEXTS[0][1], color: 'b', note: 'z počítače', at: 450 }], gone: {}, file: { id: 'f9', name: 'k.epub', at: 1 } };
+  const merged = mergeEntry(entryToSync(e), fromWindows);
+  const { patch, moved } = applySyncToEntry(e, merged, b);
+  assert.ok(moved);
+  assert.deepEqual([patch.chapter, patch.fraction, patch.posAt], [2, 0.6, 500]);
+  assert.equal(patch.highlights![0].i, 1, 'označený odstavec se najde podle textu');
+  assert.equal(patch.highlights![0].color, 'b');
+  assert.equal(patch.cloudFile!.id, 'f9');
+  // v telefonu se četlo později → místo zůstane
+  const later = applySyncToEntry({ ...e, posAt: 900 }, merged, b);
+  assert.ok(!later.moved && later.patch.chapter === undefined);
 });

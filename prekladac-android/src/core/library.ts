@@ -67,6 +67,12 @@ export interface LibraryEntry {
   /** malá obálka jako data URI */
   cover?: string;
   source?: string;
+  /** kdy se naposledy změnilo místo čtení (ms) – synchronizace s Windows přes Google Disk */
+  posAt?: number;
+  /** smazané záložky a označení (id → čas smazání ms) pro synchronizaci */
+  gone?: Record<string, number>;
+  /** soubor knihy na Google Disku */
+  cloudFile?: { id: string; name: string; at: number };
 }
 
 export function newEntry(book: Book, id: string, originalId?: string): LibraryEntry {

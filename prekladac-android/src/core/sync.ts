@@ -1,6 +1,9 @@
 // Synchronizace knih a čtení s Windows přes Google Disk – stejný formát a slučování jako prekladac/cloud_sync.py
 // (hlídají to společné testovací případy prekladac/tests/fixtures/sync_cases.json).
 // Na Disku je složka „Překladač“: sync.json (místo čtení, záložky, označené) a knihy jako EPUB.
+import type { Book } from './book';
+import { utf8Decode, utf8Encode } from './bytes';
+import type { Highlight, LibraryEntry, MarkColor } from './library';
 
 export interface SyncPos { chapter: number; fraction: number; at: number; device: string }
 export interface SyncBookmark { chapter: number; fraction: number; label: string; at: number }
@@ -89,7 +92,7 @@ const DEVICE_URL = 'https://oauth2.googleapis.com/device/code';
 const API = 'https://www.googleapis.com/drive/v3/files';
 const UPLOAD = 'https://www.googleapis.com/upload/drive/v3/files';
 
-export type Fetch = (url: string, init?: { method?: string; headers?: Record<string, string>; body?: string | Uint8Array }) => Promise<{ ok: boolean; status: number; text(): Promise<string>; arrayBuffer(): Promise<ArrayBuffer> }>;
+export type Fetch = (url: string, init?: { method?: string; headers?: Record<string, string>; body?: string | ArrayBuffer }) => Promise<{ ok: boolean; status: number; text(): Promise<string>; arrayBuffer(): Promise<ArrayBuffer> }>;
 
 export class CloudError extends Error {}
 
@@ -121,13 +124,15 @@ export class GoogleDrive {
     if (auth) h.Authorization = `Bearer ${await this.accessToken()}`;
     let r;
     try {
-      r = await this.fetchFn(url, { method, headers: h, body });
+      // binární data jako ArrayBuffer (fetch v Androidu spolehlivě posílá ArrayBuffer)
+      const b = body instanceof Uint8Array ? (body.buffer.slice(body.byteOffset, body.byteOffset + body.byteLength) as ArrayBuffer) : body;
+      r = await this.fetchFn(url, { method, headers: h, body: b });
     } catch (e: any) {
       throw new CloudError(`Google Disk není dostupný (${e?.message ?? e}). Zkontrolujte připojení k internetu.`);
     }
     const data = new Uint8Array(await r.arrayBuffer());
     if (!r.ok) {
-      const raw = new TextDecoder().decode(data);
+      const raw = utf8Decode(data);
       let j: any = {};
       try { j = JSON.parse(raw); } catch { /* text */ }
       throw new CloudError(explain(r.status, j, raw));
@@ -135,7 +140,7 @@ export class GoogleDrive {
     return data;
   }
   private async json(method: string, url: string, body?: string | Uint8Array, headers?: Record<string, string>, auth = true): Promise<any> {
-    return JSON.parse(new TextDecoder().decode(await this.req(method, url, body, headers, auth)));
+    return JSON.parse(utf8Decode(await this.req(method, url, body, headers, auth)));
   }
   private form(url: string, fields: Record<string, string>) {
     const body = Object.entries(fields).map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&');
@@ -201,9 +206,8 @@ export class GoogleDrive {
   async upload(name: string, data: Uint8Array, mime: string, fileId = ''): Promise<string> {
     if (fileId) return (await this.json('PATCH', `${UPLOAD}/${fileId}?uploadType=media&fields=id`, data, { 'Content-Type': mime })).id;
     const boundary = `prekladac${Date.now()}`;
-    const enc = new TextEncoder();
-    const head = enc.encode(`--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify({ name, parents: [await this.folder()] })}\r\n--${boundary}\r\nContent-Type: ${mime}\r\n\r\n`);
-    const tail = enc.encode(`\r\n--${boundary}--`);
+        const head = utf8Encode(`--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify({ name, parents: [await this.folder()] })}\r\n--${boundary}\r\nContent-Type: ${mime}\r\n\r\n`);
+    const tail = utf8Encode(`\r\n--${boundary}--`);
     const body = new Uint8Array(head.length + data.length + tail.length);
     body.set(head, 0);
     body.set(data, head.length);
@@ -215,7 +219,7 @@ export class GoogleDrive {
     const f = await this.find(STATE_FILE, await this.folder());
     if (!f) return { state: { v: 1, books: {} }, fileId: '' };
     try {
-      return { state: JSON.parse(new TextDecoder().decode(await this.download(f.id))), fileId: f.id };
+      return { state: JSON.parse(utf8Decode(await this.download(f.id))), fileId: f.id };
     } catch (e) {
       if (e instanceof CloudError) throw e;
       return { state: { v: 1, books: {} }, fileId: f.id };
@@ -223,7 +227,7 @@ export class GoogleDrive {
   }
 
   async putState(state: SyncState, fileId = ''): Promise<string> {
-    return this.upload(STATE_FILE, new TextEncoder().encode(JSON.stringify(state)), 'application/json', fileId);
+    return this.upload(STATE_FILE, utf8Encode(JSON.stringify(state)), 'application/json', fileId);
   }
 
   /** Stáhne sync.json, sloučí s místním stavem a nahraje výsledek. */
@@ -233,4 +237,48 @@ export class GoogleDrive {
     if (JSON.stringify(merged) !== JSON.stringify(mergeState(remote, null))) await this.putState(merged, fileId);
     return merged;
   }
+}
+
+// ------------------------------------------------------------ knihovna v telefonu ↔ společný formát
+export function entryKey(e: { title: string; author: string }): string {
+  return bookKey(e.title, e.author);
+}
+
+export function entryToSync(e: LibraryEntry): SyncEntry {
+  return {
+    title: e.title, author: e.author,
+    pos: e.posAt ? { chapter: e.chapter, fraction: Math.round(e.fraction * 10000) / 10000, at: e.posAt, device: 'Android' } : null,
+    bookmarks: e.bookmarks.map((b) => ({ chapter: b.chapter, fraction: b.fraction, label: b.label, at: b.at })),
+    highlights: (e.highlights ?? []).map((h) => ({ chapter: h.chapter, text: h.text, color: h.color ?? 'y', note: h.note ?? '', at: h.at })),
+    gone: { ...(e.gone ?? {}) },
+    file: e.cloudFile ?? null,
+  };
+}
+
+/** Odstavec v kapitole podle začátku textu (čísla odstavců se v počítači a v telefonu liší). */
+export function findBlock(book: Book, chapter: number, text: string): number {
+  const want = normText(text).slice(0, 40);
+  if (!want) return -1;
+  const blocks = book.chapters[chapter]?.blocks ?? [];
+  return blocks.findIndex((b) => (b.type === 'p' || b.type === 'h') && normText(b.text).startsWith(want));
+}
+
+/** Změny záznamu v knihovně podle sloučeného stavu z Disku (book = pro přiřazení označených k odstavcům). */
+export function applySyncToEntry(e: LibraryEntry, s: SyncEntry, book?: Book | null): { patch: Partial<LibraryEntry>; moved: boolean } {
+  const patch: Partial<LibraryEntry> = { bookmarks: s.bookmarks.map((b) => ({ ...b })), gone: { ...s.gone } };
+  if (s.file) patch.cloudFile = s.file;
+  let moved = false;
+  if (s.pos && s.pos.at > (e.posAt ?? 0)) {
+    moved = s.pos.chapter !== e.chapter || Math.abs(s.pos.fraction - e.fraction) > 0.002;
+    Object.assign(patch, { chapter: s.pos.chapter, fraction: s.pos.fraction, posAt: s.pos.at });
+  }
+  if (book) {
+    const marks: Highlight[] = [];
+    for (const h of s.highlights) {
+      const i = findBlock(book, h.chapter, h.text);
+      if (i >= 0) marks.push({ chapter: h.chapter, i, text: h.text.slice(0, 160), at: h.at, color: (h.color as MarkColor) || 'y', note: h.note || undefined });
+    }
+    patch.highlights = marks;
+  }
+  return { patch, moved };
 }
