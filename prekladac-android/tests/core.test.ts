@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { addImage, emptyBook, insertImage, type Book } from '../src/core/book';
+import { addImage, cropRect, emptyBook, imageAsCover, insertImage, insertImages, listImages, replaceImage, type Book } from '../src/core/book';
 import { cp1250Decode, decodeAny, fromBase64, toBase64, utf8Decode, utf8Encode } from '../src/core/bytes';
 import { readBook, writeBook, bookPlainText } from '../src/core/formats';
 import { compressPalmDoc, decompressPalmDoc, readPdb } from '../src/core/palmdoc';
@@ -494,4 +494,29 @@ test('PDF s heslem: bez hesla dotaz, špatné heslo, správné heslo uživatele 
     assert.equal(tries(f, 'majitel'), 'ok3', f); // heslo vlastníka
   }
   assert.equal(tries('heslo.pdf', 'tajne'), 'ok3');
+});
+
+test('oříznutí: vystředěný výřez se zvoleným poměrem stran', () => {
+  assert.deepEqual(cropRect(1024, 1024, 2 / 3), { originX: 170, originY: 0, width: 683, height: 1024 });
+  assert.deepEqual(cropRect(1024, 1536, 2 / 3), { originX: 0, originY: 0, width: 1024, height: 1536 }); // už je 2:3
+  assert.deepEqual(cropRect(800, 600, 1), { originX: 100, originY: 0, width: 600, height: 600 });
+  assert.deepEqual(cropRect(600, 800, 16 / 9), { originX: 0, originY: 231, width: 600, height: 338 });
+});
+
+test('více obrázků najednou v pořadí výběru, obrázek jako obálka, úprava dat bez změny názvu', () => {
+  const book: Book = emptyBook('Kniha');
+  book.chapters = [{ title: 'Jedna', blocks: [{ type: 'p', text: 'Text.' }] }];
+  const a = addImage(book, png(), 'image/png'), b = addImage(book, png(), 'image/png');
+  insertImages(book, 0, [a, b], 'start');
+  assert.deepEqual(book.chapters[0].blocks.filter((x) => x.type === 'img').map((x) => (x as { name: string }).name), [a, b]);
+  const c = addImage(book, png(), 'image/png'), d = addImage(book, png(), 'image/png');
+  insertImages(book, 0, [c, d], 'end');
+  assert.deepEqual(listImages(book).map((x) => x.name), [a, b, c, d]);
+  imageAsCover(book, c);
+  assert.ok(book.cover && book.cover !== c && book.images[book.cover]);
+  assert.ok(book.images[c], 'obrázek v kapitole zůstane');
+  const jpg = new Uint8Array([0xff, 0xd8, 0xff, 1, 2, 3]);
+  replaceImage(book, a, jpg);
+  assert.equal(book.images[a].mime, 'image/jpeg');
+  assert.equal(book.images[a].data, jpg);
 });

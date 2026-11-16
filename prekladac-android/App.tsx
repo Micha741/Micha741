@@ -8,13 +8,13 @@ import { addVocab, MARK_COLORS, vocabText, type Highlight, type LibraryEntry, ty
 import * as Speech from 'expo-speech';
 import { addToHistory, googleBooksSuggestUrl, googleBooksUrl, parseGoogleBooksFull, type StoreBook, gutendexUrl, KIND_LABEL, mergeSuggestions, openLibrarySuggestUrl, parseGoogleBooks, parseGutendex, parseOpenLibrary, SOURCES, suggestionQuery, type FoundBook, type SourceKind, type Suggestion } from './src/core/sources';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { addImage, bookStats, insertImage, pruneImages, type Book } from './src/core/book';
+import { addImage, bookStats, CROPS, IMG_SIZES, imageAsCover, insertImages, listImages, pruneImages, removeImageAt, replaceImage, setImageSize, type Book, type ImgSize } from './src/core/book';
 import { toBase64 } from './src/core/bytes';
 import { OUTPUT_FORMATS, type OutputFormat } from './src/core/formats';
 import { CLAUDE_MODELS, DEFAULT_CLAUDE_MODEL, DEFAULT_GEMINI_MODEL, ENGINES, LANGUAGES, makeTranslator, setOfflineBackend, translateBook, type EngineId } from './src/core/translate';
 import Mlkit from './modules/mlkit-translate/src/MlkitTranslateModule';
 import { BUILTIN_SKINS, type Skin } from './src/core/skins';
-import { addToLibrary, downloadBook, installSkinFromPicker, loadInstalledSkins, loadLibrary, loadLibraryBook, loadSettings, makeOutput, openBookUri, pickBook, pickImage, removeFromLibrary, removeSkin, reopenPdf, saveOutputToFolder, saveSettings, saveVocab, loadVocab, shareOutput, shareText, updateEntry, type Output, type Settings } from './src/platform';
+import { addToLibrary, downloadBook, installSkinFromPicker, loadInstalledSkins, loadLibrary, loadLibraryBook, loadSettings, makeOutput, openBookUri, pickBook, pickImage, pickImages, removeFromLibrary, removeSkin, reopenPdf, saveOutputToFolder, saveSettings, saveVocab, loadVocab, shareOutput, shareText, transformImage, updateEntry, type Output, type Settings } from './src/platform';
 
 import appConfig from './app.json';
 
@@ -312,7 +312,9 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
   const [output, setOutput] = useState<Output | null>(null);
   const [translated, setTranslated] = useState<Book | null>(null);
   const [translate, setTranslate] = useState(true);
-  const [imgPick, setImgPick] = useState<Uint8Array | null>(null);
+  const [imgPick, setImgPick] = useState<Uint8Array[] | null>(null);
+  const [imgEdit, setImgEdit] = useState(false);
+  const [cropFor, setCropFor] = useState<string | null>(null);
   const [rtab, setRtab] = useState(1);
   const abort = useRef<AbortController | null>(null);
   const engine = (settings.engine as EngineId) || 'google';
@@ -346,10 +348,10 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
     setTranslated(null);
   };
 
-  const setCover = async () => {
+  const applyCover = async (crop: boolean) => {
     if (!book) return;
     try {
-      const data = await pickImage();
+      const data = await pickImage({ cropCover: crop });
       if (!data) return;
       book.cover = addImage(book, data, 'image/jpeg');
       pruneImages(book);
@@ -360,10 +362,31 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
     }
   };
 
+  const setCover = () =>
+    Alert.alert('Obálka', 'Vyberte obrázek z galerie. Oříznout ho můžete hned na poměr obálky 2:3, nebo použít celý (zobrazí se celý, nic se neořízne).', [
+      { text: 'Zrušit', style: 'cancel' },
+      { text: 'Celý obrázek', onPress: () => applyCover(false) },
+      { text: '✂ Oříznout 2:3', onPress: () => applyCover(true) },
+    ]);
+
   const startInsert = async () => {
     try {
-      const data = await pickImage();
-      if (data) setImgPick(data);
+      const list = await pickImages();
+      if (!list.length || !book) return;
+      if (!book.cover) {
+        // první obrázek se nabídne jako obálka (jako ve Windows)
+        Alert.alert('Obálka', list.length > 1 ? 'Použít první vybraný obrázek jako obálku knihy?' : 'Použít obrázek jako obálku knihy?', [
+          { text: 'Ne, vložit do textu', onPress: () => setImgPick(list) },
+          {
+            text: 'Ano, obálka', onPress: () => {
+              book.cover = addImage(book, list[0], 'image/jpeg');
+              changed(book);
+              say('🖼 Obálka nastavena.');
+              if (list.length > 1) setImgPick(list.slice(1));
+            },
+          },
+        ]);
+      } else setImgPick(list);
     } catch (e) {
       fail(e);
     }
@@ -371,10 +394,26 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
 
   const insertInto = (chapter: number, where: 'start' | 'end') => {
     if (!book || !imgPick) return;
-    insertImage(book, chapter, addImage(book, imgPick, 'image/jpeg'), where);
+    insertImages(book, chapter, imgPick.map((d) => addImage(book, d, 'image/jpeg')), where);
+    const n = imgPick.length;
     setImgPick(null);
     changed(book);
-    say(`🖼 Obrázek vložen na ${where === 'start' ? 'začátek' : 'konec'} kapitoly ${chapter + 1}.`);
+    say(`🖼 ${n > 1 ? `${n} obrázků vloženo` : 'Obrázek vložen'} na ${where === 'start' ? 'začátek' : 'konec'} kapitoly ${chapter + 1}.`);
+  };
+
+  /** Otočení nebo oříznutí obrázku (v kapitole i obálky) – název obrázku zůstane, změní se jen data. */
+  const editImage = async (name: string, op: { rotate?: number; aspect?: number }, what: string) => {
+    if (!book?.images[name]) return;
+    try {
+      setBusy('Upravuji obrázek…');
+      replaceImage(book, name, await transformImage(book.images[name].data, op));
+      changed(book);
+      say(`🖼 ${what}.`);
+    } catch (e) {
+      fail(e);
+    } finally {
+      setBusy('');
+    }
   };
 
   const run = async () => {
@@ -462,10 +501,11 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
           <>
             <Group label="Obálka">
               <Big icon="🖼️" label="Obálka…" onPress={setCover} disabled={!book} />
-              <Big icon="✖️" label="Odebrat" onPress={() => { if (book) { book.cover = undefined; pruneImages(book); changed(book); } }} disabled={!book?.cover} />
+              <Big icon="🔤" label="Jen název" onPress={() => { if (book) { book.cover = undefined; pruneImages(book); changed(book); say('🔤 Obálka jen s názvem a autorem.'); } }} disabled={!book?.cover} />
             </Group>
             <Group label="Vložení">
-              <Big icon="➕" label="Obrázek…" onPress={startInsert} disabled={!book} />
+              <Big icon="➕" label="Obrázky…" onPress={startInsert} disabled={!book} />
+              <Big icon="🛠️" label="Upravit…" onPress={() => setImgEdit(true)} disabled={!book || (!book.cover && !listImages(book).length)} />
             </Group>
           </>
         )}
@@ -554,7 +594,7 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
       <Modal visible={!!imgPick} animationType="slide" transparent onRequestClose={() => setImgPick(null)}>
         <View style={st.modalBack}>
           <View style={st.modal}>
-            <Text style={st.docHeading}>Kam vložit obrázek?</Text>
+            <Text style={st.docHeading}>{(imgPick?.length ?? 0) > 1 ? `Kam vložit ${imgPick!.length} obrázků?` : 'Kam vložit obrázek?'}</Text>
             <ScrollView style={{ maxHeight: 420 }}>
               {book?.chapters.map((c, i) => (
                 <View key={i} style={st.chapterRow}>
@@ -568,6 +608,65 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
           </View>
         </View>
       </Modal>
+
+      <Modal visible={imgEdit && !!book} animationType="slide" transparent onRequestClose={() => { setImgEdit(false); setCropFor(null); }}>
+        <View style={st.modalBack}>
+          <View style={st.modal}>
+            <Text style={st.docHeading}>Obrázky v knize</Text>
+            <Text style={st.paperHint}>Velikost, celá stránka (obrázek sám na stránce), otočení, oříznutí, obálka.</Text>
+            <ScrollView style={{ maxHeight: 480 }}>
+              {book && book.cover && book.images[book.cover] ? (
+                <ImageRow book={book} name={book.cover} title="Obálka" busy={!!busy}
+                  cropOpen={cropFor === book.cover} onCrop={() => setCropFor(cropFor === book.cover ? null : book.cover!)}
+                  onRotate={() => editImage(book.cover!, { rotate: 90 }, 'Obálka otočena')}
+                  onAspect={(a, l) => { setCropFor(null); editImage(book.cover!, { aspect: a }, `Obálka oříznuta (${l})`); }}
+                  onRemove={() => { book.cover = undefined; pruneImages(book); changed(book); say('🔤 Obálka jen s názvem a autorem.'); }} />
+              ) : null}
+              {book ? listImages(book).map((it) => (
+                <ImageRow key={`${it.chapter}-${it.idx}`} book={book} name={it.name} title={`Kapitola ${it.chapter + 1}: ${book.chapters[it.chapter].title}`} busy={!!busy}
+                  size={it.size} onSize={(sz) => { setImageSize(book, it.chapter, it.idx, sz); changed(book); }}
+                  cropOpen={cropFor === `${it.chapter}-${it.idx}`} onCrop={() => setCropFor(cropFor === `${it.chapter}-${it.idx}` ? null : `${it.chapter}-${it.idx}`)}
+                  onRotate={() => editImage(it.name, { rotate: 90 }, 'Obrázek otočen')}
+                  onAspect={(a, l) => { setCropFor(null); editImage(it.name, { aspect: a }, `Obrázek oříznut (${l})`); }}
+                  onCover={() => { imageAsCover(book, it.name); changed(book); say('🖼 Obrázek použit jako obálka.'); }}
+                  onRemove={() => { removeImageAt(book, it.chapter, it.idx); changed(book); say('🗑 Obrázek odebrán.'); }} />
+              )) : null}
+            </ScrollView>
+            <Btn label="Hotovo" onPress={() => { setImgEdit(false); setCropFor(null); }} primary />
+          </View>
+        </View>
+      </Modal>
+    </View>
+  );
+}
+
+/** Jeden obrázek v okně „Obrázky v knize“: náhled a úpravy. */
+function ImageRow({ book, name, title, size, busy, cropOpen, onSize, onRotate, onCrop, onAspect, onCover, onRemove }: {
+  book: Book; name: string; title: string; size?: ImgSize; busy: boolean; cropOpen: boolean;
+  onSize?: (s: ImgSize) => void; onRotate: () => void; onCrop: () => void; onAspect: (aspect: number, label: string) => void;
+  onCover?: () => void; onRemove: () => void;
+}) {
+  const im = book.images[name];
+  return (
+    <View style={[st.chapterRow, { alignItems: 'flex-start', gap: 10 }]}>
+      <Image source={{ uri: `data:${im.mime};base64,${toBase64(im.data)}` }} style={{ width: 60, height: 84, borderRadius: 2, backgroundColor: C.infobar }} resizeMode="contain" />
+      <View style={{ flex: 1, gap: 6 }}>
+        <Text style={{ color: C.text, fontWeight: '600' }} numberOfLines={2}>{title}</Text>
+        {onSize && size ? (
+          <Chips items={(Object.keys(IMG_SIZES) as ImgSize[]).map((k) => ({ id: k, label: IMG_SIZES[k].label }))} value={size} onChange={(v) => onSize(v as ImgSize)} />
+        ) : null}
+        <View style={[st.row, { flexWrap: 'wrap' }]}>
+          <Btn label="↻ Otočit" onPress={onRotate} small disabled={busy} />
+          <Btn label="✂ Oříznout" onPress={onCrop} small disabled={busy} />
+          {onCover ? <Btn label="📕 Obálka" onPress={onCover} small disabled={busy} /> : null}
+          <Btn label="🗑" onPress={onRemove} small disabled={busy} />
+        </View>
+        {cropOpen ? (
+          <View style={[st.row, { flexWrap: 'wrap' }]}>
+            {CROPS.map((c) => <Btn key={c.id} label={c.label} onPress={() => onAspect(c.aspect, c.label)} small primary={c.id === 'cover'} />)}
+          </View>
+        ) : null}
+      </View>
     </View>
   );
 }

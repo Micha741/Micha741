@@ -138,6 +138,47 @@ export function listImages(book: Book): { chapter: number; idx: number; name: st
   return out;
 }
 
+/** Oříznutí obrázku na pevný poměr stran (střed obrázku) – obálka 2:3, čtverec, na šířku… */
+export type CropId = 'cover' | 'square' | 'portrait' | 'landscape' | 'wide';
+export const CROPS: { id: CropId; label: string; aspect: number }[] = [
+  { id: 'cover', label: 'obálka 2:3', aspect: 2 / 3 },
+  { id: 'portrait', label: 'na výšku 3:4', aspect: 3 / 4 },
+  { id: 'square', label: 'čtverec', aspect: 1 },
+  { id: 'landscape', label: 'na šířku 4:3', aspect: 4 / 3 },
+  { id: 'wide', label: 'široký 16:9', aspect: 16 / 9 },
+];
+
+/** Obdélník výřezu (celá čísla) se zvoleným poměrem šířka/výška, vystředěný, co největší. */
+export function cropRect(w: number, h: number, aspect: number): { originX: number; originY: number; width: number; height: number } {
+  let cw = w, ch = Math.round(w / aspect);
+  if (ch > h) {
+    ch = h;
+    cw = Math.round(h * aspect);
+  }
+  cw = Math.max(1, Math.min(w, cw));
+  ch = Math.max(1, Math.min(h, ch));
+  return { originX: Math.floor((w - cw) / 2), originY: Math.floor((h - ch) / 2), width: cw, height: ch };
+}
+
+/** Nahradí data obrázku (po otočení / oříznutí) – všude v knize zůstane stejný název. */
+export function replaceImage(book: Book, name: string, data: Uint8Array, mime = 'image/jpeg') {
+  if (book.images[name]) book.images[name] = { data, mime };
+}
+
+/** Obrázek z textu jako obálka (kopie – v kapitole zůstane, pokud ho tam nechcete, odeberte ho). */
+export function imageAsCover(book: Book, name: string) {
+  const im = book.images[name];
+  if (!im) return;
+  book.cover = addImage(book, im.data, im.mime);
+  pruneImages(book);
+}
+
+/** Více obrázků najednou: vloží je za sebou na konec / začátek kapitoly (ve vybraném pořadí). */
+export function insertImages(book: Book, chapter: number, names: string[], where: 'start' | 'end') {
+  const list = where === 'start' ? [...names].reverse() : names;
+  for (const n of list) insertImage(book, chapter, n, where);
+}
+
 /** Obálka bez obrázku: jen název a autor (SVG – použije se v EPUB, PDF a ve čtečce). */
 export function textCoverSvg(title: string, author: string): string {
   const words = (title || 'Kniha').split(/\s+/);
