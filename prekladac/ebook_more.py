@@ -117,10 +117,21 @@ def _rtf_pict(data: bytes, width_px: int | None = None) -> str:
     return f"{{\\pict{blip}\\picw{w}\\pich{h}\\picwgoal{gw}\\pichgoal{gh} {data.hex()}}}"
 
 
+def _rtf_info(meta: dict) -> str:
+    """Metadata do RTF (Word: Soubor → Vlastnosti): předmět, klíčová slova, komentář, vydavatel."""
+    m = meta or {}
+    out = []
+    for key, word in (("subtitle", "subject"), ("subjects", "keywords"), ("description", "doccomm"),
+                      ("publisher", "company")):
+        if str(m.get(key) or "").strip():
+            out.append(f"{{\\{word} {_rtf_text(str(m[key]).strip())}}}")
+    return "".join(out)
+
+
 def write_rtf(book: RichBook) -> bytes:
     out = ["{\\rtf1\\ansi\\ansicpg1250\\deff0\\uc1{\\fonttbl{\\f0\\froman Georgia;}}",
            "\\paperw11906\\paperh16838\\margl1418\\margr1418\\margt1418\\margb1418",
-           f"{{\\info{{\\title {_rtf_text(book.title)}}}{{\\author {_rtf_text(book.author)}}}}}",
+           f"{{\\info{{\\title {_rtf_text(book.title)}}}{{\\author {_rtf_text(book.author)}}}{_rtf_info(book.meta)}}}",
            "\\f0\\fs24 "]
 
     def inline(fragment):
@@ -204,7 +215,7 @@ def read_rtf(data: bytes, base: str = "Kniha") -> RichBook:
 
     def add_text(t):
         s = st()
-        if s["dest"] in ("title", "author"):
+        if s["dest"] in ("title", "author", "subject", "keywords", "doccomm", "company"):
             info[s["dest"]] = info.get(s["dest"], "") + t
             return
         if s["skip"] or s["pict"] is not None:
@@ -262,7 +273,7 @@ def read_rtf(data: bytes, base: str = "Kniha") -> RichBook:
         if brace == "{":
             top = st()
             stack.append({"fmt": set(top["fmt"]), "skip": top["skip"], "uc": top["uc"], "pict": None,
-                          "dest": "" if top["dest"] not in ("title", "author") else top["dest"], "first": True})
+                          "dest": "" if top["dest"] not in ("title", "author", "subject", "keywords", "doccomm", "company") else top["dest"], "first": True})
             continue
         if brace == "}":
             done = stack.pop() if len(stack) > 1 else st()
@@ -294,7 +305,7 @@ def read_rtf(data: bytes, base: str = "Kniha") -> RichBook:
             if first and word in _RTF_SKIP:
                 s["skip"] = True
                 continue
-            if word in ("title", "author") and first:
+            if word in ("title", "author", "subject", "keywords", "doccomm", "company") and first:
                 s["dest"] = word
                 continue
             if word == "pict":
@@ -346,6 +357,10 @@ def read_rtf(data: bytes, base: str = "Kniha") -> RichBook:
     blocks = [b.encode("utf-16", "surrogatepass").decode("utf-16", errors="replace") for b in blocks]
     book.title = info.get("title", "").strip() or book.title
     book.author = info.get("author", "").strip()
+    for k, key in (("subject", "subtitle"), ("keywords", "subjects"), ("doccomm", "description"),
+                   ("company", "publisher")):
+        if info.get(k, "").strip():
+            book.meta[key] = info[k].strip()
     if blocks and re.fullmatch(r'<p style="text-align:center"><img src="[^"]+"/></p>', blocks[0]) and len(blocks) > 1 \
             and blocks[1] == "<hr/>":
         book.cover = re.search(r'src="([^"]+)"', blocks[0]).group(1)
@@ -357,6 +372,39 @@ def read_rtf(data: bytes, base: str = "Kniha") -> RichBook:
 
 # ================================================================== FB2
 FB2_NS = "http://www.gribuser.ru/xml/fictionbook/2.0"
+
+
+def fb2_info(meta: dict) -> str:
+    """Anotace a klíčová slova do <title-info> (pořadí podle schématu FB2: za book-title, před coverpage)."""
+    m = meta or {}
+    out = ""
+    if str(m.get("description") or "").strip():
+        out += "<annotation>" + "".join(f"<p>{esc(p.strip())}</p>" for p in str(m["description"]).split("\n")
+                                        if p.strip()) + "</annotation>"
+    if str(m.get("subjects") or "").strip():
+        out += f"<keywords>{esc(str(m['subjects']).strip())}</keywords>"
+    if str(m.get("date") or "").strip():
+        out += f"<date>{esc(str(m['date']).strip())}</date>"
+    return out
+
+
+def fb2_sequence(meta: dict) -> str:
+    m = meta or {}
+    if not str(m.get("series") or "").strip():
+        return ""
+    num = re.sub(r"\D", "", str(m.get("series_index") or ""))
+    return f'<sequence name="{esc(str(m["series"]).strip())}"{f" number=\"{num}\"" if num else ""}/>'
+
+
+def fb2_publish(meta: dict) -> str:
+    m = meta or {}
+    pub, isbn = str(m.get("publisher") or "").strip(), str(m.get("isbn") or "").strip()
+    year = re.search(r"\d{4}", str(m.get("date") or ""))
+    if not (pub or isbn or year):
+        return ""
+    return ("<publish-info>" + (f"<publisher>{esc(pub)}</publisher>" if pub else "")
+            + (f"<year>{year.group(0)}</year>" if year else "") + (f"<isbn>{esc(isbn)}</isbn>" if isbn else "")
+            + "</publish-info>")
 
 
 def write_fb2(book: RichBook) -> bytes:
@@ -418,10 +466,11 @@ def write_fb2(book: RichBook) -> bytes:
         f'<binary id="{img_id(n)}" content-type="{ebook.MIME.get(image_ext(book.images[n]), "image/jpeg")}">'
         f'{base64.b64encode(book.images[n]).decode()}</binary>' for n in names if n in book.images)
     xml = (f'<?xml version="1.0" encoding="utf-8"?>\n<FictionBook xmlns="{FB2_NS}" xmlns:l="http://www.w3.org/1999/xlink">'
-           f'<description><title-info><genre>prose</genre>{author}<book-title>{esc(book.title)}</book-title>{cover}'
-           f'<lang>{book.language}</lang></title-info><document-info>{author}<program-used>Překladač</program-used>'
+           f'<description><title-info><genre>prose</genre>{author}<book-title>{esc(book.title)}</book-title>'
+           f'{fb2_info(book.meta)}{cover}<lang>{book.language}</lang>{fb2_sequence(book.meta)}</title-info>'
+           f'<document-info>{author}<program-used>Překladač</program-used>'
            f'<date>{time.strftime("%Y-%m-%d")}</date><id>{int(time.time())}</id><version>1.0</version></document-info>'
-           f'</description><body><title><p>{esc(book.title)}</p></title>{"".join(sections)}</body>{bins}</FictionBook>')
+           f'{fb2_publish(book.meta)}</description><body><title><p>{esc(book.title)}</p></title>{"".join(sections)}</body>{bins}</FictionBook>')
     return xml.encode("utf-8")
 
 
@@ -439,6 +488,25 @@ def read_fb2(data: bytes, base: str = "Kniha") -> RichBook:
         book.author = ", ".join(a for a in authors if a)
         if ti.find("lang"):
             book.language = ti.find("lang").get_text(strip=True)[:2].lower() or "cs"
+        if ti.find("annotation"):
+            book.meta["description"] = "\n".join(p.get_text(" ", strip=True) for p in ti.find("annotation").find_all("p")
+                                                  ) or ti.find("annotation").get_text(" ", strip=True)
+        if ti.find("keywords") and ti.find("keywords").get_text(strip=True):
+            book.meta["subjects"] = ti.find("keywords").get_text(strip=True)
+        if ti.find("date") and ti.find("date").get_text(strip=True):
+            book.meta["date"] = ti.find("date").get("value") or ti.find("date").get_text(strip=True)
+        sq = ti.find("sequence")
+        if sq and sq.get("name"):
+            book.meta["series"] = sq.get("name")
+            if sq.get("number"):
+                book.meta["series_index"] = sq.get("number")
+    pi = soup.find("publish-info")
+    if pi:
+        for tag, key in (("publisher", "publisher"), ("isbn", "isbn")):
+            if pi.find(tag) and pi.find(tag).get_text(strip=True):
+                book.meta[key] = pi.find(tag).get_text(strip=True)
+        if pi.find("year") and "date" not in book.meta:
+            book.meta["date"] = pi.find("year").get_text(strip=True)
     binaries = {b.get("id"): b for b in soup.find_all("binary")}
     loaded: dict[str, str] = {}
 
@@ -537,6 +605,17 @@ def read_odt(data: bytes, base: str = "Kniha") -> RichBook:
         a = meta.find("initial-creator") or meta.find("creator")
         if a:
             book.author = a.get_text(strip=True)
+        for tag, key in (("subject", "subtitle"), ("description", "description")):
+            if meta.find(tag) and meta.find(tag).get_text(strip=True):
+                book.meta[key] = meta.find(tag).get_text(strip=True)
+        kws = [k.get_text(strip=True) for k in meta.find_all("keyword") if k.get_text(strip=True)]
+        if kws:
+            book.meta["subjects"] = ", ".join(kws)
+        names = {name: key for key, name in ODT_USER}
+        for u in meta.find_all("user-defined"):
+            key = names.get(u.get("meta:name") or u.get("name"))
+            if key and u.get_text(strip=True):
+                book.meta[key] = u.get_text(strip=True)
     styles: dict[str, dict] = {}
     docs = [content] + ([BeautifulSoup(z.read("styles.xml"), "xml")] if "styles.xml" in z.namelist() else [])
     for d in docs:
@@ -681,6 +760,27 @@ ODT_STYLES = f"""<?xml version="1.0" encoding="UTF-8"?><office:document-styles {
 </office:document-styles>"""
 
 
+ODT_USER = (("publisher", "Vydavatel"), ("isbn", "ISBN"), ("series", "Série"), ("series_index", "Díl"),
+            ("rights", "Práva"), ("date", "Datum vydání"))
+
+
+def odt_meta(meta: dict) -> str:
+    """Metadata do meta.xml (LibreOffice: Soubor → Vlastnosti → Popis a Vlastní vlastnosti)."""
+    m = meta or {}
+    out = []
+    if str(m.get("subtitle") or "").strip():
+        out.append(f"<dc:subject>{esc(str(m['subtitle']).strip())}</dc:subject>")
+    if str(m.get("description") or "").strip():
+        out.append(f"<dc:description>{esc(str(m['description']).strip())}</dc:description>")
+    for kw in re.split(r"[,;]", str(m.get("subjects") or "")):
+        if kw.strip():
+            out.append(f"<meta:keyword>{esc(kw.strip())}</meta:keyword>")
+    for key, name in ODT_USER:
+        if str(m.get(key) or "").strip():
+            out.append(f'<meta:user-defined meta:name="{name}">{esc(str(m[key]).strip())}</meta:user-defined>')
+    return "".join(out)
+
+
 def write_odt(book: RichBook, dst) -> None:
     """ODT (LibreOffice Writer) vlastním kódem: nadpisy s úrovní osnovy, formátování, obrázky, obálka."""
     tstyles: dict[frozenset, str] = {}
@@ -793,7 +893,7 @@ def write_odt(book: RichBook, dst) -> None:
     meta = (f'<?xml version="1.0" encoding="UTF-8"?><office:document-meta {ODF_NS}><office:meta>'
             f'<dc:title>{esc(book.title)}</dc:title><meta:initial-creator>{esc(book.author)}</meta:initial-creator>'
             f'<dc:creator>{esc(book.author)}</dc:creator><dc:language>{book.language}</dc:language>'
-            '<meta:generator>Překladač</meta:generator></office:meta></office:document-meta>')
+            f'{odt_meta(book.meta)}<meta:generator>Překladač</meta:generator></office:meta></office:document-meta>')
     files = "".join(f'<manifest:file-entry manifest:full-path="{p}" manifest:media-type="'
                     f'{ebook.MIME.get(p.rsplit(".", 1)[-1], "image/jpeg")}"/>' for p in pics.values())
     manifest = ('<?xml version="1.0" encoding="UTF-8"?><manifest:manifest xmlns:manifest="urn:oasis:names:tc:'
@@ -1059,4 +1159,7 @@ def read_pdf(data: bytes, base: str = "Kniha") -> RichBook:
     title, chapters = ebook.chapters_from_text("\n\n".join(paras), base)
     book = RichBook(title=str(meta.get("/Title") or "").strip() or title or base,
                     author=str(meta.get("/Author") or "").strip(), chapters=chapters)
+    for k, key in (("/Subject", "description"), ("/Keywords", "subjects")):
+        if str(meta.get(k) or "").strip():
+            book.meta[key] = str(meta.get(k)).strip()
     return book

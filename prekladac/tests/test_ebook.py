@@ -260,3 +260,27 @@ def test_first_chapter_without_heading_is_not_lost():
     assert [c.title for c in ebook.split_chapters(title_page, "Strážce majáku")] == ["Mapa", "Návrat"]
     named = ["<p>Strážce majáku</p>"] + blocks[2:]
     assert [c.title for c in ebook.split_chapters(named, "Strážce majáku")] == ["Mapa", "Návrat"]
+
+
+@pytest.mark.parametrize("ext", ["epub", "docx", "fb2", "odt", "rtf", "pdf"])
+def test_metadata_roundtrip_formats(tmp_path, ext):
+    """Metadata (karta Metadata) se zapíšou i do FB2, ODT, RTF a PDF a při otevření knihy se načtou zpět."""
+    if ext == "pdf":
+        QtWidgets = pytest.importorskip("PySide6.QtWidgets")
+        _app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])  # noqa: F841 – Qt tiskne PDF
+    meta = {"subtitle": "Podtitul", "publisher": "Vydavatel", "date": "2025-03-01", "isbn": "978-80-1",
+            "description": "Krátká anotace.", "subjects": "fantasy, dobrodružství", "series": "Sága",
+            "series_index": "2", "rights": "© Autor"}
+    book = ebook.RichBook(title="Kůň", author="Jan Novák", meta=dict(meta),
+                          chapters=[ebook.Chapter("Jedna", "<h2>Jedna</h2><p>" + "text " * 80 + "</p>")])
+    path = tmp_path / f"k.{ext}"
+    ebook.write_book(book, path)
+    got = ebook.read_book(path).meta
+    expect = {"epub": meta, "odt": meta,
+              "docx": {k: meta[k] for k in ("subtitle", "subjects", "description", "isbn", "series", "series_index")},
+              "fb2": {k: meta[k] for k in ("description", "subjects", "date", "series", "series_index", "publisher",
+                                           "isbn")},
+              "rtf": {k: meta[k] for k in ("subtitle", "subjects", "description", "publisher")},
+              "pdf": {k: meta[k] for k in ("description", "subjects")}}[ext]
+    assert got == expect
+    assert ebook.to_project(ebook.read_book(path))["metadata"] == expect

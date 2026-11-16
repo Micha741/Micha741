@@ -583,6 +583,7 @@ def read_epub(data: bytes, base: str = "Kniha") -> RichBook:
 
     book = RichBook(title=meta("dc:title") or base, author=meta("dc:creator"),
                     language=(meta("dc:language") or "cs")[:2].lower())
+    book.meta = epub_read_meta(opf)
     items = {}
     for it in opf.find_all("item"):
         href = _resolve(opf_path, it.get("href", ""))
@@ -726,6 +727,7 @@ def read_docx(data: bytes, base: str = "Kniha") -> RichBook:
     d = docx.Document(io.BytesIO(data))
     book = RichBook(title=(d.core_properties.title or "").strip() or base,
                     author=(d.core_properties.author or "").strip())
+    book.meta = docx_read_meta(d)
     ns_a = "{http://schemas.openxmlformats.org/drawingml/2006/main}"
     ns_r = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}"
     ns_w = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
@@ -871,6 +873,9 @@ def to_project(book: RichBook) -> dict:
         proj["author"] = book.author
     if book.cover:
         proj["cover"] = book.cover
+    meta = {k: v for k, v in (book.meta or {}).items() if str(v or "").strip()}
+    if meta:
+        proj["metadata"] = meta
     return proj
 
 
@@ -931,6 +936,47 @@ def _xhtml(title: str, body: str, lang: str) -> str:
 
 def _safe(name: str) -> str:
     return re.sub(r"[^A-Za-z0-9._-]", "_", name)
+
+
+def epub_read_meta(opf) -> dict:
+    """Metadata z content.opf zpět do karty Metadata (protějšek epub_meta)."""
+    md = opf.find("metadata")
+    if md is None:
+        return {}
+    m: dict = {}
+    titles = md.find_all("title")
+    for t in titles[1:]:
+        if t.get("id") == "subtitle" or len(titles) > 1:
+            m["subtitle"] = t.get_text(strip=True)
+            break
+    for tag in ("publisher", "date", "description", "rights"):
+        el = md.find(tag)
+        if el and el.get_text(strip=True):
+            m[tag] = el.get_text(strip=True)
+    if m.get("description") and "<" in m["description"]:  # Calibre ukládá anotaci jako HTML
+        m["description"] = BeautifulSoup(m["description"], "html.parser").get_text("\n", strip=True)
+    for el in md.find_all("identifier"):
+        t = el.get_text(strip=True)
+        if "isbn" in (t.lower() + str(el.get("opf:scheme") or el.get("scheme") or "").lower()):
+            m["isbn"] = re.sub(r"(?i)^urn:isbn:", "", t)
+            break
+    subj = [el.get_text(strip=True) for el in md.find_all("subject") if el.get_text(strip=True)]
+    if subj:
+        m["subjects"] = ", ".join(subj)
+    ser = md.find("meta", attrs={"name": "calibre:series"})
+    if ser and ser.get("content"):
+        m["series"] = ser["content"]
+        idx = md.find("meta", attrs={"name": "calibre:series_index"})
+        if idx and idx.get("content"):
+            m["series_index"] = idx["content"].removesuffix(".0")
+    else:
+        col = md.find("meta", attrs={"property": "belongs-to-collection"})
+        if col and col.get_text(strip=True):
+            m["series"] = col.get_text(strip=True)
+            pos = md.find("meta", attrs={"property": "group-position"})
+            if pos and pos.get_text(strip=True):
+                m["series_index"] = pos.get_text(strip=True)
+    return m
 
 
 def epub_meta(meta: dict) -> str:
@@ -1338,6 +1384,27 @@ def _write_pdf(book: RichBook, dst: str | Path) -> None:
     doc.print_(writer)
     if not Path(dst).exists() or Path(dst).stat().st_size < 100:
         raise OSError(f"PDF se nepodařilo zapsat: {dst}")
+    pdf_meta(dst, book)
+
+
+def pdf_meta(path: str | Path, book: RichBook) -> None:
+    """Autor, předmět (anotace) a klíčová slova do vlastností PDF (Qt umí zapsat jen název)."""
+    m = book.meta or {}
+    info = {"/Title": book.title, "/Author": book.author, "/Creator": "Překladač",
+            "/Subject": str(m.get("description") or m.get("subtitle") or "").strip()[:2000],
+            "/Keywords": str(m.get("subjects") or "").strip()}
+    info = {k: v for k, v in info.items() if v}
+    try:
+        from pypdf import PdfReader, PdfWriter
+    except ImportError:  # pragma: no cover
+        return
+    path = Path(path)
+    w = PdfWriter(clone_from=PdfReader(str(path)))
+    w.add_metadata(info)
+    tmp = path.with_suffix(".meta.pdf")
+    with open(tmp, "wb") as f:
+        w.write(f)
+    tmp.replace(path)
 
 
 def convert(src: str | Path, dst: str | Path, log=print) -> str:
@@ -1353,6 +1420,24 @@ def convert(src: str | Path, dst: str | Path, log=print) -> str:
     write_book(book, dst)
     log(f"Převedeno bez Calibre: {s.name} → {Path(dst).name} ({len(book.chapters)} kapitol, {len(book.images)} obrázků)")
     return str(dst)
+
+
+def docx_read_meta(d) -> dict:
+    """Vlastnosti dokumentu Word zpět do metadat (protějšek docx_meta)."""
+    cp, m = d.core_properties, {}
+    for attr, key in (("subject", "subtitle"), ("keywords", "subjects"), ("comments", "description")):
+        if (getattr(cp, attr, "") or "").strip():
+            m[key] = getattr(cp, attr).strip()
+    ident = (cp.identifier or "").strip()
+    if ident.upper().startswith("ISBN"):
+        m["isbn"] = ident[4:].strip()
+    cat = (cp.category or "").strip()
+    if cat:
+        ser = re.match(r"(.*?)\s+(\d+)$", cat)
+        m["series"], idx = (ser.group(1), ser.group(2)) if ser else (cat, "")
+        if idx:
+            m["series_index"] = idx
+    return m
 
 
 def docx_meta(d, meta: dict) -> None:

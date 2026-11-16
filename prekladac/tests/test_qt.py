@@ -1340,3 +1340,32 @@ def test_sequel_from_book_brief(qapp, tmp_path, monkeypatch):
     _brief3, meta3 = bw.sequel_brief(new)                              # 3. díl ze 2. dílu
     assert meta3 == {"series": "Ferda", "series_index": "3"}
     win.close()
+
+
+def test_description_from_synopsis_or_brief(qapp, tmp_path, monkeypatch):
+    """Anotace jde převzít ze shrnutí děje (osnova) nebo z popisu zadání pro AI."""
+    from qt_editor import BookEditor
+    outline = json.loads(json.dumps(OUTLINE))
+    outline["synopsis"] = "Dívka najde v lese koně."
+    proj = {"language": "čeština", "outline": outline, "words": 1000, "description": "Kniha o koni a louce.",
+            "chapters": [{"text": "Text kapitoly.", "summary": ""}]}
+    p = tmp_path / "d.kniha.json"
+    bw.save_project(p, proj)
+    ed = BookEditor(proj, p, None, text_assist={}, save_options=lambda: None, app_cfg={})
+
+    def run(key):
+        def ex(dlg):
+            ed._desc_sources[key].click()
+            return 1
+        monkeypatch.setattr(QtWidgets.QDialog, "exec", ex)
+        ed.edit_description()
+        return ed.project["metadata"]["description"]
+
+    assert run("synopsis") == "Dívka najde v lese koně."
+    assert run("brief") == "Kniha o koni a louce."
+    ed.project.pop("description")
+    monkeypatch.setattr(QtWidgets.QDialog, "exec", lambda dlg: 0)
+    ed.edit_description()
+    assert not ed._desc_sources["brief"].isEnabled() and ed._desc_sources["synopsis"].isEnabled()
+    ed.dirty = False
+    ed.close()
