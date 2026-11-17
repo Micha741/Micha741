@@ -47,9 +47,11 @@ def test_make_audiobook_mp3_tags_playlist(tmp_path):
 
 
 def test_only_three_voices_and_clear_errors(monkeypatch):
-    assert set(ab.VOICES) == {"jirka", "vlasta", "antonin"}
-    with pytest.raises(ab.AudiobookError, match="Jirka, Vlasta nebo Antonín"):
+    assert set(ab.VOICES) == {"jirka", "vlasta", "antonin", "chirp_kore", "chirp_aoede", "chirp_charon", "chirp_puck"}
+    with pytest.raises(ab.AudiobookError, match="Google Chirp 3 HD"):
         ab.make_synth("google")
+    with pytest.raises(ab.AudiobookError, match="Google Cloud"):
+        ab.make_synth("chirp_kore", 1.0, {})
     with pytest.raises(ab.AudiobookError, match="Azure"):
         ab.make_synth("vlasta", 1.0, {})
     import tts_win

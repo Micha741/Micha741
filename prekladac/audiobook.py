@@ -1,5 +1,6 @@
 """Audiokniha: celá kniha namluvená po kapitolách do MP3 (s názvem, autorem, číslem kapitoly a obálkou)
-a seznam skladeb .m3u. Jen hlasy Jirka (Piper, bez internetu), Vlasta a Antonín (Microsoft Azure).
+a seznam skladeb .m3u. Hlasy Jirka (Piper, bez internetu), Vlasta a Antonín (Microsoft Azure) a nejpřirozenější
+Google Chirp 3 HD (Kore, Aoede, Charon, Puck).
 
 Azure je zdarma 500 000 znaků měsíčně (úroveň F0) – průměrná kniha má 300 000–700 000 znaků, proto program
 před namluvením ukáže počet znaků. Jirka běží v počítači, zdarma a bez omezení.
@@ -19,6 +20,15 @@ VOICES = {
                "voice": "cs-CZ-VlastaNeural"},
     "antonin": {"name": "Antonín", "info": "Microsoft Azure, přirozený mužský hlas", "kind": "azure",
                 "voice": "cs-CZ-AntoninNeural"},
+    # Google Chirp 3 HD – nejpřirozenější (intonace, pauzy), platí se podle ceníku Google Cloud
+    "chirp_kore": {"name": "Kore", "info": "Google Chirp 3 HD, nejpřirozenější ženský hlas", "kind": "google",
+                   "voice": "cs-CZ-Chirp3-HD-Kore"},
+    "chirp_aoede": {"name": "Aoede", "info": "Google Chirp 3 HD, ženský hlas", "kind": "google",
+                    "voice": "cs-CZ-Chirp3-HD-Aoede"},
+    "chirp_charon": {"name": "Charon", "info": "Google Chirp 3 HD, nejpřirozenější mužský hlas", "kind": "google",
+                     "voice": "cs-CZ-Chirp3-HD-Charon"},
+    "chirp_puck": {"name": "Puck", "info": "Google Chirp 3 HD, mužský hlas", "kind": "google",
+                   "voice": "cs-CZ-Chirp3-HD-Puck"},
 }
 AZURE_FREE_CHARS = 500_000
 PARA_PAUSE, TITLE_PAUSE = 0.45, 1.0  # sekundy ticha za odstavcem a za názvem kapitoly
@@ -63,7 +73,7 @@ def chapter_pcm(title: str, paras: list[str], synth, number: int, cancel=None) -
     params, chunks = None, []
     pieces: list[tuple[str, float]] = [(f"Kapitola {number}. {title}.", TITLE_PAUSE)]
     for p in paras:
-        parts = tts_win.split_for_voice(p, 2500)
+        parts = tts_win.split_for_voice(p, 1500)  # Google má limit 5000 bajtů na požadavek
         pieces += [(t, 0.15) for t in parts[:-1]] + [(parts[-1], PARA_PAUSE)]
     with tempfile.TemporaryDirectory() as tmp:
         for k, (text, pause) in enumerate(pieces):
@@ -128,13 +138,18 @@ def make_synth(voice: str, rate: float = 1.0, engines: dict | None = None):
 
     v = VOICES.get(voice)
     if not v:
-        raise AudiobookError("Audioknihu namluví jen Jirka, Vlasta nebo Antonín.")
+        raise AudiobookError("Audioknihu namluví jen Jirka, Vlasta, Antonín nebo hlasy Google Chirp 3 HD.")
     if v["kind"] == "piper":
         model = str(tts_win.piper_model_path(v["model"]))
         if not tts_win.piper_exe() or not Path(model).is_file():
             raise AudiobookError("Hlas Jirka není stažený – ve čtečce klikněte na Nahlas → stáhnout český hlas Jirka.")
         return lambda text, out: tts_win.piper_synthesize(text, model, rate, out, timeout=900)
     tts_win.configure_cloud(engines or {})
+    if v["kind"] == "google":
+        if "google" not in tts_win._cloud:
+            raise AudiobookError("Hlasy Google Chirp 3 HD potřebují klíč Google Cloud se zapnutým Cloud Text-to-Speech "
+                                 "API – Nastavení → Služby a klíče → Hlasy Google Cloud (je tam Návod).")
+        return lambda text, out: tts_win.cloud_synthesize(text, "google", v["voice"], rate, out)
     if "azure" not in tts_win._cloud:
         raise AudiobookError("Hlasy Vlasta a Antonín potřebují klíč Microsoft Azure – Nastavení → Služby a klíče → "
                              "Hlasy Microsoft Azure (je tam Návod).")

@@ -34,6 +34,13 @@ class AudiobookDialog(QtWidgets.QDialog):
             rb = QtWidgets.QRadioButton(f"{v['name']} – {tr(v['info'])}")
             vg.addWidget(rb)
             self.voice_buttons[key] = rb
+        sample_row = QtWidgets.QHBoxLayout()
+        self.b_sample = QtWidgets.QPushButton(tr("▶ Ukázka hlasu"))
+        self.b_sample.setToolTip(tr("Přehraje krátkou větu zvoleným hlasem a rychlostí"))
+        self.b_sample.clicked.connect(self.play_sample)
+        sample_row.addWidget(self.b_sample)
+        sample_row.addStretch(1)
+        vg.addLayout(sample_row)
         last = (editor.app_cfg or {}).get("audiobook_voice", "jirka")
         self.voice_buttons.get(last, self.voice_buttons["jirka"]).setChecked(True)
         lay.addWidget(vbox)
@@ -103,12 +110,45 @@ class AudiobookDialog(QtWidgets.QDialog):
         minutes = chars / 15 / 60  # asi 15 znaků za sekundu
         text = tr("{} znaků, asi {} h {} min poslechu.").format(f"{chars:,}".replace(",", " "), int(minutes // 60),
                                                                int(minutes % 60))
-        if ab.VOICES[self.voice()]["kind"] == "azure":
+        kind = ab.VOICES[self.voice()]["kind"]
+        if kind == "google":
+            text += " " + tr("Google Chirp 3 HD se platí podle počtu znaků (ceník Google Cloud, měsíčně bývá část "
+                             "zdarma) – je to nejpřirozenější, ale dražší hlas než Vlasta a Antonín.")
+        if kind == "azure":
             text += " " + (tr("Azure je zdarma do 500 000 znaků měsíčně – tahle část se do limitu vejde.")
                            if chars <= ab.AZURE_FREE_CHARS else
                            tr("⚠ Víc než 500 000 znaků – překročí bezplatný měsíční limit Azure (F0 pak přestane "
                               "fungovat do konce měsíce). Zvolte méně kapitol nebo hlas Jirka."))
         self.info.setText(text)
+
+    def play_sample(self):
+        """Krátká ukázka zvoleného hlasu (Windows přehraje WAV)."""
+        import tempfile
+
+        cfg = self.editor.app_cfg if self.editor.app_cfg is not None else {}
+        try:
+            synth = ab.make_synth(self.voice(), self.rate.value(), cfg.get("engines", {}))
+        except ab.AudiobookError as e:
+            QtWidgets.QMessageBox.warning(self, tr("Audiokniha"), str(e))
+            return
+        title = self.editor.outline.get("title") or tr("kniha")
+        text = tr("Dobrý den, takhle bude znít audiokniha {}. Příjemný poslech.").format(title)
+        out = str(Path(tempfile.gettempdir()) / "prekladac-ukazka-hlasu.wav")
+        self.b_sample.setEnabled(False)
+
+        def done(_res, err):
+            self.b_sample.setEnabled(True)
+            if err:
+                QtWidgets.QMessageBox.warning(self, tr("Ukázka hlasu"), str(err))
+                return
+            try:
+                import tts_win
+
+                tts_win.WavPlayer().play(out)
+            except Exception as e:  # noqa: BLE001 – přehrávání jen ve Windows
+                self.log.appendPlainText(tr("Ukázku nejde přehrát: {}").format(e))
+
+        run_bg(lambda: synth(text, out), done, owner=self)
 
     def append(self, msg: str):
         bridge().later(lambda: self.log.appendPlainText(msg))

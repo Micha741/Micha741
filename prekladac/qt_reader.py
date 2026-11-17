@@ -1535,7 +1535,7 @@ def reader_ribbon(reader: Reader, big, row, group_cls) -> QtWidgets.QWidget:
         if vc.currentData() == "cloud_help":
             vc.setCurrentIndex(max(0, vc.findData(reader.prefs.get("tts_voice", ""))))
             QtWidgets.QMessageBox.information(reader, tr("Přirozené hlasy"), tr(
-                "Přirozenější hlasy (česky Vlasta a Antonín od Microsoftu, Wavenet od Googlu) čtou přes internet "
+                "Přirozenější hlasy (česky Vlasta a Antonín od Microsoftu, nejpřirozenější Google Chirp 3 HD a Wavenet) čtou přes internet "
                 "a potřebují klíč. Obě služby mají měsíční limit zdarma.\n\nNastavíte je v ⚙ Nastavení → Služby "
                 "a klíče → „Hlasy Microsoft Azure“ nebo „Hlasy Google Cloud“ (tlačítko Návod). Po uložení se hlasy "
                 "objeví v této nabídce."))

@@ -62,7 +62,7 @@ SERVICES = {
         ("api_key", "KLÍČ 1 (služba Speech)", True, "", None),
         ("region", "Umístění/oblast (např. westeurope)", False, "", None),
     ]),
-    "google_tts": ("Hlasy Google Cloud pro čtení nahlas (Wavenet)", [
+    "google_tts": ("Hlasy Google Cloud pro čtení nahlas a audioknihy (Chirp 3 HD, Wavenet)", [
         ("api_key", "API klíč (prázdné = klíč Google Cloud Translation)", True, "", None),
     ]),
     # synchronizace knih a čtení s telefonem (není to překladač)
@@ -107,7 +107,8 @@ SERVICE_HELP = {
                "ve složce „Překladač“ na vašem serveru. Na Synology doporučujeme zvláštního uživatele jen se sdílenou "
                "složkou pro knihy. V telefonu zadejte stejnou adresu, uživatele a heslo.",
                "https://kb.synology.com/cs-cz/DSM/help/WebDAVServer/webdav_server"),
-    "google_tts": ("Přirozený hlas Google (Wavenet) pro čtení nahlas ve čtečce. Zdarma 1 milion znaků/měsíc, "
+    "google_tts": ("Nejpřirozenější hlasy Google Chirp 3 HD (Kore, Aoede, Charon, Puck) a starší Wavenet pro čtení "
+                   "nahlas a audioknihy. Platí se podle počtu znaků (každý měsíc bývá část zdarma – ceník Google), "
                    "potřebuje internet. Stačí klíč Google Cloud Translation, když v projektu zapnete Cloud "
                    "Text-to-Speech API.", "https://console.cloud.google.com/apis/library/texttospeech.googleapis.com"),
     "gemini": ("Bezplatná úroveň s limity. Klíč: aistudio.google.com → Get API key.",
@@ -379,6 +380,8 @@ def test_service(service: str, cfg: dict, lang: str) -> str:
 
         tts_win.configure_cloud(cfg.get("engines", {}))
         voice = next(v for v in tts_win.CLOUD_VOICES["cs"] if v[0] == service.split("_")[0])
+        if service == "google_tts":  # nejpřirozenější hlas Googlu (Chirp 3 HD), když ho projekt umí
+            voice = next(v for v in tts_win.CLOUD_VOICES["cs"] if tts_win.is_chirp(v[1]))
         with tempfile.TemporaryDirectory() as tmp:
             out = os.path.join(tmp, "test.wav")
             tts_win.cloud_synthesize("Dobrý den, tohle je hlas pro čtení knih.", voice[0], voice[1], 1.0, out)

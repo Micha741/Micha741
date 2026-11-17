@@ -1499,3 +1499,22 @@ def test_audiobook_dialog_records_chapters(qapp, tmp_path, monkeypatch):
     assert ed.app_cfg["audiobook_voice"] == "vlasta"
     ed.dirty = False
     ed.close()
+
+
+def test_audiobook_dialog_chirp_voice_info(qapp, tmp_path):
+    """Audiokniha: hlasy Google Chirp 3 HD ve výběru s upozorněním na ceník."""
+    from qt_audiobook import AudiobookDialog
+    from qt_editor import BookEditor
+
+    proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000,
+            "chapters": [{"text": "Text.", "summary": ""}]}
+    proj["outline"]["chapters"] = proj["outline"]["chapters"][:1]
+    p = tmp_path / "c.kniha.json"
+    bw.save_project(p, proj)
+    ed = BookEditor(proj, p, None, text_assist={}, save_options=lambda: None, app_cfg={"engines": {}})
+    dlg = AudiobookDialog(ed)
+    assert {"chirp_kore", "chirp_charon"} <= set(dlg.voice_buttons)
+    dlg.voice_buttons["chirp_kore"].setChecked(True)
+    assert "Chirp 3 HD" in dlg.info.text()
+    ed.dirty = False
+    ed.close()

@@ -309,9 +309,11 @@ Jak to funguje
 - „Není zapnuté Google Drive API“ – krok 2, pak pár minut počkejte.
 - „Přihlášení vypršelo“ – aplikace není publikovaná (krok 3), přihlaste se znovu.
 """,
-    "google_tts": """Hlasy Google Cloud pro čtení nahlas – zdarma 1 milion znaků měsíčně (Wavenet)
+    "google_tts": """Hlasy Google Cloud pro čtení nahlas a audioknihy (Chirp 3 HD a Wavenet)
 
-Přirozený český ženský hlas (Wavenet). Čte se přes internet.
+Google Chirp 3 HD – nejnovější a nejpřirozenější hlasy Googlu (intonace, pauzy, dech): česky Kore a Aoede (ženy),
+Charon a Puck (muži). Starší Wavenet je levnější, ale zní strojověji. Čte se přes internet a platí se podle
+počtu znaků (ceník Google Cloud, každý měsíc bývá část zdarma): https://cloud.google.com/text-to-speech/pricing
 
 Když už máte klíč pro Google Cloud Translation:
 1. Otevřete https://console.cloud.google.com/apis/library/texttospeech.googleapis.com
@@ -323,5 +325,6 @@ Nový klíč:
 1. https://console.cloud.google.com → vytvořte projekt (účet s platební kartou, limit zdarma se neúčtuje).
 2. Povolte „Cloud Text-to-Speech API“ (odkaz výše).
 3. „API a služby“ → „Přihlašovací údaje“ → „Vytvořit přihlašovací údaje“ → „Klíč API“.
-4. Klíč vložte sem → Uložit → Otestovat. Ve čtečce vyberte hlas „Google Wavenet“.""",
+4. Klíč vložte sem → Uložit → Otestovat. Ve čtečce vyberte hlas „Google Kore HD“ (nebo jiný HD),
+   v okně knihy → Kniha → Audiokniha zvolte Kore, Aoede, Charon nebo Puck (tlačítko ▶ Ukázka hlasu).""",
 }

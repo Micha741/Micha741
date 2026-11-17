@@ -167,7 +167,10 @@ def test_cloud_voices_azure_google(tmp_path, monkeypatch):
     tts_win.configure_cloud({"azure_speech": {"api_key": "AZ", "region": "West Europe"},
                              "google_cloud": {"api_key": "GC"}})
     names = [v["name"] for v in tts_win.cloud_voices("cs")]
-    assert names == ["cloud:azure:cs-CZ-VlastaNeural", "cloud:azure:cs-CZ-AntoninNeural", "cloud:google:cs-CZ-Wavenet-A"]
+    assert names == ["cloud:azure:cs-CZ-VlastaNeural", "cloud:azure:cs-CZ-AntoninNeural",
+                     "cloud:google:cs-CZ-Chirp3-HD-Kore", "cloud:google:cs-CZ-Chirp3-HD-Aoede",
+                     "cloud:google:cs-CZ-Chirp3-HD-Charon", "cloud:google:cs-CZ-Chirp3-HD-Puck",
+                     "cloud:google:cs-CZ-Wavenet-A"]
     wav = tmp_path / "w.wav"
     make_wav(wav, 0.3)
     calls = []
@@ -219,3 +222,37 @@ def test_speaker_cloud_voice_and_error(appdata, monkeypatch):
     done2 = threading.Event()
     sp.speak("CHYBA", "cs", 1.0, on_done=done2.set, voice_name="cloud:google:cs-CZ-Wavenet-A")
     assert done2.wait(3) and "bez internetu" in sp.error
+
+
+def test_chirp3_hd_voices_listed_and_sent_to_google(monkeypatch, tmp_path):
+    """Google Chirp 3 HD: hlasy ve výběru (s klíčem Google) a požadavek s českým jménem hlasu."""
+    import base64
+    import io
+    import json
+    import wave
+
+    import free_engines
+    import tts_win as t
+
+    t.configure_cloud({"google_tts": {"api_key": "K"}})
+    names = [v["name"] for v in t.cloud_voices("cs")]
+    assert "cloud:google:cs-CZ-Chirp3-HD-Kore" in names and "cloud:google:cs-CZ-Chirp3-HD-Charon" in names
+    assert any("nejpřirozenější" in v["label"] for v in t.cloud_voices("cs"))
+    buf = io.BytesIO()
+    with wave.open(buf, "wb") as w:
+        w.setnchannels(1)
+        w.setsampwidth(2)
+        w.setframerate(24000)
+        w.writeframes(b"\x00\x00" * 2400)
+    sent = {}
+
+    def fake(url, data=None, **kw):
+        sent["url"], sent["body"] = url, data
+        return json.dumps({"audioContent": base64.b64encode(buf.getvalue()).decode()}).encode()
+
+    monkeypatch.setattr(free_engines, "http_request", fake)
+    out = tmp_path / "a.wav"
+    t.cloud_synthesize("Dobrý den.", "google", "cs-CZ-Chirp3-HD-Kore", 1.1, str(out))
+    assert sent["body"]["voice"] == {"languageCode": "cs-CZ", "name": "cs-CZ-Chirp3-HD-Kore"}
+    assert sent["body"]["audioConfig"]["speakingRate"] == 1.1 and out.read_bytes()[:4] == b"RIFF"
+    t.configure_cloud({})
