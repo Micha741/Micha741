@@ -17,7 +17,7 @@ import book_options as bo
 import book_writer as bw
 import components
 from claude_client import DEFAULT_MODEL, MODELS, Cancelled
-from converters import DOC_ONLY_EXT, OUTPUT_FORMATS, SUPPORTED_EXT, find_ebook_convert
+from converters import DOC_ONLY_EXT, IMAGE_EXT, OUTPUT_FORMATS, SUPPORTED_EXT, find_ebook_convert
 from free_engines import ENGINE_LABELS, OCR_LABELS, EngineError, GeminiEngine, OllamaEngine, find_tesseract
 from guides import GUIDES
 from qt_common import STYLESHEET, app_icon, ask_pdf_passwords, asset, bridge, emoji_icon, label, run_bg, set_status
@@ -425,9 +425,12 @@ class TranslatePage(QtWidgets.QWidget):
         self.b_notes.setCheckable(True)
         self.b_notes.setToolTip("Zobrazit nebo skrýt pole Pokyny pro překlad (glosář, styl) pod seznamem souborů")
         self.b_notes.toggled.connect(lambda on: self.set_notes_visible(on))
+        self.b_gloss = QtWidgets.QPushButton(emoji_icon("📖"), " Glosář knihy…")
+        self.b_gloss.setToolTip("Jména postav, místa a pojmy přeložené v celé knize vždy stejně")
+        self.b_gloss.clicked.connect(self.open_glossary)
         engine_tab = ribbon_row(
             ribbon_group("Překladač", [("", self.engine), ("", self.status)]),
-            ribbon_group("Nastavení služby", [("", keys_btn), ("", self.b_notes)]))
+            ribbon_group("Nastavení služby", [("", keys_btn), ("", self.b_notes), ("", self.b_gloss)]))
         ocr_tab = ribbon_row(
             ribbon_group("Text z obrázků a skenů (OCR)", [("Rozpoznávání:", self.ocr),
                                                           ("Jazyk originálu:", self.ocr_lang)]),
@@ -513,6 +516,18 @@ class TranslatePage(QtWidgets.QWidget):
             self.win.reader_page.open_independent(res[0], read=True)
         elif b_edit is not None and clicked is b_edit:
             self.win.reader_page.open_independent(res[0], read=False)
+
+    def open_glossary(self):
+        files = [f for f in self.files.files if Path(f).suffix.lower() not in IMAGE_EXT]
+        if not files:
+            QtWidgets.QMessageBox.information(self, "Glosář knihy", "Nejdřív přidejte knihu do seznamu souborů – "
+                                              "glosář patří ke knize a cílovému jazyku.")
+            return
+        from qt_glossary import GlossaryDialog
+
+        self.remember()
+        sel = [it.data(Qt.UserRole) for it in self.files.selectedItems()] if hasattr(self.files, "selectedItems") else []
+        GlossaryDialog(files, self.win.cfg, self, current=next((f for f in sel if f in files), "")).exec()
 
     def set_notes_visible(self, on: bool, save: bool = True):
         """Pokyny pro překlad zobrazit / skrýt (stav se pamatuje)."""

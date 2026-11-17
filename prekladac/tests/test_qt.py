@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 QtWidgets = pytest.importorskip("PySide6.QtWidgets")
-from PySide6 import QtGui  # noqa: E402
+from PySide6 import QtCore, QtGui  # noqa: E402
 
 import book_writer as bw  # noqa: E402
 import html_docx  # noqa: E402
@@ -1442,3 +1442,26 @@ def test_rewrite_chapter_prompt_lengths():
     assert bw.rewrite_words(proj, 0, "longer") == 600 and bw.rewrite_words(proj, 0, "shorter") == 200
     with pytest.raises(bw.BookError):
         bw.rewrite_chapter(None, proj, 0, "custom", "")
+
+
+def test_glossary_dialog_suggest_and_save(qapp, tmp_path):
+    """Překlad → Glosář knihy: návrh jmen z knihy (bez AI), úprava a uložení ke knize a jazyku."""
+    import glossary
+    from qt_glossary import GlossaryDialog
+
+    book = tmp_path / "pribeh.txt"
+    book.write_text("It was late. Harry looked at Hermione. Then Hermione smiled at Harry. "
+                    "Later Ron said hello to Harry. Hermione laughed. Ron ran. Ron sat.", encoding="utf-8")
+    dlg = GlossaryDialog([str(book)], {"lang": "čeština", "engine": "google", "engines": {}})
+    dlg.suggest()
+    for _ in range(200):
+        qapp.processEvents()
+        if dlg.b_suggest.isEnabled() and dlg.table.rowCount():
+            break
+        QtCore.QThread.msleep(10)
+    names = [dlg.table.item(r, 0).text() for r in range(dlg.table.rowCount())]
+    assert {"Harry", "Hermione", "Ron"} <= set(names)
+    dlg.table.item(names.index("Hermione"), 1).setText("Hermiona")
+    dlg.save_and_close()
+    saved = {t["src"]: t["dst"] for t in glossary.load(book, "čeština")}
+    assert saved["Hermione"] == "Hermiona" and saved["Harry"] == "Harry"

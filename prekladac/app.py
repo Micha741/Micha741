@@ -317,7 +317,14 @@ def run_jobs(files, translate, out_fmt, tr, out_dir, merge_images, log, progress
                                               fmt=merged_fmt, ebook_convert=ebook_convert, skipped=skipped)
             else:
                 fmt = None if out_fmt in (None, SAME_FORMAT) else out_fmt
-                out = process_file(paths[0], fmt, translate, tr, out_dir, log, step, ebook_convert)
+                ftr = tr
+                if translate and tr is not None:  # glosář knihy (jména a pojmy vždy stejně)
+                    import glossary
+
+                    ftr = glossary.wrap(tr, paths[0], getattr(tr, "target_lang", "") or "")
+                    if ftr is not tr:
+                        log(f"  📖 Glosář knihy: {len(ftr.terms)} výrazů")
+                out = process_file(paths[0], fmt, translate, ftr, out_dir, log, step, ebook_convert)
             log(f"  ✓ Uloženo: {out}")
             results.append(out)
         except Cancelled:
