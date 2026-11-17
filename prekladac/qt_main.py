@@ -6,6 +6,7 @@ import os
 import re
 import sys
 import threading
+import time
 import webbrowser
 from pathlib import Path
 
@@ -2026,12 +2027,15 @@ class SettingsPage(QtWidgets.QWidget):
         g.addWidget(self.upd_btn, 2, 2)
         self.check_updates = QtWidgets.QCheckBox("Při spuštění zkontrolovat, zda je k dispozici nová verze")
         self.check_updates.setChecked(cfg.get("check_updates", True))
-        g.addWidget(self.check_updates, 3, 0, 1, 3)
+        upd = QtWidgets.QVBoxLayout()
+        upd.setContentsMargins(0, 0, 0, 0)
+        upd.addWidget(self.check_updates)
+        g.addLayout(upd, 3, 0, 1, 3)
         self.auto_update = QtWidgets.QCheckBox("Novou verzi rovnou stáhnout a nabídnout instalaci (automatická aktualizace)")
         self.auto_update.setToolTip("Stáhne se na pozadí z GitHubu, ověří otiskem SHA-256 a nainstaluje teď nebo "
                                     "při zavření programu")
         self.auto_update.setChecked(cfg.get("auto_update", True))
-        g.addWidget(self.auto_update, 4, 0, 1, 3)
+        upd.addWidget(self.auto_update)
 
         from qt_reader import SPREADS
 
@@ -2086,8 +2090,21 @@ class SettingsPage(QtWidgets.QWidget):
         lg.setColumnStretch(1, 1)
         g.addWidget(rbox, 5, 0, 1, 3)
         g.addWidget(lbox, 6, 0, 1, 3)
-        g.addWidget(label(f"Nastavení programu: {core.config_path()}", "Hint"), 7, 0, 1, 3)
-        g.setRowStretch(8, 1)
+        bbox = QtWidgets.QGroupBox("Záloha nastavení (nový počítač, přeinstalace)")
+        bg = QtWidgets.QGridLayout(bbox)
+        bg.addWidget(label("Jeden soubor .zip: nastavení, místa čtení, záložky a označené, slovníček, vlastní slova, "
+                           "skiny a glosáře knih. Klíče a hesla se nezálohují – zůstávají šifrované jen v tomto "
+                           "počítači (po obnově se zadávají znovu).", "Hint"), 0, 0, 1, 3)
+        b_bak = QtWidgets.QPushButton("💾 Zálohovat…")
+        b_bak.clicked.connect(self.make_backup)
+        b_res = QtWidgets.QPushButton("♻ Obnovit ze zálohy…")
+        b_res.clicked.connect(self.restore_backup)
+        bg.addWidget(b_bak, 1, 0)
+        bg.addWidget(b_res, 1, 1)
+        bg.setColumnStretch(2, 1)
+        g.addWidget(bbox, 7, 0, 1, 3)
+        g.addWidget(label(f"Nastavení programu: {core.config_path()}", "Hint"), 8, 0, 1, 3)
+        g.setRowStretch(9, 1)
         g.setColumnStretch(1, 1)
         self.refresh_dictionary()
         return w
@@ -2182,6 +2199,50 @@ class SettingsPage(QtWidgets.QWidget):
                 "error": f"✗ Slovník se nepodařilo načíst: {spell.last_error()}"}[st]
         self.dict_status.setText(text)
         self.dict_btn.setVisible(st in ("missing", "error"))
+
+    def make_backup(self):
+        import backup
+
+        self.collect()
+        name = f"Prekladac-zaloha-{time.strftime('%Y-%m-%d')}.zip"
+        f, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Uložit zálohu nastavení", str(Path.home() / name),
+                                                     "Záloha (*.zip)")
+        if not f:
+            return
+        try:
+            m = backup.create_backup(self.win.cfg, f)
+        except OSError as e:
+            QtWidgets.QMessageBox.warning(self, "Záloha", f"Zálohu se nepodařilo uložit:\n{e}")
+            return
+        QtWidgets.QMessageBox.information(self, "Záloha", f"Záloha uložena ✓\n\n{f}\n\nSoubory: {m['files']} "
+                                          "+ nastavení. Klíče a hesla v záloze nejsou.")
+
+    def restore_backup(self):
+        import backup
+
+        f, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Obnovit ze zálohy", str(Path.home()), "Záloha (*.zip)")
+        if not f:
+            return
+        try:
+            m = backup.read_manifest(f)
+        except backup.BackupError as e:
+            QtWidgets.QMessageBox.warning(self, "Obnovit", str(e))
+            return
+        if QtWidgets.QMessageBox.question(
+                self, "Obnovit ze zálohy",
+                f"Obnovit nastavení ze zálohy z {m.get('created', '?')} (verze {m.get('program', '?')})?\n\n"
+                "Současné nastavení se předtím uloží jako záloha do složky programu. Klíče a hesla zůstanou "
+                "tak, jak jsou v tomto počítači. Program se pak znovu spustí.") != QtWidgets.QMessageBox.Yes:
+            return
+        try:
+            new_cfg = backup.restore_backup(f, self.win.cfg)
+        except (backup.BackupError, OSError, KeyError, ValueError) as e:
+            QtWidgets.QMessageBox.warning(self, "Obnovit", f"Zálohu se nepodařilo obnovit:\n{e}")
+            return
+        self.win.cfg.clear()
+        self.win.cfg.update(new_cfg)
+        self.win.save_cfg()
+        restart_app()
 
     def download_dictionary(self):
         import spell
