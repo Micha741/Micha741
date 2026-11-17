@@ -16,7 +16,7 @@ import { OUTPUT_FORMATS, type OutputFormat } from './src/core/formats';
 import { CLAUDE_MODELS, DEFAULT_CLAUDE_MODEL, DEFAULT_GEMINI_MODEL, ENGINES, LANGUAGES, makeTranslator, setOfflineBackend, translateBook, type EngineId } from './src/core/translate';
 import Mlkit from './modules/mlkit-translate/src/MlkitTranslateModule';
 import { BUILTIN_SKINS, type Skin } from './src/core/skins';
-import { addToLibrary, downloadBook, installSkinFromPicker, loadInstalledSkins, loadLibrary, loadLibraryBook, loadSettings, makeOutput, openBookUri, pickBook, pickImage, pickImages, removeFromLibrary, removeSkin, reopenPdf, saveOutputToFolder, saveSettings, saveVocab, loadVocab, shareOutput, shareText, transformImage, updateEntry, storageFromSettings, syncLibrary, downloadCloudBook, syncEntry, pickPagePhotos, photosToBook, type Output, type Settings } from './src/platform';
+import { addToLibrary, downloadBook, installSkinFromPicker, loadInstalledSkins, loadLibrary, loadLibraryBook, loadSettings, makeOutput, openBookUri, pickBook, pickImage, pickImages, removeFromLibrary, removeSkin, reopenPdf, saveOutputToFolder, saveSettings, saveVocab, loadVocab, shareOutput, shareText, transformImage, updateEntry, storageFromSettings, syncLibrary, downloadCloudBook, syncEntry, pickPagePhotos, photosToBook, savedPagePhotos, deletePagePhotos, type Output, type Settings } from './src/platform';
 
 import appConfig from './app.json';
 
@@ -389,15 +389,21 @@ function BookScreen({ settings, update, goSettings, onRead }: { settings: Settin
   };
 
   /** 📷 Z fotky: vyfotit stránku nebo vybrat fotky stránek → text → kniha (jde hned přeložit). */
-  const fromPhoto = () =>
-    Alert.alert('Text z fotky', 'Vyfoťte stránku knihy nebo dokumentu (rovně, celou, při dobrém světle), nebo vyberte víc fotek stránek najednou.', [
-      { text: 'Zrušit', style: 'cancel' },
+  const fromPhoto = () => {
+    const waiting = savedPagePhotos();
+    Alert.alert('Text z fotky', 'Vyfoťte stránku knihy nebo dokumentu (rovně, celou, při dobrém světle), nebo vyberte víc fotek stránek najednou.' +
+      (waiting.length ? `\n\nV aplikaci čeká ${waiting.length} uložených fotek, které se zatím nepodařilo přečíst.` : ''), [
+      ...(waiting.length ? [{ text: `📥 Přečíst uložené (${waiting.length})`, onPress: () => readPhotos(null) },
+        { text: '🗑 Smazat uložené', style: 'destructive' as const, onPress: () => { deletePagePhotos(waiting); say(`🗑 Smazáno ${waiting.length} uložených fotek.`); } }] : []),
       { text: '🖼 Z galerie', onPress: () => readPhotos(false) },
       { text: '📷 Vyfotit', onPress: () => readPhotos(true) },
+      { text: 'Zrušit', style: 'cancel' },
     ]);
-  const readPhotos = async (camera: boolean) => {
+  };
+  /** camera: true = fotoaparát, false = galerie, null = fotky uložené dřív */
+  const readPhotos = async (camera: boolean | null) => {
     try {
-      const uris = await pickPagePhotos(camera);
+      const uris = camera === null ? savedPagePhotos() : await pickPagePhotos(camera);
       if (!uris.length) return;
       setBusy('Čtu text z fotky…');
       const rec = Mlkit?.recognizeText ? (u: string) => Mlkit!.recognizeText!(u) : null;
