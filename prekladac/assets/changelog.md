@@ -60,7 +60,7 @@
 # Historie verzí
 
 **Nová verze**
-- Vlastní hlas v Colabu: když se okno pro nahrání ZIPu v prohlížeči nespustí, sešit poradí nahrát ZIP přes Google Disk (místo chyby MessageError).
+- Vlastní hlas v Colabu: když se okno pro nahrání ZIPu v prohlížeči nespustí, sešit poradí nahrát ZIP přes Google Disk (místo chyby MessageError); víc ZIPů ve složce se spojí do jednoho vstupu (stejné věty jen jednou).
 
 **1.0.126 (17. 11. 2026)**
 - Automatická aktualizace: nová verze se stáhne z GitHubu, ověří otiskem SHA-256 a nainstaluje jedním klikem (teď, nebo při zavření programu); program se po instalaci sám znovu spustí. Lze vypnout v Nastavení → Obecné.
