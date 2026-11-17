@@ -1388,3 +1388,57 @@ def test_update_installs_on_close(qapp, monkeypatch, tmp_path):
     win2.show()
     win2.install_update(tmp_path / "t.exe", now=True)
     assert calls[-1] == (tmp_path / "t.exe", True) and not win2.isVisible()
+
+
+def test_rewrite_chapter_dialog_apply_and_undo(qapp, tmp_path, monkeypatch):
+    """Přepsat kapitolu: AI dostane text a pokyn, nová verze se ukáže, po Použít je v kapitole a Ctrl+Z ji vrátí."""
+    import base64
+    from qt_editor import BookEditor
+    from qt_rewrite import RewriteDialog
+
+    seen = {}
+
+    class Fake:
+        name = "Fake"
+
+        def complete(self, system, user, schema, max_tokens, cache=False):
+            seen["user"] = user
+            return {"text": "Nová první věta.\n\nNový druhý odstavec.", "summary": "Nové shrnutí."}
+
+    monkeypatch.setattr(bw, "make_backend", lambda *a, **k: Fake())
+    png = base64.b64encode(bytes.fromhex("89504e470d0a1a0a0000000d4948445200000001000000010806000000"
+                                         "1f15c4890000000d49444154789c6360000002000154a24f5d0000000049454e44ae426082")).decode()
+    proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000, "images": {"obr.png": png},
+            "chapters": [{"text": "Stará věta.", "html": '<p><img src="obr.png" width="100"/></p><p>Stará věta.</p>',
+                          "summary": "Staré."}]}
+    p = tmp_path / "r.kniha.json"
+    bw.save_project(p, proj)
+    ed = BookEditor(proj, p, None, text_assist={}, save_options=lambda: None, app_cfg={"engines": {}})
+    dlg = RewriteDialog(ed)
+    dlg.mode_buttons["tension"].setChecked(True)
+    dlg.extra.setText("víc dialogů")
+    dlg.run()
+    for _ in range(200):
+        qapp.processEvents()
+        if dlg.b_use.isEnabled():
+            break
+        QtCore.QThread.msleep(10)
+    assert dlg.b_use.isEnabled() and "Nový druhý odstavec" in dlg.new.toPlainText()
+    assert "Stará věta." in seen["user"] and "napětí" in seen["user"] and "víc dialogů" in seen["user"]
+    assert "[obrázek]" not in seen["user"]
+    dlg.use()
+    ch = ed.project["chapters"][0]
+    assert "Nový druhý odstavec" in ch["text"] and ch["summary"] == "Nové shrnutí."
+    assert 'src="obr.png"' in ch["html"], "obrázek v kapitole zůstal"
+    ed.text.undo()
+    assert "Stará věta." in ed.text.toPlainText()
+    ed.dirty = False
+    ed.close()
+
+
+def test_rewrite_chapter_prompt_lengths():
+    proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)),
+            "chapters": [{"text": " ".join(["slovo"] * 400), "summary": ""}]}
+    assert bw.rewrite_words(proj, 0, "longer") == 600 and bw.rewrite_words(proj, 0, "shorter") == 200
+    with pytest.raises(bw.BookError):
+        bw.rewrite_chapter(None, proj, 0, "custom", "")

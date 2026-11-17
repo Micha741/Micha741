@@ -62,6 +62,7 @@
 **Nová verze**
 - Automatická aktualizace: nová verze se stáhne z GitHubu, ověří otiskem SHA-256 a nainstaluje jedním klikem (teď, nebo při zavření programu); program se po instalaci sám znovu spustí. Lze vypnout v Nastavení → Obecné.
 - Záloha a obnova nastavení (Nastavení → Obecné): jeden soubor .zip s nastavením, místy čtení, záložkami, slovníčkem, skiny a glosáři – bez klíčů a hesel; před obnovou se uloží současný stav.
+- Okno knihy → Kniha → ✨ Přepsat kapitolu: AI přepíše kapitolu delší, kratší, napínavější, jednodušším jazykem, s opraveným stylem nebo podle vlastního pokynu; nová verze vedle původní, použije se až po potvrzení (Ctrl+Z ji vrátí), obrázky zůstanou.
 
 **1.0.121 (16. 11. 2026)**
 - Synchronizace mezi více počítači: u místa čtení je vidět i název počítače („Pokračujete tam, kde jste skončil (Windows – PRACOVNA, kapitola 5)“).
@@ -212,7 +213,6 @@
 
 # Plánované a nápady
 
-- Přepsat jednu kapitolu znovu pomocí AI (např. delší nebo kratší).
 - Přeložit návody ke službám a chybové hlášky do angličtiny, slovenštiny a němčiny.
 - Slovníky pro kontrolu pravopisu i v dalších jazycích (slovenština, angličtina, němčina).
 - Správné tvary čísel v jiných jazycích (např. „1 chapter“ místo „1 chapters“).

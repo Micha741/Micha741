@@ -1225,8 +1225,51 @@ class BookEditor(QtWidgets.QMainWindow):
         cov.grid.addWidget(b_cov, 0, 1, 2, 1)
         cov.grid.addWidget(self._tb(emoji_icon("🗑️"), "Odebrat obálku", self.remove_cover), 0, 2)
         self.update_cover_thumb()
+        ai = RibbonGroup("AI")
+        b_rw = self._big(emoji_icon("✨"), "Přepsat kapitolu…", self.rewrite_chapter)
+        b_rw.setToolTip("AI přepíše tuto kapitolu: delší, kratší, napínavější, jednodušší jazyk, opravit styl "
+                        "nebo vlastní pokyn – s náhledem před použitím")
+        ai.grid.addWidget(b_rw, 0, 0, 2, 1)
         self._title_group = info  # Název a Autor jsou v kartě Metadata
-        return self._row(look, cov, chap)
+        return self._row(look, cov, chap, ai)
+
+    def rewrite_chapter(self):
+        if not self.project["chapters"]:
+            return
+        from qt_rewrite import RewriteDialog
+
+        self._rewrite_dialog = RewriteDialog(self)
+        self._rewrite_dialog.exec()
+
+    def apply_rewrite(self, text: str, summary: str = ""):
+        """Nová verze kapitoly do editoru (obrázky zůstanou na začátku kapitoly); vrátí ji Ctrl+Z."""
+        import html as htmllib
+
+        from html_docx import plain_to_html
+
+        doc = self.text.document()
+        imgs, b = [], doc.begin()
+        while b.isValid():
+            it = b.begin()
+            while not it.atEnd():
+                f = it.fragment()
+                if f.isValid() and f.charFormat().isImageFormat():
+                    imf = f.charFormat().toImageFormat()
+                    w = f' width="{int(imf.width())}"' if imf.width() > 0 else ""
+                    imgs.append(f'<p align="center"><img src="{htmllib.escape(imf.name())}"{w}/></p>')
+                it += 1
+            b = b.next()
+        cur = QtGui.QTextCursor(doc)
+        cur.beginEditBlock()
+        cur.select(QtGui.QTextCursor.Document)
+        cur.removeSelectedText()
+        cur.insertHtml("".join(imgs) + plain_to_html(text))
+        cur.endEditBlock()
+        if summary and self.cur < len(self.project["chapters"]):
+            self.project["chapters"][self.cur]["summary"] = summary
+        self.store_current()
+        self.dirty = True
+        self._changed()
 
     def _color_menu(self, colors, fn, extra_text):
         menu = QtWidgets.QMenu(self)
