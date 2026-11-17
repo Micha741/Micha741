@@ -1518,3 +1518,32 @@ def test_audiobook_dialog_chirp_voice_info(qapp, tmp_path):
     assert "Chirp 3 HD" in dlg.info.text()
     ed.dirty = False
     ed.close()
+
+
+def test_voice_studio_dialog_records_with_fake_mic(qapp, monkeypatch):
+    """Nahrávací studio: nahrát větu (mezerník), uložit a přejít na další; kontrola kvality."""
+    import voice_studio as vs
+    from qt_voice_studio import StudioDialog
+    from test_voice_studio import speech
+
+    class FakeRec:
+        level = 1000
+
+        def start(self):
+            pass
+
+        def stop(self):
+            return speech(2.5)
+
+    monkeypatch.setattr(vs, "Recorder", FakeRec)
+    dlg = StudioDialog(name="zkouska")
+    first = dlg.i
+    dlg.toggle()
+    assert "Hotovo" in dlg.b_rec.text()
+    dlg.toggle()
+    assert dlg.ds.wav_path(first).is_file() and dlg.i == first + 1 and "Uloženo" in dlg.quality.text()
+    dlg.go(first)
+    assert dlg.b_play.isEnabled()
+    dlg.delete_take()
+    assert not dlg.ds.wav_path(first).is_file()
+    dlg.reject()

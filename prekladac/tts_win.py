@@ -10,6 +10,7 @@ Mimo Windows (testy v Linuxu) jsou hlasy Windows nedostupné – available() vr�
 """
 from __future__ import annotations
 
+import json
 import os
 import queue
 import subprocess
@@ -106,6 +107,25 @@ def piper_installed(lang: str | None = None) -> list[dict]:
             if piper_model_path(model).is_file():
                 out.append({"name": PIPER_PREFIX + model.rsplit("/", 1)[-1], "label": f"{name} (Piper)",
                             "lang": code, "gender": gender, "model": str(piper_model_path(model))})
+    out += custom_piper_voices(lang)
+    return out
+
+
+def custom_piper_voices(lang: str | None = None) -> list[dict]:
+    """Vlastní hlasy Piper (natrénované nebo importované, složka voices/vlastni) – bez internetu."""
+    d = piper_dir() / "voices" / "vlastni"
+    out = []
+    for onnx in sorted(d.glob("*.onnx")) if d.is_dir() else []:
+        try:
+            c = json.loads(Path(str(onnx) + ".json").read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        code = str((c.get("language") or {}).get("code") or c.get("espeak", {}).get("voice") or "cs")[:2].lower()
+        if lang and code != lang:
+            continue
+        name = str(c.get("dataset") or onnx.stem).replace("_", " ")
+        out.append({"name": f"{PIPER_PREFIX}vlastni/{onnx.stem}", "label": f"{name} (vlastní hlas, bez internetu)",
+                    "lang": code, "gender": "", "model": str(onnx)})
     return out
 
 

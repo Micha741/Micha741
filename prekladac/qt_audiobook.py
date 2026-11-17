@@ -30,7 +30,8 @@ class AudiobookDialog(QtWidgets.QDialog):
         vbox = QtWidgets.QGroupBox(tr("Hlas"))
         vg = QtWidgets.QVBoxLayout(vbox)
         self.voice_buttons: dict[str, QtWidgets.QRadioButton] = {}
-        for key, v in ab.VOICES.items():
+        self.voices = ab.all_voices()
+        for key, v in self.voices.items():
             rb = QtWidgets.QRadioButton(f"{v['name']} – {tr(v['info'])}")
             vg.addWidget(rb)
             self.voice_buttons[key] = rb
@@ -110,7 +111,7 @@ class AudiobookDialog(QtWidgets.QDialog):
         minutes = chars / 15 / 60  # asi 15 znaků za sekundu
         text = tr("{} znaků, asi {} h {} min poslechu.").format(f"{chars:,}".replace(",", " "), int(minutes // 60),
                                                                int(minutes % 60))
-        kind = ab.VOICES[self.voice()]["kind"]
+        kind = self.voices[self.voice()]["kind"]
         if kind == "google":
             text += " " + tr("Google Chirp 3 HD se platí podle počtu znaků (ceník Google Cloud, měsíčně bývá část "
                              "zdarma) – je to nejpřirozenější, ale dražší hlas než Vlasta a Antonín.")

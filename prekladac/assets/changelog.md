@@ -66,6 +66,7 @@
 - 📖 Glosář knihy (Překlad → Překladač → Glosář knihy): jména postav, místa a pojmy se v celé knize přeloží vždy stejně; návrh z textu knihy (AI navrhne i překlady, bez AI se najdou opakovaná jména), AI překladače výrazy správně skloňují, Google/DeepL/ostatní vloží zadaný překlad.
 - 🎧 Audiokniha (okno knihy → Kniha → Audiokniha): kapitoly do MP3 hlasem Jirka (bez internetu), Vlasta nebo Antonín (Azure) – s názvem kapitoly, autorem, obálkou a seznamem skladeb; výběr kapitol, rychlosti a kvality, upozornění na bezplatný limit Azure.
 - 🗣 Nejpřirozenější hlasy Google Chirp 3 HD (Kore, Aoede, Charon, Puck) ve čtečce (Čtení nahlas) i v audioknize, s tlačítkem ▶ Ukázka hlasu; stačí klíč Google Cloud se zapnutým Text-to-Speech API.
+- 🎙 Vlastní hlas bez internetu (Nastavení → Součásti → Vlastní hlas): nahrávací studio (věty se všemi českými hláskami nebo z vlastní knihy, kontrola kvality nahrávek), export pro trénování, sešit Google Colab, který z nahrávek dotrénuje hlas Piper z Jirky, a import hotového hlasu (.onnx) – čte ve čtečce i v audioknize.
 - Android: 📷 text z fotky stránky (v telefonu bez internetu přes Google ML Kit, případně Gemini/Claude) – vyjde s příštím APK.
 
 **1.0.121 (16. 11. 2026)**

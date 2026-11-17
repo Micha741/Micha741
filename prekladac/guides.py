@@ -258,6 +258,38 @@ Data neopustí váš NAS.
 - HTTP 404 / 409 – v adrese chybí nebo je špatně název sdílené složky.
 - „Server není dostupný“ – NAS je vypnutý, jiný port, nebo jste mimo domácí síť s místní adresou.
 """,
+    "vlastni_hlas": """Vlastní hlas – čtení nahlas a audioknihy bez internetu, zdarma
+
+Z vašich nahrávek se natrénuje hlas Piper (stejný typ jako Jirka, ale s vaším hlasem). Hotový hlas je malý soubor
+(asi 60 MB), běží rychle i na slabém počítači a čte bez internetu ve čtečce i v audioknize.
+
+1. Nahrání (v Překladači, asi 30–60 minut, dá se po částech)
+   Nastavení → Součásti → Vlastní hlas → 🎙 Nahrávací studio. Čtěte zobrazené věty (mezerník = začít / hotovo).
+   Začíná se 40 větami se všemi českými hláskami; „➕ Přidat věty z knihy“ přidá další z české knihy.
+   Pro dobrý hlas nahrajte aspoň 300 vět, lépe 600–1000. Tipy: tichá místnost, stále stejná vzdálenost
+   od mikrofonu, přirozené tempo; když studio ukáže ⚠, větu nahrajte znovu.
+
+2. Export
+   „📦 Export pro trénování“ uloží ZIP (nahrávky a texty vět).
+
+3. Trénování zdarma v Google Colab (v prohlížeči, s grafikou od Googlu)
+   Otevřete sešit: https://colab.research.google.com/github/Micha741/Micha741/blob/main/prekladac/tools/vlastni_hlas_colab.ipynb
+   Nahoře Runtime → Změnit typ běhového prostředí → GPU (T4). Spouštějte buňky postupně (▶):
+   připojí se Google Disk (ukládá se tam průběh), nainstaluje se trénování, nahrajete ZIP, hlas se dotrénuje
+   z Jirky, buňka 6 přehraje ukázku a buňka 7 stáhne hotový hlas: soubory „jméno.onnx“ a „jméno.onnx.json“.
+   Kolik to trvá: projekt Piper doporučuje 2000 epoch; s hodinou nahrávek je to na bezplatné grafice T4
+   řádově desítky hodin. Bezplatný Colab se po několika hodinách odpojí – průběh zůstává na vašem Disku
+   a spuštěním buněk 1–5 se pokračuje (klidně další den). Mezivýsledek si poslechnete buňkou 6 kdykoli;
+   často zní dobře už dřív. Rychlejší je Colab Pro nebo počítač s grafikou NVIDIA.
+
+4. Import
+   Oba soubory dejte do jedné složky → Nastavení → Součásti → 📥 Importovat hlas (.onnx).
+   Hlas se objeví ve čtečce (Čtení nahlas → hlas) a v audioknize (okno knihy → Kniha → Audiokniha).
+   Importovat jde i jakýkoli jiný hlas Piper (.onnx s .onnx.json), třeba z https://huggingface.co/rhasspy/piper-voices.
+
+Kvalita: s 600+ kvalitními nahrávkami bývá vlastní hlas znatelně přirozenější než Jirka; dokonalost cloudových
+hlasů (Chirp 3 HD) ale offline hlas Piper nedosáhne. Nahrávejte jen svůj hlas, nebo hlas člověka, který s tím souhlasí.
+""",
     "gdrive": """Google Disk – knihy a čtení v počítači i v telefonu (zdarma)
 
 Začnete číst v počítači a pokračujete v telefonu – a obráceně. Na vašem Google Disku vznikne složka „Překladač“

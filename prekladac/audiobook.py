@@ -31,6 +31,18 @@ VOICES = {
                    "voice": "cs-CZ-Chirp3-HD-Puck"},
 }
 AZURE_FREE_CHARS = 500_000
+
+
+def all_voices() -> dict:
+    """Hlasy pro audioknihu: pevné (Jirka, Vlasta, Antonín, Chirp 3 HD) + vlastní hlasy Piper (offline)."""
+    import tts_win
+
+    out = dict(VOICES)
+    for v in tts_win.custom_piper_voices():
+        key = "vlastni:" + Path(v["model"]).stem
+        out[key] = {"name": v["label"].split(" (")[0], "info": "vlastní hlas, bez internetu, zdarma", "kind": "piper",
+                    "model_path": v["model"]}
+    return out
 PARA_PAUSE, TITLE_PAUSE = 0.45, 1.0  # sekundy ticha za odstavcem a za názvem kapitoly
 
 
@@ -136,13 +148,15 @@ def make_synth(voice: str, rate: float = 1.0, engines: dict | None = None):
     """Funkce text → WAV pro zvolený hlas (jen Jirka, Vlasta, Antonín)."""
     import tts_win
 
-    v = VOICES.get(voice)
+    v = all_voices().get(voice)
     if not v:
         raise AudiobookError("Audioknihu namluví jen Jirka, Vlasta, Antonín nebo hlasy Google Chirp 3 HD.")
     if v["kind"] == "piper":
-        model = str(tts_win.piper_model_path(v["model"]))
+        model = v.get("model_path") or str(tts_win.piper_model_path(v["model"]))
         if not tts_win.piper_exe() or not Path(model).is_file():
-            raise AudiobookError("Hlas Jirka není stažený – ve čtečce klikněte na Nahlas → stáhnout český hlas Jirka.")
+            raise AudiobookError("Hlas Jirka není stažený – ve čtečce klikněte na Nahlas → stáhnout český hlas Jirka."
+                                 if not v.get("model_path") else "Program Piper není stažený – ve čtečce klikněte na "
+                                 "Nahlas → stáhnout český hlas Jirka (stáhne se i Piper).")
         return lambda text, out: tts_win.piper_synthesize(text, model, rate, out, timeout=900)
     tts_win.configure_cloud(engines or {})
     if v["kind"] == "google":

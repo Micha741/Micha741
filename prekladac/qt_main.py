@@ -1847,6 +1847,26 @@ class SettingsPage(QtWidgets.QWidget):
         tg.addWidget(b, 1, 2)
         lay.addWidget(tes)
 
+        vbox = QtWidgets.QGroupBox("Vlastní hlas pro čtení nahlas a audioknihy (bez internetu, zdarma)")
+        vg = QtWidgets.QGridLayout(vbox)
+        vg.addWidget(label("Nahrajte svůj hlas (asi 300 a více vět), natrénujte ho zdarma v Google Colab a importujte – "
+                           "pak čte knihy a namlouvá audioknihy offline. Importovat jde i jakýkoli hotový hlas Piper "
+                           "(.onnx s .onnx.json).", "Hint"), 0, 0, 1, 4)
+        b_st = QtWidgets.QPushButton("🎙 Nahrávací studio…")
+        b_st.clicked.connect(self.open_studio)
+        b_im = QtWidgets.QPushButton("📥 Importovat hlas (.onnx)…")
+        b_im.clicked.connect(self.import_voice)
+        b_hl = QtWidgets.QPushButton("📘 Jak natrénovat hlas")
+        b_hl.clicked.connect(lambda: __import__("qt_voice_studio").show_training_help(self))
+        vg.addWidget(b_st, 1, 0)
+        vg.addWidget(b_im, 1, 1)
+        vg.addWidget(b_hl, 1, 2)
+        vg.setColumnStretch(3, 1)
+        self.voices_info = label("", "Hint")
+        vg.addWidget(self.voices_info, 2, 0, 1, 4)
+        self._show_custom_voices()
+        lay.addWidget(vbox)
+
         langs = QtWidgets.QGroupBox("Jazyky pro OCR (stáhnou se do složky programu; chybějící i automaticky)")
         lg = QtWidgets.QGridLayout(langs)
         self.lang_checks = {}
@@ -2214,6 +2234,23 @@ class SettingsPage(QtWidgets.QWidget):
                 "error": f"✗ Slovník se nepodařilo načíst: {spell.last_error()}"}[st]
         self.dict_status.setText(text)
         self.dict_btn.setVisible(st in ("missing", "error"))
+
+    def open_studio(self):
+        from qt_voice_studio import StudioDialog
+
+        StudioDialog(self).exec()
+
+    def import_voice(self):
+        from qt_voice_studio import import_voice_dialog
+
+        if import_voice_dialog(self):
+            self._show_custom_voices()
+
+    def _show_custom_voices(self):
+        import tts_win
+
+        names = [v["label"].split(" (")[0] for v in tts_win.custom_piper_voices()]
+        self.voices_info.setText(("Vlastní hlasy: " + ", ".join(names)) if names else "Zatím žádný vlastní hlas.")
 
     def make_backup(self):
         import backup
