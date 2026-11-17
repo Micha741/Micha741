@@ -60,7 +60,7 @@
 # Historie verzí
 
 **Nová verze**
-- Vlastní hlas v Colabu: když se okno pro nahrání ZIPu v prohlížeči nespustí, sešit poradí nahrát ZIP přes Google Disk (místo chyby MessageError); víc ZIPů ve složce se spojí do jednoho vstupu (stejné věty jen jednou); výchozí hlas Jirka se stáhne jen jednou a uloží na Google Disk (bez výpisu souborů Hugging Face); výpis trénování se ukládá do trenink.log a při chybě se ukáže jeho konec; když se v Colabu nesestaví espeakbridge (převod na hlásky), vezme se hotový z oficiálního balíčku Piper.
+- Vlastní hlas v Colabu: když se okno pro nahrání ZIPu v prohlížeči nespustí, sešit poradí nahrát ZIP přes Google Disk (místo chyby MessageError); víc ZIPů ve složce se spojí do jednoho vstupu (stejné věty jen jednou); výchozí hlas Jirka se stáhne jen jednou a uloží na Google Disk (bez výpisu souborů Hugging Face); výpis trénování se ukládá do trenink.log a při chybě se ukáže jeho konec; když se v Colabu nesestaví espeakbridge (převod na hlásky), vezme se hotový z oficiálního balíčku Piper; Jirka se stahuje s ukazatelem průběhu a bez přihlášení k Hugging Face (chyba 401), buňka 5 počká na dokončení buňky 4.
 
 **1.0.126 (17. 11. 2026)**
 - Automatická aktualizace: nová verze se stáhne z GitHubu, ověří otiskem SHA-256 a nainstaluje jedním klikem (teď, nebo při zavření programu); program se po instalaci sám znovu spustí. Lze vypnout v Nastavení → Obecné.
