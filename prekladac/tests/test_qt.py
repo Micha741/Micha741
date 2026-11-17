@@ -1369,3 +1369,22 @@ def test_description_from_synopsis_or_brief(qapp, tmp_path, monkeypatch):
     assert not ed._desc_sources["brief"].isEnabled() and ed._desc_sources["synopsis"].isEnabled()
     ed.dirty = False
     ed.close()
+
+
+def test_update_installs_on_close(qapp, monkeypatch, tmp_path):
+    """Aktualizace: „Nainstalovat teď“ zavře okno a spustí instalaci s novým spuštěním, jinak až při zavření."""
+    import qt_main
+    import updater
+
+    calls = []
+    monkeypatch.setattr(updater, "start_install", lambda path, relaunch=True: calls.append((path, relaunch)))
+    win = qt_main.MainWindow()
+    win.show()
+    win.install_update(tmp_path / "s.exe", now=False)
+    assert calls == [] and win.isVisible()      # při zavření programu
+    win.close()
+    assert calls == [(tmp_path / "s.exe", False)]
+    win2 = qt_main.MainWindow()
+    win2.show()
+    win2.install_update(tmp_path / "t.exe", now=True)
+    assert calls[-1] == (tmp_path / "t.exe", True) and not win2.isVisible()

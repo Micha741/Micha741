@@ -60,7 +60,7 @@
 # Historie verzí
 
 **Nová verze**
-- (zatím nic – další změny se zapíšou sem)
+- Automatická aktualizace: nová verze se stáhne z GitHubu, ověří otiskem SHA-256 a nainstaluje jedním klikem (teď, nebo při zavření programu); program se po instalaci sám znovu spustí. Lze vypnout v Nastavení → Obecné.
 
 **1.0.121 (16. 11. 2026)**
 - Synchronizace mezi více počítači: u místa čtení je vidět i název počítače („Pokračujete tam, kde jste skončil (Windows – PRACOVNA, kapitola 5)“).

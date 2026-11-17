@@ -2027,6 +2027,11 @@ class SettingsPage(QtWidgets.QWidget):
         self.check_updates = QtWidgets.QCheckBox("Při spuštění zkontrolovat, zda je k dispozici nová verze")
         self.check_updates.setChecked(cfg.get("check_updates", True))
         g.addWidget(self.check_updates, 3, 0, 1, 3)
+        self.auto_update = QtWidgets.QCheckBox("Novou verzi rovnou stáhnout a nabídnout instalaci (automatická aktualizace)")
+        self.auto_update.setToolTip("Stáhne se na pozadí z GitHubu, ověří otiskem SHA-256 a nainstaluje teď nebo "
+                                    "při zavření programu")
+        self.auto_update.setChecked(cfg.get("auto_update", True))
+        g.addWidget(self.auto_update, 4, 0, 1, 3)
 
         from qt_reader import SPREADS
 
@@ -2202,6 +2207,7 @@ class SettingsPage(QtWidgets.QWidget):
         cfg["autosave"] = {"mode": self.auto_mode.currentData(), "seconds": self.auto_seconds.value(),
                            "chars": self.auto_chars.value()}
         cfg["check_updates"] = self.check_updates.isChecked()
+        cfg["auto_update"] = self.auto_update.isChecked()
         cfg.setdefault("reader", {})["spread"] = self.r_spread.currentData()
         cfg["reader_fullscreen"] = self.r_full.isChecked()
         ed = self.win.editor
@@ -2443,6 +2449,12 @@ class MainWindow(QtWidgets.QMainWindow):
             self.save_cfg()
         except Exception:  # noqa: BLE001 – zavření okna nesmí spadnout kvůli nastavení
             pass
+        pending = getattr(self, "_install_on_close", None)
+        if pending:  # stažená nová verze: nainstalovat po zavření programu
+            try:
+                updater.start_install(*pending)
+            except OSError as ex:
+                QtWidgets.QMessageBox.warning(self, "Nová verze", f"Instalaci se nepodařilo spustit:\n{ex}")
         super().closeEvent(e)
 
     def skin_changed(self):
@@ -2489,7 +2501,7 @@ class MainWindow(QtWidgets.QMainWindow):
                                                   f"Novou verzi se nepodařilo zjistit:\n{err}")
                 return
             if info:
-                self.offer_update(info)
+                self.offer_update(info, auto=not manual)
             elif manual:
                 QtWidgets.QMessageBox.information(
                     self, "Nová verze", f"Máte nejnovější verzi ({VERSION})." if VERSION[:1].isdigit()
@@ -2497,24 +2509,82 @@ class MainWindow(QtWidgets.QMainWindow):
 
         run_bg(lambda: updater.check(VERSION, skip), done)
 
-    def offer_update(self, info: dict):
+    def offer_update(self, info: dict, auto: bool = False):
+        """Nová verze: automaticky se stáhne na pozadí (Nastavení → Obecné), jinak nabídka Aktualizovat teď."""
+        if auto and self.cfg.get("auto_update", True) and info.get("sha256"):
+            run_bg(lambda: updater.download_setup(info), lambda path, err: self._update_ready(info, path, err), owner=self)
+            return
         box = QtWidgets.QMessageBox(self)
         box.setWindowTitle("Nová verze")
         box.setIcon(QtWidgets.QMessageBox.Icon.Information)
         box.setText(f"<b>Je k dispozici nová verze {info['version']}</b> (máte {VERSION}).")
         box.setInformativeText(
-            "Stáhněte Prekladac-Setup.exe a spusťte ho – nainstaluje se přes stávající verzi. "
-            "Nastavení, klíče i rozepsané knihy zůstanou zachované. Před instalací program zavřete.")
-        dl = box.addButton("⬇ Stáhnout novou verzi", QtWidgets.QMessageBox.ButtonRole.AcceptRole)
+            "„Aktualizovat teď“ stáhne instalátor, ověří ho a nainstaluje přes stávající verzi – program se zavře "
+            "a po instalaci znovu spustí. Nastavení, klíče i rozepsané knihy zůstanou zachované.")
+        now = box.addButton("⬇ Aktualizovat teď", QtWidgets.QMessageBox.ButtonRole.AcceptRole)
+        web = box.addButton("Stáhnout v prohlížeči", QtWidgets.QMessageBox.ButtonRole.ActionRole)
         skip = box.addButton("Tuto verzi přeskočit", QtWidgets.QMessageBox.ButtonRole.RejectRole)
         box.addButton("Později", QtWidgets.QMessageBox.ButtonRole.RejectRole)
-        box.setDefaultButton(dl)
+        box.setDefaultButton(now)
         box.exec()
-        if box.clickedButton() is dl:
+        if box.clickedButton() is now:
+            self.download_update(info)
+        elif box.clickedButton() is web:
             webbrowser.open(info["setup_url"])
         elif box.clickedButton() is skip:
             self.cfg["skip_version"] = info["version"]
             self.save_cfg()
+
+    def download_update(self, info: dict):
+        """Stáhne instalátor s ukazatelem průběhu a hned ho nainstaluje."""
+        import threading
+
+        dlg = QtWidgets.QProgressDialog(f"Stahuji verzi {info['version']}…", "Zrušit", 0, 100, self)
+        dlg.setWindowTitle("Aktualizace")
+        dlg.setWindowModality(Qt.WindowModal)
+        dlg.setMinimumDuration(0)
+        cancel = threading.Event()
+        dlg.canceled.connect(cancel.set)
+        state = {"done": 0, "total": info.get("size") or 0}
+        timer = QtCore.QTimer(dlg)
+        timer.timeout.connect(lambda: dlg.setValue(int(100 * state["done"] / state["total"])) if state["total"] else None)
+        timer.start(200)
+
+        def prog(done, total):
+            state["done"], state["total"] = done, total or state["total"]
+
+        def finished(path, err):
+            timer.stop()
+            dlg.close()
+            if err:
+                if not cancel.is_set():
+                    QtWidgets.QMessageBox.warning(self, "Aktualizace", str(err))
+                return
+            self.install_update(path, now=True)
+
+        run_bg(lambda: updater.download_setup(info, prog, cancel), finished, owner=self)
+        dlg.show()
+
+    def _update_ready(self, info: dict, path, err):
+        if err:  # na pozadí bez otravování – nabídne se ručně
+            self.offer_update(info)
+            return
+        box = QtWidgets.QMessageBox(self)
+        box.setWindowTitle("Nová verze")
+        box.setIcon(QtWidgets.QMessageBox.Icon.Information)
+        box.setText(f"<b>Nová verze {info['version']} je stažená a ověřená.</b>")
+        box.setInformativeText("Nainstalovat ji teď (program se zavře a znovu spustí), nebo až program zavřete?")
+        now = box.addButton("Nainstalovat teď", QtWidgets.QMessageBox.ButtonRole.AcceptRole)
+        box.addButton("Při zavření programu", QtWidgets.QMessageBox.ButtonRole.RejectRole)
+        box.setDefaultButton(now)
+        box.exec()
+        self.install_update(path, now=box.clickedButton() is now)
+
+    def install_update(self, path, now: bool):
+        """now=True: zavřít program a hned instalovat (pak se spustí znovu); jinak instalace až po zavření."""
+        self._install_on_close = (path, now)
+        if now:
+            self.close()
 
     def save_cfg(self):
         try:
