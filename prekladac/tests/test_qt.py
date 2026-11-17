@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 QtWidgets = pytest.importorskip("PySide6.QtWidgets")
-from PySide6 import QtGui  # noqa: E402
+from PySide6 import QtCore, QtGui  # noqa: E402
 
 import book_writer as bw  # noqa: E402
 import html_docx  # noqa: E402
@@ -1369,3 +1369,181 @@ def test_description_from_synopsis_or_brief(qapp, tmp_path, monkeypatch):
     assert not ed._desc_sources["brief"].isEnabled() and ed._desc_sources["synopsis"].isEnabled()
     ed.dirty = False
     ed.close()
+
+
+def test_update_installs_on_close(qapp, monkeypatch, tmp_path):
+    """Aktualizace: „Nainstalovat teď“ zavře okno a spustí instalaci s novým spuštěním, jinak až při zavření."""
+    import qt_main
+    import updater
+
+    calls = []
+    monkeypatch.setattr(updater, "start_install", lambda path, relaunch=True: calls.append((path, relaunch)))
+    win = qt_main.MainWindow()
+    win.show()
+    win.install_update(tmp_path / "s.exe", now=False)
+    assert calls == [] and win.isVisible()      # při zavření programu
+    win.close()
+    assert calls == [(tmp_path / "s.exe", False)]
+    win2 = qt_main.MainWindow()
+    win2.show()
+    win2.install_update(tmp_path / "t.exe", now=True)
+    assert calls[-1] == (tmp_path / "t.exe", True) and not win2.isVisible()
+
+
+def test_rewrite_chapter_dialog_apply_and_undo(qapp, tmp_path, monkeypatch):
+    """Přepsat kapitolu: AI dostane text a pokyn, nová verze se ukáže, po Použít je v kapitole a Ctrl+Z ji vrátí."""
+    import base64
+    from qt_editor import BookEditor
+    from qt_rewrite import RewriteDialog
+
+    seen = {}
+
+    class Fake:
+        name = "Fake"
+
+        def complete(self, system, user, schema, max_tokens, cache=False):
+            seen["user"] = user
+            return {"text": "Nová první věta.\n\nNový druhý odstavec.", "summary": "Nové shrnutí."}
+
+    monkeypatch.setattr(bw, "make_backend", lambda *a, **k: Fake())
+    png = base64.b64encode(bytes.fromhex("89504e470d0a1a0a0000000d4948445200000001000000010806000000"
+                                         "1f15c4890000000d49444154789c6360000002000154a24f5d0000000049454e44ae426082")).decode()
+    proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000, "images": {"obr.png": png},
+            "chapters": [{"text": "Stará věta.", "html": '<p><img src="obr.png" width="100"/></p><p>Stará věta.</p>',
+                          "summary": "Staré."}]}
+    p = tmp_path / "r.kniha.json"
+    bw.save_project(p, proj)
+    ed = BookEditor(proj, p, None, text_assist={}, save_options=lambda: None, app_cfg={"engines": {}})
+    dlg = RewriteDialog(ed)
+    dlg.mode_buttons["tension"].setChecked(True)
+    dlg.extra.setText("víc dialogů")
+    dlg.run()
+    for _ in range(200):
+        qapp.processEvents()
+        if dlg.b_use.isEnabled():
+            break
+        QtCore.QThread.msleep(10)
+    assert dlg.b_use.isEnabled() and "Nový druhý odstavec" in dlg.new.toPlainText()
+    assert "Stará věta." in seen["user"] and "napětí" in seen["user"] and "víc dialogů" in seen["user"]
+    assert "[obrázek]" not in seen["user"]
+    dlg.use()
+    ch = ed.project["chapters"][0]
+    assert "Nový druhý odstavec" in ch["text"] and ch["summary"] == "Nové shrnutí."
+    assert 'src="obr.png"' in ch["html"], "obrázek v kapitole zůstal"
+    ed.text.undo()
+    assert "Stará věta." in ed.text.toPlainText()
+    ed.dirty = False
+    ed.close()
+
+
+def test_rewrite_chapter_prompt_lengths():
+    proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)),
+            "chapters": [{"text": " ".join(["slovo"] * 400), "summary": ""}]}
+    assert bw.rewrite_words(proj, 0, "longer") == 600 and bw.rewrite_words(proj, 0, "shorter") == 200
+    with pytest.raises(bw.BookError):
+        bw.rewrite_chapter(None, proj, 0, "custom", "")
+
+
+def test_glossary_dialog_suggest_and_save(qapp, tmp_path):
+    """Překlad → Glosář knihy: návrh jmen z knihy (bez AI), úprava a uložení ke knize a jazyku."""
+    import glossary
+    from qt_glossary import GlossaryDialog
+
+    book = tmp_path / "pribeh.txt"
+    book.write_text("It was late. Harry looked at Hermione. Then Hermione smiled at Harry. "
+                    "Later Ron said hello to Harry. Hermione laughed. Ron ran. Ron sat.", encoding="utf-8")
+    dlg = GlossaryDialog([str(book)], {"lang": "čeština", "engine": "google", "engines": {}})
+    dlg.suggest()
+    for _ in range(200):
+        qapp.processEvents()
+        if dlg.b_suggest.isEnabled() and dlg.table.rowCount():
+            break
+        QtCore.QThread.msleep(10)
+    names = [dlg.table.item(r, 0).text() for r in range(dlg.table.rowCount())]
+    assert {"Harry", "Hermione", "Ron"} <= set(names)
+    dlg.table.item(names.index("Hermione"), 1).setText("Hermiona")
+    dlg.save_and_close()
+    saved = {t["src"]: t["dst"] for t in glossary.load(book, "čeština")}
+    assert saved["Hermione"] == "Hermiona" and saved["Harry"] == "Harry"
+
+
+def test_audiobook_dialog_records_chapters(qapp, tmp_path, monkeypatch):
+    """Okno knihy → Audiokniha: vybraný hlas a kapitoly, MP3 ve složce exportu, limit Azure ve zprávě."""
+    import audiobook as ab
+    from qt_audiobook import AudiobookDialog
+    from qt_editor import BookEditor
+
+    pytest.importorskip("lameenc")
+    import test_audiobook as ta
+
+    seen = []
+    monkeypatch.setattr(ab, "make_synth", lambda voice, rate=1.0, engines=None: ta.tone_synth(seen))
+    proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000,
+            "chapters": [{"text": "První kapitola.", "summary": ""}, {"text": "Druhá kapitola.", "summary": ""}]}
+    proj["outline"]["chapters"] = proj["outline"]["chapters"][:2]
+    p = tmp_path / "a.kniha.json"
+    bw.save_project(p, proj)
+    ed = BookEditor(proj, p, None, text_assist={}, save_options=lambda: None, app_cfg={"engines": {}})
+    dlg = AudiobookDialog(ed)
+    dlg.voice_buttons["vlasta"].setChecked(True)
+    assert "500 000" in dlg.info.text()
+    dlg.ch_from.setValue(2)
+    dlg.start()
+    for _ in range(300):
+        qapp.processEvents()
+        if not dlg.busy:
+            break
+        QtCore.QThread.msleep(10)
+    assert not dlg.busy and len(dlg.files) == 1 and dlg.files[0].name.startswith("02 ")
+    assert dlg.files[0].parent.parent == tmp_path
+    assert ed.app_cfg["audiobook_voice"] == "vlasta"
+    ed.dirty = False
+    ed.close()
+
+
+def test_audiobook_dialog_chirp_voice_info(qapp, tmp_path):
+    """Audiokniha: hlasy Google Chirp 3 HD ve výběru s upozorněním na ceník."""
+    from qt_audiobook import AudiobookDialog
+    from qt_editor import BookEditor
+
+    proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000,
+            "chapters": [{"text": "Text.", "summary": ""}]}
+    proj["outline"]["chapters"] = proj["outline"]["chapters"][:1]
+    p = tmp_path / "c.kniha.json"
+    bw.save_project(p, proj)
+    ed = BookEditor(proj, p, None, text_assist={}, save_options=lambda: None, app_cfg={"engines": {}})
+    dlg = AudiobookDialog(ed)
+    assert {"chirp_kore", "chirp_charon"} <= set(dlg.voice_buttons)
+    dlg.voice_buttons["chirp_kore"].setChecked(True)
+    assert "Chirp 3 HD" in dlg.info.text()
+    ed.dirty = False
+    ed.close()
+
+
+def test_voice_studio_dialog_records_with_fake_mic(qapp, monkeypatch):
+    """Nahrávací studio: nahrát větu (mezerník), uložit a přejít na další; kontrola kvality."""
+    import voice_studio as vs
+    from qt_voice_studio import StudioDialog
+    from test_voice_studio import speech
+
+    class FakeRec:
+        level = 1000
+
+        def start(self):
+            pass
+
+        def stop(self):
+            return speech(2.5)
+
+    monkeypatch.setattr(vs, "Recorder", FakeRec)
+    dlg = StudioDialog(name="zkouska")
+    first = dlg.i
+    dlg.toggle()
+    assert "Hotovo" in dlg.b_rec.text()
+    dlg.toggle()
+    assert dlg.ds.wav_path(first).is_file() and dlg.i == first + 1 and "Uloženo" in dlg.quality.text()
+    dlg.go(first)
+    assert dlg.b_play.isEnabled()
+    dlg.delete_take()
+    assert not dlg.ds.wav_path(first).is_file()
+    dlg.reject()

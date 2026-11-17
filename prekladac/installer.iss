@@ -73,3 +73,11 @@ Name: "{autodesktop}\Překladač"; Filename: "{app}\Prekladac.exe"; Tasks: deskt
 ; volitelné offline balíčky – stahují se do %APPDATA% přihlášeného uživatele (runasoriginaluser)
 Filename: "{app}\Prekladac.exe"; Parameters: "--install-offline en_cs,de_en"; StatusMsg: "Stahuji offline překlad (asi 200 MB)…"; Tasks: offlinemt; Flags: runasoriginaluser waituntilterminated
 Filename: "{app}\Prekladac.exe"; Description: "Spustit Překladač"; Flags: nowait postinstall skipifsilent
+; aktualizace z programu (tichá instalace s /relaunch=1): po instalaci program znovu spustit
+Filename: "{app}\Prekladac.exe"; Flags: nowait runasoriginaluser; Check: RelaunchAfterUpdate
+
+[Code]
+function RelaunchAfterUpdate(): Boolean;
+begin
+  Result := ExpandConstant('{param:relaunch|0}') = '1';
+end;

@@ -8,6 +8,8 @@ declare class MlkitTranslateModule extends NativeModule<{}> {
   downloadLanguage(code: string, wifiOnly: boolean): Promise<boolean>;
   deleteLanguage(code: string): Promise<boolean>;
   translate(texts: string[], source: string, target: string, wifiOnly: boolean): Promise<string[]>;
+  /** text z fotky (bloky = odstavce); ve starší verzi aplikace chybí */
+  recognizeText?(uri: string): Promise<string[]>;
 }
 
 export default requireOptionalNativeModule<MlkitTranslateModule>('MlkitTranslate');

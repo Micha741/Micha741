@@ -16,6 +16,7 @@ import { deserializeBook, fileNameFromUrl, newEntry, serializeBook, type Library
 import { toBase64 } from './core/bytes';
 import { applySyncToEntry, entryKey, entryToSync, GoogleDrive, WebDav, type Storage, type SyncEntry, type SyncState } from './core/sync';
 import { writeEpub } from './core/epub';
+import { aiOcr, blocksToText, pagesToBook } from './core/ocr';
 
 // PDF chráněné heslem: data se podrží, aby šlo po zadání hesla otevřít znovu bez dalšího výběru
 let pendingPdf: { data: Uint8Array; name: string } | null = null;
@@ -129,7 +130,7 @@ export async function makeOutput(book: Book, fmt: OutputFormat): Promise<Output>
   if (file.exists) file.delete();
   if (fmt === 'pdf') {
     const res = await Print.printToFileAsync({ html: pdfHtml(book), width: 595, height: 842 });
-    new File(res.uri).move(file);
+    await new File(res.uri).move(file); // v SDK 57 je přesun asynchronní – počkat, než bude PDF na místě
   } else {
     const data = await writeBook(fmt === 'mobi' ? await imagesForMobi(book) : book, fmt);
     file.create();
@@ -448,4 +449,107 @@ export async function syncEntry(s: Settings, e: LibraryEntry): Promise<{ entry: 
   if (!m) return null;
   const r = await applyToEntry(e, m);
   return { ...r, device: m.pos?.device };
+}
+
+// ------------------------------------------------------------ text z fotky (OCR)
+/** Fotky stránek: z fotoaparátu (jedna) nebo z galerie (víc najednou, v pořadí výběru). Vrátí cesty k JPEG. */
+export async function pickPagePhotos(camera: boolean): Promise<string[]> {
+  if (camera) {
+    const perm = await ImagePicker.requestCameraPermissionsAsync();
+    if (!perm.granted) throw new Error('Bez povolení fotoaparátu nejde stránku vyfotit (Nastavení telefonu → Aplikace → Překladač → Oprávnění).');
+  }
+  const opts = { mediaTypes: ['images'] as ImagePicker.MediaType[], quality: 1 };
+  const res = camera ? await ImagePicker.launchCameraAsync(opts)
+    : await ImagePicker.launchImageLibraryAsync({ ...opts, allowsMultipleSelection: true, orderedSelection: true });
+  if (res.canceled || !res.assets?.length) return [];
+  const out: string[] = [];
+  for (const a of res.assets) {
+    // na čtení textu stačí 2000 px na delší straně (menší soubor, rychlejší AI)
+    const ctx = ImageManipulator.manipulate(a.uri);
+    if (Math.max(a.width, a.height) > 2000) ctx.resize(a.width >= a.height ? { width: 2000, height: null } : { width: null, height: 2000 });
+    const img = await ctx.renderAsync();
+    out.push((await img.saveAsync({ format: SaveFormat.JPEG, compress: 0.9 })).uri);
+  }
+  return out;
+}
+
+/** Složka s fotkami stránek, které se zatím nepodařilo přečíst (bez internetu / bez klíče) – nic se neztratí. */
+function photosDir(): Directory {
+  const d = new Directory(Paths.document, 'fotky-stranek');
+  if (!d.exists) d.create({ intermediates: true });
+  return d;
+}
+
+/** Fotky čekající na přečtení (od nejstarší). */
+export function savedPagePhotos(): string[] {
+  try {
+    return photosDir().list().filter((f): f is File => f instanceof File && /\.jpe?g$/i.test(f.name)).map((f) => f.uri).sort();
+  } catch {
+    return [];
+  }
+}
+
+/** Uloží fotky stránek do aplikace (aby šly přečíst později). Vrátí nové cesty. */
+export function savePagePhotos(uris: string[]): string[] {
+  const dir = photosDir();
+  const stamp = Date.now();
+  return uris.map((u, i) => {
+    if (u.startsWith(dir.uri)) return u;
+    const f = new File(dir, `${stamp}-${String(i + 1).padStart(3, '0')}.jpg`);
+    new File(u).copySync(f);
+    return f.uri;
+  });
+}
+
+export function deletePagePhotos(uris: string[]) {
+  for (const u of uris) {
+    try {
+      const f = new File(u);
+      if (f.exists) f.delete();
+    } catch {
+      /* už smazané */
+    }
+  }
+}
+
+export class PhotosSavedError extends Error {
+  constructor(public count: number, why: string) {
+    super(`${why} Fotky (${count}) jsou uložené v aplikaci – až budete mít internet nebo klíč, klepněte na Z fotky → Přečíst uložené.`);
+  }
+}
+
+/** Přečte text z fotek a udělá z něj knihu: 1) ML Kit v telefonu bez internetu, 2) když nic nenajde nebo
+ *  chybí, Gemini / Claude. Když nejde ani jedno, fotky zůstanou uložené (PhotosSavedError). */
+export async function photosToBook(uris: string[], s: Settings, say: (m: string) => void = () => undefined,
+  recognize?: ((uri: string) => Promise<string[]>) | null): Promise<{ book: Book; via: string }> {
+  const saved = savePagePhotos(uris);
+  const pages: string[] = [];
+  const via = new Set<string>();
+  for (let i = 0; i < saved.length; i++) {
+    say(`Čtu text z fotky ${i + 1}/${saved.length}…`);
+    let text = '';
+    if (recognize) {
+      try {
+        text = blocksToText(await recognize(saved[i]));
+        if (text.trim()) via.add('v telefonu');
+      } catch {
+        text = ''; // ML Kit nejde → zkusí se AI
+      }
+    }
+    if (!text.trim()) {
+      if (!s.geminiKey && !s.claudeKey) {
+        throw new PhotosSavedError(saved.length, recognize ? 'V telefonu se text nepodařilo přečíst a pro Gemini/Claude chybí klíč.' : 'Čtení v telefonu tu není a pro Gemini/Claude chybí klíč (Nastavení).');
+      }
+      try {
+        text = await aiOcr(toBase64(await new File(saved[i]).bytes()), s);
+        via.add(s.geminiKey ? 'Gemini' : 'Claude');
+      } catch (e: any) {
+        throw new PhotosSavedError(saved.length, `Text se nepodařilo přečíst ani přes ${s.geminiKey ? 'Gemini' : 'Claude'} (${e?.message ?? e}).`);
+      }
+    }
+    pages.push(text);
+  }
+  const book = pagesToBook(pages);
+  deletePagePhotos(saved); // přečteno – fotky už nejsou potřeba
+  return { book, via: [...via].join(' + ') };
 }

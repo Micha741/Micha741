@@ -14,3 +14,5 @@ sentencepiece>=0.2
 sacremoses>=0.1
 cryptography>=42
 comtypes>=1.4; sys_platform == "win32"
+lameenc>=1.7
+sounddevice>=0.4.6

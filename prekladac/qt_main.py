@@ -6,6 +6,7 @@ import os
 import re
 import sys
 import threading
+import time
 import webbrowser
 from pathlib import Path
 
@@ -16,7 +17,7 @@ import book_options as bo
 import book_writer as bw
 import components
 from claude_client import DEFAULT_MODEL, MODELS, Cancelled
-from converters import DOC_ONLY_EXT, OUTPUT_FORMATS, SUPPORTED_EXT, find_ebook_convert
+from converters import DOC_ONLY_EXT, IMAGE_EXT, OUTPUT_FORMATS, SUPPORTED_EXT, find_ebook_convert
 from free_engines import ENGINE_LABELS, OCR_LABELS, EngineError, GeminiEngine, OllamaEngine, find_tesseract
 from guides import GUIDES
 from qt_common import STYLESHEET, app_icon, ask_pdf_passwords, asset, bridge, emoji_icon, label, run_bg, set_status
@@ -424,9 +425,12 @@ class TranslatePage(QtWidgets.QWidget):
         self.b_notes.setCheckable(True)
         self.b_notes.setToolTip("Zobrazit nebo skrýt pole Pokyny pro překlad (glosář, styl) pod seznamem souborů")
         self.b_notes.toggled.connect(lambda on: self.set_notes_visible(on))
+        self.b_gloss = QtWidgets.QPushButton(emoji_icon("📖"), " Glosář knihy…")
+        self.b_gloss.setToolTip("Jména postav, místa a pojmy přeložené v celé knize vždy stejně")
+        self.b_gloss.clicked.connect(self.open_glossary)
         engine_tab = ribbon_row(
             ribbon_group("Překladač", [("", self.engine), ("", self.status)]),
-            ribbon_group("Nastavení služby", [("", keys_btn), ("", self.b_notes)]))
+            ribbon_group("Nastavení služby", [("", keys_btn), ("", self.b_notes), ("", self.b_gloss)]))
         ocr_tab = ribbon_row(
             ribbon_group("Text z obrázků a skenů (OCR)", [("Rozpoznávání:", self.ocr),
                                                           ("Jazyk originálu:", self.ocr_lang)]),
@@ -512,6 +516,18 @@ class TranslatePage(QtWidgets.QWidget):
             self.win.reader_page.open_independent(res[0], read=True)
         elif b_edit is not None and clicked is b_edit:
             self.win.reader_page.open_independent(res[0], read=False)
+
+    def open_glossary(self):
+        files = [f for f in self.files.files if Path(f).suffix.lower() not in IMAGE_EXT]
+        if not files:
+            QtWidgets.QMessageBox.information(self, "Glosář knihy", "Nejdřív přidejte knihu do seznamu souborů – "
+                                              "glosář patří ke knize a cílovému jazyku.")
+            return
+        from qt_glossary import GlossaryDialog
+
+        self.remember()
+        sel = [it.data(Qt.UserRole) for it in self.files.selectedItems()] if hasattr(self.files, "selectedItems") else []
+        GlossaryDialog(files, self.win.cfg, self, current=next((f for f in sel if f in files), "")).exec()
 
     def set_notes_visible(self, on: bool, save: bool = True):
         """Pokyny pro překlad zobrazit / skrýt (stav se pamatuje)."""
@@ -1831,6 +1847,26 @@ class SettingsPage(QtWidgets.QWidget):
         tg.addWidget(b, 1, 2)
         lay.addWidget(tes)
 
+        vbox = QtWidgets.QGroupBox("Vlastní hlas pro čtení nahlas a audioknihy (bez internetu, zdarma)")
+        vg = QtWidgets.QGridLayout(vbox)
+        vg.addWidget(label("Nahrajte svůj hlas (asi 300 a více vět), natrénujte ho zdarma v Google Colab a importujte – "
+                           "pak čte knihy a namlouvá audioknihy offline. Importovat jde i jakýkoli hotový hlas Piper "
+                           "(.onnx s .onnx.json).", "Hint"), 0, 0, 1, 4)
+        b_st = QtWidgets.QPushButton("🎙 Nahrávací studio…")
+        b_st.clicked.connect(self.open_studio)
+        b_im = QtWidgets.QPushButton("📥 Importovat hlas (.onnx)…")
+        b_im.clicked.connect(self.import_voice)
+        b_hl = QtWidgets.QPushButton("📘 Jak natrénovat hlas")
+        b_hl.clicked.connect(lambda: __import__("qt_voice_studio").show_training_help(self))
+        vg.addWidget(b_st, 1, 0)
+        vg.addWidget(b_im, 1, 1)
+        vg.addWidget(b_hl, 1, 2)
+        vg.setColumnStretch(3, 1)
+        self.voices_info = label("", "Hint")
+        vg.addWidget(self.voices_info, 2, 0, 1, 4)
+        self._show_custom_voices()
+        lay.addWidget(vbox)
+
         langs = QtWidgets.QGroupBox("Jazyky pro OCR (stáhnou se do složky programu; chybějící i automaticky)")
         lg = QtWidgets.QGridLayout(langs)
         self.lang_checks = {}
@@ -2026,7 +2062,15 @@ class SettingsPage(QtWidgets.QWidget):
         g.addWidget(self.upd_btn, 2, 2)
         self.check_updates = QtWidgets.QCheckBox("Při spuštění zkontrolovat, zda je k dispozici nová verze")
         self.check_updates.setChecked(cfg.get("check_updates", True))
-        g.addWidget(self.check_updates, 3, 0, 1, 3)
+        upd = QtWidgets.QVBoxLayout()
+        upd.setContentsMargins(0, 0, 0, 0)
+        upd.addWidget(self.check_updates)
+        g.addLayout(upd, 3, 0, 1, 3)
+        self.auto_update = QtWidgets.QCheckBox("Novou verzi rovnou stáhnout a nabídnout instalaci (automatická aktualizace)")
+        self.auto_update.setToolTip("Stáhne se na pozadí z GitHubu, ověří otiskem SHA-256 a nainstaluje teď nebo "
+                                    "při zavření programu")
+        self.auto_update.setChecked(cfg.get("auto_update", True))
+        upd.addWidget(self.auto_update)
 
         from qt_reader import SPREADS
 
@@ -2081,8 +2125,21 @@ class SettingsPage(QtWidgets.QWidget):
         lg.setColumnStretch(1, 1)
         g.addWidget(rbox, 5, 0, 1, 3)
         g.addWidget(lbox, 6, 0, 1, 3)
-        g.addWidget(label(f"Nastavení programu: {core.config_path()}", "Hint"), 7, 0, 1, 3)
-        g.setRowStretch(8, 1)
+        bbox = QtWidgets.QGroupBox("Záloha nastavení (nový počítač, přeinstalace)")
+        bg = QtWidgets.QGridLayout(bbox)
+        bg.addWidget(label("Jeden soubor .zip: nastavení, místa čtení, záložky a označené, slovníček, vlastní slova, "
+                           "skiny a glosáře knih. Klíče a hesla se nezálohují – zůstávají šifrované jen v tomto "
+                           "počítači (po obnově se zadávají znovu).", "Hint"), 0, 0, 1, 3)
+        b_bak = QtWidgets.QPushButton("💾 Zálohovat…")
+        b_bak.clicked.connect(self.make_backup)
+        b_res = QtWidgets.QPushButton("♻ Obnovit ze zálohy…")
+        b_res.clicked.connect(self.restore_backup)
+        bg.addWidget(b_bak, 1, 0)
+        bg.addWidget(b_res, 1, 1)
+        bg.setColumnStretch(2, 1)
+        g.addWidget(bbox, 7, 0, 1, 3)
+        g.addWidget(label(f"Nastavení programu: {core.config_path()}", "Hint"), 8, 0, 1, 3)
+        g.setRowStretch(9, 1)
         g.setColumnStretch(1, 1)
         self.refresh_dictionary()
         return w
@@ -2178,6 +2235,67 @@ class SettingsPage(QtWidgets.QWidget):
         self.dict_status.setText(text)
         self.dict_btn.setVisible(st in ("missing", "error"))
 
+    def open_studio(self):
+        from qt_voice_studio import StudioDialog
+
+        StudioDialog(self).exec()
+
+    def import_voice(self):
+        from qt_voice_studio import import_voice_dialog
+
+        if import_voice_dialog(self):
+            self._show_custom_voices()
+
+    def _show_custom_voices(self):
+        import tts_win
+
+        names = [v["label"].split(" (")[0] for v in tts_win.custom_piper_voices()]
+        self.voices_info.setText(("Vlastní hlasy: " + ", ".join(names)) if names else "Zatím žádný vlastní hlas.")
+
+    def make_backup(self):
+        import backup
+
+        self.collect()
+        name = f"Prekladac-zaloha-{time.strftime('%Y-%m-%d')}.zip"
+        f, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Uložit zálohu nastavení", str(Path.home() / name),
+                                                     "Záloha (*.zip)")
+        if not f:
+            return
+        try:
+            m = backup.create_backup(self.win.cfg, f)
+        except OSError as e:
+            QtWidgets.QMessageBox.warning(self, "Záloha", f"Zálohu se nepodařilo uložit:\n{e}")
+            return
+        QtWidgets.QMessageBox.information(self, "Záloha", f"Záloha uložena ✓\n\n{f}\n\nSoubory: {m['files']} "
+                                          "+ nastavení. Klíče a hesla v záloze nejsou.")
+
+    def restore_backup(self):
+        import backup
+
+        f, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Obnovit ze zálohy", str(Path.home()), "Záloha (*.zip)")
+        if not f:
+            return
+        try:
+            m = backup.read_manifest(f)
+        except backup.BackupError as e:
+            QtWidgets.QMessageBox.warning(self, "Obnovit", str(e))
+            return
+        if QtWidgets.QMessageBox.question(
+                self, "Obnovit ze zálohy",
+                f"Obnovit nastavení ze zálohy z {m.get('created', '?')} (verze {m.get('program', '?')})?\n\n"
+                "Současné nastavení se předtím uloží jako záloha do složky programu. Klíče a hesla zůstanou "
+                "tak, jak jsou v tomto počítači. Program se pak znovu spustí.") != QtWidgets.QMessageBox.Yes:
+            return
+        try:
+            new_cfg = backup.restore_backup(f, self.win.cfg)
+        except (backup.BackupError, OSError, KeyError, ValueError) as e:
+            QtWidgets.QMessageBox.warning(self, "Obnovit", f"Zálohu se nepodařilo obnovit:\n{e}")
+            return
+        self.win.cfg.clear()
+        self.win.cfg.update(new_cfg)
+        self.win.save_cfg()
+        restart_app()
+
     def download_dictionary(self):
         import spell
 
@@ -2202,6 +2320,7 @@ class SettingsPage(QtWidgets.QWidget):
         cfg["autosave"] = {"mode": self.auto_mode.currentData(), "seconds": self.auto_seconds.value(),
                            "chars": self.auto_chars.value()}
         cfg["check_updates"] = self.check_updates.isChecked()
+        cfg["auto_update"] = self.auto_update.isChecked()
         cfg.setdefault("reader", {})["spread"] = self.r_spread.currentData()
         cfg["reader_fullscreen"] = self.r_full.isChecked()
         ed = self.win.editor
@@ -2443,6 +2562,12 @@ class MainWindow(QtWidgets.QMainWindow):
             self.save_cfg()
         except Exception:  # noqa: BLE001 – zavření okna nesmí spadnout kvůli nastavení
             pass
+        pending = getattr(self, "_install_on_close", None)
+        if pending:  # stažená nová verze: nainstalovat po zavření programu
+            try:
+                updater.start_install(*pending)
+            except OSError as ex:
+                QtWidgets.QMessageBox.warning(self, "Nová verze", f"Instalaci se nepodařilo spustit:\n{ex}")
         super().closeEvent(e)
 
     def skin_changed(self):
@@ -2489,7 +2614,7 @@ class MainWindow(QtWidgets.QMainWindow):
                                                   f"Novou verzi se nepodařilo zjistit:\n{err}")
                 return
             if info:
-                self.offer_update(info)
+                self.offer_update(info, auto=not manual)
             elif manual:
                 QtWidgets.QMessageBox.information(
                     self, "Nová verze", f"Máte nejnovější verzi ({VERSION})." if VERSION[:1].isdigit()
@@ -2497,24 +2622,82 @@ class MainWindow(QtWidgets.QMainWindow):
 
         run_bg(lambda: updater.check(VERSION, skip), done)
 
-    def offer_update(self, info: dict):
+    def offer_update(self, info: dict, auto: bool = False):
+        """Nová verze: automaticky se stáhne na pozadí (Nastavení → Obecné), jinak nabídka Aktualizovat teď."""
+        if auto and self.cfg.get("auto_update", True) and info.get("sha256"):
+            run_bg(lambda: updater.download_setup(info), lambda path, err: self._update_ready(info, path, err), owner=self)
+            return
         box = QtWidgets.QMessageBox(self)
         box.setWindowTitle("Nová verze")
         box.setIcon(QtWidgets.QMessageBox.Icon.Information)
         box.setText(f"<b>Je k dispozici nová verze {info['version']}</b> (máte {VERSION}).")
         box.setInformativeText(
-            "Stáhněte Prekladac-Setup.exe a spusťte ho – nainstaluje se přes stávající verzi. "
-            "Nastavení, klíče i rozepsané knihy zůstanou zachované. Před instalací program zavřete.")
-        dl = box.addButton("⬇ Stáhnout novou verzi", QtWidgets.QMessageBox.ButtonRole.AcceptRole)
+            "„Aktualizovat teď“ stáhne instalátor, ověří ho a nainstaluje přes stávající verzi – program se zavře "
+            "a po instalaci znovu spustí. Nastavení, klíče i rozepsané knihy zůstanou zachované.")
+        now = box.addButton("⬇ Aktualizovat teď", QtWidgets.QMessageBox.ButtonRole.AcceptRole)
+        web = box.addButton("Stáhnout v prohlížeči", QtWidgets.QMessageBox.ButtonRole.ActionRole)
         skip = box.addButton("Tuto verzi přeskočit", QtWidgets.QMessageBox.ButtonRole.RejectRole)
         box.addButton("Později", QtWidgets.QMessageBox.ButtonRole.RejectRole)
-        box.setDefaultButton(dl)
+        box.setDefaultButton(now)
         box.exec()
-        if box.clickedButton() is dl:
+        if box.clickedButton() is now:
+            self.download_update(info)
+        elif box.clickedButton() is web:
             webbrowser.open(info["setup_url"])
         elif box.clickedButton() is skip:
             self.cfg["skip_version"] = info["version"]
             self.save_cfg()
+
+    def download_update(self, info: dict):
+        """Stáhne instalátor s ukazatelem průběhu a hned ho nainstaluje."""
+        import threading
+
+        dlg = QtWidgets.QProgressDialog(f"Stahuji verzi {info['version']}…", "Zrušit", 0, 100, self)
+        dlg.setWindowTitle("Aktualizace")
+        dlg.setWindowModality(Qt.WindowModal)
+        dlg.setMinimumDuration(0)
+        cancel = threading.Event()
+        dlg.canceled.connect(cancel.set)
+        state = {"done": 0, "total": info.get("size") or 0}
+        timer = QtCore.QTimer(dlg)
+        timer.timeout.connect(lambda: dlg.setValue(int(100 * state["done"] / state["total"])) if state["total"] else None)
+        timer.start(200)
+
+        def prog(done, total):
+            state["done"], state["total"] = done, total or state["total"]
+
+        def finished(path, err):
+            timer.stop()
+            dlg.close()
+            if err:
+                if not cancel.is_set():
+                    QtWidgets.QMessageBox.warning(self, "Aktualizace", str(err))
+                return
+            self.install_update(path, now=True)
+
+        run_bg(lambda: updater.download_setup(info, prog, cancel), finished, owner=self)
+        dlg.show()
+
+    def _update_ready(self, info: dict, path, err):
+        if err:  # na pozadí bez otravování – nabídne se ručně
+            self.offer_update(info)
+            return
+        box = QtWidgets.QMessageBox(self)
+        box.setWindowTitle("Nová verze")
+        box.setIcon(QtWidgets.QMessageBox.Icon.Information)
+        box.setText(f"<b>Nová verze {info['version']} je stažená a ověřená.</b>")
+        box.setInformativeText("Nainstalovat ji teď (program se zavře a znovu spustí), nebo až program zavřete?")
+        now = box.addButton("Nainstalovat teď", QtWidgets.QMessageBox.ButtonRole.AcceptRole)
+        box.addButton("Při zavření programu", QtWidgets.QMessageBox.ButtonRole.RejectRole)
+        box.setDefaultButton(now)
+        box.exec()
+        self.install_update(path, now=box.clickedButton() is now)
+
+    def install_update(self, path, now: bool):
+        """now=True: zavřít program a hned instalovat (pak se spustí znovu); jinak instalace až po zavření."""
+        self._install_on_close = (path, now)
+        if now:
+            self.close()
 
     def save_cfg(self):
         try:

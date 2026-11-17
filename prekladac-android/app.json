@@ -117,8 +117,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Aplikace potřebuje přístup k fotkám, abyste mohli vložit obrázek nebo obálku do knihy.",
-          "cameraPermission": false,
+          "photosPermission": "Aplikace potřebuje přístup k fotkám, abyste mohli vložit obrázek nebo obálku do knihy a přečíst text z fotky stránky.",
+          "cameraPermission": "Aplikace potřebuje fotoaparát, abyste mohli vyfotit stránku knihy a přečíst z ní text.",
           "microphonePermission": false
         }
       ],

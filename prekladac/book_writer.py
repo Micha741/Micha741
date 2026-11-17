@@ -322,6 +322,81 @@ class BookWriter:
         return project
 
 
+# ------------------------------------------------------------------ přepsat jednu kapitolu
+REWRITE_MODES = {
+    "longer": ("📏 Delší", "Rozšiř kapitolu asi o polovinu: víc scén, dialogů, popisů a prožitků postav. "
+               "Nepřidávej děj z dalších kapitol."),
+    "shorter": ("✂ Kratší", "Zkrať kapitolu asi na polovinu: zachovej klíčový děj, důležité dialogy a konec kapitoly, "
+                "vynech vedlejší popisy a opakování."),
+    "tension": ("⚡ Napínavější", "Zvyš napětí a tempo: kratší věty v akčních chvílích, víc nejistoty a nebezpečí, "
+                "silnější konec kapitoly. Děj a výsledek kapitoly zůstanou stejné."),
+    "simple": ("🧒 Jednodušší jazyk", "Přepiš jednodušším jazykem: kratší věty, běžná slova, srozumitelné i pro mladší "
+               "čtenáře. Děj, jména a délku zachovej."),
+    "style": ("🖋 Opravit styl", "Oprav styl a jazyk: gramatiku, opakování slov, nepřirozené obraty a plynulost. "
+              "Obsah, děj a délku zachovej, piš jako zkušený redaktor."),
+    "custom": ("✍ Vlastní pokyn", ""),
+}
+
+
+def rewrite_words(project: dict, idx: int, mode: str) -> int:
+    n = len(project["chapters"][idx].get("text", "").split())
+    return {"longer": int(n * 1.5), "shorter": max(150, n // 2)}.get(mode, n)
+
+
+def rewrite_chapter(backend, project: dict, idx: int, mode: str, extra: str = "", language: str = "") -> dict:
+    """Přepíše jednu kapitolu podle zvoleného způsobu (REWRITE_MODES) a vlastního pokynu. Vrátí {text, summary};
+    projekt nemění – nová verze se použije až po potvrzení (v okně knihy jde vrátit Ctrl+Z)."""
+    if mode not in REWRITE_MODES:
+        raise BookError(f"Neznámý způsob přepisu: {mode}")
+    ch = project["chapters"][idx]
+    text = re.sub(r"\n*\[obrázek\]\n*", "\n\n", ch.get("text") or "").strip()  # obrázky zůstanou v okně knihy
+    if not text:
+        raise BookError("Kapitola je prázdná – není co přepsat.")
+    instr = REWRITE_MODES[mode][1]
+    if extra.strip():
+        instr = (instr + "\n" if instr else "") + "Pokyn autora: " + extra.strip()
+    if not instr:
+        raise BookError("Napište vlastní pokyn, jak kapitolu přepsat.")
+    language = language or project.get("language") or "čeština"
+    writer = BookWriter(backend, language, lambda *_: None)
+    system = writer._chapter_system(project) if project.get("outline") else f"Jsi zkušený spisovatel a redaktor, píšeš v jazyce: {language}."
+    titles = (project.get("outline") or {}).get("chapters") or []
+    title = titles[idx]["title"] if idx < len(titles) else f"Kapitola {idx + 1}"
+    words = rewrite_words(project, idx, mode)
+    parts = []
+    if idx > 0 and project["chapters"][idx - 1].get("summary"):
+        parts.append(f"CO SE STALO V PŘEDCHOZÍ KAPITOLE: {project['chapters'][idx - 1]['summary']}")
+    parts += [f"Přepiš kapitolu {idx + 1}: „{title}“.", f"JAK PŘEPSAT: {instr}",
+              f"Délka nové verze: asi {words} slov.",
+              "Zachovej jména a povahy postav, svět knihy a návaznost na ostatní kapitoly. Text piš jako souvislou "
+              "prózu v odstavcích oddělených prázdným řádkem, bez nadpisu a bez komentářů. Vrať i nové shrnutí kapitoly "
+              "(4–6 vět).", f"\nPŮVODNÍ TEXT KAPITOLY:\n{text}"]
+    max_tokens = min(64000, int(words * TOKENS_PER_WORD * 4) + 16000)
+    try:
+        res = backend.complete(system, "\n".join(parts), CHAPTER_SCHEMA, max_tokens=max_tokens)
+    except ModelError as e:
+        raise BookError(f"Kapitolu se nepodařilo přepsat ({e}).") from e
+    new = (res.get("text") or "").strip()
+    if not new:
+        raise BookError("Model vrátil prázdný text.")
+    return {"text": new, "summary": (res.get("summary") or "").strip()}
+
+
+def make_backend(service: str, engines: dict, language: str, log, cancel, model: str = ""):
+    """AI pro psaní (Claude, Gemini, OpenAI-kompatibilní, Ollama) podle nastavení programu."""
+    import os
+
+    import app as core
+    from claude_client import DEFAULT_MODEL
+
+    if service == "claude":
+        key = (engines.get("claude") or {}).get("api_key") or os.environ.get("ANTHROPIC_API_KEY")
+        if not key:
+            raise BookError("Chybí Claude API klíč – zadejte ho v Nastavení (je tam i Návod).")
+        return ClaudeBackend(key, model or (engines.get("claude") or {}).get("model") or DEFAULT_MODEL, language, log, cancel)
+    return EngineBackend(core.make_engine(service, language, engines.get(service, {}), ""), cancel)
+
+
 # ------------------------------------------------------------------ export
 LANG_CODES = {"čeština": "cs", "slovenština": "sk", "angličtina": "en", "němčina": "de", "polština": "pl"}
 PAGE_BREAK = "[[STRANA]]"  # samostatný řádek v textu kapitoly = zalomení stránky

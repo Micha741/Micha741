@@ -26,3 +26,45 @@ jobs:
         run: npm test
       - name: Sestavení balíčku pro Android (Metro + Hermes)
         run: npx expo export --platform android --output-dir /tmp/export
+
+  # Zkušební nativní sestavení přímo na GitHubu (nespotřebuje sestavení na Expo): ověří, že se zkompiluje
+  # vlastní modul (ML Kit – překlad a čtení textu z fotky), všechny knihovny a oprávnění, a uloží APK ke stažení.
+  native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: prekladac-android
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: prekladac-android/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - run: npm ci
+      - name: Příprava projektu Android (expo prebuild)
+        run: npx expo prebuild --platform android --no-install
+      - name: Kontrola oprávnění (fotoaparát, http v domácí síti)
+        run: |
+          grep -q 'usesCleartextTraffic="true"' android/app/src/main/AndroidManifest.xml
+      - name: Sestavení APK (Gradle, jen arm64)
+        working-directory: prekladac-android/android
+        run: ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a --no-daemon --stacktrace
+      - name: Kontrola APK (oprávnění fotoaparátu, ML Kit čtení textu)
+        run: |
+          APK=android/app/build/outputs/apk/release/app-release.apk
+          ls -la "$APK"
+          AAPT=$(ls $ANDROID_HOME/build-tools/*/aapt | tail -1)
+          $AAPT dump permissions "$APK" | tee perms.txt
+          grep -q "android.permission.CAMERA" perms.txt
+          unzip -l "$APK" | grep -i -E "mlkit|text.recognition|ocr" | head -5 || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: prekladac-android-zkusebni-apk
+          path: prekladac-android/android/app/build/outputs/apk/release/app-release.apk
+          retention-days: 14

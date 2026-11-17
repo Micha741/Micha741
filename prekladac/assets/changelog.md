@@ -60,6 +60,16 @@
 # Historie verzí
 
 **Nová verze**
+- Automatická aktualizace: nová verze se stáhne z GitHubu, ověří otiskem SHA-256 a nainstaluje jedním klikem (teď, nebo při zavření programu); program se po instalaci sám znovu spustí. Lze vypnout v Nastavení → Obecné.
+- Záloha a obnova nastavení (Nastavení → Obecné): jeden soubor .zip s nastavením, místy čtení, záložkami, slovníčkem, skiny a glosáři – bez klíčů a hesel; před obnovou se uloží současný stav.
+- Okno knihy → Kniha → ✨ Přepsat kapitolu: AI přepíše kapitolu delší, kratší, napínavější, jednodušším jazykem, s opraveným stylem nebo podle vlastního pokynu; nová verze vedle původní, použije se až po potvrzení (Ctrl+Z ji vrátí), obrázky zůstanou.
+- 📖 Glosář knihy (Překlad → Překladač → Glosář knihy): jména postav, místa a pojmy se v celé knize přeloží vždy stejně; návrh z textu knihy (AI navrhne i překlady, bez AI se najdou opakovaná jména), AI překladače výrazy správně skloňují, Google/DeepL/ostatní vloží zadaný překlad.
+- 🎧 Audiokniha (okno knihy → Kniha → Audiokniha): kapitoly do MP3 hlasem Jirka (bez internetu), Vlasta nebo Antonín (Azure) – s názvem kapitoly, autorem, obálkou a seznamem skladeb; výběr kapitol, rychlosti a kvality, upozornění na bezplatný limit Azure.
+- 🗣 Nejpřirozenější hlasy Google Chirp 3 HD (Kore, Aoede, Charon, Puck) ve čtečce (Čtení nahlas) i v audioknize, s tlačítkem ▶ Ukázka hlasu; stačí klíč Google Cloud se zapnutým Text-to-Speech API.
+- 🎙 Vlastní hlas bez internetu (Nastavení → Součásti → Vlastní hlas): nahrávací studio (věty se všemi českými hláskami nebo z vlastní knihy, kontrola kvality nahrávek), export pro trénování, sešit Google Colab, který z nahrávek dotrénuje hlas Piper z Jirky, a import hotového hlasu (.onnx) – čte ve čtečce i v audioknize.
+- Android: 📷 text z fotky stránky (v telefonu bez internetu přes Google ML Kit, případně Gemini/Claude) – vyjde s příštím APK.
+
+**1.0.121 (16. 11. 2026)**
 - Synchronizace mezi více počítači: u místa čtení je vidět i název počítače („Pokračujete tam, kde jste skončil (Windows – PRACOVNA, kapitola 5)“).
 
 **1.0.119 (16. 11. 2026)**
@@ -208,7 +218,6 @@
 
 # Plánované a nápady
 
-- Přepsat jednu kapitolu znovu pomocí AI (např. delší nebo kratší).
 - Přeložit návody ke službám a chybové hlášky do angličtiny, slovenštiny a němčiny.
 - Slovníky pro kontrolu pravopisu i v dalších jazycích (slovenština, angličtina, němčina).
 - Správné tvary čísel v jiných jazycích (např. „1 chapter“ místo „1 chapters“).

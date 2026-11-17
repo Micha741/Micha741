@@ -21,4 +21,6 @@ dependencies {
   // Google ML Kit – překlad v telefonu (offline) a rozpoznání jazyka
   implementation 'com.google.mlkit:translate:17.0.3'
   implementation 'com.google.mlkit:language-id:17.0.6'
+  // čtení textu z fotky (latinka vč. češtiny), model je přímo v aplikaci – funguje bez internetu
+  implementation 'com.google.mlkit:text-recognition:16.0.1'
 }

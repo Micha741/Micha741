@@ -66,6 +66,7 @@ Klíče ke službám se ukládají šifrovaně (Windows DPAPI) a nikam se nepos�
 <ul>
 <li>Přetáhněte do seznamu soubory (EPUB, MOBI, AZW3, KFX, PDF, DOCX, ODT, RTF, TXT, HTML, obrázky JPG/PNG…),
 zvolte cílový jazyk, výstupní formát a překladač a klikněte na <b>▶ Spustit</b>.</li>
+<li><b>📖 Glosář knihy</b> (karta Překladač): jména a pojmy přeložené v celé knize stejně.</li>
 <li>Režim <b>Jen převést formát</b> změní formát bez překladu (např. PDF → DOCX, EPUB → MOBI).</li>
 <li><b>Obrázky a skeny</b> se čtou pomocí OCR (Tesseract v počítači, nebo Gemini / Claude). Více obrázků
 jde spojit do jednoho dokumentu, nebo uložit každý zvlášť (karta Obrázky a OCR).</li>

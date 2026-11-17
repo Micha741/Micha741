@@ -10,6 +10,7 @@ Mimo Windows (testy v Linuxu) jsou hlasy Windows nedostupné – available() vr�
 """
 from __future__ import annotations
 
+import json
 import os
 import queue
 import subprocess
@@ -106,6 +107,25 @@ def piper_installed(lang: str | None = None) -> list[dict]:
             if piper_model_path(model).is_file():
                 out.append({"name": PIPER_PREFIX + model.rsplit("/", 1)[-1], "label": f"{name} (Piper)",
                             "lang": code, "gender": gender, "model": str(piper_model_path(model))})
+    out += custom_piper_voices(lang)
+    return out
+
+
+def custom_piper_voices(lang: str | None = None) -> list[dict]:
+    """Vlastní hlasy Piper (natrénované nebo importované, složka voices/vlastni) – bez internetu."""
+    d = piper_dir() / "voices" / "vlastni"
+    out = []
+    for onnx in sorted(d.glob("*.onnx")) if d.is_dir() else []:
+        try:
+            c = json.loads(Path(str(onnx) + ".json").read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        code = str((c.get("language") or {}).get("code") or c.get("espeak", {}).get("voice") or "cs")[:2].lower()
+        if lang and code != lang:
+            continue
+        name = str(c.get("dataset") or onnx.stem).replace("_", " ")
+        out.append({"name": f"{PIPER_PREFIX}vlastni/{onnx.stem}", "label": f"{name} (vlastní hlas, bez internetu)",
+                    "lang": code, "gender": "", "model": str(onnx)})
     return out
 
 
@@ -168,7 +188,7 @@ def fix_piper_config(path: Path) -> bool:
     return True
 
 
-def piper_synthesize(text: str, model: str, rate: float, out: str) -> None:
+def piper_synthesize(text: str, model: str, rate: float, out: str, timeout: int = 300) -> None:
     """Text → WAV hlasem Piper (rychlost: 1 = normální, 1.5 = rychleji)."""
     exe = piper_exe()
     if exe is None:
@@ -177,7 +197,7 @@ def piper_synthesize(text: str, model: str, rate: float, out: str) -> None:
     cmd = [str(exe), "--model", model, "--output_file", out,
            "--length_scale", f"{1 / max(0.3, min(3.0, rate)):.2f}", "--sentence_silence", "0.25"]
     r = subprocess.run(cmd, input=text.replace("\n", " ").encode("utf-8"), capture_output=True,
-                       timeout=300, creationflags=_NO_WINDOW, cwd=str(exe.parent))
+                       timeout=timeout, creationflags=_NO_WINDOW, cwd=str(exe.parent))
     if r.returncode != 0 or not Path(out).is_file():
         raise RuntimeError("Piper: " + (r.stderr.decode("utf-8", "replace").strip()[-300:] or "neznámá chyba"))
 
@@ -202,6 +222,20 @@ def wav_tail(path: str, start: float, out: str) -> str:
 # ------------------------------------------------------------------ přirozené hlasy na internetu (klíč v Nastavení)
 CLOUD_PREFIX = "cloud:"
 # jazyk → (služba, hlas, jméno, pohlaví)
+# Google Chirp 3 HD – nejnovější a nejpřirozenější hlasy Googlu (intonace, pauzy, dech); česky od prosince 2025.
+# Jméno hlasu je pro všechny jazyky stejné: „cs-CZ-Chirp3-HD-Kore“ atd.
+CHIRP_VOICES = (("Kore", "žena"), ("Aoede", "žena"), ("Charon", "muž"), ("Puck", "muž"))
+CHIRP_LOCALES = {"cs": "cs-CZ", "sk": "sk-SK", "en": "en-US", "de": "de-DE"}
+
+
+def chirp_voice_id(lang: str, name: str) -> str:
+    return f"{CHIRP_LOCALES.get(lang, 'cs-CZ')}-Chirp3-HD-{name}"
+
+
+def is_chirp(voice: str) -> bool:
+    return "-Chirp3-HD-" in voice
+
+
 CLOUD_VOICES = {
     "cs": [("azure", "cs-CZ-VlastaNeural", "Vlasta", "žena"), ("azure", "cs-CZ-AntoninNeural", "Antonín", "muž"),
            ("google", "cs-CZ-Wavenet-A", "Google Wavenet", "žena")],
@@ -212,6 +246,8 @@ CLOUD_VOICES = {
     "de": [("azure", "de-DE-KatjaNeural", "Katja", "žena"), ("azure", "de-DE-ConradNeural", "Conrad", "muž"),
            ("google", "de-DE-Wavenet-C", "Google Wavenet", "žena")],
 }
+for _lang in CHIRP_LOCALES:  # Chirp 3 HD hned za Azure (přirozenější než Wavenet)
+    CLOUD_VOICES[_lang][2:2] = [("google", chirp_voice_id(_lang, n), f"Google {n} HD", g) for n, g in CHIRP_VOICES]
 _cloud: dict = {}  # klíče z Nastavení (v paměti, na disk je ukládá program šifrovaně)
 
 
@@ -234,8 +270,9 @@ def cloud_voices(lang: str | None = None) -> list[dict]:
             continue
         for svc, vid, name, gender in voices:
             if svc in _cloud:
+                kind = "nejpřirozenější, online" if is_chirp(vid) else "přirozený, online"
                 out.append({"name": f"{CLOUD_PREFIX}{svc}:{vid}", "label": f"{name} ({'Azure' if svc == 'azure' else 'Google'}, "
-                            "přirozený, online)", "lang": code, "gender": gender})
+                            f"{kind})", "lang": code, "gender": gender})
     return out
 
 
