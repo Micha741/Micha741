@@ -1225,11 +1225,14 @@ class BookEditor(QtWidgets.QMainWindow):
         cov.grid.addWidget(b_cov, 0, 1, 2, 1)
         cov.grid.addWidget(self._tb(emoji_icon("🗑️"), "Odebrat obálku", self.remove_cover), 0, 2)
         self.update_cover_thumb()
-        ai = RibbonGroup("AI")
+        ai = RibbonGroup("Nástroje")
         b_rw = self._big(emoji_icon("✨"), "Přepsat kapitolu…", self.rewrite_chapter)
         b_rw.setToolTip("AI přepíše tuto kapitolu: delší, kratší, napínavější, jednodušší jazyk, opravit styl "
                         "nebo vlastní pokyn – s náhledem před použitím")
         ai.grid.addWidget(b_rw, 0, 0, 2, 1)
+        b_ab = self._big(emoji_icon("🎧"), "Audiokniha…", self.make_audiobook)
+        b_ab.setToolTip("Kapitoly do MP3 hlasem Jirka (bez internetu), Vlasta nebo Antonín (Azure)")
+        ai.grid.addWidget(b_ab, 0, 1, 2, 1)
         self._title_group = info  # Název a Autor jsou v kartě Metadata
         return self._row(look, cov, chap, ai)
 
@@ -1240,6 +1243,14 @@ class BookEditor(QtWidgets.QMainWindow):
 
         self._rewrite_dialog = RewriteDialog(self)
         self._rewrite_dialog.exec()
+
+    def make_audiobook(self):
+        if not self.project["chapters"]:
+            return
+        from qt_audiobook import AudiobookDialog
+
+        self._audiobook_dialog = AudiobookDialog(self)
+        self._audiobook_dialog.exec()
 
     def apply_rewrite(self, text: str, summary: str = ""):
         """Nová verze kapitoly do editoru (obrázky zůstanou na začátku kapitoly); vrátí ji Ctrl+Z."""

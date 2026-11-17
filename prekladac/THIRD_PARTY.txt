@@ -39,3 +39,6 @@ Překladač sám používá knihovny Pythonu (anthropic, python-docx, beautifuls
 pypdfium2, truststore, certifi) a PySide6 (Qt for Python, LGPL v3, https://www.qt.io/qt-for-python) pod jejich
 vlastními licencemi (MIT, BSD, Apache 2.0, HPND, MPL 2.0, LGPL v3). Knihovny Qt jsou přibalené jako
 samostatné soubory DLL a lze je nahradit vlastní verzí.
+
+lameenc (MP3 kodér pro audioknihy, obsahuje LAME)
+  https://github.com/chrisstaite/lameenc – licence LGPL 3.0 (LAME: LGPL 2.0)

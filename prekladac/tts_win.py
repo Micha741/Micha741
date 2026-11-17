@@ -168,7 +168,7 @@ def fix_piper_config(path: Path) -> bool:
     return True
 
 
-def piper_synthesize(text: str, model: str, rate: float, out: str) -> None:
+def piper_synthesize(text: str, model: str, rate: float, out: str, timeout: int = 300) -> None:
     """Text → WAV hlasem Piper (rychlost: 1 = normální, 1.5 = rychleji)."""
     exe = piper_exe()
     if exe is None:
@@ -177,7 +177,7 @@ def piper_synthesize(text: str, model: str, rate: float, out: str) -> None:
     cmd = [str(exe), "--model", model, "--output_file", out,
            "--length_scale", f"{1 / max(0.3, min(3.0, rate)):.2f}", "--sentence_silence", "0.25"]
     r = subprocess.run(cmd, input=text.replace("\n", " ").encode("utf-8"), capture_output=True,
-                       timeout=300, creationflags=_NO_WINDOW, cwd=str(exe.parent))
+                       timeout=timeout, creationflags=_NO_WINDOW, cwd=str(exe.parent))
     if r.returncode != 0 or not Path(out).is_file():
         raise RuntimeError("Piper: " + (r.stderr.decode("utf-8", "replace").strip()[-300:] or "neznámá chyba"))
 

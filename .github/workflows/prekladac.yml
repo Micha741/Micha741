@@ -40,6 +40,7 @@ jobs:
         run: |
           $env:APPDATA = "$env:RUNNER_TEMP\appdata"
           python -c "import sys; sys.path.insert(0, '.'); import tts_win as t; v = t.download_piper('cs', print); out = r'$env:RUNNER_TEMP\veta.wav'; t.piper_synthesize('Dobrý den, tohle je český hlas pro čtení knih.', v['model'], 1.0, out); s = t.wav_seconds(out); print('délka', s); assert s > 1.5; print([x['name'] for x in t.list_voices()])"
+          python -c "import sys, tempfile, pathlib; sys.path.insert(0, '.'); import audiobook as ab; proj = {'outline': {'title': 'Zkouška', 'chapters': [{'title': 'První'}]}, 'author': 'Autor', 'chapters': [{'text': 'Dobrý den.\n\nTohle je audiokniha namluvená hlasem Jirka.'}]}; f = ab.make_audiobook(proj, pathlib.Path(tempfile.mkdtemp()), ab.make_synth('jirka')); print('audiokniha', [(x.name, x.stat().st_size) for x in f]); assert f[0].suffix == '.mp3' and f[0].stat().st_size > 8000"
 
       - name: Hledání knih – skutečné katalogy (Gutenberg, Wikizdroje, Open Library, Google) a stažení
         continue-on-error: true  # katalogy mohou omezit dotazy ze sdílených serverů GitHubu – jen pro informaci
@@ -61,7 +62,7 @@ jobs:
             --add-binary "$spl;sentencepiece.libs" `
             --version-file "$PWD\build\version_info.txt" `
             --collect-all ctranslate2 --collect-all sentencepiece --collect-data sacremoses `
-            --collect-all pypdfium2 --collect-all pypdfium2_raw --hidden-import comtypes.client --hidden-import winsound --exclude-module tkinter `
+            --collect-all pypdfium2 --collect-all pypdfium2_raw --hidden-import comtypes.client --hidden-import winsound --hidden-import lameenc --exclude-module tkinter `
             --icon "$PWD\assets\icon.ico" --add-data "$PWD\assets;assets" `
             --distpath build\dist --workpath build\work --specpath build app.py
           Move-Item build\dist\Prekladac build\app

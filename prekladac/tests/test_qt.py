@@ -1465,3 +1465,37 @@ def test_glossary_dialog_suggest_and_save(qapp, tmp_path):
     dlg.save_and_close()
     saved = {t["src"]: t["dst"] for t in glossary.load(book, "čeština")}
     assert saved["Hermione"] == "Hermiona" and saved["Harry"] == "Harry"
+
+
+def test_audiobook_dialog_records_chapters(qapp, tmp_path, monkeypatch):
+    """Okno knihy → Audiokniha: vybraný hlas a kapitoly, MP3 ve složce exportu, limit Azure ve zprávě."""
+    import audiobook as ab
+    from qt_audiobook import AudiobookDialog
+    from qt_editor import BookEditor
+
+    pytest.importorskip("lameenc")
+    import test_audiobook as ta
+
+    seen = []
+    monkeypatch.setattr(ab, "make_synth", lambda voice, rate=1.0, engines=None: ta.tone_synth(seen))
+    proj = {"language": "čeština", "outline": json.loads(json.dumps(OUTLINE)), "words": 1000,
+            "chapters": [{"text": "První kapitola.", "summary": ""}, {"text": "Druhá kapitola.", "summary": ""}]}
+    proj["outline"]["chapters"] = proj["outline"]["chapters"][:2]
+    p = tmp_path / "a.kniha.json"
+    bw.save_project(p, proj)
+    ed = BookEditor(proj, p, None, text_assist={}, save_options=lambda: None, app_cfg={"engines": {}})
+    dlg = AudiobookDialog(ed)
+    dlg.voice_buttons["vlasta"].setChecked(True)
+    assert "500 000" in dlg.info.text()
+    dlg.ch_from.setValue(2)
+    dlg.start()
+    for _ in range(300):
+        qapp.processEvents()
+        if not dlg.busy:
+            break
+        QtCore.QThread.msleep(10)
+    assert not dlg.busy and len(dlg.files) == 1 and dlg.files[0].name.startswith("02 ")
+    assert dlg.files[0].parent.parent == tmp_path
+    assert ed.app_cfg["audiobook_voice"] == "vlasta"
+    ed.dirty = False
+    ed.close()
