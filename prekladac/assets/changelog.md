@@ -65,6 +65,7 @@
 - Okno knihy → Kniha → ✨ Přepsat kapitolu: AI přepíše kapitolu delší, kratší, napínavější, jednodušším jazykem, s opraveným stylem nebo podle vlastního pokynu; nová verze vedle původní, použije se až po potvrzení (Ctrl+Z ji vrátí), obrázky zůstanou.
 - 📖 Glosář knihy (Překlad → Překladač → Glosář knihy): jména postav, místa a pojmy se v celé knize přeloží vždy stejně; návrh z textu knihy (AI navrhne i překlady, bez AI se najdou opakovaná jména), AI překladače výrazy správně skloňují, Google/DeepL/ostatní vloží zadaný překlad.
 - 🎧 Audiokniha (okno knihy → Kniha → Audiokniha): kapitoly do MP3 hlasem Jirka (bez internetu), Vlasta nebo Antonín (Azure) – s názvem kapitoly, autorem, obálkou a seznamem skladeb; výběr kapitol, rychlosti a kvality, upozornění na bezplatný limit Azure.
+- Android: 📷 text z fotky stránky (v telefonu bez internetu přes Google ML Kit, případně Gemini/Claude) – vyjde s příštím APK.
 
 **1.0.121 (16. 11. 2026)**
 - Synchronizace mezi více počítači: u místa čtení je vidět i název počítače („Pokračujete tam, kde jste skončil (Windows – PRACOVNA, kapitola 5)“).

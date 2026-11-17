@@ -16,6 +16,7 @@ import { deserializeBook, fileNameFromUrl, newEntry, serializeBook, type Library
 import { toBase64 } from './core/bytes';
 import { applySyncToEntry, entryKey, entryToSync, GoogleDrive, WebDav, type Storage, type SyncEntry, type SyncState } from './core/sync';
 import { writeEpub } from './core/epub';
+import { aiOcr, blocksToText, pagesToBook } from './core/ocr';
 
 // PDF chráněné heslem: data se podrží, aby šlo po zadání hesla otevřít znovu bez dalšího výběru
 let pendingPdf: { data: Uint8Array; name: string } | null = null;
@@ -448,4 +449,53 @@ export async function syncEntry(s: Settings, e: LibraryEntry): Promise<{ entry: 
   if (!m) return null;
   const r = await applyToEntry(e, m);
   return { ...r, device: m.pos?.device };
+}
+
+// ------------------------------------------------------------ text z fotky (OCR)
+/** Fotky stránek: z fotoaparátu (jedna) nebo z galerie (víc najednou, v pořadí výběru). Vrátí cesty k JPEG. */
+export async function pickPagePhotos(camera: boolean): Promise<string[]> {
+  if (camera) {
+    const perm = await ImagePicker.requestCameraPermissionsAsync();
+    if (!perm.granted) throw new Error('Bez povolení fotoaparátu nejde stránku vyfotit (Nastavení telefonu → Aplikace → Překladač → Oprávnění).');
+  }
+  const opts = { mediaTypes: ['images'] as ImagePicker.MediaType[], quality: 1 };
+  const res = camera ? await ImagePicker.launchCameraAsync(opts)
+    : await ImagePicker.launchImageLibraryAsync({ ...opts, allowsMultipleSelection: true, orderedSelection: true });
+  if (res.canceled || !res.assets?.length) return [];
+  const out: string[] = [];
+  for (const a of res.assets) {
+    // na čtení textu stačí 2000 px na delší straně (menší soubor, rychlejší AI)
+    const ctx = ImageManipulator.manipulate(a.uri);
+    if (Math.max(a.width, a.height) > 2000) ctx.resize(a.width >= a.height ? { width: 2000, height: null } : { width: null, height: 2000 });
+    const img = await ctx.renderAsync();
+    out.push((await img.saveAsync({ format: SaveFormat.JPEG, compress: 0.9 })).uri);
+  }
+  return out;
+}
+
+/** Přečte text z fotek (ML Kit v telefonu bez internetu, jinak Gemini/Claude) a udělá z něj knihu. */
+export async function photosToBook(uris: string[], s: Settings, say: (m: string) => void = () => undefined,
+  recognize?: ((uri: string) => Promise<string[]>) | null): Promise<{ book: Book; via: string }> {
+  const pages: string[] = [];
+  let via = '';
+  for (let i = 0; i < uris.length; i++) {
+    say(`Čtu text z fotky ${i + 1}/${uris.length}…`);
+    let text = '';
+    if (recognize) {
+      try {
+        text = blocksToText(await recognize(uris[i]));
+        via = 'v telefonu (ML Kit)';
+      } catch {
+        text = '';
+      }
+    }
+    if (!text.trim() && (s.geminiKey || s.claudeKey)) {
+      text = await aiOcr(toBase64(await new File(uris[i]).bytes()), s);
+      via = s.geminiKey ? 'Gemini' : 'Claude';
+    } else if (!text.trim() && !recognize) {
+      throw new Error('Čtení textu z fotky potřebuje novou verzi aplikace (ML Kit), nebo klíč Gemini či Claude v Nastavení.');
+    }
+    pages.push(text);
+  }
+  return { book: pagesToBook(pages), via };
 }

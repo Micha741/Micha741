@@ -1,5 +1,6 @@
 package expo.modules.mlkittranslate
 
+import android.net.Uri
 import com.google.android.gms.tasks.Tasks
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.common.model.RemoteModelManager
@@ -9,6 +10,9 @@ import com.google.mlkit.nl.translate.TranslateRemoteModel
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.Translator
 import com.google.mlkit.nl.translate.TranslatorOptions
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import expo.modules.kotlin.exception.CodedException
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
@@ -76,6 +80,19 @@ class MlkitTranslateModule : Module() {
       val conditions = DownloadConditions.Builder().apply { if (wifiOnly) requireWifi() }.build()
       Tasks.await(t.downloadModelIfNeeded(conditions))
       texts.map { if (it.isBlank()) it else Tasks.await(t.translate(it)) }
+    }
+
+    // text z fotky stránky: bloky textu (odstavce) v pořadí, jak je ML Kit najde
+    AsyncFunction("recognizeText") { uri: String ->
+      val context = appContext.reactContext ?: throw CodedException("Aplikace není připravená.")
+      val image = InputImage.fromFilePath(context, Uri.parse(uri))
+      val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+      try {
+        val result = Tasks.await(recognizer.process(image))
+        result.textBlocks.map { block -> block.lines.joinToString("\n") { it.text } }
+      } finally {
+        recognizer.close()
+      }
     }
 
     OnDestroy {

@@ -737,3 +737,18 @@ test('Synology / WebDAV: složka Překladač, sync.json, knihy a srozumitelné c
   await assert.rejects(new WebDav('http://nas:8765/home', 'mikes', 'spatne', undefined, fake as any).getState(), /heslo/);
   assert.deepEqual(parsePropfind('<D:multistatus xmlns:D="DAV:"><D:response><D:href>/a/P%C5%99eklada%C4%8D/x%20y.epub</D:href><D:getcontentlength>5</D:getcontentlength></D:response></D:multistatus>'), [{ id: 'x y.epub', name: 'x y.epub', size: '5' }]);
 });
+
+test('text z fotky: odstavce z ML Kit, rozdělená slova, číslo stránky pryč, kniha a čtení přes Gemini', async () => {
+  const { blocksToText, pagesToBook, aiOcr } = await import('../src/core/ocr');
+  const text = blocksToText(['KAPITOLA PRVNÍ', 'Byl pozdní večer, první máj,\nvečerní máj, byl lásky čas. Hrdliččin zval ke lás-\nce hlas.', '17', 'Jean-\nPaul přišel.']);
+  assert.equal(text, 'KAPITOLA PRVNÍ\n\nByl pozdní večer, první máj, večerní máj, byl lásky čas. Hrdliččin zval ke lásce hlas.\n\nJean- Paul přišel.');
+  const book = pagesToBook([text, 'Druhá stránka.']);
+  assert.ok(book.chapters.length >= 1 && book.title.startsWith('Text z fotky'));
+  assert.ok(book.chapters.flatMap((c) => c.blocks).some((b) => b.type === 'p' && b.text === 'Druhá stránka.'));
+  assert.throws(() => pagesToBook(['  ', '']), /nenašel žádný text/);
+  let sent: any = null;
+  const fake = async (url: string, init: any) => { sent = { url, body: JSON.parse(init.body), key: init.headers['x-goog-api-key'] }; return { ok: true, status: 200, text: async () => JSON.stringify({ candidates: [{ content: { parts: [{ text: 'Přečtený text.' }] } }] }) }; };
+  assert.equal(await aiOcr('QUJD', { geminiKey: 'K' }, fake as any), 'Přečtený text.');
+  assert.ok(sent.url.includes(':generateContent') && sent.key === 'K' && sent.body.contents[0].parts[0].inlineData.data === 'QUJD');
+  await assert.rejects(aiOcr('QUJD', {}, fake as any), /Gemini nebo Claude/);
+});
