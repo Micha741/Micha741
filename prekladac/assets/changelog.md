@@ -60,6 +60,9 @@
 # Historie verzí
 
 **Nová verze**
+- (zatím nic – další změny se zapíšou sem)
+
+**1.0.126 (17. 11. 2026)**
 - Automatická aktualizace: nová verze se stáhne z GitHubu, ověří otiskem SHA-256 a nainstaluje jedním klikem (teď, nebo při zavření programu); program se po instalaci sám znovu spustí. Lze vypnout v Nastavení → Obecné.
 - Záloha a obnova nastavení (Nastavení → Obecné): jeden soubor .zip s nastavením, místy čtení, záložkami, slovníčkem, skiny a glosáři – bez klíčů a hesel; před obnovou se uloží současný stav.
 - Okno knihy → Kniha → ✨ Přepsat kapitolu: AI přepíše kapitolu delší, kratší, napínavější, jednodušším jazykem, s opraveným stylem nebo podle vlastního pokynu; nová verze vedle původní, použije se až po potvrzení (Ctrl+Z ji vrátí), obrázky zůstanou.
