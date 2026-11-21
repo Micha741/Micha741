@@ -97,5 +97,5 @@ def test_import_voice_appears_in_reader_and_audiobook(tmp_path, monkeypatch):
 def test_colab_notebook_is_valid():
     nb = json.loads((Path(vs.__file__).parent / "tools" / "vlastni_hlas_colab.ipynb").read_text(encoding="utf-8"))
     src = "".join("".join(c["source"]) for c in nb["cells"])
-    assert "piper.train fit" in src and "export_onnx" in src and "--data.espeak_voice cs" in src
+    assert "piper.train" in src and "export_onnx" in src and "--data.espeak_voice" in src and "warmstart_ckpt" in src
     assert nb["metadata"]["accelerator"] == "GPU"

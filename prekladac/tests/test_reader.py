@@ -548,3 +548,74 @@ def test_reader_cloud_sync_continue_from_phone(qapp, monkeypatch):
         if not r.cloud._busy:
             break
     assert phone.get_state()[0]["books"][key]["highlights"] == []
+
+
+def test_editor_search_loose_counter_undo_and_reader_place(qapp):
+    """Hledání bez diakritiky + počítadlo, Vrátit poslední úpravu napříč kapitolami, čtečka → Úpravy na stejném místě."""
+    from qt_editor import BookEditor
+
+    proj = project(3, 4)
+    proj["chapters"][1]["text"] += "\n\nTady je v domě Žlutý kůň."
+    ed = BookEditor(proj, Path("x.kniha.json"), None, text_assist={}, save_options=lambda: None, app_cfg={})
+    ed.show()
+    st = ed.search_tab
+    ed.open_find()
+    st.find.setText("zlutoucky kun")
+    assert st.loose.isChecked() and st.find_next()
+    assert ed.text.textCursor().selectedText() == "žluťoučký kůň"
+    assert st.info.text() == "1 / 36"                       # 3 kapitoly × 4 odstavce × 3
+    assert len(ed.text.extraSelections()) == 12             # žlutě všechny výskyty v kapitole
+    st.find.setText("v domě zluty")                         # mezera najde i pevnou mezeru
+    st.find_next()
+    assert ed.cur == 1 and ed.text.textCursor().selectedText() == "v domě Žlutý"
+    st.loose.setChecked(False)
+    assert st.info.text() == "Nenalezeno."
+    st.loose.setChecked(True)
+
+    # Nahradit vše v celé knize → jedním tlačítkem zpět
+    before = [c["text"] for c in proj["chapters"]]
+    st.find.setText("kůň")
+    st.repl.setText("osel")
+    st.replace_all()
+    assert all("kůň" not in c["text"] for c in proj["chapters"]) and "Nahrazeno 37×" in st.info.text()
+    ed.undo_last()
+    while ed.text.document().isUndoAvailable():
+        ed.undo_last()
+    ed.store_current()
+    assert [c["text"] for c in proj["chapters"]] == before
+
+    # úprava kapitoly 1, přepnutí na kapitolu 3 → Vrátit vrátí i úpravu v kapitole 1
+    ed.select_chapter(0)
+    ed.text.textCursor().insertText("NOVÝ ZAČÁTEK ")
+    ed.select_chapter(2)
+    assert "kapitole 1." in ed.b_undo_last.toolTip()
+    ed.undo_last()
+    assert ed.cur == 0 and "NOVÝ ZAČÁTEK" not in ed.text.toPlainText()
+    ed.undo_last()  # není co vrátit – nic nespadne
+    assert ed.cur == 0
+
+    # čtečka: označený odstavec v kapitole 2 → Úpravy otevřou kapitolu 2 s označeným textem
+    ed.set_mode(True)
+    settle(qapp, ed)
+    r = ed.reader
+    pos = r.doc.find("Odstavec 2.3.").position()
+    r.goto_pos(pos)
+    r.mark(pos, "y")
+    ed.set_mode(False)
+    qapp.processEvents()
+    assert ed.cur == 1 and ed.text.textCursor().selectedText().startswith("Odstavec 2.3.")
+    # bez označení: první věta zobrazené stránky, kurzor bez výběru
+    ed.set_mode(True)
+    settle(qapp, ed)
+    r.touch = None
+    r.goto_pos(r.doc.find("Odstavec 3.2.").position())
+    first = r.view.first_pos()
+    want_ch, want_fr = r.pos_to_sync(first)
+    ed.set_mode(False)
+    qapp.processEvents()
+    c = ed.text.textCursor()
+    assert ed.cur == want_ch and not c.hasSelection()
+    frac = c.position() / max(1, ed.text.document().characterCount())
+    assert abs(frac - want_fr) < 0.15                        # stejné místo, ne první výskyt opakované věty
+    ed.dirty = False
+    ed.close()

@@ -7,6 +7,7 @@ pdf_blocks), takže je converters.py používá stejně.
 from __future__ import annotations
 
 import html
+import http.client
 import json
 import os
 import re
@@ -124,6 +125,11 @@ def http_request(url: str, *, data=None, headers: dict | None = None, method: st
                 delay = float(wait) if wait and wait.isdigit() else backoff[min(attempt, len(backoff) - 1)]
             else:
                 raise EngineError(f"{service}: chyba HTTP {e.code}: {body}") from e
+        except http.client.HTTPException as e:  # IncompleteRead: spojení se přerušilo uprostřed odpovědi
+            last = "spojení se přerušilo uprostřed přenosu – " + (
+                f"přišlo jen {len(e.partial):,} bajtů".replace(",", " ") if isinstance(e, http.client.IncompleteRead)
+                else type(e).__name__)
+            delay = backoff[min(attempt, len(backoff) - 1)]
         except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
             if _is_cert_error(e):
                 if ctx_i + 1 < len(ctxs):

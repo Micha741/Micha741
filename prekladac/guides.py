@@ -275,7 +275,8 @@ Z vašich nahrávek se natrénuje hlas Piper (stejný typ jako Jirka, ale s vaš
 3. Trénování zdarma v Google Colab (v prohlížeči, s grafikou od Googlu)
    Otevřete sešit: https://colab.research.google.com/github/Micha741/Micha741/blob/main/prekladac/tools/vlastni_hlas_colab.ipynb
    Nahoře Runtime → Změnit typ běhového prostředí → GPU (T4). Spouštějte buňky postupně (▶):
-   připojí se Google Disk (ukládá se tam průběh), nainstaluje se trénování, nahrajete ZIP, hlas se dotrénuje
+   připojí se Google Disk (ukládá se tam průběh), nainstaluje se trénování, nahrajete ZIP (nejspolehlivěji
+   na Google Disk do složky „Prekladac-vlastni-hlas“ – drive.google.com, přetáhnout ZIP), hlas se dotrénuje
    z Jirky, buňka 6 přehraje ukázku a buňka 7 stáhne hotový hlas: soubory „jméno.onnx“ a „jméno.onnx.json“.
    Kolik to trvá: projekt Piper doporučuje 2000 epoch; s hodinou nahrávek je to na bezplatné grafice T4
    řádově desítky hodin. Bezplatný Colab se po několika hodinách odpojí – průběh zůstává na vašem Disku

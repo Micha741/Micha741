@@ -218,7 +218,7 @@ def test_speaker_cloud_voice_and_error(appdata, monkeypatch):
     done = threading.Event()
     sp.speak("Dlouhá věta. " * 200, "cs", 1.0, on_done=done.set, voice_name="cloud:azure:cs-CZ-VlastaNeural")
     assert done.wait(5) and not sp.error
-    assert len(synth) == 3 and all(s[1:] == ("azure", "cs-CZ-VlastaNeural") for s in synth)  # po kouscích
+    assert len(synth) == 6 and all(s[1:] == ("azure", "cs-CZ-VlastaNeural") for s in synth)  # po kouscích (500 znaků)
     done2 = threading.Event()
     sp.speak("CHYBA", "cs", 1.0, on_done=done2.set, voice_name="cloud:google:cs-CZ-Wavenet-A")
     assert done2.wait(3) and "bez internetu" in sp.error

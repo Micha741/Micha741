@@ -873,6 +873,7 @@ class Reader(QtWidgets.QWidget):
         self.prefs = {**DEFAULT_PREFS, **self.app_cfg.get("reader", {})}
         self.state = ReaderState(project)
         self.search_sel: tuple[int, int] | None = None
+        self.touch: tuple[int, int] | None = None  # naposledy označené / kliknuté místo (pro přepnutí do Úprav)
         self.speak_block = -1
         self.speak_from = 0       # odkud v čteném odstavci se čte (pozice v knize)
         self.read_start: int | None = None  # kliknutím označené místo, odkud začne čtení nahlas
@@ -935,6 +936,7 @@ class Reader(QtWidgets.QWidget):
     # ---- sazba a nastavení
     def rebuild(self, keep_pos: int | None = None):
         pos = keep_pos if keep_pos is not None else (self.view.anchor if self.view.doc else self.state.pos)
+        self.touch = None
         self.doc, self.chapters = build_reader_doc(self.project, self.prefs)
         self._relocate_marks()
         self.view.doc = self.doc
@@ -1036,6 +1038,27 @@ class Reader(QtWidgets.QWidget):
         i = max(0, min(i, len(starts) - 1))
         end = starts[i + 1] if i + 1 < len(starts) else self.doc.characterCount()
         return starts[i], max(starts[i] + 1, end)
+
+    def edit_target(self) -> dict:
+        """Kam skočit v Úpravách: naposledy označený / kliknutý / nalezený text, je-li na zobrazené stránce,
+        jinak první věta stránky. Vrací text, název a pořadí kapitoly ve čtečce a podíl kapitoly."""
+        a0, z0 = self.view.visible_range()
+        t, chosen = getattr(self, "touch", None), True
+        if not t or not (a0 <= t[0] <= max(z0, a0)):
+            pos = self.view.first_pos()
+            b = self.doc.findBlock(pos)
+            while b.isValid() and not b.text().strip() and b.position() < z0:
+                b = b.next()
+            pos = max(pos, b.position()) if b.isValid() else pos
+            t, chosen = sentence_bounds(self.doc, pos), False
+            t = (pos, max(pos, t[1]))
+        c = QtGui.QTextCursor(self.doc)
+        c.setPosition(max(0, min(t[0], self.doc.characterCount() - 1)))
+        c.setPosition(max(0, min(t[1], self.doc.characterCount() - 1)), QtGui.QTextCursor.KeepAnchor)
+        i, fr = self.pos_to_sync(t[0])
+        name = self.chapters[i][0] if i < len(self.chapters) else ""
+        return {"text": c.selectedText().replace("\u2029", "\n"), "chapter": i, "title": name,
+                "fraction": fr, "select": chosen}
 
     def chapter_index(self, pos: int) -> int:
         idx = 0
@@ -1152,6 +1175,8 @@ class Reader(QtWidgets.QWidget):
 
     def set_search(self, s):
         self.search_sel = s
+        if s:
+            self.touch = (s[0], s[0] + s[1])
         self.view.refresh()
 
     def find_all(self, q: str) -> list[tuple[int, int, str, str]]:
@@ -1188,6 +1213,7 @@ class Reader(QtWidgets.QWidget):
         b = self.doc.findBlock(pos)
         if not b.isValid():
             return
+        self.touch = (b.position(), b.position() + max(0, b.length() - 1))
         old = next((h for h in self.state.highlights if h.get("block") == b.blockNumber()), None)
         self.state.highlights = [h for h in self.state.highlights if h is not old]
         if old and not color:
@@ -1315,6 +1341,7 @@ class Reader(QtWidgets.QWidget):
         word = c.selectedText().strip(" .,;:!?„“\"'()«»–—")
         if not word:
             return
+        self.touch = (c.selectionStart(), c.selectionEnd())
         b = self.doc.findBlock(pos)
         t = b.text()
         k = pos - b.position()
@@ -1332,6 +1359,7 @@ class Reader(QtWidgets.QWidget):
             self.start_speaking(pos=pos)
             return
         a, _z = sentence_bounds(self.doc, pos)
+        self.touch = (a, _z)
         self.read_start = None if self.read_start is not None and sentence_bounds(self.doc, self.read_start)[0] == a else a
         self.view.refresh()
 

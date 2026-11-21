@@ -259,9 +259,13 @@ def build_translator(s: dict, translate: bool, needs_ocr: bool, log, cancel_even
 
     if segs is None and ocr is None:
         return None
-    if ocr is None and doc is None and engine == "claude":
-        return segs
-    return Pipeline(segs, ocr, lang, document_translator=doc)
+    out = segs if (ocr is None and doc is None and engine == "claude") else Pipeline(segs, ocr, lang,
+                                                                                       document_translator=doc)
+    if segs is not None and doc is None and s.get("translation_cache", True):
+        # mezipaměť překladů: stejný překladač + model + jazyk + pokyny → úsek se podruhé nepřekládá
+        model = engines.get(engine, {}).get("model", "")
+        out.cache_id = "|".join((engine, model, engines.get(engine, {}).get("url", ""), lang, notes))
+    return out
 
 
 def files_need_ocr(files: list[str], out_fmt: str | None, translate: bool, engine: str = "") -> bool:
@@ -325,6 +329,13 @@ def run_jobs(files, translate, out_fmt, tr, out_dir, merge_images, log, progress
                     ftr = glossary.wrap(tr, paths[0], getattr(tr, "target_lang", "") or "")
                     if ftr is not tr:
                         log(f"  📖 Glosář knihy: {len(ftr.terms)} výrazů")
+                    if getattr(tr, "cache_id", ""):
+                        import json
+
+                        import translation_cache
+
+                        extra = json.dumps(getattr(ftr, "terms", []), ensure_ascii=False, sort_keys=True)
+                        ftr = translation_cache.wrap(ftr, tr.cache_id, extra if ftr is not tr else "", log)
                 out = process_file(paths[0], fmt, translate, ftr, out_dir, log, step, ebook_convert)
             log(f"  ✓ Uloženo: {out}")
             results.append(out)
