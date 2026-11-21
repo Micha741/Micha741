@@ -193,26 +193,52 @@ def vline() -> QtWidgets.QFrame:
 
 class FindLogic:
     """Hledání a nahrazování v knize (karta Hledání). Potřebuje: self.ed, self.find, self.repl, self.case,
-    self.words, self.whole (zaškrtávátka) a self.info (štítek)."""
+    self.words, self.whole (zaškrtávátka), volitelně self.loose (bez ohledu na diakritiku) a self.info (štítek).
+
+    Hledá se regulárním výrazem z text_search: mezera najde i pevnou mezeru, uvozovky/pomlčky všech druhů,
+    volitelně bez háčků a čárek."""
+
+    def _loose(self) -> bool:
+        w = getattr(self, "loose", None)
+        return bool(w is not None and w.isChecked())
+
+    def _regex_text(self) -> str:
+        from text_search import search_regex
+
+        return search_regex(self.find.text(), self.case.isChecked(), self.words.isChecked(), self._loose())
+
+    def _qrx(self) -> QtCore.QRegularExpression:
+        opt = QtCore.QRegularExpression.UseUnicodePropertiesOption
+        if not self.case.isChecked():
+            opt |= QtCore.QRegularExpression.CaseInsensitiveOption
+        return QtCore.QRegularExpression(self._regex_text(), opt)
 
     def _flags(self, back: bool = False):
         f = QtGui.QTextDocument.FindFlags()
-        if self.case.isChecked():
-            f |= QtGui.QTextDocument.FindCaseSensitively
-        if self.words.isChecked():
-            f |= QtGui.QTextDocument.FindWholeWords
         if back:
             f |= QtGui.QTextDocument.FindBackward
         return f
 
     def _pattern(self) -> re.Pattern:
-        p = re.escape(self.find.text())
-        if self.words.isChecked():
-            p = rf"(?<!\w){p}(?!\w)"
-        return re.compile(p, 0 if self.case.isChecked() else re.IGNORECASE)
+        p = self._regex_text()
+        return re.compile(p or r"(?!x)x", 0 if self.case.isChecked() else re.IGNORECASE)
+
+    def _chapter_text(self, j: int) -> str:
+        if j == self.ed.cur:
+            return document_to_plain(self.ed.text.document())
+        return self.ed.project["chapters"][j].get("text", "")
 
     def _chapter_has(self, j: int) -> bool:
-        return bool(self._pattern().search(self.ed.project["chapters"][j]["text"]))
+        return bool(self._pattern().search(self._chapter_text(j)))
+
+    def _find_in_doc(self, back: bool) -> bool:
+        ed = self.ed
+        c = ed.text.document().find(self._qrx(), ed.text.textCursor(), self._flags(back))
+        if c.isNull():
+            return False
+        ed.text.setTextCursor(c)
+        ed.text.ensureCursorVisible()
+        return True
 
     def find_next(self) -> bool:
         return self._find(back=False)
@@ -221,30 +247,72 @@ class FindLogic:
         return self._find(back=True)
 
     def _find(self, back: bool) -> bool:
-        needle = self.find.text()
-        if not needle:
+        if not self._regex_text():
+            self.info.setText("")
             return False
         ed = self.ed
-        if ed.text.find(needle, self._flags(back)):
-            self.info.setText("")
-            return True
-        if self.whole.isChecked():
-            ed.store_current()
+        found = self._find_in_doc(back)
+        if not found and self.whole.isChecked() and len(ed.project["chapters"]) > 1:
             n = len(ed.project["chapters"])
             for step in range(1, n + 1):
                 j = (ed.cur + (-step if back else step)) % n
                 if self._chapter_has(j):
-                    ed.select_chapter(j)
+                    if j != ed.cur:
+                        ed.select_chapter(j)
                     ed.text.moveCursor(QtGui.QTextCursor.End if back else QtGui.QTextCursor.Start)
-                    if ed.text.find(needle, self._flags(back)):
-                        self.info.setText(f"Kapitola {j + 1}")
-                        return True
-        else:
+                    found = self._find_in_doc(back)
+                    if found:
+                        break
+        elif not found:
             ed.text.moveCursor(QtGui.QTextCursor.End if back else QtGui.QTextCursor.Start)
-            if ed.text.find(needle, self._flags(back)):
-                return True
-        self.info.setText("Nenalezeno.")
-        return False
+            found = self._find_in_doc(back)
+        self.refresh_marks()
+        if not found:
+            self.info.setText(tr("Nenalezeno."))
+        return found
+
+    def refresh_marks(self):
+        """Zvýrazní všechny výskyty v otevřené kapitole a ukáže pořadí „3 / 12“ (v celé knize)."""
+        ed = self.ed
+        if not hasattr(self, "info"):
+            return
+        if not self._regex_text():
+            ed.text.setExtraSelections([])
+            self.info.setText("")
+            return
+        doc, rx, sels = ed.text.document(), self._qrx(), []
+        fmt = QtGui.QTextCharFormat()
+        fmt.setBackground(QtGui.QColor(255, 225, 90, 170))
+        c = QtGui.QTextCursor(doc)
+        here, sel = 0, ed.text.textCursor()
+        while len(sels) < 5000:
+            c = doc.find(rx, c)
+            if c.isNull():
+                break
+            if c.selectionEnd() == c.selectionStart():
+                c.movePosition(QtGui.QTextCursor.NextCharacter)
+                continue
+            es = QtWidgets.QTextEdit.ExtraSelection()
+            es.cursor, es.format = QtGui.QTextCursor(c), fmt
+            sels.append(es)
+            if c.selectionStart() <= sel.selectionStart():
+                here = len(sels)
+        ed.text.setExtraSelections(sels)
+        before = after = 0
+        if self.whole.isChecked():
+            pat = self._pattern()
+            for j in range(len(ed.project["chapters"])):
+                if j != ed.cur:
+                    k = len(pat.findall(ed.project["chapters"][j].get("text", "")))
+                    before += k if j < ed.cur else 0
+                    after += k if j > ed.cur else 0
+        total = before + len(sels) + after
+        if not total:
+            self.info.setText(tr("Nenalezeno."))
+        elif sel.hasSelection() and here:
+            self.info.setText(f"{before + here} / {total}")
+        else:
+            self.info.setText(tr("Nalezeno {}×").format(total))
 
     def replace_one(self):
         c = self.ed.text.textCursor()
@@ -252,38 +320,57 @@ class FindLogic:
             c.insertText(self.repl.text())
         self.find_next()
 
+    def _replace_in_doc(self) -> int:
+        ed = self.ed
+        doc, rx, repl = ed.text.document(), self._qrx(), self.repl.text()
+        edit = QtGui.QTextCursor(doc)
+        edit.beginEditBlock()
+        c, n = QtGui.QTextCursor(doc), 0
+        while n < 100000:
+            c = doc.find(rx, c)
+            if c.isNull():
+                break
+            if c.selectionEnd() == c.selectionStart():
+                c.movePosition(QtGui.QTextCursor.NextCharacter)
+                continue
+            c.insertText(repl)
+            n += 1
+        edit.endEditBlock()
+        return n
+
     def replace_all(self):
-        needle, repl = self.find.text(), self.repl.text()
-        if not needle:
+        if not self._regex_text():
             return
         ed = self.ed
-        ed.store_current()
         targets = range(len(ed.project["chapters"])) if self.whole.isChecked() else [ed.cur]
-        total = 0
-        current = ed.cur
-        for j in targets:
-            if j != ed.cur and not self._chapter_has(j):
-                continue
-            ed.select_chapter(j)
-            ed.text.moveCursor(QtGui.QTextCursor.Start)
-            cur = ed.text.textCursor()
-            cur.beginEditBlock()
-            while ed.text.find(needle, self._flags()):
-                ed.text.textCursor().insertText(repl)
-                total += 1
-            cur.endEditBlock()
+        others = [j for j in targets if j != ed.cur and self._chapter_has(j)]
+        if others and hasattr(ed, "push_history"):
+            ed.push_history(tr("Nahradit vše „{}“").format(self.find.text()))
+        total, current = 0, ed.cur
+        ed._bulk = True
+        try:
+            total += self._replace_in_doc()
             ed.store_current()
-        ed.select_chapter(current)
-        self.info.setText(f"Nahrazeno {total}×.")
+            for j in others:
+                ed.select_chapter(j)
+                total += self._replace_in_doc()
+                ed.store_current()
+            if others:
+                ed.select_chapter(current)
+        finally:
+            ed._bulk = False
+        if total:
+            ed._changed()
+        self.refresh_marks()
+        self.info.setText(tr("Nahrazeno {}×.").format(total) + (" " + tr("Vrátíte tlačítkem ↩️.") if total else ""))
 
     def all_hits(self) -> list[tuple[int, int, str]]:
         """Všechny výskyty v knize: (kapitola, pořadí výskytu v kapitole, ukázka textu kolem)."""
-        if not self.find.text():
+        if not self._regex_text():
             return []
-        self.ed.store_current()
         pat, out = self._pattern(), []
-        for j, ch in enumerate(self.ed.project["chapters"]):
-            text = ch["text"]
+        for j in range(len(self.ed.project["chapters"])):
+            text = self._chapter_text(j)
             for k, m in enumerate(pat.finditer(text)):
                 a, z = max(0, m.start() - 40), min(len(text), m.end() + 40)
                 snip = ("…" if a else "") + text[a:z].replace("\n", " ") + ("…" if z < len(text) else "")
@@ -292,11 +379,13 @@ class FindLogic:
 
     def goto_hit(self, chapter: int, nth: int):
         ed = self.ed
-        ed.select_chapter(chapter)
+        if chapter != ed.cur:
+            ed.select_chapter(chapter)
         ed.text.moveCursor(QtGui.QTextCursor.Start)
         for _ in range(nth + 1):
-            if not ed.text.find(self.find.text(), self._flags()):
+            if not self._find_in_doc(False):
                 break
+        self.refresh_marks()
         ed.text.setFocus()
 
 
@@ -359,9 +448,29 @@ class SearchTab(FindLogic, QtWidgets.QWidget):
         self.words = QtWidgets.QCheckBox(tr("Jen celá slova"))
         self.whole = QtWidgets.QCheckBox(tr("V celé knize"))
         self.whole.setChecked(True)
+        self.loose = QtWidgets.QCheckBox(tr("Bez ohledu na diakritiku"))
+        self.loose.setToolTip(tr("„zluty kun“ najde i „žlutý kůň“. Mezera najde i pevnou mezeru, uvozovky a "
+                                 "pomlčky všech druhů se berou jako stejné."))
+        self.loose.setChecked(bool(ed.app_cfg.get("search_loose", True)) if isinstance(ed.app_cfg, dict) else True)
         g_opt.grid.addWidget(self.case, 0, 0)
         g_opt.grid.addWidget(self.words, 1, 0)
         g_opt.grid.addWidget(self.whole, 0, 1)
+        g_opt.grid.addWidget(self.loose, 1, 1)
+        # hledá se už při psaní (po krátké pauze); změna možností hned přepočítá výskyty
+        self._live = QtCore.QTimer(self)
+        self._live.setSingleShot(True)
+        self._live.setInterval(300)
+        self._live.timeout.connect(self._live_find)
+        self.find.textEdited.connect(lambda _t: self._live.start())
+        self.find.textChanged.connect(lambda t: (not t) and self.refresh_marks())
+        for w in (self.case, self.words, self.whole, self.loose):
+            w.toggled.connect(lambda _on: self.refresh_marks())
+        self.loose.toggled.connect(self._remember_loose)
+        # nalezený text zůstane modře označený, i když je kurzor v poli Hledat
+        pal = ed.text.palette()
+        for role in (QtGui.QPalette.Highlight, QtGui.QPalette.HighlightedText):
+            pal.setColor(QtGui.QPalette.Inactive, role, pal.color(QtGui.QPalette.Active, role))
+        ed.text.setPalette(pal)
 
         g_rep = RibbonGroup("Nahradit")
         self.repl = QtWidgets.QLineEdit()
@@ -374,6 +483,8 @@ class SearchTab(FindLogic, QtWidgets.QWidget):
         b2.clicked.connect(self.replace_all)
         g_rep.grid.addWidget(b1, 1, 0)
         g_rep.grid.addWidget(b2, 1, 1)
+        g_rep.grid.addWidget(ed._tb(emoji_icon("↩️"), "Vrátit poslední úpravu (i Nahradit vše v celé knize)",
+                                    ed.undo_last), 1, 2)
 
         g_all = RibbonGroup("Výsledky")
         g_all.grid.addWidget(ed._big(emoji_icon("📋"), tr("Všechny\nvýskyty"), self.show_all), 0, 0, 2, 1)
@@ -394,6 +505,20 @@ class SearchTab(FindLogic, QtWidgets.QWidget):
                 lay.addWidget(vline())
             lay.addWidget(g)
         lay.addStretch(1)
+
+    def _live_find(self):
+        """Hledání při psaní: od začátku aktuálního výběru, aby se při dopisování výskyt jen prodlužoval."""
+        if not self._regex_text():
+            self.refresh_marks()
+            return
+        c = self.ed.text.textCursor()
+        c.setPosition(c.selectionStart())
+        self.ed.text.setTextCursor(c)
+        self._find(back=False)
+
+    def _remember_loose(self, on: bool):
+        if isinstance(self.ed.app_cfg, dict):
+            self.ed.app_cfg["search_loose"] = bool(on)
 
     def fill_chapters(self):
         self.go.blockSignals(True)
@@ -450,6 +575,9 @@ class BookEditor(QtWidgets.QMainWindow):
         self.loading = False
         self.painter_fmt: QtGui.QTextCharFormat | None = None
         self.find_dlg: FindDialog | None = None
+        self._history: list[dict] = []  # Vrátit poslední úpravu (i v jiných kapitolách a hromadné změny)
+        self._bulk = False
+        self._chapter_orig = None
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.resize(1300, 860)
 
@@ -458,6 +586,7 @@ class BookEditor(QtWidgets.QMainWindow):
         self.text.setTabStopDistance(40)
         self.text.document().setDocumentMargin(48)
         self.text.setObjectName("BookText")
+        self.text.undoAvailable.connect(lambda _on: self._update_undo_tip())
         self.view_opts = text_assist if text_assist is not None else {}
         self._save_view = save_options or (lambda: None)
         page = QtWidgets.QFrame()
@@ -561,7 +690,15 @@ class BookEditor(QtWidgets.QMainWindow):
         back.setAutoRaise(True)
         back.setCursor(Qt.PointingHandCursor)
         back.clicked.connect(self.go_back)
-        tabs.setCornerWidget(back, Qt.TopLeftCorner)
+        quick = QtWidgets.QWidget()
+        ql = QtWidgets.QHBoxLayout(quick)
+        ql.setContentsMargins(0, 0, 0, 0)
+        ql.setSpacing(0)
+        ql.addWidget(back)
+        self.b_undo_last = self._tb(emoji_icon("↩️"), "Vrátit poslední úpravu", self.undo_last)
+        self.b_undo_last.setIconSize(QtCore.QSize(18, 18))
+        ql.addWidget(self.b_undo_last)
+        tabs.setCornerWidget(quick, Qt.TopLeftCorner)
         self.b_back = back
         # přepínač režimu vpravo nahoře: ✏️ Úpravy / 📖 Čtení
         mode = QtWidgets.QWidget()
@@ -590,7 +727,99 @@ class BookEditor(QtWidgets.QMainWindow):
         self.look_tab = tabs.addTab(QtWidgets.QWidget(), tr("Vzhled"))
         tabs.setTabVisible(self.look_tab, False)
         self.ribbon = tabs
+        tabs.currentChanged.connect(self._ribbon_changed)
         return tabs
+
+    def _ribbon_changed(self, i: int):
+        """Žluté zvýraznění výskytů jen v kartě Hledání."""
+        if i == self.search_tab_index:
+            self.search_tab.refresh_marks()
+        else:
+            self.text.setExtraSelections([])
+
+    # ================================================================ historie úprav (Vrátit poslední úpravu)
+    HISTORY_MAX = 20
+
+    def _flush_chapter_edit(self):
+        """Úpravy v otevřené kapitole → do historie (původní podoba kapitoly), aby šly vrátit i po přepnutí."""
+        if getattr(self, "_bulk", False) or self.loading or not self.project["chapters"]:
+            return
+        orig = getattr(self, "_chapter_orig", None)
+        if not orig or orig[0] != self.cur or orig[0] >= len(self.project["chapters"]):
+            return
+        now = self.text.document().toHtml()
+        if now != orig[1]:
+            title = self.outline["chapters"][self.cur]["title"] if self.cur < len(self.outline["chapters"]) else ""
+            self._history.append({"kind": "chapter", "i": self.cur, "html": orig[1], "text": orig[2],
+                                  "label": tr("úpravy v kapitole {}").format(f"{self.cur + 1}. {title}")})
+            self._chapter_orig = (self.cur, now, document_to_plain(self.text.document()))
+            del self._history[:-self.HISTORY_MAX]
+        self._update_undo_tip()
+
+    def push_history(self, label_text: str):
+        """Uloží celou knihu před hromadnou úpravou (Nahradit vše, smazání/přesun kapitoly…)."""
+        import copy
+
+        self._flush_chapter_edit()
+        self.store_current()
+        self._history.append({"kind": "book", "label": label_text, "cur": self.cur,
+                              "chapters": copy.deepcopy(self.project["chapters"]),
+                              "outline": copy.deepcopy(self.outline["chapters"])})
+        del self._history[:-self.HISTORY_MAX]
+        self._update_undo_tip()
+
+    def _update_undo_tip(self):
+        b = getattr(self, "b_undo_last", None)
+        if b is None:
+            return
+        doc = self.text.document()
+        if doc.isUndoAvailable():
+            tip = tr("Vrátit poslední úpravu v této kapitole")
+        elif getattr(self, "_history", None):
+            tip = tr("Vrátit: {}").format(self._history[-1]["label"])
+        else:
+            tip = tr("Není co vrátit")
+        b.setToolTip(tip + " (Ctrl+Z)")
+
+    def undo_last(self):
+        """Vrátí poslední úpravu: nejdřív v otevřené kapitole (Ctrl+Z), pak úpravy jiných kapitol a hromadné
+        změny (Nahradit vše v celé knize, smazání či přesun kapitoly, přepis AI) – i po přepnutí kapitoly."""
+        if self.reading():
+            self.set_mode(False)
+        doc = self.text.document()
+        if doc.isUndoAvailable():
+            doc.undo()
+            self._changed()
+        elif self._history:
+            h = self._history.pop()
+            if h["kind"] == "book":
+                self.project["chapters"][:] = h["chapters"]
+                self.outline["chapters"][:] = h["outline"]
+                self.cur = -1
+                self.refresh_list()
+                if self.project["chapters"]:
+                    self._select_no_flush(min(h["cur"], len(self.project["chapters"]) - 1))
+            elif h["i"] < len(self.project["chapters"]):
+                ch = self.project["chapters"][h["i"]]
+                if h["i"] == self.cur:
+                    self.cur = -1
+                ch["html"], ch["text"] = h["html"], h["text"]
+                self._select_no_flush(h["i"])
+            self.dirty = True
+            self._changed()
+            self.statusBar().showMessage(tr("Vráceno: {}").format(h["label"]), 6000)
+        else:
+            self.statusBar().showMessage(tr("Není co vrátit."), 4000)
+        self._update_undo_tip()
+        if self.ribbon.currentIndex() == self.search_tab_index:
+            self.search_tab.refresh_marks()
+
+    def _select_no_flush(self, i: int):
+        self._bulk = True
+        try:
+            self.select_chapter(i)
+        finally:
+            self._bulk = False
 
     # ================================================================ režim Čtení
     def reading(self) -> bool:
@@ -666,9 +895,14 @@ class BookEditor(QtWidgets.QMainWindow):
                 QtCore.QTimer.singleShot(0, lambda: self.reading() and self.set_fullscreen(True))
         else:
             self.set_fullscreen(False)
+            target = None
             if self.reader:
                 self.reader.stop_speaking()
                 self.reader.state.save()
+                try:
+                    target = self.reader.edit_target()
+                except Exception:  # noqa: BLE001 – přenos místa nesmí zablokovat přepnutí
+                    target = None
             for i in range(self.ribbon.count()):
                 self.ribbon.setTabVisible(i, i not in (self.read_tab, self.look_tab))
             back = getattr(self, "_edit_tab", 1)
@@ -677,9 +911,63 @@ class BookEditor(QtWidgets.QMainWindow):
             self.chapters_dock.setVisible(bool(self.view_opts.get("chapters_panel", True)))
             self.statusBar().setVisible(True)
             self.text.setFocus()
+            if target:
+                QtCore.QTimer.singleShot(0, lambda t=target: self.goto_reader_place(t))
         self.b_mode_read.setChecked(read)
         self.b_mode_edit.setChecked(not read)
         self.mode_changed.emit(read)
+
+    def goto_reader_place(self, t: dict) -> bool:
+        """Úpravy na stejném místě jako čtečka: najde text (označený / první větu stránky) v kapitolách a
+        označí ho; když se nenajde, aspoň otevře kapitolu na stejném podílu."""
+        import text_search
+
+        chapters = self.project["chapters"]
+        if not chapters:
+            return False
+        titles = [c.get("title", "") for c in self.outline.get("chapters", [])]
+        hint = titles.index(t.get("title")) if t.get("title") in titles else min(t.get("chapter", 0), len(chapters) - 1)
+        snippet = next((x.strip() for x in t.get("text", "").split("\n") if x.strip()), "")[:160]
+        pat = text_search.compile_py(snippet, case=True, loose=False) if snippet else None
+        order = sorted(range(len(chapters)), key=lambda j: abs(j - hint))
+        for j in order if pat else []:
+            body = document_to_plain(self.text.document()) if j == self.cur else chapters[j].get("text", "")
+            hits = [m.start() for m in pat.finditer(body)]
+            if not hits:
+                continue
+            # opakuje-li se text v kapitole, vezme se výskyt nejblíž místu čtení
+            want = float(t.get("fraction", 0)) * len(body) if j == hint else 0
+            nth = min(range(len(hits)), key=lambda k: abs(hits[k] - want))
+            if j != self.cur:
+                self.select_chapter(j)
+            rx = QtCore.QRegularExpression(text_search.search_regex(snippet, True, False, False),
+                                           QtCore.QRegularExpression.UseUnicodePropertiesOption)
+            c = QtGui.QTextCursor(self.text.document())
+            for _ in range(nth + 1):
+                nxt = self.text.document().find(rx, c)
+                if nxt.isNull():
+                    break
+                c = nxt
+            if not c.hasSelection():
+                continue
+            if not t.get("select"):
+                c.setPosition(c.selectionStart())
+            self._center_on(c)
+            return True
+        if hint != self.cur:
+            self.select_chapter(hint)
+        c = self.text.textCursor()
+        c.setPosition(int(max(0, self.text.document().characterCount() - 1) * float(t.get("fraction", 0))))
+        self._center_on(c)
+        return False
+
+    def _center_on(self, c: QtGui.QTextCursor):
+        self.text.setTextCursor(c)
+        self.text.ensureCursorVisible()
+        sb = self.text.verticalScrollBar()
+        r = self.text.cursorRect(c)
+        sb.setValue(sb.value() + r.center().y() - self.text.viewport().height() // 3)
+        self.text.setFocus()
 
     def _file_tab(self) -> QtWidgets.QWidget:
         """Karta Soubor jako ve Wordu: uložit, uložit jako (DOCX, PDF, MOBI, ODT, TXT…), export, tisk."""
@@ -1061,7 +1349,8 @@ class BookEditor(QtWidgets.QMainWindow):
 
         # --- Úpravy
         edit = RibbonGroup("Úpravy")
-        edit.grid.addWidget(self._tb(emoji_icon("↩️"), "Zpět", t.undo, shortcut="Ctrl+Z"), 0, 0)
+        edit.grid.addWidget(self._tb(emoji_icon("↩️"), "Vrátit poslední úpravu (i v jiné kapitole a Nahradit vše)",
+                                     self.undo_last, shortcut="Ctrl+Z"), 0, 0)
         edit.grid.addWidget(self._tb(emoji_icon("↪️"), "Znovu", t.redo, shortcut="Ctrl+Y"), 1, 0)
         edit.grid.addWidget(self._tb(emoji_icon("➕"), "Přiblížit", lambda: t.zoomIn(1)), 0, 1)
         edit.grid.addWidget(self._tb(emoji_icon("➖"), "Oddálit", lambda: t.zoomOut(1)), 1, 1)
@@ -1360,7 +1649,7 @@ class BookEditor(QtWidgets.QMainWindow):
             self.search_tab.fill_chapters()
 
     def store_current(self):
-        if not self.project["chapters"] or self.cur >= len(self.project["chapters"]):
+        if not self.project["chapters"] or not 0 <= self.cur < len(self.project["chapters"]):
             return
         doc = self.text.document()
         ch = self.project["chapters"][self.cur]
@@ -1368,7 +1657,8 @@ class BookEditor(QtWidgets.QMainWindow):
         ch["text"] = document_to_plain(doc)
 
     def select_chapter(self, i: int):
-        if self.project["chapters"] and self.cur < len(self.project["chapters"]) and i != self.cur:
+        if self.project["chapters"] and 0 <= self.cur < len(self.project["chapters"]) and i != self.cur:
+            self._flush_chapter_edit()
             self.store_current()
         self.cur = i
         ch = self.project["chapters"][i]
@@ -1378,6 +1668,7 @@ class BookEditor(QtWidgets.QMainWindow):
         self.text.document().setDefaultFont(base)
         self.text.document().clearUndoRedoStacks()
         self.text.document().setModified(False)
+        self._chapter_orig = (i, self.text.document().toHtml(), ch.get("text", ""))
         self.ch_title.setText(self.outline["chapters"][i]["title"])
         self.loading = False
         self.chapters.blockSignals(True)
@@ -1417,6 +1708,8 @@ class BookEditor(QtWidgets.QMainWindow):
         if QtWidgets.QMessageBox.question(self, "Smazat kapitolu", f"Opravdu smazat kapitolu „{t}“?") \
                 != QtWidgets.QMessageBox.Yes:
             return
+        self.push_history(tr("smazání kapitoly „{}“").format(t))
+        self._bulk = True
         del self.project["chapters"][self.cur]
         del self.outline["chapters"][self.cur]
         self.cur = max(0, self.cur - 1)
@@ -1426,13 +1719,14 @@ class BookEditor(QtWidgets.QMainWindow):
             self.select_chapter(self.cur)
         else:
             self.text.clear()
+        self._bulk = False
         self._changed()
 
     def move_chapter(self, d: int):
         j = self.cur + d
         if not (0 <= j < len(self.project["chapters"])):
             return
-        self.store_current()
+        self.push_history(tr("přesun kapitoly"))
         for lst in (self.project["chapters"], self.outline["chapters"]):
             lst[self.cur], lst[j] = lst[j], lst[self.cur]
         self.cur = j

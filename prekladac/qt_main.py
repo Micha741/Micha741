@@ -2138,11 +2138,43 @@ class SettingsPage(QtWidgets.QWidget):
         bg.addWidget(b_res, 1, 1)
         bg.setColumnStretch(2, 1)
         g.addWidget(bbox, 7, 0, 1, 3)
-        g.addWidget(label(f"Nastavení programu: {core.config_path()}", "Hint"), 8, 0, 1, 3)
-        g.setRowStretch(9, 1)
+        cbox = QtWidgets.QGroupBox("Mezipaměť překladů")
+        cg = QtWidgets.QGridLayout(cbox)
+        self.tr_cache = QtWidgets.QCheckBox("Pamatovat si přeložený text (stejný úsek se podruhé nepřekládá)")
+        self.tr_cache.setToolTip("Při opakovaném překladu stejné knihy, po přerušení nebo u opakovaných vět se už "
+                                 "přeložené úseky vezmou z mezipaměti – rychlejší a šetří placené znaky. Změna "
+                                 "překladače, modelu, jazyka, pokynů nebo glosáře znamená nový překlad.")
+        self.tr_cache.setChecked(cfg.get("translation_cache", True))
+        cg.addWidget(self.tr_cache, 0, 0, 1, 3)
+        import translation_cache
+
+        self.tr_cache_info = label(translation_cache.describe(translation_cache.TranslationCache()), "Hint")
+        cg.addWidget(self.tr_cache_info, 1, 0, 1, 2)
+        b_clr = QtWidgets.QPushButton("🗑 Vymazat mezipaměť")
+        b_clr.setToolTip("Smaže uložené překlady – další překlad půjde znovu přes překladač.")
+        b_clr.clicked.connect(self.clear_translation_cache)
+        cg.addWidget(b_clr, 1, 2)
+        cg.setColumnStretch(1, 1)
+        g.addWidget(cbox, 8, 0, 1, 3)
+        g.addWidget(label(f"Nastavení programu: {core.config_path()}", "Hint"), 9, 0, 1, 3)
+        g.setRowStretch(10, 1)
         g.setColumnStretch(1, 1)
         self.refresh_dictionary()
         return w
+
+    def clear_translation_cache(self):
+        import translation_cache
+
+        c = translation_cache.TranslationCache()
+        if QtWidgets.QMessageBox.question(self, "Mezipaměť překladů",
+                                          translation_cache.describe(c) + "\n\nOpravdu smazat uložené překlady?") \
+                != QtWidgets.QMessageBox.Yes:
+            return
+        try:
+            c.clear()
+        except Exception as e:  # noqa: BLE001
+            QtWidgets.QMessageBox.warning(self, "Mezipaměť překladů", f"Nepodařilo se smazat: {e}")
+        self.tr_cache_info.setText(translation_cache.describe(c))
 
     def _info_tab(self, cfg) -> QtWidgets.QWidget:
         """O programu: verze, co umí, historie verzí, plány a vlastní poznámky uživatele."""
@@ -2321,6 +2353,7 @@ class SettingsPage(QtWidgets.QWidget):
                            "chars": self.auto_chars.value()}
         cfg["check_updates"] = self.check_updates.isChecked()
         cfg["auto_update"] = self.auto_update.isChecked()
+        cfg["translation_cache"] = self.tr_cache.isChecked()
         cfg.setdefault("reader", {})["spread"] = self.r_spread.currentData()
         cfg["reader_fullscreen"] = self.r_full.isChecked()
         ed = self.win.editor
