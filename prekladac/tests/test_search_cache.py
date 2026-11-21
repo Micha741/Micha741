@@ -109,3 +109,36 @@ def test_run_jobs_uses_cache(tmp_path, monkeypatch):
         app.run_jobs([str(src)], True, "txt", inner, str(tmp_path / "out"), False, lambda *_: None,
                      lambda *_: None, None, threading.Event())
     assert len(inner.calls) == 1  # podruhé vše z mezipaměti
+
+
+def test_http_request_retries_incomplete_read(monkeypatch):
+    import http.client
+    import urllib.request
+
+    import free_engines as fe
+
+    calls = []
+
+    class Resp:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+        def read(self):
+            calls.append(1)
+            if len(calls) == 1:
+                raise http.client.IncompleteRead(b"x" * 139264, 5000)
+            return b"RIFF-ok"
+
+    monkeypatch.setattr(urllib.request, "urlopen", lambda *a, **k: Resp())
+    monkeypatch.setattr(fe.time, "sleep", lambda s: None)
+    assert fe.http_request("https://example.invalid/tts", retries=2, service="Hlas Azure") == b"RIFF-ok"
+    calls.clear()
+    Resp.read = lambda self: (_ for _ in ()).throw(http.client.IncompleteRead(b"x" * 10, 5))
+    try:
+        fe.http_request("https://example.invalid/tts", retries=1, service="Hlas Azure")
+        raise AssertionError("mělo selhat")
+    except fe.EngineError as e:
+        assert "přerušilo" in str(e) and "Hlas Azure" in str(e)

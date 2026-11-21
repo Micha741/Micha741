@@ -297,7 +297,7 @@ def cloud_synthesize(text: str, service: str, voice: str, rate: float, out: str)
         ssml = (f"<speak version='1.0' xml:lang='{lang}'><voice name='{voice}'><prosody rate='{pct:+d}%'>"
                 f"{_escape(text)}</prosody></voice></speak>")
         data = http_request(f"https://{region}.tts.speech.microsoft.com/cognitiveservices/v1",
-                            data=ssml.encode("utf-8"), method="POST", timeout=60, retries=2, service="Hlas Azure",
+                            data=ssml.encode("utf-8"), method="POST", timeout=60, retries=3, service="Hlas Azure",
                             headers={"Ocp-Apim-Subscription-Key": key, "Content-Type": "application/ssml+xml",
                                      "X-Microsoft-OutputFormat": "riff-24khz-16bit-mono-pcm"})
     else:
@@ -306,7 +306,7 @@ def cloud_synthesize(text: str, service: str, voice: str, rate: float, out: str)
                 "audioConfig": {"audioEncoding": "LINEAR16", "sampleRateHertz": 24000,
                                 "speakingRate": max(0.5, min(2.0, rate))}}
         res = json.loads(http_request("https://texttospeech.googleapis.com/v1/text:synthesize?key=" + key,
-                                      data=body, method="POST", timeout=60, retries=2, service="Hlas Google"))
+                                      data=body, method="POST", timeout=60, retries=3, service="Hlas Google"))
         data = base64.b64decode(res.get("audioContent") or "")
     if not data.startswith(b"RIFF"):
         raise EngineError("Služba nevrátila zvuk.")
@@ -398,7 +398,7 @@ class Speaker:
                 piper = None
                 if name and name.startswith(CLOUD_PREFIX):
                     _p, svc, vid = name.split(":", 2)
-                    for part in split_for_voice(text):
+                    for part in split_for_voice(text, 500):  # kratší kusy: začne hrát dřív, menší přenos
                         if self._halted():
                             break
                         self._speak_file(lambda out, t=part: cloud_synthesize(t, svc, vid, rate, out))

@@ -64,6 +64,7 @@
 - 🔍 Hledání v okně knihy: hledá už při psaní, bez ohledu na háčky a čárky („zluty kun“ najde „žlutý kůň“, lze vypnout), mezera najde i pevnou mezeru, uvozovky a pomlčky všech druhů jsou stejné; všechny výskyty v kapitole se žlutě zvýrazní a ukáže se pořadí „3 / 12“ v celé knize; nalezený text zůstane vidět označený.
 - ↩️ Vrátit poslední úpravu (vlevo nahoře vedle „← Zpět“, v kartě Domů i Hledání): vrátí i úpravy v jiné kapitole po přepnutí, Nahradit vše v celé knize, smazání a přesun kapitoly; v nápovědě tlačítka je vidět, co se vrátí.
 - 📖→✏️ Ze čtečky do Úprav na stejné místo: označený, kliknutý nebo nalezený text ve čtečce se v Úpravách rovnou označí; jinak se otevře místo, kde právě čtete.
+- Čtení nahlas hlasem z internetu (Vlasta, Antonín, Chirp): když se spojení přeruší uprostřed přenosu zvuku (chyba IncompleteRead), program to sám zkusí znovu místo hlášky „Hlas není k dispozici“; odstavce se posílají po kratších kusech, takže čtení začne dřív. Totéž opakování platí pro stahování hlasů a překlady.
 - ♻ Mezipaměť překladů (Nastavení → Obecné): jednou přeložený úsek se podruhé nepřekládá – opakovaný překlad stejné knihy, pokračování po přerušení (hotové části se průběžně ukládají) i opakované věty jsou rychlejší a šetří placené znaky; změna překladače, modelu, jazyka, pokynů nebo glosáře znamená nový překlad; tlačítko Vymazat mezipaměť.
 
 **1.0.126 (17. 11. 2026)**
