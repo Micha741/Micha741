@@ -67,11 +67,11 @@ SERVICES = {
     ]),
     # synchronizace knih a čtení s telefonem (není to překladač)
     "gdrive": ("Google Disk – knihy a čtení i v telefonu", [
-        ("client_id", "ID klienta (…apps.googleusercontent.com)", False, "", None),
+        ("client_id", "ID klienta (stačí část před tečkou, konec se doplní)", False, "", None),
         ("client_secret", "Tajný klíč klienta", True, "", None),
     ]),
     "webdav": ("Synology / WebDAV (Nextcloud…) – knihy a čtení i v telefonu", [
-        ("url", "Adresa WebDAV (např. https://mujnas.synology.me:5006/home)", False, "", None),
+        ("url", "Adresa WebDAV (např. mujnas.synology.me:5006/home – https:// se doplní)", False, "", None),
         ("user", "Uživatel", False, "", None),
         ("password", "Heslo", True, "", None),
         ("trust_cert", "Důvěřovat vlastnímu certifikátu NAS (jen v domácí síti)", False, "", "checkbox"),

@@ -60,6 +60,7 @@
 # Historie verzí
 
 **Nová verze**
+- Nastavení → Služby a klíče: adresy (Synology/WebDAV, Ollama, LibreTranslate, OpenAI…) bez http:// a https:// – doplní se samy (v domácí síti http, jinak https); ID klienta Google stačí zadat po tečku, konec „.apps.googleusercontent.com“ se doplní; u ID klienta a tajného klíče kontrola počtu znaků (upozorní, když znak chybí nebo přebývá).
 - Návod Google Disk: co dělat při „Přístup zablokován … Chyba 403: access_denied“ (aplikace v režimu Testování).
 
 **1.0.140 (22. 11. 2026)**

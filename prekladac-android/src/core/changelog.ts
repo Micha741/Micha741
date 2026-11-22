@@ -10,6 +10,14 @@ export interface Release {
 
 export const ANDROID_HISTORY: Release[] = [
   {
+    version: '1.2.1',
+    date: '',
+    items: [
+      'Adresy (Synology/WebDAV, OpenRouter…) bez psaní http:// a https:// – doplní se samy (v domácí síti http, jinak https).',
+      'ID klienta Google: stačí část před tečkou, konec „.apps.googleusercontent.com“ se doplní; u ID i tajného klíče kontrola počtu znaků (upozorní, když znak chybí nebo přebývá).',
+    ],
+  },
+  {
     version: '1.2.0',
     date: '22. 11. 2026',
     items: [

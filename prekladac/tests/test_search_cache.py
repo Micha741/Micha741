@@ -142,3 +142,22 @@ def test_http_request_retries_incomplete_read(monkeypatch):
         raise AssertionError("mělo selhat")
     except fe.EngineError as e:
         assert "přerušilo" in str(e) and "Hlas Azure" in str(e)
+
+
+def test_inputs_same_as_android():
+    import json
+
+    import inputs
+
+    raw = (Path(__file__).parent / "fixtures" / "input_cases.json").read_text(encoding="utf-8")
+    c = json.loads(raw.replace("{G}", inputs.GOOGLE_SUFFIX))
+    for i, o in c["urls"]:
+        assert inputs.normalize_url(i) == o, i
+    for i, o in c["client_ids"]:
+        assert inputs.normalize_google_client_id(i) == o, i
+    for i, o in c["client_id_checks"]:
+        w = inputs.check_google_client_id(i)
+        assert (o in w) if o else w == "", (i, w)
+    for i, o in c["secret_checks"]:
+        w = inputs.check_google_secret(i)
+        assert (o in w) if o else w == "", (i, w)

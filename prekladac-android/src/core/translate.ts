@@ -1,4 +1,5 @@
 // Překlad knihy: Google (zdarma), Claude, Gemini, DeepL, OpenAI-kompatibilní služby (OpenRouter, DeepSeek…).
+import { normalizeUrl } from './inputs';
 import Anthropic from '@anthropic-ai/sdk';
 import type { Block, Book } from './book';
 
@@ -256,7 +257,7 @@ export function makeTranslator(id: EngineId, target: string, s: EngineSettings, 
     }
     case 'openai': {
       if (!s.openaiKey) throw new Error('Chybí API klíč (Nastavení → OpenRouter / OpenAI-kompatibilní).');
-      const base = (s.openaiBase || 'https://openrouter.ai/api/v1').replace(/\/+$/, '');
+      const base = (normalizeUrl(s.openaiBase ?? '') || 'https://openrouter.ai/api/v1').replace(/\/+$/, '');
       const model = s.openaiModel || 'deepseek/deepseek-chat';
       return {
         maxChars: 8000,

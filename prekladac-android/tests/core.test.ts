@@ -752,3 +752,19 @@ test('text z fotky: odstavce z ML Kit, rozdělená slova, číslo stránky pryč
   assert.ok(sent.url.includes(':generateContent') && sent.key === 'K' && sent.body.contents[0].parts[0].inlineData.data === 'QUJD');
   await assert.rejects(aiOcr('QUJD', {}, fake as any), /Gemini nebo Claude/);
 });
+
+test('vstupy: http(s) doplnit, ID klienta Google dokončit, kontrola délky (stejně jako Windows)', async () => {
+  const { readFileSync } = await import('node:fs');
+  const inp = await import('../src/core/inputs');
+  const c = JSON.parse(readFileSync(`${process.cwd()}/../prekladac/tests/fixtures/input_cases.json`, 'utf8').split('{G}').join(inp.GOOGLE_SUFFIX));
+  for (const [i, o] of c.urls) assert.equal(inp.normalizeUrl(i), o, i);
+  for (const [i, o] of c.client_ids) assert.equal(inp.normalizeGoogleClientId(i), o, i);
+  for (const [i, o] of c.client_id_checks) {
+    const w = inp.checkGoogleClientId(i);
+    assert.ok(o ? w.includes(o) : w === '', `${i} → ${w}`);
+  }
+  for (const [i, o] of c.secret_checks) {
+    const w = inp.checkGoogleSecret(i);
+    assert.ok(o ? w.includes(o) : w === '', `${i} → ${w}`);
+  }
+});

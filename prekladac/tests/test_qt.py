@@ -1547,3 +1547,27 @@ def test_voice_studio_dialog_records_with_fake_mic(qapp, monkeypatch):
     dlg.delete_take()
     assert not dlg.ds.wav_path(first).is_file()
     dlg.reject()
+
+
+def test_settings_fill_scheme_and_google_client_id(qapp, monkeypatch):
+    import qt_main
+    from PySide6 import QtWidgets
+    win = qt_main.MainWindow()
+    f = win.settings.fields
+    dav, cid, sec = f["webdav"]["url"], f["gdrive"]["client_id"], f["gdrive"]["client_secret"]
+    dav.setText("192.168.1.20:5005/home")
+    dav.editingFinished.emit()
+    assert dav.text() == "http://192.168.1.20:5005/home"
+    cid.setText("123456789012-abcdefghijklmnopqrstuvwxyz012345")
+    cid.editingFinished.emit()
+    assert cid.text().endswith(".apps.googleusercontent.com")
+    texts = [w.text() for w in win.settings.findChildren(QtWidgets.QLabel)]
+    assert not any("pomlčkou" in t or "Konec ID" in t for t in texts)
+    cid.setText("123456789012-abcdefghijklmnopqrstuvwxyz0123" + ".apps.googleuser" + "content.com")
+    assert any("chybí 2 znaky" in w.text() for w in win.settings.findChildren(QtWidgets.QLabel))
+    sec.setText("GOCSPX-abc")
+    assert any("chybí 25 znaků" in w.text() for w in win.settings.findChildren(QtWidgets.QLabel))
+    f["openai"]["url"].setText("openrouter.ai/api/v1")  # bez opuštění pole – doplní se při uložení
+    win.settings.collect()
+    assert win.cfg["engines"]["openai"]["url"] == "https://openrouter.ai/api/v1"
+    win.close()

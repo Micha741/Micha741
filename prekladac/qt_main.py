@@ -1725,6 +1725,8 @@ class SettingsPage(QtWidgets.QWidget):
                 g.addWidget(w, r, 1)
                 self.fields[name][key] = w
                 r += 1
+                if isinstance(w, QtWidgets.QLineEdit):
+                    r = self._smart_field(name, key, w, g, r)
             btns = QtWidgets.QHBoxLayout()
             gb = QtWidgets.QPushButton("📘 Návod")
             gb.clicked.connect(lambda _c=False, n=name: self.show_guide(n))
@@ -1748,7 +1750,40 @@ class SettingsPage(QtWidgets.QWidget):
         scroll.setWidget(inner)
         return scroll
 
+    def _smart_field(self, name: str, key: str, w: QtWidgets.QLineEdit, g, r: int) -> int:
+        """Adresa bez http(s):// a ID klienta Google bez konce se po opuštění pole doplní; u ID a tajného
+        klíče se hned ukáže, když znak chybí nebo přebývá."""
+        import inputs
+
+        fix = inputs.normalizer(name, key)
+        if fix is not None:
+            def apply(e=w, f=fix):
+                n = f(e.text())
+                if n != e.text():
+                    e.setText(n)
+
+            w.editingFinished.connect(apply)
+            if key in inputs.URL_KEYS:
+                w.setToolTip("http:// nebo https:// se doplní samo (v domácí síti http, jinak https).")
+        check = inputs.CHECK.get((name, key))
+        if check is not None:
+            warn = label("", "Hint")
+            warn.setStyleSheet("color: #c0392b;")
+            g.addWidget(warn, r, 1)
+
+            def show(t, lab=warn, c=check):
+                msg = c(t)
+                lab.setText("⚠ " + msg if msg else "")
+                lab.setVisible(bool(msg))
+
+            w.textChanged.connect(show)
+            show(w.text())
+            r += 1
+        return r
+
     def collect(self):
+        import inputs
+
         cfg = self.win.cfg
         for name, ws in self.fields.items():
             sect = cfg["engines"].setdefault(name, {})
@@ -1756,7 +1791,9 @@ class SettingsPage(QtWidgets.QWidget):
                 if isinstance(w, QtWidgets.QCheckBox):
                     sect[key] = "ano" if w.isChecked() else ""
                     continue
-                sect[key] = w.currentData() if isinstance(w, QtWidgets.QComboBox) else w.text().strip()
+                val = w.currentData() if isinstance(w, QtWidgets.QComboBox) else w.text().strip()
+                fix = inputs.normalizer(name, key) if isinstance(val, str) else None
+                sect[key] = fix(val) if fix and val else val
 
     def gdrive_login(self):
         from qt_cloud import LoginDialog
