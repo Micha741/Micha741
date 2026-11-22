@@ -60,6 +60,7 @@
 # Historie verzí
 
 **Nová verze**
+- Návod Google Disk: co dělat při „Přístup zablokován … Chyba 403: access_denied“ (aplikace v režimu Testování).
 
 **1.0.140 (22. 11. 2026)**
 - Vlastní hlas v Colabu: když se okno pro nahrání ZIPu v prohlížeči nespustí, sešit poradí nahrát ZIP přes Google Disk (místo chyby MessageError); víc ZIPů ve složce se spojí do jednoho vstupu (stejné věty jen jednou); výchozí hlas Jirka se stáhne jen jednou a uloží na Google Disk (bez výpisu souborů Hugging Face); výpis trénování se ukládá do trenink.log a při chybě se ukáže jeho konec; když se v Colabu nesestaví espeakbridge (převod na hlásky), vezme se hotový z oficiálního balíčku Piper; Jirka se stahuje s ukazatelem průběhu a bez přihlášení k Hugging Face (chyba 401), buňka 5 počká na dokončení buňky 4; buňka 5 odmítne běžet bez grafické karty (T4 GPU); buňky 3–7 si po restartu samy připojí Google Disk; nepovinná buňka 1b začne trénovat znovu od Jirky (např. s novými nahrávkami).

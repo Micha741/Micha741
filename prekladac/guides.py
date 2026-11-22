@@ -341,6 +341,9 @@ Jak to funguje
 - „Google nezná ID klienta“ – klient musí být typu „TV a zařízení s omezeným vstupem“, ID a klíč bez mezer.
 - „Není zapnuté Google Drive API“ – krok 2, pak pár minut počkejte.
 - „Přihlášení vypršelo“ – aplikace není publikovaná (krok 3), přihlaste se znovu.
+- „Přístup zablokován … neprošla procesem ověření Googlem“ (Chyba 403: access_denied) – aplikace je ještě
+  v režimu Testování: https://console.cloud.google.com/auth/audience → „Publikovat aplikaci“ → Potvrdit
+  (nebo dole „Testovací uživatelé“ → Přidat uživatele → váš e-mail Google). Pak se přihlaste znovu.
 """,
     "google_tts": """Hlasy Google Cloud pro čtení nahlas a audioknihy (Chirp 3 HD a Wavenet)
 
