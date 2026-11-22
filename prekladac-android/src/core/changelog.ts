@@ -11,7 +11,7 @@ export interface Release {
 export const ANDROID_HISTORY: Release[] = [
   {
     version: '1.2.0',
-    date: '',
+    date: '22. 11. 2026',
     items: [
       'Obrázky v knize: velikost (malý až celá stránka), otočení, oříznutí (obálka 2:3, čtverec, 16:9…), použít jako obálku, odebrat.',
       'Více obrázků najednou v pořadí výběru; první se nabídne jako obálka. Obálka: oříznout na 2:3, nebo celý obrázek.',
