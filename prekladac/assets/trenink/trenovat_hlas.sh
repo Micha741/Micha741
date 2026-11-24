@@ -12,6 +12,7 @@
 # Hotový hlas se uloží do SLOŽKA/hotovo/ (jméno.onnx + jméno.onnx.json) a Překladač ho načte.
 set -euo pipefail
 export PATH="$PATH:/usr/lib/wsl/lib"  # nvidia-smi ve WSL (Ubuntu i Debian)
+export PIP_RETRIES=10 PIP_DEFAULT_TIMEOUT=60  # velké balíčky (PyTorch): při výpadku spojení zkoušet déle
 
 if [[ "${1:-}" == "--system" ]]; then
   if command -v espeak-ng > /dev/null && command -v cmake > /dev/null && command -v git > /dev/null \
@@ -61,6 +62,11 @@ if [[ ! -f "$HOME_T/.hotovo-instalace" ]]; then
   for p in espeak-ng cmake git; do
     command -v "$p" > /dev/null || { echo "⚠ Chybí $p – spusťte nejdřív: bash trenovat_hlas.sh --system (jako root)"; exit 1; }
   done
+  if ! getent hosts pypi.org > /dev/null; then
+    echo "⚠ Linux (WSL) nemá připojení k internetu (nefunguje DNS). Návod: v Debianu"
+    echo "  echo 'nameserver 8.8.8.8' | sudo tee /etc/resolv.conf   a zkuste to znovu."
+    exit 1
+  fi
   python3 -m venv "$VENV"
   # shellcheck disable=SC1091
   source "$VENV/bin/activate"
