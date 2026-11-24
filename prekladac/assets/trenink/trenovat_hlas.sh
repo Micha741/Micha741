@@ -18,11 +18,11 @@ if [[ "${1:-}" == "--system" ]]; then
       && python3 -c "import venv, ensurepip" 2> /dev/null; then
     exit 0  # už nainstalováno
   fi
-  echo "== Instaluji balíčky Ubuntu (jen poprvé) =="
+  echo "== Instaluji balíčky Linuxu (jen poprvé, 5–15 minut – průběh se vypisuje) =="
   export DEBIAN_FRONTEND=noninteractive
-  apt-get update -qq
-  apt-get install -y -qq espeak-ng build-essential cmake ninja-build git curl ca-certificates python3 python3-venv python3-dev python3-pip unzip > /dev/null
-  echo "✓ Balíčky Ubuntu jsou nainstalované."
+  apt-get update
+  apt-get install -y espeak-ng build-essential cmake ninja-build git curl ca-certificates python3 python3-venv python3-dev python3-pip unzip
+  echo "✓ Balíčky Linuxu jsou nainstalované."
   exit 0
 fi
 
