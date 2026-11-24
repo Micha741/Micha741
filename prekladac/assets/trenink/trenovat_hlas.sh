@@ -11,6 +11,7 @@
 # SLOŽKA (cesta ve WSL, např. /mnt/c/Users/…/trenink_hlasu/muj_hlas) obsahuje ZIP ze studia.
 # Hotový hlas se uloží do SLOŽKA/hotovo/ (jméno.onnx + jméno.onnx.json) a Překladač ho načte.
 set -euo pipefail
+export PATH="$PATH:/usr/lib/wsl/lib"  # nvidia-smi ve WSL (Ubuntu i Debian)
 
 if [[ "${1:-}" == "--system" ]]; then
   if command -v espeak-ng > /dev/null && command -v cmake > /dev/null && command -v git > /dev/null \
@@ -20,7 +21,7 @@ if [[ "${1:-}" == "--system" ]]; then
   echo "== Instaluji balíčky Ubuntu (jen poprvé) =="
   export DEBIAN_FRONTEND=noninteractive
   apt-get update -qq
-  apt-get install -y -qq espeak-ng build-essential cmake ninja-build git python3 python3-venv python3-dev unzip > /dev/null
+  apt-get install -y -qq espeak-ng build-essential cmake ninja-build git curl ca-certificates python3 python3-venv python3-dev python3-pip unzip > /dev/null
   echo "✓ Balíčky Ubuntu jsou nainstalované."
   exit 0
 fi
