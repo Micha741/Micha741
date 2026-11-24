@@ -76,9 +76,12 @@ class StudioDialog(QtWidgets.QDialog):
         b_add.clicked.connect(self.add_from_book)
         b_exp = QtWidgets.QPushButton(tr("📦 Export pro trénování…"))
         b_exp.clicked.connect(self.export)
+        b_local = QtWidgets.QPushButton(tr("🖥 Trénovat v tomto počítači…"))
+        b_local.setToolTip(tr("S grafikou NVIDIA (např. RTX 3050) přes WSL – bez Colabu a bez odpojování."))
+        b_local.clicked.connect(lambda: LocalTrainDialog(self, self.ds.name).exec())
         b_help = QtWidgets.QPushButton(tr("📘 Jak natrénovat hlas"))
         b_help.clicked.connect(lambda: show_training_help(self))
-        for b in (b_add, b_exp, b_help):
+        for b in (b_add, b_exp, b_local, b_help):
             row2.addWidget(b)
         row2.addStretch(1)
         close = QtWidgets.QPushButton(tr("Zavřít"))
@@ -241,3 +244,108 @@ def import_voice_dialog(parent) -> bool:
         "Hlas „{}“ je připravený ✓\n\nNajdete ho ve čtečce (Čtení nahlas → hlas) i v audioknize. Funguje bez internetu.")
         .format(name))
     return True
+
+
+class LocalTrainDialog(QtWidgets.QDialog):
+    """Trénink hlasu v tomto počítači (WSL + grafika NVIDIA) – bez Colabu, bez limitů a odpojování."""
+
+    def __init__(self, parent=None, name: str = ""):
+        import voice_train_local as vt
+
+        super().__init__(parent)
+        self.vt = vt
+        self.setWindowTitle(tr("Trénovat hlas v tomto počítači (NVIDIA)"))
+        self.resize(640, 420)
+        lay = QtWidgets.QVBoxLayout(self)
+        lay.addWidget(label(tr(
+            "Hlas se dotrénuje z Jirky na vaší grafice NVIDIA (stačí GeForce s 6–8 GB, např. RTX 3050) ve WSL – "
+            "Linuxu zabudovaném ve Windows. Trénink běží v samostatném okně, můžete ho kdykoli zavřít (Ctrl+C) "
+            "a později pokračovat. Ukázku hlasu si poslechnete kdykoli během tréninku."), "Hint"))
+        top = QtWidgets.QHBoxLayout()
+        top.addWidget(QtWidgets.QLabel(tr("Hlas:")))
+        self.name = QtWidgets.QComboBox()
+        names = sorted(p.name for p in vs.voices_root().iterdir() if p.is_dir() and (p / "wavs").is_dir())
+        self.name.addItems(names or [vs.safe(name or "muj_hlas")])
+        if name:
+            self.name.setCurrentText(vs.safe(name))
+        self.name.currentTextChanged.connect(lambda _t: self.refresh())
+        top.addWidget(self.name, 1)
+        lay.addLayout(top)
+        self.info = label("", "Hint")
+        lay.addWidget(self.info)
+        grid = QtWidgets.QGridLayout()
+        self.b_run = QtWidgets.QPushButton(tr("▶ Spustit / pokračovat v tréninku"))
+        self.b_run.clicked.connect(lambda: self.start("trenovat.bat", fresh_zip=True))
+        self.b_sample = QtWidgets.QPushButton(tr("🔊 Ukázka z průběhu"))
+        self.b_sample.setToolTip(tr("Vytvoří hlas z dosavadního tréninku (trénink může dál běžet), pak ho načtěte."))
+        self.b_sample.clicked.connect(lambda: self.start("ukazka.bat"))
+        self.b_load = QtWidgets.QPushButton(tr("📥 Načíst natrénovaný hlas"))
+        self.b_load.clicked.connect(self.load)
+        self.b_again = QtWidgets.QPushButton(tr("🔁 Začít znovu od Jirky"))
+        self.b_again.clicked.connect(self.again)
+        self.b_folder = QtWidgets.QPushButton(tr("📂 Otevřít složku"))
+        self.b_folder.clicked.connect(lambda: QtGui.QDesktopServices.openUrl(
+            QtCore.QUrl.fromLocalFile(str(self.vt.train_dir(self.name.currentText())))))
+        b_help = QtWidgets.QPushButton(tr("📘 Návod"))
+        b_help.clicked.connect(lambda: show_training_help(self))
+        for i, b in enumerate((self.b_run, self.b_sample, self.b_load, self.b_again, self.b_folder, b_help)):
+            grid.addWidget(b, i // 2, i % 2)
+        lay.addLayout(grid)
+        lay.addStretch(1)
+        close = QtWidgets.QPushButton(tr("Zavřít"))
+        close.clicked.connect(self.accept)
+        lay.addWidget(close, 0, Qt.AlignRight)
+        self.timer = QtCore.QTimer(self)
+        self.timer.timeout.connect(self.refresh)
+        self.timer.start(5000)
+        self.refresh()
+
+    def _dir(self) -> Path:
+        return self.vt.train_dir(self.name.currentText())
+
+    def refresh(self):
+        vt = self.vt
+        parts = []
+        if not vt.wsl_available():
+            parts.append(tr("⚠ WSL není nainstalované. Spusťte příkazový řádek jako správce, zadejte  wsl --install  "
+                            "a restartujte počítač (podrobně v Návodu)."))
+        ds = vs.Dataset(self.name.currentText())
+        n = len(ds.recorded())
+        parts.append(tr("Nahraných vět: {}").format(n) + ("" if n >= 300 else tr(" (doporučeno aspoň 300)")))
+        st = vt.status(self._dir())
+        if st["epoch"]:
+            parts.append(tr("Trénink: epocha {} z {}").format(st["epoch"], st["epochs"]))
+        if st["voice"] is not None:
+            parts.append(tr("Připravený hlas: {}").format(st["voice"].name))
+        self.info.setText("\n".join(parts))
+        for b in (self.b_run, self.b_sample, self.b_again):
+            b.setEnabled(vt.wsl_available() and n >= 50)
+        self.b_load.setEnabled(st["voice"] is not None)
+
+    def start(self, which: str, fresh_zip: bool = False):
+        try:
+            ds = vs.Dataset(self.name.currentText())
+            d = self.vt.prepare(ds) if fresh_zip or not (self._dir() / self.vt.SCRIPT).is_file() else self._dir()
+            self.vt.write_bats(d, ds.name)
+            self.vt.launch(d, which)
+        except (vs.StudioError, OSError) as e:
+            QtWidgets.QMessageBox.warning(self, tr("Trénink hlasu"), str(e))
+            return
+        self.info.setText(self.info.text() + "\n" + tr("Otevřelo se okno s tréninkem – první spuštění instaluje "
+                                                       "(asi 15 minut, stáhne se i Jirka 849 MB)."))
+
+    def again(self):
+        if QtWidgets.QMessageBox.question(self, tr("Začít znovu"), tr(
+                "Smazat dosavadní průběh tréninku a začít znovu od Jirky?\n(Nahrávky zůstanou.)")) \
+                == QtWidgets.QMessageBox.Yes:
+            self.start("znovu_od_jirky.bat", fresh_zip=True)
+
+    def load(self):
+        try:
+            dst = self.vt.load_voice(self._dir())
+        except vs.StudioError as e:
+            QtWidgets.QMessageBox.warning(self, tr("Načíst hlas"), str(e))
+            return
+        QtWidgets.QMessageBox.information(self, tr("Načíst hlas"), tr(
+            "Hlas „{}“ je připravený ✓\n\nNajdete ho ve čtečce (Čtení nahlas → hlas) i v audioknize. "
+            "Po dalším tréninku ho načtěte znovu – nahradí se.").format(dst.stem))

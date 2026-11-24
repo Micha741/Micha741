@@ -60,6 +60,12 @@
 # Historie verzí
 
 **Nová verze**
+- 📱 Přenést do telefonu (Nastavení → Služby a klíče → Google Disk / Synology): QR kód s nastavením synchronizace i přihlášením – telefon ho načte (Android 1.2.1: 📷 Načíst z počítače, nebo fotoaparátem / Google Lens), nic se neopisuje. Okno se po 5 minutách samo zavře.
+- 🖥 Vlastní hlas: trénování ve vlastním počítači s grafikou NVIDIA (např. RTX 3050) přes WSL – bez Colabu, bez odpojování a denních limitů; tlačítka Spustit/pokračovat, Ukázka z průběhu, Načíst natrénovaný hlas a Začít znovu od Jirky; při nedostatku paměti grafiky se dávka sama zmenší.
+- Nastavení → Služby a klíče: adresy (Synology/WebDAV, Ollama, LibreTranslate, OpenAI…) bez http:// a https:// – doplní se samy (v domácí síti http, jinak https); ID klienta Google stačí zadat po tečku, konec „.apps.googleusercontent.com“ se doplní; u ID klienta a tajného klíče kontrola počtu znaků (upozorní, když znak chybí nebo přebývá).
+- Návod Google Disk: co dělat při „Přístup zablokován … Chyba 403: access_denied“ (aplikace v režimu Testování).
+
+**1.0.140 (22. 11. 2026)**
 - Vlastní hlas v Colabu: když se okno pro nahrání ZIPu v prohlížeči nespustí, sešit poradí nahrát ZIP přes Google Disk (místo chyby MessageError); víc ZIPů ve složce se spojí do jednoho vstupu (stejné věty jen jednou); výchozí hlas Jirka se stáhne jen jednou a uloží na Google Disk (bez výpisu souborů Hugging Face); výpis trénování se ukládá do trenink.log a při chybě se ukáže jeho konec; když se v Colabu nesestaví espeakbridge (převod na hlásky), vezme se hotový z oficiálního balíčku Piper; Jirka se stahuje s ukazatelem průběhu a bez přihlášení k Hugging Face (chyba 401), buňka 5 počká na dokončení buňky 4; buňka 5 odmítne běžet bez grafické karty (T4 GPU); buňky 3–7 si po restartu samy připojí Google Disk; nepovinná buňka 1b začne trénovat znovu od Jirky (např. s novými nahrávkami).
 - 🔍 Hledání v okně knihy: hledá už při psaní, bez ohledu na háčky a čárky („zluty kun“ najde „žlutý kůň“, lze vypnout), mezera najde i pevnou mezeru, uvozovky a pomlčky všech druhů jsou stejné; všechny výskyty v kapitole se žlutě zvýrazní a ukáže se pořadí „3 / 12“ v celé knize; nalezený text zůstane vidět označený.
 - ↩️ Vrátit poslední úpravu (vlevo nahoře vedle „← Zpět“, v kartě Domů i Hledání): vrátí i úpravy v jiné kapitole po přepnutí, Nahradit vše v celé knize, smazání a přesun kapitoly; v nápovědě tlačítka je vidět, co se vrátí.

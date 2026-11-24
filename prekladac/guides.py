@@ -283,6 +283,17 @@ Z vašich nahrávek se natrénuje hlas Piper (stejný typ jako Jirka, ale s vaš
    a spuštěním buněk 1–5 se pokračuje (klidně další den). Mezivýsledek si poslechnete buňkou 6 kdykoli;
    často zní dobře už dřív. Rychlejší je Colab Pro nebo počítač s grafikou NVIDIA.
 
+3b. Nebo trénování ve vlastním počítači s grafikou NVIDIA (rychlejší než bezplatný Colab, bez odpojování)
+   Stačí GeForce s 6–8 GB (např. RTX 3050, 3060, 4060) a Windows 10/11. Radeon a Intel neumí.
+   Jednou: aktuální ovladač NVIDIA (nvidia.com nebo GeForce Experience), pak Start → napište „cmd“ →
+   Spustit jako správce → zadejte  wsl --install  → restart počítače → otevře se Ubuntu, zvolte jméno a heslo.
+   Pak: Nastavení → Součásti → Vlastní hlas → 🖥 Trénovat v tomto počítači → ▶ Spustit.
+   Otevře se okno s průběhem; první spuštění vše nainstaluje (asi 15 minut, stáhne se i Jirka 849 MB).
+   Okno můžete kdykoli zavřít (Ctrl+C) a později pokračovat – průběh zůstává. „🔊 Ukázka z průběhu“ vytvoří
+   hlas z dosavadního tréninku, „📥 Načíst natrénovaný hlas“ ho přidá do čtečky a audioknihy.
+   Kolik to trvá: s 300 větami na RTX 3050 zhruba 10–20 hodin pro 2000 epoch; často zní dobře už po 1000.
+   Při nedostatku paměti grafiky se dávka sama zmenší.
+
 4. Import
    Oba soubory dejte do jedné složky → Nastavení → Součásti → 📥 Importovat hlas (.onnx).
    Hlas se objeví ve čtečce (Čtení nahlas → hlas) a v audioknize (okno knihy → Kniha → Audiokniha).
@@ -341,6 +352,9 @@ Jak to funguje
 - „Google nezná ID klienta“ – klient musí být typu „TV a zařízení s omezeným vstupem“, ID a klíč bez mezer.
 - „Není zapnuté Google Drive API“ – krok 2, pak pár minut počkejte.
 - „Přihlášení vypršelo“ – aplikace není publikovaná (krok 3), přihlaste se znovu.
+- „Přístup zablokován … neprošla procesem ověření Googlem“ (Chyba 403: access_denied) – aplikace je ještě
+  v režimu Testování: https://console.cloud.google.com/auth/audience → „Publikovat aplikaci“ → Potvrdit
+  (nebo dole „Testovací uživatelé“ → Přidat uživatele → váš e-mail Google). Pak se přihlaste znovu.
 """,
     "google_tts": """Hlasy Google Cloud pro čtení nahlas a audioknihy (Chirp 3 HD a Wavenet)
 

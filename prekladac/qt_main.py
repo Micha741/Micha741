@@ -1725,6 +1725,8 @@ class SettingsPage(QtWidgets.QWidget):
                 g.addWidget(w, r, 1)
                 self.fields[name][key] = w
                 r += 1
+                if isinstance(w, QtWidgets.QLineEdit):
+                    r = self._smart_field(name, key, w, g, r)
             btns = QtWidgets.QHBoxLayout()
             gb = QtWidgets.QPushButton("📘 Návod")
             gb.clicked.connect(lambda _c=False, n=name: self.show_guide(n))
@@ -1737,6 +1739,11 @@ class SettingsPage(QtWidgets.QWidget):
                 lb = QtWidgets.QPushButton("🔑 Přihlásit k Disku")
                 lb.clicked.connect(self.gdrive_login)
                 btns.addWidget(lb)
+            if name in ("gdrive", "webdav"):  # stejné nastavení do telefonu bez opisování
+                qb = QtWidgets.QPushButton("📱 Přenést do telefonu (QR)")
+                qb.setToolTip("Ukáže QR kód – telefon si nastavení i přihlášení načte, nic se neopisuje.")
+                qb.clicked.connect(self.transfer_to_phone)
+                btns.addWidget(qb)
             tb = QtWidgets.QPushButton("✔ Otestovat")
             tb.clicked.connect(lambda _c=False, n=name, b=tb: self.test(n, b))
             btns.addWidget(tb)
@@ -1748,7 +1755,40 @@ class SettingsPage(QtWidgets.QWidget):
         scroll.setWidget(inner)
         return scroll
 
+    def _smart_field(self, name: str, key: str, w: QtWidgets.QLineEdit, g, r: int) -> int:
+        """Adresa bez http(s):// a ID klienta Google bez konce se po opuštění pole doplní; u ID a tajného
+        klíče se hned ukáže, když znak chybí nebo přebývá."""
+        import inputs
+
+        fix = inputs.normalizer(name, key)
+        if fix is not None:
+            def apply(e=w, f=fix):
+                n = f(e.text())
+                if n != e.text():
+                    e.setText(n)
+
+            w.editingFinished.connect(apply)
+            if key in inputs.URL_KEYS:
+                w.setToolTip("http:// nebo https:// se doplní samo (v domácí síti http, jinak https).")
+        check = inputs.CHECK.get((name, key))
+        if check is not None:
+            warn = label("", "Hint")
+            warn.setStyleSheet("color: #c0392b;")
+            g.addWidget(warn, r, 1)
+
+            def show(t, lab=warn, c=check):
+                msg = c(t)
+                lab.setText("⚠ " + msg if msg else "")
+                lab.setVisible(bool(msg))
+
+            w.textChanged.connect(show)
+            show(w.text())
+            r += 1
+        return r
+
     def collect(self):
+        import inputs
+
         cfg = self.win.cfg
         for name, ws in self.fields.items():
             sect = cfg["engines"].setdefault(name, {})
@@ -1756,7 +1796,16 @@ class SettingsPage(QtWidgets.QWidget):
                 if isinstance(w, QtWidgets.QCheckBox):
                     sect[key] = "ano" if w.isChecked() else ""
                     continue
-                sect[key] = w.currentData() if isinstance(w, QtWidgets.QComboBox) else w.text().strip()
+                val = w.currentData() if isinstance(w, QtWidgets.QComboBox) else w.text().strip()
+                fix = inputs.normalizer(name, key) if isinstance(val, str) else None
+                sect[key] = fix(val) if fix and val else val
+
+    def transfer_to_phone(self):
+        from qt_cloud import show_transfer
+
+        self.collect()
+        self.win.save_cfg()
+        show_transfer(self.win.cfg, self)
 
     def gdrive_login(self):
         from qt_cloud import LoginDialog
@@ -1851,19 +1900,24 @@ class SettingsPage(QtWidgets.QWidget):
         vg = QtWidgets.QGridLayout(vbox)
         vg.addWidget(label("Nahrajte svůj hlas (asi 300 a více vět), natrénujte ho zdarma v Google Colab a importujte – "
                            "pak čte knihy a namlouvá audioknihy offline. Importovat jde i jakýkoli hotový hlas Piper "
-                           "(.onnx s .onnx.json).", "Hint"), 0, 0, 1, 4)
+                           "(.onnx s .onnx.json).", "Hint"), 0, 0, 1, 5)
         b_st = QtWidgets.QPushButton("🎙 Nahrávací studio…")
         b_st.clicked.connect(self.open_studio)
         b_im = QtWidgets.QPushButton("📥 Importovat hlas (.onnx)…")
         b_im.clicked.connect(self.import_voice)
         b_hl = QtWidgets.QPushButton("📘 Jak natrénovat hlas")
         b_hl.clicked.connect(lambda: __import__("qt_voice_studio").show_training_help(self))
+        b_lt = QtWidgets.QPushButton("🖥 Trénovat v tomto počítači…")
+        b_lt.setToolTip("S grafikou NVIDIA (např. RTX 3050) přes WSL – bez Colabu a bez odpojování.")
+        b_lt.clicked.connect(lambda: (__import__("qt_voice_studio").LocalTrainDialog(self).exec(),
+                                      self._show_custom_voices()))
         vg.addWidget(b_st, 1, 0)
-        vg.addWidget(b_im, 1, 1)
-        vg.addWidget(b_hl, 1, 2)
-        vg.setColumnStretch(3, 1)
+        vg.addWidget(b_lt, 1, 1)
+        vg.addWidget(b_im, 1, 2)
+        vg.addWidget(b_hl, 1, 3)
+        vg.setColumnStretch(4, 1)
         self.voices_info = label("", "Hint")
-        vg.addWidget(self.voices_info, 2, 0, 1, 4)
+        vg.addWidget(self.voices_info, 2, 0, 1, 5)
         self._show_custom_voices()
         lay.addWidget(vbox)
 

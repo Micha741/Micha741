@@ -1,3 +1,5 @@
+import { decodeTransfer, describeTransfer, isTransferLink } from './src/core/transfer';
+import { checkGoogleClientId, checkGoogleSecret, normalizeGoogleClientId, normalizeUrl } from './src/core/inputs';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { ActivityIndicator, Alert, BackHandler, Image, Linking, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
@@ -211,6 +213,7 @@ export default function App() {
   // soubor otevřený z jiné aplikace („Otevřít v Překladači“)
   useEffect(() => {
     const handle = async (url: string | null) => {
+      if (isTransferLink(url)) return applyTransferRef.current(url!);  // QR kód z počítače (fotoaparát / Lens)
       if (!url || !/^(content|file):/i.test(url)) return;
       try {
         setLibBusy('Otevírám soubor…');
@@ -231,6 +234,8 @@ export default function App() {
     setSettings(next);
     saveSettings(next).catch(() => undefined);
   };
+  const applyTransferRef = useRef<(link: string) => void>(() => undefined);
+  applyTransferRef.current = (link: string) => applyTransfer(link, update);
   const chooseSkin = (skin: Skin) => {
     useSkin(skin);
     update({ skin: skin.id });
@@ -837,11 +842,13 @@ function SettingsScreen({ settings, update, skin }: { settings: Settings; update
             </Box>
             <Box title="OpenRouter / OpenAI-kompatibilní (DeepSeek, Mistral…)">
               <Field label="API klíč" value={settings.openaiKey} onChange={(v) => update({ openaiKey: v })} secret />
-              <Field label="Adresa API" value={settings.openaiBase} placeholder="https://openrouter.ai/api/v1" onChange={(v) => update({ openaiBase: v })} />
+              <Field label="Adresa API (https:// se doplní samo)" value={settings.openaiBase} placeholder="openrouter.ai/api/v1" onChange={(v) => update({ openaiBase: v })} normalize={normalizeUrl} url />
               <Field label="Model" value={settings.openaiModel} placeholder="deepseek/deepseek-chat" onChange={(v) => update({ openaiModel: v })} />
             </Box>
             <Box title="Synchronizace s Windows (knihy a čtení)">
               <Text style={st.hint}>Kam se ukládají knihy a místo čtení – v Překladači ve Windows zvolte totéž (Čtečka → Moje knihy).</Text>
+              <Btn small primary label="📷 Načíst z počítače (QR kód)" onPress={() => scanTransfer(update)} />
+              <Text style={st.hint}>V Překladači ve Windows: Nastavení → Služby a klíče → Google Disk / Synology → 📱 Přenést do telefonu. Nic se neopisuje.</Text>
               <Chips items={[{ id: 'gdrive', label: '☁ Google Disk' }, { id: 'webdav', label: '🗄 Synology / WebDAV' }]} value={settings.cloudProvider || (settings.davUrl && !settings.gdriveToken ? 'webdav' : 'gdrive')} onChange={(v) => update({ cloudProvider: v })} />
             </Box>
             {(settings.cloudProvider || (settings.davUrl && !settings.gdriveToken ? 'webdav' : 'gdrive')) === 'webdav' ? <DavBox settings={settings} update={update} /> : <GDriveBox settings={settings} update={update} />}
@@ -891,6 +898,45 @@ function SettingsScreen({ settings, update, skin }: { settings: Settings; update
   );
 }
 
+/** Nastavení z počítače (QR kód): potvrzení a uložení – klíče, přihlášení i Synology bez opisování. */
+function applyTransfer(link: string, update: (s: Partial<Settings>) => void) {
+  let t;
+  try {
+    t = decodeTransfer(link);
+  } catch (e: any) {
+    Alert.alert('Načíst z počítače', String(e?.message ?? e));
+    return;
+  }
+  Alert.alert('Načíst nastavení z počítače?', `${t.device ? `Z: ${t.device}\n` : ''}Přenese se: ${describeTransfer(t)}.`, [
+    { text: 'Zrušit', style: 'cancel' },
+    {
+      text: 'Načíst', onPress: () => {
+        const s: Partial<Settings> = {};
+        if (t.gdrive) Object.assign(s, { gdriveClientId: t.gdrive.clientId, gdriveSecret: t.gdrive.secret, ...(t.gdrive.token ? { gdriveToken: t.gdrive.token } : {}) });
+        if (t.webdav) Object.assign(s, { davUrl: t.webdav.url, davUser: t.webdav.user, davPassword: t.webdav.password });
+        if (t.provider) s.cloudProvider = t.provider;
+        update(s);
+        Alert.alert('Načíst z počítače', 'Hotovo ✓ Synchronizace je nastavená – Číst → 🔄 Synchronizovat.');
+      },
+    },
+  ]);
+}
+
+/** 📷 Vyfotit QR kód z počítače (Nastavení → Služby a klíče → 📱 Přenést do telefonu). */
+async function scanTransfer(update: (s: Partial<Settings>) => void) {
+  if (!Mlkit?.scanQr) return Alert.alert('Načíst z počítače', 'Tato verze aplikace QR kód číst neumí – naskenujte ho fotoaparátem telefonu (Google Lens).');
+  try {
+    const [uri] = await pickPagePhotos(true);
+    if (!uri) return;
+    const codes = await Mlkit.scanQr(uri);
+    const link = codes.find((c) => isTransferLink(c));
+    if (!link) return Alert.alert('Načíst z počítače', codes.length ? 'Tohle není kód z Překladače.' : 'QR kód se nenašel – vyfoťte ho zblízka a ostře, celý v záběru.');
+    applyTransfer(link, update);
+  } catch (e: any) {
+    Alert.alert('Načíst z počítače', String(e?.message ?? e));
+  }
+}
+
 /** Google Disk – knihy a čtení i ve Windows: ID klienta a tajný klíč (stejné jako ve Windows) a přihlášení kódem. */
 function GDriveBox({ settings, update }: { settings: Settings; update: (s: Partial<Settings>) => void }) {
   const [login, setLogin] = useState(false);
@@ -898,8 +944,8 @@ function GDriveBox({ settings, update }: { settings: Settings; update: (s: Parti
   return (
     <Box title="Google Disk">
       <Text style={st.hint}>Začnete číst v počítači a pokračujete v telefonu (a obráceně). Zadejte stejné ID klienta a tajný klíč jako v Překladači ve Windows (Nastavení → Služby a klíče → Google Disk, tam je i návod).</Text>
-      <Field label="ID klienta (…apps.googleusercontent.com)" value={settings.gdriveClientId} onChange={(v) => update({ gdriveClientId: v.trim() })} />
-      <Field label="Tajný klíč klienta" value={settings.gdriveSecret} onChange={(v) => update({ gdriveSecret: v.trim() })} secret />
+      <Field label="ID klienta (stačí část před tečkou, konec se doplní)" value={settings.gdriveClientId} placeholder="123456789012-abc…" onChange={(v) => update({ gdriveClientId: v.trim() })} normalize={normalizeGoogleClientId} check={checkGoogleClientId} />
+      <Field label="Tajný klíč klienta (GOCSPX-…)" value={settings.gdriveSecret} onChange={(v) => update({ gdriveSecret: v.trim() })} secret check={checkGoogleSecret} />
       <Text style={[st.hint, settings.gdriveToken ? { color: C.ok } : null]}>{settings.gdriveToken ? '✓ Přihlášeno – knihovna se synchronizuje sama, nebo Číst → 🔄 Synchronizovat.' : 'Nepřihlášeno.'}</Text>
       <View style={st.row}>
         <Btn small primary label={settings.gdriveToken ? '🔑 Přihlásit znovu' : '🔑 Přihlásit'} onPress={() => (settings.gdriveClientId ? setLogin(true) : Alert.alert('Google Disk', 'Nejdřív vyplňte ID klienta a tajný klíč klienta.'))} />
@@ -934,7 +980,7 @@ function DavBox({ settings, update }: { settings: Settings; update: (s: Partial<
   return (
     <Box title="Synology / WebDAV (Nextcloud…)">
       <Text style={st.hint}>Knihy a místo čtení ve složce „Překladač“ na vašem NAS. Zadejte stejnou adresu, uživatele a heslo jako ve Windows.</Text>
-      <Field label="Adresa WebDAV" value={settings.davUrl} placeholder="https://mujnas.synology.me:5006/home" onChange={(v) => update({ davUrl: v.trim() })} />
+      <Field label="Adresa WebDAV (http:// / https:// se doplní samo)" value={settings.davUrl} placeholder="mujnas.synology.me:5006/home" onChange={(v) => update({ davUrl: v.trim() })} normalize={normalizeUrl} url />
       <Field label="Uživatel" value={settings.davUser} onChange={(v) => update({ davUser: v.trim() })} />
       <Field label="Heslo" value={settings.davPassword} onChange={(v) => update({ davPassword: v })} secret />
       <View style={st.row}>
@@ -959,7 +1005,7 @@ function LoginModal({ visible, settings, onClose, onToken }: { visible: boolean;
     if (!visible) return;
     let stop = false;
     let timer: ReturnType<typeof setTimeout> | null = null;
-    const d = new GoogleDrive(settings.gdriveClientId ?? '', settings.gdriveSecret ?? '');
+    const d = new GoogleDrive(normalizeGoogleClientId(settings.gdriveClientId ?? ''), settings.gdriveSecret ?? '');
     setCode(null);
     setInfo('Připojuji se ke Googlu…');
     d.deviceStart().then((r) => {
@@ -1961,15 +2007,26 @@ function Chips({ items, value, onChange, rows }: { items: { id: string; label: s
   );
 }
 
-function Field({ label, value, onChange, secret, placeholder }: { label: string; value?: string; onChange: (v: string) => void; secret?: boolean; placeholder?: string }) {
+/** Pole formuláře; normalize = úprava po opuštění pole (doplnit https://, konec ID…), check = upozornění pod polem. */
+function Field({ label, value, onChange, secret, placeholder, normalize, check, url }: {
+  label: string; value?: string; onChange: (v: string) => void; secret?: boolean; placeholder?: string;
+  normalize?: (v: string) => string; check?: (v: string) => string; url?: boolean;
+}) {
   const [show, setShow] = useState(false);
+  const warn = check ? check(value ?? '') : '';
+  const fix = () => {
+    if (!normalize) return;
+    const n = normalize(value ?? '');
+    if (n !== (value ?? '')) onChange(n);
+  };
   return (
     <View style={{ marginTop: 6 }}>
       <Text style={st.label}>{label}</Text>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-        <TextInput style={[st.input, { flex: 1 }]} value={value ?? ''} onChangeText={(t) => onChange(t.trim())} secureTextEntry={secret && !show} autoCapitalize="none" autoCorrect={false} placeholder={placeholder} placeholderTextColor={C.disabled} />
+        <TextInput style={[st.input, { flex: 1 }]} value={value ?? ''} onChangeText={(t) => onChange(t.trim())} onBlur={fix} onSubmitEditing={fix} secureTextEntry={secret && !show} autoCapitalize="none" autoCorrect={false} keyboardType={url ? 'url' : 'default'} placeholder={placeholder} placeholderTextColor={C.disabled} />
         {secret ? <Btn label={show ? '🙈' : '👁'} onPress={() => setShow(!show)} small /> : null}
       </View>
+      {warn ? <Text style={[st.hint, { color: C.warn }]}>⚠ {warn}</Text> : null}
     </View>
   );
 }

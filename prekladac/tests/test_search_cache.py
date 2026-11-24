@@ -142,3 +142,43 @@ def test_http_request_retries_incomplete_read(monkeypatch):
         raise AssertionError("mělo selhat")
     except fe.EngineError as e:
         assert "přerušilo" in str(e) and "Hlas Azure" in str(e)
+
+
+def test_inputs_same_as_android():
+    import json
+
+    import inputs
+
+    raw = (Path(__file__).parent / "fixtures" / "input_cases.json").read_text(encoding="utf-8")
+    c = json.loads(raw.replace("{G}", inputs.GOOGLE_SUFFIX))
+    for i, o in c["urls"]:
+        assert inputs.normalize_url(i) == o, i
+    for i, o in c["client_ids"]:
+        assert inputs.normalize_google_client_id(i) == o, i
+    for i, o in c["client_id_checks"]:
+        w = inputs.check_google_client_id(i)
+        assert (o in w) if o else w == "", (i, w)
+    for i, o in c["secret_checks"]:
+        w = inputs.check_google_secret(i)
+        assert (o in w) if o else w == "", (i, w)
+
+
+def test_settings_transfer_roundtrip_and_errors():
+    import json
+
+    import pytest
+
+    import settings_transfer as t
+
+    with pytest.raises(t.TransferError):
+        t.payload({}, "gdrive")
+    eng = {"gdrive": {"client_id": "ID", "client_secret": "S", "refresh_token": "T"}, "webdav": {}}
+    link = t.encode(t.payload(eng, "gdrive", "PC"))
+    assert link.startswith("prekladac://nastaveni?d=") and t.decode(link)["g"] == {"i": "ID", "s": "S", "t": "T"}
+    assert len(t.qr_matrix(link)) > 21
+    for bad in ("https://x", t.PREFIX + "%%%"):
+        with pytest.raises(t.TransferError):
+            t.decode(bad)
+    case = json.loads((Path(__file__).parent / "fixtures" / "transfer_case.json").read_text(encoding="utf-8"))
+    d = t.decode(case["link"])
+    assert d["w"]["h"] == "heslo ěščř" and d["p"] == "webdav"

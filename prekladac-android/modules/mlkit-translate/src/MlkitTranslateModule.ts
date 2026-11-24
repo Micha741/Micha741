@@ -10,6 +10,8 @@ declare class MlkitTranslateModule extends NativeModule<{}> {
   translate(texts: string[], source: string, target: string, wifiOnly: boolean): Promise<string[]>;
   /** text z fotky (bloky = odstavce); ve starší verzi aplikace chybí */
   recognizeText?(uri: string): Promise<string[]>;
+  /** QR kódy z fotky; ve starší verzi aplikace chybí */
+  scanQr?(uri: string): Promise<string[]>;
 }
 
 export default requireOptionalNativeModule<MlkitTranslateModule>('MlkitTranslate');

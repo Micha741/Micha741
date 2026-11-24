@@ -1547,3 +1547,52 @@ def test_voice_studio_dialog_records_with_fake_mic(qapp, monkeypatch):
     dlg.delete_take()
     assert not dlg.ds.wav_path(first).is_file()
     dlg.reject()
+
+
+def test_settings_fill_scheme_and_google_client_id(qapp, monkeypatch):
+    import qt_main
+    from PySide6 import QtWidgets
+    win = qt_main.MainWindow()
+    f = win.settings.fields
+    dav, cid, sec = f["webdav"]["url"], f["gdrive"]["client_id"], f["gdrive"]["client_secret"]
+    dav.setText("192.168.1.20:5005/home")
+    dav.editingFinished.emit()
+    assert dav.text() == "http://192.168.1.20:5005/home"
+    cid.setText("123456789012-abcdefghijklmnopqrstuvwxyz012345")
+    cid.editingFinished.emit()
+    assert cid.text().endswith(".apps.googleusercontent.com")
+    texts = [w.text() for w in win.settings.findChildren(QtWidgets.QLabel)]
+    assert not any("pomlčkou" in t or "Konec ID" in t for t in texts)
+    cid.setText("123456789012-abcdefghijklmnopqrstuvwxyz0123" + ".apps.googleuser" + "content.com")
+    assert any("chybí 2 znaky" in w.text() for w in win.settings.findChildren(QtWidgets.QLabel))
+    sec.setText("GOCSPX-abc")
+    assert any("chybí 25 znaků" in w.text() for w in win.settings.findChildren(QtWidgets.QLabel))
+    f["openai"]["url"].setText("openrouter.ai/api/v1")  # bez opuštění pole – doplní se při uložení
+    win.settings.collect()
+    assert win.cfg["engines"]["openai"]["url"] == "https://openrouter.ai/api/v1"
+    win.close()
+
+
+def test_transfer_to_phone_qr(qapp, monkeypatch):
+    import qt_main
+    import settings_transfer
+    from PySide6 import QtWidgets
+    from qt_cloud import TransferDialog
+    win = qt_main.MainWindow()
+    f = win.settings.fields
+    f["webdav"]["url"].setText("192.168.1.20:5005/home")
+    f["webdav"]["user"].setText("jan")
+    win.settings.collect()
+    d = TransferDialog(win.cfg, win)
+    data = settings_transfer.decode(d.link)
+    assert data["w"]["u"] == "http://192.168.1.20:5005/home" and data["w"]["n"] == "jan"
+    assert not d.qr.pixmap().isNull() and d.qr.pixmap().width() >= 300
+    assert any("Synology" in w.text() for w in d.findChildren(QtWidgets.QLabel))
+    d.close()
+    win.cfg["engines"]["webdav"] = {}
+    win.cfg["engines"]["gdrive"] = {}
+    shown = []
+    monkeypatch.setattr(QtWidgets.QMessageBox, "information", lambda *a, **k: shown.append(a[2]))
+    from qt_cloud import show_transfer
+    assert show_transfer(win.cfg, win) is False and "Nejdřív nastavte" in shown[0]
+    win.close()

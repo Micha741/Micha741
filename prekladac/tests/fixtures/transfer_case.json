@@ -1,0 +1,17 @@
+{
+ "link": "prekladac://nastaveni?d=q1YqU7Iy1FEqULJSKk9NSkksU9JRSleyqlbKBIp4uuh6-3i6-oU4AkWLgQIhjl5-kSAxZ6BACVDAUF8_Pykvvyy_LDE5U7ckPzs1T6lWR6kcZEIpSN7SSM_QzELPUM_IwMrUwMBUPyM_NxWoOQ8omZWYB2RlAFkZqcU5-QpHZh9deKT36EyQCSlA0fDMvJT88mKFRw2TFQKCHJ39w_wclWoB",
+ "expected": {
+  "provider": "webdav",
+  "gdrive": {
+   "clientId": "ID-KLIENTA",
+   "secret": "TAJNY-KLIC",
+   "token": "1//obnovovaci-token"
+  },
+  "webdav": {
+   "url": "http://192.168.1.20:5005/home",
+   "user": "jan",
+   "password": "heslo ěščř"
+  },
+  "device": "Windows – PRACOVNA"
+ }
+}

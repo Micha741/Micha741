@@ -1,4 +1,5 @@
 // Napojení na telefon: výběr souborů a obrázků, uložení, sdílení, PDF, uložení nastavení a klíčů.
+import { normalizeGoogleClientId, normalizeUrl } from './core/inputs';
 import * as DocumentPicker from 'expo-document-picker';
 import { Directory, File, Paths } from 'expo-file-system';
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
@@ -371,9 +372,9 @@ export async function shareText(name: string, text: string) {
 /** Zvolené úložiště pro synchronizaci (Google Disk nebo Synology / WebDAV); null = nic nastaveného. */
 export function storageFromSettings(s: Settings): Storage | null {
   const provider = s.cloudProvider || (s.davUrl && !s.gdriveToken ? 'webdav' : 'gdrive');
-  if (provider === 'webdav') return s.davUrl?.trim() && s.davUser?.trim() ? new WebDav(s.davUrl, s.davUser, s.davPassword ?? '') : null;
+  if (provider === 'webdav') return s.davUrl?.trim() && s.davUser?.trim() ? new WebDav(normalizeUrl(s.davUrl), s.davUser, s.davPassword ?? '') : null;
   if (!s.gdriveClientId?.trim() || !s.gdriveToken) return null;
-  return new GoogleDrive(s.gdriveClientId, s.gdriveSecret ?? '', s.gdriveToken);
+  return new GoogleDrive(normalizeGoogleClientId(s.gdriveClientId), s.gdriveSecret ?? '', s.gdriveToken);
 }
 
 const safeName = (t: string) => (t || 'kniha').replace(/[\\/:*?"<>|]+/g, '_').trim().slice(0, 80) || 'kniha';

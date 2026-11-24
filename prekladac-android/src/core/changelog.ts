@@ -10,8 +10,17 @@ export interface Release {
 
 export const ANDROID_HISTORY: Release[] = [
   {
-    version: '1.2.0',
+    version: '1.2.1',
     date: '',
+    items: [
+      'Adresy (Synology/WebDAV, OpenRouter…) bez psaní http:// a https:// – doplní se samy (v domácí síti http, jinak https).',
+      '📷 Načíst z počítače: nastavení synchronizace (Google Disk i s přihlášením, Synology) se přenese QR kódem z Windows – vyfoťte ho v Nastavení, nebo naskenujte fotoaparátem telefonu.',
+      'ID klienta Google: stačí část před tečkou, konec „.apps.googleusercontent.com“ se doplní; u ID i tajného klíče kontrola počtu znaků (upozorní, když znak chybí nebo přebývá).',
+    ],
+  },
+  {
+    version: '1.2.0',
+    date: '22. 11. 2026',
     items: [
       'Obrázky v knize: velikost (malý až celá stránka), otočení, oříznutí (obálka 2:3, čtverec, 16:9…), použít jako obálku, odebrat.',
       'Více obrázků najednou v pořadí výběru; první se nabídne jako obálka. Obálka: oříznout na 2:3, nebo celý obrázek.',

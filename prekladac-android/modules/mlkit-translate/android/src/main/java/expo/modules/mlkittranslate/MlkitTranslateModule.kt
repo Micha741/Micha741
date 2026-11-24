@@ -95,6 +95,20 @@ class MlkitTranslateModule : Module() {
       }
     }
 
+    // QR kód z fotky (přenos nastavení z počítače) – model je v aplikaci, bez internetu
+    AsyncFunction("scanQr") { uri: String ->
+      val context = appContext.reactContext ?: throw CodedException("Aplikace není připravená.")
+      val image = InputImage.fromFilePath(context, Uri.parse(uri))
+      val options = com.google.mlkit.vision.barcode.BarcodeScannerOptions.Builder()
+        .setBarcodeFormats(com.google.mlkit.vision.barcode.common.Barcode.FORMAT_QR_CODE).build()
+      val scanner = com.google.mlkit.vision.barcode.BarcodeScanning.getClient(options)
+      try {
+        Tasks.await(scanner.process(image)).mapNotNull { it.rawValue }
+      } finally {
+        scanner.close()
+      }
+    }
+
     OnDestroy {
       synchronized(translators) {
         translators.values.forEach { it.close() }

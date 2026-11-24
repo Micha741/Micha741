@@ -1,0 +1,42 @@
+{
+  "_": "{G} = .apps.googleusercontent.com (vcelku by testovací ID vypadalo jako skutečný klíč)",
+  "urls": [
+    ["", ""],
+    ["192.168.1.20:5005/home", "http://192.168.1.20:5005/home"],
+    ["mujnas.synology.me:5006/home", "https://mujnas.synology.me:5006/home"],
+    ["https://mujnas.synology.me:5006/home", "https://mujnas.synology.me:5006/home"],
+    ["http://192.168.1.20:5005", "http://192.168.1.20:5005"],
+    ["localhost:11434", "http://localhost:11434"],
+    ["DiskStation:5006/home", "http://DiskStation:5006/home"],
+    ["diskstation.local/home", "http://diskstation.local/home"],
+    ["openrouter.ai/api/v1", "https://openrouter.ai/api/v1"],
+    ["https//openrouter.ai/api/v1", "https://openrouter.ai/api/v1"],
+    [" 10.0.0.5 ", "http://10.0.0.5"],
+    ["172.20.1.1:5006", "http://172.20.1.1:5006"],
+    ["8.8.8.8", "https://8.8.8.8"]
+  ],
+  "client_ids": [
+    ["123456789012-abcdefghijklmnopqrstuvwxyz012345", "123456789012-abcdefghijklmnopqrstuvwxyz012345{G}"],
+    ["123456789012-abcdefghijklmnopqrstuvwxyz012345.apps.googleuser", "123456789012-abcdefghijklmnopqrstuvwxyz012345{G}"],
+    ["123456789012-abcdefghijklmnopqrstuvwxyz012345.", "123456789012-abcdefghijklmnopqrstuvwxyz012345{G}"],
+    [" 123456789012-abcdefghijklmnopqrstuvwxyz012345{G} ", "123456789012-abcdefghijklmnopqrstuvwxyz012345{G}"],
+    ["neco jineho", "necojineho"],
+    ["", ""]
+  ],
+  "client_id_checks": [
+    ["123456789012-abcdefghijklmnopqrstuvwxyz012345{G}", ""],
+    ["123456789012-abcdefghijklmnopqrstuvwxyz01234{G}", "chybí 1 znak"],
+    ["123456789012-abcdefghijklmnopqrstuvwxyz0123{G}", "chybí 2 znaky"],
+    ["123456789012-abcdefghijklmnopqrstuvwxyz0123456{G}", "o 1 znak víc"],
+    ["123456789012-abcdefghijklmnopqrstuvwxyz012345.apps.google.com", "Konec ID"],
+    ["abc", "tvar"],
+    ["", ""]
+  ],
+  "secret_checks": [
+    ["GOCSPX-abcdefghijklmnopqrstuvwxyz12", ""],
+    ["GOCSPX-abcdefghijklmnopqrstuvwxyz1", "chybí 1 znak"],
+    ["GOCSPX-abcdefghijklmnopqrstuvwxyz123", "o 1 znak delší"],
+    ["abcdefghijklmnopqrstuvwxyz12", "GOCSPX-"],
+    ["", ""]
+  ]
+}

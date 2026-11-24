@@ -372,10 +372,14 @@ def storage_from_config(engines: dict, provider: str = "") -> Storage | None:
     if provider == "webdav":
         if not (w.get("url") and w.get("user")):
             return None
-        return WebDav(w["url"], w["user"], w.get("password", ""), w.get("folder") or FOLDER,
+        from inputs import normalize_url
+
+        return WebDav(normalize_url(w["url"]), w["user"], w.get("password", ""), w.get("folder") or FOLDER,
                       str(w.get("trust_cert", "")).lower() in ("1", "true", "ano", "yes"))
     if g.get("client_id") and g.get("refresh_token"):
-        return GoogleDrive(g["client_id"], g.get("client_secret", ""), g["refresh_token"])
+        from inputs import normalize_google_client_id
+
+        return GoogleDrive(normalize_google_client_id(g["client_id"]), g.get("client_secret", ""), g["refresh_token"])
     return None
 
 
