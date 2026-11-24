@@ -23,4 +23,6 @@ dependencies {
   implementation 'com.google.mlkit:language-id:17.0.6'
   // čtení textu z fotky (latinka vč. češtiny), model je přímo v aplikaci – funguje bez internetu
   implementation 'com.google.mlkit:text-recognition:16.0.1'
+  // QR kód (přenos nastavení z počítače), model přímo v aplikaci
+  implementation 'com.google.mlkit:barcode-scanning:17.3.0'
 }

@@ -60,6 +60,7 @@
 # Historie verzí
 
 **Nová verze**
+- 📱 Přenést do telefonu (Nastavení → Služby a klíče → Google Disk / Synology): QR kód s nastavením synchronizace i přihlášením – telefon ho načte (Android 1.2.1: 📷 Načíst z počítače, nebo fotoaparátem / Google Lens), nic se neopisuje. Okno se po 5 minutách samo zavře.
 - 🖥 Vlastní hlas: trénování ve vlastním počítači s grafikou NVIDIA (např. RTX 3050) přes WSL – bez Colabu, bez odpojování a denních limitů; tlačítka Spustit/pokračovat, Ukázka z průběhu, Načíst natrénovaný hlas a Začít znovu od Jirky; při nedostatku paměti grafiky se dávka sama zmenší.
 - Nastavení → Služby a klíče: adresy (Synology/WebDAV, Ollama, LibreTranslate, OpenAI…) bez http:// a https:// – doplní se samy (v domácí síti http, jinak https); ID klienta Google stačí zadat po tečku, konec „.apps.googleusercontent.com“ se doplní; u ID klienta a tajného klíče kontrola počtu znaků (upozorní, když znak chybí nebo přebývá).
 - Návod Google Disk: co dělat při „Přístup zablokován … Chyba 403: access_denied“ (aplikace v režimu Testování).

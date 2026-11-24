@@ -768,3 +768,14 @@ test('vstupy: http(s) doplnit, ID klienta Google dokončit, kontrola délky (ste
     assert.ok(o ? w.includes(o) : w === '', `${i} → ${w}`);
   }
 });
+
+test('přenos nastavení QR kódem: odkaz z Windows (settings_transfer.py) se přečte', async () => {
+  const { readFileSync } = await import('node:fs');
+  const tr = await import('../src/core/transfer');
+  const c = JSON.parse(readFileSync(`${process.cwd()}/../prekladac/tests/fixtures/transfer_case.json`, 'utf8'));
+  assert.ok(tr.isTransferLink(c.link));
+  assert.deepEqual(tr.decodeTransfer(c.link), c.expected);
+  assert.match(tr.describeTransfer(tr.decodeTransfer(c.link)), /Google Disk \(i přihlášení\), Synology/);
+  assert.throws(() => tr.decodeTransfer('https://example.com'), /není kód/);
+  assert.throws(() => tr.decodeTransfer(tr.TRANSFER_PREFIX + 'AAAA'), /poškozený/);
+});

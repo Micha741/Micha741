@@ -16,3 +16,4 @@ cryptography>=42
 comtypes>=1.4; sys_platform == "win32"
 lameenc>=1.7
 sounddevice>=0.4.6
+segno>=1.6

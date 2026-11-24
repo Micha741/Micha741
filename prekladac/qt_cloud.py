@@ -344,3 +344,65 @@ class ReaderCloud(QtCore.QObject):
             self._busy = False
 
         run_bg(self._work, done, owner=self.reader)
+
+
+def qr_pixmap(text: str, size: int = 320) -> QtGui.QPixmap:
+    """QR kód jako obrázek (černé moduly na bílém, s tichým okrajem)."""
+    import settings_transfer
+
+    m = settings_transfer.qr_matrix(text)
+    n = len(m)
+    img = QtGui.QImage(n, n, QtGui.QImage.Format_RGB32)
+    img.fill(QtGui.QColor("white"))
+    for y, row in enumerate(m):
+        for x, on in enumerate(row):
+            if on:
+                img.setPixel(x, y, 0xFF000000)
+    return QtGui.QPixmap.fromImage(img.scaled(size, size, Qt.KeepAspectRatio, Qt.FastTransformation))
+
+
+class TransferDialog(QtWidgets.QDialog):
+    """📱 Přenést do telefonu: QR kód s nastavením synchronizace (bez opisování klíčů v telefonu)."""
+
+    def __init__(self, cfg: dict, parent=None):
+        import settings_transfer
+        from qt_reader import device_name
+
+        super().__init__(parent)
+        self.setWindowTitle(tr("Přenést nastavení do telefonu"))
+        lay = QtWidgets.QVBoxLayout(self)
+        data = settings_transfer.payload(cfg.get("engines", {}), provider_of(cfg), device_name())
+        self.link = settings_transfer.encode(data)
+        what = []
+        if "g" in data:
+            what.append(tr("Google Disk") + (tr(" (i s přihlášením)") if data["g"].get("t") else ""))
+        if "w" in data:
+            what.append(tr("Synology / WebDAV"))
+        lay.addWidget(label(tr("V telefonu otevřete Překladač → Nastavení → Služby a klíče → „📷 Načíst z počítače“ "
+                               "a vyfoťte tento kód. Nebo ho naskenujte fotoaparátem telefonu (Google Lens) – "
+                               "otevře se Překladač a nastavení se načte.") + "\n" +
+                            tr("Přenese se: {}.").format(", ".join(what))))
+        self.qr = QtWidgets.QLabel()
+        self.qr.setAlignment(Qt.AlignCenter)
+        self.qr.setPixmap(qr_pixmap(self.link, 360))
+        self.qr.setStyleSheet("background: white; padding: 8px;")
+        lay.addWidget(self.qr)
+        warn = label(tr("⚠ Kód obsahuje přístup k vašemu úložišti (klíč, přihlášení, heslo). Ukazujte ho jen svému "
+                        "telefonu a okno po přenosu zavřete."), "Hint")
+        warn.setStyleSheet("color: #c0392b;")
+        lay.addWidget(warn)
+        b = QtWidgets.QPushButton(tr("Zavřít"))
+        b.clicked.connect(self.accept)
+        lay.addWidget(b, 0, Qt.AlignRight)
+        QtCore.QTimer.singleShot(5 * 60 * 1000, self.accept)  # po 5 minutách se okno samo zavře
+
+
+def show_transfer(cfg: dict, parent=None) -> bool:
+    import settings_transfer
+
+    try:
+        TransferDialog(cfg, parent).exec()
+    except settings_transfer.TransferError as e:
+        QtWidgets.QMessageBox.information(parent, tr("Přenést do telefonu"), str(e))
+        return False
+    return True

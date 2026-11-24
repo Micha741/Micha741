@@ -1739,6 +1739,11 @@ class SettingsPage(QtWidgets.QWidget):
                 lb = QtWidgets.QPushButton("🔑 Přihlásit k Disku")
                 lb.clicked.connect(self.gdrive_login)
                 btns.addWidget(lb)
+            if name in ("gdrive", "webdav"):  # stejné nastavení do telefonu bez opisování
+                qb = QtWidgets.QPushButton("📱 Přenést do telefonu (QR)")
+                qb.setToolTip("Ukáže QR kód – telefon si nastavení i přihlášení načte, nic se neopisuje.")
+                qb.clicked.connect(self.transfer_to_phone)
+                btns.addWidget(qb)
             tb = QtWidgets.QPushButton("✔ Otestovat")
             tb.clicked.connect(lambda _c=False, n=name, b=tb: self.test(n, b))
             btns.addWidget(tb)
@@ -1794,6 +1799,13 @@ class SettingsPage(QtWidgets.QWidget):
                 val = w.currentData() if isinstance(w, QtWidgets.QComboBox) else w.text().strip()
                 fix = inputs.normalizer(name, key) if isinstance(val, str) else None
                 sect[key] = fix(val) if fix and val else val
+
+    def transfer_to_phone(self):
+        from qt_cloud import show_transfer
+
+        self.collect()
+        self.win.save_cfg()
+        show_transfer(self.win.cfg, self)
 
     def gdrive_login(self):
         from qt_cloud import LoginDialog
