@@ -222,9 +222,9 @@ if [[ "$MODE" == "znovu" ]] || { [[ -f "$WORK/otisk" ]] && ! cmp -s "$WORK/otisk
 fi
 cp "$HOME_T/data/otisk" "$WORK/otisk"
 
-if [[ -z "$DAVKA" ]]; then  # podle paměti grafiky: 8 GB → 12, 12 GB a víc → 16, méně → 8
+if [[ -z "$DAVKA" ]]; then  # podle paměti grafiky: 8 GB → 8 (víc se nevejde a Windows by půjčoval pomalou RAM), 12 GB → 16
   MEM=$(nvidia-smi --query-gpu=memory.total --format=csv,noheader,nounits | head -1)
-  if (( MEM >= 11000 )); then DAVKA=16; elif (( MEM >= 7500 )); then DAVKA=12; else DAVKA=8; fi
+  if (( MEM >= 11000 )); then DAVKA=16; elif (( MEM >= 7500 )); then DAVKA=8; else DAVKA=6; fi
 fi
 
 echo "Epoch $EPOCHY. Řádek „Epoch …“ se vypíše vždy po dokončení epochy (první může trvat i 10 minut)."
