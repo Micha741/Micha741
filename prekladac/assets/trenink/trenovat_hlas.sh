@@ -182,23 +182,22 @@ fi
 # ---------------------------------------------------------------- výchozí hlas Jirka (stáhne se jen jednou)
 JIRKA="$HOME_T/jirka-start.ckpt"
 if [[ ! -f "$JIRKA" ]]; then
-  echo "== Stahuji výchozí hlas Jirka (849 MB, jen jednou) =="
-  python3 - "$JIRKA" <<'PY'
-import os, shutil, sys
-from huggingface_hub import hf_hub_download
-path = 'cs/cs_CZ/jirka/medium/epoch=2099-step=92400.ckpt'
-last = None
-for typ in ('model', 'dataset'):
-    try:
-        f = hf_hub_download('rhasspy/piper-checkpoints', path, repo_type=typ, token=False)
-        shutil.copy(f, sys.argv[1] + '.part')
-        os.replace(sys.argv[1] + '.part', sys.argv[1])
-        break
-    except Exception as e:  # noqa: BLE001
-        last = e
-else:
-    sys.exit(f'Jirku se nepodařilo stáhnout: {last}')
-PY
+  echo "== Stahuji výchozí hlas Jirka (849 MB, jen jednou; při přerušení stačí spustit znovu – naváže) =="
+  if ls "$SLOZKA"/jirka-start.ckpt > /dev/null 2>&1; then  # kopie z Google Disku (Colab) ve složce s nahrávkami
+    cp "$SLOZKA/jirka-start.ckpt" "$JIRKA.part"
+  else
+    CK='cs/cs_CZ/jirka/medium/epoch%3D2099-step%3D92400.ckpt'
+    for URL in "https://huggingface.co/datasets/rhasspy/piper-checkpoints/resolve/main/$CK" \
+               "https://huggingface.co/rhasspy/piper-checkpoints/resolve/main/$CK"; do
+      curl -fL -C - --retry 20 --retry-delay 5 --retry-all-errors -o "$JIRKA.part" "$URL" && break
+    done
+  fi
+  SIZE=$(stat -c %s "$JIRKA.part" 2>/dev/null || echo 0)
+  if (( SIZE < 800000000 )); then
+    echo "❌ Jirka se nestáhl celý ($SIZE B). Spusťte příkaz znovu – stahování naváže."
+    exit 1
+  fi
+  mv "$JIRKA.part" "$JIRKA"
 fi
 
 # nové nahrávky (jiný otisk dat) nebo --znovu → začít od Jirky
