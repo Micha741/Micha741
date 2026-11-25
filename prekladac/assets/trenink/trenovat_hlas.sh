@@ -227,6 +227,7 @@ if [[ -z "$DAVKA" ]]; then  # podle paměti grafiky: 8 GB → 8 (víc se nevejde
   if (( MEM >= 11000 )); then DAVKA=16; elif (( MEM >= 7500 )); then DAVKA=8; else DAVKA=6; fi
 fi
 
+WORKERS=$(( $(nproc) > 4 ? 4 : $(nproc) - 1 )); (( WORKERS < 1 )) && WORKERS=1  # data pro grafiku chystá víc jader
 echo "Epoch $EPOCHY. Řádek „Epoch …“ se vypíše vždy po dokončení epochy (první může trvat i 10 minut)."
 echo "Přerušit: Ctrl+C (průběh zůstane, příště se pokračuje)."
 echo "Ukázku hlasu si můžete kdykoli udělat v Překladači tlačítkem „🔊 Ukázka z průběhu“."
@@ -252,7 +253,8 @@ while true; do
     --data.voice_name "$VOICE" --data.csv_path "$HOME_T/data/metadata.csv" --data.audio_dir "$HOME_T/data/wavs" \
     --model.sample_rate 22050 --data.espeak_voice cs --data.cache_dir "$HOME_T/cache" \
     --data.config_path "$WORK/$VOICE.onnx.json" --data.batch_size "$DAVKA" \
-    --trainer.max_epochs "$EPOCHY" --trainer.default_root_dir "$WORK" "${START[@]}" "${MOS[@]}" 2>&1 \
+    --trainer.max_epochs "$EPOCHY" --trainer.default_root_dir "$WORK" "${START[@]}" "${MOS[@]}" \
+    --data.num_workers "$WORKERS" --trainer.check_val_every_n_epoch 5 2>&1 \
     | tee "$LOG" | grep --line-buffered -E "Epoch|Error|error|CUDA out of memory"
   RC=${PIPESTATUS[0]}
   set -e
