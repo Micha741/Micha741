@@ -71,9 +71,13 @@ if [[ ! -f "$HOME_T/.hotovo-instalace" ]]; then
   # shellcheck disable=SC1091
   source "$VENV/bin/activate"
   pip install -q --upgrade pip wheel
-  [[ -d "$REPO" ]] || git clone -q https://github.com/OHF-Voice/piper1-gpl.git "$REPO"
+  echo "Stahuji Piper…"
+  [[ -d "$REPO/.git" ]] || { rm -rf "$REPO"; git clone -q https://github.com/OHF-Voice/piper1-gpl.git "$REPO"; }
   cd "$REPO"
-  pip install -q -e '.[train]'
+  echo "Stahuji PyTorch a knihovny (asi 3–4 GB) – průběh se vypisuje:"
+  pip install --progress-bar on -e '.[train]' 2>&1 | grep --line-buffered -E 'Collecting|Downloading|Installing|Successfully|ERROR|error' || true
+  python3 -c 'import torch, lightning' 2>/dev/null || { echo "❌ Instalace knihoven se nepovedla – spusťte příkaz znovu (naváže)."; exit 1; }
+  echo "Sestavuji součásti…"
   ./build_monotonic_align.sh > "$HOME_T/build.log" 2>&1
   pip install -q scikit-build && python3 setup.py build_ext --inplace >> "$HOME_T/build.log" 2>&1 || true
   python3 - <<'PY'
