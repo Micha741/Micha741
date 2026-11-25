@@ -231,7 +231,15 @@ echo "Epoch $EPOCHY. Řádek „Epoch …“ se vypíše vždy po dokončení ep
 echo "Přerušit: Ctrl+C (průběh zůstane, příště se pokračuje)."
 echo "Ukázku hlasu si můžete kdykoli udělat v Překladači tlačítkem „🔊 Ukázka z průběhu“."
 while true; do
-  LAST=$(ls -t "$WORK"/lightning_logs/*/checkpoints/last.ckpt 2>/dev/null | head -1 || true)
+  LAST=""
+  for ck in $(ls -t "$WORK"/lightning_logs/*/checkpoints/last.ckpt 2>/dev/null || true); do
+    # poškozený průběh (přerušeno Ctrl+C / restartem při ukládání) se přeskočí
+    if python3 -c "import sys, zipfile; sys.exit(0 if zipfile.is_zipfile(sys.argv[1]) else 1)" "$ck"; then
+      LAST="$ck"; break
+    fi
+    echo "⚠ Poškozený uložený průběh (přerušeno při ukládání) – přeskakuji: $ck"
+    mv "$ck" "$ck.poskozeny"
+  done
   if [[ -n "$LAST" ]]; then
     echo "== Pokračuji z: $LAST (dávka $DAVKA) =="
     START=(--ckpt_path "$LAST")
