@@ -12,7 +12,7 @@
 # Hotový hlas se uloží do SLOŽKA/hotovo/ (jméno.onnx + jméno.onnx.json) a Překladač ho načte.
 set -euo pipefail
 export PATH="$PATH:/usr/lib/wsl/lib"  # nvidia-smi ve WSL (Ubuntu i Debian)
-export PIP_RETRIES=10 PIP_DEFAULT_TIMEOUT=60  # velké balíčky (PyTorch): při výpadku spojení zkoušet déle
+export PIP_RETRIES=20 PIP_DEFAULT_TIMEOUT=120  # velké balíčky (PyTorch): při výpadku spojení zkoušet déle
 
 if [[ "${1:-}" == "--system" ]]; then
   if command -v espeak-ng > /dev/null && command -v cmake > /dev/null && command -v git > /dev/null \
@@ -70,12 +70,18 @@ if [[ ! -f "$HOME_T/.hotovo-instalace" ]]; then
   python3 -m venv "$VENV"
   # shellcheck disable=SC1091
   source "$VENV/bin/activate"
-  pip install -q --upgrade pip wheel
+  pip install -q --upgrade 'pip>=25.1' wheel
   echo "Stahuji Piper…"
   [[ -d "$REPO/.git" ]] || { rm -rf "$REPO"; git clone -q https://github.com/OHF-Voice/piper1-gpl.git "$REPO"; }
   cd "$REPO"
   echo "Stahuji PyTorch a knihovny (asi 3–4 GB) – průběh se vypisuje:"
-  pip install --progress-bar on -e '.[train]' 2>&1 | grep --line-buffered -E 'Collecting|Downloading|Installing|Successfully|ERROR|error' || true
+  for pokus in 1 2 3 4 5 6; do  # stažené balíčky zůstávají v mezipaměti, další pokus naváže
+    pip install --resume-retries 30 -e '.[train]' 2>&1 \
+      | grep --line-buffered -E 'Collecting|Downloading|Installing|Successfully|ERROR|error|interrupted' || true
+    python3 -c 'import torch, lightning' 2>/dev/null && break
+    echo "⚠ Stahování se přerušilo (pokus $pokus z 6) – za 20 s zkusím znovu…"
+    sleep 20
+  done
   python3 -c 'import torch, lightning' 2>/dev/null || { echo "❌ Instalace knihoven se nepovedla – spusťte příkaz znovu (naváže)."; exit 1; }
   echo "Sestavuji součásti…"
   ./build_monotonic_align.sh > "$HOME_T/build.log" 2>&1
