@@ -60,6 +60,7 @@
 # Historie verzí
 
 **Nová verze**
+- Vlastní hlas (počítač i Colab): oprava pádu tréninku po první epoše („ModelCheckpoint(monitor='val_mos') could not find the monitored key“) v nové verzi Piper; trénink ve WSL funguje i v Debianu, navazuje přerušené stahování a hlídá připojení k internetu.
 
 **1.0.142 (24. 11. 2026)**
 - 📱 Přenést do telefonu (Nastavení → Služby a klíče → Google Disk / Synology): QR kód s nastavením synchronizace i přihlášením – telefon ho načte (Android 1.2.1: 📷 Načíst z počítače, nebo fotoaparátem / Google Lens), nic se neopisuje. Okno se po 5 minutách samo zavře.

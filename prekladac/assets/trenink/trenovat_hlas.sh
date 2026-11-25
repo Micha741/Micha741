@@ -116,6 +116,21 @@ fi
 source "$VENV/bin/activate"
 cd "$HOME_T"
 
+# ---------------------------------------------------------------- oprava Piper (každé spuštění, neškodí opakovaně)
+python3 - "$REPO" <<'PY'
+# Oprava piper1-gpl: ModelCheckpoint(monitor="val_mos") shodí trénink, když se hodnocení MOS nenačte
+# (MisconfigurationException po 1. epoše). Kontrolní bod podle val_mos se vypustí, ostatní zůstanou.
+import re, sys
+p = sys.argv[1] + '/src/piper/train/__main__.py'
+s = open(p, encoding='utf-8').read()
+n = re.sub(r'\n[ \t]*ModelCheckpoint\(\s*monitor="val_mos",.*?\n[ \t]*\),', '', s, flags=re.S)
+if n != s:
+    open(p, 'w', encoding='utf-8').write(n)
+    print('✓ Oprava Piper: kontrolní bod podle val_mos vypnut')
+PY
+MOS=()
+grep -q "mos_metric" "$REPO/src/piper/train/vits/lightning.py" && MOS=(--model.mos_metric none)  # bez stahování UTMOS
+
 # ---------------------------------------------------------------- data: všechny ZIPy ve složce → jeden vstup
 VOICE=$(python3 - "$SLOZKA" "$HOME_T/data" <<'PY'
 import glob, hashlib, os, shutil, sys, zipfile
@@ -212,7 +227,8 @@ if [[ -z "$DAVKA" ]]; then  # podle paměti grafiky: 8 GB → 12, 12 GB a víc �
   if (( MEM >= 11000 )); then DAVKA=16; elif (( MEM >= 7500 )); then DAVKA=12; else DAVKA=8; fi
 fi
 
-echo "Epoch $EPOCHY. Přerušit: Ctrl+C (průběh zůstane, příště se pokračuje)."
+echo "Epoch $EPOCHY. Řádek „Epoch …“ se vypíše vždy po dokončení epochy (první může trvat i 10 minut)."
+echo "Přerušit: Ctrl+C (průběh zůstane, příště se pokračuje)."
 echo "Ukázku hlasu si můžete kdykoli udělat v Překladači tlačítkem „🔊 Ukázka z průběhu“."
 while true; do
   LAST=$(ls -t "$WORK"/lightning_logs/*/checkpoints/last.ckpt 2>/dev/null | head -1 || true)
@@ -228,7 +244,7 @@ while true; do
     --data.voice_name "$VOICE" --data.csv_path "$HOME_T/data/metadata.csv" --data.audio_dir "$HOME_T/data/wavs" \
     --model.sample_rate 22050 --data.espeak_voice cs --data.cache_dir "$HOME_T/cache" \
     --data.config_path "$WORK/$VOICE.onnx.json" --data.batch_size "$DAVKA" \
-    --trainer.max_epochs "$EPOCHY" --trainer.default_root_dir "$WORK" "${START[@]}" 2>&1 \
+    --trainer.max_epochs "$EPOCHY" --trainer.default_root_dir "$WORK" "${START[@]}" "${MOS[@]}" 2>&1 \
     | tee "$LOG" | grep --line-buffered -E "Epoch|Error|error|CUDA out of memory"
   RC=${PIPESTATUS[0]}
   set -e
