@@ -168,8 +168,13 @@ WORK="$HOME_T/prace/$VOICE"
 mkdir -p "$WORK"
 
 export_voice() {
-  local ck
-  ck=$(ls -t "$WORK"/lightning_logs/*/checkpoints/last.ckpt 2>/dev/null | head -1 || true)
+  local ck="" c
+  for c in $(ls -t "$WORK"/lightning_logs/*/checkpoints/*.ckpt 2>/dev/null || true); do
+    if python3 -c "import sys, zipfile; sys.exit(0 if zipfile.is_zipfile(sys.argv[1]) else 1)" "$c"; then
+      ck="$c"; break
+    fi
+    echo "⚠ Poškozený uložený průběh – zkouším starší: $c"
+  done
   if [[ -z "$ck" ]]; then
     echo "⚠ Zatím není uložený žádný průběh – nechte trénink běžet aspoň jednu epochu."
     return 1
@@ -229,7 +234,7 @@ fi
 
 WORKERS=$(( $(nproc) > 4 ? 4 : $(nproc) - 1 )); (( WORKERS < 1 )) && WORKERS=1  # data pro grafiku chystá víc jader
 echo "Epoch $EPOCHY. Řádek „Epoch …“ se vypíše vždy po dokončení epochy (první může trvat i 10 minut)."
-echo "Přerušit: Ctrl+C (průběh zůstane, příště se pokračuje)."
+echo "Přerušit: jednou Ctrl+C UPROSTŘED epochy (ne hned po řádku 100 %, to se ukládá). Příště se pokračuje."
 echo "Ukázku hlasu si můžete kdykoli udělat v Překladači tlačítkem „🔊 Ukázka z průběhu“."
 while true; do
   LAST=""
